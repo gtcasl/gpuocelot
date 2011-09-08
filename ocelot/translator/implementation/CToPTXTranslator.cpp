@@ -802,7 +802,7 @@ namespace translator
         setPredicate(inst);
 
         inst.d.addressMode = ir::PTXOperand::Immediate;
-        inst.d.imm_int = 0;
+        inst.d.imm_uint = 0;
         
         stmt.instruction = inst;
         statements.push_back(stmt);
@@ -819,7 +819,7 @@ namespace translator
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.a.addressMode = ir::PTXOperand::Immediate;
         inst.a.type = type;
-        inst.a.imm_int = 0;
+        inst.a.imm_uint = 0;
         
         setPredicate(inst);
         stmt.instruction = inst;
@@ -838,7 +838,7 @@ namespace translator
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.a.addressMode = ir::PTXOperand::Immediate;
         inst.a.type = type;
-        inst.a.imm_int = 0;
+        inst.a.imm_uint = 0;
         
         setPredicate(inst);
         stmt.instruction = inst;
@@ -1352,8 +1352,8 @@ namespace translator
         
         inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Immediate;
        
-        inst.a.imm_int = 1;
-        inst.b.imm_int = 0;
+        inst.a.imm_uint = 1;
+        inst.b.imm_uint = 0;
             
         inst.c.type = ir::PTXOperand::pred;
         inst.c.addressMode = ir::PTXOperand::Register;
@@ -1527,7 +1527,7 @@ namespace translator
             inst.d.addressMode = ir::PTXOperand::Register;
             inst.a.type = type;
             inst.a.addressMode = ir::PTXOperand::Immediate;
-            inst.a.imm_int = insn->opnds.a3i.u.imm;
+            inst.a.imm_uint = insn->opnds.a3i.u.imm;
             
             setPredicate(inst);
             stmt.instruction = inst;
@@ -1572,7 +1572,7 @@ namespace translator
                 inst.b.addressMode = ir::PTXOperand::Immediate;
                 src1 = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.src);
                 dst = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.dest);
-                inst.b.imm_int = insn->opnds.a3i.u.imm;
+                inst.b.imm_uint = insn->opnds.a3i.u.imm;
             }
         
             if(registerMap[dst].empty())
@@ -1903,7 +1903,7 @@ namespace translator
             if(prev.opcode == ir::PTXInstruction::Add
                 && (prev.d.identifier == inst.d.identifier || prev.d.identifier == inst.a.identifier)) {
             
-                memoryType = prev.b.imm_int;
+                memoryType = prev.b.imm_uint;
                 
                 for(ir::PTXKernel::PTXStatementVector::iterator s = statements.begin(); s != statements.end(); ++s)
                 { 
@@ -1934,7 +1934,7 @@ namespace translator
             if(prev.opcode == ir::PTXInstruction::Mov
                 && (prev.d.identifier == inst.d.identifier || prev.d.identifier == inst.a.identifier)) {
             
-                memoryType = prev.b.imm_int;
+                memoryType = prev.b.imm_uint;
                     
                 for(ir::PTXKernel::PTXStatementVector::iterator s = statements.begin(); s != statements.end(); ++s)
                 { 

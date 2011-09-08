@@ -42,44 +42,27 @@ namespace transforms
             toInsert.instruction.pg.identifier.clear();
         }
         
-        if(statement.instruction.a.identifier == BASIC_BLOCK_EXEC_INST_COUNT && statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
-        {
-            toInsert.instruction.d.reg = toInsert.instruction.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
-            toInsert.instruction.d.identifier.clear();
-            toInsert.instruction.a.identifier.clear();
-        }
         
-        if(statement.instruction.a.identifier == BASIC_BLOCK_PRED_INST_COUNT && statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT)
+        ir::PTXOperand ir::PTXInstruction::* source_operands[] = { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c};
+
+        for (int i = 0; i < 3; i++) 
         {
-            toInsert.instruction.d.reg = toInsert.instruction.a.reg = newRegisterMap[BASIC_BLOCK_PRED_INST_COUNT];
-            toInsert.instruction.d.identifier.clear();
-            toInsert.instruction.a.identifier.clear();
-        }
+            ir::PTXOperand &operand = statement.instruction.*(source_operands[i]);
         
-        if( statement.instruction.d.identifier == BASIC_BLOCK_COUNT || 
-            statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
-            statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
-            statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT ||
-            statement.instruction.d.identifier == BASIC_BLOCK_ID || 
-            statement.instruction.d.identifier == INSTRUCTION_ID ||
-            statement.instruction.d.identifier == INSTRUCTION_COUNT) {
-            toInsert.instruction.d.reg = dfg().newRegister();
-            newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
-            toInsert.instruction.d.identifier.clear();
-            
-            if(statement.instruction.d.identifier == BASIC_BLOCK_COUNT) 
-                toInsert.instruction.a.imm_int = attributes.basicBlockCount;
-            else if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT) 
-                toInsert.instruction.a.imm_int = attributes.basicBlockInstructionCount;
-            else if(statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT || statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT) 
-                toInsert.instruction.a.imm_int = attributes.basicBlockExecutedInstructionCount;
-            else if(statement.instruction.d.identifier == BASIC_BLOCK_ID)    
-                toInsert.instruction.a.imm_int = attributes.basicBlockId; 
-            else if(statement.instruction.d.identifier == INSTRUCTION_ID)    
-                toInsert.instruction.a.imm_int = attributes.instructionId;
-            else if(statement.instruction.d.identifier == INSTRUCTION_COUNT)   
-                toInsert.instruction.a.imm_int = attributes.kernelInstructionCount;
-        }
+            if( operand.identifier == BASIC_BLOCK_COUNT)
+                (toInsert.instruction.*(source_operands[i])).imm_uint = attributes.basicBlockCount;
+            else if( operand.identifier == BASIC_BLOCK_INST_COUNT)
+                (toInsert.instruction.*(source_operands[i])).imm_uint = attributes.basicBlockInstructionCount;
+            else if( operand.identifier == BASIC_BLOCK_EXEC_INST_COUNT || operand.identifier == BASIC_BLOCK_PRED_INST_COUNT)
+                (toInsert.instruction.*(source_operands[i])).imm_uint = attributes.basicBlockExecutedInstructionCount;
+            else if( operand.identifier == BASIC_BLOCK_ID)
+                (toInsert.instruction.*(source_operands[i])).imm_uint = attributes.basicBlockId;
+            else if( operand.identifier == INSTRUCTION_ID)
+                (toInsert.instruction.*(source_operands[i])).imm_uint = attributes.instructionId;
+            else if( operand.identifier == INSTRUCTION_COUNT)
+                (toInsert.instruction.*(source_operands[i])).imm_uint = attributes.kernelInstructionCount;
+       } 
+       
         
         if(statement.instruction.d.identifier == COMPUTE_BASE_ADDRESS)
         {
@@ -327,20 +310,29 @@ namespace transforms
                     
                         ir::PTXKernel::PTXStatementVector::iterator position = translationBlock.statements.end();
                         for(ir::PTXKernel::PTXStatementVector::iterator statement = translationBlock.statements.begin();
-                            statement != translationBlock.statements.end(); ++statement) {    
-                            if(statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
+                            statement != translationBlock.statements.end(); ++statement) { 
+                            
+                            ir::PTXOperand ir::PTXInstruction::* source_operands[] = 
+                                { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c};
+
+                            for (int i = 0; i < 3; i++) 
                             {
-                                position = statement;
-                                break;
-                            }
-                            else if(statement->instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT)
-                            {
-                                position = statement;
-                                isPredInstCount = true;
-                                guard = statement->instruction.pg;
-                                break;
-                            }
-                        }                    
+                                ir::PTXOperand &operand = statement->instruction.*(source_operands[i]);
+                                
+                                if(operand.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
+                                {
+                                    position = statement;
+                                    break;
+                                }
+                                else if(operand.identifier == BASIC_BLOCK_PRED_INST_COUNT)
+                                {
+                                    position = statement;
+                                    isPredInstCount = true;
+                                    guard = statement->instruction.pg;
+                                    break;
+                                }
+                            }   
+                        }             
         
                         if(position == translationBlock.statements.end())
                             throw hydrazine::Exception("Unable to locate BASIC_BLOCK_EXEC_INST_COUNT or BASIC_BLOCK_PRED_INST_COUNT statement!");
@@ -392,7 +384,7 @@ namespace transforms
                             add.type = add.d.type = add.a.type = add.b.type = type;
                             add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
                             
-                            add.d.identifier = add.a.identifier = BASIC_BLOCK_PRED_INST_COUNT;
+                            add.d = add.a = position->instruction.d;
                             add.b.reg = cvtResult;
                             
                             add.pg = guard;
@@ -405,9 +397,8 @@ namespace transforms
                             position = translationBlock.statements.insert(position + 1, stmt);
                             stmt.instruction = cvt;
                             position = translationBlock.statements.insert(position + 1, stmt);
-                            add.d = add.a = (position + 1)->instruction.d;
                             stmt.instruction = add;
-                            position = translationBlock.statements.insert(position + 2, stmt);
+                            position = translationBlock.statements.insert(position + 1, stmt);
                             
                         }
                         else
@@ -426,7 +417,7 @@ namespace transforms
                             add.type = add.d.type = add.a.type = add.b.type = type;
                             add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
                             
-                            add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
+                            add.d = add.a = position->instruction.d;
                             add.b.reg = predCount;
                             
 
@@ -466,10 +457,9 @@ namespace transforms
                     } 
                     
                     if(statement->instruction.opcode == ir::PTXInstruction::Vote && (statement+1)->instruction.opcode == ir::PTXInstruction::Popc
-                        && (statement+2)->instruction.opcode == ir::PTXInstruction::Cvt && (statement+4)->instruction.opcode == ir::PTXInstruction::Add)
+                        && (statement+2)->instruction.opcode == ir::PTXInstruction::Cvt && (statement+3)->instruction.opcode == ir::PTXInstruction::Add)
                     {
-                        ir::PTXKernel::PTXStatementVector::iterator position = translationBlock.statements.erase(statement, statement + 3);
-                        translationBlock.statements.erase(position + 1);
+                        translationBlock.statements.erase(statement, statement + 4);
                     } 
                 
                 }
@@ -621,21 +611,34 @@ namespace transforms
             }
             
             /* check if predication is enabled */
-            if(statement->directive == ir::PTXStatement::Instr && 
-                (statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT || statement->instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT))
+            if(statement->directive == ir::PTXStatement::Instr)
             {
-                if(translationBlocks.size() > 0){
-                    transforms::TranslationBlock last = translationBlocks.back();
-                    last.specifier.checkForPredication = true;
-                    translationBlocks.pop_back();
-                    translationBlocks.push_back(last);
-                }
-                else {
-                    initialBlock.specifier.checkForPredication = true;
+                ir::PTXOperand ir::PTXInstruction::* source_operands[] = 
+                    { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c};
+
+                for (int i = 0; i < 3; i++) 
+                {
+                    ir::PTXOperand operand = statement->instruction.*(source_operands[i]);
+                    
+                    if(operand.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
+                        operand.identifier == BASIC_BLOCK_PRED_INST_COUNT)
+                    {
+                        if(translationBlocks.size() > 0)
+                        {
+                            transforms::TranslationBlock last = translationBlocks.back();
+                            last.specifier.checkForPredication = true;
+                            translationBlocks.pop_back();
+                            translationBlocks.push_back(last);
+                        }
+                        else {
+                            initialBlock.specifier.checkForPredication = true;
+                        }
+                        break;
+                    }
                 }
             }
-                
             
+        
             /* check if a label was encountered */
             if(statement->directive == ir::PTXStatement::Label) {
                 
@@ -787,15 +790,107 @@ namespace transforms
 	}
 	
 	
+	void CToPTXInstrumentationPass::optimize(ir::PTXKernel::PTXStatementVector & statements)
+	{
+	    ir::PTXKernel::PTXStatementVector toErase;
+	    bool propagateConstant = true;
+	
+	    for(ir::PTXKernel::PTXStatementVector::iterator statement = statements.begin();
+            statement != statements.end(); ++statement) 
+        {
+        
+            if(statement->instruction.opcode == ir::PTXInstruction::Mov && 
+                statement->instruction.a.addressMode == ir::PTXOperand::Immediate)
+            {
+                propagateConstant = true;
+                for(FunctionNameVector::const_iterator function = functionNames.begin();
+                    function != functionNames.end(); ++function)
+            
+                if(statement->instruction.d.identifier == *function)
+                {
+                    propagateConstant = false;
+                    break;
+                }
+                
+                if(propagateConstant)
+                {
+                    constants[statement->instruction.d.identifier] = statement->instruction.a.imm_uint;
+                    toErase.push_back(*statement);
+                }
+            }       
+            
+            if(statement->instruction.opcode == ir::PTXInstruction::Mad ||
+                statement->instruction.opcode == ir::PTXInstruction::Add ||
+                statement->instruction.opcode == ir::PTXInstruction::Sub ||
+                statement->instruction.opcode == ir::PTXInstruction::Div ||
+                statement->instruction.opcode == ir::PTXInstruction::Mul)
+            {    
+                ir::PTXOperand ir::PTXInstruction::* source_operands[] = 
+                    { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c};
+
+                for (int i = 0; i < 3; i++) 
+                {
+                    ir::PTXOperand &operand = statement->instruction.*(source_operands[i]);
+        
+                    if( constants.find(operand.identifier) != constants.end())
+                    {
+                        (statement->instruction.*(source_operands[i])).addressMode = ir::PTXOperand::Immediate;
+                        (statement->instruction.*(source_operands[i])).imm_uint = constants[operand.identifier];
+                    }
+                }
+            }
+            
+            if(statement->instruction.opcode == ir::PTXInstruction::Mul && 
+                (statement+1)->instruction.opcode == ir::PTXInstruction::Add &&
+                statement->instruction.d.identifier == (statement+1)->instruction.d.identifier &&
+                statement->instruction.d.identifier == (statement+1)->instruction.a.identifier)
+                {
+                    statement->instruction.opcode = ir::PTXInstruction::Mad;
+                    statement->instruction.c.addressMode = (statement+1)->instruction.b.addressMode;
+                    statement->instruction.c.identifier = (statement+1)->instruction.b.identifier;
+                    toErase.push_back(*(statement+1));
+                }            
+        }	
+        
+       
+        ir::PTXKernel::PTXStatementVector newStatementsVector;
+        bool add = true;
+            
+        for(ir::PTXKernel::PTXStatementVector::iterator statement = statements.begin();
+        statement != statements.end(); ++statement) 
+        {
+            add = true;
+            
+            for(ir::PTXKernel::PTXStatementVector::iterator 
+                s = toErase.begin(); s != toErase.end(); ++s)
+                { 
+                    if(statement->toString() == s->toString())
+                    {
+                        add = false;
+                        break;
+                    }        
+                }
+            
+            if(add)       
+                newStatementsVector.push_back(*statement);                 
+        }
+        
+        statements = newStatementsVector;
+        
+	}
+	
     CToPTXInstrumentationPass::CToPTXInstrumentationPass(std::string resource)
 		: KernelPass( Analysis::DataflowGraphAnalysis,
 			"CToPTXInstrumentationPass" )
 	{
 	    translator::CToPTXTranslator translator;
 	    translation = translator.generate(resource);
+	    optimize(translation.statements);
 	    baseAddress = translation.globals.front().name;
 	    
 	    parameterMap = translation.parameterMap;
+	 
+	    functionNames = { COMPUTE_BASE_ADDRESS, GET_PREDICATE_VALUE };
 	 
 	    instructionClasses = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP };
 	    addressSpaceSpecifiers = { GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE };

@@ -87,6 +87,8 @@ namespace transforms
             typedef std::map<ir::PTXInstruction::Opcode, std::string> OpcodeMap; 
             typedef std::map<std::string, ir::PTXInstruction::AddressSpace> AddressSpaceMap;   
             typedef std::map<ir::PTXOperand::DataType, std::string> DataTypeMap; 
+            typedef std::map<std::string, unsigned int> ConstantsMap; 
+            typedef std::vector<std::string> FunctionNameVector;
 
             OpcodeMap opcodeMap;
             AddressSpaceMap addressSpaceMap;
@@ -95,6 +97,8 @@ namespace transforms
             std::vector<std::string> instructionClasses;
             std::vector<std::string> addressSpaceSpecifiers;
             std::vector<std::string> types;
+            ConstantsMap constants;
+            FunctionNameVector functionNames;
 			
 		protected:
 		    analysis::DataflowGraph& dfg();
@@ -110,6 +114,8 @@ namespace transforms
 			FunctionParameterMap parameterMap;
 			
 	    private:
+	    
+	        void optimize(ir::PTXKernel::PTXStatementVector & statements);
 	    
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
 	        bool instrumentationConditionsMet(ir::PTXInstruction instruction, TranslationBlock translationBlock);

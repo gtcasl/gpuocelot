@@ -51,10 +51,7 @@ UNSIGNED_DECIMAL_CONSTANT {DECIMAL_CONSTANT}U
 UNSIGNED_HEX_CONSTANT {HEX_CONSTANT}U
 UNSIGNED_OCT_CONSTANT {OCT_CONSTANT}U
 
-STRING_FIRST ([^\"\\\n]|(\\['\"?\\abfnrtv])
-STRING_SECOND {STRING_FIRST}|(\\([0123456]{1,3}))|(\\x[[:xdigit:]]+)
-
-STRING L?\"{STRING_SECOND}|(\\u([[:xdigit:]]{4}))|(\\U([[:xdigit:]]{8})))*\"
+STRING L?\"(\\.|[^\\"])*\"
 COMMENT ("/*"([^*]|"*"[^/])*"*/")|("/"(\\\n)*"/"[^\n]*)
 
 DSEQ ([[:digit:]]+)

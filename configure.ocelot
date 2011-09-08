@@ -35,7 +35,8 @@
 		warpSize: 4
 	},
 	optimizations: {
-		subkernelSize: 1000
+		subkernelSize: 1000,
+		programStructureType: "superblock"
 	},
 	checkpoint: {
 		enabled: false,

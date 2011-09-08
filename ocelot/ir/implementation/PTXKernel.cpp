@@ -12,6 +12,11 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
 
+#include <ocelot/analysis/interface/SuperblockAnalysis.h>
+#include <ocelot/analysis/interface/DefaultProgramStructure.h>
+
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
 // Hydrazine Includes
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
@@ -22,7 +27,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -576,19 +581,18 @@ void PTXKernel::write(std::ostream& stream) const
 	
 	// issue actual instructions
 	if (_cfg != 0) {
-		ControlFlowGraph::BlockPointerVector 
-			blocks = _cfg->executable_sequence();
-			
+		analysis::ProgramStructureGraph* graph =
+			const_cast<PTXKernel*>(this)->getProgramStructureGraph();
+		
 		IndirectCallMap indirectCalls;
 	
 		// look for and emit function prototypes
-		for (ControlFlowGraph::BlockPointerVector::iterator 
-			block = blocks.begin(); block != blocks.end(); ++block) {
+		for (analysis::ProgramStructureGraph::iterator block = graph->begin();
+			block != graph->end(); ++block) {
 			
-			for( ControlFlowGraph::InstructionList::iterator 
-				instruction = (*block)->instructions.begin(); 
-				instruction != (*block)->instructions.end();
-				++instruction ) {
+			for(analysis::ProgramStructureGraph::Block::iterator
+				instruction = block->begin(); instruction != block->end();
+				++instruction) {
 				ir::PTXInstruction* inst =
 					static_cast<ir::PTXInstruction *>(*instruction);
 				
@@ -639,16 +643,15 @@ void PTXKernel::write(std::ostream& stream) const
 		//
 	
 		int blockIndex = 1;
-		for (ControlFlowGraph::BlockPointerVector::iterator 
-			block = blocks.begin(); block != blocks.end(); 
-			++block, ++blockIndex) {
-			std::string label = (*block)->label;
-			std::string comment = (*block)->comment;
-			if ((*block)->instructions.size() 
-				|| (label != "entry" && label != "exit")) {
+		for (analysis::ProgramStructureGraph::iterator block = graph->begin();
+			block != graph->end(); ++block, ++blockIndex) {
+			report("Printing out block " << block->block_begin()->id);
+			std::string label   = block->block_begin()->label;
+			std::string comment = block->block_begin()->comment;
+			if (!block->empty() || (label != "entry" && label != "exit")) {
 				if (label == "") {
 					std::stringstream ss;
-					ss << "$__Block_" << (*block)->id;
+					ss << "$__Block_" << block->block_begin()->id;
 					label = ss.str();
 				}
 				stream << "\t" << label << ":";
@@ -658,13 +661,15 @@ void PTXKernel::write(std::ostream& stream) const
 				stream << "\n";
 			}
 			
-			for( ControlFlowGraph::InstructionList::iterator 
-				instruction = (*block)->instructions.begin(); 
-				instruction != (*block)->instructions.end();
-				++instruction ) {
+			for(analysis::ProgramStructureGraph::Block::iterator
+				instruction = block->begin(); instruction != block->end();
+				++instruction) {
+				report(" " << (*instruction)->toString());
 				stream << "\t\t" << (*instruction)->toString() << ";\n";
 			}
 		}
+		
+		delete graph;
 	}
 	stream << "}\n";
 }
@@ -728,6 +733,20 @@ ir::PTXKernel::Prototype ir::PTXKernel::getPrototype() const {
 	}
 	
 	return prototype;
+}
+
+analysis::ProgramStructureGraph* ir::PTXKernel::getProgramStructureGraph() {
+	const std::string& type =
+		api::OcelotConfiguration::get().optimizations.programStructureType;
+	
+	if(type == "superblock")
+	{
+		return new analysis::SuperblockAnalysis(*cfg());		
+	}
+	else
+	{
+		return new analysis::DefaultProgramStructure(*cfg());
+	}
 }
 
 }

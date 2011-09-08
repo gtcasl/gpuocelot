@@ -317,9 +317,12 @@ static void initializeOptimizations(
 			
 	optimizations.mimdThreadScheduling =
 		config.parse<bool>("mimdThreadScheduling", false);
-			
+	
 	optimizations.syncElimination =
 		config.parse<bool>("syncElimination", false);			
+
+	optimizations.programStructureType =
+		config.parse<std::string>("programStructureType", "default");			
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

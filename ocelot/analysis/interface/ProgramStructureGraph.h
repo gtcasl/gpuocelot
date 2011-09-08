@@ -124,6 +124,7 @@ public:
 			iterator();
 			explicit iterator(const block_iterator&,
 				const instruction_iterator&);
+
 		public:
 			reference operator*() const;
 			pointer operator->() const;
@@ -134,6 +135,9 @@ public:
 			
 			bool operator==(const self&) const;
 			bool operator!=(const self&) const;	
+
+		public:
+			void align();
 
 		private:
 			instruction_iterator _instruction;
@@ -182,7 +186,7 @@ public:
 		{
 		public:
 			typedef successor_iterator self;
-			typedef ir::BasicBlock     value_type;
+			typedef Block              value_type;
 			typedef value_type&        reference;
 			typedef value_type*        pointer;
 		
@@ -198,7 +202,7 @@ public:
 			self operator++(int);
 			self& operator--();
 			self operator--(int);
-						
+					
 			bool operator==(const self&) const;
 			bool operator!=(const self&) const;	
 		
@@ -214,7 +218,7 @@ public:
 		{
 		public:
 			typedef const_successor_iterator self;
-			typedef ir::BasicBlock           value_type;
+			typedef Block                    value_type;
 			typedef const value_type&        reference;
 			typedef const value_type*        pointer;
 		
@@ -247,10 +251,10 @@ public:
 		class predecessor_iterator
 		{
 		public:
-			typedef predecessor_iterator     self;
-			typedef ir::BasicBlock           value_type;
-			typedef value_type&              reference;
-			typedef value_type*              pointer;
+			typedef predecessor_iterator self;
+			typedef Block                value_type;
+			typedef value_type&          reference;
+			typedef value_type*          pointer;
 		
 		public:	      
 			predecessor_iterator();
@@ -280,7 +284,7 @@ public:
 		{
 		public:
 			typedef const_predecessor_iterator self;
-			typedef ir::BasicBlock             value_type;
+			typedef Block                      value_type;
 			typedef const value_type&          reference;
 			typedef const value_type*          pointer;
 		
@@ -370,6 +374,8 @@ public:
 		size_t instructions() const;
 		/*! \brief Get the number of basic blocks in the block */
 		size_t basicBlocks() const;
+		/*! \brief Does the block have a fallthrough edge */
+		bool hasFallthroughEdge() const;
 		
 	private:
 		typedef ir::ControlFlowGraph::BlockPointerVector BlockPointerVector;
@@ -395,6 +401,10 @@ public:
 	const_iterator end() const;
 
 public:
+	/*! \brief Reorders blocks into an executable sequence */
+	void reorderIntoExecutableSequence();
+
+public:
 	/*! \brief Get the number of basic blocks in the graph */
 	size_t size() const;
 	/*! \brief Is the graph empty? */
@@ -402,6 +412,7 @@ public:
 	
 protected:
 	BlockVector _blocks;
+	iterator    _entry;
 };
 
 }

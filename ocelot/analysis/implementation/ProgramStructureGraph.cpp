@@ -6,6 +6,17 @@
 
 // Ocelot Includes
 #include <ocelot/analysis/interface/ProgramStructureGraph.h>
+#include <ocelot/ir/interface/Instruction.h>
+
+// Hydrazine Includes
+#include <hydrazine/implementation/debug.h>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 namespace analysis
 {
@@ -49,14 +60,16 @@ ProgramStructureGraph::Block::block_iterator::self&
 	{
 		if(_iterator != _end)
 		{
+			report("Advancing from block '" << (*_iterator)->id << "'");
 			++_iterator;
-			if(!(*_iterator)->instructions.empty())
-			{
-				break;
-			}
+			
+			if(_iterator == _end) break;
+			
+			if(!(*_iterator)->instructions.empty()) break;
 		}
 		else
 		{
+			report("Not advancing block iterator, already at the end");
 			break;
 		}
 	}
@@ -280,17 +293,19 @@ ProgramStructureGraph::Block::iterator::pointer
 ProgramStructureGraph::Block::iterator::self&
 	ProgramStructureGraph::Block::iterator::operator++()
 {
-	if(_instruction != _basicBlock->instructions.end())
+	if(!_basicBlock.end())
 	{
-		++_instruction;
-		
-		if(_instruction == _basicBlock->instructions.end())
+		if(_instruction != _basicBlock->instructions.end())
 		{
-			++_basicBlock;
-			_instruction = _basicBlock->instructions.begin();
+			report("Advancing from instruction '"
+				<< (*_instruction)->toString() << "'");
+			
+			++_instruction;
 		}
 	}
-	
+
+	align();
+		
 	return *this;
 }
 
@@ -339,12 +354,36 @@ ProgramStructureGraph::Block::iterator::self
 
 bool ProgramStructureGraph::Block::iterator::operator==(const self& i) const
 {
-	return i._instruction == _instruction && i._basicBlock == _basicBlock;
+	bool bothEnd = (i._basicBlock.end() && _basicBlock.end());
+
+	return bothEnd ||
+		(i._instruction == _instruction && i._basicBlock == _basicBlock);
 }
 
 bool ProgramStructureGraph::Block::iterator::operator!=(const self& i) const
 {
 	return !(i == *this);
+}
+
+void ProgramStructureGraph::Block::iterator::align()
+{
+	if(!_basicBlock.end())
+	{
+		if(_instruction == _basicBlock->instructions.end())
+		{
+			++_basicBlock;
+		
+			if(_basicBlock.end())
+			{
+				report(" hit the end.");
+				_instruction = instruction_iterator();
+			}
+			else
+			{
+				_instruction = _basicBlock->instructions.begin();
+			}
+		}
+	}
 }
 		
 ProgramStructureGraph::Block::const_iterator::const_iterator()
@@ -858,12 +897,16 @@ bool ProgramStructureGraph::Block::const_predecessor_iterator::operator!=(
 
 ProgramStructureGraph::Block::iterator ProgramStructureGraph::Block::begin()
 {
-	return iterator(block_begin(), block_begin()->instructions.begin());
+	iterator it(block_begin(), block_begin()->instructions.begin());
+
+	it.align();
+	
+	return it;
 }
 
 ProgramStructureGraph::Block::iterator ProgramStructureGraph::Block::end()
 {
-	return iterator(block_end(), block_end()->instructions.begin());
+	return iterator(block_end(), instruction_iterator());
 }
 
 ProgramStructureGraph::Block::const_iterator
@@ -875,7 +918,7 @@ ProgramStructureGraph::Block::const_iterator
 ProgramStructureGraph::Block::const_iterator
 	ProgramStructureGraph::Block::end() const
 {
-	return const_iterator(block_end(), block_end()->instructions.begin());
+	return const_iterator(block_end(), const_instruction_iterator());
 }
 
 ProgramStructureGraph::Block::block_iterator
@@ -1026,6 +1069,71 @@ ProgramStructureGraph::const_iterator ProgramStructureGraph::begin() const
 ProgramStructureGraph::const_iterator ProgramStructureGraph::end() const
 {
 	return _blocks.end();
+}
+
+void ProgramStructureGraph::reorderIntoExecutableSequence()
+{
+	typedef std::unordered_set<iterator> BlockSet;
+	BlockPointerVector sequence;
+	BlockSet unscheduled;
+
+	for(iterator i = begin(); i != end(); ++i)
+	{
+		unscheduled.insert(i);
+	}
+
+	report("Getting executable sequence.");
+
+	sequence.push_back(_entry);
+	unscheduled.erase(_entry);
+	report(" added " << _entry->block_begin()->label);
+
+	while (!unscheduled.empty()) {
+		if (sequence.back()->hasFallthroughEdge()) {
+			iterator fallthrough 	
+				= iterator(sequence.back()->getFallthrough());
+			sequence.push_back(fallthrough);
+			unscheduled.erase(fallthrough);
+		}
+		else {
+			// find a new block, favor branch targets over random blocks
+			iterator next = *unscheduled.begin();
+			
+			for(successor_iterator successor =
+				sequence.back()->successor_begin();
+				successor != sequence.back()->successor_end(); ++successor)
+			{
+				iterator successorBlock(successor);
+			
+				if(unscheduled.count(successorBlock) != 0)
+				{
+					next = successorBlock;
+				}
+			}
+			
+			// rewind through fallthrough edges to find the beginning of the 
+			// next chain of fall throughs
+			report("  restarting at " << next->label);
+			bool rewinding = true;
+			while (rewinding)
+			{
+				rewinding = false;
+				if(next->hasIncommingFallthrough())
+				{
+					next = next->getIncommingFallthrough();
+					rewinding = true;
+					report("   rewinding to " << next->block_begin()->label);
+				}
+			}
+			sequence.push_back(next);
+			unscheduled.erase(next);
+		}
+		
+		report(" added " << sequence.back()->block_begin()->label);
+	}
+
+	return sequence;
+
 }
 
 size_t ProgramStructureGraph::size() const

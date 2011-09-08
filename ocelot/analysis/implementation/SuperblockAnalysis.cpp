@@ -41,7 +41,8 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 	{
 		if(block->predecessors.size() > 1)
 		{
-			report("  Starting a new superblock at " << block->label);
+			report("  Starting a new superblock at " << block->label
+				<< " (" << block->id << ")");
 			superblocks.insert(block);
 			visited.insert(block);
 		}
@@ -52,8 +53,11 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 	for(BlockSet::iterator block = superblocks.begin();
 		block != superblocks.end(); ++block)
 	{
-		report("  For superblock " << (*block)->label);
+		report("  For superblock " << (*block)->label << " ("
+			<< (*block)->id << ")"); 
 		Block superblock;
+	
+		superblock.insert(*block);
 	
 		for(ir::ControlFlowGraph::pointer_iterator successor =
 			(*block)->successors.begin();
@@ -61,7 +65,8 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 		{
 			if((*successor)->predecessors.size() == 1)
 			{
-				report("   Added successor " << (*successor)->label);
+				report("   Added successor " << (*successor)->label
+					<< " (" << (*successor)->id << ")");
 				superblock.insert(*successor);
 				visited.insert(*successor);
 			}
@@ -77,7 +82,8 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 	{
 		if(visited.count(block) == 0)
 		{
-			report("  Adding normal block " << block->label);
+			report("  Adding normal block " << block->label << " ("
+				<< block->id << ")");
 			
 			Block normalblock;
 			normalblock.insert(block);

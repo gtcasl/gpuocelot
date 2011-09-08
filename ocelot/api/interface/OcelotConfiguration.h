@@ -189,7 +189,10 @@ namespace api {
 			bool mimdThreadScheduling;
 			
 			/*! \brief Sync elimination pass */
-			bool syncElimination;			
+			bool syncElimination;
+			
+			/*! \brief The type of program structure to use */
+			std::string programStructureType;
 		};
 
 

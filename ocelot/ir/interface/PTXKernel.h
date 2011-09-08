@@ -7,8 +7,12 @@
 #ifndef IR_PTX_KERNEL_H_INCLUDED
 #define IR_PTX_KERNEL_H_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
+
+// Forward Declarations
+namespace analysis { class ProgramStructureGraph; }
 
 namespace ir 
 {
@@ -129,6 +133,10 @@ namespace ir
 			
 			/*! \brief returns a prototype for this kernel */
 			Prototype getPrototype() const;
+
+		public:
+			/* \brief Gets the currently selected program structure graph */
+			analysis::ProgramStructureGraph* getProgramStructureGraph();
 
 		public:
 			/*! \brief renames all the blocks with canonical names */

@@ -11,6 +11,9 @@
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 
+// Standard Library Includes
+#include <unordered_set>
+
 // Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -28,15 +31,14 @@ ProgramStructureGraph::Block::block_iterator::block_iterator()
 
 ProgramStructureGraph::Block::block_iterator::block_iterator(
 	const block_iterator& i)
-: _iterator(i._iterator), _end(i._end)
+: _iterator(i._iterator), _block(i._block)
 {
 
 }
 
 ProgramStructureGraph::Block::block_iterator::block_iterator(
-	const basic_block_iterator& i, const basic_block_iterator& b,
-	const basic_block_iterator& e)
-: _iterator(i), _begin(b), _end(e)
+	const basic_block_iterator& i, Block* b)
+: _iterator(i), _block(b)
 {
 
 }
@@ -58,12 +60,12 @@ ProgramStructureGraph::Block::block_iterator::self&
 {
 	while(true)
 	{
-		if(_iterator != _end)
+		if(_iterator != _block->_blocks.end())
 		{
 			report("Advancing from block '" << (*_iterator)->id << "'");
 			++_iterator;
 			
-			if(_iterator == _end) break;
+			if(_iterator == _block->_blocks.end()) break;
 			
 			if(!(*_iterator)->instructions.empty()) break;
 		}
@@ -92,7 +94,7 @@ ProgramStructureGraph::Block::block_iterator::self&
 {
 	while(true)
 	{
-		if(_iterator != _begin)
+		if(_iterator != _block->_blocks.begin())
 		{
 			--_iterator;
 			if(!(*_iterator)->instructions.empty())
@@ -122,7 +124,7 @@ ProgramStructureGraph::Block::block_iterator::self
 bool ProgramStructureGraph::Block::block_iterator::operator==(
 	const self& i) const
 {
-	return i._iterator == _iterator && i._end == _end;
+	return i._iterator == _iterator && i._block == _block;
 }
 
 bool ProgramStructureGraph::Block::block_iterator::operator!=(
@@ -133,37 +135,42 @@ bool ProgramStructureGraph::Block::block_iterator::operator!=(
 
 bool ProgramStructureGraph::Block::block_iterator::begin() const
 {
-	return _iterator == _begin;
+	return _iterator == _block->_blocks.begin();
 }
 
 bool ProgramStructureGraph::Block::block_iterator::end() const
 {
-	return _iterator == _end;
+	return _iterator == _block->_blocks.end();
+}
+
+ProgramStructureGraph::Block::block_iterator::operator pointer_iterator()
+{
+	return pointer_iterator(_block);
 }
 
 ProgramStructureGraph::Block::const_block_iterator::const_block_iterator()
+: _block(0)
 {
 
 }
 
 ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
 	const block_iterator& i)
-: _iterator(i._iterator), _end(i._end)
+: _iterator(i._iterator), _block(i._block)
 {
 
 }
 
 ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
 	const const_block_iterator& i)
-: _iterator(i._iterator), _end(i._end)
+: _iterator(i._iterator), _block(i._block)
 {
 
 }
 
 ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
-	const const_basic_block_iterator& i, const const_basic_block_iterator& b,
-	const const_basic_block_iterator& e)
-: _iterator(i), _begin(b), _end(e)
+	const const_basic_block_iterator& i, const Block* b)
+: _iterator(i), _block(b)
 {
 
 }
@@ -185,7 +192,7 @@ ProgramStructureGraph::Block::const_block_iterator::self&
 {
 	while(true)
 	{
-		if(_iterator != _end)
+		if(_iterator != _block->_blocks.end())
 		{
 			++_iterator;
 			if(!(*_iterator)->instructions.empty())
@@ -217,7 +224,7 @@ ProgramStructureGraph::Block::const_block_iterator::self&
 {
 	while(true)
 	{
-		if(_iterator != _begin)
+		if(_iterator != _block->_blocks.begin())
 		{
 			--_iterator;
 			if(!(*_iterator)->instructions.empty())
@@ -247,7 +254,7 @@ ProgramStructureGraph::Block::const_block_iterator::self
 bool ProgramStructureGraph::Block::const_block_iterator::operator==(
 	const self& i) const
 {
-	return i._iterator == _iterator && i._end == _end;
+	return i._iterator == _iterator && i._block == _block;
 }
 
 bool ProgramStructureGraph::Block::const_block_iterator::operator!=(
@@ -258,12 +265,18 @@ bool ProgramStructureGraph::Block::const_block_iterator::operator!=(
 
 bool ProgramStructureGraph::Block::const_block_iterator::begin() const
 {
-	return _iterator == _begin;
+	return _iterator == _block->_blocks.begin();
 }
 
 bool ProgramStructureGraph::Block::const_block_iterator::end() const
 {
-	return _iterator == _end;
+	return _iterator == _block->_blocks.end();
+}
+
+ProgramStructureGraph::Block::const_block_iterator::operator
+	const_pointer_iterator()
+{
+	return const_pointer_iterator(_block);
 }
 
 ProgramStructureGraph::Block::iterator::iterator()
@@ -591,6 +604,11 @@ bool ProgramStructureGraph::Block::successor_iterator::operator!=(
 {
 	return !(i == *this);
 }
+		
+ProgramStructureGraph::Block::successor_iterator::operator pointer_iterator()
+{
+	return _block;
+}
 				
 ProgramStructureGraph::Block::const_successor_iterator::const_successor_iterator()
 {
@@ -695,6 +713,12 @@ bool ProgramStructureGraph::Block::const_successor_iterator::operator!=(
 {
 	return !(i == *this);
 }
+		
+ProgramStructureGraph::Block::const_successor_iterator::operator
+	const_pointer_iterator()
+{
+	return _block;
+}
 
 ProgramStructureGraph::Block::predecessor_iterator::predecessor_iterator()
 {
@@ -790,6 +814,11 @@ bool ProgramStructureGraph::Block::predecessor_iterator::operator!=(
 	const self& i) const
 {
 	return !(i == *this);
+}
+		
+ProgramStructureGraph::Block::predecessor_iterator::operator pointer_iterator()
+{
+	return _block;
 }
 
 ProgramStructureGraph::Block::const_predecessor_iterator::const_predecessor_iterator()
@@ -894,6 +923,12 @@ bool ProgramStructureGraph::Block::const_predecessor_iterator::operator!=(
 {
 	return !(i == *this);
 }
+		
+ProgramStructureGraph::Block::const_predecessor_iterator::operator
+	const_pointer_iterator()
+{
+	return _block;
+}
 
 ProgramStructureGraph::Block::iterator ProgramStructureGraph::Block::begin()
 {
@@ -924,27 +959,25 @@ ProgramStructureGraph::Block::const_iterator
 ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::block_begin()
 {
-	return block_iterator(_blocks.begin(), _blocks.begin(), _blocks.end());
+	return block_iterator(_blocks.begin(), this);
 }
 
 ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::block_end()
 {
-	return block_iterator(_blocks.end(), _blocks.begin(), _blocks.end());
+	return block_iterator(_blocks.end(), this);
 }
 
 ProgramStructureGraph::Block::const_block_iterator
 	ProgramStructureGraph::Block::block_begin() const
 {
-	return const_block_iterator(_blocks.begin(),
-		_blocks.begin(), _blocks.end());
+	return const_block_iterator(_blocks.begin(), this);
 }
 
 ProgramStructureGraph::Block::const_block_iterator
 	ProgramStructureGraph::Block::block_end() const
 {
-	return const_block_iterator(_blocks.end(),
-		_blocks.begin(), _blocks.end());
+	return const_block_iterator(_blocks.end(), this);
 }
 
 ProgramStructureGraph::Block::successor_iterator
@@ -1005,8 +1038,7 @@ ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::insert(ir::ControlFlowGraph::iterator block,
 	block_iterator position)
 {
-	return block_iterator(_blocks.insert(position._iterator, block),
-		_blocks.begin(), _blocks.end());
+	return block_iterator(_blocks.insert(position._iterator, block), this);
 }
 
 ProgramStructureGraph::Block::block_iterator
@@ -1051,6 +1083,28 @@ size_t ProgramStructureGraph::Block::basicBlocks() const
 	return _blocks.size();
 }
 
+bool ProgramStructureGraph::Block::hasFallthroughEdge() const
+{
+	assertM(false, "not implemented");
+}
+
+ProgramStructureGraph::Block::block_iterator
+	ProgramStructureGraph::Block::getFallthrough()
+{
+	assertM(false, "not implemented");
+}
+
+bool ProgramStructureGraph::Block::hasIncommingFallthrough() const
+{
+	assertM(false, "not implemented");
+}
+
+ProgramStructureGraph::Block::block_iterator
+	ProgramStructureGraph::Block::getIncommingFallthrough()
+{
+	assertM(false, "not implemented");
+}
+
 ProgramStructureGraph::iterator ProgramStructureGraph::begin()
 {
 	return _blocks.begin();
@@ -1074,7 +1128,8 @@ ProgramStructureGraph::const_iterator ProgramStructureGraph::end() const
 void ProgramStructureGraph::reorderIntoExecutableSequence()
 {
 	typedef std::unordered_set<iterator> BlockSet;
-	BlockPointerVector sequence;
+	
+	BlockVector sequence;
 	BlockSet unscheduled;
 
 	for(iterator i = begin(); i != end(); ++i)
@@ -1084,26 +1139,25 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 
 	report("Getting executable sequence.");
 
-	sequence.push_back(_entry);
+	sequence.push_back(*_entry);
 	unscheduled.erase(_entry);
 	report(" added " << _entry->block_begin()->label);
 
 	while (!unscheduled.empty()) {
-		if (sequence.back()->hasFallthroughEdge()) {
-			iterator fallthrough 	
-				= iterator(sequence.back()->getFallthrough());
-			sequence.push_back(fallthrough);
+		if (sequence.back().hasFallthroughEdge()) {
+			iterator fallthrough = sequence.back().getFallthrough();
+			sequence.push_back(*fallthrough);
 			unscheduled.erase(fallthrough);
 		}
 		else {
 			// find a new block, favor branch targets over random blocks
 			iterator next = *unscheduled.begin();
 			
-			for(successor_iterator successor =
-				sequence.back()->successor_begin();
-				successor != sequence.back()->successor_end(); ++successor)
+			for(Block::successor_iterator successor =
+				sequence.back().successors_begin();
+				successor != sequence.back().successors_end(); ++successor)
 			{
-				iterator successorBlock(successor);
+				iterator successorBlock = successor;
 			
 				if(unscheduled.count(successorBlock) != 0)
 				{
@@ -1113,7 +1167,7 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 			
 			// rewind through fallthrough edges to find the beginning of the 
 			// next chain of fall throughs
-			report("  restarting at " << next->label);
+			report("  restarting at " << next->block_begin()->label);
 			bool rewinding = true;
 			while (rewinding)
 			{
@@ -1125,15 +1179,15 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 					report("   rewinding to " << next->block_begin()->label);
 				}
 			}
-			sequence.push_back(next);
+			sequence.push_back(*next);
 			unscheduled.erase(next);
 		}
 		
-		report(" added " << sequence.back()->block_begin()->label);
+		report(" added " << sequence.back().block_begin()->label);
 	}
 
-	return sequence;
-
+	_blocks = std::move(sequence);
+	_entry = _blocks.begin();
 }
 
 size_t ProgramStructureGraph::size() const

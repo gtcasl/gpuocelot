@@ -24,6 +24,12 @@ public:
 	class Block
 	{
 	public:
+		// ProgramStructureGraph Typedefs
+		typedef std::vector<Block>          BlockVector;
+		typedef BlockVector::iterator       pointer_iterator;
+		typedef BlockVector::const_iterator const_pointer_iterator;
+		
+		// CFG Typedefs
 		typedef ir::ControlFlowGraph           CFG;
 		typedef ir::BasicBlock                 BB;
 		typedef BB::instruction_iterator       instruction_iterator;
@@ -46,9 +52,7 @@ public:
 		public:	      
 			block_iterator();
 			block_iterator(const block_iterator&);
-			explicit block_iterator(const basic_block_iterator& i,
-				const basic_block_iterator& begin,
-				const basic_block_iterator& end);
+			explicit block_iterator(const basic_block_iterator& i, Block* b);
 
 		public:
 			reference operator*() const;
@@ -63,11 +67,12 @@ public:
 		
 			bool begin() const;
 			bool end() const;
+			
+			operator pointer_iterator();
 		
 		private:
 			basic_block_iterator _iterator;	
-			basic_block_iterator _begin;
-			basic_block_iterator _end;
+			Block*               _block;
 
 			friend class const_block_iterator;
 			friend class Block;
@@ -87,8 +92,7 @@ public:
 			const_block_iterator(const const_block_iterator&);
 			const_block_iterator(const block_iterator&);
 			explicit const_block_iterator(const const_basic_block_iterator& i,
-				const const_basic_block_iterator& begin,
-				const const_basic_block_iterator& end);
+				const Block* b);
 
 		public:
 			reference operator*() const;
@@ -104,10 +108,11 @@ public:
 			bool begin() const;
 			bool end() const;
 			
+			operator const_pointer_iterator();
+			
 		private:
-			const_basic_block_iterator _iterator;	
-			const_basic_block_iterator _begin;
-			const_basic_block_iterator _end;
+			const_basic_block_iterator _iterator;
+			const Block*               _block;
 		};
 
 		/*! \brief An iterator over the instructions in the
@@ -186,7 +191,7 @@ public:
 		{
 		public:
 			typedef successor_iterator self;
-			typedef Block              value_type;
+			typedef ir::BasicBlock     value_type;
 			typedef value_type&        reference;
 			typedef value_type*        pointer;
 		
@@ -206,9 +211,11 @@ public:
 			bool operator==(const self&) const;
 			bool operator!=(const self&) const;	
 		
+			operator pointer_iterator();
+		
 		private:
-			block_iterator         _block;
-			basic_block_iterator _successor;		
+			block_iterator       _block;
+			basic_block_iterator _successor;
 		
 			friend class const_successor_iterator;
 		};
@@ -218,7 +225,7 @@ public:
 		{
 		public:
 			typedef const_successor_iterator self;
-			typedef Block                    value_type;
+			typedef ir::BasicBlock           value_type;
 			typedef const value_type&        reference;
 			typedef const value_type*        pointer;
 		
@@ -240,6 +247,8 @@ public:
 			bool operator==(const self&) const;
 			bool operator!=(const self&) const;	
 		
+			operator const_pointer_iterator();
+			
 		private:
 			const_block_iterator       _block;
 			const_basic_block_iterator _successor;		
@@ -252,7 +261,7 @@ public:
 		{
 		public:
 			typedef predecessor_iterator self;
-			typedef Block                value_type;
+			typedef ir::BasicBlock       value_type;
 			typedef value_type&          reference;
 			typedef value_type*          pointer;
 		
@@ -270,8 +279,10 @@ public:
 			self operator--(int);
 			
 			bool operator==(const self&) const;
-			bool operator!=(const self&) const;	
+			bool operator!=(const self&) const;
 		
+			operator pointer_iterator();
+			
 		private:
 			block_iterator       _block;
 			basic_block_iterator _predecessor;	
@@ -284,7 +295,7 @@ public:
 		{
 		public:
 			typedef const_predecessor_iterator self;
-			typedef Block                      value_type;
+			typedef ir::BasicBlock             value_type;
 			typedef const value_type&          reference;
 			typedef const value_type*          pointer;
 		
@@ -304,6 +315,8 @@ public:
 			
 			bool operator==(const self&) const;
 			bool operator!=(const self&) const;	
+		
+			operator const_pointer_iterator();
 		
 		private:
 			const_block_iterator       _block;
@@ -376,19 +389,26 @@ public:
 		size_t basicBlocks() const;
 		/*! \brief Does the block have a fallthrough edge */
 		bool hasFallthroughEdge() const;
+		/*! \brief Get an iterator to an incomming fallthrough block */
+		block_iterator getFallthrough();
+		/*! \brief Does the block have an incomming fallthrough edge */
+		bool hasIncommingFallthrough() const;
+		/*! \brief Get an iterator to an incomming fallthrough block */
+		block_iterator getIncommingFallthrough();
 		
 	private:
 		typedef ir::ControlFlowGraph::BlockPointerVector BlockPointerVector;
 		
 	private:
-		BlockPointerVector _blocks;
+		BlockPointerVector     _blocks;
+		ProgramStructureGraph* _graph;
 	};
 
 public:
-	typedef std::vector<Block>          BlockVector;
-	typedef BlockVector::iterator       iterator;
-	typedef BlockVector::const_iterator const_iterator;
-
+	typedef Block::BlockVector            BlockVector;
+	typedef Block::pointer_iterator       iterator;
+	typedef Block::const_pointer_iterator const_iterator;
+	
 public:
 	/*! \brief Get an iterator to the first block */
 	iterator begin();
@@ -417,4 +437,16 @@ protected:
 
 }
 
+namespace std
+{
+	template<>
+	struct hash< analysis::ProgramStructureGraph::iterator >
+	{
+		inline size_t operator()(
+			const analysis::ProgramStructureGraph::iterator& it ) const
+		{
+			return ( size_t )&*it;
+		}
+	};
+}
 

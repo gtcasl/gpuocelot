@@ -27,7 +27,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -583,6 +583,8 @@ void PTXKernel::write(std::ostream& stream) const
 	if (_cfg != 0) {
 		analysis::ProgramStructureGraph* graph =
 			const_cast<PTXKernel*>(this)->getProgramStructureGraph();
+		
+		graph->reorderIntoExecutableSequence();
 		
 		IndirectCallMap indirectCalls;
 	

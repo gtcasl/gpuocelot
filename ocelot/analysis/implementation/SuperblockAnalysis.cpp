@@ -34,6 +34,11 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 	report(" Seeding superblocks.");
 	BlockSet superblocks;
 	BlockSet visited;
+		
+	report("  Starting a new superblock at " << _cfg->get_entry_block()->label
+		<< " (" << _cfg->get_entry_block()->id << ")");
+	superblocks.insert(_cfg->get_entry_block());
+	visited.insert(_cfg->get_entry_block());
 	
 	// Superblocks start from multiple-entry blocks
 	for(ir::ControlFlowGraph::iterator block = _cfg->begin();
@@ -73,6 +78,11 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 		}
 		
 		_blocks.push_back(superblock);
+		
+		if(*block == _cfg->get_entry_block())
+		{
+			_entry = --_blocks.end();
+		}
 	}
 	
 	// Add regular blocks to fill out the program structure

@@ -17,7 +17,7 @@
 #include <configure.h>
 
 #if HAVE_LLVM
-#include <llvm/Target/TargetSelect.h>
+#include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/LLVMContext.h>

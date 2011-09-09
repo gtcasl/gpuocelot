@@ -25,7 +25,7 @@ public:
 	{
 	public:
 		// ProgramStructureGraph Typedefs
-		typedef std::vector<Block>          BlockVector;
+		typedef std::list<Block>            BlockVector;
 		typedef BlockVector::iterator       pointer_iterator;
 		typedef BlockVector::const_iterator const_pointer_iterator;
 		
@@ -52,7 +52,8 @@ public:
 		public:	      
 			block_iterator();
 			block_iterator(const block_iterator&);
-			explicit block_iterator(const basic_block_iterator& i, Block* b);
+			explicit block_iterator(const basic_block_iterator& i,
+				const pointer_iterator& b);
 
 		public:
 			reference operator*() const;
@@ -69,10 +70,11 @@ public:
 			bool end() const;
 			
 			operator pointer_iterator();
+			operator basic_block_iterator();
 		
 		private:
 			basic_block_iterator _iterator;	
-			Block*               _block;
+			pointer_iterator     _block;
 
 			friend class const_block_iterator;
 			friend class Block;
@@ -92,7 +94,7 @@ public:
 			const_block_iterator(const const_block_iterator&);
 			const_block_iterator(const block_iterator&);
 			explicit const_block_iterator(const const_basic_block_iterator& i,
-				const Block* b);
+				const const_pointer_iterator& b);
 
 		public:
 			reference operator*() const;
@@ -109,10 +111,11 @@ public:
 			bool end() const;
 			
 			operator const_pointer_iterator();
+			operator const_basic_block_iterator();
 			
 		private:
 			const_basic_block_iterator _iterator;
-			const Block*               _block;
+			const_pointer_iterator     _block;
 		};
 
 		/*! \brief An iterator over the instructions in the
@@ -395,19 +398,28 @@ public:
 		bool hasIncommingFallthrough() const;
 		/*! \brief Get an iterator to an incomming fallthrough block */
 		block_iterator getIncommingFallthrough();
-		
+	
+	public:
+		/*! \brief Construct a new block */
+		explicit Block(ProgramStructureGraph* g);
+	
 	private:
 		typedef ir::ControlFlowGraph::BlockPointerVector BlockPointerVector;
 		
 	private:
 		BlockPointerVector     _blocks;
 		ProgramStructureGraph* _graph;
+		pointer_iterator       _this;
+		
+	private:
+		friend class ProgramStructureGraph;
 	};
 
 public:
 	typedef Block::BlockVector            BlockVector;
 	typedef Block::pointer_iterator       iterator;
 	typedef Block::const_pointer_iterator const_iterator;
+	typedef std::vector<iterator>         BlockPointerVector;
 	
 public:
 	/*! \brief Get an iterator to the first block */
@@ -429,6 +441,10 @@ public:
 	size_t size() const;
 	/*! \brief Is the graph empty? */
 	bool empty() const;
+	
+protected:
+	/*! \brief Create and link a new block against this graph */
+	iterator newBlock();
 	
 protected:
 	BlockVector _blocks;

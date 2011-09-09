@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
@@ -37,7 +37,7 @@ ProgramStructureGraph::Block::block_iterator::block_iterator(
 }
 
 ProgramStructureGraph::Block::block_iterator::block_iterator(
-	const basic_block_iterator& i, Block* b)
+	const basic_block_iterator& i, const pointer_iterator& b)
 : _iterator(i), _block(b)
 {
 
@@ -145,11 +145,15 @@ bool ProgramStructureGraph::Block::block_iterator::end() const
 
 ProgramStructureGraph::Block::block_iterator::operator pointer_iterator()
 {
-	return pointer_iterator(_block);
+	return _block;
+}
+
+ProgramStructureGraph::Block::block_iterator::operator basic_block_iterator()
+{
+	return _iterator;
 }
 
 ProgramStructureGraph::Block::const_block_iterator::const_block_iterator()
-: _block(0)
 {
 
 }
@@ -169,7 +173,7 @@ ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
 }
 
 ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
-	const const_basic_block_iterator& i, const Block* b)
+	const const_basic_block_iterator& i, const const_pointer_iterator& b)
 : _iterator(i), _block(b)
 {
 
@@ -276,7 +280,13 @@ bool ProgramStructureGraph::Block::const_block_iterator::end() const
 ProgramStructureGraph::Block::const_block_iterator::operator
 	const_pointer_iterator()
 {
-	return const_pointer_iterator(_block);
+	return _block;
+}
+
+ProgramStructureGraph::Block::const_block_iterator::operator
+	const_basic_block_iterator()
+{
+	return _iterator;
 }
 
 ProgramStructureGraph::Block::iterator::iterator()
@@ -959,25 +969,25 @@ ProgramStructureGraph::Block::const_iterator
 ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::block_begin()
 {
-	return block_iterator(_blocks.begin(), this);
+	return block_iterator(_blocks.begin(), _this);
 }
 
 ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::block_end()
 {
-	return block_iterator(_blocks.end(), this);
+	return block_iterator(_blocks.end(), _this);
 }
 
 ProgramStructureGraph::Block::const_block_iterator
 	ProgramStructureGraph::Block::block_begin() const
 {
-	return const_block_iterator(_blocks.begin(), this);
+	return const_block_iterator(_blocks.begin(), _this);
 }
 
 ProgramStructureGraph::Block::const_block_iterator
 	ProgramStructureGraph::Block::block_end() const
 {
-	return const_block_iterator(_blocks.end(), this);
+	return const_block_iterator(_blocks.end(), _this);
 }
 
 ProgramStructureGraph::Block::successor_iterator
@@ -1038,7 +1048,7 @@ ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::insert(ir::ControlFlowGraph::iterator block,
 	block_iterator position)
 {
-	return block_iterator(_blocks.insert(position._iterator, block), this);
+	return block_iterator(_blocks.insert(position._iterator, block), _this);
 }
 
 ProgramStructureGraph::Block::block_iterator
@@ -1085,13 +1095,41 @@ size_t ProgramStructureGraph::Block::basicBlocks() const
 
 bool ProgramStructureGraph::Block::hasFallthroughEdge() const
 {
-	assertM(false, "not implemented");
+	if(_blocks.empty()) return false;
+	
+	return _blocks.back()->has_fallthrough_edge();
 }
 
 ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::getFallthrough()
 {
-	assertM(false, "not implemented");
+	assert(hasFallthroughEdge());
+	
+	ir::ControlFlowGraph::edge_iterator fallthrough =
+		_blocks.back()->get_fallthrough_edge();
+	
+	block_iterator result = block_end();
+	
+	for(ProgramStructureGraph::iterator metablock = _graph->begin();
+		metablock != _graph->end(); ++metablock)
+	{
+		for(block_iterator block = metablock->block_begin();
+			block != metablock->block_end(); ++block)
+		{
+			basic_block_iterator bb = block;
+		
+			if(*bb == fallthrough->tail)
+			{
+				result = block;
+				
+				goto GET_FALLTHROUGH_END;
+			}
+		}
+	}
+
+	GET_FALLTHROUGH_END:
+	
+	return result;
 }
 
 bool ProgramStructureGraph::Block::hasIncommingFallthrough() const
@@ -1103,6 +1141,12 @@ ProgramStructureGraph::Block::block_iterator
 	ProgramStructureGraph::Block::getIncommingFallthrough()
 {
 	assertM(false, "not implemented");
+}
+
+ProgramStructureGraph::Block::Block(ProgramStructureGraph* g)
+: _graph(g)
+{
+
 }
 
 ProgramStructureGraph::iterator ProgramStructureGraph::begin()
@@ -1129,7 +1173,7 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 {
 	typedef std::unordered_set<iterator> BlockSet;
 	
-	BlockVector sequence;
+	BlockPointerVector sequence;
 	BlockSet unscheduled;
 
 	for(iterator i = begin(); i != end(); ++i)
@@ -1139,14 +1183,14 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 
 	report("Getting executable sequence.");
 
-	sequence.push_back(*_entry);
+	sequence.push_back(_entry);
 	unscheduled.erase(_entry);
 	report(" added " << _entry->block_begin()->label);
 
 	while (!unscheduled.empty()) {
-		if (sequence.back().hasFallthroughEdge()) {
-			iterator fallthrough = sequence.back().getFallthrough();
-			sequence.push_back(*fallthrough);
+		if (sequence.back()->hasFallthroughEdge()) {
+			iterator fallthrough = sequence.back()->getFallthrough();
+			sequence.push_back(fallthrough);
 			unscheduled.erase(fallthrough);
 		}
 		else {
@@ -1154,8 +1198,8 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 			iterator next = *unscheduled.begin();
 			
 			for(Block::successor_iterator successor =
-				sequence.back().successors_begin();
-				successor != sequence.back().successors_end(); ++successor)
+				sequence.back()->successors_begin();
+				successor != sequence.back()->successors_end(); ++successor)
 			{
 				iterator successorBlock = successor;
 			
@@ -1179,14 +1223,21 @@ void ProgramStructureGraph::reorderIntoExecutableSequence()
 					report("   rewinding to " << next->block_begin()->label);
 				}
 			}
-			sequence.push_back(*next);
+			sequence.push_back(next);
 			unscheduled.erase(next);
 		}
 		
-		report(" added " << sequence.back().block_begin()->label);
+		report(" added " << sequence.back()->block_begin()->label);
 	}
 
-	_blocks = std::move(sequence);
+	report("finished generating executale sequence");
+
+	for(BlockPointerVector::reverse_iterator blockPointer = sequence.rbegin();
+		blockPointer != sequence.rend(); ++blockPointer)
+	{
+		_blocks.splice(_blocks.begin(), _blocks, *blockPointer);
+	}
+	
 	_entry = _blocks.begin();
 }
 
@@ -1198,6 +1249,14 @@ size_t ProgramStructureGraph::size() const
 bool ProgramStructureGraph::empty() const
 {
 	return _blocks.empty();
+}
+
+ProgramStructureGraph::iterator ProgramStructureGraph::newBlock()
+{
+	iterator block = _blocks.insert(_blocks.end(), Block(this));
+	block->_this = block;
+	
+	return block;
 }
 
 }

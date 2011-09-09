@@ -1,10 +1,6 @@
 {
 	ocelot: "ocelot",
-    instrument: {
-        dynamicInstructionCount: {
-            logfile: ""
-        }
-    },
+   
 	trace: { 
 		database: "traces-ipdom/database.trace",
 		memoryChecker: {

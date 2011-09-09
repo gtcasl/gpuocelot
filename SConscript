@@ -179,6 +179,8 @@ tests.append(('TestExternalFunctions', \
 	'ocelot/api/test/TestExternalFunctions.cpp', 'full'))
 tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
+tests.append(('TestInstructionCycles', \
+	'ocelot/api/test/TestInstructionCycles.cpp', 'basic'))
 
 for test in tests:
 	libs = ocelot_libs

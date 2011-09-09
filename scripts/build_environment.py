@@ -201,19 +201,26 @@ OldEnvironment = Environment;
 # this dictionary maps the name of a compiler program to a dictionary mapping the name of
 # a compiler switch of interest to the specific switch implementing the feature
 gCompilerOptions = {
-		'gcc' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'gcc' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g', 
 			'exception_handling' : '', 'standard': ''},
-		'g++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'g++' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g', 
 			'exception_handling' : '', 'standard': '-std=c++0x'},
-		'c++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'c++' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '',
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
-		'cl'  : {'warn_all' : '', 'warn_errors' : '/WX',
-				'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 
-				'exception_handling' : '/EHsc', 'standard': '-DYY_NO_UNISTD_H'}
+		'cl'  : {'warn_all' : '/Wall',
+			 'warn_errors' : '/WX', 
+	         'optimization' : ['/Ox', '/MD', '/Zi', '/DNDEBUG'], 
+			 'debug' : ['/ZI', '/Od', '/D_DEBUG', '/RTC1', '/MDd'], 
+			 'exception_handling': '/EHsc', 
+			 'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
+			 '/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H']}
 	}
 
 

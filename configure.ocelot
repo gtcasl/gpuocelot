@@ -1,6 +1,8 @@
 {
 	ocelot: "ocelot",
-   
+    instrument: {
+        warpInstructionCount: {}
+    },
 	trace: { 
 		database: "traces-ipdom/database.trace",
 		memoryChecker: {

@@ -80,7 +80,7 @@ namespace analysis
             }
             case instructionCount:
             {
-                pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
+                pass = new transforms::CToPTXInstrumentationPass("resources/threadInstructionCount.c");
                 symbol = pass->baseAddress;
                 break;
             }

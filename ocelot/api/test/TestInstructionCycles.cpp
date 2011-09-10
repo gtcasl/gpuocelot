@@ -391,12 +391,6 @@ namespace test
 		ptx += "		st.global.u64 [%r13 + 160], %r1;\n";
 		
 		ptx += "        mov.u64 %r0, %clock64;\n";
-		ptx += "		div.u64 %r34, %r33, 32;\n";
-		ptx += "        mov.u64 %r1, %clock64;\n";
-		ptx += "        sub.u64 %r1, %r1, %r0;\n";
-		ptx += "		st.global.u64 [%r13 + 168], %r1;\n";
-		
-		ptx += "        mov.u64 %r0, %clock64;\n";
 		ptx += "		add.u64 %r33, %r32, %r31;\n";
 		ptx += "        mov.u64 %r1, %clock64;\n";
 		ptx += "        sub.u64 %r1, %r1, %r0;\n";

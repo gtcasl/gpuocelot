@@ -344,9 +344,9 @@ namespace transforms
                         {
                             ir::PTXInstruction ballot(ir::PTXInstruction::Vote);
                             ballot.vote = ir::PTXInstruction::Ballot;
-                            ballot.type = ir::PTXOperand::b32;
+                            ballot.type = ir::PTXOperand::b64;
                             
-                            ballot.d.type = ir::PTXOperand::b32;
+                            ballot.d.type = ir::PTXOperand::b64;
                             ballot.d.addressMode = ir::PTXOperand::Register;
                             ballot.d.reg = predCount;
                             ballot.a.addressMode = ir::PTXOperand::Register;
@@ -357,9 +357,9 @@ namespace transforms
                             ballot.pg.condition = ir::PTXOperand::Pred;
 
                             ir::PTXInstruction popc(ir::PTXInstruction::Popc);
-                            popc.type = ir::PTXOperand::b32;
-                            popc.d.type = ir::PTXOperand::u32;
-                            popc.a.type = ir::PTXOperand::b32;
+                            popc.type = ir::PTXOperand::b64;
+                            popc.d.type = ir::PTXOperand::u64;
+                            popc.a.type = ir::PTXOperand::b64;
                             popc.d.addressMode = popc.a.addressMode = ir::PTXOperand::Register;
                             popc.a = ballot.d;   
                             analysis::DataflowGraph::RegisterId popcResult = dfg().newRegister();
@@ -368,24 +368,12 @@ namespace transforms
                             popc.pg = guard;
                             popc.pg.condition = ir::PTXOperand::Pred;
 
-                            ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
-                            cvt.type = type;
-                            cvt.d.type = type;
-                            analysis::DataflowGraph::RegisterId cvtResult = dfg().newRegister();
-                            cvt.d.reg = cvtResult;
-                            cvt.a.type = ir::PTXOperand::u32;
-                            cvt.d.addressMode = cvt.a.addressMode = ir::PTXOperand::Register;
-                            cvt.a = popc.d;
-                            
-                            cvt.pg = guard;
-                            cvt.pg.condition = ir::PTXOperand::Pred;
-
                             ir::PTXInstruction add(ir::PTXInstruction::Add);
                             add.type = add.d.type = add.a.type = add.b.type = type;
                             add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
                             
                             add.d = add.a = position->instruction.d;
-                            add.b.reg = cvtResult;
+                            add.b.reg = popcResult;
                             
                             add.pg = guard;
                             add.pg.condition = ir::PTXOperand::Pred;
@@ -394,8 +382,6 @@ namespace transforms
                             stmt.instruction = ballot;
                             position = translationBlock.statements.insert(position + 1, stmt);
                             stmt.instruction = popc;
-                            position = translationBlock.statements.insert(position + 1, stmt);
-                            stmt.instruction = cvt;
                             position = translationBlock.statements.insert(position + 1, stmt);
                             stmt.instruction = add;
                             position = translationBlock.statements.insert(position + 1, stmt);
@@ -451,15 +437,17 @@ namespace transforms
                 for(ir::PTXKernel::PTXStatementVector::iterator statement = translationBlock.statements.begin();
                 statement != translationBlock.statements.end(); ++statement) {
                 
-                    if(statement->instruction.opcode == ir::PTXInstruction::SelP && (statement+1)->instruction.opcode == ir::PTXInstruction::Add)
+                    if( statement->instruction.opcode == ir::PTXInstruction::SelP && 
+                        (statement+1)->instruction.opcode == ir::PTXInstruction::Add)
                     {
                         translationBlock.statements.erase(statement, statement + 2);
                     } 
                     
-                    if(statement->instruction.opcode == ir::PTXInstruction::Vote && (statement+1)->instruction.opcode == ir::PTXInstruction::Popc
-                        && (statement+2)->instruction.opcode == ir::PTXInstruction::Cvt && (statement+3)->instruction.opcode == ir::PTXInstruction::Add)
+                    if( statement->instruction.opcode == ir::PTXInstruction::Vote && 
+                        (statement+1)->instruction.opcode == ir::PTXInstruction::Popc && 
+                        (statement+2)->instruction.opcode == ir::PTXInstruction::Add)
                     {
-                        translationBlock.statements.erase(statement, statement + 4);
+                        translationBlock.statements.erase(statement, statement + 3);
                     } 
                 
                 }
@@ -794,6 +782,9 @@ namespace transforms
 	{
 	    ir::PTXKernel::PTXStatementVector toErase;
 	    bool propagateConstant = true;
+	    bool saveOperands = false;
+	    
+	    ir::PTXOperand d, a, b, c;
 	
 	    for(ir::PTXKernel::PTXStatementVector::iterator statement = statements.begin();
             statement != statements.end(); ++statement) 
@@ -805,11 +796,12 @@ namespace transforms
                 propagateConstant = true;
                 for(FunctionNameVector::const_iterator function = functionNames.begin();
                     function != functionNames.end(); ++function)
-            
-                if(statement->instruction.d.identifier == *function)
                 {
-                    propagateConstant = false;
-                    break;
+                    if(statement->instruction.d.identifier == *function)
+                    {
+                        propagateConstant = false;
+                        break;
+                    }
                 }
                 
                 if(propagateConstant)
@@ -823,7 +815,9 @@ namespace transforms
                 statement->instruction.opcode == ir::PTXInstruction::Add ||
                 statement->instruction.opcode == ir::PTXInstruction::Sub ||
                 statement->instruction.opcode == ir::PTXInstruction::Div ||
-                statement->instruction.opcode == ir::PTXInstruction::Mul)
+                statement->instruction.opcode == ir::PTXInstruction::Mul ||
+                statement->instruction.opcode == ir::PTXInstruction::Shr ||
+                statement->instruction.opcode == ir::PTXInstruction::Shl)
             {    
                 ir::PTXOperand ir::PTXInstruction::* source_operands[] = 
                     { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c};
@@ -849,6 +843,23 @@ namespace transforms
                     statement->instruction.c.addressMode = (statement+1)->instruction.b.addressMode;
                     statement->instruction.c.identifier = (statement+1)->instruction.b.identifier;
                     toErase.push_back(*(statement+1));
+                    
+                    if((statement + 2)->instruction.opcode == ir::PTXInstruction::Ld)
+                    {
+                        d = statement->instruction.d;
+                        a = statement->instruction.a;
+                        b = statement->instruction.b;
+                        c = statement->instruction.c;
+                        
+                        saveOperands = true;
+                    }
+                    else if(saveOperands &&
+                        (statement + 2)->instruction.opcode == ir::PTXInstruction::St)
+                    {
+                        (statement + 2)->instruction.d.identifier = d.identifier;
+                        toErase.push_back(*statement);
+                        saveOperands = false;
+                    }
                 }            
         }	
         
@@ -883,11 +894,6 @@ namespace transforms
 		: KernelPass( Analysis::DataflowGraphAnalysis,
 			"CToPTXInstrumentationPass" )
 	{
-	    translator::CToPTXTranslator translator;
-	    translation = translator.generate(resource);
-	    optimize(translation.statements);
-	    baseAddress = translation.globals.front().name;
-	    
 	    parameterMap = translation.parameterMap;
 	 
 	    functionNames = { COMPUTE_BASE_ADDRESS, GET_PREDICATE_VALUE };
@@ -950,6 +956,11 @@ namespace transforms
 	    dataTypeMap[ir::PTXOperand::f16] = TYPE_FP;
 	    dataTypeMap[ir::PTXOperand::f32] = TYPE_FP;
 	    dataTypeMap[ir::PTXOperand::f64] = TYPE_FP;
+	    
+	    translator::CToPTXTranslator translator;
+	    translation = translator.generate(resource);
+	    optimize(translation.statements);
+	    baseAddress = translation.globals.front().name;
 	}
 	
 	InstrumentationSpecifier::InstrumentationSpecifier()

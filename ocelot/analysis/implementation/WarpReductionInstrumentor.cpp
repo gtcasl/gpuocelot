@@ -83,7 +83,7 @@ namespace analysis
             break;
             case instructionCount:
             {
-                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/optimizedDynamicInstructionCount.c");
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/warpInstructionCount.c");
                 symbol = pass->baseAddress;
                 
                 passes[0] = pass;   

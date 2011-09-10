@@ -1,5 +1,5 @@
 {
-    unsigned long warpId = (blockId() * blockDim() + blockThreadId())/32;
+    unsigned long warpId = (blockId() * blockDim() + blockThreadId()) >> 5;
     
     ON_BASIC_BLOCK_EXIT:
     {

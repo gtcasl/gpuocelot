@@ -55,8 +55,8 @@ extern "C" __global__ void testShr(int *A) {
 
 int main(int argc, char *arg[]) {
 
-	const int BlockSize = 64;
-	const int N = 128;
+	const int BlockSize = 1;
+	const int N = 1;
 	int *A_host, *A_gpu =0;
 	int errors = 0;
 

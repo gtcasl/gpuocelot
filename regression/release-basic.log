@@ -11,10 +11,12 @@ INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLL
 INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer -i ../tests/ptx 
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels 
 INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph -i ../tests/ptx 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions 
 INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph
-INFO     Test completed in 0.014447927475 seconds
+INFO     Test completed in 0.0459420681 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -29,8 +31,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1315579784
-Test time : 2.40803e-05
+Test Seed : 1315764747
+Test time : 2.0504e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -41,9 +43,92 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0477929115295 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1315764747
+Test time : 9.77516e-06
+
+Status : 
+
+
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser -i ../tests/ptx 
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels 
+INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer
+INFO     Test completed in 0.0578100681305 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1315764747
+Test time : 1.54972e-05
+
+Status : 
+
+
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions 
+INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser
+INFO     Test completed in 0.062075138092 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1315764747
+Test time : 1.57356e-05
+
+Status : 
+
+
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator 
+INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels
+INFO     Test completed in 0.0745010375977 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1315764747
+Test time : 0.0141308
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
+INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions 
 INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions
-INFO     Test completed in 0.018483877182 seconds
+INFO     Test completed in 0.0723478794098 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -53,8 +138,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1315579784
-Test time : 0.000848293
+Test Seed : 1315764747
+Test time : 0.000901937
 
 Status : Test output:
 Accessors test passed.
@@ -69,76 +154,8 @@ pass: predicated Add and Ld isntructions
 
 
 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0138809680939 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1315579784
-Test time : 2.47955e-05
-
-Status : 
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser -i ../tests/ptx 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser
-INFO     Test completed in 0.0133218765259 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1315579784
-Test time : 2.24113e-05
-
-Status : 
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator
-INFO     Test completed in 0.0178329944611 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1315579784
-Test time : 0.00504184
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels 
 INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels
-INFO     Test completed in 0.0809559822083 seconds
+INFO     Test completed in 0.152395963669 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -149,8 +166,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1315579784
-Test time : 0.0660689
+Test Seed : 1315764747
+Test time : 0.0796239
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -185,49 +202,32 @@ R = [
 
 
 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels
-INFO     Test completed in 0.0369439125061 seconds
+INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator
+INFO     Test completed in 0.0505230426788 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestKernels
+Name : TestEmulator
 
 Description: 
 
 
-Test Seed : 1315579784
-Test time : 0.0191653
+Test Seed : 1315764747
+Test time : 0.00277019
 
 Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer -i ../tests/ptx 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer
-INFO     Test completed in 0.0137088298798 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1315579784
-Test time : 2.09808e-05
-
-Status : 
 
 
 INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.01646900177 seconds
+INFO     Test completed in 0.0544240474701 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -241,8 +241,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1315579784
-Test time : 0.00110722
+Test Seed : 1315764747
+Test time : 0.00063777
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -375,13 +375,13 @@ Zext Instruction Passed
 
 INFO     
 Passing tests:
- (0.014s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator : Passed
- (0.014s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph : Passed
- (0.013s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser : Passed
- (0.037s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels : Passed
- (0.018s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator : Passed
- (0.016s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions : Passed
- (0.081s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels : Passed
- (0.018s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions : Passed
- (0.014s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer : Passed
+ (0.048s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.046s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph : Passed
+ (0.062s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser : Passed
+ (0.075s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels : Passed
+ (0.051s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator : Passed
+ (0.054s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions : Passed
+ (0.152s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels : Passed
+ (0.072s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions : Passed
+ (0.058s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer : Passed
 

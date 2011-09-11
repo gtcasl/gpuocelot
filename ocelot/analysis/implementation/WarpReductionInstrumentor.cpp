@@ -40,6 +40,8 @@ namespace analysis
         counter = 0;
         
         warpCount = (threads * threadBlocks)/32;
+        if(warpCount == 0)
+            warpCount = 1;
 
         if(cudaMalloc((void **) &counter, entries * warpCount * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );

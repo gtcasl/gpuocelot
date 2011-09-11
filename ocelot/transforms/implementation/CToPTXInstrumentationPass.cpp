@@ -40,6 +40,7 @@ namespace transforms
         { 
             toInsert.instruction.pg.reg = newRegisterMap[toInsert.instruction.pg.identifier];
             toInsert.instruction.pg.identifier.clear();
+            return toInsert;
         }
         
         
@@ -344,9 +345,9 @@ namespace transforms
                         {
                             ir::PTXInstruction ballot(ir::PTXInstruction::Vote);
                             ballot.vote = ir::PTXInstruction::Ballot;
-                            ballot.type = ir::PTXOperand::b64;
+                            ballot.type = ir::PTXOperand::b32;
                             
-                            ballot.d.type = ir::PTXOperand::b64;
+                            ballot.d.type = ir::PTXOperand::b32;
                             ballot.d.addressMode = ir::PTXOperand::Register;
                             ballot.d.reg = predCount;
                             ballot.a.addressMode = ir::PTXOperand::Register;
@@ -357,9 +358,8 @@ namespace transforms
                             ballot.pg.condition = ir::PTXOperand::Pred;
 
                             ir::PTXInstruction popc(ir::PTXInstruction::Popc);
-                            popc.type = ir::PTXOperand::b64;
-                            popc.d.type = ir::PTXOperand::u64;
-                            popc.a.type = ir::PTXOperand::b64;
+                            popc.type = popc.a.type = ir::PTXOperand::b32;
+                            popc.d.type = ir::PTXOperand::u32;
                             popc.d.addressMode = popc.a.addressMode = ir::PTXOperand::Register;
                             popc.a = ballot.d;   
                             analysis::DataflowGraph::RegisterId popcResult = dfg().newRegister();
@@ -368,12 +368,23 @@ namespace transforms
                             popc.pg = guard;
                             popc.pg.condition = ir::PTXOperand::Pred;
 
+                            ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
+                            cvt.type = cvt.d.type = type;
+                            cvt.a.type = ir::PTXOperand::u32;
+                            cvt.d.addressMode = cvt.a.addressMode = ir::PTXOperand::Register;
+                            cvt.a = popc.d;   
+                            analysis::DataflowGraph::RegisterId cvtResult = dfg().newRegister();
+                            cvt.d.reg = cvtResult;
+                            
+                            cvt.pg = guard;
+                            cvt.pg.condition = ir::PTXOperand::Pred;
+
                             ir::PTXInstruction add(ir::PTXInstruction::Add);
                             add.type = add.d.type = add.a.type = add.b.type = type;
                             add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
                             
                             add.d = add.a = position->instruction.d;
-                            add.b.reg = popcResult;
+                            add.b.reg = cvtResult;
                             
                             add.pg = guard;
                             add.pg.condition = ir::PTXOperand::Pred;
@@ -382,6 +393,8 @@ namespace transforms
                             stmt.instruction = ballot;
                             position = translationBlock.statements.insert(position + 1, stmt);
                             stmt.instruction = popc;
+                            position = translationBlock.statements.insert(position + 1, stmt);
+                            stmt.instruction = cvt;
                             position = translationBlock.statements.insert(position + 1, stmt);
                             stmt.instruction = add;
                             position = translationBlock.statements.insert(position + 1, stmt);
@@ -445,9 +458,10 @@ namespace transforms
                     
                     if( statement->instruction.opcode == ir::PTXInstruction::Vote && 
                         (statement+1)->instruction.opcode == ir::PTXInstruction::Popc && 
-                        (statement+2)->instruction.opcode == ir::PTXInstruction::Add)
+                        (statement+2)->instruction.opcode == ir::PTXInstruction::Cvt &&
+                        (statement+3)->instruction.opcode == ir::PTXInstruction::Add)
                     {
-                        translationBlock.statements.erase(statement, statement + 3);
+                        translationBlock.statements.erase(statement, statement + 4);
                     } 
                 
                 }
@@ -803,7 +817,7 @@ namespace transforms
                         break;
                     }
                 }
-                
+
                 if(propagateConstant)
                 {
                     constants[statement->instruction.d.identifier] = statement->instruction.a.imm_uint;
@@ -887,7 +901,7 @@ namespace transforms
         }
         
         statements = newStatementsVector;
-        
+
 	}
 	
     CToPTXInstrumentationPass::CToPTXInstrumentationPass(std::string resource)
@@ -959,6 +973,7 @@ namespace transforms
 	    
 	    translator::CToPTXTranslator translator;
 	    translation = translator.generate(resource);
+
 	    optimize(translation.statements);
 	    baseAddress = translation.globals.front().name;
 	}

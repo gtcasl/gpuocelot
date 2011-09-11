@@ -918,12 +918,11 @@ namespace translator
 
         //mov.u32 %lmask, %lanemask_lt;
         inst.opcode = ir::PTXInstruction::Mov;
-        inst.type = type;
+        inst.type = inst.d.type = ir::PTXOperand::u32; 
                  
         inst.d.identifier = "lmask";
         registers.push_back(inst.d.identifier); 
-             
-        inst.d.type = type;          
+                     
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.a = ir::PTXOperand(ir::PTXOperand::lanemask_lt, ir::PTXOperand::u32);
         inst.a.addressMode = ir::PTXOperand::Special;
@@ -953,12 +952,12 @@ namespace translator
         stmt.instruction = inst;
         statements.push_back(stmt); 
 
-        //vote.ballot.b64 %bitmask, %p0;
+        //vote.ballot.b32 %bitmask, %p0;
 	    inst.opcode = ir::PTXInstruction::Vote;
         inst.vote = ir::PTXInstruction::Ballot;
-        inst.type = ir::PTXOperand::b64;
+        inst.type = ir::PTXOperand::b32;
         
-        inst.d.type = ir::PTXOperand::b64;
+        inst.d.type = ir::PTXOperand::b32;
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.identifier = "bitmask";
 	    specialRegisterMap["bitmask"] = inst.d.identifier;
@@ -972,15 +971,15 @@ namespace translator
         
         inst.vote = ir::PTXInstruction::VoteMode_Invalid;
         
-	    //and.b64 %rb0, %bitmask, %lmask;
+	    //and.b32 %rb0, %bitmask, %lmask;
 	    inst.opcode = ir::PTXInstruction::And;
-        inst.type = ir::PTXOperand::b64;
+        inst.type = ir::PTXOperand::b32;
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
         std::string rb0 = inst.d.identifier;
         registers.push_back(inst.d.identifier);
         inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.type = ir::PTXOperand::b64;
-        inst.a.identifier = "bitmask";
+        inst.a.type = ir::PTXOperand::b32;
+        inst.a.identifier = specialRegisterMap["bitmask"];
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.identifier = "lmask";
         inst.b.type = type;
@@ -1018,12 +1017,12 @@ namespace translator
             stmt.instruction = inst;
             statements.push_back(stmt); 
 
-            //vote.ballot.b64 %bitmask, %p0;
+            //vote.ballot.b32 %bitmask, %p0;
 	        inst.opcode = ir::PTXInstruction::Vote;
             inst.vote = ir::PTXInstruction::Ballot;
-            inst.type = ir::PTXOperand::b64;
+            inst.type = ir::PTXOperand::b32;
             
-            inst.d.type = ir::PTXOperand::b64;
+            inst.d.type = ir::PTXOperand::b32;
             inst.d.addressMode = ir::PTXOperand::Register;
             inst.d.identifier = "bitmask";
 	        specialRegisterMap["bitmask"] = inst.d.identifier;
@@ -1032,6 +1031,7 @@ namespace translator
             inst.a.type = ir::PTXOperand::pred;
             inst.a.identifier = p0;
             
+            setPredicate(inst);
             stmt.instruction = inst;
             statements.push_back(stmt);
         }
@@ -1039,15 +1039,27 @@ namespace translator
         inst.vote = ir::PTXInstruction::VoteMode_Invalid;
         
         inst.opcode = ir::PTXInstruction::Popc;
-        inst.type = ir::PTXOperand::b64;
-        inst.d.type = type;
-        inst.a.type = type;
+        inst.type = inst.a.type = ir::PTXOperand::b32;
+        inst.d.type = ir::PTXOperand::u32;
         inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.identifier = specialRegisterMap["bitmask"];
 
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        std::string popcResult = inst.d.identifier;
         registers.push_back(inst.d.identifier);  
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        inst.opcode = ir::PTXInstruction::Cvt;
+        inst.type = inst.d.type = type;
+        inst.a.type = ir::PTXOperand::u32;
+        inst.a.identifier = popcResult;
         
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);  
+
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt);
@@ -1669,7 +1681,7 @@ namespace translator
 	        }
 	        else if(br_op >= 0 && br_op < 11){
 	            predicateInfo.condition = PredicateInfo::TAKEN;
-	            inst.type = ir::PTXOperand::b32;
+	            inst.type = ir::PTXOperand::u32;
 		        inst.b.addressMode = ir::PTXOperand::Immediate;
 		        inst.b.imm_uint = 0;
 	            predicateInfo.set = true;

@@ -347,6 +347,8 @@ def getExtraLibs():
 def fixPath(path):
 	if (os.name == 'nt'):
 		return path.replace('\\', '\\\\')
+	else:
+		return path
  
 def defineConfigFlags(env):
 	

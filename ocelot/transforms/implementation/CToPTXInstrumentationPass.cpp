@@ -908,6 +908,9 @@ namespace transforms
 		: KernelPass( Analysis::DataflowGraphAnalysis,
 			"CToPTXInstrumentationPass" )
 	{
+        translator::CToPTXTranslator translator;
+	    translation = translator.generate(resource);
+
 	    parameterMap = translation.parameterMap;
 	 
 	    functionNames = { COMPUTE_BASE_ADDRESS, GET_PREDICATE_VALUE };
@@ -971,9 +974,6 @@ namespace transforms
 	    dataTypeMap[ir::PTXOperand::f32] = TYPE_FP;
 	    dataTypeMap[ir::PTXOperand::f64] = TYPE_FP;
 	    
-	    translator::CToPTXTranslator translator;
-	    translation = translator.generate(resource);
-
 	    optimize(translation.statements);
 	    baseAddress = translation.globals.front().name;
 	}

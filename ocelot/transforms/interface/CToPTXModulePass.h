@@ -21,7 +21,6 @@
 /* function names */
 
 #define UNIQUE_ELEMENT_COUNT            "uniqueElementCount"
-#define ACTIVE_THREAD_SUM               "activeThreadSum"
 
 /* label names */
 
@@ -69,7 +68,6 @@ namespace transforms
 			void finalize();
 			
         private:
-            ir::PTXKernel * activeThreadSum();
 			ir::PTXKernel * uniqueElementCount();
 	};
 }

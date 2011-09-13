@@ -54,10 +54,10 @@ namespace analysis
         
         counter = 0;
 
-        if(cudaMalloc((void **) &counter, entries * kernelDataMap[kernelName] * threadBlocks * threads * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, ((entries * kernelDataMap[kernelName] * threadBlocks * threads) + (2 * threadBlocks)) * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, entries * kernelDataMap[kernelName] * threadBlocks * threads * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, ((entries * kernelDataMap[kernelName] * threadBlocks * threads) + (2 * threadBlocks)) * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -102,9 +102,9 @@ namespace analysis
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[entries * kernelDataMap[kernelName] * threads * threadBlocks];
+        size_t *info = new size_t[((entries * kernelDataMap[kernelName] * threadBlocks * threads) + (2 * threadBlocks))];
         if(counter) {
-            cudaMemcpy(info, counter, entries * kernelDataMap[kernelName] * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, ((entries * kernelDataMap[kernelName] * threadBlocks * threads) + (2 * threadBlocks)) * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -145,7 +145,32 @@ namespace analysis
                     
                 }
 
-                *out << "\nTotal Dynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
+                size_t smid = 0;
+                _kernelProfile.processorToClockCyclesMap.clear();
+                size_t totalSize = kernelDataMap[kernelName] * threads * threadBlocks; 
+                
+                for(size_t i = 0; i < threadBlocks; i++) {
+                    smid = info[ i*2 + 1 + totalSize];
+                    _kernelProfile.processorToClockCyclesMap[smid] += info[i*2 + totalSize];
+                } 
+
+                std::vector<double> clockCyclesPerSM;
+                clockCyclesPerSM.clear();
+
+                for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = 
+                    _kernelProfile.processorToClockCyclesMap.begin();
+                    it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
+                    clockCyclesPerSM.push_back(it->second);
+                }
+
+                struct cudaDeviceProp properties;
+                cudaGetDeviceProperties(&properties, 0);
+
+                _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), 
+                    clockCyclesPerSM.end()))/properties.clockRate;
+
+                *out << "\nDynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
+                *out << "\nClock Cycle Runtime: " << _kernelProfile.maxSMRuntime << " ms\n\n";
               
                 *out << "\n\n";        
 

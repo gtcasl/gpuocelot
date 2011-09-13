@@ -88,6 +88,7 @@ namespace translator {
         public:
         
             std::string id;
+            std::string targetId;
             bool set;
             bool inv;
             std::string branchLabel;
@@ -199,6 +200,7 @@ namespace translator {
 		    StringVector targetList;
 		    StringVector targets;
 		    FunctionParameterMap parameterMap;
+		    std::string targetId;
 		    
 		    unsigned int maxRegister;	
 		    unsigned int maxPredicate;

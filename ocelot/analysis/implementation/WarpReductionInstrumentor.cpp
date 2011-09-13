@@ -43,10 +43,10 @@ namespace analysis
         if(warpCount == 0)
             warpCount = 1;
 
-        if(cudaMalloc((void **) &counter, entries * warpCount * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, (entries * warpCount + 2 * threadBlocks) * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, entries * warpCount  * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, (entries * warpCount + 2 * threadBlocks)  * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -101,9 +101,9 @@ namespace analysis
 
     void WarpReductionInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[entries * warpCount];
+        size_t *info = new size_t[(entries * warpCount + 2 * threadBlocks)];
         if(counter) {
-            cudaMemcpy(info, counter, entries * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, (entries * warpCount + 2 * threadBlocks) * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -162,11 +162,36 @@ namespace analysis
                     break;
                     case instructionCount:
                     {
+                    
+                        size_t smid = 0;
+                        _kernelProfile.processorToClockCyclesMap.clear();
+                        
+                        for(size_t i = 0; i < threadBlocks; i++) {
+                            smid = info[ i*2 + 1 + warpCount];
+                            _kernelProfile.processorToClockCyclesMap[smid] += info[i*2 + warpCount];
+                        } 
+
+                        std::vector<double> clockCyclesPerSM;
+                        clockCyclesPerSM.clear();
+
+                        for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = 
+                            _kernelProfile.processorToClockCyclesMap.begin();
+                            it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
+                            clockCyclesPerSM.push_back(it->second);
+                        }
+
+                        struct cudaDeviceProp properties;
+                        cudaGetDeviceProperties(&properties, 0);
+
+                        _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), 
+                            clockCyclesPerSM.end()))/properties.clockRate;
+                    
                         unsigned int instCount = 0;
                         for(unsigned int i = 0; i < warpCount; i++)
                             instCount += info[0];
                         
-                        *out << "\nDynamic Instruction Count: " << instCount << "\n\n";
+                        *out << "\nDynamic Instruction Count: " << instCount << "\n";
+                        *out << "\nClock Cycle Runtime: " << _kernelProfile.maxSMRuntime << " ms\n\n";
                     }                    
                     break;
                     default:

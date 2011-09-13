@@ -70,15 +70,19 @@ namespace translator
 
         for (PredicateList::const_iterator pred = predicateList.begin(); 
 	        pred != predicateList.end(); ++pred) {
-
-            if(pred->inv)
-                instruction.pg.condition = ir::PTXOperand::InvPred;
-            else    
-                instruction.pg.condition = ir::PTXOperand::Pred;
             
-            instruction.pg.identifier = pred->id;
-            instruction.pg.type = ir::PTXOperand::pred;
-            instruction.pg.addressMode = ir::PTXOperand::Register;       
+            if(pred->targetId == targetId)
+            {
+
+                if(pred->inv)
+                    instruction.pg.condition = ir::PTXOperand::InvPred;
+                else    
+                    instruction.pg.condition = ir::PTXOperand::Pred;
+                
+                instruction.pg.identifier = pred->id;
+                instruction.pg.type = ir::PTXOperand::pred;
+                instruction.pg.addressMode = ir::PTXOperand::Register;   
+            }            
         }
     }
     
@@ -236,21 +240,35 @@ namespace translator
     
     void CToPTXTranslator::generateWarpCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
     {
-        inst.opcode = ir::PTXInstruction::Cvt;
+        if(specialRegisterMap["ntid"].empty())
+            generateBlockDim(inst, stmt, type, insn);
+            
+        if(specialRegisterMap["nctaid"].empty())
+            generateGridDim(inst, stmt, type, insn);
+    
+        inst.opcode = ir::PTXInstruction::Mul;
+        inst.modifier = ir::PTXInstruction::lo;
         setPredicate(inst);
-        
-        inst.d.type = type;
         
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
         registers.push_back(inst.d.identifier);
         
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.a = ir::PTXOperand(ir::PTXOperand::nwarpId);
-        inst.a.addressMode = ir::PTXOperand::Special;
-        inst.a.type = ir::PTXOperand::u32;
+        inst.d.type = inst.a.type = inst.b.type = type;
+        inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = specialRegisterMap["ntid"];
+        inst.b.identifier = specialRegisterMap["nctaid"];
         
         stmt.instruction = inst;
         statements.push_back(stmt);        
+        
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.opcode = ir::PTXInstruction::Shr;
+        inst.a.identifier = inst.d.identifier;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 5;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;    
     
@@ -265,7 +283,7 @@ namespace translator
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.a = ir::PTXOperand(ir::PTXOperand::clock64, ir::PTXOperand::ix);
         inst.a.type = ir::PTXOperand::u64;
-	inst.a.vec = ir::PTXOperand::v1;
+	    inst.a.vec = ir::PTXOperand::v1;
 
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);	
         registers.push_back(inst.d.identifier);	      
@@ -279,22 +297,27 @@ namespace translator
     
     void CToPTXTranslator::generateThreadIndexX(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
     {
-        inst.opcode = ir::PTXInstruction::Cvt;
-        setPredicate(inst);
+        if(specialRegisterMap["tidX"].empty())
+        {
+            inst.opcode = ir::PTXInstruction::Cvt;
+            setPredicate(inst);
 
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        registers.push_back(inst.d.identifier);
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+            registers.push_back(inst.d.identifier);
+            
+            inst.d.type = type;
+            inst.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
+            inst.a.addressMode = ir::PTXOperand::Special;
+            inst.a.vec = ir::PTXOperand::v1;
+            
+            stmt.instruction = inst;
+            statements.push_back(stmt);    
+            
+            specialRegisterMap["tidX"] = inst.d.identifier;       
+        }
         
-        inst.d.type = type;
-        inst.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
-        inst.a.addressMode = ir::PTXOperand::Special;
-        inst.a.vec = ir::PTXOperand::v1;
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);        
-        
-        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;    
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = specialRegisterMap["tidX"]; 
     }
     
     void CToPTXTranslator::generateBlockDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
@@ -1724,6 +1747,7 @@ namespace translator
 	        stmt.instruction = inst;
 	        statements.push_back(stmt);
 	          
+	        predicateInfo.targetId = targetId;
 	        predicateList.push_back(predicateInfo);  
 	        
 	        if(label == "loop end")
@@ -1935,7 +1959,10 @@ namespace translator
                 target != targetList.end(); ++target)
             {
                 if(label == *target)
+                { 
                     targets.push_back(label);
+                    targetId = *target;
+                }
             }
             
             stmt.directive = ir::PTXStatement::Label;

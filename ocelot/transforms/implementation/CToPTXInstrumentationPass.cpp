@@ -235,6 +235,7 @@ namespace transforms
         StaticAttributes attributes;
         attributes.basicBlockId = 0;
         attributes.kernelInstructionCount = kernelInstructionCount(translationBlock);
+        attributes.basicBlockCount = dfg().size() - 2;
         
         
         analysis::DataflowGraph::iterator block = dfg().begin();
@@ -477,6 +478,7 @@ namespace transforms
         attributes.basicBlockId = 0;
         attributes.instructionId = 0;
         attributes.kernelInstructionCount = 0;
+        attributes.basicBlockCount = dfg().size() - 2;
                 
         /* ensure that there is at least one basic block -- otherwise, skip this kernel */
         if(dfg().empty())
@@ -825,13 +827,14 @@ namespace transforms
                 }
             }       
             
-            if(statement->instruction.opcode == ir::PTXInstruction::Mad ||
+            if( statement->instruction.opcode == ir::PTXInstruction::Mad ||
                 statement->instruction.opcode == ir::PTXInstruction::Add ||
                 statement->instruction.opcode == ir::PTXInstruction::Sub ||
                 statement->instruction.opcode == ir::PTXInstruction::Div ||
                 statement->instruction.opcode == ir::PTXInstruction::Mul ||
                 statement->instruction.opcode == ir::PTXInstruction::Shr ||
-                statement->instruction.opcode == ir::PTXInstruction::Shl)
+                statement->instruction.opcode == ir::PTXInstruction::Shl ||
+                statement->instruction.opcode == ir::PTXInstruction::SetP)
             {    
                 ir::PTXOperand ir::PTXInstruction::* source_operands[] = 
                     { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c};
@@ -909,7 +912,7 @@ namespace transforms
 			"CToPTXInstrumentationPass" )
 	{
         translator::CToPTXTranslator translator;
-	    translation = translator.generate(resource);
+        translation = translator.generate(resource);
 
 	    parameterMap = translation.parameterMap;
 	 

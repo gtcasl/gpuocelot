@@ -61,19 +61,29 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 		report("  For superblock " << (*block)->label << " ("
 			<< (*block)->id << ")"); 
 		iterator superblock = newBlock();
+		ir::ControlFlowGraph::iterator next = *block;
 	
 		superblock->insert(*block);
-	
-		for(ir::ControlFlowGraph::pointer_iterator successor =
-			(*block)->successors.begin();
-			successor != (*block)->successors.end(); ++successor)
+
+		while(next != _cfg->end())
 		{
-			if((*successor)->predecessors.size() == 1)
+			ir::ControlFlowGraph::iterator current = next;
+			next = _cfg->end();
+			for(ir::ControlFlowGraph::pointer_iterator successor =
+				current->successors.begin();
+				successor != current->successors.end(); ++successor)
 			{
-				report("   Added successor " << (*successor)->label
-					<< " (" << (*successor)->id << ")");
-				superblock->insert(*successor);
-				visited.insert(*successor);
+				// right now we just pick the first one,
+				// TODO: use profiling information
+				if((*successor)->predecessors.size() == 1)
+				{
+					report("   Added successor " << (*successor)->label
+						<< " (" << (*successor)->id << ")");
+					superblock->insert(*successor);
+					visited.insert(*successor);
+					next = *successor;
+					break;
+				}
 			}
 		}
 		

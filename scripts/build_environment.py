@@ -181,6 +181,11 @@ def getLLVMPaths(enabled):
 		if lib[0:2] == "-L":
 			libs.remove(lib)
 
+	# remove inc_path from cflags
+	for flag in cflags:
+		if flag[0:2] == "-I":
+			cflags.remove(flag)
+
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
 def getTools():
@@ -476,6 +481,9 @@ def Environment():
 	if os.name == 'nt':
 		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
 		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
+	
+	# include the build directory in case of generated files
+	env.Prepend(CPPPATH = env.Dir('.'))
 
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
@@ -528,9 +536,6 @@ def Environment():
 	# set ocelot libs
 	ocelot_libs = '-locelot'
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-	
-	# include the build directory in case of generated files
-	env.Prepend(CPPPATH = env.Dir('.'))
 
 	# generate OcelotConfig flags
 	defineConfigFlags(env)

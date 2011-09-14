@@ -429,8 +429,13 @@ def Environment():
 		allowed_values = ('none', 'basic', 'full')))
 
 	# add a variable to determine the install path
+	default_install_path = '/usr/local'
+	
+	if 'OCELOT_INSTALL_PATH' in os.environ:
+		default_install_path = os.environ['OCELOT_INSTALL_PATH']
+	
 	vars.Add(PathVariable('install_path', 'The ocelot install path',
-		'/usr/local'))
+		default_install_path))
 
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \

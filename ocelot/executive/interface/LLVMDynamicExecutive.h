@@ -241,6 +241,24 @@ namespace executive {
 		//! \brief sets the resume point of the context
 		static void setResumePoint(const LLVMContext &context, EntryId resumeId);
 		
+		//! \brief gets the initial entry cycle count
+		static unsigned long long getEntryCycles(const LLVMContext &context);
+		
+		//! \brief sets the initial entry cycle count
+		static void setEntryCycles(const LLVMContext &context, unsigned long long cycles);
+		
+		//! \brief sets the initial exit cycle count
+		static unsigned long long getExitCycles(const LLVMContext &context);
+		
+		//! \brief gets the initial entry cycle count
+		static void setExitCycles(const LLVMContext &context, unsigned long long cycles);
+		
+		//! \brief gets the ID of the most recent exit
+		static unsigned int getExitId(const LLVMContext &context);
+
+		//! \brief gets the liveness count of the most recent exit
+		static unsigned int getExitLiveness(const LLVMContext &context);
+		
 	public:
 	
 		//! \brief kernel to execute

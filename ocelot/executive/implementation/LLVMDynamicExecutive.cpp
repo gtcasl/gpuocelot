@@ -33,6 +33,19 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+extern "C" {
+  __inline__ uint64_t rdtsc(void) {
+    uint32_t lo, hi;
+    __asm__ __volatile__ (
+    "xorl %%eax,%%eax \n        cpuid"
+    ::: "%rax", "%rbx", "%rcx", "%rdx");
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return (uint64_t)hi << 32 | lo;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace executive {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +238,36 @@ void LLVMDynamicExecutive::setResumePoint(
 	const LLVMContext &context, 
 	LLVMDynamicExecutive::EntryId entryId) {
 	*((EntryId *)&context.local[4]) = entryId;
+}
+
+//! \brief gets the initial entry cycle count
+unsigned long long LLVMDynamicExecutive::getEntryCycles(const LLVMContext &context) {
+	return *((unsigned long long *)&context.local[8]);
+}
+
+//! \brief sets the initial entry cycle count
+void LLVMDynamicExecutive::setEntryCycles(const LLVMContext &context, unsigned long long cycles) {
+	*((unsigned long long *)&context.local[8]) = cycles;
+}
+
+//! \brief sets the initial exit cycle count
+unsigned long long LLVMDynamicExecutive::getExitCycles(const LLVMContext &context) {
+	return *((unsigned long long *)&context.local[16]);
+}
+
+//! \brief gets the initial entry cycle count
+void LLVMDynamicExecutive::setExitCycles(const LLVMContext &context, unsigned long long cycles) {
+	*((unsigned long long *)&context.local[16]) = cycles;
+}
+
+//! \brief gets the ID of the most recent exit
+unsigned int LLVMDynamicExecutive::getExitId(const LLVMContext &context) {
+	return *((unsigned int *)&context.local[24]);
+}
+
+//! \brief gets the liveness count of the most recent exit
+unsigned int LLVMDynamicExecutive::getExitLiveness(const LLVMContext &context) {
+	return *((unsigned int *)&context.local[28]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

@@ -17,7 +17,7 @@
 #include <configure.h>
 
 #ifdef HAVE_LLVM
-#include <llvm/Target/TargetSelect.h>
+#include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/LLVMContext.h>
@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive
 {

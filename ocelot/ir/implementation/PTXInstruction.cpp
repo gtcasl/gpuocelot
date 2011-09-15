@@ -1061,6 +1061,13 @@ std::string ir::PTXInstruction::valid() const {
 			if( ( a.vec != PTXOperand::v1 || d.vec != PTXOperand::v1 ) 
 				&& ( a.bytes() != d.bytes() ) ) {
 				std::stringstream stream;
+				if (a.vec != PTXOperand::v1) {
+					stream << "\nA.vec != v1; ";
+				}
+				if (d.vec != PTXOperand::v1) {
+					stream << "d.vec != v1; ";
+				}
+				stream << "A.bytes = " << a.bytes() << ", D.bytes = " << d.bytes() << "\n";
 				stream << "at least one vector operand and A size " << a.bytes()
 					<< " does not equal D size " << d.bytes();
 				return stream.str();

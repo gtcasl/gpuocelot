@@ -2652,6 +2652,32 @@ namespace translator
 		
 		_add( branch );
 	}
+	
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_insertIncrementor( 
+		ir::LLVMInstruction::Operand &pointer, ir::LLVMInstruction::Operand &increment ) {
+		
+		ir::LLVMLoad load;
+		load.a = pointer;
+		load.d.name = _tempRegister();
+		load.d.type.type = ir::LLVMInstruction::I64;
+		load.d.type.category = ir::LLVMInstruction::Type::Element;
+		_add(load);
+
+		ir::LLVMAdd add;
+		add.d.name = _tempRegister();
+		add.d.type.type = ir::LLVMInstruction::I64;
+		add.d.type.category = ir::LLVMInstruction::Type::Element;
+		add.a = load.d;
+		add.b = increment;
+		_add(add);
+
+		ir::LLVMStore store;
+		store.a = add.d;
+		store.d = pointer;
+		_add(store);
+
+		return add.d;
+	}
 
 	void PTXToLLVMTranslator::_translateIsspacep( const ir::PTXInstruction& i )
 	{
@@ -7845,6 +7871,18 @@ namespace translator
 				
 				return cast.d.name;
 				break;
+			}
+			case ir::PTXOperand::clock64:
+			{
+				ir::LLVMCall call;
+				
+				call.name = "@llvm.readcyclecounter";
+				call.d.type.category = ir::LLVMInstruction::Type::Element;
+				call.d.type.type = ir::LLVMInstruction::I64;
+				call.d.name = _tempRegister();
+
+				_add( call );
+				return call.d.name;
 			}
 			case ir::PTXOperand::pm0:
 			{

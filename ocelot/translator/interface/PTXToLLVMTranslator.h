@@ -178,6 +178,9 @@ namespace translator
 				const ir::PTXOperand& o, 
 				ir::PTXInstruction::AddressSpace space, 
 				ir::LLVMInstruction::DataType type, unsigned int vector );
+				
+			ir::LLVMInstruction::Operand _insertIncrementor(
+				ir::LLVMInstruction::Operand &pointer, ir::LLVMInstruction::Operand &increment );
 			
 			ir::LLVMInstruction::Operand _destination( 
 				const ir::PTXInstruction& i, bool pd = false );

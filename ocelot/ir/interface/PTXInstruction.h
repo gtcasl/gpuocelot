@@ -293,7 +293,7 @@ namespace ir {
 			Ballot,
 			VoteMode_Invalid
 		};
-		
+
 	public:
 		static std::string toString( Level );
 		static std::string toString( PermuteMode );

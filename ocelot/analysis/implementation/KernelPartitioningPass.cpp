@@ -29,6 +29,8 @@
 
 #define REPORT_BASE 0
 
+#define INSERT_CYCLE_COUNTERS 1
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace analysis {
@@ -129,11 +131,31 @@ void KernelPartitioningPass::KernelDecomposition::_createSpillRegion(size_t spil
 	kernel->locals.insert(std::make_pair(resumeTarget.name, ir::Local(resumeTarget)));
 	
 	ir::PTXStatement resumeStatus(ir::PTXStatement::Local);
-		
 	resumeStatus.type = ir::PTXOperand::u32;
 	resumeStatus.name = "_Zocelot_resume_status";
-	
 	kernel->locals.insert(std::make_pair(resumeStatus.name, ir::Local(resumeStatus)));
+	
+	if (INSERT_CYCLE_COUNTERS) {
+		ir::PTXStatement entryCycles(ir::PTXStatement::Local);
+		entryCycles.type = ir::PTXOperand::u64;
+		entryCycles.name = "_Zocelot_entry_cycles";
+		kernel->locals.insert(std::make_pair(entryCycles.name, ir::Local(entryCycles)));
+	
+		ir::PTXStatement exitCycles(ir::PTXStatement::Local);
+		exitCycles.type = ir::PTXOperand::u64;
+		exitCycles.name = "_Zocelot_exit_cycles";
+		kernel->locals.insert(std::make_pair(exitCycles.name, ir::Local(exitCycles)));
+	
+		ir::PTXStatement exitId(ir::PTXStatement::Local);
+		exitId.type = ir::PTXOperand::u32;
+		exitId.name = "_Zocelot_exit_id";
+		kernel->locals.insert(std::make_pair(exitId.name, ir::Local(exitId)));
+		
+		ir::PTXStatement exitLiveness(ir::PTXStatement::Local);
+		exitLiveness.type = ir::PTXOperand::u32;
+		exitLiveness.name = "_Zocelot_exit_liveness";
+		kernel->locals.insert(std::make_pair(exitLiveness.name, ir::Local(exitLiveness)));
+	}
 	
 	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
 		
@@ -246,7 +268,81 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		_constructTransition(transition_it->second);
 	}
 }
+	
+/*!
+	\brief inserting an entry counter
+*/
+void KernelPartitioningPass::KernelDecomposition::_insertEntryCycleCounter(
+	ir::BasicBlock::Pointer block) {
+		
+	ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+	move->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	move->a = ir::PTXOperand(ir::PTXOperand::Special, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	move->a.special = ir::PTXOperand::clock64;
+	move->type = move->d.type;
+	block->instructions.push_back(move);
+	
+	ir::PTXInstruction *load = new ir::PTXInstruction(ir::PTXInstruction::Ld);
+	load->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	load->a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_entry_cycles");
+	load->type = load->d.type;
+	block->instructions.push_back(load);
+	
+	ir::PTXInstruction *sub = new ir::PTXInstruction(ir::PTXInstruction::Sub);
+	sub->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	sub->a = move->d;
+	sub->b = load->d;
+	sub->type = sub->d.type;
+	block->instructions.push_back(sub);
+	
+	ir::PTXInstruction *store = new ir::PTXInstruction(ir::PTXInstruction::St);
+	store->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_entry_cycles");
+	store->a = sub->d;
+	store->type = store->a.type;
+	block->instructions.push_back(store);
+}
 
+/*!
+	\brief inserting a cycle counter
+*/
+void KernelPartitioningPass::KernelDecomposition::_insertExitCycleCounter(
+	ir::BasicBlock::Pointer block,
+	int exitId,
+	int liveness) {
+	
+	ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+	move->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	move->a = ir::PTXOperand(ir::PTXOperand::Special, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	move->a.special = ir::PTXOperand::clock64;
+	move->type = move->d.type;
+	block->instructions.push_back(move);
+	
+	ir::PTXInstruction *store = new ir::PTXInstruction(ir::PTXInstruction::St);
+	store->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_exit_cycles");
+	store->a = move->d;
+	store->type = store->a.type;
+	block->instructions.push_back(store);
+	
+	ir::PTXInstruction *storeId = new ir::PTXInstruction(ir::PTXInstruction::St);
+	storeId->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_exit_id");
+	storeId->a = ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32);
+	storeId->a.imm_uint = exitId;
+	storeId->type = ir::PTXOperand::u32;
+	block->instructions.push_back(storeId);
+	
+	ir::PTXInstruction *storeLiveness = new ir::PTXInstruction(ir::PTXInstruction::St);
+	storeLiveness->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_exit_liveness");
+	storeLiveness->a = ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32);
+	storeLiveness->a.imm_uint = liveness;
+	storeLiveness->type = ir::PTXOperand::u32;
+	block->instructions.push_back(storeLiveness);
+}
 /*!
 	\brief inserts spill and restore code into each transition
 */
@@ -287,7 +383,11 @@ void KernelPartitioningPass::KernelDecomposition::_constructTransition(
 			
 			bytes += ir::PTXOperand::bytes(reg_it->type);
 		}
-				
+
+		if (INSERT_CYCLE_COUNTERS) {
+			_insertEntryCycleCounter(transition.handler);
+		}
+
 		ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
 		branch->d.addressMode = ir::PTXOperand::Label;
 		branch->d.identifier = transition.block->label;
@@ -308,6 +408,11 @@ void KernelPartitioningPass::KernelDecomposition::_constructTransition(
 	{
 		// all others are thread exits of various types
 		size_t bytes = 0;
+		
+		
+		if (INSERT_CYCLE_COUNTERS) {
+			_insertExitCycleCounter(transition.handler, 0, transition.liveValues.size());
+		}
 		
 		ir::PTXInstruction* move = 0;
 		for (RegisterSet::const_iterator reg_it = transition.liveValues.begin(); 

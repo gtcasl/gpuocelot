@@ -106,6 +106,12 @@ namespace analysis {
 			//! \brief inserts spill and restore code into each transition
 			void _constructTransition(KernelTransitionPoint &transition);
 			
+			//! \brief inserts a counter after restoring live values			
+			void _insertEntryCycleCounter(ir::BasicBlock::Pointer block);
+			
+			//! \brief inserts a counter after storing live values
+			void _insertExitCycleCounter(ir::BasicBlock::Pointer block, int exitId, int liveness);
+			
 			//! \brief 
 			void _transformExitTransitions(KernelTransitionPoint &transition);
 			

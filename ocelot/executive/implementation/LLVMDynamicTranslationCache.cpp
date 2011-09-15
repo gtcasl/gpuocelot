@@ -67,7 +67,7 @@
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1270,10 +1270,6 @@ static void cloneAndOptimizeTranslation(
 	translation->llvmFunction = llvm::CloneFunction(translatedKernel.scalarTranslation);
 	translation->llvmFunction->setName(ss.str());
 	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
-	
-	std::cerr << "Cloned function:\n";
-	translation->llvmFunction->dump();
-	std::cerr << std::endl;
 	
 	translatedKernel.kernelModule->getFunctionList().push_back(translation->llvmFunction);
 	

@@ -229,6 +229,13 @@ namespace executive {
 		//! \brief computes the CTA ID
 		unsigned int getThreadId(const LLVMContext &ctx) const;
 		
+		//! \brief 
+		void subkernelExecutionEvent(uint64_t entryCycles, unsigned int entryId, 
+			unsigned int entryLiveness, uint64_t exitCycles, unsigned int exitId, 
+			unsigned int exitLiveness);
+		
+	private:
+	
 		//! \brief gets the exit code of a thread
 		static ThreadExitCode getExitCode(const LLVMContext &context);
 		
@@ -242,16 +249,22 @@ namespace executive {
 		static void setResumePoint(const LLVMContext &context, EntryId resumeId);
 		
 		//! \brief gets the initial entry cycle count
-		static unsigned long long getEntryCycles(const LLVMContext &context);
+		static uint64_t getEntryCycles(const LLVMContext &context);
 		
 		//! \brief sets the initial entry cycle count
-		static void setEntryCycles(const LLVMContext &context, unsigned long long cycles);
+		static void setEntryCycles(const LLVMContext &context, uint64_t cycles);
+		
+		//! \brief gets entry liveness
+		static unsigned int getEntryLiveness(const LLVMContext &context);
+		
+		//! \brief sets entry liveness
+		static unsigned int getEntryId(const LLVMContext &context);
 		
 		//! \brief sets the initial exit cycle count
-		static unsigned long long getExitCycles(const LLVMContext &context);
+		static uint64_t getExitCycles(const LLVMContext &context);
 		
 		//! \brief gets the initial entry cycle count
-		static void setExitCycles(const LLVMContext &context, unsigned long long cycles);
+		static void setExitCycles(const LLVMContext &context, uint64_t cycles);
 		
 		//! \brief gets the ID of the most recent exit
 		static unsigned int getExitId(const LLVMContext &context);
@@ -287,6 +300,8 @@ namespace executive {
 		
 		//! \brief used for computing weighted average of liveness
 		LivenessEntryCounterMap livenessEntryCounter;
+		
+		bool yieldOverheadInstrumentation;
 	};
 }	
 #endif

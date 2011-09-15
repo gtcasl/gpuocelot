@@ -107,7 +107,7 @@ namespace analysis {
 			void _constructTransition(KernelTransitionPoint &transition);
 			
 			//! \brief inserts a counter after restoring live values			
-			void _insertEntryCycleCounter(ir::BasicBlock::Pointer block);
+			void _insertEntryCycleCounter(ir::BasicBlock::Pointer block, int entryId, int liveness);
 			
 			//! \brief inserts a counter after storing live values
 			void _insertExitCycleCounter(ir::BasicBlock::Pointer block, int exitId, int liveness);

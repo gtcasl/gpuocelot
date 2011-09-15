@@ -15,6 +15,7 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -23,13 +24,11 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_SUBKERNEL_PTX 0
+#define REPORT_SUBKERNEL_PTX 1
 #define REPORT_SUBKERNEL_BARE 0
 #define REPORT_SUBKERNEL_CFG 0
 
-#define REPORT_BASE 0
-
-#define INSERT_CYCLE_COUNTERS 1
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,26 +134,36 @@ void KernelPartitioningPass::KernelDecomposition::_createSpillRegion(size_t spil
 	resumeStatus.name = "_Zocelot_resume_status";
 	kernel->locals.insert(std::make_pair(resumeStatus.name, ir::Local(resumeStatus)));
 	
-	if (INSERT_CYCLE_COUNTERS) {
+	if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {
 		ir::PTXStatement entryCycles(ir::PTXStatement::Local);
 		entryCycles.type = ir::PTXOperand::u64;
 		entryCycles.name = "_Zocelot_entry_cycles";
-		kernel->locals.insert(std::make_pair(entryCycles.name, ir::Local(entryCycles)));
+		kernel->locals.insert(std::make_pair(entryCycles.name, ir::Local(entryCycles)));	// offset 8
+		
+		ir::PTXStatement entryId(ir::PTXStatement::Local);
+		entryId.type = ir::PTXOperand::u32;
+		entryId.name = "_Zocelot_entry_id";
+		kernel->locals.insert(std::make_pair(entryId.name, ir::Local(entryId)));	// offset 16
+		
+		ir::PTXStatement entryLiveness(ir::PTXStatement::Local);
+		entryLiveness.type = ir::PTXOperand::u32;
+		entryLiveness.name = "_Zocelot_entry_liveness";
+		kernel->locals.insert(std::make_pair(entryLiveness.name, ir::Local(entryLiveness)));	// offset 20
 	
 		ir::PTXStatement exitCycles(ir::PTXStatement::Local);
 		exitCycles.type = ir::PTXOperand::u64;
 		exitCycles.name = "_Zocelot_exit_cycles";
-		kernel->locals.insert(std::make_pair(exitCycles.name, ir::Local(exitCycles)));
+		kernel->locals.insert(std::make_pair(exitCycles.name, ir::Local(exitCycles)));	// offset 24
 	
 		ir::PTXStatement exitId(ir::PTXStatement::Local);
 		exitId.type = ir::PTXOperand::u32;
 		exitId.name = "_Zocelot_exit_id";
-		kernel->locals.insert(std::make_pair(exitId.name, ir::Local(exitId)));
+		kernel->locals.insert(std::make_pair(exitId.name, ir::Local(exitId)));	// offset 32
 		
 		ir::PTXStatement exitLiveness(ir::PTXStatement::Local);
 		exitLiveness.type = ir::PTXOperand::u32;
 		exitLiveness.name = "_Zocelot_exit_liveness";
-		kernel->locals.insert(std::make_pair(exitLiveness.name, ir::Local(exitLiveness)));
+		kernel->locals.insert(std::make_pair(exitLiveness.name, ir::Local(exitLiveness)));	// offset 36
 	}
 	
 	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
@@ -273,8 +282,10 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 	\brief inserting an entry counter
 */
 void KernelPartitioningPass::KernelDecomposition::_insertEntryCycleCounter(
-	ir::BasicBlock::Pointer block) {
-		
+	ir::BasicBlock::Pointer block,
+	int entryId,
+	int liveness) {
+
 	ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 	move->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
 		kernel->dfg()->newRegister());
@@ -289,6 +300,7 @@ void KernelPartitioningPass::KernelDecomposition::_insertEntryCycleCounter(
 		kernel->dfg()->newRegister());
 	load->a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_entry_cycles");
 	load->type = load->d.type;
+	load->addressSpace = ir::PTXInstruction::Local;
 	block->instructions.push_back(load);
 	
 	ir::PTXInstruction *sub = new ir::PTXInstruction(ir::PTXInstruction::Sub);
@@ -303,7 +315,23 @@ void KernelPartitioningPass::KernelDecomposition::_insertEntryCycleCounter(
 	store->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_entry_cycles");
 	store->a = sub->d;
 	store->type = store->a.type;
+	store->addressSpace = ir::PTXInstruction::Local;
 	block->instructions.push_back(store);
+	
+	
+	ir::PTXInstruction *storeId = new ir::PTXInstruction(ir::PTXInstruction::St);
+	storeId->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_entry_id");
+	storeId->a = ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32);
+	storeId->a.imm_uint = entryId;
+	storeId->addressSpace = ir::PTXInstruction::Local;
+	block->instructions.push_back(storeId);
+	
+	ir::PTXInstruction *storeLiveness = new ir::PTXInstruction(ir::PTXInstruction::St);
+	storeLiveness->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_entry_liveness");
+	storeLiveness->a = ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32);
+	storeLiveness->a.imm_uint = liveness;
+	storeLiveness->addressSpace = ir::PTXInstruction::Local;
+	block->instructions.push_back(storeLiveness);
 }
 
 /*!
@@ -327,6 +355,7 @@ void KernelPartitioningPass::KernelDecomposition::_insertExitCycleCounter(
 	store->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_exit_cycles");
 	store->a = move->d;
 	store->type = store->a.type;
+	store->addressSpace = ir::PTXInstruction::Local;
 	block->instructions.push_back(store);
 	
 	ir::PTXInstruction *storeId = new ir::PTXInstruction(ir::PTXInstruction::St);
@@ -334,6 +363,7 @@ void KernelPartitioningPass::KernelDecomposition::_insertExitCycleCounter(
 	storeId->a = ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32);
 	storeId->a.imm_uint = exitId;
 	storeId->type = ir::PTXOperand::u32;
+	storeId->addressSpace = ir::PTXInstruction::Local;
 	block->instructions.push_back(storeId);
 	
 	ir::PTXInstruction *storeLiveness = new ir::PTXInstruction(ir::PTXInstruction::St);
@@ -341,6 +371,7 @@ void KernelPartitioningPass::KernelDecomposition::_insertExitCycleCounter(
 	storeLiveness->a = ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32);
 	storeLiveness->a.imm_uint = liveness;
 	storeLiveness->type = ir::PTXOperand::u32;
+	storeLiveness->addressSpace = ir::PTXInstruction::Local;
 	block->instructions.push_back(storeLiveness);
 }
 /*!
@@ -384,8 +415,8 @@ void KernelPartitioningPass::KernelDecomposition::_constructTransition(
 			bytes += ir::PTXOperand::bytes(reg_it->type);
 		}
 
-		if (INSERT_CYCLE_COUNTERS) {
-			_insertEntryCycleCounter(transition.handler);
+		if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {
+			_insertEntryCycleCounter(transition.handler, 0, transition.liveValues.size());
 		}
 
 		ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
@@ -410,7 +441,7 @@ void KernelPartitioningPass::KernelDecomposition::_constructTransition(
 		size_t bytes = 0;
 		
 		
-		if (INSERT_CYCLE_COUNTERS) {
+		if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {
 			_insertExitCycleCounter(transition.handler, 0, transition.liveValues.size());
 		}
 		

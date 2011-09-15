@@ -164,6 +164,8 @@ LLVMDynamicExecutive::LLVMDynamicExecutive(
 	sharedMemorySize(_sharedMemSize + _translatedKernel->sharedMemorySize) {
 	
 	assert(LLVMDYNAMICEXECUTIVE_MAXIMUM_WARP_SIZE >= api::OcelotConfiguration::get().executive.warpSize);
+
+	yieldOverheadInstrumentation = api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation;
 	
 #if METRIC_ENTRYPOINT_LIVENESS
 	for (analysis::KernelPartitioningPass::KernelTransitionPointMap::const_iterator 
@@ -241,33 +243,43 @@ void LLVMDynamicExecutive::setResumePoint(
 }
 
 //! \brief gets the initial entry cycle count
-unsigned long long LLVMDynamicExecutive::getEntryCycles(const LLVMContext &context) {
-	return *((unsigned long long *)&context.local[8]);
+uint64_t LLVMDynamicExecutive::getEntryCycles(const LLVMContext &context) {
+	return *((uint64_t *)&context.local[8]);
 }
 
 //! \brief sets the initial entry cycle count
-void LLVMDynamicExecutive::setEntryCycles(const LLVMContext &context, unsigned long long cycles) {
-	*((unsigned long long *)&context.local[8]) = cycles;
+void LLVMDynamicExecutive::setEntryCycles(const LLVMContext &context, uint64_t cycles) {
+	*((uint64_t *)&context.local[8]) = cycles;
+}
+
+//! \brief gets the ID of the most recent exit
+unsigned int LLVMDynamicExecutive::getEntryId(const LLVMContext &context) {
+	return *((unsigned int *)&context.local[16]);
+}
+
+//! \brief gets the liveness count of the most recent exit
+unsigned int LLVMDynamicExecutive::getEntryLiveness(const LLVMContext &context) {
+	return *((unsigned int *)&context.local[24]);
 }
 
 //! \brief sets the initial exit cycle count
-unsigned long long LLVMDynamicExecutive::getExitCycles(const LLVMContext &context) {
-	return *((unsigned long long *)&context.local[16]);
+uint64_t LLVMDynamicExecutive::getExitCycles(const LLVMContext &context) {
+	return rdtsc() - *((uint64_t *)&context.local[24]);
 }
 
 //! \brief gets the initial entry cycle count
-void LLVMDynamicExecutive::setExitCycles(const LLVMContext &context, unsigned long long cycles) {
-	*((unsigned long long *)&context.local[16]) = cycles;
+void LLVMDynamicExecutive::setExitCycles(const LLVMContext &context, uint64_t cycles) {
+	*((uint64_t *)&context.local[24]) = cycles;
 }
 
 //! \brief gets the ID of the most recent exit
 unsigned int LLVMDynamicExecutive::getExitId(const LLVMContext &context) {
-	return *((unsigned int *)&context.local[24]);
+	return *((unsigned int *)&context.local[32]);
 }
 
 //! \brief gets the liveness count of the most recent exit
 unsigned int LLVMDynamicExecutive::getExitLiveness(const LLVMContext &context) {
-	return *((unsigned int *)&context.local[28]);
+	return *((unsigned int *)&context.local[36]);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -356,6 +368,7 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "\n\nExecuting warp of size " << warp.size() 
 		<< " on hyperblockId " << warp.entryId);
+
 	
 	//
 	// lazily fetch translation
@@ -388,7 +401,21 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 	// Execute the warp for all threads
 	//
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
+		if (yieldOverheadInstrumentation) {
+			setEntryCycles(*warp.contextPointers[tid], rdtsc());
+		}
+		
 		translation->execute(&warp.contextPointers[tid]);
+		
+		if (yieldOverheadInstrumentation) {
+			uint64_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
+			uint64_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
+			int exitId = getExitId(*warp.contextPointers[tid]);
+			int exitLiveness = getExitLiveness(*warp.contextPointers[tid]);
+			int entryLiveness = getEntryLiveness(*warp.contextPointers[tid]);
+			
+			subkernelExecutionEvent(entryCycles, 0, entryLiveness, exitCycles, exitId, exitLiveness);
+		}
 	}
 	
 #if METRIC_WARPSIZE
@@ -426,7 +453,22 @@ void LLVMDynamicExecutive::executeWarpWarpLevel(Warp & warp) {
 	// Execute the warp for all threads
 	//
 	for (int tid = 0; tid < warp.warpSize; tid += translation->warpSize) {
+	
+		if (yieldOverheadInstrumentation) {
+			setEntryCycles(*warp.contextPointers[tid], rdtsc());
+		}
+		
 		translation->execute(&warp.contextPointers[tid]);
+		
+		if (yieldOverheadInstrumentation) {
+			uint64_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
+			uint64_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
+			int exitId = getExitId(*warp.contextPointers[tid]);
+			int exitLiveness = getExitLiveness(*warp.contextPointers[tid]);
+			int entryLiveness = getEntryLiveness(*warp.contextPointers[tid]);
+			
+			subkernelExecutionEvent(entryCycles, 0, entryLiveness, exitCycles, exitId, exitLiveness);
+		}
 	}
 }
 
@@ -748,6 +790,20 @@ LLVMDynamicExecutive::getOrInsertTranslationById(EntryId id, int ws) {
 		translationCache[id] = warpMap;
 	}
 	return translation;
+}
+
+
+//! \brief 
+void LLVMDynamicExecutive::subkernelExecutionEvent(uint64_t entryCycles, 
+	unsigned int entryId, unsigned int entryLiveness, uint64_t exitCycles, 
+	unsigned int exitId, unsigned int exitLiveness) {
+
+	std::ofstream result("yieldOverheadCycles.json", std::ios_base::app);
+	
+	result << "{ entryId: " << entryId << ", entryLiveness: " << entryLiveness 
+		<< ", entryCycles: " << entryCycles
+		<< ", exitId: " << exitId << ", exitLiveness: " << exitLiveness
+		<< ", exitCycles: " << exitCycles << " },\n";
 }
 
 }

@@ -67,7 +67,7 @@
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -884,6 +884,32 @@ static void setupLocalMemoryReferences(
 	offsets.insert(std::make_pair("_Zocelot_resume_point", metadata->localSize));
 	metadata->localSize += sizeof(int);
 	
+	if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {
+		pad(metadata->localSize, sizeof(size_t));
+		offsets.insert(std::make_pair("_Zocelot_entry_cycles", metadata->localSize));
+		metadata->localSize += sizeof(size_t);
+	
+		pad(metadata->localSize, sizeof(int));
+		offsets.insert(std::make_pair("_Zocelot_entry_id", metadata->localSize));
+		metadata->localSize += sizeof(int);
+	
+		pad(metadata->localSize, sizeof(int));
+		offsets.insert(std::make_pair("_Zocelot_entry_liveness", metadata->localSize));
+		metadata->localSize += sizeof(int);
+	
+		pad(metadata->localSize, sizeof(size_t));
+		offsets.insert(std::make_pair("_Zocelot_exit_cycles", metadata->localSize));
+		metadata->localSize += sizeof(size_t);
+	
+		pad(metadata->localSize, sizeof(int));
+		offsets.insert(std::make_pair("_Zocelot_exit_id", metadata->localSize));
+		metadata->localSize += sizeof(int);
+	
+		pad(metadata->localSize, sizeof(int));
+		offsets.insert(std::make_pair("_Zocelot_exit_liveness", metadata->localSize));
+		metadata->localSize += sizeof(int);
+	}
+	
 	for(ir::Kernel::LocalMap::const_iterator local = kernel.locals.begin(); 
 		local != kernel.locals.end(); ++local)
 	{
@@ -891,6 +917,15 @@ static void setupLocalMemoryReferences(
 		if(local->first == "_Zocelot_spill_area")          continue;
 		if(local->first == "_Zocelot_resume_point")        continue;
 		if(local->first == "_Zocelot_resume_status")        continue;
+		
+		if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {
+			if(local->first == "_Zocelot_entry_cycles")        continue;
+			if(local->first == "_Zocelot_entry_id")        continue;
+			if(local->first == "_Zocelot_entry_liveness")        continue;
+			if(local->first == "_Zocelot_exit_cycles")        continue;
+			if(local->first == "_Zocelot_exit_id")        continue;
+			if(local->first == "_Zocelot_exit_liveness")        continue;
+		}
 		
 		if(local->second.space == ir::PTXInstruction::Local)
 		{

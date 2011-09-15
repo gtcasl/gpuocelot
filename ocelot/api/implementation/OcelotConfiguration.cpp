@@ -147,6 +147,7 @@ api::OcelotConfiguration::Executive::Executive():
 	warpSize(-1),
 	dynamicWarpFormation(true),
 	threadInvariantElimination(false),
+	yieldOverheadInstrumentation(false),
 	printLLVMModule(false),
 	printKernelRuntimes(false)
 {
@@ -238,6 +239,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.warpSize = config.parse<int>("warpSize", -1);
 	executive.dynamicWarpFormation = config.parse<bool>("dynamicWarpFormation", true);
 	executive.threadInvariantElimination = config.parse<bool>("threadInvariantElimination", false);
+	executive.yieldOverheadInstrumentation = config.parse<bool>("yieldOverheadInstrumentation", false);
 	executive.printLLVMModule = config.parse<bool>("printLLVMModule", false);
 	executive.printKernelRuntimes = config.parse<bool>("printKernelRuntimes", false);
 	

@@ -34,6 +34,7 @@
 		warpSize: 1,
 		dynamicWarpFormation: false,
 		threadInvariantElimination: false,
+		yieldOverheadInstrumentation: true,
 		printLLVMModule: false
 	},
 	optimizations: {

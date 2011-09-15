@@ -174,6 +174,9 @@ namespace api {
 			//! \brief enables thread-invariant elimination optimization
 			bool threadInvariantElimination;
 			
+			//! \brief if true, inserts instrumentation to measure yield overhead
+			bool yieldOverheadInstrumentation;
+			
 			//! \brief indicates whether to print LLVM module
 			bool printLLVMModule;
 			

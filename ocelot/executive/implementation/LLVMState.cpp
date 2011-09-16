@@ -54,6 +54,7 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 		_module = new llvm::Module("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
 		assertM(_module != 0, "Creating global module failed.");
 	
+		llvm::llvm_start_multithreaded();
 		llvm::InitializeNativeTarget();
 		
 		report("  initialized native target");

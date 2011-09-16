@@ -63,7 +63,7 @@
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 1			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
-#define REPORT_TRANSLATION_OPERATIONS 0		// translation events
+#define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
@@ -908,6 +908,10 @@ static void setupLocalMemoryReferences(
 		pad(metadata->localSize, sizeof(int));
 		offsets.insert(std::make_pair("_Zocelot_exit_liveness", metadata->localSize));
 		metadata->localSize += sizeof(int);
+		
+		pad(metadata->localSize, sizeof(size_t));
+		offsets.insert(std::make_pair("_Zocelot_subkernel_cycles", metadata->localSize));
+		metadata->localSize += sizeof(size_t);
 	}
 	
 	for(ir::Kernel::LocalMap::const_iterator local = kernel.locals.begin(); 
@@ -925,6 +929,7 @@ static void setupLocalMemoryReferences(
 			if(local->first == "_Zocelot_exit_cycles")        continue;
 			if(local->first == "_Zocelot_exit_id")        continue;
 			if(local->first == "_Zocelot_exit_liveness")        continue;
+			if (local->first == "_Zocelot_subkernel_cycles") continue;
 		}
 		
 		if(local->second.space == ir::PTXInstruction::Local)

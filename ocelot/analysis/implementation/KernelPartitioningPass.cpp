@@ -164,6 +164,11 @@ void KernelPartitioningPass::KernelDecomposition::_createSpillRegion(size_t spil
 		exitLiveness.type = ir::PTXOperand::u32;
 		exitLiveness.name = "_Zocelot_exit_liveness";
 		kernel->locals.insert(std::make_pair(exitLiveness.name, ir::Local(exitLiveness)));	// offset 36
+		
+		ir::PTXStatement subkernelCycles(ir::PTXStatement::Local);
+		subkernelCycles.type = ir::PTXOperand::u64;
+		subkernelCycles.name = "_Zocelot_subkernel_cycles";
+		kernel->locals.insert(std::make_pair(subkernelCycles.name, ir::Local(subkernelCycles))); // offset 40
 	}
 	
 	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
@@ -332,6 +337,22 @@ void KernelPartitioningPass::KernelDecomposition::_insertEntryCycleCounter(
 	storeLiveness->a.imm_uint = liveness;
 	storeLiveness->addressSpace = ir::PTXInstruction::Local;
 	block->instructions.push_back(storeLiveness);
+	
+	move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+	move->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	move->a = ir::PTXOperand(ir::PTXOperand::Special, ir::PTXOperand::u64,
+		kernel->dfg()->newRegister());
+	move->a.special = ir::PTXOperand::clock64;
+	move->type = move->d.type;
+	block->instructions.push_back(move);
+	
+	store = new ir::PTXInstruction(ir::PTXInstruction::St);
+	store->d = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u64, "_Zocelot_subkernel_cycles");
+	store->a = move->d;
+	store->type = store->a.type;
+	store->addressSpace = ir::PTXInstruction::Local;
+	block->instructions.push_back(store);
 }
 
 /*!

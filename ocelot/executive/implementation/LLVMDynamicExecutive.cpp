@@ -34,13 +34,13 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 extern "C" {
-  __inline__ uint64_t rdtsc(void) {
+  __inline__ size_t rdtsc(void) {
     uint32_t lo, hi;
     __asm__ __volatile__ (
     "xorl %%eax,%%eax \n        cpuid"
     ::: "%rax", "%rbx", "%rcx", "%rdx");
     __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-    return (uint64_t)hi << 32 | lo;
+    return (size_t)hi << 32 | lo;
   }
 }
 
@@ -56,6 +56,61 @@ LLVMDynamicExecutive::Metadata::Metadata() {
 
 LLVMDynamicExecutive::Metadata::~Metadata() {
 
+}
+
+LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer():
+	subkernelCycles(0), entryCycles(0), entryLiveness(0), exitCycles(0), exitLiveness(0), 
+	entryCount(0), exitCount(0) {
+
+}
+
+LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer(
+	size_t _subkernelCycles, 
+	size_t _entryCycles, 
+	size_t _entryLiveness, 
+	size_t _exitCycles, 
+	size_t _exitLiveness
+):
+	subkernelCycles(_subkernelCycles), entryCycles(_entryCycles), entryLiveness(_entryLiveness), 
+		exitCycles(_exitCycles), exitLiveness(_exitLiveness), entryCount(1), exitCount(1) {
+
+}
+
+LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer & 
+	LLVMDynamicExecutive::SubkernelCycleTimer::operator+=(const SubkernelCycleTimer &timer) {
+	
+	subkernelCycles += timer.subkernelCycles;
+	entryCycles += timer.entryCycles;
+	entryLiveness += timer.entryLiveness;
+	exitCycles += timer.exitCycles;
+	exitLiveness += timer.exitLiveness;
+	entryCount += timer.entryCount;
+	exitCount += timer.exitCount;
+	return *this;
+}
+
+void LLVMDynamicExecutive::SubkernelCycleTimer::reset() {
+	subkernelCycles = 0;
+	entryCycles = 0;
+	entryLiveness = 0;
+	exitCycles = 0;
+	exitLiveness = 0;
+	entryCount = 0;
+	exitCount = 0;
+}
+
+std::ostream &
+operator<<(std::ostream &out, LLVMDynamicExecutive::SubkernelCycleTimer &timer) {
+
+	out << "{ subkernelCycles: " << timer.subkernelCycles 
+		<< ", entryCycles: " << timer.entryCycles 
+		<< ", entryLiveness: " << timer.entryLiveness
+		<< ", exitCycles: " << timer.exitCycles
+		<< ", exitLiveness: " << timer.exitLiveness
+		<< ", entryCount: " << timer.entryCount
+		<< "}";
+	
+	return out;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,13 +298,13 @@ void LLVMDynamicExecutive::setResumePoint(
 }
 
 //! \brief gets the initial entry cycle count
-uint64_t LLVMDynamicExecutive::getEntryCycles(const LLVMContext &context) {
-	return *((uint64_t *)&context.local[8]);
+size_t LLVMDynamicExecutive::getEntryCycles(const LLVMContext &context) {
+	return *((size_t *)&context.local[8]);
 }
 
 //! \brief sets the initial entry cycle count
-void LLVMDynamicExecutive::setEntryCycles(const LLVMContext &context, uint64_t cycles) {
-	*((uint64_t *)&context.local[8]) = cycles;
+void LLVMDynamicExecutive::setEntryCycles(const LLVMContext &context, size_t cycles) {
+	*((size_t *)&context.local[8]) = cycles;
 }
 
 //! \brief gets the ID of the most recent exit
@@ -259,17 +314,22 @@ unsigned int LLVMDynamicExecutive::getEntryId(const LLVMContext &context) {
 
 //! \brief gets the liveness count of the most recent exit
 unsigned int LLVMDynamicExecutive::getEntryLiveness(const LLVMContext &context) {
-	return *((unsigned int *)&context.local[24]);
+	return *((unsigned int *)&context.local[20]);
 }
 
 //! \brief sets the initial exit cycle count
-uint64_t LLVMDynamicExecutive::getExitCycles(const LLVMContext &context) {
-	return rdtsc() - *((uint64_t *)&context.local[24]);
+size_t LLVMDynamicExecutive::getExitCycles(const LLVMContext &context) {
+	return rdtsc() - *((size_t *)&context.local[24]);
+}
+
+//! \brief sets the initial exit cycle count
+size_t LLVMDynamicExecutive::getExitCycleNumber(const LLVMContext &context) {
+	return *((size_t *)&context.local[24]);
 }
 
 //! \brief gets the initial entry cycle count
-void LLVMDynamicExecutive::setExitCycles(const LLVMContext &context, uint64_t cycles) {
-	*((uint64_t *)&context.local[24]) = cycles;
+void LLVMDynamicExecutive::setExitCycles(const LLVMContext &context, size_t cycles) {
+	*((size_t *)&context.local[24]) = cycles;
 }
 
 //! \brief gets the ID of the most recent exit
@@ -282,6 +342,11 @@ unsigned int LLVMDynamicExecutive::getExitLiveness(const LLVMContext &context) {
 	return *((unsigned int *)&context.local[36]);
 }
 
+//! \brief gets the start time of the subkernel
+size_t LLVMDynamicExecutive::getSubkernelCycles(const LLVMContext &context) {
+	return *((size_t *)&context.local[40]);
+}
+		
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*! 
@@ -356,6 +421,16 @@ void LLVMDynamicExecutive::execute() {
 		}
 	} while (readyWarp);
 #endif
+
+	if (yieldOverheadInstrumentation) {	
+		std::ofstream result("yieldOverheadCycles.json", std::ios_base::app);
+		const char *appName = getenv("APP_NAME");
+		if (!appName) { appName = "unknown"; }
+		
+		result << "{ app: \"" << appName << "\", kernel:\"" << kernel->name << "\", cycles: ";
+		result << yieldOverheadTimer;
+		result << " },\n";
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,13 +483,16 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 		translation->execute(&warp.contextPointers[tid]);
 		
 		if (yieldOverheadInstrumentation) {
-			uint64_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
-			uint64_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
-			int exitId = getExitId(*warp.contextPointers[tid]);
+			size_t subkernelCycles = getExitCycleNumber(*warp.contextPointers[tid]) - 
+				getSubkernelCycles(*warp.contextPointers[tid]);
+			size_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
+			size_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
+			//int exitId = getExitId(*warp.contextPointers[tid]);
 			int exitLiveness = getExitLiveness(*warp.contextPointers[tid]);
 			int entryLiveness = getEntryLiveness(*warp.contextPointers[tid]);
 			
-			subkernelExecutionEvent(entryCycles, 0, entryLiveness, exitCycles, exitId, exitLiveness);
+			SubkernelCycleTimer timer(subkernelCycles, entryCycles, entryLiveness, exitCycles, exitLiveness);
+			yieldOverheadTimer += timer;
 		}
 	}
 	
@@ -461,13 +539,16 @@ void LLVMDynamicExecutive::executeWarpWarpLevel(Warp & warp) {
 		translation->execute(&warp.contextPointers[tid]);
 		
 		if (yieldOverheadInstrumentation) {
-			uint64_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
-			uint64_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
-			int exitId = getExitId(*warp.contextPointers[tid]);
+			size_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
+			size_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
+			size_t subkernelCycles = getExitCycleNumber(*warp.contextPointers[tid]) - getSubkernelCycles(*warp.contextPointers[tid]);
+			//int exitId = getExitId(*warp.contextPointers[tid]);
 			int exitLiveness = getExitLiveness(*warp.contextPointers[tid]);
 			int entryLiveness = getEntryLiveness(*warp.contextPointers[tid]);
 			
-			subkernelExecutionEvent(entryCycles, 0, entryLiveness, exitCycles, exitId, exitLiveness);
+			
+			SubkernelCycleTimer timer(subkernelCycles, entryCycles, entryLiveness, exitCycles, exitLiveness);
+			yieldOverheadTimer += timer;
 		}
 	}
 }
@@ -794,13 +875,13 @@ LLVMDynamicExecutive::getOrInsertTranslationById(EntryId id, int ws) {
 
 
 //! \brief 
-void LLVMDynamicExecutive::subkernelExecutionEvent(uint64_t entryCycles, 
-	unsigned int entryId, unsigned int entryLiveness, uint64_t exitCycles, 
-	unsigned int exitId, unsigned int exitLiveness) {
+void LLVMDynamicExecutive::subkernelExecutionEvent(size_t subkernelCycles,
+	size_t entryCycles, unsigned int entryId, unsigned int entryLiveness, 
+	size_t exitCycles, unsigned int exitId, unsigned int exitLiveness) {
 
 	std::ofstream result("yieldOverheadCycles.json", std::ios_base::app);
 	
-	result << "{ entryId: " << entryId << ", entryLiveness: " << entryLiveness 
+	result << "{ subkernelCycles: " << subkernelCycles << ", entryId: " << entryId << ", entryLiveness: " << entryLiveness 
 		<< ", entryCycles: " << entryCycles
 		<< ", exitId: " << exitId << ", exitLiveness: " << exitLiveness
 		<< ", exitCycles: " << exitCycles << " },\n";

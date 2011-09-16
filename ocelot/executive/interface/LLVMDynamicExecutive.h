@@ -59,6 +59,38 @@ namespace executive {
 			size_t entries;
 			int liveValues;
 		};
+		
+		//! \brief counts cycles spent entering a subkernel, exiting a subkernel, and executing a subkernel
+		class SubkernelCycleTimer {
+		public:
+			SubkernelCycleTimer();
+			SubkernelCycleTimer(size_t _subkernelCycles, size_t _entryCycles, size_t _entryLiveness, size_t _exitCycles, size_t _exitLiveness);
+			
+			SubkernelCycleTimer & operator+=(const SubkernelCycleTimer &timer);
+			
+			void reset();
+		
+		public:
+		
+			//! \brief cycles spent within a subkernel
+			size_t subkernelCycles;
+			
+			//! \brief cycles spent from within the execution manager, restoring state, and branching into scheduler block
+			size_t entryCycles;
+			
+			//! \brief average number of live values
+			size_t entryLiveness;
+			
+			//! \brief cycles spent storing live state, exiting, and returning to execution manager
+			size_t exitCycles;
+			
+			//! \brief average number of live values
+			size_t exitLiveness;
+			
+			//! \brief accumulates number of entries
+			size_t entryCount;
+			size_t exitCount;
+		};
 	
 		typedef std::map< int, size_t > EntryCounter;
 		typedef std::map< EntryId, LivenessEntryCounter > LivenessEntryCounterMap;
@@ -230,8 +262,9 @@ namespace executive {
 		unsigned int getThreadId(const LLVMContext &ctx) const;
 		
 		//! \brief 
-		void subkernelExecutionEvent(uint64_t entryCycles, unsigned int entryId, 
-			unsigned int entryLiveness, uint64_t exitCycles, unsigned int exitId, 
+		void subkernelExecutionEvent(size_t subkernelCycles,
+			size_t entryCycles, unsigned int entryId, 
+			unsigned int entryLiveness, size_t exitCycles, unsigned int exitId, 
 			unsigned int exitLiveness);
 		
 	private:
@@ -249,10 +282,10 @@ namespace executive {
 		static void setResumePoint(const LLVMContext &context, EntryId resumeId);
 		
 		//! \brief gets the initial entry cycle count
-		static uint64_t getEntryCycles(const LLVMContext &context);
+		static size_t getEntryCycles(const LLVMContext &context);
 		
 		//! \brief sets the initial entry cycle count
-		static void setEntryCycles(const LLVMContext &context, uint64_t cycles);
+		static void setEntryCycles(const LLVMContext &context, size_t cycles);
 		
 		//! \brief gets entry liveness
 		static unsigned int getEntryLiveness(const LLVMContext &context);
@@ -260,17 +293,23 @@ namespace executive {
 		//! \brief sets entry liveness
 		static unsigned int getEntryId(const LLVMContext &context);
 		
-		//! \brief sets the initial exit cycle count
-		static uint64_t getExitCycles(const LLVMContext &context);
+		//! \brief computes the number of cycles during exit
+		static size_t getExitCycles(const LLVMContext &context);
+		
+		//! \brief returns the actual cycle number during exit
+		static size_t getExitCycleNumber(const LLVMContext &context);
 		
 		//! \brief gets the initial entry cycle count
-		static void setExitCycles(const LLVMContext &context, uint64_t cycles);
+		static void setExitCycles(const LLVMContext &context, size_t cycles);
 		
 		//! \brief gets the ID of the most recent exit
 		static unsigned int getExitId(const LLVMContext &context);
 
 		//! \brief gets the liveness count of the most recent exit
 		static unsigned int getExitLiveness(const LLVMContext &context);
+		
+		//! \brief gets the start time of the subkernel
+		static size_t getSubkernelCycles(const LLVMContext &context);
 		
 	public:
 	
@@ -301,6 +340,10 @@ namespace executive {
 		//! \brief used for computing weighted average of liveness
 		LivenessEntryCounterMap livenessEntryCounter;
 		
+		//! \brief counts cycles related to yield on diverge
+		SubkernelCycleTimer yieldOverheadTimer;
+		
+		//! \brief enables yield counters
 		bool yieldOverheadInstrumentation;
 	};
 }	

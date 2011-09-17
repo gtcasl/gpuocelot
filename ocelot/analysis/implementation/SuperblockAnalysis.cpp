@@ -27,17 +27,18 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 : _cfg(&c)
 {
 	typedef std::unordered_set<ir::ControlFlowGraph::iterator> BlockSet;
+	typedef std::list<ir::ControlFlowGraph::iterator>          BlockList;
 		
 	// Find all trivial superblocks, assume they were freed up previously
 	//  by tail duplication, unrolling, and peeling
 	report("Finding superblocks.");
 	report(" Seeding superblocks.");
-	BlockSet superblocks;
-	BlockSet visited;
+	BlockList superblocks;
+	BlockSet  visited;
 		
 	report("  Starting a new superblock at " << _cfg->get_entry_block()->label
 		<< " (" << _cfg->get_entry_block()->id << ")");
-	superblocks.insert(_cfg->get_entry_block());
+	superblocks.push_back(_cfg->get_entry_block());
 	visited.insert(_cfg->get_entry_block());
 	
 	// Superblocks start from multiple-entry blocks
@@ -48,14 +49,14 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 		{
 			report("  Starting a new superblock at " << block->label
 				<< " (" << block->id << ")");
-			superblocks.insert(block);
+			superblocks.push_back(block);
 			visited.insert(block);
 		}
 	}
 	
 	// Find successors with only one predecessor, these can be included
 	report(" Adding successors.");
-	for(BlockSet::iterator block = superblocks.begin();
+	for(BlockList::iterator block = superblocks.begin();
 		block != superblocks.end(); ++block)
 	{
 		report("  For superblock " << (*block)->label << " ("
@@ -75,17 +76,30 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 			{
 				// right now we just pick the first one,
 				// TODO: use profiling information
-				if((*successor)->predecessors.size() == 1)
+				if(next == _cfg->end())
 				{
-					report("   Added successor " << (*successor)->label
-						<< " (" << (*successor)->id << ")");
-					superblock->insert(*successor);
-					visited.insert(*successor);
-					next = *successor;
-					break;
+					if((*successor)->predecessors.size() == 1)
+					{
+						report("   Added successor " << (*successor)->label
+							<< " (" << (*successor)->id << ")");
+						superblock->insert(*successor);
+						visited.insert(*successor);
+						next = *successor;
+					}
+				}
+				else
+				{
+					// seed new superblocks at the exit points
+					if(visited.insert(*successor).second)
+					{
+						superblocks.push_back(*successor);
+					}
 				}
 			}
 		}
+		
+		report("   superblock has " << superblock->instructions()
+			<< " instructions");
 		
 		if(*block == _cfg->get_entry_block())
 		{
@@ -107,6 +121,9 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 			iterator normalblock = newBlock();
 
 			normalblock->insert(block);
+		
+			report("   basic block has " << normalblock->instructions()
+				<< " instructions");
 		}
 	}
 }

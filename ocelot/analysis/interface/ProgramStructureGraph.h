@@ -28,14 +28,20 @@ public:
 		typedef std::list<Block>            BlockVector;
 		typedef BlockVector::iterator       pointer_iterator;
 		typedef BlockVector::const_iterator const_pointer_iterator;
+		typedef size_t                      Id;
 		
 		// CFG Typedefs
-		typedef ir::ControlFlowGraph           CFG;
-		typedef ir::BasicBlock                 BB;
-		typedef BB::instruction_iterator       instruction_iterator;
-		typedef CFG::pointer_iterator          basic_block_iterator;
-		typedef BB::const_instruction_iterator const_instruction_iterator;
-		typedef CFG::const_pointer_iterator    const_basic_block_iterator;
+		typedef ir::ControlFlowGraph               CFG;
+		typedef ir::BasicBlock                     BB;
+		typedef std::list<CFG::iterator>           BBPointerList;
+		typedef BB::instruction_iterator           instruction_iterator;
+		typedef BBPointerList::iterator            bb_pointer_iterator;
+		typedef BBPointerList::const_iterator      const_bb_pointer_iterator;
+		typedef CFG::iterator                      cfg_iterator;
+		typedef CFG::const_iterator                const_cfg_iterator;
+		typedef CFG::pointer_iterator              cfg_pointer_iterator;
+		typedef BB::const_instruction_iterator     const_instruction_iterator;
+		typedef CFG::const_pointer_iterator        const_cfg_pointer_iterator;
 
 		// Forward Declarations
 		class const_iterator;
@@ -52,7 +58,7 @@ public:
 		public:	      
 			block_iterator();
 			block_iterator(const block_iterator&);
-			explicit block_iterator(const basic_block_iterator& i,
+			explicit block_iterator(const bb_pointer_iterator& i,
 				const pointer_iterator& b);
 
 		public:
@@ -70,11 +76,11 @@ public:
 			bool end() const;
 			
 			operator pointer_iterator();
-			operator basic_block_iterator();
+			operator bb_pointer_iterator();
 		
 		private:
-			basic_block_iterator _iterator;	
-			pointer_iterator     _block;
+			bb_pointer_iterator _iterator;	
+			pointer_iterator    _block;
 
 			friend class const_block_iterator;
 			friend class Block;
@@ -93,7 +99,7 @@ public:
 			const_block_iterator();
 			const_block_iterator(const const_block_iterator&);
 			const_block_iterator(const block_iterator&);
-			explicit const_block_iterator(const const_basic_block_iterator& i,
+			explicit const_block_iterator(const const_bb_pointer_iterator& i,
 				const const_pointer_iterator& b);
 
 		public:
@@ -111,10 +117,10 @@ public:
 			bool end() const;
 			
 			operator const_pointer_iterator();
-			operator const_basic_block_iterator();
+			operator const_bb_pointer_iterator();
 			
 		private:
-			const_basic_block_iterator _iterator;
+			const_bb_pointer_iterator _iterator;
 			const_pointer_iterator     _block;
 		};
 
@@ -142,7 +148,7 @@ public:
 			self operator--(int);
 			
 			bool operator==(const self&) const;
-			bool operator!=(const self&) const;	
+			bool operator!=(const self&) const;
 
 		public:
 			void align();
@@ -202,7 +208,9 @@ public:
 			successor_iterator();
 			successor_iterator(const successor_iterator&);
 			explicit successor_iterator(const block_iterator&,
-				const basic_block_iterator&);
+				const cfg_pointer_iterator&);
+			explicit successor_iterator(const block_iterator&);
+			
 		public:
 			reference operator*() const;
 			pointer operator->() const;
@@ -215,10 +223,14 @@ public:
 			bool operator!=(const self&) const;	
 		
 			operator pointer_iterator();
+			operator cfg_pointer_iterator();
+		
+		public:
+			void align();
 		
 		private:
 			block_iterator       _block;
-			basic_block_iterator _successor;
+			cfg_pointer_iterator _successor;
 		
 			friend class const_successor_iterator;
 		};
@@ -237,7 +249,8 @@ public:
 			const_successor_iterator(const const_successor_iterator&);
 			const_successor_iterator(const successor_iterator&);
 			explicit const_successor_iterator(const const_block_iterator&,
-				const const_basic_block_iterator&);
+				const const_cfg_pointer_iterator&);
+			explicit const_successor_iterator(const const_block_iterator&);
 
 		public:
 			reference operator*() const;
@@ -251,10 +264,14 @@ public:
 			bool operator!=(const self&) const;	
 		
 			operator const_pointer_iterator();
+			operator const_cfg_pointer_iterator();
+
+		public:
+			void align();
 			
 		private:
 			const_block_iterator       _block;
-			const_basic_block_iterator _successor;		
+			const_cfg_pointer_iterator _successor;		
 		};
 		
 		class const_predecessor_iterator;
@@ -272,7 +289,9 @@ public:
 			predecessor_iterator();
 			predecessor_iterator(const predecessor_iterator&);
 			explicit predecessor_iterator(const block_iterator&,
-				const basic_block_iterator&);
+				const cfg_pointer_iterator&);
+			explicit predecessor_iterator(const block_iterator&);
+			
 		public:
 			reference operator*() const;
 			pointer operator->() const;
@@ -285,10 +304,15 @@ public:
 			bool operator!=(const self&) const;
 		
 			operator pointer_iterator();
+			operator block_iterator();
+			operator cfg_pointer_iterator();
 			
+		public:
+			void align();
+		
 		private:
 			block_iterator       _block;
-			basic_block_iterator _predecessor;	
+			cfg_pointer_iterator _predecessor;	
 		
 			friend class const_predecessor_iterator;
 		};
@@ -307,7 +331,9 @@ public:
 			const_predecessor_iterator(const const_predecessor_iterator&);
 			const_predecessor_iterator(const predecessor_iterator&);
 			explicit const_predecessor_iterator(const const_block_iterator&,
-				const const_basic_block_iterator&);
+				const const_cfg_pointer_iterator&);
+			explicit const_predecessor_iterator(const const_block_iterator&);
+			
 		public:
 			reference operator*() const;
 			pointer operator->() const;
@@ -320,10 +346,15 @@ public:
 			bool operator!=(const self&) const;	
 		
 			operator const_pointer_iterator();
+			operator const_block_iterator();
+			operator const_cfg_pointer_iterator();
+
+		public:
+			void align();
 		
 		private:
 			const_block_iterator       _block;
-			const_basic_block_iterator _predecessor;	
+			const_cfg_pointer_iterator _predecessor;	
 		};
 		
 	public:
@@ -398,18 +429,27 @@ public:
 		bool hasIncommingFallthrough() const;
 		/*! \brief Get an iterator to an incomming fallthrough block */
 		block_iterator getIncommingFallthrough();
+		/*! \brief Does the block contain the specified basic block ? */
+		bool contains(const const_cfg_iterator& bb) const;
+		/*! \brief Get an iterator the block containing the specified BB */
+		pointer_iterator findBlockWithBasicBlock(const const_cfg_iterator& bb);
+		/*! \brief Get an iterator the block containing the specified BB */
+		const_pointer_iterator findBlockWithBasicBlock(
+			const const_cfg_iterator& bb) const;
+	
+	public:
+		/*! \brief Get a unique id for the block */
+		Id id() const;
 	
 	public:
 		/*! \brief Construct a new block */
-		explicit Block(ProgramStructureGraph* g);
-	
-	private:
-		typedef ir::ControlFlowGraph::BlockPointerVector BlockPointerVector;
+		explicit Block(ProgramStructureGraph* g, Id id);
 		
 	private:
-		BlockPointerVector     _blocks;
+		BBPointerList          _blocks;
 		ProgramStructureGraph* _graph;
 		pointer_iterator       _this;
+		Id                     _id;
 		
 	private:
 		friend class ProgramStructureGraph;
@@ -420,7 +460,12 @@ public:
 	typedef Block::pointer_iterator       iterator;
 	typedef Block::const_pointer_iterator const_iterator;
 	typedef std::vector<iterator>         BlockPointerVector;
-	
+	typedef Block::Id                     Id;
+
+public:
+	/*! \brief The constructor sets the block id */
+	ProgramStructureGraph();
+
 public:
 	/*! \brief Get an iterator to the first block */
 	iterator begin();
@@ -449,6 +494,7 @@ protected:
 protected:
 	BlockVector _blocks;
 	iterator    _entry;
+	Id          _nextId;
 };
 
 }
@@ -461,7 +507,7 @@ namespace std
 		inline size_t operator()(
 			const analysis::ProgramStructureGraph::iterator& it ) const
 		{
-			return ( size_t )&*it;
+			return ( size_t )it->id();
 		}
 	};
 }

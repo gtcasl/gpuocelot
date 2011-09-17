@@ -7,6 +7,16 @@
 // Ocelot Includes
 #include <ocelot/analysis/interface/DefaultProgramStructure.h>
 
+// Hydrazine Includes
+#include <hydrazine/implementation/debug.h>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
+
 namespace analysis
 {
 
@@ -26,6 +36,9 @@ DefaultProgramStructure::DefaultProgramStructure(ir::ControlFlowGraph& cfg)
 		iterator metaBlock = newBlock();
 		
 		metaBlock->insert(block);
+		
+		report("   basic block has " << metaBlock->instructions()
+			<< " instructions");
 	}
 }
 

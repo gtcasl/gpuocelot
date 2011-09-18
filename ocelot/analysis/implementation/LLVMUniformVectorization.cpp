@@ -1718,12 +1718,20 @@ bool analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 			vecPhi->addIncoming(vecPhi, before->getParent());
 		}
 		else {
-			llvm::BasicBlock *incomingBlock = warpBlocksMap[phiNode->getIncomingBlock(i)];
-			vecPhi->addIncoming(
-				getInstructionAsVectorized(
-					phiNode->getIncomingValue(i), 
-					incomingBlock->getTerminator()),
-				incomingBlock);
+			if (llvm::Instruction *incomingInst = llvm::dyn_cast<llvm::Instruction>(phiNode->getIncomingValue(i))) {
+				llvm::BasicBlock *incomingBlock = warpBlocksMap[incomingInst->getParent()];
+			
+				assert(incomingBlock && "Failed to vectorize phi node - couldn't find vector block");
+			
+				vecPhi->addIncoming(
+					getInstructionAsVectorized(
+						phiNode->getIncomingValue(i), 
+						incomingBlock->getTerminator()),
+					incomingBlock);
+			}
+			else {
+				assert(0 && "Unexpected incoming value for phi node");
+			}
 		}
 	}
 	return true;

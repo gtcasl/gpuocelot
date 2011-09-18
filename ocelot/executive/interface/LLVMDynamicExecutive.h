@@ -64,7 +64,13 @@ namespace executive {
 		class SubkernelCycleTimer {
 		public:
 			SubkernelCycleTimer();
-			SubkernelCycleTimer(size_t _subkernelCycles, size_t _entryCycles, size_t _entryLiveness, size_t _exitCycles, size_t _exitLiveness, size_t _emCycles = 0);
+			SubkernelCycleTimer(
+				size_t _subkernelCycles,
+				size_t _entryCycles, 
+				size_t _entryLiveness, 
+				size_t _exitCycles, 
+				size_t _exitLiveness, 
+				size_t _emCycles = 0);
 			
 			SubkernelCycleTimer & operator+=(const SubkernelCycleTimer &timer);
 			

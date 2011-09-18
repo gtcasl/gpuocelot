@@ -59,8 +59,14 @@ LLVMDynamicExecutive::Metadata::~Metadata() {
 }
 
 LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer():
-	subkernelCycles(0), entryCycles(0), entryLiveness(0), exitCycles(0), exitLiveness(0), 
-	executionManagerCycles(0), entryCount(0), exitCount(0) {
+	subkernelCycles(0), 
+	entryCycles(0), 
+	entryLiveness(0),
+	 exitCycles(0), 
+	 exitLiveness(0), 
+	executionManagerCycles(0), 
+	entryCount(0), 
+	exitCount(0) {
 
 }
 
@@ -387,7 +393,7 @@ void LLVMDynamicExecutive::execute() {
 	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
 	
 	if (yieldOverheadInstrumentation) {
-		executionManagerStart = rdtsc();
+		executionManagerStart = 0;
 	}
 		
 	do {
@@ -433,7 +439,8 @@ void LLVMDynamicExecutive::execute() {
 
 
 	if (yieldOverheadInstrumentation) {
-		yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+		//yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+		executionManagerStart = 0;
 	}
 	
 	if (yieldOverheadInstrumentation) {	
@@ -441,7 +448,9 @@ void LLVMDynamicExecutive::execute() {
 		const char *appName = getenv("APPNAME");
 		if (!appName) { appName = "unknown"; }
 		
-		result << "{ \"app\": \"" << appName << "\", \"kernel\":\"" << kernel->name << "\", \"cycles\": ";
+		result << "{ \"app\": \"" << appName << "\", \"kernel\":\"" << kernel->name 
+			<< "\", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+			<< ", \"cycles\": ";
 		result << yieldOverheadTimer;
 		result << " },\n";
 	}
@@ -491,7 +500,9 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 	//
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		if (yieldOverheadInstrumentation) {
-			yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+			if (executionManagerStart) { 
+				yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+			}
 			
 			setEntryCycles(*warp.contextPointers[tid], rdtsc());
 		}
@@ -552,6 +563,10 @@ void LLVMDynamicExecutive::executeWarpWarpLevel(Warp & warp) {
 	for (int tid = 0; tid < warp.warpSize; tid += translation->warpSize) {
 	
 		if (yieldOverheadInstrumentation) {
+			if (executionManagerStart) { 
+				yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+			}
+			
 			setEntryCycles(*warp.contextPointers[tid], rdtsc());
 		}
 		
@@ -562,9 +577,11 @@ void LLVMDynamicExecutive::executeWarpWarpLevel(Warp & warp) {
 			size_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
 			size_t subkernelCycles = getExitCycleNumber(*warp.contextPointers[tid]) - getSubkernelCycles(*warp.contextPointers[tid]);
 			//int exitId = getExitId(*warp.contextPointers[tid]);
+			
+			executionManagerStart = rdtsc();
+			
 			int exitLiveness = getExitLiveness(*warp.contextPointers[tid]);
 			int entryLiveness = getEntryLiveness(*warp.contextPointers[tid]);
-			
 			
 			SubkernelCycleTimer timer(subkernelCycles, entryCycles, entryLiveness, exitCycles, exitLiveness);
 			yieldOverheadTimer += timer;

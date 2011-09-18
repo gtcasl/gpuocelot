@@ -60,7 +60,7 @@ LLVMDynamicExecutive::Metadata::~Metadata() {
 
 LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer():
 	subkernelCycles(0), entryCycles(0), entryLiveness(0), exitCycles(0), exitLiveness(0), 
-	entryCount(0), exitCount(0) {
+	executionManagerCycles(0), entryCount(0), exitCount(0) {
 
 }
 
@@ -69,10 +69,12 @@ LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer(
 	size_t _entryCycles, 
 	size_t _entryLiveness, 
 	size_t _exitCycles, 
-	size_t _exitLiveness
+	size_t _exitLiveness,
+	size_t _emCycles
 ):
 	subkernelCycles(_subkernelCycles), entryCycles(_entryCycles), entryLiveness(_entryLiveness), 
-		exitCycles(_exitCycles), exitLiveness(_exitLiveness), entryCount(1), exitCount(1) {
+		exitCycles(_exitCycles), exitLiveness(_exitLiveness), executionManagerCycles(_emCycles),
+		entryCount(1), exitCount(1) {
 
 }
 
@@ -84,6 +86,7 @@ LLVMDynamicExecutive::SubkernelCycleTimer &
 	entryLiveness += timer.entryLiveness;
 	exitCycles += timer.exitCycles;
 	exitLiveness += timer.exitLiveness;
+	executionManagerCycles += timer.executionManagerCycles;
 	entryCount += timer.entryCount;
 	exitCount += timer.exitCount;
 	return *this;
@@ -95,6 +98,7 @@ void LLVMDynamicExecutive::SubkernelCycleTimer::reset() {
 	entryLiveness = 0;
 	exitCycles = 0;
 	exitLiveness = 0;
+	executionManagerCycles = 0;
 	entryCount = 0;
 	exitCount = 0;
 }
@@ -102,12 +106,13 @@ void LLVMDynamicExecutive::SubkernelCycleTimer::reset() {
 std::ostream &
 operator<<(std::ostream &out, LLVMDynamicExecutive::SubkernelCycleTimer &timer) {
 
-	out << "{ subkernelCycles: " << timer.subkernelCycles 
-		<< ", entryCycles: " << timer.entryCycles 
-		<< ", entryLiveness: " << timer.entryLiveness
-		<< ", exitCycles: " << timer.exitCycles
-		<< ", exitLiveness: " << timer.exitLiveness
-		<< ", entryCount: " << timer.entryCount
+	out << "{ \"subkernelCycles\": " << timer.subkernelCycles 
+		<< ", \"entryCycles\": " << timer.entryCycles 
+		<< ", \"entryLiveness\": " << timer.entryLiveness
+		<< ", \"exitCycles\": " << timer.exitCycles
+		<< ", \"executionManagerCycles\": " << timer.executionManagerCycles
+		<< ", \"exitLiveness\": " << timer.exitLiveness
+		<< ", \"entryCount\": " << timer.entryCount
 		<< "}";
 	
 	return out;
@@ -381,6 +386,10 @@ void LLVMDynamicExecutive::execute() {
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
 	
+	if (yieldOverheadInstrumentation) {
+		executionManagerStart = rdtsc();
+	}
+		
 	do {
 		Warp warp;
 		testBarriers(waitingThreads, readyThreads);
@@ -422,12 +431,17 @@ void LLVMDynamicExecutive::execute() {
 	} while (readyWarp);
 #endif
 
+
+	if (yieldOverheadInstrumentation) {
+		yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+	}
+	
 	if (yieldOverheadInstrumentation) {	
 		std::ofstream result("yieldOverheadCycles.json", std::ios_base::app);
-		const char *appName = getenv("APP_NAME");
+		const char *appName = getenv("APPNAME");
 		if (!appName) { appName = "unknown"; }
 		
-		result << "{ app: \"" << appName << "\", kernel:\"" << kernel->name << "\", cycles: ";
+		result << "{ \"app\": \"" << appName << "\", \"kernel\":\"" << kernel->name << "\", \"cycles\": ";
 		result << yieldOverheadTimer;
 		result << " },\n";
 	}
@@ -477,6 +491,8 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 	//
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		if (yieldOverheadInstrumentation) {
+			yieldOverheadTimer.executionManagerCycles += (rdtsc() - executionManagerStart);
+			
 			setEntryCycles(*warp.contextPointers[tid], rdtsc());
 		}
 		
@@ -487,7 +503,10 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 				getSubkernelCycles(*warp.contextPointers[tid]);
 			size_t exitCycles = getExitCycles(*warp.contextPointers[tid]);
 			size_t entryCycles = getEntryCycles(*warp.contextPointers[tid]);
+			
 			//int exitId = getExitId(*warp.contextPointers[tid]);
+			executionManagerStart = rdtsc();
+			
 			int exitLiveness = getExitLiveness(*warp.contextPointers[tid]);
 			int entryLiveness = getEntryLiveness(*warp.contextPointers[tid]);
 			

@@ -64,7 +64,7 @@ namespace executive {
 		class SubkernelCycleTimer {
 		public:
 			SubkernelCycleTimer();
-			SubkernelCycleTimer(size_t _subkernelCycles, size_t _entryCycles, size_t _entryLiveness, size_t _exitCycles, size_t _exitLiveness);
+			SubkernelCycleTimer(size_t _subkernelCycles, size_t _entryCycles, size_t _entryLiveness, size_t _exitCycles, size_t _exitLiveness, size_t _emCycles = 0);
 			
 			SubkernelCycleTimer & operator+=(const SubkernelCycleTimer &timer);
 			
@@ -86,6 +86,9 @@ namespace executive {
 			
 			//! \brief average number of live values
 			size_t exitLiveness;
+			
+			//! \brief number of cycles spent in execution manager
+			size_t executionManagerCycles;
 			
 			//! \brief accumulates number of entries
 			size_t entryCount;
@@ -342,6 +345,9 @@ namespace executive {
 		
 		//! \brief counts cycles related to yield on diverge
 		SubkernelCycleTimer yieldOverheadTimer;
+		
+		//! \brief
+		size_t executionManagerStart;
 		
 		//! \brief enables yield counters
 		bool yieldOverheadInstrumentation;

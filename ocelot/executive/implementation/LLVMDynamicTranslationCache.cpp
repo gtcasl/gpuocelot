@@ -67,7 +67,7 @@
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1324,6 +1324,8 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
+	
+	level = 1;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1375,7 +1377,7 @@ static void cloneAndOptimizeTranslation(
 #endif
 
 #if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
-	debugEmitLLVMKernel(std::cerr, translation->llvmFunction, false);
+//	debugEmitLLVMKernel(std::cerr, translation->llvmFunction, false);
 #endif
 
 	// we can't verify errors until this point
@@ -1384,13 +1386,14 @@ static void cloneAndOptimizeTranslation(
 	
 	if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &verifyError)) {
 	
+		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
+			<< verifyError << "\"" << std::endl;
+			
 #if REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		translatedKernel.kernelModule->dump();
 #endif
 	
-		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
-			<< verifyError << "\"" << std::endl;
 	
 		assert(0 && "quitting");
 		

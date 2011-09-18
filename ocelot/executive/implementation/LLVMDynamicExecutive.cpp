@@ -76,7 +76,7 @@ LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer(
 
 }
 
-LLVMDynamicExecutive::SubkernelCycleTimer::SubkernelCycleTimer & 
+LLVMDynamicExecutive::SubkernelCycleTimer & 
 	LLVMDynamicExecutive::SubkernelCycleTimer::operator+=(const SubkernelCycleTimer &timer) {
 	
 	subkernelCycles += timer.subkernelCycles;

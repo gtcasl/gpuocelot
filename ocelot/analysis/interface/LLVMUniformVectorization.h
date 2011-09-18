@@ -163,6 +163,9 @@ namespace analysis
 		//! \brief 
 		class SubkernelEntry {
 		public:
+			SubkernelEntry(): prologue(0), start(0) { }
+			
+		public:
 		
 			//! \brief new entry block inserted by pass
 			llvm::BasicBlock *prologue;
@@ -276,6 +279,11 @@ namespace analysis
 					or returns to Ocelot multicore runtime
 			*/
 			void resolveControlFlow();
+			
+			/*!
+				\brief 
+			*/
+			void checkPhiNodes();
 			
 			/*!
 				\brief removes all superfluous and unreachable scalar blocks

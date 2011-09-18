@@ -269,7 +269,9 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 
 	// perform this for all warp sizes including the scalar case
 	if (warpSize >= 1) {
-
+		report("Asserting phi nodes have been updated");
+		checkPhiNodes();
+		
 		report("Removing superfluous scalar blocks");
 		removeScalarBlocks();
 		
@@ -284,7 +286,6 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	}
 	
 	report("Iterating over predecessors to WarpSynchronousEntry");
-	
 	
 	for (llvm::pred_iterator PI = llvm::pred_begin(subkernelEntry.prologue); 
 		PI != llvm::pred_end(subkernelEntry.prologue); ++PI) {
@@ -319,7 +320,7 @@ void analysis::LLVMUniformVectorization::Translation::breadthFirstTraversal(
 	blockList.pop_front();
 
 	while (traversal.size() != llvmBasicBlocks.size() - 1) {
-		llvm::BasicBlock *bb;
+		llvm::BasicBlock *bb = 0;
 		
 		if (workList.size()) {
 			bb = workList.front();
@@ -538,6 +539,8 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 		}
 		for (int j = 0; j < 5; j++) {
 			std::stringstream ss;
+
+
 			std::vector< llvm::Value *> idx;
 			
 			idx.push_back(pass->getConstInt32(0));
@@ -972,7 +975,7 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 						}
 						else {
 							// why does this happen
-							phiNode->dump();
+							phiNode->dump();	// ONERROR
 							
 							Ocelot_Exception("PHI NODE operand present but not an instruction (op " << j << ")");
 						}
@@ -980,7 +983,7 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 					else {
 							// why does this happen
 						std::cerr << "operand " << j << ": ";
-						phiNode->getIncomingValue(j)->dump();
+						phiNode->getIncomingValue(j)->dump();	// ONERROR
 						Ocelot_Exception("PHI NODE operand not present (operand " << j << ")");
 					}
 				}
@@ -991,7 +994,7 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 			if (!handled) {
 				// problem
 				std::cerr << "\nin block " << instr->getParent()->getNameStr() << "\n";
-				instr->dump();
+				instr->dump();	// ONERROR
 				std::cerr << std::endl;
 				
 				assert(0 && "unhandled problem with vectorization");
@@ -1009,6 +1012,7 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 */
 void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 		
+
 	for (BasicBlockMap::iterator bb_it = warpBlocksMap.begin();
 		bb_it != warpBlocksMap.end(); ++bb_it) {
 		
@@ -1074,14 +1078,64 @@ void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/*!
+	\brief Examines all vector blocks and ensures any PHI instructions reference acceptable predecessors 
+*/
+void analysis::LLVMUniformVectorization::Translation::checkPhiNodes() {
+	if (warpSize < 2) {
+		return;
+	}
+	report("Ensuring phi nodes in vectorized blocks have valid predecessors");
+	
+	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); 
+		scalar_it != warpBlocksMap.end(); 
+		++scalar_it ) {
+	
+		report("  visiting (scalar) block " << scalar_it->first->getNameStr() 
+			<< " mapped to " << scalar_it->second->getNameStr());
+		
+		if (scalar_it->first->getNameStr() == "WarpSynchronousEntry" ||
+			warpSchedulerBlocks.find(scalar_it->first) != warpSchedulerBlocks.end()) {
+			continue;
+		}
+		
+		for (llvm::BasicBlock::iterator inst = scalar_it->second->begin(); inst != scalar_it->second->end(); ++inst) { 
+			if (llvm::PHINode *phi = llvm::dyn_cast<llvm::PHINode>(&*inst)) {
+				report("  phi");
+				for (unsigned int i = 0; i < phi->getNumIncomingValues(); i++) {
+					llvm::Instruction *incomingInst = llvm::dyn_cast<llvm::Instruction>(phi->getIncomingValue(i));
+					if (incomingInst) {
+						report("  instruction " << phi->getIncomingValue(i)->getNameStr() 
+							<< " (parent: " << incomingInst->getParent()->getNameStr() << ") "
+							<< " [" << phi->getIncomingBlock(i)->getNameStr() << "]");
+							
+						phi->setIncomingBlock(i, incomingInst->getParent());
+					}
+					else {
+						report("  value " << phi->getIncomingValue(i)->getNameStr() 
+							<< " [" << phi->getIncomingBlock(i)->getNameStr() << "]");
+					}
+				}
+			}
+		}
+	}
+	
+	report("  done checking");
+}
+
 /*!
 	\brief removes all superfluous and unreachable scalar blocks
 */
 void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
-	report("Removing scalar blocks");
-	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
+	report("Removing scalar blocks - replacing with references to " << subkernelEntry.prologue->getNameStr());
+	
+	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); 
+		scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
 	
+		report("  visiting (scalar) block " << scalar_it->first->getNameStr());
+		
 		if (scalar_it->first->getNameStr() == "WarpSynchronousEntry" ||
 			warpSchedulerBlocks.find(scalar_it->first) != warpSchedulerBlocks.end()) {
 			continue;
@@ -1097,11 +1151,23 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 			(*SI)->removePredecessor(scalar_it->first);
 		}
 		scalar_it->first->dropAllReferences();
+		
+		report("  dropped all references");
 	}
-	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
-		++scalar_it ) {
-		scalar_it->first->replaceAllUsesWith(subkernelEntry.prologue);
-		scalar_it->first->eraseFromParent();
+	
+	if (true) {
+		for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); 
+			scalar_it != warpBlocksMap.end(); 
+			++scalar_it ) {
+			
+			if (scalar_it->first->getNameStr() == "WarpSynchronousEntry" ||
+				warpSchedulerBlocks.find(scalar_it->first) != warpSchedulerBlocks.end()) {
+				continue;
+			}
+			
+//			scalar_it->first->replaceAllUsesWith(subkernelEntry.prologue);
+			scalar_it->first->eraseFromParent();
+		}
 	}
 }
 
@@ -1304,7 +1370,7 @@ void analysis::LLVMUniformVectorization::Translation::debugEmitCFG() {
 			}
 			else {
 				std::cerr << "bad terminator in block " << std::string(block->getName()) << ":" << std::endl;
-				terminator->dump();
+				terminator->dump();	// ONERROR
 				std::cerr << std::endl;
 				
 				out << "  bb_error_" << (errors) << " [label=\"" << std::string(block->getName()) <<

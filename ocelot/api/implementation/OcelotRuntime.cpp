@@ -194,6 +194,42 @@ namespace ocelot
             _basicBlockInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;
             ocelot::addInstrumentor(_basicBlockInstrumentor);    
         }
+        if(c.instrument.measureWarpReductionInstrumentor.enabled)
+        {   
+            report("Creating measure warp reduction instrumentor");
+             switch(c.instrument.measureWarpReductionInstrumentor.type) {
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency:
+                    _measureWarpReductionInstrumentor.type = analysis::MeasureWarpReductionInstrumentor::memoryEfficiency;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount:
+                    _measureWarpReductionInstrumentor.type = analysis::MeasureWarpReductionInstrumentor::instructionCount;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence:
+                    _measureWarpReductionInstrumentor.type = analysis::MeasureWarpReductionInstrumentor::branchDivergence;
+                    break;
+            }
+             
+            _measureWarpReductionInstrumentor.output = c.instrument.measureWarpReductionInstrumentor.logfile;
+            ocelot::addInstrumentor(_measureWarpReductionInstrumentor);    
+        }
+        if(c.instrument.measureBasicBlockInstrumentor.enabled)
+        {   
+            report("Creating measure basid block instrumentor");
+            switch(c.instrument.measureBasicBlockInstrumentor.type) {
+                case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::executionCount:
+                    _measureBasicBlockInstrumentor.type = analysis::MeasureBasicBlockInstrumentor::executionCount;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount:
+                    _measureBasicBlockInstrumentor.type = analysis::MeasureBasicBlockInstrumentor::instructionCount;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::memoryIntensity:
+                    _measureBasicBlockInstrumentor.type = analysis::MeasureBasicBlockInstrumentor::memoryIntensity;
+                    break;
+            }
+             
+            _measureBasicBlockInstrumentor.output = c.instrument.measureBasicBlockInstrumentor.logfile;
+            ocelot::addInstrumentor(_measureBasicBlockInstrumentor);    
+        }
 
 		if (c.optimizations.structuralTransform)
 		{

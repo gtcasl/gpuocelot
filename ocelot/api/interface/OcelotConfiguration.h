@@ -180,11 +180,17 @@ namespace api {
 			/*! \brief Clock cycle count instrumentor */
 			ClockCycleCountInstrumentor clockCycleCountInstrumentor;
 
-            //! \brief Basic block execution count instrumentor
+            //! \brief Basic block instrumentor
 			BasicBlockInstrumentor basicBlockInstrumentor;
 			
 			//! \brief Warp reduction instrumentor
 			WarpReductionInstrumentor warpReductionInstrumentor;
+			
+			//! \brief Measure warp reduction instrumentor
+			WarpReductionInstrumentor measureWarpReductionInstrumentor;
+			
+			//! \brief Measure basic block instrumentor
+			BasicBlockInstrumentor measureBasicBlockInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

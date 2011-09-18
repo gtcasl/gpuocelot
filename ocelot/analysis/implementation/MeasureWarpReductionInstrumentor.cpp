@@ -1,13 +1,13 @@
-/*! \file WarpReductionInstrumentor.cpp
+/*! \file MeasureWarpReductionInstrumentor.cpp
 	\date Monday July 30, 2011
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The source file for the WarpReductionInstrumentor class.
+	\brief The source file for the MeasureWarpReductionInstrumentor class.
 */
 
-#ifndef WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
-#define WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
+#ifndef MEASURE_WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
+#define MEASURE_WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/WarpReductionInstrumentor.h>
+#include <ocelot/analysis/interface/MeasureWarpReductionInstrumentor.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -27,15 +27,15 @@ using namespace hydrazine;
 namespace analysis
 {
 
-    void WarpReductionInstrumentor::checkConditions() {
+    void MeasureWarpReductionInstrumentor::checkConditions() {
         conditionsMet = true;
     }
 
-    void WarpReductionInstrumentor::analyze(ir::Module &module) {
+    void MeasureWarpReductionInstrumentor::analyze(ir::Module &module) {
              
     }
 
-    void WarpReductionInstrumentor::initialize() {
+    void MeasureWarpReductionInstrumentor::initialize() {
         
         counter = 0;
         
@@ -43,10 +43,10 @@ namespace analysis
         if(warpCount == 0)
             warpCount = 1;
 
-        if(cudaMalloc((void **) &counter, entries * warpCount * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, ((entries * warpCount) + (2 * threadBlocks)) * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, entries * warpCount * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, ((entries * warpCount) + (2 * threadBlocks))  * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -55,7 +55,7 @@ namespace analysis
         }
     }
 
-    void WarpReductionInstrumentor::createPasses() {
+    void MeasureWarpReductionInstrumentor::createPasses() {
         
         entries = 1;
 
@@ -85,7 +85,7 @@ namespace analysis
             break;
             case instructionCount:
             {
-                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/warpInstructionCount.c");
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/measureWarpIC.c");
                 symbol = pass->baseAddress;
                 
                 passes[0] = pass;   
@@ -99,11 +99,11 @@ namespace analysis
         
     }
 
-    void WarpReductionInstrumentor::extractResults(std::ostream *out) {
+    void MeasureWarpReductionInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[entries * warpCount];
+        size_t *info = new size_t[((entries * warpCount) + (2 * threadBlocks))];
         if(counter) {
-            cudaMemcpy(info, counter, entries * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, ((entries * warpCount) + (2 * threadBlocks)) * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -162,11 +162,36 @@ namespace analysis
                     break;
                     case instructionCount:
                     {
-                        _kernelProfile.instructionCount = 0;
-                        for(unsigned int i = 0; i < warpCount; i++)
-                            _kernelProfile.instructionCount += info[i];
+                    
+                        size_t smid = 0;
+                        _kernelProfile.processorToClockCyclesMap.clear();
                         
-                        *out << "\nDynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
+                        for(size_t i = 0; i < threadBlocks; i++) {
+                            smid = info[ i*2 + 1 + warpCount];
+                            _kernelProfile.processorToClockCyclesMap[smid] += info[i*2 + warpCount];
+                        } 
+
+                        std::vector<double> clockCyclesPerSM;
+                        clockCyclesPerSM.clear();
+
+                        for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = 
+                            _kernelProfile.processorToClockCyclesMap.begin();
+                            it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
+                            clockCyclesPerSM.push_back(it->second);
+                        }
+
+                        struct cudaDeviceProp properties;
+                        cudaGetDeviceProperties(&properties, 0);
+
+                        _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), 
+                            clockCyclesPerSM.end()))/properties.clockRate;
+                    
+                        unsigned int instCount = 0;
+                        for(unsigned int i = 0; i < warpCount; i++)
+                            instCount += info[0];
+                        
+                        *out << "\nDynamic Instruction Count: " << instCount << "\n";
+                        *out << "\nClock Cycle Runtime: " << _kernelProfile.maxSMRuntime << " ms\n\n";
                     }                    
                     break;
                     default:
@@ -181,8 +206,8 @@ namespace analysis
             
     }
 
-    WarpReductionInstrumentor::WarpReductionInstrumentor() : 
-        description("Warp Reduction Instrumentor") {
+    MeasureWarpReductionInstrumentor::MeasureWarpReductionInstrumentor() : 
+        description("Measure Warp Reduction Instrumentor") {
     }
     
 

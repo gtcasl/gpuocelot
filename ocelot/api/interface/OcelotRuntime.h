@@ -15,6 +15,8 @@
 #include <ocelot/analysis/interface/ClockCycleCountInstrumentor.h>
 #include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
 #include <ocelot/analysis/interface/WarpReductionInstrumentor.h>
+#include <ocelot/analysis/interface/MeasureBasicBlockInstrumentor.h>
+#include <ocelot/analysis/interface/MeasureWarpReductionInstrumentor.h>
 
 #include <ocelot/transforms/interface/StructuralTransform.h>
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
@@ -40,6 +42,9 @@ namespace ocelot
         analysis::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
 		analysis::BasicBlockInstrumentor _basicBlockInstrumentor;
 		analysis::WarpReductionInstrumentor _warpReductionInstrumentor;
+		
+		analysis::MeasureBasicBlockInstrumentor _measureBasicBlockInstrumentor;
+		analysis::MeasureWarpReductionInstrumentor _measureWarpReductionInstrumentor;
 		
 		bool _initialized;
 		

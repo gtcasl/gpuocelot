@@ -1,18 +1,15 @@
-{
-    unsigned long threadId = blockThreadId();
-    
+{   
+    unsigned long warpId = (blockId() * blockDim() + blockThreadId()) >> 5;
+
     ON_INSTRUCTION:
-    PREDICATED: 
+    PREDICATED:
     BRANCH:
     {
-        sharedMem[threadId] = getPredicateValue();
         
-        if(leastActiveThreadInWarp() != 0)
+        if(leastActiveThreadInWarp())
         {
-            unsigned long uniqueCount = uniqueElementCount(sharedMem, 0);
-            atomicIncrement(globalMem, 0);    
-            if(uniqueCount > 1)
-                atomicIncrement(globalMem, 1);      
+            globalMem[warpId * 2 + 1] = globalMem[warpId * 2 + 1] + activeThreadCount();
+            globalMem[warpId * 2] = globalMem[warpId * 2] + divergentThreadCount();
             
         }
     }

@@ -106,6 +106,6 @@ void atomicIncrement(unsigned long *memBuffer, unsigned long offset);
 
 void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);
 
-unsigned long predicateEvalWarpDivergent();
+unsigned long divergentThreadCount();
 
 #endif

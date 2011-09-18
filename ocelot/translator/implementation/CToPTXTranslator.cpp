@@ -1232,15 +1232,33 @@ namespace translator
     
     }
     
-    void CToPTXTranslator::generatePredicateEvalWarpDivergent(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
+    void CToPTXTranslator::generateDivergentThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
         virtual_insn *insn)
     {
+        inst.opcode = ir::PTXInstruction::SetP;
+    
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
+        std::string pred = inst.d.identifier;
+        registers.push_back(inst.d.identifier);
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.imm_uint = 0;
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 1;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);      
+    
         inst.opcode = ir::PTXInstruction::Vote;
         inst.vote = ir::PTXInstruction::Uni;
         inst.type = inst.d.type = inst.a.type = ir::PTXOperand::pred;
         inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
         
-        std::string pred = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
         inst.d.identifier = pred;
         registers.push_back(inst.d.identifier);
         inst.a.identifier = pred;
@@ -1249,26 +1267,43 @@ namespace translator
         stmt.instruction = inst;
         statements.push_back(stmt);
         
-        inst.opcode = ir::PTXInstruction::SelP;
-        inst.vote = ir::PTXInstruction::VoteMode_Invalid;
-        inst.type = inst.d.type = inst.a.type = inst.b.type = type;
+        PredicateInfo predicateInfo;
+	    predicateInfo.id = inst.d.identifier;
+	    predicateInfo.inv = true;
+	    predicateInfo.targetId = targetId;
+	    
+	    predicateList.push_back(predicateInfo);   
+	    
+	    inst.vote = ir::PTXInstruction::VoteMode_Invalid;
+	    
+	    inst.vote = ir::PTXInstruction::Ballot;
+        inst.type = ir::PTXOperand::b32;
+        
+        inst.d.type = ir::PTXOperand::b32;
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        registers.push_back(inst.d.identifier);  
-        
-        inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Immediate;
-       
-        inst.a.imm_uint = 1;
-        inst.b.imm_uint = 0;
-            
-        inst.c.type = ir::PTXOperand::pred;
-        inst.c.addressMode = ir::PTXOperand::Register;
-        inst.c.identifier = pred;
+        registers.push_back(inst.d.identifier);
+
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = ir::PTXOperand::pred;
+        inst.a.identifier = TARGET;
         
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt);
         
+        inst.opcode = ir::PTXInstruction::Cvt;
+        inst.type = inst.d.type = type;
+        inst.a.type = ir::PTXOperand::u32;
+        inst.a.identifier = inst.d.identifier;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);  
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
     }
     
@@ -1623,9 +1658,9 @@ namespace translator
                         generateAtomicAdd(inst, stmt, type, insn, regInput);
                     }
                     break;
-                    case predicateEvalWarpDivergentSymbol:
+                    case divergentThreadCountSymbol:
                     {
-                        generatePredicateEvalWarpDivergent(inst, stmt, type, insn);
+                        generateDivergentThreadCount(inst, stmt, type, insn);
                     }
                     break;
                     case basicBlockCountSymbol:
@@ -2071,7 +2106,7 @@ namespace translator
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);\
                                         unsigned long activeThreadCount();\
-                                        unsigned long predicateEvalWarpDivergent();\
+                                        unsigned long divergentThreadCount();\
                                         unsigned long globalMem[1];\
                                         unsigned long sharedMem[1];";
                         
@@ -2112,7 +2147,7 @@ namespace translator
             {(char *)"computeBaseAddress", (void*)(unsigned long)(*computeBaseAddress)},
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"activeThreadCount", (void*)(unsigned long)(*activeThreadCount)},
-            {(char *)"predicateEvalWarpDivergent", (void*)(unsigned long)(*predicateEvalWarpDivergent)},
+            {(char *)"divergentThreadCount", (void*)(unsigned long)(*divergentThreadCount)},
             {(char *)"atomicIncrement", (void*)(*atomicIncrement)},
             {(char *)"atomicAdd", (void*)(*atomicAdd)},
             {(char *)"globalMem", (void *)GLOBAL_MEM},
@@ -2189,7 +2224,7 @@ namespace translator
         functionCalls["leastActiveThreadInWarp"] = leastActiveThreadInWarpSymbol;
         functionCalls["atomicIncrement"] = atomicIncrementSymbol;
         functionCalls["atomicAdd"] = atomicAddSymbol;
-        functionCalls["predicateEvalWarpDivergent"] = predicateEvalWarpDivergentSymbol;
+        functionCalls["divergentThreadCount"] = divergentThreadCountSymbol;
                 
         specifierList = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP,
             GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE, TYPE_INT, TYPE_FP };

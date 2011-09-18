@@ -80,6 +80,7 @@
 #define LOOP                            "$loop"
 #define LOOP_END                        "$loopEnd"
 
+#define TARGET                           "target"
 
 namespace translator {
 
@@ -172,7 +173,7 @@ namespace translator {
                 leastActiveThreadInWarpSymbol,
                 atomicIncrementSymbol,
                 atomicAddSymbol,
-                predicateEvalWarpDivergentSymbol
+                divergentThreadCountSymbol
 		    };
 		    
 		    SpecialSymbols symbols;
@@ -228,7 +229,7 @@ namespace translator {
                 void generateActiveThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int uInput);
 		        void generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string regInput);
-		        void generatePredicateEvalWarpDivergent(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateDivergentThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
                 void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
 		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		    

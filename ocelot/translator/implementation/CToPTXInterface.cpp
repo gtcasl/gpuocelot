@@ -158,7 +158,7 @@ void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toA
     return;
 }
 
-unsigned long predicateEvalWarpDivergent() {
+unsigned long divergentThreadCount() {
     return 0;
 }
 

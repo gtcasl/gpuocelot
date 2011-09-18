@@ -121,7 +121,13 @@ namespace transforms
         if(statement.instruction.opcode == ir::PTXInstruction::Vote && statement.instruction.vote == ir::PTXInstruction::Uni){
             toInsert.instruction.a = attributes.originalInstruction.pg;
         }
-
+        
+        if(statement.instruction.opcode == ir::PTXInstruction::Vote 
+            && statement.instruction.vote == ir::PTXInstruction::Ballot
+            && statement.instruction.a.identifier == TARGET){
+            toInsert.instruction.a = attributes.originalInstruction.pg;
+        }
+        
         return toInsert;
     }
 

@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        warpInstructionCount: {}
+        branchDivergence: {}
     },
 	trace: { 
 		database: "traces-ipdom/database.trace",

@@ -173,7 +173,7 @@ namespace translator {
                 leastActiveThreadInWarpSymbol,
                 atomicIncrementSymbol,
                 atomicAddSymbol,
-                divergentThreadCountSymbol
+                divergentWarpSymbol
 		    };
 		    
 		    SpecialSymbols symbols;
@@ -229,7 +229,7 @@ namespace translator {
                 void generateActiveThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int uInput);
 		        void generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string regInput);
-		        void generateDivergentThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateDivergentWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
                 void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
 		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		    

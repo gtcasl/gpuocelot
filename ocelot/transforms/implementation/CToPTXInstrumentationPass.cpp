@@ -119,13 +119,22 @@ namespace transforms
         }
         
         if(statement.instruction.opcode == ir::PTXInstruction::Vote && statement.instruction.vote == ir::PTXInstruction::Uni){
-            toInsert.instruction.a = attributes.originalInstruction.pg;
-        }
-        
-        if(statement.instruction.opcode == ir::PTXInstruction::Vote 
-            && statement.instruction.vote == ir::PTXInstruction::Ballot
-            && statement.instruction.a.identifier == TARGET){
-            toInsert.instruction.a = attributes.originalInstruction.pg;
+            if(attributes.originalInstruction.pg.condition == ir::PTXOperand::PT ||
+                attributes.originalInstruction.pg.condition == ir::PTXOperand::nPT)
+            {
+                toInsert.instruction.vote = ir::PTXInstruction::VoteMode_Invalid;
+
+                toInsert.instruction.opcode = ir::PTXInstruction::SetP;
+                toInsert.instruction.comparisonOperator = ir::PTXInstruction::Eq;
+                toInsert.instruction.type = toInsert.instruction.a.type = toInsert.instruction.b.type = ir::PTXOperand::u64;
+                toInsert.instruction.a.addressMode = toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
+                toInsert.instruction.a.imm_uint = 0;
+                toInsert.instruction.b.imm_uint = 0;
+            }
+            else 
+            {
+                toInsert.instruction.a = attributes.originalInstruction.pg;
+            }
         }
         
         return toInsert;

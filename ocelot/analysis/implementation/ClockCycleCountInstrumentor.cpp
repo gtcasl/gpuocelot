@@ -126,17 +126,18 @@ namespace analysis
             case text:   
 
                 if(!deviceInfoWritten){
-                    deviceInfo(out);
+                    //deviceInfo(out);
                     deviceInfoWritten = true;
                 }
-
+    
+                /*
                 *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n";
-                
+                */
 
                 *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << " ms\n";
-                
+                /*
                 *out << "\nSM to CTA Mapping [SM ID: (CTA ID, Clock Cycles)]:\n\n";
                 
                 for(KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin();
@@ -158,7 +159,7 @@ namespace analysis
                 }
     
                 *out << "\n\n";
-  
+                */    
             
             break;
 

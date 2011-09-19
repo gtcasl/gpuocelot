@@ -121,9 +121,9 @@ namespace analysis
             break;
             case text:
 
-                *out << "Thread Block Count: " << threadBlocks << "\n";
-		        *out << "Kernel Name: " << kernelName << "\n";		
-		        *out << "Thread Count: " << threads << "\n";
+                //*out << "Thread Block Count: " << threadBlocks << "\n";
+		        //*out << "Kernel Name: " << kernelName << "\n";		
+		        //*out << "Thread Count: " << threads << "\n";
             
                 switch(type)
                 {
@@ -146,17 +146,17 @@ namespace analysis
                     case branchDivergence:
                     {
                         unsigned int divergentBranches = 0;
-                        unsigned int totalCondBranches = 0;
+                        unsigned int totalBranches = 0;
                         
                         for(unsigned int i = 0; i < warpCount; i++)
                         {
                             divergentBranches += info[i * entries];
-                            totalCondBranches += info[i * entries + 1];
+                            totalBranches += info[i * entries + 1];
                         }
                     
                         *out << "Divergent Dynamic Branches: " << divergentBranches << "\n";
-                        *out << "Total Dynamic Conditional Branches: " << totalCondBranches << "\n\n";              
-                        *out << "Branch Divergence: " << ((double)divergentBranches/(double)totalCondBranches) * 100 << "%\n\n";
+                        *out << "Total Dynamic Branches: " << totalBranches << "\n\n";              
+                        *out << "Branch Divergence: " << ((double)divergentBranches/(double)totalBranches) * 100 << "%\n\n";
                     
                     }
                     break;

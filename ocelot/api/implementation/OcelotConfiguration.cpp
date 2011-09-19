@@ -182,6 +182,22 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
                 api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
     }
 
+    warpReductionConfig = config["measureMemEfficiency"];
+    if (!warpReductionConfig.is_null()) {
+            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
+            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
+            instrument.measureWarpReductionInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency;
+    }
+
+    warpReductionConfig = config["measureBranchDivergence"];
+    if (!warpReductionConfig.is_null()) {
+            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
+            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
+            instrument.measureWarpReductionInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence;
+    }
+
     
 }
 

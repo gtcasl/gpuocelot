@@ -76,9 +76,9 @@ def getBoostPaths():
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
 	elif os.name == 'nt':
-		boost_path = '../../../../tools/boost_1_46_1'
+		boost_path = '../../tools/boost_1_46_1'
 		bin_path = boost_path + "/bin"
-		lib_path = boost_path + "/lib/win32"
+		lib_path = boost_path + "/lib/win" + os.environ['VC_BITNESS']
 		inc_path = boost_path + "/"
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
@@ -103,7 +103,7 @@ def getFlexPaths(env):
 	if os.name == 'posix':
 		inc_path = ['/usr/include']
 	elif os.name == 'nt':
-		inc_path = inc_path = ['../../../../tools/MinGW/msys/1.0/include']
+		inc_path = inc_path = ['../../tools/MinGW/msys/1.0/include']
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is FLEX installed?'
 
@@ -220,12 +220,12 @@ gCompilerOptions = {
 			'exception_handling' : '',
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
 		'cl'  : {'warn_all' : '/Wall',
-			 'warn_errors' : '/WX', 
-	         'optimization' : ['/Ox', '/MD', '/Zi', '/DNDEBUG'], 
-			 'debug' : ['/ZI', '/Od', '/D_DEBUG', '/RTC1', '/MDd'], 
-			 'exception_handling': '/EHsc', 
-			 'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
-			 '/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H']}
+				 'warn_errors' : '/WX', 
+		         'optimization' : ['/Ox', '/MD', '/Zi', '/DNDEBUG'], 
+				 'debug' : ['/Zi', '/Od', '/D_DEBUG', '/RTC1', '/MDd'], 
+				 'exception_handling': '/EHsc', 
+				 'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
+				 	'/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H']}
 	}
 
 

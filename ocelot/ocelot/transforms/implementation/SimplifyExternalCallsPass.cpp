@@ -222,9 +222,9 @@ static void simplifyCall(ir::PTXKernel& kernel,
 }
 
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
-	const ir::ExternalFunctionSet& e) 
+	const ir::ExternalFunctionSet& e, bool s) 
 : KernelPass(analysis::Analysis::DataflowGraphAnalysis,
-	"SimplifyExternalCallsPass"), _externals(&e)
+	"SimplifyExternalCallsPass"), _externals(&e), _simplifyAll(s)
 {
 
 }
@@ -258,7 +258,12 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 		
 			if(ptx.opcode == ir::PTXInstruction::Call)
 			{
-				if(k.module->kernels().count(ptx.a.identifier) == 0)
+				if(_simplifyAll)
+				{
+					report(" For " << ptx.toString());
+					simplifyCall(kernel, block, ptx, *dfg);
+				}
+				else if(k.module->kernels().count(ptx.a.identifier) == 0)
 				{
 					if(_externals->find(ptx.a.identifier) != 0)
 					{

@@ -55,12 +55,13 @@ std::string ir::PTXInstruction::toString( Vec v ) {
 
 std::string ir::PTXInstruction::toString( AddressSpace space ) {
 	switch( space ) {
-		case Const:   return "const";  break;
-		case Global:  return "global"; break;
-		case Local:   return "local";  break;
-		case Param:   return "param";  break;
-		case Shared:  return "shared"; break;
-		case Texture: return "tex";    break;
+		case Const:    return "const";   break;
+		case Global:   return "global";  break;
+		case Local:    return "local";   break;
+		case Param:    return "param";   break;
+		case Shared:   return "shared";  break;
+		case Texture:  return "tex";     break;
+		case Generic:  return "generic"; break;
 		default: break;
 	}
 	return "";

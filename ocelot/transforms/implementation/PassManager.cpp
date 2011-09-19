@@ -538,7 +538,13 @@ const analysis::Analysis* PassManager::getAnalysis(int type) const
 
 void PassManager::invalidateAnalysis(int type)
 {
-	assertM(false, "Not implemented.");
+	assert(_analyses != 0);
+
+	AnalysisMap::iterator analysis = _analyses->find(type);
+	assert(analysis != _analyses->end());
+	
+	delete analysis->second;
+	_analyses->erase(analysis);
 }
 
 

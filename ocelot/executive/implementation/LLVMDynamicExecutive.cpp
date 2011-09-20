@@ -125,6 +125,10 @@ operator<<(std::ostream &out, LLVMDynamicExecutive::SubkernelCycleTimer &timer) 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+LLVMDynamicExecutive::CooperativeThreadArray::CooperativeThreadArray() {
+	pReadyQueue = & CooperativeThreadArray::readyQueue;
+	pBarrierQueue = & CooperativeThreadArray::barrierQueue;
+}
 
 void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const LLVMDynamicKernel &kernel, 
@@ -156,7 +160,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		setResumePoint(context, entry);
 		
 #if THREAD_SCHEDULER == SCHEDULER_THREAD_LEVEL
-		readyQueue.push_back(context);
+		(this->*pReadyQueue).push_back(context);
 #elif THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
 		warp.threadStatuses[warp.threads.size()] = analysis::KernelPartitioningPass::Thread_entry;
 		warp.threads.push_back(context);
@@ -402,6 +406,9 @@ void LLVMDynamicExecutive::execute() {
 	timerBarriers = timerWarpFormation = timerExecution = timerUpdateWarps = 0;
 	accumBarriers = accumWarpFormation = accumExecution = accumUpdateWarps = 0;
 	
+	assert(ctaMap.size() == 1);
+	activeCta = &ctaMap.begin()->second;
+	
 	do {
 	
 		timerBarriers = rdtsc();
@@ -465,8 +472,6 @@ void LLVMDynamicExecutive::execute() {
 		executionManagerStart = 0;
 	}
 	
-	timerBarriers = timerWarpFormation = timerExecution = timerUpdateWarps = 0;
-	
 	if (yieldOverheadInstrumentation) {	
 		std::ofstream result("yieldOverheadCycles.json", std::ios_base::app);
 		const char *appName = getenv("APPNAME");
@@ -474,10 +479,10 @@ void LLVMDynamicExecutive::execute() {
 		
 		result << "{ \"app\": \"" << appName << "\", \"kernel\":\"" << kernel->name 
 			<< "\", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
-			<< ", \"barriers\": " << timerBarriers
-			<< ", \"warpFormation\": " << timerWarpFormation
-			<< ", \"execution\": " << timerExecution
-			<< ", \"updateWarps\": " << timerUpdateWarps
+			<< ", \"barriers\": " << accumBarriers
+			<< ", \"warpFormation\": " << accumWarpFormation
+			<< ", \"execution\": " << accumExecution
+			<< ", \"updateWarps\": " << accumUpdateWarps
 			<< ", \"cycles\": ";
 		result << yieldOverheadTimer;
 		result << " },\n";
@@ -522,6 +527,7 @@ void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 #if METRIC_ENTRYPOINT_LIVENESS
 	livenessEntryCounter[warp.entryId].entries += warp.threads.size();
 #endif
+
 
 	//
 	// Execute the warp for all threads
@@ -636,9 +642,9 @@ void LLVMDynamicExecutive::updateWarpThreadLevel(Warp &warp) {
 			<< analysis::KernelPartitioningPass::toString(exitCode) 
 			<< " - resume point: " << getResumePoint(*ctx_it));
 		
-		assert(ctaMap.find(ctaId) != ctaMap.end() && "CtaID not present in ctaMap");
-		
-		CooperativeThreadArray & cta = ctaMap[ctaId];
+		//assert(ctaMap.find(ctaId) != ctaMap.end() && "CtaID not present in ctaMap");
+		//CooperativeThreadArray & cta = ctaMap[ctaId];
+		CooperativeThreadArray &cta = *activeCta;
 		
 		switch (exitCode) {
 		case analysis::KernelPartitioningPass::Thread_fallthrough:
@@ -646,14 +652,14 @@ void LLVMDynamicExecutive::updateWarpThreadLevel(Warp &warp) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into ready queue of CTA " << ctaId);
-			cta.readyQueue.push_back(*ctx_it);
+			(cta.*(cta.pReadyQueue)).push_back(*ctx_it);
 			break;
 		case analysis::KernelPartitioningPass::Thread_branch:
 			// update its next thread Id
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into ready queue of CTA " << ctaId);
-			cta.readyQueue.push_back(*ctx_it);
+			(cta.*(cta.pReadyQueue)).push_back(*ctx_it);
 			break;
 		case analysis::KernelPartitioningPass::Thread_tailcall:
 			// update its next thread Id
@@ -668,7 +674,7 @@ void LLVMDynamicExecutive::updateWarpThreadLevel(Warp &warp) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into barrier queue of CTA " << ctaId);
-			cta.barrierQueue.push_back(*ctx_it);
+			(cta.*(cta.pBarrierQueue)).push_back(*ctx_it);
 			break;
 		case analysis::KernelPartitioningPass::Thread_exit:
 			// kill off the thread
@@ -753,14 +759,15 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 		for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
 			cta_it != ctaMap.end() && warp.threads.size() < warpSize;
 			++cta_it) {
+			CooperativeThreadArray &cta = cta_it->second;
 		
-			for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
-				ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize;) {
+			for (ThreadContextQueue::iterator ctx_it = (cta.*(cta.pReadyQueue)).begin();
+				ctx_it != (cta.*(cta.pReadyQueue)).end() && warp.threads.size() < warpSize;) {
 				EntryId entryId = getResumePoint(*ctx_it);
 				if (!warp.threads.size() || entryId == warp.entryId) {
 					warp.entryId = entryId;
 					warp.threads.push_back(*ctx_it);
-					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+					ctx_it = (cta.*(cta.pReadyQueue)).erase(ctx_it);
 				}
 				else {
 					++ctx_it;
@@ -771,12 +778,18 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 	else {
 		// statically choose warp<=>thread mapping
 		bool earlyExit = true;
+		/*
 		for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
 			cta_it != ctaMap.end() && warp.threads.size() < warpSize && earlyExit;
 			++cta_it) {
 		
-			for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
-				ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize  && earlyExit;) {
+			CooperativeThreadArray &cta = cta_it->second;
+			*/
+			
+			
+			CooperativeThreadArray &cta = *activeCta;
+			for (ThreadContextQueue::iterator ctx_it = (cta.*(cta.pReadyQueue)).begin();
+				ctx_it != (cta.*(cta.pReadyQueue)).end() && warp.threads.size() < warpSize  && earlyExit;) {
 				EntryId entryId = getResumePoint(*ctx_it);
 				
 				reportE(REPORT_SCHEDULE_OPERATIONS, 
@@ -785,14 +798,14 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 				if (!warp.threads.size()) {
 					warp.entryId = entryId;
 					warp.threads.push_back(*ctx_it);
-					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+					ctx_it = (cta.*(cta.pReadyQueue)).erase(ctx_it);
 				}
 				else if (entryId == warp.entryId && 
 					getThreadId(*ctx_it) == getThreadId(warp.threads.back()) + 1 &&
 					ctx_it->tid.y == warp.threads.front().tid.y &&
 					ctx_it->tid.z == warp.threads.front().tid.z) {
 					warp.threads.push_back(*ctx_it);
-					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+					ctx_it = (cta.*(cta.pReadyQueue)).erase(ctx_it);
 				}
 				else {
 					earlyExit = false;
@@ -801,15 +814,18 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 			if (warp.threads.size()) {
 				earlyExit = false;
 			}
-		}
+//		}
 	}
 	
 	size_t p = warp.threads.size();
 	while (!hydrazine::isPowerOfTwo((unsigned int)p)) {
 		LLVMContext & ctx = warp.threads[p - 1];
 	
-		unsigned int ctaId = LLVMDynamicExecutive::ctaId(ctx);
-		ctaMap[ctaId].readyQueue.push_back(ctx);
+//		unsigned int ctaId = LLVMDynamicExecutive::ctaId(ctx);
+//		CooperativeThreadArray &cta = ctaMap[ctaId];
+		
+		CooperativeThreadArray &cta = *activeCta;
+		(cta.*(cta.pReadyQueue)).push_back(ctx);
 		--p;
 	}
 	if (p < warp.threads.size()) {
@@ -826,18 +842,27 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 //! \brief determine if any barriers have been reached
 void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 	ready = waiting = 0;
+	/*
 	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
 		cta_it != ctaMap.end();
 		++cta_it) {
 		
-		if (cta_it->second.barrierQueue.size() && !cta_it->second.readyQueue.size()) {
-			cta_it->second.readyQueue = cta_it->second.barrierQueue;
-			cta_it->second.barrierQueue.clear();
+		CooperativeThreadArray &cta = cta_it->second;
+		*/
+		
+		CooperativeThreadArray &cta = *activeCta;
+		if ((cta.*(cta.pBarrierQueue)).size() && !(cta.*(cta.pReadyQueue)).size()) {
+			ThreadContextQueue CooperativeThreadArray:: *tempQueuePtr = cta.pReadyQueue;
+			cta.pReadyQueue = cta.pBarrierQueue;
+			cta.pBarrierQueue = tempQueuePtr;
+			
+			// cta_it->second.readyQueue = cta_it->second.barrierQueue;
+			// cta_it->second.barrierQueue.clear();
 		}
 		
-		ready += (int)cta_it->second.readyQueue.size();
-		waiting += (int)cta_it->second.barrierQueue.size();
-	}
+		ready += (int)(cta.*(cta.pReadyQueue)).size();
+		waiting += (int)(cta.*(cta.pReadyQueue)).size();
+//	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

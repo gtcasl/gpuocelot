@@ -173,6 +173,8 @@ namespace executive {
 		class CooperativeThreadArray {
 		public:
 		
+			CooperativeThreadArray();
+		
 			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, 
 				EntryId entry, int localSize = 0, int sharedSize = 0);
 		
@@ -193,13 +195,17 @@ namespace executive {
 			
 			ir::Dim3 blockId;
 			ir::Dim3 blockDim;
-
-#if THREAD_SCHEDULER == SCHEDULER_THREAD_LEVEL
+			
+			ThreadContextQueue CooperativeThreadArray::* pReadyQueue;
+			ThreadContextQueue CooperativeThreadArray::* pBarrierQueue;
+			
 			//! threads ready to execute
 			ThreadContextQueue readyQueue;
 			
 			//! threads waiting on a barrier
 			ThreadContextQueue barrierQueue;
+
+#if THREAD_SCHEDULER == SCHEDULER_THREAD_LEVEL
 			
 #elif THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
 

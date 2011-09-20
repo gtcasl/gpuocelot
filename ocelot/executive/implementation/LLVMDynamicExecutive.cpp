@@ -392,13 +392,25 @@ void LLVMDynamicExecutive::execute() {
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
 	
+	size_t timerBarriers, timerWarpFormation, timerExecution, timerUpdateWarps;
+	size_t accumBarriers, accumWarpFormation, accumExecution, accumUpdateWarps;
+	
 	if (yieldOverheadInstrumentation) {
 		executionManagerStart = 0;
 	}
-		
+	
+	timerBarriers = timerWarpFormation = timerExecution = timerUpdateWarps = 0;
+	accumBarriers = accumWarpFormation = accumExecution = accumUpdateWarps = 0;
+	
 	do {
+	
+		timerBarriers = rdtsc();
+	
 		Warp warp;
 		testBarriers(waitingThreads, readyThreads);
+		
+		accumBarriers += (rdtsc() - timerBarriers);
+		timerWarpFormation = rdtsc();
 		
 		if (readyThreads) {
 			
@@ -408,11 +420,21 @@ void LLVMDynamicExecutive::execute() {
 			// gratuitous debug messaging
 			reportE(REPORT_SCHEDULE_OPERATIONS, " formed warp with " << warp.threads.size() << " threads");
 			
+			accumWarpFormation += (rdtsc() - timerWarpFormation);
+			
+			timerExecution = rdtsc();
+			
 			// execute a warp
 			executeWarpThreadLevel(warp);
 			
+			accumExecution += (rdtsc() - timerExecution);
+			
+			
+			timerUpdateWarps = rdtsc();
 			// update the warp
 			updateWarpThreadLevel(warp);
+			
+			accumUpdateWarps += (rdtsc() - timerUpdateWarps);
 		}
 	} while (waitingThreads || readyThreads);
 			
@@ -443,6 +465,8 @@ void LLVMDynamicExecutive::execute() {
 		executionManagerStart = 0;
 	}
 	
+	timerBarriers = timerWarpFormation = timerExecution = timerUpdateWarps = 0;
+	
 	if (yieldOverheadInstrumentation) {	
 		std::ofstream result("yieldOverheadCycles.json", std::ios_base::app);
 		const char *appName = getenv("APPNAME");
@@ -450,6 +474,10 @@ void LLVMDynamicExecutive::execute() {
 		
 		result << "{ \"app\": \"" << appName << "\", \"kernel\":\"" << kernel->name 
 			<< "\", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+			<< ", \"barriers\": " << timerBarriers
+			<< ", \"warpFormation\": " << timerWarpFormation
+			<< ", \"execution\": " << timerExecution
+			<< ", \"updateWarps\": " << timerUpdateWarps
 			<< ", \"cycles\": ";
 		result << yieldOverheadTimer;
 		result << " },\n";

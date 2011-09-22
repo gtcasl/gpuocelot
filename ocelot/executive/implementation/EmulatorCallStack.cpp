@@ -50,6 +50,7 @@ namespace executive
 		_globalLocalSize(align(globalLocalSize))
 	{
 		// Reserve 1MB so that the stack never gets realloced
+		// unless it overflows
 		_stack.reserve(1 << 20);
 	
 		_stackFrameSizes.push_back(align(initialFrameSize));
@@ -203,6 +204,11 @@ namespace executive
 	{
 		return *(unsigned int*)_stackBase(
 		_stackPointer + 2 * sizeof(unsigned int) );
+	}
+	
+	bool EmulatorCallStack::isTheCurrentFrameMain() const
+	{
+		return _sharedMemorySizes.size() == 1;
 	}
 	
 	void EmulatorCallStack::pushFrame(unsigned int stackSize, 

@@ -110,6 +110,8 @@ class EmulatorCallStack
 		unsigned int callerOffset() const;
 		/*! \brief Get the offset of the caller frame */
 		unsigned int callerFrameSize() const;
+		/*! \brief Is the only frame on the stack the entry point? */
+		bool isTheCurrentFrameMain() const;
 
 		/*! \brief Push a new frame onto the stack */
 		void pushFrame(unsigned int stackSize, unsigned int registers, 

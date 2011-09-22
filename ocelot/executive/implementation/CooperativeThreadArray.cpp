@@ -6312,6 +6312,12 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context,
 void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, 
 	const PTXInstruction &instr) {
 	trace();
+	
+	if (functionCallStack.isTheCurrentFrameMain()) {
+		eval_Exit(context, instr);
+		return;
+	}
+	
 	reportE(REPORT_RET, "Returned from function call at PC " 
 		<< functionCallStack.returnPC() );
 	const PTXInstruction& call = kernel->instructions[

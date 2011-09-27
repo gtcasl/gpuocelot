@@ -292,14 +292,12 @@ void DivergenceAnalysis::_addPredicate(const DataflowGraph::PhiInstruction &phi,
 }
 
 /*! \brief Constructor, already making the analysis of a input kernel */
-DivergenceAnalysis::DivergenceAnalysis(ir::IRKernel& k)
+DivergenceAnalysis::DivergenceAnalysis()
 : Analysis( Analysis::DivergenceAnalysis, "DivergenceAnalysis",
 	Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment )
 {
 	_doCFGanalysis = true;
 	_kernel = NULL;
-	
-	runOnKernel(k);
 }
 
 /*! \brief Analyze the control and data flow graphs searching for divergent 

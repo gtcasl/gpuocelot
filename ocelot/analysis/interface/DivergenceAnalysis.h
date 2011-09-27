@@ -46,7 +46,7 @@ class DivergenceAnalysis : public Analysis
 		bool doControlFlowAnalysis() const { return _doCFGanalysis; };
 
 	public:
-		DivergenceAnalysis(ir::IRKernel& k);
+		DivergenceAnalysis();
 		
 		void runOnKernel( ir::IRKernel& k );
 

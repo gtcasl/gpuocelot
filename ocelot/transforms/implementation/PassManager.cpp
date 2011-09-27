@@ -149,11 +149,19 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 		if(analyses.count(analysis::Analysis::DivergenceAnalysis) == 0)
 		{
 			report("   Allocating divergence analysis for kernel " << k->name);
-			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
-				analysis::Analysis::DivergenceAnalysis,
-				new analysis::DivergenceAnalysis(*k))).first;
+			analysis::DivergenceAnalysis* divergenceAnalysis =
+				new analysis::DivergenceAnalysis;			
 			
-			analysis->second->setPassManager(manager);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::DivergenceAnalysis,
+				divergenceAnalysis)).first;
+			
+			divergenceAnalysis->setPassManager(manager);
+			
+			allocateNewDataStructures(analyses, k,
+				divergenceAnalysis->required, manager);
+			
+			divergenceAnalysis->runOnKernel(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)

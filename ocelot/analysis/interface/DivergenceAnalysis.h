@@ -17,7 +17,7 @@ namespace analysis
    analysis goes over the program dataflow graph and finds all the variables
    that will always hold the same values for every thread.
  */
-class DivergenceAnalysis : public Analysis
+class DivergenceAnalysis : public KernelAnalysis
 {
 	public:
 		typedef std::set<BranchInfo> branch_set;
@@ -25,7 +25,7 @@ class DivergenceAnalysis : public Analysis
 			const_instruction_iterator;
 
 	private:
-		ir::PTXKernel *_kernel;
+		ir::IRKernel *_kernel;
 		/*!\brief Holds the variables marks of divergent blocks */
 		DivergenceGraph _divergGraph;
 		/*!\brief A set with all divergent branch instructions of the kernel */
@@ -48,10 +48,8 @@ class DivergenceAnalysis : public Analysis
 	public:
 		DivergenceAnalysis();
 		
-		void runOnKernel( ir::IRKernel& k );
+		virtual void analyze( ir::IRKernel& k );
 
-		// TODO: see if it is possible to use only the call on block,
-		// eliminating the call on iterator.
 		/*!\brief Tests if a block ends with a divergent branch instruction */
 		bool isDivBlock( DataflowGraph::const_iterator &block ) const;
 		/*!\brief Tests if a block ends with a divergent branch instruction */
@@ -64,8 +62,8 @@ class DivergenceAnalysis : public Analysis
 		bool isDivInstruction(
 			const DataflowGraph::Instruction &instruction ) const;
 		/*!\brief Tests if a instruction is a possibly divergent branch */
-		bool isPossibleDivBranch(
-			const const_instruction_iterator &instruction) const;
+		bool isPossibleDivBranch(const const_instruction_iterator
+		    &instruction) const;
 
 		/*!\brief Returns set of all divergent branches of the kernel */
 		branch_set &getDivergentBranches();

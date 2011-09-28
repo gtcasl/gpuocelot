@@ -123,6 +123,10 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 
+KernelDrawer = env.Program('KernelDrawer', \
+	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
+env.Depends(KernelDrawer, libocelot)
+
 ocelot_server_libs = ['']
 
 if os.name != 'nt':

@@ -52,8 +52,8 @@ class DivergenceGraph: public DirectionalGraph
 		bool isDivSource( const ir::PTXOperand* srt ) const;
 		bool hasSpecial( const ir::PTXOperand* special ) const;
 		size_t divNodesCount() const;
-		inline node_iterator beginDivNodes() const;
-		inline node_iterator endDivNodes() const;
+		inline node_iterator beginDivNodes() const{return _divergentNodes.begin();};
+		inline node_iterator endDivNodes() const {return _divergentNodes.end();};
 		void computeDivergence();
 		std::string getSpecialName( const ir::PTXOperand* in ) const;
 		std::ostream& print( std::ostream& out ) const;

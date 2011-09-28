@@ -32,7 +32,6 @@ public:
   bool operator>(const BranchInfo& x) const;
   bool operator>=(const BranchInfo& x) const;
 
-	// TODO: see if you can make this method friend with Div analysis.
 	/*!\brief Tells if a node is control dependent
 		on a divergent branch instruction. */
 	bool isTainted(const node_type &node) const;
@@ -75,7 +74,7 @@ private:
 		successors to the dependency list */
 	void _insertVariable(node_type &variable, node_set &variables);
 	/*!\brief Walks through the blocks instruction,
-		inserting the destiny variables to the dependency list */
+		inserting the destination variables to the dependency list */
 	void _taintVariables(const Block *block, node_set &variables);
 	/*!\brief Walks through the blocks creating a list of
 		dependency until reach of the postdominator block */

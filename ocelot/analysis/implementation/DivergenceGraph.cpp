@@ -153,16 +153,6 @@ size_t DivergenceGraph::divNodesCount() const{
 	return _divergentNodes.size();
 }
 
-/*!\brief Gives an iterator at the first divergent node of the graph */
-inline DirectionalGraph::node_iterator DivergenceGraph::beginDivNodes() const{
-	return _divergentNodes.begin();
-}
-
-/*!\brief Gives the divergent node iterator limit of the graph */
-inline DirectionalGraph::node_iterator DivergenceGraph::endDivNodes() const{
-	return _divergentNodes.end();
-}
-
 /*!\brief Computes divergence spread
  * 1) Clear preview divergent nodes list
  * 2) Set all nodes that are directly dependent of a divergent

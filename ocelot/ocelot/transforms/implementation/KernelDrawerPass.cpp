@@ -7,7 +7,9 @@
 
 #include <fstream>
 #include <assert.h>
+#ifndef _WIN32
 #include <cxxabi.h>
+#endif
 #include <ocelot/transforms/interface/KernelDrawerPass.h>
 #include <ocelot/analysis/interface/DirectionalGraph.h>
 
@@ -532,7 +534,11 @@ KernelDrawerPass::KernelDrawerPass(const string &path,
 void KernelDrawerPass::runOnKernel(ir::IRKernel& k)
 {
   int status = -1;
+  #ifndef _WIN32
   string kernelName = abi::__cxa_demangle(k.name.c_str(), 0, 0, &status);
+  #else
+  string kernelName = k.name;
+  #endif
   if (status < 0) {
     cerr << "Error: could not demangle kernel name " << k.name
         << endl;

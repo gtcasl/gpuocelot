@@ -1207,7 +1207,9 @@ namespace translator
         retVal.type = type;
         inst.d.array.push_back(retVal);
 
-        setPredicate(inst);
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+
         stmt.instruction = inst;
         statements.push_back(stmt);    
 

@@ -442,7 +442,6 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 }
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
-	trace::DynamicCompilationOverhead::instance.start();
 	
 	if(module->second.loaded()) return;
 	module->second.loadNow();
@@ -450,11 +449,17 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
     HostThreadContext& thread = _getCurrentThread();    
     for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
         instrumentor != thread.instrumentors.end(); ++instrumentor){
+        
+        trace::DynamicCompilationOverhead::instance.start();
+        
         (*instrumentor)->checkConditions();
         if((*instrumentor)->conditionsMet) {
             (*instrumentor)->analyze(module->second);
             (*instrumentor)->instrument(module->second);
         }
+        
+        trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::instrumentPtx);
     }
    
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
@@ -485,9 +490,6 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 		(*device)->setOptimizationLevel(_optimization);
 		(*device)->unselect();
 	}
-	
-	trace::DynamicCompilationOverhead::instance.stop(
-		& trace::DynamicCompilationOverhead::instrumentPtx);
 }
 
 void cuda::CudaRuntime::_registerModule(const std::string& name) {
@@ -2658,9 +2660,16 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			thread.nextTraceGenerators.end());
 
 		_inExecute = true;
+		
+		trace::DynamicCompilationOverhead::instance.start();
+		
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, paramSize, traceGens, &_externals);
+			
+	    trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::kernelExecute);		
+			
 		_inExecute = false;
 		report(" launch completed successfully");	
 	}

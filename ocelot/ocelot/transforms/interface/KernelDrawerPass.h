@@ -20,7 +20,7 @@ class KernelDrawerPass: KernelPass
     void _sanityTest() const;
     string _edges(const analysis::DataflowGraph::Block &block,
         const bool isFullGraph = false) const;
-    uint _graphs;
+    unsigned int _graphs;
     string _getBGColor(const unsigned int id) const;
 
   public:

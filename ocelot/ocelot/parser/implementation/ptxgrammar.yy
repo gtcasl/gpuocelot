@@ -525,6 +525,8 @@ completeEntryStatement : guard instruction
 	state.instruction();
 };
 
+completeEntryStatement : openBrace entryStatements closeBrace;
+
 entryStatements : completeEntryStatement;
 entryStatements : entryStatements completeEntryStatement;
 

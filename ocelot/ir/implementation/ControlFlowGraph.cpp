@@ -254,7 +254,7 @@ bool ControlFlowGraph::empty() const {
 ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	const BasicBlock& block) {
 	report("Inserting block '" << block.label << "' (" << block.id << ")" );
-	return _blocks.insert(end(), block);
+	return _blocks.insert(_exit, block);
 }
 
 ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block, std::string suffix)
@@ -466,8 +466,8 @@ void ControlFlowGraph::clear() {
 	}
 	_blocks.clear();
 	_edges.clear();
-	_entry = insert_block(BasicBlock("entry", 0));
-	_exit = insert_block(BasicBlock("exit", 1));
+	_entry = _blocks.insert(end(), BasicBlock("entry", 0));
+	_exit =  _blocks.insert(end(), BasicBlock("exit", 1));
 	_nextId = 2;
 }
 

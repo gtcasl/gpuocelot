@@ -59,6 +59,7 @@ namespace parser
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
+					typedef std::vector< StringList > StringListStack;
 					typedef std::vector< unsigned int > UintStack;
 					typedef std::vector< unsigned int > DimensionVector;
 					typedef std::vector< double > DoubleVector;
@@ -103,10 +104,10 @@ namespace parser
 					
 					StringList identifiers;
 					OperandMap operands;
-					StringList localOperands;
+					StringListStack localOperands;
 
 					PrototypeMap prototypes;
-					StringList localPrototypes;
+					StringListStack localPrototypes;
 					
 					bool inEntry;
 					bool inArgumentList;

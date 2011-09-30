@@ -37,6 +37,9 @@ namespace trace {
 		//! accumulates time spent emitting PTX kernels to a string
 		double ptxEmitOcelot;
 		
+		//! accumulates time spent loading through CUDA driver and JIT
+		double ptxCudaLoad;
+		
 		//! accumulates time spent 
 		double ptxRegister;
 		

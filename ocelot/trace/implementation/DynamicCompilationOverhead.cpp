@@ -27,6 +27,7 @@ DynamicCompilationOverhead::~DynamicCompilationOverhead() {
 			{ "ptxParseOcelot", &ptxParseOcelot },
 			{ "instrumentPtx", &instrumentPtx },
 			{ "ptxEmitOcelot", &ptxEmitOcelot },
+			{ "ptxCudaLoad", &ptxCudaLoad },
 			{ "ptxRegister", &ptxRegister },
 			{ "kernelExecute", & kernelExecute},
 			{ 0, 0 }

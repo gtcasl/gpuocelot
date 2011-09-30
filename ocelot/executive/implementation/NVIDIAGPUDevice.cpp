@@ -420,6 +420,11 @@ namespace executive
 		
 		std::string ptxModule = stream.str();
 
+		trace::DynamicCompilationOverhead::instance.stop(
+			& trace::DynamicCompilationOverhead::ptxEmitOcelot);
+			
+		trace::DynamicCompilationOverhead::instance.start();
+
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
 			stream.str().c_str(), 3, options, optionValues);
 		
@@ -432,8 +437,6 @@ namespace executive
 		
 		report(" Module loaded successfully.");
 		
-		trace::DynamicCompilationOverhead::instance.stop(
-			& trace::DynamicCompilationOverhead::ptxEmitOcelot);
 		
 		for(ir::Module::TextureMap::const_iterator 
 			texture = ir->textures().begin(); 
@@ -471,6 +474,8 @@ namespace executive
 					new NVIDIAExecutableKernel(*kernel->second, function)));
 			}
 		}
+		trace::DynamicCompilationOverhead::instance.stop(
+			& trace::DynamicCompilationOverhead::ptxCudaLoad);
 	}
 	
 	NVIDIAGPUDevice::Module::AllocationVector 

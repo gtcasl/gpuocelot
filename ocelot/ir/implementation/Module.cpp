@@ -95,8 +95,12 @@ bool ir::Module::load(const std::string& path) {
 	// open file, parse file, extract statements vector
 
 	ifstream file(_modulePath.c_str());
+	
 
 	if (file.is_open()) {
+	
+		trace::DynamicCompilationOverhead::instance.start();
+		
 		parser::PTXParser parser;
 		parser.fileName = _modulePath;
 
@@ -104,6 +108,9 @@ bool ir::Module::load(const std::string& path) {
 
 		_statements = std::move( parser.statements() );
 		extractPTXKernels();
+	
+		trace::DynamicCompilationOverhead::instance.stop(
+			& trace::DynamicCompilationOverhead::ptxParseOcelot);
 	}
 	else {
 		return false;

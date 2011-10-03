@@ -575,7 +575,6 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
 	_lock();
 
-	trace::DynamicCompilationOverhead::instance.start();
 
 	handle = _fatBinaries.size();
 	
@@ -602,9 +601,6 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	reportE(REPORT_ALL_PTX, " with PTX\n" << cubinContext.ptx());
 		
 	_unlock();
-	
-	trace::DynamicCompilationOverhead::instance.stop(
-		& trace::DynamicCompilationOverhead::ptxParseOcelot);
 	
 	return (void **)handle;
 }

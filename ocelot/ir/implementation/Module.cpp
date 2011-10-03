@@ -128,6 +128,8 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 	
 	unload();
 	
+	trace::DynamicCompilationOverhead::instance.start();
+		
 	parser::PTXParser parser;
 	_modulePath = path;
 	parser.fileName = _modulePath;
@@ -137,6 +139,9 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 	extractPTXKernels();
 
 	_loaded = true;
+	
+	trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::ptxParseOcelot);
 
 	return true;
 }
@@ -164,6 +169,9 @@ void ir::Module::loadNow() {
 	_loaded = true;
 	if( !_ptx.empty() )
 	{
+	
+		trace::DynamicCompilationOverhead::instance.start();
+	
 		std::stringstream stream( std::move( _ptx ) );
 		_ptx.clear();
 	
@@ -173,6 +181,9 @@ void ir::Module::loadNow() {
 		parser.parse( stream );
 		_statements = std::move( parser.statements() );
 		extractPTXKernels();
+		
+		trace::DynamicCompilationOverhead::instance.stop(
+			& trace::DynamicCompilationOverhead::ptxParseOcelot);
 	}
 	else
 	{
@@ -180,12 +191,16 @@ void ir::Module::loadNow() {
 		std::stringstream stream( _ptxPointer );
 		_ptxPointer = 0;
 	
+		trace::DynamicCompilationOverhead::instance.start();
+		
 		parser::PTXParser parser;
 		parser.fileName = path();
 	
 		parser.parse( stream );
 		_statements = std::move( parser.statements() );
 		extractPTXKernels();
+		trace::DynamicCompilationOverhead::instance.stop(
+			& trace::DynamicCompilationOverhead::ptxParseOcelot);
 	}
 }	
 	

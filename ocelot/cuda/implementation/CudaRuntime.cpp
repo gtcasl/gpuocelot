@@ -450,16 +450,18 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
     for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
         instrumentor != thread.instrumentors.end(); ++instrumentor){
         
-        trace::DynamicCompilationOverhead::instance.start();
-        
         (*instrumentor)->checkConditions();
         if((*instrumentor)->conditionsMet) {
             (*instrumentor)->analyze(module->second);
+
+            trace::DynamicCompilationOverhead::instance.start();
+
             (*instrumentor)->instrument(module->second);
+    
+            trace::DynamicCompilationOverhead::instance.stop(
+		        & trace::DynamicCompilationOverhead::instrumentPtx);
+
         }
-        
-        trace::DynamicCompilationOverhead::instance.stop(
-		& trace::DynamicCompilationOverhead::instrumentPtx);
     }
    
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
@@ -2663,6 +2665,8 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, paramSize, traceGens, &_externals);
 			
+        _getDevice().synchronize();    
+    
 	    trace::DynamicCompilationOverhead::instance.stop(
 		& trace::DynamicCompilationOverhead::kernelExecute);		
 			

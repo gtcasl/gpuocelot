@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        clockCycleCount: {}
+        memoryEfficiency: {}
     },
 	trace: { 
 		database: "traces-ipdom/database.trace",

@@ -8,6 +8,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/parser/interface/PTXParser.h>
+#include <ocelot/trace/interface/DynamicCompilationOverhead.h>
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Version.h>

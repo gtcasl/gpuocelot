@@ -39,7 +39,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0 
+#define REPORT_BASE 0
 
 namespace ir
 {
@@ -404,7 +404,10 @@ ExternalFunctionSet::~ExternalFunctionSet()
 	{
 		llvm::Function* function = _module->getFunction(
 			external->second.mangledName());
-		executive::LLVMState::jit()->freeMachineCodeForFunction(function);
+		if(function != 0)
+		{
+			executive::LLVMState::jit()->freeMachineCodeForFunction(function);
+		}
 	}
 
 	executive::LLVMState::jit()->removeModule(_module);
@@ -440,16 +443,18 @@ void ExternalFunctionSet::remove(const std::string& name)
 	#if HAVE_LLVM
 	llvm::Function* llvmFunction = _module->getFunction(
 		function->second.mangledName());
-	assert(llvmFunction != 0);
-	executive::LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
-	llvmFunction->eraseFromParent();
-	assert(_module->getFunction(function->second.mangledName()) == 0);
+	if(llvmFunction != 0)
+	{
+		executive::LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
+		llvmFunction->eraseFromParent();
+		assert(_module->getFunction(function->second.mangledName()) == 0);
 	
-	llvm::GlobalValue* global = _module->getNamedValue(
-		function->second.name());
-	assertM(global != 0, "Could not find global "
-		<< function->second.name() << " in module.");
-	global->eraseFromParent();
+		llvm::GlobalValue* global = _module->getNamedValue(
+			function->second.name());
+		assertM(global != 0, "Could not find global "
+			<< function->second.name() << " in module.");
+		global->eraseFromParent();
+	}
 	#endif
 
 	_functions.erase(function);

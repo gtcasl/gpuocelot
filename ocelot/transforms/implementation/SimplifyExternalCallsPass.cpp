@@ -216,8 +216,12 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		report("   " << *parameterName);
 		ir::Kernel::ParameterMap::iterator
 			parameter = kernel.parameters.find(*parameterName);
-		assert(parameter != kernel.parameters.end());
-		kernel.parameters.erase(parameter);
+			
+		// we may have already erased the parameter
+		if(parameter != kernel.parameters.end())
+		{
+			kernel.parameters.erase(parameter);
+		}
 	}
 }
 

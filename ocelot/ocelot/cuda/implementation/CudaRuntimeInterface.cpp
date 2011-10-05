@@ -37,7 +37,6 @@ static void destroyInstance() {
 ////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
-	std::cout << "I am CUDA" << std::endl;
 	if (!cuda::CudaRuntimeInterface::instance) {
 		if (api::OcelotConfiguration::get().cuda.implementation
 			== "CudaRuntime") {

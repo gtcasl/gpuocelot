@@ -34,18 +34,16 @@ clGetDeviceIDs(cl_platform_id   platform,
                cl_uint          num_entries, 
                cl_device_id *   devices, 
                cl_uint *        num_devices) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
 	return opencl::OpenCLRuntimeInterface::get()->clGetDeviceIDs(platform, device_type, num_entries, devices, num_devices);
 }
 
 cl_int
-clGetDeviceInfo(cl_device_id    /* device */,
-                cl_device_info  /* param_name */, 
-                size_t          /* param_value_size */, 
-                void *          /* param_value */,
-                size_t *        /* param_value_size_ret */) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+clGetDeviceInfo(cl_device_id    device,
+                cl_device_info  param_name, 
+                size_t          param_value_size, 
+                void *          param_value,
+                size_t *        param_value_size_ret) {
+	return opencl::OpenCLRuntimeInterface::get()->clGetDeviceInfo(device, param_name, param_value_size, param_value, param_value_size_ret);
 }
 
 /* Context APIs  */

@@ -953,19 +953,45 @@ void opencl::OpenCLRuntime::removeExternalFunction(const std::string& name) {
 */
 ////////////////////////////////////////////////////////////////////////////////
 
-cl_int opencl::OpenCLRuntime::clGetPlatformIDs(
-	cl_uint num_entries, 
+cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries, 
 	cl_platform_id * platforms, 
 	cl_uint * num_platforms) {
 	return CL_SUCCESS;
 }
 
-cl_int opencl::OpenCLRuntime::clGetDeviceIDs(
-    cl_platform_id platform, 
+cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform, 
     cl_device_type device_type, 
     cl_uint num_entries,
     cl_device_id * devices,
     cl_uint * num_devices) {
-	*num_devices=1;
-    return CL_SUCCESS;
+	
+	cl_int result = CL_SUCCESS;
+	*num_devices = 0;
+	if( devices != 0)
+		* devices = 0;
+	
+	_lock();
+	_enumerateDevices();
+	if (_devices.empty()) return _setLastError(CL_DEVICE_NOT_FOUND);
+
+	*num_devices = _devices.size() > num_entries ? num_entries : _devices.size() ;
+
+	if(!devices)
+	{
+		*devices = 0;
+	}
+	
+	_unlock();
+    return _setLastError(result);
+}
+
+cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
+	cl_device_info param_name,
+	size_t param_value_size,
+	void * param_value,
+	size_t * param_value_size_ret) {
+	cl_int result = CL_SUCCESS;
+
+
+	return _setLastError(result);
 }

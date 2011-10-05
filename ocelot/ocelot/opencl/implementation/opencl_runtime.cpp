@@ -35,7 +35,7 @@ clGetDeviceIDs(cl_platform_id   platform,
                cl_device_id *   devices, 
                cl_uint *        num_devices) {
 	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clGetDeviceIDs(platform, device_type, num_entries, devices, num_devices);
 }
 
 cl_int

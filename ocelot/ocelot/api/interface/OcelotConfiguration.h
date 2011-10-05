@@ -115,6 +115,20 @@ namespace api {
 			std::string runtimeApiTrace;
 		};
 
+		class OpenCLRuntimeImplementation {
+		public:
+			OpenCLRuntimeImplementation();
+
+		public:
+
+			//! \brief names particular OpenCL Runtime implementation 
+			//         to instantiate
+			std::string implementation;
+			
+			//! \brief for TraceGeneratingRuntime, path to output file
+		//	std::string runtimeApiTrace;
+		};
+
 		class Executive {
 		public:
 			Executive();
@@ -229,6 +243,9 @@ namespace api {
 
 		//! \brief configuration for CUDA runtime implementation
 		CudaRuntimeImplementation cuda;
+		
+		//! \brief configuration for OpenCL runtime implementation
+		OpenCLRuntimeImplementation opencl;
 
 		//! \brief configuration for Ocelot Executive
 		Executive executive;

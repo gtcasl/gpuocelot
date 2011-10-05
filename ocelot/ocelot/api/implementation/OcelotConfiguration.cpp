@@ -123,6 +123,23 @@ api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation()
 
 }
 
+api::OcelotConfiguration::OpenCLRuntimeImplementation::OpenCLRuntimeImplementation():
+	implementation("OpenCLRuntime")
+	/*runtimeApiTrace("trace/CudaAPI.trace")*/
+{
+
+}
+
+static void initializeOpenCLRuntimeImplementation(
+	api::OcelotConfiguration::OpenCLRuntimeImplementation &opencl, 
+	hydrazine::json::Visitor config) {
+
+	opencl.implementation = config.parse<std::string>(
+		"implementation", "OpenCLRuntime");
+//	opencl.runtimeApiTrace = config.parse<std::string>(
+//		"runtimeApiTrace", "trace/CudaAPI.trace");
+}
+
 static void initializeCudaRuntimeImplementation(
 	api::OcelotConfiguration::CudaRuntimeImplementation &cuda, 
 	hydrazine::json::Visitor config) {
@@ -348,6 +365,9 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		}
 		if (main.find("cuda")) {
 			initializeCudaRuntimeImplementation(cuda, main["cuda"]);
+		}
+		if (main.find("opencl")) {
+			initializeOpenCLRuntimeImplementation(opencl, main["opencl"]);
 		}
 		if (main.find("executive")) {
 			initializeExecutive(executive, main["executive"]);

@@ -478,8 +478,11 @@ functionName : identifier
 	state.functionName( $<text>1, @1 );
 };
 
+optionalSemicolon: ';'
+optionalSemicolon: /* empty string */
+
 functionDeclaration : externOrVisible functionBegin optionalReturnArgumentList 
-	functionName argumentList
+	functionName argumentList optionalSemicolon
 {
 	state.functionDeclaration( @4, false );
 };

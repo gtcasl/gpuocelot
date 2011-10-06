@@ -66,6 +66,15 @@ cl_int opencl::OpenCLRuntimeInterface::clGetPlatformIDs(cl_uint num_entries,
 	return CL_UNIMPLEMENTED;
 }
 
+cl_int opencl::OpenCLRuntimeInterface::clGetPlatformInfo(cl_platform_id platform, 
+                  cl_platform_info param_name,
+                  size_t param_value_size, 
+                  void * param_value,
+                  size_t * param_value_size_ret) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
 cl_int opencl::OpenCLRuntimeInterface::clGetDeviceIDs(cl_platform_id platform, 
 	cl_device_type device_type, 
 	cl_uint num_entries,

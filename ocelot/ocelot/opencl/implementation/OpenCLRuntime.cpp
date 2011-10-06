@@ -956,8 +956,70 @@ void opencl::OpenCLRuntime::removeExternalFunction(const std::string& name) {
 cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries, 
 	cl_platform_id * platforms, 
 	cl_uint * num_platforms) {
-	return CL_SUCCESS;
+	cl_int result = CL_SUCCESS;
+	_lock();
+	if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
+		result = CL_INVALID_VALUE;
+	else {
+		//Assume only 1 platform, platform_id = 0
+		if(platforms)
+			*platforms = 0;
+		if(num_platforms)
+			*num_platforms = 1;
+	}
+	_unlock();
+    return _setLastError(result);
 }
+
+cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform, 
+	cl_platform_info param_name,
+	size_t param_value_size, 
+	void * param_value,
+	size_t * param_value_size_ret) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+	if(platform)
+		result = CL_INVALID_PLATFORM;
+	else if(!param_value && !param_value_size_ret)
+		result = CL_INVALID_VALUE;
+	else {
+		switch(param_name) {
+			case CL_PLATFORM_NAME:
+				if(param_value && param_value_size < strlen("Ocelot"))
+					result = CL_INVALID_VALUE;
+				else {
+					if(param_value != 0)
+						strcpy((char *)param_value, "Ocelot");
+					if(param_value_size_ret != 0)
+						*param_value_size_ret = strlen("Ocelot");
+				}
+				break;
+			case CL_PLATFORM_VERSION: {
+			#ifdef VERSION
+				char ocelotVersion[] = VERSION;
+			#else
+				char ocelotVersion[] = "";
+			#endif
+				if(param_value && param_value_size < strlen(ocelotVersion))
+					result = CL_INVALID_VALUE;
+				else {
+					if(param_value != 0)
+						strcpy((char *)param_value, ocelotVersion);
+					if(param_value_size_ret != 0)
+						*param_value_size_ret = strlen(ocelotVersion);
+				}
+				break;
+			}
+			default:
+				assertM(false, "Platform info unimplemented!\n");
+				result = CL_UNIMPLEMENTED;
+				break;
+		}
+	}
+	_unlock();
+	return _setLastError(result);
+}
+	
 
 cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform, 
     cl_device_type device_type, 

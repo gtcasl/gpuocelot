@@ -7168,33 +7168,38 @@ namespace test
 			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
 			uniformFloat<unsigned char, 1>, 1, 1);
 
-		add("TestCvta-local-u32",
-			testCvta_REF<unsigned int>,
-			testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Local),
-			testCvta_INOUT(I32), testCvta_INOUT(I32),
-			uniformFloat<unsigned int, 1>, 1, 1);
+		if(sizeof(size_t) == 4)
+		{
+			add("TestCvta-local-u32",
+				testCvta_REF<unsigned int>,
+				testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Local),
+				testCvta_INOUT(I32), testCvta_INOUT(I32),
+				uniformFloat<unsigned int, 1>, 1, 1);
+			add("TestCvta-global-u32",
+				testCvta_REF<unsigned int>,
+				testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Global),
+				testCvta_INOUT(I32), testCvta_INOUT(I32),
+				uniformFloat<unsigned int, 1>, 1, 1);
+			add("TestCvta-shared-u32",
+				testCvta_REF<unsigned int>,
+				testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Shared),
+				testCvta_INOUT(I32), testCvta_INOUT(I32),
+				uniformFloat<unsigned int, 1>, 1, 1);
+		}
+		
 		add("TestCvta-local-u64",
 			testCvta_REF<long long unsigned int>,
 			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Local),
 			testCvta_INOUT(I64), testCvta_INOUT(I64),
 			uniformFloat<long long unsigned int, 1>, 1, 1);
 
-		add("TestCvta-global-u32",
-			testCvta_REF<unsigned int>,
-			testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Global),
-			testCvta_INOUT(I32), testCvta_INOUT(I32),
-			uniformFloat<unsigned int, 1>, 1, 1);
 		add("TestCvta-global-u64",
 			testCvta_REF<long long unsigned int>,
 			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Global),
 			testCvta_INOUT(I64), testCvta_INOUT(I64),
 			uniformFloat<long long unsigned int, 1>, 1, 1);
 
-		add("TestCvta-shared-u32",
-			testCvta_REF<unsigned int>,
-			testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Shared),
-			testCvta_INOUT(I32), testCvta_INOUT(I32),
-			uniformFloat<unsigned int, 1>, 1, 1);
+		
 		add("TestCvta-shared-u64",
 			testCvta_REF<long long unsigned int>,
 			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Shared),

@@ -996,7 +996,31 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 	void * param_value,
 	size_t * param_value_size_ret) {
 	cl_int result = CL_SUCCESS;
+	_lock();
+	if(!device)
+		result = CL_INVALID_DEVICE;
+	else if(!param_value && !param_value_size_ret)
+		result = CL_INVALID_VALUE;
+	else {
+		const executive::Device::Properties & prop = ((executive::Device *)device)->properties();
+		switch(param_name) {
+			case CL_DEVICE_NAME:
+				if(param_value && param_value_size < strlen(prop.name))
+					result = CL_INVALID_VALUE;
+				else {
+					if(param_value != 0)
+						strcpy((char *)param_value, prop.name);
+					if(param_value_size_ret !=0 )
+						*param_value_size_ret = strlen(prop.name);
+				}
+				break;
+			default:
+				assertM(false, "Device info unimplemented!\n");
+				result = CL_UNIMPLEMENTED;
+				break;
+		}
+	}
 
-
+	_unlock();
 	return _setLastError(result);
 }

@@ -966,21 +966,26 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
     cl_uint * num_devices) {
 	
 	cl_int result = CL_SUCCESS;
-	*num_devices = 0;
-	if( devices != 0)
-		* devices = 0;
-	
+
 	_lock();
-	_enumerateDevices();
-	if (_devices.empty()) return _setLastError(CL_DEVICE_NOT_FOUND);
-
-	*num_devices = _devices.size() > num_entries ? num_entries : _devices.size() ;
-
-	if(!devices)
-	{
-		*devices = 0;
+	if(platform) //Temorarily assume platform=0
+		result = CL_INVALID_PLATFORM;
+	else if(device_type < CL_DEVICE_TYPE_CPU || device_type > CL_DEVICE_TYPE_ALL)
+		result = CL_INVALID_DEVICE_TYPE;
+	else if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
+		result = CL_INVALID_VALUE;
+	else { 
+		_enumerateDevices();
+		if(num_devices != 0)
+			*num_devices = _devices.size();
+		if(devices != 0) {
+			for(cl_uint i = 0; i < std::min(_devices.size(), (size_t)num_entries); i++)
+				devices[i] = (void *) _devices[i];
+		}
+		if (_devices.empty()) {
+			result = CL_DEVICE_NOT_FOUND;
+		}
 	}
-	
 	_unlock();
     return _setLastError(result);
 }

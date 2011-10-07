@@ -109,7 +109,18 @@ class DataflowGraph : public KernelAnalysis
 				const char* what() const throw();
 		};
 
-		/*! \brief A class for referring to a generic instruction. */
+		
+		class Block;
+                class Instruction;
+		class PhiInstruction;
+                /*! \brief A vector of Instructions */
+		typedef std::list< Instruction > InstructionVector;
+		/*! \brief A vector of PhiInstructions */
+		typedef std::list< PhiInstruction > PhiInstructionVector;
+		/*! \brief A vector of blocks */
+		typedef std::list< Block > BlockVector;
+		
+                /*! \brief A class for referring to a generic instruction. */
 		class Instruction
 		{
 			public:
@@ -119,6 +130,13 @@ class DataflowGraph : public KernelAnalysis
 				RegisterPointerVector d;
 				/*! \brief Source registers */
 				RegisterPointerVector s;
+				/*! \brief iterator over all uses in the same block */
+                                std::list<InstructionVector::iterator> uses;
+				/*! \brief iterator over all defs in the same block */
+                                std::list<InstructionVector::iterator> defs;
+				/*! \brief iterator over all uses in the same block */
+                                typedef std::list<InstructionVector::iterator>::iterator DUIterator;
+
 		};
 		
 		/*! \brief A class for referring to a phi instruction. */
@@ -130,14 +148,6 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief Source registers */
 				RegisterVector s;
 		};
-		
-		class Block;
-		/*! \brief A vector of Instructions */
-		typedef std::list< Instruction > InstructionVector;
-		/*! \brief A vector of PhiInstructions */
-		typedef std::list< PhiInstruction > PhiInstructionVector;
-		/*! \brief A vector of blocks */
-		typedef std::list< Block > BlockVector;
 
 		struct BlockVector_Hash
 		{
@@ -359,8 +369,15 @@ class DataflowGraph : public KernelAnalysis
 			immediately before the specified index */
 		void insert( iterator block, const ir::Instruction& instruction, 
 			unsigned int index );
+		/*! \brief Insert an instruction into a block 
+			immediately before the element at specified  position*/
+                InstructionVector::iterator insert( iterator block, const ir::Instruction& instruction, 
+			InstructionVector::iterator position );
 		/*! \brief Insert an instruction at the end of a block */
 		void insert( iterator block, const ir::Instruction& instruction );
+		/*! \brief Erase an instruction from a block at the specified
+			position */
+		void erase( iterator block, InstructionVector::iterator position );
 		/*! \brief Erase an instruction from a block at the specified
 			index */
 		void erase( iterator block, unsigned int index );
@@ -368,6 +385,9 @@ class DataflowGraph : public KernelAnalysis
 	public:
 		/*! \brief Compute live ranges */
 		void compute();
+                /*! \brief Construct DU/UD chains*/
+                void constructDUChains();
+                void constructBlockDUChains(iterator blockIter);
 		/*! \brief Determine the max register used in the graph */
 		RegisterId maxRegister() const;
 		/*! \brief Allocate a new register that is not used elswhere 

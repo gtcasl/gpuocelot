@@ -684,7 +684,7 @@ namespace parser
 			operand.array.clear();
 			if( inEntry )
 			{
-				localOperands.push_back( statement.name );
+				localOperands.back().push_back( statement.name );
 			}
 		}
 		
@@ -728,7 +728,7 @@ namespace parser
 			operand.array.clear();
 			if( inEntry )
 			{
-				localOperands.push_back( name.str() );
+				localOperands.back().push_back( name.str() );
 			}
 		}
 	}
@@ -813,7 +813,7 @@ namespace parser
 	
 		if( inEntry )
 		{
-			localOperands.push_back( statement.name );
+			localOperands.back().push_back( statement.name );
 		}
 	}
 
@@ -912,8 +912,8 @@ namespace parser
 
 		operands.insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, ir::PTXInstruction::Param ) ) );
-
-		localOperands.push_back( statement.name );
+		
+		localOperands.back().push_back( statement.name );
 
 		if( inReturnList )
 		{
@@ -940,13 +940,19 @@ namespace parser
 	void PTXParser::State::openBrace( YYLTYPE& location )
 	{
 		report( "  Rule: '{'" );
-
-		assert( !inEntry );
-		inEntry = true;
-
-		statement.directive = ir::PTXStatement::StartScope;	
 		
-		statementEnd( location );
+		if( !inEntry )
+		{
+			statement.directive = ir::PTXStatement::StartScope;	
+			statementEnd( location );
+			inEntry = true;
+		}
+		else
+		{	
+			localOperands.push_back( StringList() );
+		}
+		
+		localPrototypes.push_back( StringList() );
 	}
 	
 	void PTXParser::State::closeBrace( YYLTYPE& location )
@@ -954,13 +960,18 @@ namespace parser
 		report( "  Rule: '}'" );
 
 		assert( inEntry );
-		inEntry = false;
+		assert( !localOperands.empty() );
 
-		statement.directive = ir::PTXStatement::EndScope;	
-		statementEnd( location );
-	
-		for( StringList::iterator operand = localOperands.begin(); 
-			operand != localOperands.end(); ++operand )
+		inEntry = localOperands.size() > 1;
+		
+		if( !inEntry )
+		{
+			statement.directive = ir::PTXStatement::EndScope;	
+			statementEnd( location );
+		}
+		
+		for( StringList::iterator operand = localOperands.back().begin(); 
+			operand != localOperands.back().end(); ++operand )
 		{
 			report( "   Local variable " << *operand << " went out of scope" );
 			OperandMap::iterator fi = operands.find( *operand );
@@ -968,7 +979,18 @@ namespace parser
 			operands.erase( fi );
 		}
 	
-		localOperands.clear();
+		for( StringList::iterator prototype = localPrototypes.back().begin(); 
+			prototype != localPrototypes.back().end(); ++prototype )
+		{
+			report( "   Local prototype " << *prototype
+				<< " went out of scope" );
+			PrototypeMap::iterator fi = prototypes.find( *prototype );
+			assert( fi != prototypes.end() );
+			prototypes.erase( fi );
+		}
+		
+		localOperands.pop_back();
+		localPrototypes.pop_back();
 	}
 
 	void PTXParser::State::argumentListBegin( YYLTYPE& location )
@@ -992,7 +1014,7 @@ namespace parser
 		statement.directive = ir::PTXStatement::EndParam;
 		statement.isReturnArgument = false;
 	
-		statementEnd( location );		
+		statementEnd( location );
 	}
 
 	void PTXParser::State::returnArgumentListBegin( YYLTYPE& location )
@@ -1024,6 +1046,8 @@ namespace parser
 		report( "  Rule: .func" );
 		statement.directive = ir::PTXStatement::Func;
 		
+		localOperands.push_back( StringList() );
+		
 		statementEnd( location );
 	}
 
@@ -1053,9 +1077,11 @@ namespace parser
 					<< " already declared in this scope.", 
 					DuplicateDeclaration );
 			}
-		
-			for( StringList::iterator operand = localOperands.begin(); 
-				operand != localOperands.end(); ++operand )
+
+			assert(!localOperands.empty());
+
+			for( StringList::iterator operand = localOperands.back().begin(); 
+				operand != localOperands.back().end(); ++operand )
 			{
 				report( "   Local variable " << *operand 
 					<< " went out of scope" );
@@ -1064,8 +1090,8 @@ namespace parser
 				operands.erase( fi );
 			}
 	
-			localOperands.clear();
-			
+			localOperands.pop_back();
+		
 			statement.directive = ir::PTXStatement::EndFuncDec;
 			statementEnd( location );
 		}
@@ -1106,6 +1132,8 @@ namespace parser
 		prototype.name = name;
 	
 		statementEnd( location );
+		
+		localOperands.push_back( StringList() );
 	}	
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )
@@ -1180,7 +1208,7 @@ namespace parser
 		
 		if( inEntry )
 		{
-			localOperands.push_back( statement.name );
+			localOperands.back().push_back( statement.name );
 		}
 	}
 
@@ -1981,9 +2009,9 @@ namespace parser
 			ir::PTXOperand( ir::PTXOperand::FunctionName, 
 			ir::PTXOperand::TypeSpecifier_invalid, name ) ) );
 	
-		localPrototypes.push_back( name );
-		localOperands.push_back( name );
-	
+		localPrototypes.back().push_back( name );
+		localOperands.back().push_back( name );
+		
 		statement.directive     = ir::PTXStatement::FunctionPrototype;
 		statement.returnTypes   = prototype.returnTypes;
 		statement.argumentTypes = prototype.argumentTypes;
@@ -2666,7 +2694,6 @@ namespace parser
 				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
 			delete[] temp;
 		
-
 			report("parse error");
 			report(e.what());
 			throw e;

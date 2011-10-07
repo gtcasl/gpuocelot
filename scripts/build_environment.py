@@ -76,9 +76,9 @@ def getBoostPaths():
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
 	elif os.name == 'nt':
-		boost_path = '../../../../tools/boost_1_46_1'
+		boost_path = '../../tools/boost_1_46_1'
 		bin_path = boost_path + "/bin"
-		lib_path = boost_path + "/lib/win32"
+		lib_path = boost_path + "/lib/win" + os.environ['VC_BITNESS']
 		inc_path = boost_path + "/"
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
@@ -103,7 +103,7 @@ def getFlexPaths(env):
 	if os.name == 'posix':
 		inc_path = ['/usr/include']
 	elif os.name == 'nt':
-		inc_path = inc_path = ['../../../../tools/MinGW/msys/1.0/include']
+		inc_path = inc_path = ['../../tools/MinGW/msys/1.0/include']
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is FLEX installed?'
 
@@ -181,6 +181,11 @@ def getLLVMPaths(enabled):
 		if lib[0:2] == "-L":
 			libs.remove(lib)
 
+	# remove inc_path from cflags
+	for flag in cflags:
+		if flag[0:2] == "-I":
+			cflags.remove(flag)
+
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
 def getTools():
@@ -201,19 +206,26 @@ OldEnvironment = Environment;
 # this dictionary maps the name of a compiler program to a dictionary mapping the name of
 # a compiler switch of interest to the specific switch implementing the feature
 gCompilerOptions = {
-		'gcc' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'gcc' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g', 
 			'exception_handling' : '', 'standard': ''},
-		'g++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'g++' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g', 
 			'exception_handling' : '', 'standard': '-std=c++0x'},
-		'c++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'c++' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '',
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
-		'cl'  : {'warn_all' : '', 'warn_errors' : '/WX',
-				'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 
-				'exception_handling' : '/EHsc', 'standard': '-DYY_NO_UNISTD_H'}
+		'cl'  : {'warn_all' : '/Wall',
+				 'warn_errors' : '/WX', 
+		         'optimization' : ['/Ox', '/MD', '/Zi', '/DNDEBUG'], 
+				 'debug' : ['/Zi', '/Od', '/D_DEBUG', '/RTC1', '/MDd'], 
+				 'exception_handling': '/EHsc', 
+				 'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
+				 	'/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H']}
 	}
 
 
@@ -340,6 +352,8 @@ def getExtraLibs():
 def fixPath(path):
 	if (os.name == 'nt'):
 		return path.replace('\\', '\\\\')
+	else:
+		return path
  
 def defineConfigFlags(env):
 	
@@ -415,8 +429,13 @@ def Environment():
 		allowed_values = ('none', 'basic', 'full')))
 
 	# add a variable to determine the install path
+	default_install_path = '/usr/local'
+	
+	if 'OCELOT_INSTALL_PATH' in os.environ:
+		default_install_path = os.environ['OCELOT_INSTALL_PATH']
+	
 	vars.Add(PathVariable('install_path', 'The ocelot install path',
-		'/usr/local'))
+		default_install_path))
 
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \
@@ -467,6 +486,9 @@ def Environment():
 	if os.name == 'nt':
 		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
 		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
+	
+	# include the build directory in case of generated files
+	env.Prepend(CPPPATH = env.Dir('.'))
 
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
@@ -519,9 +541,6 @@ def Environment():
 	# set ocelot libs
 	ocelot_libs = '-locelot'
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-	
-	# include the build directory in case of generated files
-	env.Prepend(CPPPATH = env.Dir('.'))
 
 	# generate OcelotConfig flags
 	defineConfigFlags(env)

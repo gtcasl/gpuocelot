@@ -370,7 +370,6 @@ namespace ir {
 		unsigned int modifier;
 
 		union {
-
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
@@ -479,7 +478,7 @@ namespace ir {
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
-				at analysis time
+				at analysis time for use at runtime
 		*/
 		
 		union
@@ -501,6 +500,7 @@ namespace ir {
 			/*! \brief Is this a kernel argument in the parameter space? */
 			bool isArgument;
 		};
+		
 		/*!	The following are used for debugging information at runtime. */
 	public:
 		/*! \brief The index of the statement that this instruction was 
@@ -508,6 +508,11 @@ namespace ir {
 		unsigned int statementIndex;
 		/*! \brief The program counter of the instruction */
 		unsigned int pc;
+
+		/*!	The following are used for debugging meta-data. */
+	public:
+		/*! \brief Meta-data attached to the instruction */
+		std::string metadata;
 	};
 
 }

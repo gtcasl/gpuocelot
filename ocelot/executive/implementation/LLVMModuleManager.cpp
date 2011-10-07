@@ -1296,14 +1296,17 @@ LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 {
-	DatabaseMessage message;
+	if(!killed())
+	{
+		DatabaseMessage message;
 	
-	message.type = DatabaseMessage::KillThread;
+		message.type = DatabaseMessage::KillThread;
 	
-	send(&message);
+		send(&message);
 
-	DatabaseMessage* reply;	
-	receive(reply);
+		DatabaseMessage* reply;	
+		receive(reply);
+	}
 	
 	for(KernelVector::iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel)

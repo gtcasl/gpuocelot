@@ -20,13 +20,14 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
 
 static void simplifyCall(ir::PTXKernel& kernel,
-	ir::ControlFlowGraph::iterator block, ir::PTXInstruction& call,
+	ir::ControlFlowGraph::iterator block,
+	ir::BasicBlock::InstructionList::iterator callIterator,
 	analysis::DataflowGraph& dfg)
 {
 	typedef std::unordered_set<std::string> StringSet;
@@ -35,8 +36,12 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	typedef std::vector<ir::BasicBlock::InstructionList::iterator>
 		InstructionVector;
 
+	ir::PTXInstruction& call = static_cast<ir::PTXInstruction&>(**callIterator);
+
 	// Get the names of parameters
 	StringSet parameterNames;
+	StringSet inputNames;
+	StringSet outputNames;
 	
 	report("  return arguments:");
 	
@@ -47,6 +52,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
 		report("   " << parameter->identifier);
 		parameterNames.insert(parameter->identifier);
+		outputNames.insert(parameter->identifier);
 	}
 
 	report("  input arguments:");
@@ -57,15 +63,17 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
 		report("   " << parameter->identifier);
 		parameterNames.insert(parameter->identifier);
+		inputNames.insert(parameter->identifier);
 	}
 	
 	// Find the registers that are mapped to these parameters
 	RegisterMap nameToRegister;
 	InstructionVector killList;
 	
-	for(ir::BasicBlock::InstructionList::iterator
-		instruction = block->instructions.begin();
-		instruction != block->instructions.end(); ++instruction)
+	report("  searching for argument accesses");
+	for(ir::BasicBlock::InstructionList::reverse_iterator instruction =
+		ir::BasicBlock::InstructionList::reverse_iterator(callIterator);
+		instruction != block->instructions.rend(); ++instruction)
 	{
 		ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
 			**instruction);
@@ -76,8 +84,13 @@ static void simplifyCall(ir::PTXKernel& kernel,
 			{
 				if(ptx.d.addressMode == ir::PTXOperand::Address)
 				{
-					if(parameterNames.count(ptx.d.identifier) != 0)
+					StringSet::iterator input =
+						inputNames.find(ptx.d.identifier);
+					
+					if(inputNames.end() != input)
 					{
+						report("   found input '" << ptx.d.identifier << "'");
+	
 						if(ptx.a.addressMode == ir::PTXOperand::Register)
 						{
 							assert(nameToRegister.count(ptx.d.identifier) == 0);
@@ -87,7 +100,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 							{
 								nameToRegister.insert(std::make_pair(
 									ptx.d.identifier, ptx.a.reg));
-								killList.push_back(instruction);
+								killList.push_back(--instruction.base());
 							}
 							else
 							{
@@ -121,18 +134,33 @@ static void simplifyCall(ir::PTXKernel& kernel,
 							ptx.opcode = ir::PTXInstruction::Mov;
 							ptx.d = temp;
 						}
+						
+						inputNames.erase(input);
 					}
 				}
 			}
 		}
-		else if(ptx.opcode == ir::PTXInstruction::Ld)
+	}
+	
+	for(ir::BasicBlock::InstructionList::iterator instruction = callIterator;
+		instruction != block->instructions.end(); ++instruction)
+	{
+		ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
+			**instruction);
+	
+		if(ptx.opcode == ir::PTXInstruction::Ld)
 		{
 			if(ptx.addressSpace == ir::PTXInstruction::Param)
 			{
 				if(ptx.a.addressMode == ir::PTXOperand::Address)
 				{
-					if(parameterNames.count(ptx.a.identifier) != 0)
+					StringSet::iterator output =
+						outputNames.find(ptx.a.identifier);
+					
+					if(outputNames.end() != output)
 					{
+						report("   found output '" << ptx.a.identifier << "'");
+	
 						assert(ptx.d.addressMode == ir::PTXOperand::Register);
 						assert(nameToRegister.count(ptx.a.identifier) == 0);
 						// if the types match, kill the load
@@ -157,7 +185,8 @@ static void simplifyCall(ir::PTXKernel& kernel,
 							ptx.modifier =
 								ir::PTXInstruction::Modifier_invalid;
 						}
-
+						
+						outputNames.erase(output);
 					}
 				}
 			}
@@ -265,14 +294,14 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 				if(_simplifyAll)
 				{
 					report(" For " << ptx.toString());
-					simplifyCall(kernel, block, ptx, *dfg);
+					simplifyCall(kernel, block, instruction, *dfg);
 				}
 				else if(k.module->kernels().count(ptx.a.identifier) == 0)
 				{
 					if(_externals->find(ptx.a.identifier) != 0)
 					{
 						report(" For " << ptx.toString());
-						simplifyCall(kernel, block, ptx, *dfg);
+						simplifyCall(kernel, block, instruction, *dfg);
 					}
 				}
 			}

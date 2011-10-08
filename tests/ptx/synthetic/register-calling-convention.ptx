@@ -1,0 +1,49 @@
+
+
+.version 3.0
+.target sm_20
+.address_size 64
+
+	.file	1 "saxpy.cpp3.i"
+	.file	2 "saxpy.cu"
+
+.entry _Z5saxpyPdPKdS_m(
+	.param .u64 _Z5saxpyPdPKdS_m_param_0,
+	.param .u64 _Z5saxpyPdPKdS_m_param_1,
+	.param .u64 _Z5saxpyPdPKdS_m_param_2,
+	.param .u64 _Z5saxpyPdPKdS_m_param_3
+)
+{
+	.reg .f64 	%fd<5>;
+	.reg .s32 	%r<4>;
+	.reg .s64 	%rl<10>;
+
+
+
+	ld.param.u64 	%rl1, [_Z5saxpyPdPKdS_m_param_0]; // variance: 0
+	ld.param.u64 	%rl2, [_Z5saxpyPdPKdS_m_param_1]; // variance: 0
+	ld.param.u64 	%rl3, [_Z5saxpyPdPKdS_m_param_2]; // variance: 0
+	cvta.to.global.u64 	%rl4, %rl1; // variance: 1
+	cvta.to.global.u64 	%rl5, %rl2; // variance: 1
+	cvta.to.global.u64 	%rl6, %rl3; // variance: 1
+	.loc 2 5 1
+	mov.u32 	%r1, %ntid.x; // variance: 1
+	mov.u32 	%r2, %ctaid.x; // variance: 1
+	mul.lo.s32 	%r3, %r2, %r1; // variance: 1
+	ldu.global.f64 	%fd1, [%rl6+8]; // variance: 1
+	mul.wide.u32 	%rl7, %r3, 8; // variance: 1
+	add.s64 	%rl8, %rl4, %rl7; // variance: 1
+fproto: .callprototype (.reg .f64) ldwseq_global_f64 (.reg .s64);
+	call.uni (%fd2), _Z_intrinsic_ldwseq_global_f64, ([%rl8]), fproto; // variance: 2
+	add.s64 	%rl9, %rl5, %rl7; // variance: 1
+fproto: .callprototype (.reg .f64) ldwseq_global_f64 (.reg .s64);
+	call.uni (%fd3), _Z_intrinsic_ldwseq_global_f64 ([%rl9]), fproto; // variance: 2
+	.loc 2 10 1
+	fma.rn.f64 	%fd4, %fd3, %fd1, %fd2; // variance: 2
+fproto: .callprototype sdwseq_global_f64 (.reg .s64, .reg .f64);
+	call.uni _Z_intrinsic_stwseq_global_f64 ([%rl8], %fd4), fproto; // variance: 2
+	.loc 2 11 2
+	ret; // variance: 1
+}
+
+

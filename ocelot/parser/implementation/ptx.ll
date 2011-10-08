@@ -535,7 +535,9 @@ WHITESPACE [ \t]*
                                     MIN( strlen( yytext ) - 1, 1024 ) ); \
                                     return TOKEN_STRING;}
 
-{COMMENT}                       { nextColumn += strlen( yytext ); }
+{COMMENT}                       { commentLength = strlen( yytext );
+                                    sstrcpy( comment, yytext, 1024 );
+                                    nextColumn += commentLength; }
 {TAB}                           { nextColumn += strlen( yytext ) * 4; }
 {SPACE}                         { nextColumn += strlen( yytext ); }
 {NEW_LINE}                      { nextColumn = 1; }

@@ -21,7 +21,7 @@ namespace parser
 {
 	PTXLexer::PTXLexer( std::istream* arg_yyin, std::ostream* arg_yyout ):
 		yyFlexLexer( arg_yyin, arg_yyout ), yylval( 0 ), column( 0 ), 
-		nextColumn( 0 )
+		nextColumn( 0 ), commentLength( 0 )
 	{
 	
 	}

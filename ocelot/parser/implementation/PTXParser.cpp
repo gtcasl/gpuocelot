@@ -604,6 +604,18 @@ namespace parser
 		statement.line   = location.first_line;
 		statement.column = location.first_column;		
 
+		if(!statements.empty())
+		{
+			if(comment.find("//!") == 0)
+			{
+				statements.back().instruction.metadata = std::move( comment );
+			}
+			else
+			{
+				comment.clear();
+			}
+		}
+		
 		report( "   At (" << statement.line << "," << statement.column
 			<< ") : Parsed statement " << statements.size() 
 			<< " \"" << statement.toString() << "\"" );

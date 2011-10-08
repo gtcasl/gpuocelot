@@ -776,6 +776,33 @@ Block::const_successor_iterator::operator const_pointer_iterator()
 {
 	return _block;
 }
+		
+Block::const_successor_iterator::operator const_cfg_pointer_iterator()
+{
+	return _successor;
+}
+		
+void Block::const_successor_iterator::align()
+{
+	if(_block.end()) return;
+	
+	while(_successor != _block->successors.end())
+	{
+		const_pointer_iterator block = _block;
+	
+		if(block->contains(*_successor))
+		{
+			// skip basic blocks contained within the same block
+			report("    skipping successor " << (*_successor)->label);
+			++_successor;
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
 
 Block::predecessor_iterator::predecessor_iterator()
 {

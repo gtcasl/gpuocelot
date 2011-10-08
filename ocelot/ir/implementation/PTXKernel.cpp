@@ -666,8 +666,15 @@ void PTXKernel::write(std::ostream& stream) const
 			for(analysis::ProgramStructureGraph::Block::iterator
 				instruction = block->begin(); instruction != block->end();
 				++instruction) {
+				PTXInstruction& ptx =
+					static_cast<PTXInstruction&>(**instruction);
+				
 				report(" " << (*instruction)->toString());
-				stream << "\t\t" << (*instruction)->toString() << ";\n";
+				stream << "\t\t" << (*instruction)->toString() << ";";
+				
+				if(!ptx.metadata.empty()) stream << " " << ptx.metadata;
+				
+				stream << "\n";
 			}
 		}
 		

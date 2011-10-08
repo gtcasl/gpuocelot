@@ -121,6 +121,7 @@ namespace parser
 					FunctionPrototype prototype;
 					
 					ir::PTXStatement::Directive directive;
+					std::string comment;
 									
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 

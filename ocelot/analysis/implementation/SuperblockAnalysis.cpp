@@ -6,6 +6,7 @@
 
 // Ocelot Includes
 #include <ocelot/analysis/interface/SuperblockAnalysis.h>
+#include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -23,9 +24,16 @@
 namespace analysis
 {
 
-SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
-: _cfg(&c)
+SuperblockAnalysis::SuperblockAnalysis(unsigned int b)
+: _cfg(0), _blockSize(0)
 {
+
+}
+
+void SuperblockAnalysis::analyze(ir::IRKernel& kernel)
+{
+	_cfg = kernel.cfg();
+
 	typedef std::unordered_set<ir::ControlFlowGraph::iterator> BlockSet;
 	typedef std::list<ir::ControlFlowGraph::iterator>          BlockList;
 		

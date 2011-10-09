@@ -7,6 +7,8 @@
 #pragma once
 
 // Ocelot Includes
+#include <ocelot/analysis/interface/Analysis.h>
+
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 
 namespace analysis
@@ -18,7 +20,7 @@ namespace analysis
 	Examples of program structures from literature may include Superblocks,
 		Hyperblocks, Treegions, or Subkernels.
 */
-class ProgramStructureGraph
+class ProgramStructureGraph : public KernelAnalysis
 {
 public:
 	class Block
@@ -486,6 +488,8 @@ public:
 	size_t size() const;
 	/*! \brief Is the graph empty? */
 	bool empty() const;
+	/*! \brief Clear the graph */
+	void clear();
 	
 protected:
 	/*! \brief Create and link a new block against this graph */

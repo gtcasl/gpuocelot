@@ -174,6 +174,7 @@ version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
 };
 
 identifier : '_' | TOKEN_IDENTIFIER | opcode;
+optionalIdentifier : /* empty string */ | identifier;
 
 identifierList : identifier
 {
@@ -423,6 +424,11 @@ parameter : TOKEN_PARAM
 	state.locationAddress( $<value>1 );
 };
 
+parameter : TOKEN_REG
+{
+	state.locationAddress( $<value>1 );
+};
+
 argumentDeclaration : parameter addressableVariablePrefix identifier 
 	arrayDimensions
 {
@@ -655,7 +661,7 @@ labelOperand : identifier
 	state.labelOperand( $<text>1 );
 };
 
-returnType : TOKEN_PARAM dataTypeId identifier
+returnType : parameter dataTypeId optionalIdentifier
 {
 	state.returnType( $<value>2 );
 };
@@ -664,7 +670,7 @@ returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
 returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
 
-argumentType : TOKEN_PARAM dataTypeId identifier
+argumentType : parameter dataTypeId optionalIdentifier
 {
 	state.argumentType( $<value>2 );
 };

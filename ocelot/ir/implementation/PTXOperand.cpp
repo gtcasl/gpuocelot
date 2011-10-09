@@ -643,25 +643,21 @@ std::string ir::PTXOperand::toString() const {
 		return "_";
 	} else if( addressMode == Indirect ) {
 		std::stringstream stream;
-		if( offset < 0 ) {
-			if ( identifier != "" ) {
-				stream << identifier;
-			}
-			else {
-				stream << "%r" << reg;
-			}
-			stream << " + " << ( offset );
-			return stream.str();
-		} else {
-			if ( identifier != "" ) {
-				stream << identifier;
-			}
-			else {
-				stream << "%r" << reg;
-			}
-			stream << " + " << ( offset );
-			return stream.str();
+
+		if ( identifier != "" ) {
+			stream << identifier;
 		}
+		else {
+			stream << "%r" << reg;
+		}
+	
+		if( offset < 0 ) {
+			stream << " - " << ( offset );
+		} else if ( offset > 0 ) {
+			stream << " + " << ( offset );
+		}
+
+		return stream.str();
 	} else if( addressMode == Address ) {
 		std::stringstream stream;
 		if( offset == 0 ) {

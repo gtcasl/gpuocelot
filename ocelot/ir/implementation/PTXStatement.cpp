@@ -356,13 +356,20 @@ namespace ir {
 				break;
 			}
 			case FunctionPrototype: {
-				std::string result = name + ": .callprototype (";
-				for(TypeVector::const_iterator type = returnTypes.begin(); 
-					type != returnTypes.end(); ++type) {
-					if( type != returnTypes.begin() ) result += ", ";
-					result += ".param ." + PTXOperand::toString( *type ) + " _";
+				std::string result = name + ": .callprototype ";
+				
+				if(!returnTypes.empty()) {
+					result += "(";
+					for(TypeVector::const_iterator type = returnTypes.begin(); 
+						type != returnTypes.end(); ++type) {
+						if( type != returnTypes.begin() ) result += ", ";
+						result += ".param ." +
+							PTXOperand::toString( *type ) + " _";
+					}
+					result += ") ";
 				}
-				result += ") _ (";
+				
+				result += "_ (";
 				for(TypeVector::const_iterator type = argumentTypes.begin(); 
 					type != argumentTypes.end(); ++type) {
 					if( type != argumentTypes.begin() ) result += ", ";

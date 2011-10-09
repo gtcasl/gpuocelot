@@ -13,6 +13,7 @@
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
 
 #include <ocelot/analysis/interface/SuperblockAnalysis.h>
+#include <ocelot/analysis/interface/HyperblockAnalysis.h>
 #include <ocelot/analysis/interface/DefaultProgramStructure.h>
 
 #include <ocelot/api/interface/OcelotConfiguration.h>
@@ -453,12 +454,17 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 				}
 				if ((instr.*operands[i]).addressMode == PTXOperand::Register
 					|| (instr.*operands[i]).addressMode 
-					== PTXOperand::Indirect) {
-					if ((instr.*operands[i]).vec != PTXOperand::v1) {
+					== PTXOperand::Indirect || (instr.*operands[i]).addressMode 
+					== PTXOperand::ArgumentList) {
+					if ((instr.*operands[i]).vec != PTXOperand::v1
+						|| (instr.*operands[i]).addressMode
+						== PTXOperand::ArgumentList) {
 						for (PTXOperand::Array::iterator a_it = 
 							(instr.*operands[i]).array.begin(); 
-							a_it != (instr.*operands[i]).array.end();
-							++a_it) {
+							a_it != (instr.*operands[i]).array.end(); ++a_it) {
+							if (a_it->addressMode ==
+								PTXOperand::Address) continue;
+							
 							
 							RegisterMap::iterator it =
 								map.find(a_it->registerName());
@@ -598,12 +604,25 @@ void PTXKernel::write(std::ostream& stream) const
 				ir::PTXInstruction* inst =
 					static_cast<ir::PTXInstruction *>(*instruction);
 				
-				if (inst->opcode == ir::PTXInstruction::Call
-					&& inst->a.addressMode == PTXOperand::Register ) {
+				if (inst->opcode == ir::PTXInstruction::Call) {
+					bool needsPrototype = false;
+					std::string name;
+											
+					if (inst->a.addressMode == PTXOperand::FunctionName) {
+						needsPrototype = module->prototypes().count(
+							inst->a.identifier) == 0;
+						if (needsPrototype) {
+							name = inst->a.identifier;
+						}
+					}
+					else if (inst->a.addressMode == PTXOperand::Register) {
+						name = inst->c.identifier;
+						needsPrototype = true;
+					}
+					
 					// indirect call
-					if (indirectCalls.find(inst->c.identifier)
-						== indirectCalls.end()) {
-						indirectCalls[inst->c.identifier] = inst;
+					if (needsPrototype) {
+						indirectCalls[name] = inst;
 					}
 				}
 			}
@@ -615,20 +634,25 @@ void PTXKernel::write(std::ostream& stream) const
 				indCall != indirectCalls.end(); ++indCall) {
 
 				stream << "\t" << indCall->first << ": .callprototype ";
-				stream << "(";
-
-				unsigned int n = 0;
-				for (ir::PTXOperand::Array::const_iterator
-					arg_it = indCall->second->d.array.begin();
-					arg_it != indCall->second->d.array.end();
-					++arg_it, ++n) {
 				
-					stream << (n ? ", " : "") << ".param ."
-						<< ir::PTXOperand::toString(arg_it->type) << " _";
-				}
+				if (!indCall->second->d.array.empty()) {
+					stream << "(";
+				
+					unsigned int n = 0;
+					for (ir::PTXOperand::Array::const_iterator
+						arg_it = indCall->second->d.array.begin();
+						arg_it != indCall->second->d.array.end();
+						++arg_it, ++n) {
+				
+						stream << (n ? ", " : "") << ".param ."
+							<< ir::PTXOperand::toString(arg_it->type) << " _";
+					}
 			
-				stream << ") _ (";
-				n = 0;
+					stream << ")";
+				}
+				
+				stream << " _ (";
+				unsigned int n = 0;
 				for (ir::PTXOperand::Array::const_iterator
 					arg_it = indCall->second->b.array.begin();
 					arg_it != indCall->second->b.array.end();
@@ -748,14 +772,24 @@ analysis::ProgramStructureGraph* ir::PTXKernel::getProgramStructureGraph() {
 	const std::string& type =
 		api::OcelotConfiguration::get().optimizations.programStructureType;
 	
+	analysis::ProgramStructureGraph* graph = 0;
+	
 	if(type == "superblock")
 	{
-		return new analysis::SuperblockAnalysis(*cfg());		
+		graph = new analysis::SuperblockAnalysis();		
+	}
+	else if (type == "hyperblock")
+	{
+		graph = new analysis::HyperblockAnalysis();
 	}
 	else
 	{
-		return new analysis::DefaultProgramStructure(*cfg());
+		graph = new analysis::DefaultProgramStructure();
 	}
+	
+	graph->analyze(*this);
+	
+	return graph;
 }
 
 }

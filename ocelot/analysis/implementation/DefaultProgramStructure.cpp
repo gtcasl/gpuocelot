@@ -6,6 +6,7 @@
 
 // Ocelot Includes
 #include <ocelot/analysis/interface/DefaultProgramStructure.h>
+#include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -20,8 +21,15 @@
 namespace analysis
 {
 
-DefaultProgramStructure::DefaultProgramStructure(ir::ControlFlowGraph& cfg)
+DefaultProgramStructure::DefaultProgramStructure()
 {
+
+}
+
+void DefaultProgramStructure::analyze(ir::IRKernel& kernel)
+{
+	ir::ControlFlowGraph& cfg = *kernel.cfg();
+
 	iterator entry = newBlock();
 
 	entry->insert(cfg.get_entry_block());

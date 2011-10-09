@@ -1541,6 +1541,12 @@ bool ProgramStructureGraph::empty() const
 	return _blocks.empty();
 }
 
+void ProgramStructureGraph::clear()
+{
+	_blocks.clear();
+	_nextId = 0;
+}
+
 ProgramStructureGraph::iterator ProgramStructureGraph::newBlock()
 {
 	iterator block = _blocks.insert(_blocks.end(), Block(this, ++_nextId));

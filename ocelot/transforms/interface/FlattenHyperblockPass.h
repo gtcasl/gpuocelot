@@ -1,7 +1,7 @@
-/*! \file   AggressivePredication.h
+/*! \file   FlattenHyperblockPass.h
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date   Saturday October 8, 2011
-	\brief  The header file for the AggressivePredicationPass class.
+	\brief  The header file for the FlattenHyperblockPass class.
 */
 
 #pragma once
@@ -12,11 +12,11 @@
 namespace transforms
 {
 
-/*! \brief Uses heuristics to duplicate blocks and add them to hyperblocks */
-class AggressivePredicationPass : public KernelPass
+/*! \brief Merge all basic blocks in a hyperblock together using predication */
+class FlattenHyperblockPass : public KernelPass
 {
 public:
-	AggressivePredicationPass(unsigned int maxBlockSize = 0);
+	FlattenHyperblockPass();
 
 public:
 	/*! \brief Initialize the pass using a specific module */

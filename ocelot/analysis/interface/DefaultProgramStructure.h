@@ -16,7 +16,11 @@ namespace analysis
 class DefaultProgramStructure : public ProgramStructureGraph
 {
 public:
-	DefaultProgramStructure(ir::ControlFlowGraph& cfg);
+	DefaultProgramStructure();
+
+public:
+	/*! \brief Build from a kernel CFG */
+	void analyze(ir::IRKernel& k);
 
 };
 

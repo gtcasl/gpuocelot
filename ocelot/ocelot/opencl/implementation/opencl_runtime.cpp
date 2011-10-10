@@ -52,8 +52,7 @@ clCreateContext(const cl_context_properties * properties,
                 void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
                 void *                        user_data,
                 cl_int *                      errcode_ret) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return NULL;
+	return opencl::OpenCLRuntimeInterface::get()->clCreateContext(properties, num_devices, devices, pfn_notify, user_data, errcode_ret);
 }
 
 cl_context
@@ -85,8 +84,7 @@ clCreateCommandQueue(cl_context                     context,
                      cl_device_id                   device, 
                      cl_command_queue_properties    properties,
                      cl_int *                       errcode_ret) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return NULL;
+	return opencl::OpenCLRuntimeInterface::get()->clCreateCommandQueue(context, device, properties, errcode_ret);
 }
 
 cl_int
@@ -228,8 +226,7 @@ clCreateProgramWithSource(cl_context        context,
                           const char **     strings,
                           const size_t *    lengths,
                           cl_int *          errcode_ret) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return NULL;
+	return opencl::OpenCLRuntimeInterface::get()->clCreateProgramWithSource(context, count, strings, lengths, errcode_ret);
 }
 
 cl_program
@@ -257,8 +254,7 @@ clBuildProgram(cl_program           program,
                const char *         options, 
                void (CL_CALLBACK *  pfn_notify)(cl_program /* program */, void * /* user_data */),
                void *               user_data) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clBuildProgram(program, num_devices, device_list, options, pfn_notify, user_data);
 }
 
 cl_int

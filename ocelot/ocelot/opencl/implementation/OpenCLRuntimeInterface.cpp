@@ -93,3 +93,44 @@ cl_int opencl::OpenCLRuntimeInterface::clGetDeviceInfo(cl_device_id device,
 	return CL_UNIMPLEMENTED;
 }
 
+cl_context opencl::OpenCLRuntimeInterface::clCreateContext(const cl_context_properties * properties,
+	cl_uint num_devices,
+	const cl_device_id * devices,
+	void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
+	void * user_data,
+	cl_int * errcode_ret) {
+	assertM(false, "unimplemented");
+	*errcode_ret = CL_UNIMPLEMENTED;
+	return NULL;
+}
+
+cl_command_queue opencl::OpenCLRuntimeInterface::clCreateCommandQueue(cl_context context, 
+	cl_device_id device, 
+	cl_command_queue_properties properties,
+	cl_int * errcode_ret) {
+	assertM(false, "unimplemented");
+	*errcode_ret = CL_UNIMPLEMENTED;
+	return NULL;
+}
+
+cl_program opencl::OpenCLRuntimeInterface::clCreateProgramWithSource(cl_context context,
+	cl_uint count,
+	const char ** strings,
+	const size_t * lengths,
+	cl_int * errcode_ret) {
+	assertM(false, "unimplemented");
+	*errcode_ret = CL_UNIMPLEMENTED;
+	return NULL;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clBuildProgram(cl_program program,
+	cl_uint num_devices,
+	const cl_device_id * device_list,
+	const char * options, 
+	void (CL_CALLBACK * pfn_notify)(cl_program, void *),
+	void * user_data) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
+

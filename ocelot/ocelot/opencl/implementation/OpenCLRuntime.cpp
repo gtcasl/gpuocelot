@@ -176,6 +176,22 @@ unsigned int opencl::HostThreadContext::mapParameters(const ir::Kernel* kernel) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+opencl::Program::Program() : source(""), ptx("") {
+	std::stringstream stream;
+	stream << "__clmodule" << id;
+	module = stream.str();
+	id++;
+}
+
+void opencl::Program::loadSource(const std::string & s) {
+	source = s;	
+}
+
+void opencl::Program::loadPTX(const std::string & p) {
+	ptx = p;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 opencl::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
 	const std::string& k) : handle(h), module(m), kernel(k) {
 }
@@ -383,7 +399,7 @@ void opencl::OpenCLRuntime::_unbind() {
 	executive::Device& device = _getDevice();
 	assert(_getCurrentThread().selectedDevice == _selectedDevice);
 	
-	_selectedDevice = -1;
+	_selectedDevice = NULL;
 	assert(device.selected());
 	device.unselect();
 }
@@ -400,9 +416,7 @@ void opencl::OpenCLRuntime::_release() {
 }
 
 executive::Device& opencl::OpenCLRuntime::_getDevice() {
-	assert(_selectedDevice >= 0);
-	assert(_selectedDevice < (int)_devices.size());
-	return *_devices[_selectedDevice];
+	return *((executive::Device *)_selectedDevice);
 }
 
 std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
@@ -429,6 +443,21 @@ opencl::HostThreadContext& opencl::OpenCLRuntime::_getCurrentThread() {
 	return t->second;
 }
 
+unsigned int opencl::Program::id = 0;
+
+opencl::Program & opencl::OpenCLRuntime::_createProgramSource(const std::string & source) {
+	_programs.push_back(Program());
+	Program & p = _programs[_programs.size()-1];
+	p.loadSource(source);
+	return p;
+}
+
+opencl::Program & opencl::OpenCLRuntime::_createProgramBinary(const std::string & binary) {
+	_programs.push_back(Program());
+	Program & p = _programs[_programs.size()-1];
+	p.loadPTX(binary);
+	return p;
+}
 
 void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module) {
 	if(module->second.loaded()) return;
@@ -478,7 +507,7 @@ void opencl::OpenCLRuntime::_registerAllModules() {
 
 opencl::OpenCLRuntime::OpenCLRuntime() : _inExecute(false), _deviceCount(0),
 	_devicesLoaded(false), 
-	_selectedDevice(-1), _nextSymbol(1), _computeCapability(2), _flags(0), 
+	_selectedDevice(NULL), _nextSymbol(1), _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 
@@ -984,22 +1013,20 @@ cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform,
 		result = CL_INVALID_VALUE;
 	else {
 		switch(param_name) {
-			case CL_PLATFORM_NAME:
-				if(param_value && param_value_size < strlen("Ocelot"))
+			case CL_PLATFORM_NAME: {
+				char ocelotPlatform[] = "Ocelot";						
+				if(param_value && param_value_size < strlen(ocelotPlatform))
 					result = CL_INVALID_VALUE;
 				else {
 					if(param_value != 0)
-						strcpy((char *)param_value, "Ocelot");
+						strcpy((char *)param_value, ocelotPlatform);
 					if(param_value_size_ret != 0)
-						*param_value_size_ret = strlen("Ocelot");
+						*param_value_size_ret = strlen(ocelotPlatform);
 				}
 				break;
+			}
 			case CL_PLATFORM_VERSION: {
-			#ifdef VERSION
-				char ocelotVersion[] = VERSION;
-			#else
-				char ocelotVersion[] = "";
-			#endif
+				char ocelotVersion[] = "2.1";
 				if(param_value && param_value_size < strlen(ocelotVersion))
 					result = CL_INVALID_VALUE;
 				else {
@@ -1085,4 +1112,167 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 
 	_unlock();
 	return _setLastError(result);
+}
+
+cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * properties,
+	cl_uint num_devices,
+	const cl_device_id * devices,
+	void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
+	void * user_data,
+	cl_int * errcode_ret) {
+	_lock();
+	*errcode_ret = CL_SUCCESS;
+	HostThreadContext * pThread = NULL;
+
+	//Assume ocelot platform is always availbe, but platform_id in properties should be zero
+	if(properties && properties[0] && (properties[0] != CL_CONTEXT_PLATFORM 
+		|| properties[2] != 0 /*properties terminates with 0*/ ))
+		*errcode_ret = CL_INVALID_PROPERTY;
+	else if(properties[1] != 0 /*platform_id should be zero*/)
+		*errcode_ret = CL_INVALID_PLATFORM;
+	else if(devices == 0 || num_devices == 0
+		|| (pfn_notify == 0 && user_data != 0))
+		*errcode_ret = CL_INVALID_VALUE;
+	else if(*devices == 0)
+		*errcode_ret = CL_INVALID_DEVICE;
+	else if(pfn_notify) {
+		assertM(false, "call_back function unsupported\n");
+		*errcode_ret = CL_UNIMPLEMENTED;
+	}
+	else {
+		pThread = &_getCurrentThread();
+		pThread->validDevices.resize(num_devices);
+		for (cl_uint i = 0; i < num_devices; i++) {
+			pThread->validDevices[i] = devices[i];
+		}
+		pThread->selectedDevice = pThread->validDevices[0];
+	}
+	_setLastError(*errcode_ret);
+	_unlock();
+	return (cl_context)pThread;
+}
+
+cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context, 
+	cl_device_id device, 
+	cl_command_queue_properties properties,
+	cl_int * errcode_ret) {
+	
+	cl_command_queue queue = 0;
+	
+	_lock();
+	*errcode_ret = CL_SUCCESS;
+
+	HostThreadContext &thread = _getCurrentThread();
+	if((HostThreadContext *) context != &thread)
+		*errcode_ret = CL_INVALID_CONTEXT;
+	else if(device == 0)
+		*errcode_ret = CL_INVALID_DEVICE;
+	else {
+		std::vector<cl_device_id>::iterator d;
+		for (d = thread.validDevices.begin();
+			d != thread.validDevices.end(); ++d) {
+			if(*d == device)
+				break;
+		}
+		if(d == thread.validDevices.end()) //Not found
+			*errcode_ret = CL_INVALID_DEVICE;
+		else if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
+							CL_QUEUE_PROFILING_ENABLE))
+			*errcode_ret = CL_INVALID_VALUE;
+		else if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
+			||(properties & CL_QUEUE_PROFILING_ENABLE)) {
+			assertM(false, "unimplemented queue properties");
+			*errcode_ret = CL_INVALID_QUEUE_PROPERTIES;
+		}
+		else {
+			((executive::Device *)device)->select();
+			try {
+				queue = ((executive::Device *)device)->createStream();
+			}
+			catch (...) {
+				*errcode_ret = CL_OUT_OF_RESOURCES;
+			}
+			((executive::Device *)device)->unselect();
+		}
+	}
+	_unlock();
+	return queue;
+}
+
+cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
+	cl_uint count,
+	const char ** strings,
+	const size_t * lengths,
+	cl_int * errcode_ret) {
+	
+	cl_program program = 0;
+	
+	_lock();
+	*errcode_ret = CL_SUCCESS;
+	HostThreadContext &thread = _getCurrentThread();
+	if((HostThreadContext *)context != &thread)
+		*errcode_ret = CL_INVALID_CONTEXT;
+	else if(count == 0 || strings == 0)
+		*errcode_ret = CL_INVALID_VALUE;
+	else {
+		cl_uint i;
+		for(i = 0; i < count; i++) {
+			if(strings[i] == 0) {
+				*errcode_ret = CL_INVALID_VALUE;
+				break;
+			}
+		}
+		if(i == count) {//valid string 
+			std::stringstream stream;
+			for(i = 0; i < count; i++)
+				stream << strings[i];
+			program = (cl_program) &_createProgramSource(stream.str());
+			thread.validPrograms.push_back(program);
+		}
+	}
+	_unlock();
+
+	return program;
+}
+
+cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
+	cl_uint num_devices,
+	const cl_device_id * device_list,
+	const char * options, 
+	void (CL_CALLBACK * pfn_notify)(cl_program, void *),
+	void * user_data) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+	HostThreadContext &thread = _getCurrentThread();
+	std::vector< cl_program >::iterator p;
+	for(p = thread.validPrograms.begin();
+		 p < thread.validPrograms.end(); p++) {
+		if(*p == program)
+			break;
+	}
+	if(p == thread.validPrograms.end()) //Not found
+		result = CL_INVALID_PROGRAM;
+	else if((num_devices == 0 && device_list) || (num_devices && device_list == NULL))
+		result = CL_INVALID_VALUE;
+	else if(pfn_notify == NULL && user_data)
+		result = CL_INVALID_VALUE;
+	else {
+		for(cl_uint i = 0; i < num_devices; i++) {
+			std::vector< cl_device_id >::iterator d;
+			for(d = thread.validDevices.begin();
+				d < thread.validDevices.end(); d++) {
+				if(*d == device_list[i])
+					break;
+			}
+			if(d == thread.validDevices.end()) {//Not found
+				result = CL_INVALID_DEVICE;
+				break;
+			}
+		}
+		if(result != CL_INVALID_DEVICE) {
+		}
+	}
+
+	_unlock();
+	return result;
 }

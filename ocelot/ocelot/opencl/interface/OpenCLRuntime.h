@@ -66,10 +66,13 @@ namespace opencl {
 	class HostThreadContext {	
 	public:
 		//! index of selected device
-		int selectedDevice;
+		cl_device_id selectedDevice;
 		
 		//! array of valid device indices
-		std::vector< int > validDevices;
+		std::vector< cl_device_id > validDevices;
+
+		//! array of valid programs
+		std::vector< cl_program > validPrograms;
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
@@ -111,7 +114,25 @@ namespace opencl {
 	};
 	
 	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
+
+	//! programs created in OpenCL runtime	
+	class Program {
+	private:
+		static unsigned int id;
+	public:
+		Program();
+		void loadSource(const std::string & source);
+		void loadPTX(const std::string & ptx);
+
+	public:
+		std::string module;
+		std::string source;
+		std::string ptx;
+
+	};
 	
+	typedef std::vector< Program > ProgramVector;
+
 	//! references a kernel registered to OpenCL runtime
 	class RegisteredKernel {
 	public:
@@ -224,6 +245,10 @@ namespace opencl {
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
 		HostThreadContext& _getCurrentThread();
+		//! \brief create program binary
+		Program & _createProgramSource(const std::string & source);
+		//! \brief create program binary
+		Program & _createProgramBinary(const std::string & binary);
 		// Load module and register it with all devices
 		void _registerModule(ModuleMap::iterator module);
 		// Load module and register it with all devices
@@ -243,6 +268,9 @@ namespace opencl {
 		
 		//! Registered modules
 		ModuleMap _modules;
+
+		//! created programs
+		ProgramVector _programs;
 		
 		//! map of pthreads to thread contexts
 		HostThreadContextMap _threads;
@@ -272,7 +300,7 @@ namespace opencl {
 		bool _devicesLoaded;
 		
 		//! Currently selected device
-		int _selectedDevice;
+		cl_device_id _selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
 		int _nextSymbol;
@@ -402,6 +430,28 @@ namespace opencl {
 				    size_t param_value_size,
 					void * param_value,
 				    size_t * param_value_size_ret);
+		virtual cl_context clCreateContext(const cl_context_properties * properties,
+				    cl_uint num_devices,
+				    const cl_device_id * devices,
+				    void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
+				    void * user_data,
+				    cl_int * errcode_ret);
+		virtual cl_command_queue clCreateCommandQueue(cl_context context, 
+				    cl_device_id device, 
+				    cl_command_queue_properties properties,
+				    cl_int * errcode_ret);
+		virtual cl_program clCreateProgramWithSource(cl_context context,
+					cl_uint count,
+					const char ** strings,
+					const size_t * lengths,
+					cl_int * errcode_ret);
+		virtual cl_int clBuildProgram(cl_program program,
+					cl_uint num_devices,
+					const cl_device_id * device_list,
+					const char * options, 
+					void (CL_CALLBACK * pfn_notify)(cl_program, void *),
+					void * user_data);
+
 	};
 
 }

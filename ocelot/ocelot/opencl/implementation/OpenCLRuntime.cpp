@@ -3,6 +3,7 @@
 
 // C++ standard library includes
 #include <sstream>
+#include <fstream>
 #include <algorithm>
 
 // Ocelot includes
@@ -176,6 +177,7 @@ unsigned int opencl::HostThreadContext::mapParameters(const ir::Kernel* kernel) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+unsigned int opencl::Program::id = 0;
 opencl::Program::Program() : source(""), ptx("") {
 	std::stringstream stream;
 	stream << "__clmodule" << id;
@@ -183,12 +185,11 @@ opencl::Program::Program() : source(""), ptx("") {
 	id++;
 }
 
-void opencl::Program::loadSource(const std::string & s) {
-	source = s;	
-}
-
-void opencl::Program::loadPTX(const std::string & p) {
-	ptx = p;
+opencl::Program::Program(const std::string & s, const std::string & p) : source(s), ptx(p) {
+	std::stringstream stream;
+	stream << "__clmodule" << id;
+	module = stream.str();
+	id++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -344,21 +345,7 @@ void opencl::OpenCLRuntime::_enumerateDevices() {
 		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
 			<< "configure.ocelot.\n";
 	}
-	else
-	{
-		// Register modules that have already been loaded
-		for(ModuleMap::iterator module = _modules.begin(); 
-			module != _modules.end(); ++module) {
-			if(!module->second.loaded()) continue;
-			for(DeviceVector::iterator device = _devices.begin(); 
-				device != _devices.end(); ++device) {
-				(*device)->select();
-				(*device)->load(&module->second);
-				(*device)->setOptimizationLevel(_optimization);
-				(*device)->unselect();
-			}
-		}
-	}
+
 	
 }
 
@@ -443,26 +430,10 @@ opencl::HostThreadContext& opencl::OpenCLRuntime::_getCurrentThread() {
 	return t->second;
 }
 
-unsigned int opencl::Program::id = 0;
 
-opencl::Program & opencl::OpenCLRuntime::_createProgramSource(const std::string & source) {
-	_programs.push_back(Program());
-	Program & p = _programs[_programs.size()-1];
-	p.loadSource(source);
-	return p;
-}
-
-opencl::Program & opencl::OpenCLRuntime::_createProgramBinary(const std::string & binary) {
-	_programs.push_back(Program());
-	Program & p = _programs[_programs.size()-1];
-	p.loadPTX(binary);
-	return p;
-}
-
-void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module) {
+void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, DeviceVector & devices) {
 	if(module->second.loaded()) return;
-	module->second.loadNow();
-	
+	module->second.loadNow();	
 /*	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
 		if(texture->second.module != module->first) continue;
@@ -480,8 +451,8 @@ void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module) {
 	
 	manager.runOnModule();*/
 	
-	for(DeviceVector::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
+	for(DeviceVector::iterator device = devices.begin(); 
+		device != devices.end(); ++device) {
 		(*device)->select();
 		(*device)->load(&module->second);
 		(*device)->setOptimizationLevel(_optimization);
@@ -489,17 +460,17 @@ void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module) {
 	}
 }
 
-void opencl::OpenCLRuntime::_registerModule(const std::string& name) {
+void opencl::OpenCLRuntime::_registerModule(const std::string& name, DeviceVector & devices) {
 	ModuleMap::iterator module = _modules.find(name);
 	if(module != _modules.end()) {
-		_registerModule(module);
+		_registerModule(module, devices);
 	}
 }
 
-void opencl::OpenCLRuntime::_registerAllModules() {
+void opencl::OpenCLRuntime::_registerAllModules(DeviceVector & devices) {
 	for(ModuleMap::iterator module = _modules.begin(); 
 		module != _modules.end(); ++module) {
-		_registerModule(module);
+		_registerModule(module, devices);
 	}
 }
 
@@ -644,6 +615,7 @@ void opencl::OpenCLRuntime::registerPTXModule(std::istream& ptx,
 		
 	_unlock();
 }
+
 /*
 void opencl::OpenCLRuntime::registerTexture(const void* texref,
 	const std::string& moduleName,
@@ -865,7 +837,7 @@ cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName,
 	assert(module != _modules.end());
 
 	try {
-		_registerModule(module);
+		_registerModule(module, _devices);
 	}
 	catch(...) {
 		_unlock();
@@ -1143,7 +1115,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 		pThread = &_getCurrentThread();
 		pThread->validDevices.resize(num_devices);
 		for (cl_uint i = 0; i < num_devices; i++) {
-			pThread->validDevices[i] = devices[i];
+			pThread->validDevices[i] = (executive::Device *)(devices[i]);
 		}
 		pThread->selectedDevice = pThread->validDevices[0];
 	}
@@ -1168,10 +1140,10 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	else if(device == 0)
 		*errcode_ret = CL_INVALID_DEVICE;
 	else {
-		std::vector<cl_device_id>::iterator d;
+		DeviceVector::iterator d;
 		for (d = thread.validDevices.begin();
 			d != thread.validDevices.end(); ++d) {
-			if(*d == device)
+			if(*d == (executive::Device *)device)
 				break;
 		}
 		if(d == thread.validDevices.end()) //Not found
@@ -1226,8 +1198,9 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 			std::stringstream stream;
 			for(i = 0; i < count; i++)
 				stream << strings[i];
-			program = (cl_program) &_createProgramSource(stream.str());
-			thread.validPrograms.push_back(program);
+			Program & p = *(_programs.insert(_programs.end(), Program(stream.str(), "")));
+			thread.validPrograms.push_back(&p);
+			program = (cl_program)&p;
 		}
 	}
 	_unlock();
@@ -1244,35 +1217,96 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	cl_int result = CL_SUCCESS;
 	_lock();
 	HostThreadContext &thread = _getCurrentThread();
-	std::vector< cl_program >::iterator p;
-	for(p = thread.validPrograms.begin();
-		 p < thread.validPrograms.end(); p++) {
-		if(*p == program)
-			break;
-	}
-	if(p == thread.validPrograms.end()) //Not found
-		result = CL_INVALID_PROGRAM;
-	else if((num_devices == 0 && device_list) || (num_devices && device_list == NULL))
-		result = CL_INVALID_VALUE;
-	else if(pfn_notify == NULL && user_data)
-		result = CL_INVALID_VALUE;
-	else {
+	try {
+		std::vector< Program * >::iterator p;
+		for(p = thread.validPrograms.begin();
+			 p < thread.validPrograms.end(); p++) {
+			if(*p == (Program *)program)
+				break;
+		}
+		if(p == thread.validPrograms.end())//Not found
+			throw CL_INVALID_PROGRAM;
+
+		if((num_devices == 0 && device_list) || (num_devices && device_list == NULL))
+			throw CL_INVALID_VALUE;
+
+		if(pfn_notify == NULL && user_data)
+			throw CL_INVALID_VALUE;
+
 		for(cl_uint i = 0; i < num_devices; i++) {
-			std::vector< cl_device_id >::iterator d;
+			DeviceVector::iterator d;
 			for(d = thread.validDevices.begin();
 				d < thread.validDevices.end(); d++) {
-				if(*d == device_list[i])
+				if(*d == (executive::Device *)device_list[i])
 					break;
 			}
 			if(d == thread.validDevices.end()) {//Not found
-				result = CL_INVALID_DEVICE;
+				throw CL_INVALID_DEVICE;
 				break;
 			}
 		}
-		if(result != CL_INVALID_DEVICE) {
-		}
-	}
 
+		if(options || pfn_notify || user_data) {
+			assertM(false, "unsupported");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		Program &prog = *((Program *)program);
+		if(prog.ptx.empty()) { //Not binary is loaded
+			std::ifstream ptx("buildout.ptx", std::ifstream::in); //Temorarily load ptx file as built binary
+			if(ptx.fail()) {
+				assertM(false, "buildout.ptx not found, run opencl program with libOpenCL first!");
+				throw CL_BUILD_PROGRAM_FAILURE;
+			}
+				
+			std::string temp;
+		
+			ptx.seekg(0, std::ios::end);
+			size_t size = ptx.tellg();
+			ptx.seekg(0, std::ios::beg);
+			
+			if(!size) {
+				assertM(false, "buildout.ptx is empty!");
+				throw CL_BUILD_PROGRAM_FAILURE;
+			}
+
+			temp.resize(size);
+			ptx.read((char*)temp.data(), size);
+			prog.ptx = temp;
+		}
+
+		// Register ptx with device
+		try {
+			
+			report("Loading module (ptx) - " << prog.module);
+			assert(_modules.count(prog.module) == 0);
+	
+			ModuleMap::iterator module = _modules.insert(
+				std::make_pair(prog.module, ir::Module())).first;
+			
+			module->second.lazyLoad(prog.ptx, prog.module);
+		
+			if(num_devices) {
+				DeviceVector devices (num_devices);
+				for(cl_uint i = 0; i < num_devices; i++)
+					devices[i] = (executive::Device *)(device_list[i]);
+				_registerModule(module, devices);
+			}
+			else
+				_registerModule(module, _devices);
+		}
+		catch(...) {
+			throw CL_BUILD_PROGRAM_FAILURE;
+		}
+								
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_BUILD_PROGRAM_FAILURE;
+	}
+	
 	_unlock();
 	return result;
 }

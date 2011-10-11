@@ -62,17 +62,35 @@ namespace opencl {
 	typedef std::vector< unsigned int > IndexVector;
 	typedef std::vector< unsigned int > SizeVector;
 	
+	//! programs created in OpenCL runtime	
+	class Program {
+	private:
+		static unsigned int id;
+	public:
+		Program();
+		Program(const std::string & source, const std::string & ptx);
+
+	public:
+		std::string module;
+		std::string source;
+		std::string ptx;
+
+	};
+	
+	typedef std::vector< Program > ProgramVector;
+
+
 	/*! Host thread OpenCL context consists of these */
 	class HostThreadContext {	
 	public:
 		//! index of selected device
-		cl_device_id selectedDevice;
+		executive::Device * selectedDevice;
 		
 		//! array of valid device indices
-		std::vector< cl_device_id > validDevices;
+		executive::DeviceVector validDevices;
 
 		//! array of valid programs
-		std::vector< cl_program > validPrograms;
+		std::vector< Program * > validPrograms;
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
@@ -114,24 +132,6 @@ namespace opencl {
 	};
 	
 	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
-
-	//! programs created in OpenCL runtime	
-	class Program {
-	private:
-		static unsigned int id;
-	public:
-		Program();
-		void loadSource(const std::string & source);
-		void loadPTX(const std::string & ptx);
-
-	public:
-		std::string module;
-		std::string source;
-		std::string ptx;
-
-	};
-	
-	typedef std::vector< Program > ProgramVector;
 
 	//! references a kernel registered to OpenCL runtime
 	class RegisteredKernel {
@@ -249,12 +249,12 @@ namespace opencl {
 		Program & _createProgramSource(const std::string & source);
 		//! \brief create program binary
 		Program & _createProgramBinary(const std::string & binary);
-		// Load module and register it with all devices
-		void _registerModule(ModuleMap::iterator module);
-		// Load module and register it with all devices
-		void _registerModule(const std::string& name);
+		// Load module and register it with devices
+		void _registerModule(ModuleMap::iterator module, DeviceVector & devices);
+		// Load module and register it with devices
+		void _registerModule(const std::string& name, DeviceVector & devices);
 		// Load all modules and register them with all devices
-		void _registerAllModules();
+		void _registerAllModules(DeviceVector & devices);
 
 	private:
 		//! locking object for opencl runtime

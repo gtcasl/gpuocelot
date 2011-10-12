@@ -133,3 +133,11 @@ cl_int opencl::OpenCLRuntimeInterface::clBuildProgram(cl_program program,
 	return CL_UNIMPLEMENTED;
 }
 
+cl_int opencl::OpenCLRuntimeInterface::clGetProgramInfo(cl_program program,
+	cl_program_info param_name,
+	size_t param_value_size,
+	void * param_value,
+	size_t * param_value_size_ret) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}

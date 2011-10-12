@@ -266,8 +266,7 @@ clGetProgramInfo(cl_program         program,
                  size_t             param_value_size,
                  void *             param_value,
                  size_t *           param_value_size_ret) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clGetProgramInfo(program, param_name, param_value_size, param_value, param_value_size_ret);
 }
 
 cl_int

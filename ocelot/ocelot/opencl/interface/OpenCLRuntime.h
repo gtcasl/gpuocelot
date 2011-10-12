@@ -460,6 +460,12 @@ namespace opencl {
 					const char * options, 
 					void (CL_CALLBACK * pfn_notify)(cl_program, void *),
 					void * user_data);
+		virtual cl_int clGetProgramInfo(cl_program program,
+					cl_program_info param_name,
+					size_t param_value_size,
+					void * param_value,
+					size_t * param_value_size_ret);
+
 	};
 
 }

@@ -1303,4 +1303,78 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	return result;
 }
 
+cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
+	cl_program_info param_name,
+	size_t param_value_size,
+	void * param_value,
+	size_t * param_value_size_ret) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+	
+	try {
+		
+		if(param_name < CL_PROGRAM_REFERENCE_COUNT || param_name > CL_PROGRAM_BINARIES)
+			throw CL_INVALID_VALUE;
+		
+		HostThreadContext &thread = _getCurrentThread();
+	
+		if(thread.validPrograms.find((Program *)program) == thread.validPrograms.end())//Not found
+			throw CL_INVALID_PROGRAM;
 
+		Program &prog = *(Program *)program;
+
+		switch(param_name) {
+			case CL_PROGRAM_BINARY_SIZES: {
+				if(param_value_size < prog.ptxCode.size() * sizeof(size_t))
+					throw CL_INVALID_VALUE;
+
+				if(param_value)	{
+					std::map <executive::Device *, std::string>::iterator ptx;
+					unsigned int i = 0;
+					for(ptx = prog.ptxCode.begin(); ptx != prog.ptxCode.end(); ptx++) {
+						((size_t *)param_value)[i] = ptx->second.size();
+						i++;
+					}
+				}
+
+				if(param_value_size_ret)
+					*param_value_size_ret = prog.ptxCode.size() * sizeof(size_t);
+	
+				break;
+			}
+			case CL_PROGRAM_BINARIES: {
+				if(param_value_size < prog.ptxCode.size() * sizeof(char *))
+					throw CL_INVALID_VALUE;
+
+				if(param_value)	{
+					std::map <executive::Device *, std::string>::iterator ptx;
+					unsigned int i = 0;
+					for(ptx = prog.ptxCode.begin(); ptx != prog.ptxCode.end(); ptx++) {
+						std::memcpy(((char **)param_value)[i], ptx->second.data(), prog.ptxCode.size());
+						i++;
+					}
+				}
+
+				if(param_value_size_ret)
+					*param_value_size_ret = prog.ptxCode.size() * sizeof(size_t);
+	
+				break;
+			}
+				
+				break;
+			default:
+				assertM(false, "unsupported program info");
+				throw CL_UNIMPLEMENTED;
+				break;
+		}
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}

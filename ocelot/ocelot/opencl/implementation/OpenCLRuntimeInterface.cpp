@@ -133,4 +133,3 @@ cl_int opencl::OpenCLRuntimeInterface::clBuildProgram(cl_program program,
 	return CL_UNIMPLEMENTED;
 }
 
-

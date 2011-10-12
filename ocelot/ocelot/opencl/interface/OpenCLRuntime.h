@@ -65,20 +65,29 @@ namespace opencl {
 	//! programs created in OpenCL runtime	
 	class Program {
 	private:
+		//! program id
 		static unsigned int id;
-	public:
-		Program();
-		Program(const std::string & source, const std::string & ptx);
 
 	public:
-		std::string module;
+		Program(const std::string & source = "");
+
+	public:
+		std::string name;
+	
+		//! ptx modules associated with devices	
+		std::map <executive::Device *, std::string> ptxModule;
+
+		//! ptx code
+		std::map <executive::Device *, std::string> ptxCode;
+		
+		//! source code of program
 		std::string source;
-		std::string ptx;
 
 	};
 	
 	typedef std::vector< Program > ProgramVector;
-
+	typedef std::set< Program * > ProgramSet;
+	typedef std::set< executive::Device * > DeviceSet;
 
 	/*! Host thread OpenCL context consists of these */
 	class HostThreadContext {	
@@ -87,10 +96,10 @@ namespace opencl {
 		executive::Device * selectedDevice;
 		
 		//! array of valid device indices
-		executive::DeviceVector validDevices;
+		DeviceSet validDevices;
 
 		//! array of valid programs
-		std::vector< Program * > validPrograms;
+		ProgramSet validPrograms;
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
@@ -250,11 +259,11 @@ namespace opencl {
 		//! \brief create program binary
 		Program & _createProgramBinary(const std::string & binary);
 		// Load module and register it with devices
-		void _registerModule(ModuleMap::iterator module, DeviceVector & devices);
+		void _registerModule(ModuleMap::iterator module, executive::Device * device);
 		// Load module and register it with devices
-		void _registerModule(const std::string& name, DeviceVector & devices);
+		void _registerModule(const std::string& name, executive::Device * device);
 		// Load all modules and register them with all devices
-		void _registerAllModules(DeviceVector & devices);
+		void _registerAllModules(executive::Device * device);
 
 	private:
 		//! locking object for opencl runtime
@@ -451,7 +460,6 @@ namespace opencl {
 					const char * options, 
 					void (CL_CALLBACK * pfn_notify)(cl_program, void *),
 					void * user_data);
-
 	};
 
 }

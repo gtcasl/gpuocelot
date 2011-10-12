@@ -1328,38 +1328,51 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 
 		switch(param_name) {
 			case CL_PROGRAM_BINARY_SIZES: {
-				if(param_value_size < prog.ptxCode.size() * sizeof(size_t))
+				if(param_value_size < thread.validDevices.size() * sizeof(size_t))
 					throw CL_INVALID_VALUE;
 
 				if(param_value)	{
-					std::map <executive::Device *, std::string>::iterator ptx;
+					DeviceSet::iterator device;
 					unsigned int i = 0;
-					for(ptx = prog.ptxCode.begin(); ptx != prog.ptxCode.end(); ptx++) {
-						((size_t *)param_value)[i] = ptx->second.size();
+					//get ptx code size for every valid device
+					for(device = thread.validDevices.begin(); 
+							device != thread.validDevices.end(); device++) {
+						//if ptx code for a specific device does not exist, return 0
+						std::map <executive::Device *, std::string>::iterator ptx;
+						if((ptx = prog.ptxCode.find(*device)) != prog.ptxCode.end())
+							((size_t *)param_value)[i] = ptx->second.size();
+						else
+							((size_t *)param_value)[i] = 0;
 						i++;
 					}
 				}
 
 				if(param_value_size_ret)
-					*param_value_size_ret = prog.ptxCode.size() * sizeof(size_t);
+					*param_value_size_ret = thread.validDevices.size() * sizeof(size_t);
 	
 				break;
 			}
 			case CL_PROGRAM_BINARIES: {
-				if(param_value_size < prog.ptxCode.size() * sizeof(char *))
+				if(param_value_size < thread.validDevices.size() * sizeof(char *))
 					throw CL_INVALID_VALUE;
 
 				if(param_value)	{
-					std::map <executive::Device *, std::string>::iterator ptx;
+					DeviceSet::iterator device;;
 					unsigned int i = 0;
-					for(ptx = prog.ptxCode.begin(); ptx != prog.ptxCode.end(); ptx++) {
-						std::memcpy(((char **)param_value)[i], ptx->second.data(), prog.ptxCode.size());
+					//get ptx code size for every valid device
+					for(device = thread.validDevices.begin(); 
+							device != thread.validDevices.end(); device++) {
+							
+						//if ptx code for a specific device does not exist, don't copy
+						std::map <executive::Device *, std::string>::iterator ptx;
+						if((ptx = prog.ptxCode.find(*device)) != prog.ptxCode.end())
+							std::memcpy(((char **)param_value)[i], ptx->second.data(), ptx->second.size());
 						i++;
 					}
 				}
 
 				if(param_value_size_ret)
-					*param_value_size_ret = prog.ptxCode.size() * sizeof(size_t);
+					*param_value_size_ret = thread.validDevices.size() * sizeof(size_t);
 	
 				break;
 			}
@@ -1395,8 +1408,7 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 		Program * prog = (Program *)program;
 		if(thread.validPrograms.find(prog) == thread.validPrograms.end())
 			throw CL_INVALID_PROGRAM;
-		
-		
+
 	}
 	catch(cl_int exception) {
 		*errcode_ret = exception;

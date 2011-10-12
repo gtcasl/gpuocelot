@@ -177,14 +177,14 @@ unsigned int opencl::HostThreadContext::mapParameters(const ir::Kernel* kernel) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-unsigned int opencl::Program::id = 0;
+unsigned int opencl::Program::_id = 0;
 
 
-opencl::Program::Program(const std::string & s) : source(s) {
+opencl::Program::Program(const std::string & s) : source(s), built(false) {
 	std::stringstream stream;
-	stream << "__clmodule_" << id;
+	stream << "__clmodule_" << _id;
 	name = stream.str();
-	id++;
+	_id++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1225,70 +1225,73 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 
 		Program &prog = *((Program *)program);
 		//For source building, since we don't have opencl frontend, load buildout.ptx instead
-		if(!prog.ptxModule.empty()) {
+		if(!prog.ptxModule.empty() && !prog.built) {
 			assertM(false, "unsupported binary. note that clCreateProgramWithBinaries is currently unsupported!");
 			throw CL_UNIMPLEMENTED;
 		}
 
-		//Not binary is loaded
-		std::ifstream ptx("buildout.ptx", std::ifstream::in); //Temorarily load ptx file as built binary
-		if(ptx.fail()) {
-			assertM(false, "buildout.ptx not found, run opencl program with libOpenCL first!");
-			throw CL_BUILD_PROGRAM_FAILURE;
-		}
-			
-		std::string temp;
-	
-		ptx.seekg(0, std::ios::end);
-		size_t size = ptx.tellg();
-		ptx.seekg(0, std::ios::beg);
-		
-		if(!size) {
-			assertM(false, "buildout.ptx is empty!");
-			throw CL_BUILD_PROGRAM_FAILURE;
-		}
-
-		temp.resize(size);
-		ptx.read((char*)temp.data(), size);
-
-		// Register ptx with device
-		DeviceSet devices;
-		if(num_devices) {
-			for(cl_uint i = 0; i < num_devices; i++)
-				devices.insert((executive::Device *)(device_list[i]));
-		}
-		else
-			devices = thread.validDevices;
-
-		try{
-			unsigned int deviceId = 0;
-			for(DeviceSet::iterator d = devices.begin(); d != devices.end(); d++) {
-				std::stringstream moduleName;
-				moduleName << prog.name << "_" << deviceId;
-				deviceId++;
-				report("Loading module (ptx) - " << moduleName.str());
-
-				std::string name = moduleName.str();
-				assert(_modules.count(name) == 0);
-		
-				ModuleMap::iterator module = _modules.insert(
-					std::make_pair(name, ir::Module())).first;
-			
-				module->second.lazyLoad(temp, name);
-		
-				_registerModule(module, *d);
-
-				assert(prog.ptxModule.count(*d) == 0);
-				prog.ptxModule.insert(std::make_pair(*d, name));
-	
-				assert(prog.ptxCode.count(*d) == 0);
-				prog.ptxCode.insert(std::make_pair(*d, temp));
+		if(!prog.built) {
+			//Not built is loaded
+			std::ifstream ptx("buildout.ptx", std::ifstream::in); //Temorarily load ptx file as built binary
+			if(ptx.fail()) {
+				assertM(false, "buildout.ptx not found, run opencl program with libOpenCL first!");
+				throw CL_BUILD_PROGRAM_FAILURE;
 			}
-
-			assert(prog.ptxModule.size() == prog.ptxCode.size());
-		}
-		catch(...) {
-			throw CL_BUILD_PROGRAM_FAILURE;
+				
+			std::string temp;
+		
+			ptx.seekg(0, std::ios::end);
+			size_t size = ptx.tellg();
+			ptx.seekg(0, std::ios::beg);
+			
+			if(!size) {
+				assertM(false, "buildout.ptx is empty!");
+				throw CL_BUILD_PROGRAM_FAILURE;
+			}
+	
+			temp.resize(size);
+			ptx.read((char*)temp.data(), size);
+	
+			// Register ptx with device
+			DeviceSet devices;
+			if(num_devices) {
+				for(cl_uint i = 0; i < num_devices; i++)
+					devices.insert((executive::Device *)(device_list[i]));
+			}
+			else
+				devices = thread.validDevices;
+	
+			try{
+				unsigned int deviceId = 0;
+				for(DeviceSet::iterator d = devices.begin(); d != devices.end(); d++) {
+					std::stringstream moduleName;
+					moduleName << prog.name << "_" << deviceId;
+					deviceId++;
+					report("Loading module (ptx) - " << moduleName.str());
+	
+					std::string name = moduleName.str();
+					assert(_modules.count(name) == 0);
+			
+					ModuleMap::iterator module = _modules.insert(
+						std::make_pair(name, ir::Module())).first;
+				
+					module->second.lazyLoad(temp, name);
+			
+					_registerModule(module, *d);
+	
+					assert(prog.ptxModule.count(*d) == 0);
+					prog.ptxModule.insert(std::make_pair(*d, name));
+		
+					assert(prog.ptxCode.count(*d) == 0);
+					prog.ptxCode.insert(std::make_pair(*d, temp));
+				}
+	
+				assert(prog.ptxModule.size() == prog.ptxCode.size());
+				prog.built = true;
+			}
+			catch(...) {
+				throw CL_BUILD_PROGRAM_FAILURE;
+			}
 		}
 								
 	}
@@ -1377,4 +1380,31 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 
 	_unlock();
 	return result;
+}
+
+cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
+	const char * kernel_name,
+	cl_int * errcode_ret) {
+	
+	cl_kernel kernel = NULL;
+	_lock();
+	*errcode_ret = CL_SUCCESS;
+
+	try{
+		HostThreadContext & thread = _getCurrentThread();
+		Program * prog = (Program *)program;
+		if(thread.validPrograms.find(prog) == thread.validPrograms.end())
+			throw CL_INVALID_PROGRAM;
+		
+		
+	}
+	catch(cl_int exception) {
+		*errcode_ret = exception;
+	}
+	catch(...) {
+		*errcode_ret = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return kernel;
 }

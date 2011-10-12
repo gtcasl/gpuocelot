@@ -141,3 +141,11 @@ cl_int opencl::OpenCLRuntimeInterface::clGetProgramInfo(cl_program program,
 	assertM(false, "unimplemented");
 	return CL_UNIMPLEMENTED;
 }
+
+cl_kernel opencl::OpenCLRuntimeInterface::clCreateKernel(cl_program program,
+	const char * kernel_name,
+	cl_int * errcode_ret) {
+	*errcode_ret = CL_UNIMPLEMENTED;
+	assertM(false, "unimplemented");
+	return NULL;
+}

@@ -80,6 +80,10 @@ namespace opencl {
 					size_t param_value_size,
 					void * param_value,
 					size_t * param_value_size_ret);
+		virtual cl_kernel clCreateKernel(cl_program program,
+					const char * kernel_name,
+					cl_int * errcode_ret);
+
 
 
 

@@ -66,7 +66,7 @@ namespace opencl {
 	class Program {
 	private:
 		//! program id
-		static unsigned int id;
+		static unsigned int _id;
 
 	public:
 		Program(const std::string & source = "");
@@ -83,6 +83,9 @@ namespace opencl {
 		//! source code of program
 		std::string source;
 
+		//! get build status
+		bool built;
+
 	};
 	
 	typedef std::vector< Program > ProgramVector;
@@ -95,10 +98,10 @@ namespace opencl {
 		//! index of selected device
 		executive::Device * selectedDevice;
 		
-		//! array of valid device indices
+		//! set of valid device indices
 		DeviceSet validDevices;
 
-		//! array of valid programs
+		//! set of valid programs
 		ProgramSet validPrograms;
 	
 		//! stack of launch configurations
@@ -465,6 +468,9 @@ namespace opencl {
 					size_t param_value_size,
 					void * param_value,
 					size_t * param_value_size_ret);
+		virtual cl_kernel clCreateKernel(cl_program program,
+					const char * kernel_name,
+					cl_int * errcode_ret);
 
 	};
 

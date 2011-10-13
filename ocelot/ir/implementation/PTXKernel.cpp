@@ -778,10 +778,6 @@ analysis::ProgramStructureGraph* ir::PTXKernel::getProgramStructureGraph() {
 	{
 		graph = new analysis::SuperblockAnalysis();		
 	}
-	else if (type == "hyperblock")
-	{
-		graph = new analysis::HyperblockAnalysis();
-	}
 	else
 	{
 		graph = new analysis::DefaultProgramStructure();

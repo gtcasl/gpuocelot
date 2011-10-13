@@ -8,6 +8,9 @@
 
 // Ocelot Includes
 #include <ocelot/transforms/interface/Pass.h>
+#include <ocelot/ir/interface/PTXOperand.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/analysis/interface/HyperblockAnalysis.h>
 
 namespace transforms
 {
@@ -26,9 +29,54 @@ public:
 	/*! \brief Finalize the pass */
 	void finalize();
 
+public:
+	/*! \brief A predicate term */
+	class PredicateTerm
+	{
+	public:
+		enum Operator
+		{
+			Or,
+			And,
+			Invalid
+		};
+		
+	public:
+		PredicateTerm(ir::Instruction::RegisterType r = 0,
+			ir::PTXOperand::PredicateCondition c = ir::PTXOperand::PT,
+			Operator o = Invalid);
+		
+	public:
+		ir::Instruction::RegisterType      reg;
+		ir::PTXOperand::PredicateCondition condition;
+		Operator                           op;
+	};
+	
+	/*! \brief A predicate equation */
+	class PredicateEquation
+	{
+	public:
+		typedef std::vector<PredicateTerm> TermVector;
+	
+	public:
+		PredicateEquation();
+		
+	public:
+		void createAndInsertInstructions(ir::Instruction::RegisterType& regId,
+			ir::BasicBlock& bb);
+		void mergeEquations(const PredicateEquation& eq);
+	
+	public:
+		TermVector terms;
+		
+	};
+	
+private:
+	void _flattenBlock(ir::ControlFlowGraph& cfg,
+		ir::Instruction::RegisterType& regId, 
+		analysis::HyperblockAnalysis::iterator block);
 };
 
 }
 
 
-	

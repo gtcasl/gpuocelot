@@ -15,7 +15,7 @@ namespace analysis
 class HyperblockAnalysis : public ProgramStructureGraph
 {
 public:
-	HyperblockAnalysis(unsigned int blockSize = 50);
+	HyperblockAnalysis(unsigned int blockSize = 100);
 
 public:
 	/*! \brief Build from a kernel CFG */

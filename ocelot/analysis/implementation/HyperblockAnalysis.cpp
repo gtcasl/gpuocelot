@@ -76,6 +76,9 @@ void HyperblockAnalysis::analyze(ir::IRKernel& kernel)
 				current->successors.begin();
 				successor != current->successors.end(); ++successor)
 			{
+				// don't add the exit block!
+				if(*successor == kernel.cfg()->get_exit_block()) continue;
+				
 				// add all blocks with all predecessors in the hyperblock
 				bool allPredecessorsContained = true;
 
@@ -100,7 +103,7 @@ void HyperblockAnalysis::analyze(ir::IRKernel& kernel)
 					(*successor)->successors.begin();
 					nextSuccessor != (*successor)->successors.end();
 					++nextSuccessor)
-				{
+				{ 
 					if(*nextSuccessor != *block &&
 						hyperblock->contains(*successor))
 					{

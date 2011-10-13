@@ -34,6 +34,8 @@ public:
 		DivergenceAnalysis        = 0x20,
 		StructuralAnalysis        = 0x40,
 		ThreadFrontierAnalysis    = 0x80,
+		SuperblockAnalysis        = 0x100,
+		HyperblockAnalysis        = 0x200
 	};
 
 public:

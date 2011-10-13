@@ -19,6 +19,7 @@
 #include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
 #include <ocelot/transforms/interface/SplitBasicBlockPass.h>
 #include <ocelot/transforms/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/FlattenHyperblockPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -114,6 +115,12 @@ namespace tools
 			manager.addPass( *pass );
 		}
 		
+		if( passes & Hyperblock )
+		{
+			transforms::Pass* pass = new transforms::FlattenHyperblockPass;
+			manager.addPass( *pass );
+		}
+		
 		if( input.empty() )
 		{
 			std::cout << "No input file name given.  Bailing out." << std::endl;
@@ -205,6 +212,11 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched sync-elimination." );
 			types |= tools::PTXOptimizer::SyncElimination;
 		}
+		else if( *pass == "hyperblock" )
+		{
+			report( "  Matched hyperblock." );
+			types |= tools::PTXOptimizer::Hyperblock;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -238,7 +250,7 @@ int main( int argc, char** argv )
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
 		"mimd-threading, dead-code-elimination, split-blocks, "
-		"sync-elimination)" );
+		"sync-elimination, hyperblock)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

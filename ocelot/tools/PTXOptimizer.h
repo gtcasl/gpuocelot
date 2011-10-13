@@ -33,7 +33,8 @@ namespace tools
 				MIMDThreadScheduling = 0x10,
 				DeadCodeElimination  = 0x20,
 				SplitBasicBlocks     = 0x40,
-				SyncElimination      = 0x80
+				SyncElimination      = 0x80,
+				Hyperblock           = 0x100
 			};
 	
 		public:

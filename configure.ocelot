@@ -36,7 +36,7 @@
 	},
 	optimizations: {
 		subkernelSize: 1000,
-		programStructureType: "hyperblock"
+		programStructureType: "default"
 	},
 	checkpoint: {
 		enabled: false,

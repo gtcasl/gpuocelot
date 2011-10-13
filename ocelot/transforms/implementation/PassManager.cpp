@@ -18,6 +18,8 @@
 #include <ocelot/analysis/interface/PostdominatorTree.h>
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
+#include <ocelot/analysis/interface/HyperblockAnalysis.h>
+#include <ocelot/analysis/interface/SuperblockAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -53,6 +55,8 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 	types.push_back(analysis::Analysis::ControlTreeAnalysis);
 	types.push_back(analysis::Analysis::StructuralAnalysis);
 	types.push_back(analysis::Analysis::ThreadFrontierAnalysis); 
+	types.push_back(analysis::Analysis::SuperblockAnalysis); 
+	types.push_back(analysis::Analysis::HyperblockAnalysis); 
 	
 	#else
 	TypeVector types = {analysis::Analysis::DivergenceAnalysis,
@@ -61,7 +65,9 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 		analysis::Analysis::DominatorTreeAnalysis,
 		analysis::Analysis::ControlTreeAnalysis,
 		analysis::Analysis::StructuralAnalysis,
-		analysis::Analysis::ThreadFrontierAnalysis
+		analysis::Analysis::ThreadFrontierAnalysis,
+		analysis::Analysis::SuperblockAnalysis,
+		analysis::Analysis::HyperblockAnalysis
 		};
 	#endif
 	
@@ -155,8 +161,10 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				new analysis::DivergenceAnalysis())).first;
 			
 			analysis->second->setPassManager(manager);
-			allocateNewDataStructures(analyses, k, analysis->second->required, manager);
-			static_cast<analysis::DivergenceAnalysis*>(analysis->second)->analyze(*k);
+			allocateNewDataStructures(analyses, k,
+				analysis->second->required, manager);
+			static_cast<analysis::DivergenceAnalysis*>(
+				analysis->second)->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)
@@ -194,6 +202,44 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			allocateNewDataStructures(analyses, k,
 				frontierAnalysis->required, manager);
 			frontierAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::SuperblockAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::SuperblockAnalysis) == 0)
+		{
+			analysis::SuperblockAnalysis* superblockAnalysis =
+				new analysis::SuperblockAnalysis;
+			
+			report("   Allocating superblock analysis "
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::SuperblockAnalysis,
+				superblockAnalysis));
+			
+			superblockAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				superblockAnalysis->required, manager);
+			superblockAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::HyperblockAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::HyperblockAnalysis) == 0)
+		{
+			analysis::HyperblockAnalysis* hyperblockAnalysis =
+				new analysis::HyperblockAnalysis;
+			
+			report("   Allocating hyperblock analysis "
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::HyperblockAnalysis,
+				hyperblockAnalysis));
+			
+			hyperblockAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				hyperblockAnalysis->required, manager);
+			hyperblockAnalysis->analyze(*k);
 		}
 	}
 }

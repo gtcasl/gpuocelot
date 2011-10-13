@@ -13,6 +13,7 @@
 // Standard Library Includes
 #include <string>
 #include <list>
+#include <vector>
 
 // Forward Declarations
 namespace ir
@@ -48,6 +49,9 @@ public:
 	/*! \brief shorthand for analysis */
 	typedef analysis::Analysis Analysis;
 	
+	/*! \brief shorthand for a list of strings */
+	typedef std::vector<std::string> StringVector;
+	
 public:
 	/*! \brief The type of this pass */
 	const Type type;
@@ -78,7 +82,10 @@ public:
 	/*! \brief Invalidate the analysis, the pass manager will
 		need to generate it again for other applications */
 	void invalidateAnalysis(Analysis::Type type);
-
+	
+	/*! \brief Return a list of passes (by name) that this pass depends on */
+	virtual StringVector getDependentPasses() const;
+	
 public:
 	/*! \brief Report the name of the pass */
 	std::string toString() const;

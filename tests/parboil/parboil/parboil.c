@@ -37,7 +37,7 @@ read_string_array(char *in)
   for (i = 0; in[i]; i++) if (in[i] == ',') count++;
 
   /* Allocate storage */
-  ret = malloc((count + 1) * sizeof(char *));
+  ret = (char**)malloc((count + 1) * sizeof(char *));
 
   /* Create copies of the strings from the list */
   substring = in;
@@ -53,7 +53,7 @@ read_string_array(char *in)
     substring_length = substring_end - substring;
 
     /* Allocate memory and copy the substring */
-    ret[i] = malloc(substring_length + 1);
+    ret[i] = (char*)malloc(substring_length + 1);
     memcpy(ret[i], substring, substring_length);
     ret[i][substring_length] = 0;
 
@@ -140,11 +140,11 @@ pb_ReadParameters(int *_argc, char **argv)
 {
   char *err_message;
   struct argparse ap;
-  struct pb_Parameters *ret = malloc(sizeof(struct pb_Parameters));
+  struct pb_Parameters *ret = ( struct pb_Parameters *)malloc(sizeof(struct pb_Parameters));
 
   /* Initialize the parameters structure */
   ret->outFile = NULL;
-  ret->inpFiles = malloc(sizeof(char *));
+  ret->inpFiles = (char**)malloc(sizeof(char *));
   ret->inpFiles[0] = NULL;
   ret->synchronizeGpu = 0;
 

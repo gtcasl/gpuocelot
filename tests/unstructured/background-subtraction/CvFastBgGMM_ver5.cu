@@ -1,320 +1,105 @@
 #include <stdlib.h>
-#include "CvFastBgGMM.h"
 
+#define CUDAGMM_VERSION 5
+ 
 #if(CUDAGMM_VERSION == 5)
 
 #define SWAP(a, b, t)	t = (a); a = (b); b = (t)
 
+
+typedef struct CvFastBgGMMData
+{
+	float4* ucGaussian;
+	float* rWeight;
+	int* rnUsedModes;
+
+} CvFastBgGMMData;
+
+
+enum ImageInfo
+{
+#if(CUDAGMM_VERSION >= 2)
+	ImageInfoPixelCount = 0,		//
+	ImageInfoPixelsPerThread = 1,	//
+	ImageInfoCount = 2
+#else
+	ImageInfoInpWidth = 0,
+	ImageInfoInpHeight = 1,
+	ImageInfoInpWidthStep = 2,
+	ImageInfoOutWidth = 3,
+	ImageInfoOutHeight = 4,
+	ImageInfoOutWidthStep = 5,
+	ImageInfoPixelCount = 6,		//
+	ImageInfoPixelsPerThread = 7,	//
+	ImageInfoCount = 8
+#endif
+};
+
+// algorithm parameters
+typedef struct CvFastBgGMMParams
+{
+	/////////////////////////
+	//very important parameters - things you will change
+	////////////////////////
+	float fAlphaT;
+	//alpha - speed of update - if the time interval you want to average over is T
+	//set alpha=1/T. It is also useful at start to make T slowly increase
+	//from 1 until the desired T
+	float fTb;
+	//Tb - threshold on the squared Mahalan. dist. to decide if it is well described
+	//by the background model or not. Related to Cthr from the paper.
+	//This does not influence the update of the background. A typical value could be 4 sigma
+	//and that is Tb=4*4=16;
+
+	/////////////////////////
+	//less important parameters - things you might change but be carefull
+	////////////////////////
+	float fTg;
+	//Tg - threshold on the squared Mahalan. dist. to decide 
+	//when a sample is close to the existing components. If it is not close
+	//to any a new component will be generated. I use 3 sigma => Tg=3*3=9.
+	//Smaller Tg leads to more generated components and higher Tg might make
+	//lead to small number of components but they can grow too large
+	float fTB;//1-cf from the paper
+	//TB - threshold when the component becomes significant enough to be included into
+	//the background model. It is the TB=1-cf from the paper. So I use cf=0.1 => TB=0.
+	//For alpha=0.001 it means that the mode should exist for approximately 105 frames before
+	//it is considered foreground
+	float fSigma;
+	//initial standard deviation  for the newly generated components. 
+	//It will will influence the speed of adaptation. A good guess should be made. 
+	//A simple way is to estimate the typical standard deviation from the images.
+	//I used here 10 as a reasonable value
+	float fCT;//CT - complexity reduction prior
+	//this is related to the number of samples needed to accept that a component
+	//actually exists. We use CT=0.05 of all the samples. By setting CT=0 you get
+	//the standard Stauffer&Grimson algorithm (maybe not exact but very similar)
+
+	//even less important parameters
+	int nM;//max number of modes - const - 4 is usually enough
+
+	//shadow detection parameters
+	int bShadowDetection;//do shadow detection
+	float fTau;
+	// Tau - shadow threshold. The shadow is detected if the pixel is darker
+	//version of the background. Tau is a threshold on how much darker the shadow can be.
+	//Tau= 0.5 means that if pixel is more than 2 times darker then it is not shadow
+	//See: Prati,Mikic,Trivedi,Cucchiarra,"Detecting Moving Shadows...",IEEE PAMI,2003.
+
+	float fPrune;	//=-m_fAlphaT*m_fCT;
+
+	//data
+	int nNBands;//only RGB now ==3
+	int nWidth;//image size
+	int nHeight;
+	int nSize;
+	int bRemoveForeground;
+} CvFastBgGMMParams;
+
+
 __constant__ CvFastBgGMMParams d_GMMParams;
 __constant__ CvFastBgGMMData d_GMMData;
 __constant__ int d_arrImageInfo[ImageInfoCount];
-
-/*====================================================================================*/
-// forward declarations
-/*====================================================================================*/
-
-int InitCUDA(CvFastBgGMM* pGMM);
-template <int BLOCK_SIZE> 
-__global__ void cudaUpdateFastBgGMM(unsigned char* data, unsigned char* output);
-void cudaUpdateFastBgGMM_Wrapper(unsigned char* data, unsigned char* output, 
-								 int iGridSize, int iBlockSize, int sharedSize, cudaStream_t stream);
-
-
-/*====================================================================================*/
-
-/*====================================================================================*/
-
-CvFastBgGMMParams* cvCreateFastBgGMMParams(int width, int height)
-{
-	CvFastBgGMMParams* pGMMParams = new CvFastBgGMMParams();
-
-	int size = width*height;
-	pGMMParams->nWidth = width;
-	pGMMParams->nHeight = height;
-	pGMMParams->nSize = size;
-
-	pGMMParams->nNBands=3;	//always 3 - not implemented for other values!
-
-	//set parameters
-	// K - max number of Gaussians per pixel
-	pGMMParams->nM = 4;			
-	// Tb - the threshold - n var
-	pGMMParams->fTb = 4*4;
-	// Tbf - the threshold
-	pGMMParams->fTB = 0.9f;//1-cf from the paper 
-	// Tgenerate - the threshold
-	pGMMParams->fTg = 3.0f*3.0f;//update the mode or generate new
-	pGMMParams->fSigma= 11.0f;//sigma for the new mode
-	// alpha - the learning factor
-	pGMMParams->fAlphaT=0.001f;
-	// complexity reduction prior constant
-	pGMMParams->fCT=0.05f;
-
-	//shadow
-	// Shadow detection
-	pGMMParams->bShadowDetection = 1;//turn on
-	pGMMParams->fTau = 0.5f;// Tau - shadow threshold
-
-	pGMMParams->bRemoveForeground = 0;
-	return pGMMParams;
-}
-/*====================================================================================*/
-
-/*====================================================================================*/
-
-template <bool toPinned>
-void copyImageData(IplImage* h_img, unsigned char* d_pinnedMem, int channels)
-{
-	if(h_img->widthStep == channels*h_img->width)
-	{
-		memcpy(
-			toPinned ? (d_pinnedMem) : (unsigned char*)(h_img->imageData), 
-			toPinned ? (unsigned char*)(h_img->imageData) : (d_pinnedMem),
-			h_img->widthStep*h_img->height);
-	}
-	else
-	{
-		unsigned char* d_curData = d_pinnedMem;
-		if(toPinned)
-		{
-			for(int i = 0; i < h_img->height; ++i)
-			{
-				memcpy(
-					d_curData,
-					&CV_IMAGE_ELEM(h_img, unsigned char, i, 0),
-					channels*h_img->width);
-				d_curData += (channels*h_img->width);
-			}
-		}
-		else
-		{
-			for(int i = 0; i < h_img->height; ++i)
-			{
-				memcpy(
-					&CV_IMAGE_ELEM(h_img, unsigned char, i, 0),
-					d_curData,
-					channels*h_img->width);
-				d_curData += (channels*h_img->width);
-			}
-		}
-	}
-}
-
-/*====================================================================================*/
-
-/*====================================================================================*/
-
-CvFastBgGMM* cvCreateFastBgGMM(CvFastBgGMMParams* pGMMParams, IplImage* frame0)
-{
-	CvFastBgGMM* h_pGMMRet = new CvFastBgGMM();
-
-	if(InitCUDA(h_pGMMRet) < 0)
-	{
-		delete h_pGMMRet;
-		return NULL;
-	}
-
-	CvFastBgGMMData* h_pGMMData = new CvFastBgGMMData();
-
-	// allocate device global memory
-	int iElemCount = pGMMParams->nSize * pGMMParams->nM * sizeof(float);
-	int iSizeCount = pGMMParams->nSize * sizeof(int);
-
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMData->ucGaussian), 4*iElemCount));
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMData->rWeight), iElemCount));
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMData->rnUsedModes), iSizeCount));
-	CUDAGMM_SAFE_CALL(cudaMemset(h_pGMMData->rnUsedModes, 0, iSizeCount));
-
-	CUDAGMM_SAFE_CALL(cudaMemcpyToSymbol(d_GMMData, h_pGMMData, sizeof(CvFastBgGMMData), 0, cudaMemcpyHostToDevice));
-
-	h_pGMMRet->internal_data = h_pGMMData;
-
-	// we will use 4-channels image as input data!
-	h_pGMMRet->inputFrame = cvCreateImage(cvSize(pGMMParams->nWidth, pGMMParams->nHeight), IPL_DEPTH_8U, 4);
-	h_pGMMRet->nInputImgSize = 4 * frame0->width *  pGMMParams->nHeight;
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMRet->d_inputImg), h_pGMMRet->nInputImgSize));
-	h_pGMMRet->h_outputImg = cvCreateImage(cvSize(pGMMParams->nWidth, pGMMParams->nHeight), IPL_DEPTH_8U, 1);
-	h_pGMMRet->nOutputImgSize = pGMMParams->nWidth *  pGMMParams->nHeight;
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMRet->d_outputImg), h_pGMMRet->nOutputImgSize));
-	
-	// d_arrImageInfo constant (device mem.)
-	int inpPixelCnt = pGMMParams->nWidth * pGMMParams->nHeight;
-
-	// number of pixels per thread must be 4k, i.e. 4, 8, 12, 16, 20...
-	int iPixelsPerThread = (int)ceil(inpPixelCnt *1.0 / (h_pGMMRet->nBlocksPerGrid * h_pGMMRet->nThreadsPerBlock));
-	iPixelsPerThread = 4*(int)ceil(iPixelsPerThread/4.0f);
-	h_pGMMRet->nBlocksPerGrid = (int)ceil(inpPixelCnt*1.0 / ((h_pGMMRet->nThreadsPerBlock) * iPixelsPerThread));
-
-	printf("%d pixels/thread, %d threads/block, %d blocks\r\n", 
-		iPixelsPerThread, h_pGMMRet->nThreadsPerBlock, h_pGMMRet->nBlocksPerGrid);
-
-	int arrImgInfo[ImageInfoCount] = {	inpPixelCnt, iPixelsPerThread };
-	CUDAGMM_SAFE_CALL(cudaMemcpyToSymbol(d_arrImageInfo, arrImgInfo, ImageInfoCount*sizeof(int),
-		0, cudaMemcpyHostToDevice));
-
-	CUDAGMM_SAFE_CALL(cudaStreamCreate(&(h_pGMMRet->copyStream)));
-	CUDAGMM_SAFE_CALL(cudaStreamCreate(&(h_pGMMRet->execStream)));
-	CUDAGMM_SAFE_CALL(cudaHostAlloc((void**)&(h_pGMMRet->h_pinnedIn), h_pGMMRet->nInputImgSize, cudaHostAllocMapped));
-	CUDAGMM_SAFE_CALL(cudaHostAlloc((void**)&(h_pGMMRet->h_pinnedOut), h_pGMMRet->nOutputImgSize, cudaHostAllocMapped));
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMRet->d_inputImg2), h_pGMMRet->nInputImgSize));
-	CUDAGMM_SAFE_CALL(cudaMalloc((void**)&(h_pGMMRet->d_outputImg2), h_pGMMRet->nOutputImgSize));
-
-	// copy the algorithm parameters to Constant memory
-	pGMMParams->fPrune = -(pGMMParams->fAlphaT) * (pGMMParams->fCT);
-	CUDAGMM_SAFE_CALL(cudaMemcpyToSymbol(d_GMMParams, pGMMParams, sizeof(CvFastBgGMMParams),
-		0, cudaMemcpyHostToDevice));
-
-	// setup the initial state for asynchronous execution
-	cvCvtColor(frame0, h_pGMMRet->inputFrame, CV_BGR2BGRA);
-	copyImageData<true>(h_pGMMRet->inputFrame, h_pGMMRet->h_pinnedIn, 4);
-	CUDAGMM_SAFE_CALL(cudaMemcpy(h_pGMMRet->d_inputImg2, h_pGMMRet->h_pinnedIn, h_pGMMRet->nInputImgSize, cudaMemcpyHostToDevice));
-	cudaUpdateFastBgGMM<<< (h_pGMMRet->nBlocksPerGrid), (h_pGMMRet->nThreadsPerBlock), 4, h_pGMMRet->execStream >>>
-		( h_pGMMRet->d_inputImg2, h_pGMMRet->d_outputImg2 );
-
-	CUDAGMM_SAFE_CALL(cudaMemcpyAsync(h_pGMMRet->d_inputImg, h_pGMMRet->h_pinnedIn, h_pGMMRet->nInputImgSize, 
-		cudaMemcpyHostToDevice, h_pGMMRet->copyStream));
-	CUDAGMM_SAFE_CALL(cudaStreamSynchronize(h_pGMMRet->execStream));
-	CUDAGMM_SAFE_CALL(cudaMemcpy(h_pGMMRet->h_pinnedOut, h_pGMMRet->d_outputImg2, h_pGMMRet->nOutputImgSize, cudaMemcpyDeviceToHost));
-
-	CUDAGMM_SAFE_CALL(cudaStreamSynchronize(h_pGMMRet->copyStream));
-	cudaUpdateFastBgGMM<<< (h_pGMMRet->nBlocksPerGrid), (h_pGMMRet->nThreadsPerBlock), 4, h_pGMMRet->execStream >>>
-		( h_pGMMRet->d_inputImg, h_pGMMRet->d_outputImg );
-
-	CUDAGMM_SAFE_CALL(cudaMemcpyAsync(h_pGMMRet->d_inputImg2, h_pGMMRet->h_pinnedIn, h_pGMMRet->nInputImgSize, 
-		cudaMemcpyHostToDevice, h_pGMMRet->copyStream));
-
-	return h_pGMMRet;
-}
-
-/*====================================================================================*/
-
-/*====================================================================================*/
-
-void cvReleaseFastBgGMM(CvFastBgGMM** h_ppGMM)
-{
-	CvFastBgGMM* h_pGMM = *h_ppGMM;
-
-	cvReleaseImage(&(h_pGMM->h_outputImg));
-	cvReleaseImage(&(h_pGMM->inputFrame));
-	CUDAGMM_SAFE_CALL( cudaStreamSynchronize(h_pGMM->copyStream));
-	CUDAGMM_SAFE_CALL( cudaStreamSynchronize(h_pGMM->execStream));
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMM->d_inputImg));
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMM->d_outputImg));
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMM->d_inputImg2));
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMM->d_outputImg2));
-	CUDAGMM_SAFE_CALL( cudaFreeHost(h_pGMM->h_pinnedIn));
-	CUDAGMM_SAFE_CALL( cudaFreeHost(h_pGMM->h_pinnedOut));
-	CUDAGMM_SAFE_CALL( cudaStreamDestroy(h_pGMM->copyStream));
-	CUDAGMM_SAFE_CALL( cudaStreamDestroy(h_pGMM->execStream));
-
-	CvFastBgGMMData* h_pGMMData = h_pGMM->internal_data;
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMMData->ucGaussian));
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMMData->rWeight));
-	CUDAGMM_SAFE_CALL( cudaFree(h_pGMMData->rnUsedModes));
-	
-	delete h_pGMM->internal_data;
-	delete h_pGMM;
-	(*h_ppGMM) = 0;
-}
-
-/*====================================================================================*/
-
-/*====================================================================================*/
-
-void cvUpdateFastBgGMM(CvFastBgGMM* pGMM, IplImage* inputImg)
-{
-	cvCvtColor(inputImg, pGMM->inputFrame, CV_BGR2BGRA);
-	CUDAGMM_SAFE_CALL(cudaStreamSynchronize(pGMM->copyStream));
-	copyImageData<true>(pGMM->inputFrame, pGMM->h_pinnedIn, 4);
-	copyImageData<false>(pGMM->h_outputImg, pGMM->h_pinnedOut, 1);
-	
-	CUDAGMM_SAFE_CALL(cudaStreamSynchronize(pGMM->execStream));
-	unsigned char* pTmp;
-	SWAP(pGMM->d_inputImg, pGMM->d_inputImg2, pTmp);
-	SWAP(pGMM->d_outputImg, pGMM->d_outputImg2, pTmp);
-
-	CUDAGMM_SAFE_CALL(cudaMemcpyAsync(pGMM->d_inputImg, pGMM->h_pinnedIn, pGMM->nInputImgSize, cudaMemcpyHostToDevice, pGMM->copyStream));
-	CUDAGMM_SAFE_CALL(cudaMemcpyAsync(pGMM->h_pinnedOut, pGMM->d_outputImg, pGMM->nOutputImgSize, cudaMemcpyDeviceToHost, pGMM->copyStream));
-
-	cudaUpdateFastBgGMM_Wrapper( pGMM->d_inputImg2, pGMM->d_outputImg2 , 
-		(pGMM->nBlocksPerGrid), (pGMM->nThreadsPerBlock), 4, pGMM->execStream);
-
-#ifdef _DEBUG
-	cudaError_t error = cudaGetLastError();
-	if(error != cudaSuccess)
-	{
-		printf("CUDA error: %d: %s\r\n", error, cudaGetErrorString(error));
-	}
-#endif
-}
-
-float cvUpdateFastBgGMMTimer(CvFastBgGMM* pGMM, IplImage* inputImg)
-{
-	cudaEvent_t start, stop;
-	float time = 0;
-	cudaEventCreate(&start);
-	cudaEventCreate(&stop);
-	cudaEventRecord( start, 0 );
-	
-	cvUpdateFastBgGMM(pGMM, inputImg);
-
-	cudaEventRecord( stop, 0 );
-	cudaEventSynchronize( stop );
-	cudaEventElapsedTime( &time, start, stop );
-	cudaEventDestroy( start );
-	cudaEventDestroy( stop );
-	return time;
-}
-
-/*============================================================================*/
-// CUDA-related functions
-/*============================================================================*/
-
-int InitCUDA(CvFastBgGMM* pGMM)
-{
-#if __DEVICE_EMULATION__
-
-	pGMM->nThreadsPerBlock = pGMM->nBlocksPerGrid = 256;
-	return 0;
-
-#else
-
-	int count = 0;
-	int i = 0;
-
-	cudaGetDeviceCount(&count);
-	if(count == 0)
-	{
-		fprintf(stderr, "There is no device.\n");
-		return -1;
-	}
-
-	for(i = 0; i < count; i++)
-	{
-		cudaDeviceProp prop;
-		if(cudaGetDeviceProperties(&prop, i) == cudaSuccess)
-		{
-			if(prop.major >= 1)
-			{
-				pGMM->nThreadsPerBlock = prop.maxThreadsPerBlock / 4;
-
-				// temporarily hard-code a little here...
-				pGMM->nBlocksPerGrid = 256;
-				break;
-			}
-		}
-	}
-	if(i == count) {
-		fprintf(stderr, "There is no device supporting CUDA.\n");
-		return -1;
-	}
-	cudaSetDevice(i);
-	return i;
-
-#endif
-}
-
-/*=======================================================================================*/
 
 /*=======================================================================================*/
 
@@ -323,7 +108,7 @@ __device__ int _cudaUpdateFastBgGMM(int pixel,
 									int* pModesUsed
 									)
 {
-	//calculate distances to the modes (+ sort???)
+	//calculate distances to the modes (+ sort)
 	//here we need to go in descending order!!!
 
 	int pos;
@@ -526,7 +311,7 @@ __device__ int _cudaRemoveShadowGMM(int pixel,
 									float red, float green, float blue, 
 									int nModes)
 {
-	//calculate distances to the modes (+ sort???)
+	//calculate distances to the modes (+ sort)
 	//here we need to go in descending order!!!
 	//	long posPixel = pixel * m_nM;
 	int pos;
@@ -611,7 +396,7 @@ __global__ void cudaUpdateFastBgGMM(unsigned char* data, unsigned char* output)
 	unsigned char* pGlobalOutput = output + iPxStart;
 
 	int* pUsedModes = d_GMMData.rnUsedModes + iPxStart;
-	uchar fRed, fGreen, fBlue;
+	unsigned char fRed, fGreen, fBlue;
 	uchar4 currentInputPx;
 
 	for(int i = iPxStart; i < iPxEnd; i += BLOCK_SIZE)
@@ -666,42 +451,6 @@ __global__ void cudaUpdateFastBgGMM(unsigned char* data, unsigned char* output)
 			break;
 		}
 		pGlobalOutput += BLOCK_SIZE;
-	}
-}
-
-void cudaUpdateFastBgGMM_Wrapper(unsigned char* data, unsigned char* output, 
-								 int iGridSize, int iBlockSize, int sharedSize, cudaStream_t stream)
-{
-	switch(iBlockSize)
-	{
-	case 8:
-		cudaUpdateFastBgGMM<8> <<< iGridSize, 8, sharedSize, stream>>>
-			(data, output);
-		break;
-	case 16:
-		cudaUpdateFastBgGMM<16> <<< iGridSize, 16, sharedSize, stream>>>
-			(data, output);
-		break;
-	case 32:
-		cudaUpdateFastBgGMM<32> <<< iGridSize, 32, sharedSize, stream>>>
-			(data, output);
-		break;
-	case 64:
-		cudaUpdateFastBgGMM<64> <<< iGridSize, 64, sharedSize, stream>>>
-			(data, output);
-		break;
-	case 128:
-		cudaUpdateFastBgGMM<128> <<< iGridSize, 128, sharedSize, stream>>>
-			(data, output);
-		break;
-	case 256:
-		cudaUpdateFastBgGMM<256> <<< iGridSize, 256, sharedSize, stream>>>
-			(data, output);
-		break;
-	case 512:
-		cudaUpdateFastBgGMM<512> <<< iGridSize, 512, sharedSize, stream>>>
-			(data, output);
-		break;
 	}
 }
 #endif

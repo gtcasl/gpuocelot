@@ -28,6 +28,7 @@
 
 #include <SDL.h>
 
+#include <cstdio>
 #include <cfloat>
 
 #include <cuda.h>
@@ -909,71 +910,7 @@ void CudaRender(
 	// Unfortunately, we can't pass runtime vars in template params, not even when they are enumerants
 	// or booleans...
 
-	if (!g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , false , false , false , false )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , false , false , false , true )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , false , false , true , false )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , false , false , true , true )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , false , true , false , false )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , false , true , false , true )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , false , true , true , false )
-	} else if (!g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , false , true , true , true )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , true , false , false , false )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , true , false , false , true )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , true , false , true , false )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , true , false , true , true )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , true , true , false , false )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , true , true , false , true )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( false , true , true , true , false )
-	} else if (!g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( false , true , true , true , true )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , false , false , false , false )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , false , false , false , true )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , false , false , true , false )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , false , false , true , true )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , false , true , false , false )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , false , true , false , true )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , false , true , true , false )
-	} else if (g_bUseSpecular && !g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , false , true , true , true )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , true , false , false , false )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , true , false , false , true )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , true , false , true , false )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && !g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , true , false , true , true )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , true , true , false , false )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && !g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , true , true , false , true )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && !g_bUseAntialiasing) {
-	   PAINT( true , true , true , true , false )
-	} else if (g_bUseSpecular && g_bUsePhongInterp && g_bUseReflections && g_bUseShadows && g_bUseAntialiasing) {
-	   PAINT( true , true , true , true , true )
-	}
+	PAINT( true , true , true , true , true )
     }
     cudaError_t error = cudaGetLastError();
     if(error != cudaSuccess) {

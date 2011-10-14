@@ -33,15 +33,15 @@
 	ldu.global.f64 	%fd1, [%rl6+8]; // variance: 1
 	mul.wide.u32 	%rl7, %r3, 8; // variance: 1
 	add.s64 	%rl8, %rl4, %rl7; // variance: 1
-fproto: .callprototype (.reg .f64) ldwseq_global_f64 (.reg .s64);
-	call.uni (%fd2), _Z_intrinsic_ldwseq_global_f64, ([%rl8]), fproto; // variance: 2
+_Z_intrinsic_ldwseq_global_f64: .callprototype (.reg .f64) _Z_intrinsic_ldwseq_global_f64 (.reg .s64);
+	call.uni (%fd2), _Z_intrinsic_ldwseq_global_f64, (%rl8), _Z_intrinsic_ldwseq_global_f64; // variance: 2
 	add.s64 	%rl9, %rl5, %rl7; // variance: 1
-fproto: .callprototype (.reg .f64) ldwseq_global_f64 (.reg .s64);
-	call.uni (%fd3), _Z_intrinsic_ldwseq_global_f64 ([%rl9]), fproto; // variance: 2
+_Z_intrinsic_ldwseq_global_f64: .callprototype (.reg .f64) _Z_intrinsic_ldwseq_global_f64 (.reg .s64);
+	call.uni (%fd3), _Z_intrinsic_ldwseq_global_f64, (%rl9), _Z_intrinsic_ldwseq_global_f64; // variance: 2
 	.loc 2 10 1
 	fma.rn.f64 	%fd4, %fd3, %fd1, %fd2; // variance: 2
-fproto: .callprototype sdwseq_global_f64 (.reg .s64, .reg .f64);
-	call.uni _Z_intrinsic_stwseq_global_f64 ([%rl8], %fd4), fproto; // variance: 2
+_Z_intrinsic_sdwseq_global_f64: .callprototype _Z_intrinsic_sdwseq_global_f64 (.reg .s64, .reg .f64);
+	call.uni _Z_intrinsic_sdwseq_global_f64, (%rl8, %fd4), _Z_intrinsic_sdwseq_global_f64; // variance: 2
 	.loc 2 11 2
 	ret; // variance: 1
 }

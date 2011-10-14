@@ -9,7 +9,7 @@
 #include <sys/time.h>
 
 // includes, kernels
-#include <backprop_cuda_kernel.cu>
+//#include <backprop_cuda_kernel.cu>
 #include "backprop.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,6 +25,35 @@ void bpnn_hidden_error(float *delta_h, int nh, float *delta_o, int no, float **w
 
 extern "C" 
 void bpnn_adjust_weights(float *delta, int ndelta, float *ly, int nly, float **w, float **oldw, float eta, float momentum);
+
+extern "C" __global__ void
+bpnn_layerforward_CUDA(float *input_cuda,
+	                   float *output_hidden_cuda,
+					   float *input_hidden_cuda,
+					   float *hidden_partial_sum,
+					   int in,
+					   int hid) ;
+
+extern "C" __device__ void bpnn_adjust_weights_cuda_kernel(float * delta,   
+										 int hid,         
+										 float * ly,      
+										 int in,          
+										 float * w,       
+										 float * oldw,    
+										 float eta,       
+										 float momentum);
+
+extern "C" __global__ void bpnn_adjust_weights_cuda(float * delta,   
+										 int hid,         
+										 float * ly,      
+										 int in,          
+										 float * w,       
+										 float * oldw,    
+										 float eta,       
+										 float momentum)
+{
+	bpnn_adjust_weights_cuda_kernel(delta, hid, ly, in, w, oldw, eta, momentum);
+}										
 
 
 extern "C"

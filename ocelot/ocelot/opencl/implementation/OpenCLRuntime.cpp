@@ -1472,6 +1472,68 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	_lock();
 	cl_int err = CL_SUCCESS;
 
+	try {
+		HostThreadContext & thread = _getCurrentThread();
+		if(context != (void *)&thread)
+			throw CL_INVALID_CONTEXT;
+
+		if((flags & CL_MEM_READ_ONLY) 
+			&& ((flags & CL_MEM_READ_WRITE) || (flags & CL_MEM_WRITE_ONLY)))
+			throw CL_INVALID_VALUE;
+		if((flags & CL_MEM_WRITE_ONLY) 
+			&& ((flags & CL_MEM_READ_WRITE) || (flags & CL_MEM_READ_ONLY)))
+			throw CL_INVALID_VALUE;
+
+		if((flags & CL_MEM_ALLOC_HOST_PTR) && (flags & CL_MEM_COPY_HOST_PTR))
+			throw CL_INVALID_VALUE;
+		
+		if(size == 0)
+			throw CL_INVALID_BUFFER_SIZE;
+
+		if((!host_ptr && ((flags & CL_MEM_USE_HOST_PTR) || (flags & CL_MEM_COPY_HOST_PTR)))
+			|| (host_ptr && !(flags & CL_MEM_USE_HOST_PTR) && !(flags & CL_MEM_COPY_HOST_PTR)))
+			throw CL_INVALID_HOST_PTR;
+
+		if(host_ptr) {
+			assertM(false, "unsuported host_ptr");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		std::map< int, void * > addresses;
+		for(IndexSet::iterator it = thread.validDevices.begin();
+			it != thread.validDevices.end(); it++) {
+			executive::Device &device = *(_devices[*it]);
+			device.select();
+			try {
+				void * addr =  device.allocate(size)->pointer();
+				addresses.insert(std::make_pair(*it, addr));
+				report("clCreateBuffer() return address = " << addr << ", size = " << size);
+			}
+			catch(...) {
+				device.unselect();
+				throw CL_OUT_OF_RESOURCES;
+			}
+
+			device.unselect();
+		}
+
+		try {
+			_buffers.push_back(new BufferObject(addresses, context, flags, size));
+		}
+		catch(...) {
+			throw CL_OUT_OF_HOST_MEMORY;
+		}
+		buffer = _buffers.size()-1;
+		thread.validBuffers.insert(buffer);
+
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();

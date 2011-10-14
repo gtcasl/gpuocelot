@@ -127,6 +127,9 @@ namespace opencl {
 
 		//! set of valid programs
 		IndexSet validPrograms;
+
+		//! set of valid buffer objects
+		IndexSet validBuffers;
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
@@ -222,7 +225,9 @@ namespace opencl {
 //	
 //	/*! \brief Set of PTX passes */
 //	typedef std::set< transforms::Pass* > PassSet;
-//
+
+
+	typedef std::vector< BufferObject * > BufferObjectVector;
 //	typedef std::vector< FatBinaryContext > FatBinaryVector;
 //	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 //	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
@@ -293,8 +298,11 @@ namespace opencl {
 		//! map of pthreads to thread contexts
 		HostThreadContextMap _threads;
 		
-		//! map of kernels
+		//! vectors of kernels
 		RegisteredKernelVector _kernels;
+
+		//! vectors of buffer objects
+		BufferObjectVector _buffers;
 		
 		//! maps texture symbols to module-textures
 		//RegisteredTextureMap _textures;

@@ -8,7 +8,6 @@
 
 // Ocelot includes
 #include <ocelot/opencl/interface/OpenCLRuntime.h>
-//#include <ocelot/opencl/interface/OpenCLDriver.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/transforms/interface/PassManager.h>
@@ -1085,36 +1084,39 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
 	void * user_data,
 	cl_int * errcode_ret) {
-	_lock();
-	*errcode_ret = CL_SUCCESS;
+	
 	cl_context context = NULL;
+	_lock();
+	cl_int err = CL_SUCCESS;
 
 	//Assume ocelot platform is always availbe, but platform_id in properties should be zero
 	if(properties && properties[0] && (properties[0] != CL_CONTEXT_PLATFORM 
 		|| properties[2] != 0 /*properties terminates with 0*/ ))
-		*errcode_ret = CL_INVALID_PROPERTY;
+		err = CL_INVALID_PROPERTY;
 	else if(properties[1] != 0 /*platform_id should be zero*/)
-		*errcode_ret = CL_INVALID_PLATFORM;
+		err = CL_INVALID_PLATFORM;
 	else if(devices == 0 || num_devices == 0
 		|| (pfn_notify == 0 && user_data != 0))
-		*errcode_ret = CL_INVALID_VALUE;
+		err = CL_INVALID_VALUE;
 	else if(pfn_notify) {
 		assertM(false, "call_back function unsupported\n");
-		*errcode_ret = CL_UNIMPLEMENTED;
+		err = CL_UNIMPLEMENTED;
 	}
 	else {
 		HostThreadContext &thread = _getCurrentThread();
 		for (cl_uint i = 0; i < num_devices; i++) {
 			if(devices[i] == -1 || devices[i] >= (int)_devices.size()) {
-				*errcode_ret = CL_INVALID_DEVICE;
+				err = CL_INVALID_DEVICE;
 				break;
 			}
 			thread.validDevices.insert(devices[i]);
 		}
-		if(*errcode_ret == CL_SUCCESS)
+		if(err == CL_SUCCESS)
 			context = (cl_context) &thread;
 	}
-	_setLastError(*errcode_ret);
+	_setLastError(err);
+	if(errcode_ret)
+		*errcode_ret = err;
 	_unlock();
 	return context;
 }
@@ -1127,20 +1129,20 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	cl_command_queue queue = -1;
 	
 	_lock();
-	*errcode_ret = CL_SUCCESS;
+	cl_int err = CL_SUCCESS;
 
 	HostThreadContext &thread = _getCurrentThread();
 	if(context != (void *)&thread)
-		*errcode_ret = CL_INVALID_CONTEXT;
+		err = CL_INVALID_CONTEXT;
 	else if(thread.validDevices.find(device) == thread.validDevices.end())//Not found
-		*errcode_ret = CL_INVALID_DEVICE;
+		err = CL_INVALID_DEVICE;
 	else if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
 					CL_QUEUE_PROFILING_ENABLE))
-		*errcode_ret = CL_INVALID_VALUE;
+		err = CL_INVALID_VALUE;
 	else if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
 		||(properties & CL_QUEUE_PROFILING_ENABLE)) {
 		assertM(false, "unimplemented queue properties");
-		*errcode_ret = CL_INVALID_QUEUE_PROPERTIES;
+		err = CL_INVALID_QUEUE_PROPERTIES;
 	}
 	else {
 		executive::Device &d = *(_devices[device]);
@@ -1149,10 +1151,12 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 			queue = d.createStream();
 		}
 		catch (...) {
-			*errcode_ret = CL_OUT_OF_RESOURCES;
+			err = CL_OUT_OF_RESOURCES;
 		}
 		d.unselect();
 	}
+	if(errcode_ret)
+		*errcode_ret = err;
 	_unlock();
 	return queue;
 }
@@ -1166,17 +1170,17 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	cl_program program = -1;
 	
 	_lock();
-	*errcode_ret = CL_SUCCESS;
+	cl_int err = CL_SUCCESS;
 	HostThreadContext &thread = _getCurrentThread();
 	if(context != (void *)&thread)
-		*errcode_ret = CL_INVALID_CONTEXT;
+		err = CL_INVALID_CONTEXT;
 	else if(count == 0 || strings == 0)
-		*errcode_ret = CL_INVALID_VALUE;
+		err = CL_INVALID_VALUE;
 	else {
 		cl_uint i;
 		for(i = 0; i < count; i++) {
 			if(strings[i] == 0) {
-				*errcode_ret = CL_INVALID_VALUE;
+				err = CL_INVALID_VALUE;
 				break;
 			}
 		}
@@ -1189,6 +1193,9 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 			thread.validPrograms.insert(program);
 		}
 	}
+
+	if(errcode_ret)
+		*errcode_ret = err;
 	_unlock();
 
 	return program;
@@ -1401,8 +1408,9 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	cl_int * errcode_ret) {
 	
 	cl_kernel kernel = -1;
+	cl_int err = CL_SUCCESS;	
+
 	_lock();
-	*errcode_ret = CL_SUCCESS;
 
 	try{
 		HostThreadContext & thread = _getCurrentThread();
@@ -1438,15 +1446,18 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 			throw CL_OUT_OF_HOST_MEMORY;
 		}
 		kernel = _kernels.size() - 1;
+		prog.kernels.insert(kernel);
 
 	}
 	catch(cl_int exception) {
-		*errcode_ret = exception;
+		err = exception;
 	}
 	catch(...) {
-		*errcode_ret = CL_OUT_OF_HOST_MEMORY;
+		err = CL_OUT_OF_HOST_MEMORY;
 	}
 
+	if(errcode_ret)
+		*errcode_ret = err;
 	_unlock();
 	return kernel;
 }
@@ -1457,10 +1468,12 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	void * host_ptr,
 	cl_int * errcode_ret) {
 
-	_lock();
-	*errcode_ret = CL_SUCCESS;
 	cl_mem buffer = -1;
+	_lock();
+	cl_int err = CL_SUCCESS;
 
+	if(errcode_ret)
+		*errcode_ret = err;
 	_unlock();
 	return buffer;
 }

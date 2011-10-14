@@ -55,10 +55,10 @@ bool DirectionalGraph::hasNode( const node_type nodeId ) const{
 /*!\brief Remove a node with certain id from the graph
  * 1) Tests if node is present
  * 2) Tests If there are outgoing arrows
- * 2.1) Remove this node from each destination's node id source list
+ * 2.1) Remove this node from each destiny's node id source list
  * 2.2) Remove this node outgoing list
  * 3) Tests If there are incoming arrows
- * 3.1) Remove this node from each sources's node id destination list
+ * 3.1) Remove this node from each sources's node id destiny list
  * 3.2) Remove this node sources list
  * 4) Remove the node from the node list
  */
@@ -75,7 +75,7 @@ bool DirectionalGraph::eraseNode( const node_type &nodeId ){
 	if( arrows != outArrows.end() ){
 		nextNode = arrows->second.begin();
 
-		/* 2.1) Remove this node from each destination's node id source list */
+		/* 2.1) Remove this node from each destiny's node id source list */
 		for( ; nextNode != arrows->second.end(); nextNode++ ){
 			arrow_iterator inArrow = inArrows.find(*nextNode);
 
@@ -91,7 +91,7 @@ bool DirectionalGraph::eraseNode( const node_type &nodeId ){
 	if( arrows != inArrows.end() ){
 		nextNode = arrows->second.begin();
 
-		/* 3.1) Remove this node from each sources's node id destination list */
+		/* 3.1) Remove this node from each sources's node id destiny list */
 		for( ; nextNode != arrows->second.end(); nextNode++ ){
 			arrow_iterator outArrow = outArrows.find(*nextNode);
 
@@ -137,16 +137,16 @@ const DirectionalGraph::node_set DirectionalGraph::getInNodesSet(
 }
 /*!\brief Insert a edge between two nodes. If the nodes doesn't exist they can be created
  * 1) Tests if can create new nodes
- * 1.1) Create ongoing and destination nodes
+ * 1.1) Create ongoing and destiny nodes
  * 1.2) Or test if both nodes exist
  * 2) Insert / create / update list of ongoing edges for source node
- * 3) Insert / create / update list of incoming edges for destination node
+ * 3) Insert / create / update list of incoming edges for destiny node
  */
 int DirectionalGraph::insertEdge( const node_type &fromNode,
 	const node_type &toNode, const bool createNewNodes ){
 	/* 1) Tests if can create new nodes */
 	if( createNewNodes ){
-		/* 1.1) Create ongoing and destination nodes */
+		/* 1.1) Create ongoing and destiny nodes */
 		nodes.insert(fromNode);
 		nodes.insert(toNode);
 	}else{
@@ -186,7 +186,7 @@ int DirectionalGraph::insertEdge( const node_type &fromNode,
 		return 4;
 	}
 
-	/* 3) Insert / create / update list of incoming edges for destination node
+	/* 3) Insert / create / update list of incoming edges for destiny node
 	 * Insert A->B arrow in inArrows: inArrows[B].insert(A) */
 	arrowIt = inArrows.find(toNode);
 

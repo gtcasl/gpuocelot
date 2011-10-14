@@ -111,16 +111,17 @@ class DataflowGraph : public KernelAnalysis
 
 		
 		class Block;
-                class Instruction;
+		class Instruction;
 		class PhiInstruction;
-                /*! \brief A vector of Instructions */
+		/*! \brief A vector of Instructions */
 		typedef std::list< Instruction > InstructionVector;
 		/*! \brief A vector of PhiInstructions */
 		typedef std::list< PhiInstruction > PhiInstructionVector;
 		/*! \brief A vector of blocks */
 		typedef std::list< Block > BlockVector;
+		typedef std::list<InstructionVector::iterator> InstructionIteratorList;
 		
-                /*! \brief A class for referring to a generic instruction. */
+		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
 		{
 			public:
@@ -131,11 +132,11 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief Source registers */
 				RegisterPointerVector s;
 				/*! \brief iterator over all uses in the same block */
-                                std::list<InstructionVector::iterator> uses;
+				InstructionIteratorList uses;
 				/*! \brief iterator over all defs in the same block */
-                                std::list<InstructionVector::iterator> defs;
+				InstructionIteratorList defs;
 				/*! \brief iterator over all uses in the same block */
-                                typedef std::list<InstructionVector::iterator>::iterator DUIterator;
+				typedef InstructionIteratorList::iterator DUIterator;
 
 		};
 		
@@ -385,9 +386,9 @@ class DataflowGraph : public KernelAnalysis
 	public:
 		/*! \brief Compute live ranges */
 		void compute();
-                /*! \brief Construct DU/UD chains*/
-                void constructDUChains();
-                void constructBlockDUChains(iterator blockIter);
+		/*! \brief Construct DU/UD chains*/
+		void constructDUChains();
+		void constructBlockDUChains(iterator blockIter);
 		/*! \brief Determine the max register used in the graph */
 		RegisterId maxRegister() const;
 		/*! \brief Allocate a new register that is not used elswhere 

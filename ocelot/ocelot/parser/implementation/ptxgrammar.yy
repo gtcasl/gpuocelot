@@ -23,7 +23,8 @@
 	namespace ptx
 	{
 	
-	int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer );
+	int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer, 
+		parser::PTXParser::State& state );
 	void yyerror( YYLTYPE* location, parser::PTXLexer& lexer, 
 		parser::PTXParser::State& state, char const* message );
 	
@@ -44,6 +45,7 @@
 %parse-param {parser::PTXLexer& lexer}
 %parse-param {parser::PTXParser::State& state}
 %lex-param {parser::PTXLexer& lexer}
+%lex-param {parser::PTXParser::State& state}
 %pure-parser
 
 %token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
@@ -172,6 +174,7 @@ version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
 };
 
 identifier : '_' | TOKEN_IDENTIFIER | opcode;
+optionalIdentifier : /* empty string */ | identifier;
 
 identifierList : identifier
 {
@@ -421,6 +424,11 @@ parameter : TOKEN_PARAM
 	state.locationAddress( $<value>1 );
 };
 
+parameter : TOKEN_REG
+{
+	state.locationAddress( $<value>1 );
+};
+
 argumentDeclaration : parameter addressableVariablePrefix identifier 
 	arrayDimensions
 {
@@ -653,7 +661,7 @@ labelOperand : identifier
 	state.labelOperand( $<text>1 );
 };
 
-returnType : TOKEN_PARAM dataTypeId identifier
+returnType : parameter dataTypeId optionalIdentifier
 {
 	state.returnType( $<value>2 );
 };
@@ -662,7 +670,7 @@ returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
 returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
 
-argumentType : TOKEN_PARAM dataTypeId identifier
+argumentType : parameter dataTypeId optionalIdentifier
 {
 	state.argumentType( $<value>2 );
 };
@@ -891,7 +899,8 @@ optionalPrototypeName : ',' identifier
 	state.callPrototypeName( $<text>2 );
 };
 
-optionalPrototypeName : ',' '(' callArgumentList ')' | /* empty string */;
+optionalPrototypeName : ',' '(' callArgumentList ')'
+	| ',' '(' ')' | /* empty string */;
 
 optionalUniOrTail : TOKEN_TAIL
 {
@@ -1512,17 +1521,32 @@ vote : OPCODE_VOTE voteOperation voteDataType operand ',' operand ';'
 
 %%
 
-int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer )
+int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer, 
+	parser::PTXParser::State& state )
 {
 	lexer.yylval = token;
 	
-	int tokenValue = lexer.yylexPosition();
-	location->first_line = lexer.lineno();
+	int tokenValue         = lexer.yylexPosition();
+	location->first_line   = lexer.lineno();
 	location->first_column = lexer.column;
 	
-	report( " Lexer (" << location->first_line << "," << location->first_column 
-		<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
-		<< lexer.YYText() << "\"" );
+	if(lexer.commentLength != 0)
+	{
+		state.comment = lexer.comment;
+		lexer.commentLength = 0;
+
+		report( " Lexer (" << location->first_line << ","
+			<< location->first_column 
+			<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
+			<< lexer.YYText() << "\", comment '" << state.comment << "'" );
+	}
+	else
+	{
+		report( " Lexer (" << location->first_line << ","
+			<< location->first_column 
+			<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
+			<< lexer.YYText() << "\"");
+	}
 	
 	return tokenValue;
 }

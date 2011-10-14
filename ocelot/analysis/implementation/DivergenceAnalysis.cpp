@@ -10,6 +10,7 @@
 
 // Standard Library Includes
 #include <cassert>
+
 namespace analysis
 {
 

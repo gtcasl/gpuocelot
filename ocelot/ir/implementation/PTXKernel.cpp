@@ -592,12 +592,25 @@ void PTXKernel::write(std::ostream& stream) const
 				ir::PTXInstruction* inst =
 					static_cast<ir::PTXInstruction *>(*instruction);
 				
-				if (inst->opcode == ir::PTXInstruction::Call
-					&& inst->a.addressMode == PTXOperand::Register ) {
+				if (inst->opcode == ir::PTXInstruction::Call) {
+					bool needsPrototype = false;
+					std::string name;
+											
+					if (inst->a.addressMode == PTXOperand::FunctionName) {
+						needsPrototype = module->prototypes().count(
+							inst->a.identifier) == 0;
+						if (needsPrototype) {
+							name = inst->a.identifier;
+						}
+					}
+					else if (inst->a.addressMode == PTXOperand::Register) {
+						name = inst->c.identifier;
+						needsPrototype = true;
+					}
+					
 					// indirect call
-					if (indirectCalls.find(inst->c.identifier)
-						== indirectCalls.end()) {
-						indirectCalls[inst->c.identifier] = inst;
+					if (needsPrototype) {
+						indirectCalls[name] = inst;
 					}
 				}
 			}
@@ -609,20 +622,25 @@ void PTXKernel::write(std::ostream& stream) const
 				indCall != indirectCalls.end(); ++indCall) {
 
 				stream << "\t" << indCall->first << ": .callprototype ";
-				stream << "(";
-
-				unsigned int n = 0;
-				for (ir::PTXOperand::Array::const_iterator
-					arg_it = indCall->second->d.array.begin();
-					arg_it != indCall->second->d.array.end();
-					++arg_it, ++n) {
 				
-					stream << (n ? ", " : "") << ".param ."
-						<< ir::PTXOperand::toString(arg_it->type) << " _";
-				}
+				if (!indCall->second->d.array.empty()) {
+					stream << "(";
+				
+					unsigned int n = 0;
+					for (ir::PTXOperand::Array::const_iterator
+						arg_it = indCall->second->d.array.begin();
+						arg_it != indCall->second->d.array.end();
+						++arg_it, ++n) {
+				
+						stream << (n ? ", " : "") << ".param ."
+							<< ir::PTXOperand::toString(arg_it->type) << " _";
+					}
 			
-				stream << ") _ (";
-				n = 0;
+					stream << ")";
+				}
+				
+				stream << " _ (";
+				unsigned int n = 0;
 				for (ir::PTXOperand::Array::const_iterator
 					arg_it = indCall->second->b.array.begin();
 					arg_it != indCall->second->b.array.end();

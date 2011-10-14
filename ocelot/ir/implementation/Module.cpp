@@ -393,7 +393,15 @@ unsigned int ir::Module::addressSize() const {
 void ir::Module::addPrototype(const std::string &identifier,
 	const ir::PTXKernel::Prototype &prototype) {
 	report("adding prototype: " << prototype.toString());
-	_prototypes[identifier] = prototype;
+	
+	FunctionPrototypeMap::iterator proto = _prototypes.find(identifier);
+	
+	if (proto == _prototypes.end()) {
+		_prototypes.insert(proto, std::make_pair(identifier, prototype));
+	}
+	else {
+		//assert(prototype == proto->second);
+	}
 }
 		
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
@@ -452,14 +460,16 @@ void ir::Module::extractPTXKernels() {
 		it != _statements.end(); ++it) {
 		const PTXStatement &statement = (*it);
 	
-		if (statement.directive != PTXStatement::Instr && statement.directive != PTXStatement::Loc) {
-			report("directive: " << PTXStatement::toString(statement.directive));
+		if (statement.directive != PTXStatement::Instr &&
+			statement.directive != PTXStatement::Loc) {
+			report("directive: "
+				<< PTXStatement::toString(statement.directive));
 		}
 	
 		switch (statement.directive) {
 			case PTXStatement::Entry:	// fallthrough
 			case PTXStatement::Func:
-			{			
+			{
 				// new kernel
 				assert(!inKernel);
 				startIterator = it;
@@ -511,29 +521,33 @@ void ir::Module::extractPTXKernels() {
 			case PTXStatement::EndFuncDec:
 			{
 				assert(inKernel);
-				inKernel = false;
+				inKernel   = false;
 				isFunction = false;
 				
 			} // fallthrough
 			case PTXStatement::StartScope:
 			{
-				if (prototypeState != PS_NoState && functionPrototype.callType != ir::PTXKernel::Prototype::Entry) {
-					addPrototype(functionPrototype.identifier, functionPrototype);
+				if (prototypeState != PS_NoState &&
+					functionPrototype.callType !=
+					ir::PTXKernel::Prototype::Entry) {
+					addPrototype(functionPrototype.identifier,
+						functionPrototype);
 					prototypeState = PS_NoState;
 				}
 			}
 			break;
 			case PTXStatement::Param:
 			{						
-				if (prototypeState == PS_ReturnParams || PS_Params) {					
-					// Parameter(const PTXStatement& statement, bool arg, bool isReturn = false)
+				if (prototypeState == PS_ReturnParams || PS_Params) {
 					ir::Parameter argument(statement, false);
 					if (prototypeState == PS_ReturnParams) {
-						report("  appending " << argument.name << " to returnArguments");
+						report("  appending " << argument.name
+							<< " to returnArguments");
 						functionPrototype.returnArguments.push_back(argument);
 					}
 					else {
-						report("  appending " << argument.name << " to arguments");
+						report("  appending " << argument.name
+							<< " to arguments");
 						functionPrototype.arguments.push_back(argument);
 					}					
 				}
@@ -548,7 +562,7 @@ void ir::Module::extractPTXKernels() {
 				instructionCount++;
 			}
 			break;
-		case PTXStatement::Const: // fallthrough
+		case PTXStatement::Const:  // fallthrough
 		case PTXStatement::Global: // fallthrough
 		case PTXStatement::Shared: // fallthrough
 		case PTXStatement::Local:
@@ -556,7 +570,8 @@ void ir::Module::extractPTXKernels() {
 				assertM(_globals.count(statement.name) == 0, "Global operand '" 
 					<< statement.name << "' declared more than once." );
 
-				_globals.insert(std::make_pair(statement.name, Global(statement)));
+				_globals.insert(std::make_pair(statement.name,
+					Global(statement)));
 			}
 			break;
 
@@ -589,7 +604,6 @@ void ir::Module::extractPTXKernels() {
 			default:
 				break;
 		}
-
 	}
 }
 

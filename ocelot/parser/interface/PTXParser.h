@@ -59,13 +59,13 @@ namespace parser
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
-					typedef std::vector< StringList > StringListStack;
+					typedef std::unordered_set< std::string > StringSet;
+					typedef std::vector< StringSet > StringSetStack;
 					typedef std::vector< unsigned int > UintStack;
 					typedef std::vector< unsigned int > DimensionVector;
 					typedef std::vector< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
 						OperandWrapper > OperandMap;
-					typedef std::unordered_set< std::string > StringSet;
 					typedef std::vector< ir::PTXOperand > OperandVector;
 					typedef std::unordered_map< std::string, 
 						FunctionPrototype > PrototypeMap;
@@ -104,10 +104,10 @@ namespace parser
 					
 					StringList identifiers;
 					OperandMap operands;
-					StringListStack localOperands;
+					StringSetStack localOperands;
 
 					PrototypeMap prototypes;
-					StringListStack localPrototypes;
+					StringSetStack localPrototypes;
 					
 					bool inEntry;
 					bool inArgumentList;
@@ -121,6 +121,7 @@ namespace parser
 					FunctionPrototype prototype;
 					
 					ir::PTXStatement::Directive directive;
+					std::string comment;
 									
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 

@@ -1182,7 +1182,7 @@ typedef int cl_platform_id;
 typedef int cl_device_id;
 typedef void * cl_context;
 typedef int cl_command_queue;
-typedef struct _cl_mem *            cl_mem;
+typedef int cl_mem;
 typedef int cl_program;
 typedef int cl_kernel;
 typedef struct _cl_event *          cl_event;

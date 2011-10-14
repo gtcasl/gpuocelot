@@ -129,8 +129,7 @@ clCreateBuffer(cl_context   context,
                size_t       size,
                void *       host_ptr,
                cl_int *     errcode_ret) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return NULL;
+	return opencl::OpenCLRuntimeInterface::get()->clCreateBuffer(context, flags, size, host_ptr, errcode_ret);
 }
 
 cl_mem

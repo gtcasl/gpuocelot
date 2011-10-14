@@ -83,6 +83,12 @@ namespace opencl {
 		virtual cl_kernel clCreateKernel(cl_program program,
 					const char * kernel_name,
 					cl_int * errcode_ret);
+		virtual cl_mem clCreateBuffer(cl_context context,
+					cl_mem_flags flags,
+					size_t size,
+					void * host_ptr,
+					cl_int * errcode_ret);
+
 
 
 

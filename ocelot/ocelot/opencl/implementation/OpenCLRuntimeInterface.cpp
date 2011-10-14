@@ -149,3 +149,13 @@ cl_kernel opencl::OpenCLRuntimeInterface::clCreateKernel(cl_program program,
 	assertM(false, "unimplemented");
 	return NULL;
 }
+
+cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
+	cl_mem_flags flags,
+	size_t size,
+	void * host_ptr,
+	cl_int * errcode_ret) {
+	*errcode_ret = CL_UNIMPLEMENTED;
+	assertM(false, "unimplemented");
+	return NULL;
+}

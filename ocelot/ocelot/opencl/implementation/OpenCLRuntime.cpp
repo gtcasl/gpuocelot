@@ -1450,3 +1450,17 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	_unlock();
 	return kernel;
 }
+
+cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
+	cl_mem_flags flags,
+	size_t size,
+	void * host_ptr,
+	cl_int * errcode_ret) {
+
+	_lock();
+	*errcode_ret = CL_SUCCESS;
+	cl_mem buffer = -1;
+
+	_unlock();
+	return buffer;
+}

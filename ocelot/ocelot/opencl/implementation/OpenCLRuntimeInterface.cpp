@@ -100,7 +100,6 @@ cl_context opencl::OpenCLRuntimeInterface::clCreateContext(const cl_context_prop
 	void * user_data,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	*errcode_ret = CL_UNIMPLEMENTED;
 	return NULL;
 }
 
@@ -109,7 +108,6 @@ cl_command_queue opencl::OpenCLRuntimeInterface::clCreateCommandQueue(cl_context
 	cl_command_queue_properties properties,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	*errcode_ret = CL_UNIMPLEMENTED;
 	return NULL;
 }
 
@@ -119,7 +117,6 @@ cl_program opencl::OpenCLRuntimeInterface::clCreateProgramWithSource(cl_context 
 	const size_t * lengths,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	*errcode_ret = CL_UNIMPLEMENTED;
 	return NULL;
 }
 
@@ -145,7 +142,6 @@ cl_int opencl::OpenCLRuntimeInterface::clGetProgramInfo(cl_program program,
 cl_kernel opencl::OpenCLRuntimeInterface::clCreateKernel(cl_program program,
 	const char * kernel_name,
 	cl_int * errcode_ret) {
-	*errcode_ret = CL_UNIMPLEMENTED;
 	assertM(false, "unimplemented");
 	return NULL;
 }
@@ -155,7 +151,32 @@ cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
 	size_t size,
 	void * host_ptr,
 	cl_int * errcode_ret) {
-	*errcode_ret = CL_UNIMPLEMENTED;
 	assertM(false, "unimplemented");
 	return NULL;
 }
+
+cl_int opencl::OpenCLRuntimeInterface::clEnqueueReadBuffer(cl_command_queue command_queue,
+	cl_mem buffer,
+	cl_bool blocking_read,
+	size_t offset,
+	size_t cb, 
+	void * ptr,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clEnqueueWriteBuffer(cl_command_queue command_queue,
+	cl_mem buffer,
+	cl_bool blocking_write,
+	size_t offset,
+	size_t cb, 
+	const void * ptr,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+} 

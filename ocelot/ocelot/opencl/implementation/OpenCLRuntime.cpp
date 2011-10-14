@@ -1539,3 +1539,33 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	_unlock();
 	return buffer;
 }
+
+cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue,
+	cl_mem buffer,
+	cl_bool blocking_read,
+	size_t offset,
+	size_t cb, 
+	void * ptr,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queue,
+	cl_mem buffer,
+	cl_bool blocking_write,
+	size_t offset,
+	size_t cb, 
+	const void * ptr,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+	_unlock();
+	return result;
+}

@@ -59,9 +59,29 @@ namespace opencl {
 	/*!	\brief Set of thread ids */
 	typedef std::set< boost::thread::id > ThreadSet;	
 	
-	typedef std::vector< unsigned int > IndexVector;
+	typedef std::vector< int > IndexVector;
 	typedef std::vector< unsigned int > SizeVector;
+
+	typedef std::set< int > IndexSet;
+
+	//! references a kernel registered to OpenCL runtime
+	class RegisteredKernel {
+	public:
+		RegisteredKernel(const std::string& kernel, const int program, const void * context);
+
+	public:
+		//! name of kernel
+		const std::string kernel;
+
+		//! associated program
+		const int program;
+
+		//! associated context
+		const void * context;
+	};
 	
+	typedef std::vector< RegisteredKernel * > RegisteredKernelVector;
+
 	//! programs created in OpenCL runtime	
 	class Program {
 	private:
@@ -69,29 +89,33 @@ namespace opencl {
 		static unsigned int _id;
 
 	public:
-		Program(const std::string & source = "");
+		Program(const std::string & source, const void * context);
 
 	public:
 		std::string name;
 	
-		//! ptx modules associated with devices	
-		std::map <executive::Device *, std::string> ptxModule;
+		//! ptx modules associated with device id	
+		std::map <int, std::string> ptxModule;
 
-		//! ptx code
-		std::map <executive::Device *, std::string> ptxCode;
+		//! ptx code associated with device id
+		std::map <int, std::string> ptxCode;
 		
 		//! source code of program
 		std::string source;
 
+		//! kernels
+		IndexSet kernels;
+
 		//! get build status
 		bool built;
 
+		//! associated context
+		const void * context;
+
 	};
 	
-	typedef std::vector< Program > ProgramVector;
-	typedef std::set< Program * > ProgramSet;
-	typedef std::set< executive::Device * > DeviceSet;
-
+	typedef std::vector< Program * > ProgramVector;
+	
 	/*! Host thread OpenCL context consists of these */
 	class HostThreadContext {	
 	public:
@@ -99,10 +123,10 @@ namespace opencl {
 		executive::Device * selectedDevice;
 		
 		//! set of valid device indices
-		DeviceSet validDevices;
+		IndexSet validDevices;
 
 		//! set of valid programs
-		ProgramSet validPrograms;
+		IndexSet validPrograms;
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
@@ -143,26 +167,8 @@ namespace opencl {
 		unsigned int mapParameters(const ir::Kernel* kernel);
 	};
 	
-	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
+	typedef std::map<boost::thread::id, HostThreadContext *> HostThreadContextMap;
 
-	//! references a kernel registered to OpenCL runtime
-	class RegisteredKernel {
-	public:
-		RegisteredKernel(size_t handle = 0, const std::string& module = "", 
-			const std::string& kernel = "");
-
-	public:
-		//! binary handle
-		size_t handle;
-		
-		//! name of module
-		std::string module;
-		
-		//! name of kernel
-		std::string kernel;
-	};
-	
-	typedef std::map< void*, RegisteredKernel > RegisteredKernelMap;
 //
 //	class RegisteredTexture
 //	{
@@ -262,11 +268,11 @@ namespace opencl {
 		//! \brief create program binary
 		Program & _createProgramBinary(const std::string & binary);
 		// Load module and register it with devices
-		void _registerModule(ModuleMap::iterator module, executive::Device * device);
+		void _registerModule(ModuleMap::iterator module, int device);
 		// Load module and register it with devices
-		void _registerModule(const std::string& name, executive::Device * device);
+		void _registerModule(const std::string& name, int device);
 		// Load all modules and register them with all devices
-		void _registerAllModules(executive::Device * device);
+		void _registerAllModules(int device);
 
 	private:
 		//! locking object for opencl runtime
@@ -288,7 +294,7 @@ namespace opencl {
 		HostThreadContextMap _threads;
 		
 		//! map of kernels
-		RegisteredKernelMap _kernels;
+		RegisteredKernelVector _kernels;
 		
 		//! maps texture symbols to module-textures
 		//RegisteredTextureMap _textures;
@@ -312,7 +318,7 @@ namespace opencl {
 		bool _devicesLoaded;
 		
 		//! Currently selected device
-		cl_device_id _selectedDevice;
+		executive::Device * _selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
 		int _nextSymbol;

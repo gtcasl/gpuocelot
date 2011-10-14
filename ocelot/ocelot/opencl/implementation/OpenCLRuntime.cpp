@@ -180,7 +180,8 @@ unsigned int opencl::HostThreadContext::mapParameters(const ir::Kernel* kernel) 
 unsigned int opencl::Program::_id = 0;
 
 
-opencl::Program::Program(const std::string & s) : source(s), built(false) {
+opencl::Program::Program(const std::string & s, const void * c): 
+		source(s), built(false), context(c) {
 	std::stringstream stream;
 	stream << "__clmodule_" << _id;
 	name = stream.str();
@@ -188,8 +189,8 @@ opencl::Program::Program(const std::string & s) : source(s), built(false) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-opencl::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
-	const std::string& k) : handle(h), module(m), kernel(k) {
+opencl::RegisteredKernel::RegisteredKernel(const std::string &k, const int p,
+const void * c): kernel(k), program(p), context(c) {
 }
 /*
 opencl::RegisteredTexture::RegisteredTexture(const std::string& m, 
@@ -420,13 +421,13 @@ opencl::HostThreadContext& opencl::OpenCLRuntime::_getCurrentThread() {
 		report("Creating new context for thread "
 			<< boost::this_thread::get_id());
 		t = _threads.insert(std::make_pair(boost::this_thread::get_id(), 
-			HostThreadContext())).first;
+			new HostThreadContext())).first;
 	}
-	return t->second;
+	return *(t->second);
 }
 
 
-void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, executive::Device * device) {
+void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, int device) {
 	if(module->second.loaded()) return;
 	module->second.loadNow();	
 /*	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
@@ -445,21 +446,21 @@ void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, executiv
 	}
 	
 	manager.runOnModule();*/
-	
-	device->select();
-	device->load(&module->second);
-	device->setOptimizationLevel(_optimization);
-	device->unselect();
+	executive::Device & d =*(_devices[device]);
+	d.select();
+	d.load(&module->second);
+	d.setOptimizationLevel(_optimization);
+	d.unselect();
 }
 
-void opencl::OpenCLRuntime::_registerModule(const std::string& name, executive::Device * device) {
+void opencl::OpenCLRuntime::_registerModule(const std::string& name, int device) {
 	ModuleMap::iterator module = _modules.find(name);
 	if(module != _modules.end()) {
 		_registerModule(module, device);
 	}
 }
 
-void opencl::OpenCLRuntime::_registerAllModules(executive::Device * device) {
+void opencl::OpenCLRuntime::_registerAllModules(int device) {
 	for(ModuleMap::iterator module = _modules.begin(); 
 		module != _modules.end(); ++module) {
 		_registerModule(module, device);
@@ -1033,7 +1034,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 			*num_devices = _devices.size();
 		if(devices != 0) {
 			for(cl_uint i = 0; i < std::min(_devices.size(), (size_t)num_entries); i++)
-				devices[i] = (void *) _devices[i];
+				devices[i] = i;
 		}
 		if (_devices.empty()) {
 			result = CL_DEVICE_NOT_FOUND;
@@ -1050,12 +1051,12 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 	size_t * param_value_size_ret) {
 	cl_int result = CL_SUCCESS;
 	_lock();
-	if(!device)
+	if(device == -1 || device >= (int)_devices.size())
 		result = CL_INVALID_DEVICE;
 	else if(!param_value && !param_value_size_ret)
 		result = CL_INVALID_VALUE;
 	else {
-		const executive::Device::Properties & prop = ((executive::Device *)device)->properties();
+		const executive::Device::Properties & prop = (_devices[device])->properties();
 		switch(param_name) {
 			case CL_DEVICE_NAME:
 				if(param_value && param_value_size < strlen(prop.name))
@@ -1086,7 +1087,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	cl_int * errcode_ret) {
 	_lock();
 	*errcode_ret = CL_SUCCESS;
-	HostThreadContext * pThread = NULL;
+	cl_context context = NULL;
 
 	//Assume ocelot platform is always availbe, but platform_id in properties should be zero
 	if(properties && properties[0] && (properties[0] != CL_CONTEXT_PLATFORM 
@@ -1097,22 +1098,25 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	else if(devices == 0 || num_devices == 0
 		|| (pfn_notify == 0 && user_data != 0))
 		*errcode_ret = CL_INVALID_VALUE;
-	else if(*devices == 0)
-		*errcode_ret = CL_INVALID_DEVICE;
 	else if(pfn_notify) {
 		assertM(false, "call_back function unsupported\n");
 		*errcode_ret = CL_UNIMPLEMENTED;
 	}
 	else {
-		pThread = &_getCurrentThread();
+		HostThreadContext &thread = _getCurrentThread();
 		for (cl_uint i = 0; i < num_devices; i++) {
-			pThread->validDevices.insert((executive::Device *)(devices[i]));
+			if(devices[i] == -1 || devices[i] >= (int)_devices.size()) {
+				*errcode_ret = CL_INVALID_DEVICE;
+				break;
+			}
+			thread.validDevices.insert(devices[i]);
 		}
-		pThread->selectedDevice = *(pThread->validDevices.begin());
+		if(*errcode_ret == CL_SUCCESS)
+			context = (cl_context) &thread;
 	}
 	_setLastError(*errcode_ret);
 	_unlock();
-	return (cl_context)pThread;
+	return context;
 }
 
 cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context, 
@@ -1120,17 +1124,15 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	cl_command_queue_properties properties,
 	cl_int * errcode_ret) {
 	
-	cl_command_queue queue = 0;
+	cl_command_queue queue = -1;
 	
 	_lock();
 	*errcode_ret = CL_SUCCESS;
 
 	HostThreadContext &thread = _getCurrentThread();
-	if((HostThreadContext *) context != &thread)
+	if(context != (void *)&thread)
 		*errcode_ret = CL_INVALID_CONTEXT;
-	else if(device == 0)
-		*errcode_ret = CL_INVALID_DEVICE;
-	else if(thread.validDevices.find((executive::Device *) device) == thread.validDevices.end())//Not found
+	else if(thread.validDevices.find(device) == thread.validDevices.end())//Not found
 		*errcode_ret = CL_INVALID_DEVICE;
 	else if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
 					CL_QUEUE_PROFILING_ENABLE))
@@ -1141,14 +1143,15 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 		*errcode_ret = CL_INVALID_QUEUE_PROPERTIES;
 	}
 	else {
-		((executive::Device *)device)->select();
+		executive::Device &d = *(_devices[device]);
+		d.select();
 		try {
-			queue = ((executive::Device *)device)->createStream();
+			queue = d.createStream();
 		}
 		catch (...) {
 			*errcode_ret = CL_OUT_OF_RESOURCES;
 		}
-		((executive::Device *)device)->unselect();
+		d.unselect();
 	}
 	_unlock();
 	return queue;
@@ -1160,12 +1163,12 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	const size_t * lengths,
 	cl_int * errcode_ret) {
 	
-	cl_program program = 0;
+	cl_program program = -1;
 	
 	_lock();
 	*errcode_ret = CL_SUCCESS;
 	HostThreadContext &thread = _getCurrentThread();
-	if((HostThreadContext *)context != &thread)
+	if(context != (void *)&thread)
 		*errcode_ret = CL_INVALID_CONTEXT;
 	else if(count == 0 || strings == 0)
 		*errcode_ret = CL_INVALID_VALUE;
@@ -1181,9 +1184,9 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 			std::stringstream stream;
 			for(i = 0; i < count; i++)
 				stream << strings[i];
-			Program & p = *(_programs.insert(_programs.end(), Program(stream.str())));
-			thread.validPrograms.insert(&p);
-			program = (cl_program)&p;
+			_programs.push_back(new Program(stream.str(), context));
+			program = _programs.size()-1;
+			thread.validPrograms.insert(program);
 		}
 	}
 	_unlock();
@@ -1202,7 +1205,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	try {
 		HostThreadContext &thread = _getCurrentThread();
 		
-		if(thread.validPrograms.find((Program *)program) == thread.validPrograms.end())//Not found
+		if(thread.validPrograms.find(program) == thread.validPrograms.end())//Not found
 			throw CL_INVALID_PROGRAM;
 
 		if((num_devices == 0 && device_list) || (num_devices && device_list == NULL))
@@ -1212,7 +1215,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			throw CL_INVALID_VALUE;
 
 		for(cl_uint i = 0; i < num_devices; i++) {
-			if(thread.validDevices.find((executive::Device *)(device_list[i])) == thread.validDevices.end()) {//Not found
+			if(thread.validDevices.find(device_list[i]) == thread.validDevices.end()) {//Not found
 				throw CL_INVALID_DEVICE;
 				break;
 			}
@@ -1223,7 +1226,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			throw CL_UNIMPLEMENTED;
 		}
 
-		Program &prog = *((Program *)program);
+		Program &prog = *(_programs[program]);
 		//For source building, since we don't have opencl frontend, load buildout.ptx instead
 		if(!prog.ptxModule.empty() && !prog.built) {
 			assertM(false, "unsupported binary. note that clCreateProgramWithBinaries is currently unsupported!");
@@ -1253,20 +1256,18 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			ptx.read((char*)temp.data(), size);
 	
 			// Register ptx with device
-			DeviceSet devices;
+			IndexSet devices;
 			if(num_devices) {
 				for(cl_uint i = 0; i < num_devices; i++)
-					devices.insert((executive::Device *)(device_list[i]));
+					devices.insert((device_list[i]));
 			}
 			else
 				devices = thread.validDevices;
 	
 			try{
-				unsigned int deviceId = 0;
-				for(DeviceSet::iterator d = devices.begin(); d != devices.end(); d++) {
+				for(IndexSet::iterator d = devices.begin(); d != devices.end(); d++) {
 					std::stringstream moduleName;
-					moduleName << prog.name << "_" << deviceId;
-					deviceId++;
+					moduleName << prog.name << "_" << *d;
 					report("Loading module (ptx) - " << moduleName.str());
 	
 					std::string name = moduleName.str();
@@ -1321,10 +1322,10 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 		
 		HostThreadContext &thread = _getCurrentThread();
 	
-		if(thread.validPrograms.find((Program *)program) == thread.validPrograms.end())//Not found
+		if(thread.validPrograms.find(program) == thread.validPrograms.end())//Not found
 			throw CL_INVALID_PROGRAM;
 
-		Program &prog = *(Program *)program;
+		Program &prog = *_programs[program];
 
 		switch(param_name) {
 			case CL_PROGRAM_BINARY_SIZES: {
@@ -1332,13 +1333,13 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 					throw CL_INVALID_VALUE;
 
 				if(param_value)	{
-					DeviceSet::iterator device;
+					IndexSet::iterator device;
 					unsigned int i = 0;
 					//get ptx code size for every valid device
 					for(device = thread.validDevices.begin(); 
 							device != thread.validDevices.end(); device++) {
 						//if ptx code for a specific device does not exist, return 0
-						std::map <executive::Device *, std::string>::iterator ptx;
+						std::map <int, std::string>::iterator ptx;
 						if((ptx = prog.ptxCode.find(*device)) != prog.ptxCode.end())
 							((size_t *)param_value)[i] = ptx->second.size();
 						else
@@ -1357,14 +1358,14 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 					throw CL_INVALID_VALUE;
 
 				if(param_value)	{
-					DeviceSet::iterator device;;
+					IndexSet::iterator device;
 					unsigned int i = 0;
 					//get ptx code size for every valid device
 					for(device = thread.validDevices.begin(); 
 							device != thread.validDevices.end(); device++) {
 							
 						//if ptx code for a specific device does not exist, don't copy
-						std::map <executive::Device *, std::string>::iterator ptx;
+						std::map <int, std::string>::iterator ptx;
 						if((ptx = prog.ptxCode.find(*device)) != prog.ptxCode.end())
 							std::memcpy(((char **)param_value)[i], ptx->second.data(), ptx->second.size());
 						i++;
@@ -1399,15 +1400,44 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	const char * kernel_name,
 	cl_int * errcode_ret) {
 	
-	cl_kernel kernel = NULL;
+	cl_kernel kernel = -1;
 	_lock();
 	*errcode_ret = CL_SUCCESS;
 
 	try{
 		HostThreadContext & thread = _getCurrentThread();
-		Program * prog = (Program *)program;
-		if(thread.validPrograms.find(prog) == thread.validPrograms.end())
+		if(thread.validPrograms.find(program) == thread.validPrograms.end())
 			throw CL_INVALID_PROGRAM;
+
+		Program &prog = *_programs[program];
+		if(!prog.built)
+			throw CL_INVALID_PROGRAM_EXECUTABLE;
+
+		if(!kernel_name)
+			throw CL_INVALID_VALUE;
+
+		std::map < int, std::string >::iterator module;
+		std::string kernelName(kernel_name);
+		
+		for(module = prog.ptxModule.begin(); module != prog.ptxModule.end(); module++) {
+			ModuleMap::iterator m = _modules.find(module->second);
+			assert(m != _modules.end());
+			if(m->second.getKernel(kernelName)==0) {//kernel not found
+				throw CL_INVALID_KERNEL_NAME;
+				break;
+			}
+	
+		}
+
+		report("Registered kernel - " << kernelName
+			<< " in program '" << prog.name << "'");
+		try {
+			_kernels.push_back(new RegisteredKernel(kernelName, program, prog.context));
+		}
+		catch(...) {
+			throw CL_OUT_OF_HOST_MEMORY;
+		}
+		kernel = _kernels.size() - 1;
 
 	}
 	catch(cl_int exception) {

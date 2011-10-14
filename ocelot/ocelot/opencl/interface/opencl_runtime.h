@@ -1178,13 +1178,13 @@ typedef union
  
 /******************************************************************************/
 
-typedef struct _cl_platform_id *    cl_platform_id;
-typedef void * cl_device_id;
+typedef int cl_platform_id;
+typedef int cl_device_id;
 typedef void * cl_context;
-typedef unsigned int cl_command_queue;
+typedef int cl_command_queue;
 typedef struct _cl_mem *            cl_mem;
-typedef struct _cl_program *        cl_program;
-typedef struct _cl_kernel *         cl_kernel;
+typedef int cl_program;
+typedef int cl_kernel;
 typedef struct _cl_event *          cl_event;
 typedef struct _cl_sampler *        cl_sampler;
 

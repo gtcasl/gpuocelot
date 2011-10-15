@@ -160,7 +160,8 @@ namespace api {
                     enum InstrumentationType {
 			            memoryEfficiency,
 			            branchDivergence,
-                        instructionCount
+                        instructionCount,
+                        raceDetection
 		            };	
 
 			public:
@@ -171,6 +172,40 @@ namespace api {
                     std::string logfile;		
                     //! \brief type of instrumentation */
                     InstrumentationType type;	
+			};
+			
+			/*! \brief configuration properties for analysis::RaceDetectionInstrumentor */
+			class RaceDetectionInstrumentor
+			{
+			public:
+					RaceDetectionInstrumentor();
+
+			public:
+			
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;		
+			};
+			
+			/*! \brief configuration properties for analysis::AlignmentCheckInstrumentor */
+			class AlignmentCheckInstrumentor
+			{
+			public:
+					AlignmentCheckInstrumentor();
+
+			public:
+			        enum InstrumentationType {
+			            alignmentCheck,
+                        raceDetection
+		            };	
+		            
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;	
+                    //! \brief type of instrumentation */
+                    InstrumentationType type;		
 			};
 			
 		public:
@@ -186,11 +221,9 @@ namespace api {
 			//! \brief Warp reduction instrumentor
 			WarpReductionInstrumentor warpReductionInstrumentor;
 			
-			//! \brief Measure warp reduction instrumentor
-			WarpReductionInstrumentor measureWarpReductionInstrumentor;
+			//! \brief Warp reduction instrumentor
+			AlignmentCheckInstrumentor alignmentCheckInstrumentor;
 			
-			//! \brief Measure basic block instrumentor
-			BasicBlockInstrumentor measureBasicBlockInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

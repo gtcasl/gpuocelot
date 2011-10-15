@@ -36,11 +36,11 @@ namespace ir {
 	public:
 		//! addressing mode of operand
 		enum AddressMode {
-			Register,			//! use as register variable
-			Indirect,			//! indirect access
+			Register,			//! use as register variable 
+			Indirect,			//! indirect access [register + offset]
 			Immediate,			//! treat as immediate value
-			Address,			//! treat as addressable variable
-			Label,				//! operand is a label
+			Address,			//! treat as addressable variable [identifier + offset]
+			Label,				//! operand is a label [branch target]
 			Special,			//! special register
 			ArgumentList,       //! treat as argument list for function call
 			FunctionName,       //! operand is a function name

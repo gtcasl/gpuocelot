@@ -1,7 +1,14 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        memoryEfficiency: {}
+        alignmentCheck: {
+        	enabled: true,
+        	logfile: "alignment_log"
+        },
+        memoryEfficiency: {
+            enabled: false,
+            logfile: "memoryEfficiency_log"
+        }
     },
 	trace: { 
 		database: "traces-ipdom/database.trace",

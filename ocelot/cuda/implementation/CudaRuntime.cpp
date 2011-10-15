@@ -36,10 +36,10 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // report all ptx modules
-#define REPORT_ALL_PTX 0
+#define REPORT_ALL_PTX 1
 
 // report PTX after instrumentation passes
 #define REPORT_INSTRUMENTED_PTX 1
@@ -452,7 +452,7 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
         
         (*instrumentor)->checkConditions();
         if((*instrumentor)->conditionsMet) {
-            (*instrumentor)->analyze(module->second);
+            (*instrumentor)->analyze(module->second, *_devices[0]);
 
             trace::DynamicCompilationOverhead::instance.start();
 

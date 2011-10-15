@@ -13,6 +13,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/transforms/interface/Pass.h>
 #include <hydrazine/implementation/json.h>
+#include <ocelot/executive/interface/Device.h>
 
 #include <ostream>
 
@@ -133,6 +134,8 @@ namespace analysis
 
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module) = 0;
+            
+            virtual void analyze(ir::Module &module, const executive::Device &device) = 0;
 
             /*! \brief Performs the instrumentation */
 			void instrument();		

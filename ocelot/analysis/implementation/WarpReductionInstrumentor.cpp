@@ -91,6 +91,15 @@ namespace analysis
                 passes[0] = pass;   
             }
             break;
+            case raceDetection:
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/intraWarpRaceDetection.c");
+                symbol = pass->baseAddress;
+                passes[0] = pass;   
+                
+                entries = 2;
+            }
+            break;
             default:
                 throw hydrazine::Exception("No instrumentation type specified!");
             break;
@@ -168,6 +177,18 @@ namespace analysis
                         
                         *out << "\nDynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
                     }                    
+                    break;
+                    case raceDetection:
+                    {
+                        
+                        *out << "Intra-warp races detected: \n";
+                        
+                        for(unsigned int i = 0; i < warpCount; i++)
+                        {
+                            *out << info[i * entries];
+                        }
+                    
+                    }
                     break;
                     default:
                     break;

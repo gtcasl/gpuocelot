@@ -25,8 +25,8 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
 #include "cod.h"
-#include "dill.h"
-#include "dill_internal.h"
+#include "dill/dill.h"
+#include "dill/dill_internal.h"
 
 /* Instrumentation Target Specifiers */
 
@@ -74,6 +74,7 @@
 
 #define COMPUTE_BASE_ADDRESS            "computeBaseAddress"
 #define GET_PREDICATE_VALUE             "getPredicateValue"
+#define ALIGNMENT_CHECK                 "alignmentCheck"
 
 #define EXIT                            "$exit"
 #define LOOP_BEGIN                      "$loopBegin"
@@ -166,6 +167,7 @@ namespace translator {
                 warpIdSymbol,
                 getPredicateValueSymbol,
                 computeBaseAddressSymbol,
+                alignmentCheckSymbol,
                 memoryTransactionCountSymbol,
                 computeUniqueMemTransactionsSymbol,
                 uniqueElementCountSymbol,
@@ -224,6 +226,7 @@ namespace translator {
 		        void generateGlobalThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateBlockThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateComputeBaseAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
+		        void generateAlignmentCheck(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName, unsigned long uInput);
                 void generateActiveThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);

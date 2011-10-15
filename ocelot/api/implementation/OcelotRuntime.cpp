@@ -158,6 +158,12 @@ namespace ocelot
             _clockCycleCountInstrumentor.output = c.instrument.clockCycleCountInstrumentor.logfile;
             ocelot::addInstrumentor(_clockCycleCountInstrumentor);
         }
+        if(c.instrument.alignmentCheckInstrumentor.enabled)
+        {   
+            report("Creating alignment check instrumentor");
+            _alignmentCheckInstrumentor.output = c.instrument.alignmentCheckInstrumentor.logfile;
+            ocelot::addInstrumentor(_alignmentCheckInstrumentor);
+        }
         if(c.instrument.warpReductionInstrumentor.enabled)
         {   
             report("Creating warp reduction instrumentor");
@@ -170,6 +176,9 @@ namespace ocelot
                     break;
                 case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence:
                     _warpReductionInstrumentor.type = analysis::WarpReductionInstrumentor::branchDivergence;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::raceDetection:
+                    _warpReductionInstrumentor.type = analysis::WarpReductionInstrumentor::raceDetection;
                     break;
             }
              

@@ -1,4 +1,4 @@
-/*! \file ClockCycleCountPass.h
+ /*! \file ClockCycleCountPass.h
 	\date Monday November 15, 2010
 	\author Naila Farooqui <naila@cc.gatech.edu>
 	\brief The header file for the ClockCycleCountPass class

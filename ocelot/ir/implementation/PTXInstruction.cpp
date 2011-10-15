@@ -2128,7 +2128,8 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Exit: {
-			return "exit";
+		    std::string result = guard() + "exit";
+			return result;
 		}
 		case Fma: {
 			std::string result = guard() + "fma."

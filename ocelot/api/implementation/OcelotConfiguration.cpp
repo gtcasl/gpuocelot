@@ -81,6 +81,18 @@ api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockIns
 
 }
 
+api::OcelotConfiguration::Instrumentation::RaceDetectionInstrumentor::RaceDetectionInstrumentor():
+        enabled(false)
+{
+
+}
+
+api::OcelotConfiguration::Instrumentation::AlignmentCheckInstrumentor::AlignmentCheckInstrumentor():
+        enabled(false)
+{
+
+}
+
 api::OcelotConfiguration::Instrumentation::Instrumentation()
 {
 
@@ -182,23 +194,24 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
                 api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
     }
 
-    warpReductionConfig = config["measureMemEfficiency"];
+    warpReductionConfig = config["raceDetection"];
     if (!warpReductionConfig.is_null()) {
-            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.measureWarpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency;
+            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
+            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
+            instrument.warpReductionInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::raceDetection;
     }
-
-    warpReductionConfig = config["measureBranchDivergence"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.measureWarpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence;
+//    hydrazine::json::Visitor RaceDetectionConfig = config["RaceDetection"];
+//    if (!RaceDetection.is_null()) {
+//            instrument.RaceDetectionInstrumentor.enabled = RaceDetectionConfig.parse<bool>("enabled", true);
+//            instrument.RaceDetectionInstrumentor.logfile = RaceDetectionConfig.parse<std::string>("logfile", "");
+//    }
+    hydrazine::json::Visitor alignmentCheckConfig = config["alignmentCheck"];
+    if (!alignmentCheckConfig.is_null()) {
+            instrument.alignmentCheckInstrumentor.enabled = alignmentCheckConfig.parse<bool>("enabled", true);
+            instrument.alignmentCheckInstrumentor.logfile = alignmentCheckConfig.parse<std::string>("logfile", "");
+            instrument.alignmentCheckInstrumentor.type = api::OcelotConfiguration::Instrumentation::AlignmentCheckInstrumentor::alignmentCheck;
     }
-
-    
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 

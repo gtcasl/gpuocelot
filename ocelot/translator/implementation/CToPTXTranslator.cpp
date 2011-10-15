@@ -18,7 +18,7 @@
 #define COD_REG     "\%codr"
 #define COD_PRED    "\%codp"
 
-#define EMIT_COD    0
+#define EMIT_COD    1
 
 namespace translator
 {
@@ -1501,6 +1501,10 @@ namespace translator
             if(arith3_name[(unsigned int)insn->insn_code].find("add") != std::string::npos){
 
                 inst.opcode = ir::PTXInstruction::Add;
+            }
+            else if(arith3_name[(unsigned int)insn->insn_code].find("and") != std::string::npos){
+                
+                inst.opcode = ir::PTXInstruction::And;
             }
             else if(arith3_name[(unsigned int)insn->insn_code].find("sub") != std::string::npos){
                 

@@ -2192,7 +2192,14 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(
 		prop->totalGlobalMem = properties.totalMemory;
 		prop->warpSize = properties.SIMDWidth;
 		prop->concurrentKernels = properties.concurrentKernels;
+
 		prop->integrated = properties.integrated;
+		prop->unifiedAddressing = properties.unifiedAddressing;
+		prop->memoryClockRate = properties.memoryClockRate;
+		prop->memoryBusWidth = properties.memoryBusWidth;
+		prop->l2CacheSize = properties.l2CacheSize;
+		prop->maxThreadsPerMultiProcessor =
+			properties.maxThreadsPerMultiProcessor;
 		
 		report("  returning: prop->major = " << prop->major 
 			<< ", prop->minor = " << prop->minor);

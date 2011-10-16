@@ -11498,7 +11498,7 @@ extern void __device_stub__Z15testShareSimplePi(int *);
 extern void __device_stub__Z10v4sequenceP4int4i(int4 *, int);
 extern void __device_stub__Z7testShrPi(int *);
 static void __sti____cudaRegisterAll_43_tmpxft_00000eb8_00000000_4_sequence_cpp1_ii_074584c3(void) __attribute__((__constructor__));
-void __device_stub__Z8sequencePii(int *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))sequence)); (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence))); };}
+void __device_stub__Z8sequencePii(int *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence))); };}
 void sequence( int *__cuda_0,int __cuda_1)
 # 14 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
 {__device_stub__Z8sequencePii( __cuda_0,__cuda_1);
@@ -11508,14 +11508,14 @@ void sequence( int *__cuda_0,int __cuda_1)
 
 }
 # 1 "/tmp/tmpxft_00000eb8_00000000-1_sequence.cudafe1.stub.c"
-void __device_stub__Z15testShareSimplePi( int *__par0) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *))testShareSimple)); (void)cudaLaunch(((char *)((void ( *)(int *))testShareSimple))); }; }
+void __device_stub__Z15testShareSimplePi( int *__par0) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; { (void)cudaLaunch(((char *)((void ( *)(int *))testShareSimple))); }; }
 void testShareSimple( int *__cuda_0)
 # 21 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
 {__device_stub__Z15testShareSimplePi( __cuda_0);
 # 30 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
 }
 # 1 "/tmp/tmpxft_00000eb8_00000000-1_sequence.cudafe1.stub.c"
-void __device_stub__Z10v4sequenceP4int4i( int4 *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int4 *, int))v4sequence)); (void)cudaLaunch(((char *)((void ( *)(int4 *, int))v4sequence))); }; }
+void __device_stub__Z10v4sequenceP4int4i( int4 *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { (void)cudaLaunch(((char *)((void ( *)(int4 *, int))v4sequence))); }; }
 void v4sequence( int4 *__cuda_0,int __cuda_1)
 # 32 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
 {__device_stub__Z10v4sequenceP4int4i( __cuda_0,__cuda_1);
@@ -11524,7 +11524,7 @@ void v4sequence( int4 *__cuda_0,int __cuda_1)
 
 }
 # 1 "/tmp/tmpxft_00000eb8_00000000-1_sequence.cudafe1.stub.c"
-void __device_stub__Z7testShrPi( int *__par0) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *))testShr)); (void)cudaLaunch(((char *)((void ( *)(int *))testShr))); }; }
+void __device_stub__Z7testShrPi( int *__par0) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; { (void)cudaLaunch(((char *)((void ( *)(int *))testShr))); }; }
 void testShr( int *__cuda_0)
 # 40 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
 {__device_stub__Z7testShrPi( __cuda_0);

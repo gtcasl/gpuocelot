@@ -534,9 +534,9 @@ def Environment():
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
 	
-	# we need libdl on linux
+	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-lrt']) 
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

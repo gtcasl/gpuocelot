@@ -9,7 +9,7 @@
 
 // ocelot includes
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/cuda_internal.h>
 
 namespace executive
 {

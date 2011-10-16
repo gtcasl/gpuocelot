@@ -112,7 +112,7 @@ if 'install' in COMMAND_LINE_TARGETS:
 if os.name == 'nt':
 	ocelot_libs = ['ocelot.lib', 'opengl32.lib']
 else:
-	ocelot_libs = ['-locelot']
+	ocelot_libs = ['-locelot',]
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
@@ -197,6 +197,8 @@ tests.append(('TestExternalFunctions', \
 	'ocelot/api/test/TestExternalFunctions.cpp', 'full'))
 tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
+tests.append(('TestDriverAPISequence', \
+	'ocelot/cuda/test/driver/sequence.cpp', 'full'))
 
 for test in tests:
 	libs = ocelot_libs

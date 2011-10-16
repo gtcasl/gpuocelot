@@ -500,7 +500,7 @@ namespace analysis
 
 	void DataflowGraph::analyze(ir::IRKernel& kernel)
 	{
-		_cfg        = kernel.cfg();
+		_cfg	 = kernel.cfg();
 		_consistent = _cfg->empty();
 		
 		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
@@ -857,25 +857,25 @@ namespace analysis
 		block->_block->instructions.insert( bbPosition, ptx );
 	}
 	
-        DataflowGraph::InstructionVector::iterator DataflowGraph::insert( iterator block, 
+	 DataflowGraph::InstructionVector::iterator DataflowGraph::insert( iterator block, 
 		const ir::Instruction& instruction, InstructionVector::iterator position )
 	{
 		_consistent = false;
 
-                int index = std::distance(block->_instructions.begin(), position);
-                                
+		  int index = std::distance(block->_instructions.begin(), position);
+				    
 		ir::PTXInstruction* ptx = static_cast< ir::PTXInstruction* >( 
 			instruction.clone() );
 		
-                InstructionVector::iterator new_position = 
-                        block->_instructions.insert( position, convert( *ptx ) );
+		  InstructionVector::iterator new_position = 
+			   block->_instructions.insert( position, convert( *ptx ) );
 		
 		ir::ControlFlowGraph::InstructionList::iterator 
 			bbPosition = block->_block->instructions.begin();
 		std::advance( bbPosition, index );
 		
 		block->_block->instructions.insert( bbPosition, ptx );
-                return new_position;
+		  return new_position;
 	}
 
 	void DataflowGraph::insert( iterator block, 
@@ -968,8 +968,8 @@ namespace analysis
 	void DataflowGraph::erase( iterator block, InstructionVector::iterator position )
 	{
 		_consistent = false;
-                
-                int index = std::distance(block->_instructions.begin(), position);
+		  
+		  int index = std::distance(block->_instructions.begin(), position);
 		
 		block->_instructions.erase( position );
 		
@@ -1047,90 +1047,90 @@ namespace analysis
 			}
 		}
 		#endif
-                constructDUChains();
+		  constructDUChains();
 	
 
 	}
-        void DataflowGraph::constructDUChains()
-        {
-                for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
-                {
-                        for (InstructionVector::iterator instIter = blockIter->instructions().begin();
-                                        instIter != blockIter->instructions().end(); ++instIter)
+	 void DataflowGraph::constructDUChains()
+	 {
+		  for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
+		  {
+			   for (InstructionVector::iterator instIter = blockIter->instructions().begin();
+					     instIter != blockIter->instructions().end(); ++instIter)
 
-                        {
-                                instIter->defs.clear();
-                                instIter->uses.clear();
-                        }
-                }
-                for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
-                {
-                        for (InstructionVector::iterator instIter = blockIter->instructions().begin();
-                                        instIter != blockIter->instructions().end(); ++instIter)
-                        {
-                                InstructionVector::reverse_iterator instRIter(instIter);   
-                                for(
-                                                ; instRIter != blockIter->instructions().rend(); ++instRIter) 
-                                {
-                                        for(RegisterPointerVector::iterator src = instIter->s.begin();
-                                                        src != instIter->s.end(); ++src)
-                                        {               
-                                                for (RegisterPointerVector::iterator dest = instRIter->d.begin();
-                                                                dest != instRIter->d.end();++dest)
-                                                {               
-                                                        if(*dest->pointer == *src->pointer)
-                                                        {
-                                                                InstructionVector::iterator tempIter = instRIter.base();
-                                                                instIter->defs.push_back(--tempIter);
-                                                                instRIter->uses.push_back(instIter);
-                                                        }
+			   {
+				    instIter->defs.clear();
+				    instIter->uses.clear();
+			   }
+		  }
+		  for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
+		  {
+			   for (InstructionVector::iterator instIter = blockIter->instructions().begin();
+					     instIter != blockIter->instructions().end(); ++instIter)
+			   {
+				    InstructionVector::reverse_iterator instRIter(instIter);   
+				    for(
+						      ; instRIter != blockIter->instructions().rend(); ++instRIter) 
+				    {
+					     for(RegisterPointerVector::iterator src = instIter->s.begin();
+								src != instIter->s.end(); ++src)
+					     {		 
+						      for (RegisterPointerVector::iterator dest = instRIter->d.begin();
+									 dest != instRIter->d.end();++dest)
+						      {		 
+								if(*dest->pointer == *src->pointer)
+								{
+									 InstructionVector::iterator tempIter = instRIter.base();
+									 instIter->defs.push_back(--tempIter);
+									 instRIter->uses.push_back(instIter);
+								}
 
-                                                }
-                                        }
-                                }
+						      }
+					     }
+				    }
 
-                        }
+			   }
 
-                }
-        }
-        
-        void DataflowGraph::constructBlockDUChains(iterator blockIter)
-        {
-                for (InstructionVector::iterator instIter = blockIter->instructions().begin();
-                                instIter != blockIter->instructions().end(); ++instIter)
+		  }
+	 }
+	 
+	 void DataflowGraph::constructBlockDUChains(iterator blockIter)
+	 {
+		  for (InstructionVector::iterator instIter = blockIter->instructions().begin();
+				    instIter != blockIter->instructions().end(); ++instIter)
 
-                {
-                        instIter->defs.clear();
-                        instIter->uses.clear();
-                }
-                for (InstructionVector::iterator instIter = blockIter->instructions().begin();
-                                instIter != blockIter->instructions().end(); ++instIter)
-                {
-                        InstructionVector::reverse_iterator instRIter(instIter);   
-                        for(
-                                        ; instRIter != blockIter->instructions().rend(); ++instRIter) 
-                        {
-                                                                                          
-                                for (RegisterPointerVector::iterator dest = instRIter->d.begin();
-                                                dest != instRIter->d.end();++dest)
-                                {               
-                                        for(RegisterPointerVector::iterator src = instIter->s.begin();
-                                                        src != instIter->s.end(); ++src)
-                                        {               
-                                                if(*dest->pointer == *src->pointer)
-                                                {
-                                                        InstructionVector::iterator tempIter = instRIter.base();
-                                                        instIter->defs.push_back(--tempIter);
-                                                        instRIter->uses.push_back(instIter);
-                                                }
+		  {
+			   instIter->defs.clear();
+			   instIter->uses.clear();
+		  }
+		  for (InstructionVector::iterator instIter = blockIter->instructions().begin();
+				    instIter != blockIter->instructions().end(); ++instIter)
+		  {
+			   InstructionVector::reverse_iterator instRIter(instIter);   
+			   for(
+					     ; instRIter != blockIter->instructions().rend(); ++instRIter) 
+			   {
+												      
+				    for (RegisterPointerVector::iterator dest = instRIter->d.begin();
+						      dest != instRIter->d.end();++dest)
+				    {		 
+					     for(RegisterPointerVector::iterator src = instIter->s.begin();
+								src != instIter->s.end(); ++src)
+					     {		 
+						      if(*dest->pointer == *src->pointer)
+						      {
+								InstructionVector::iterator tempIter = instRIter.base();
+								instIter->defs.push_back(--tempIter);
+								instRIter->uses.push_back(instIter);
+						      }
 
-                                        }
-                                }
-                        }
+					     }
+				    }
+			   }
 
-                }
+		  }
 
-        }
+	 }
 
 	DataflowGraph::RegisterId DataflowGraph::maxRegister() const
 	{

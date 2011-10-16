@@ -7,7 +7,7 @@
 #define CUDA_DRIVER_H_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/cuda_internal.h>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN

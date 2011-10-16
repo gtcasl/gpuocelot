@@ -43,7 +43,7 @@
 #define REPORT_BASE 0
 
 #define REPORT_KERNEL_INSTRUCTIONS 1
-#define REPORT_LAUNCH_CONFIGURATION 0
+#define REPORT_LAUNCH_CONFIGURATION 1
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -795,6 +795,22 @@ namespace executive
 			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
 			&_properties.minor, device));
+		
+		int unifiedAddressing = false;
+		checkError(driver::cuDeviceGetAttribute(&unifiedAddressing, 
+			CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING, device));
+			
+		_properties.unifiedAddressing = unifiedAddressing;
+		
+		checkError(driver::cuDeviceGetAttribute(&_properties.memoryClockRate, 
+			CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE, device));
+		checkError(driver::cuDeviceGetAttribute(&_properties.memoryBusWidth, 
+			CU_DEVICE_ATTRIBUTE_GLOBAL_MEMORY_BUS_WIDTH, device));
+		checkError(driver::cuDeviceGetAttribute(&_properties.l2CacheSize, 
+			CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, device));
+		checkError(driver::cuDeviceGetAttribute(
+			&_properties.maxThreadsPerMultiProcessor, 
+			CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, device));
 	}
 
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()

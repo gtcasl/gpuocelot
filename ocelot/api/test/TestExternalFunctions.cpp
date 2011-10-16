@@ -13,6 +13,8 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+#include <configure.h>
+
 // Standard Library Includes
 #include <fstream>
 
@@ -231,10 +233,14 @@ bool TestExternalFunctions::testMismatchingTypes()
 
 bool TestExternalFunctions::doTest()
 {
+	#if HAVE_LLVM
 	return testMallocFree() 
 		&& testPrintf() 
 		&& testUserFunction()
 		&& testMismatchingTypes();
+	#else
+	return true;
+	#endif
 }
 
 }
@@ -250,9 +256,9 @@ int main(int argc, char** argv)
 	parser.parse( "-v", "--verbose", test.verbose, false, 
 		"Print out information after the test has finished." );
 	parser.parse();
-	
+
 	test.test();
-	
+		
 	return test.passed();	
 }
 

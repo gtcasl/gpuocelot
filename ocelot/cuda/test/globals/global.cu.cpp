@@ -1,12 +1,12 @@
-# 1 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 1 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.cpp"
+# 1 "ocelot/cuda/test/globals/global.cu"
 # 60 "/usr/local/cuda/bin/../include/device_types.h"
-# 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
+# 150 "/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include/stddef.h" 3
 typedef long ptrdiff_t;
-# 211 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
+# 212 "/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include/stddef.h" 3
 typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
@@ -23,7 +23,7 @@ enum cudaRoundMode
 };
 # 57 "/usr/local/cuda/bin/../include/builtin_types.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/driver_types.h" 1 3
-# 123 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 118 "/usr/local/cuda/bin/../include/driver_types.h" 3
 enum cudaError
 {
 
@@ -50,13 +50,13 @@ enum cudaError
 
 
   cudaErrorInitializationError = 3,
-# 158 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 153 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorLaunchFailure = 4,
-# 167 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 162 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorPriorLaunchFailure = 5,
-# 177 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 172 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorLaunchTimeout = 6,
-# 186 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 181 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorLaunchOutOfResources = 7,
 
 
@@ -64,7 +64,7 @@ enum cudaError
 
 
   cudaErrorInvalidDeviceFunction = 8,
-# 201 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 196 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorInvalidConfiguration = 9,
 
 
@@ -137,13 +137,13 @@ enum cudaError
 
 
   cudaErrorInvalidMemcpyDirection = 21,
-# 282 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 277 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorAddressOfConstant = 22,
-# 291 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 286 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorTextureFetchFailed = 23,
-# 300 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 295 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorTextureNotBound = 24,
-# 309 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 304 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorSynchronizationError = 25,
 
 
@@ -184,7 +184,7 @@ enum cudaError
 
 
   cudaErrorNotYetImplemented = 31,
-# 357 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 352 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorMemoryValueTooLarge = 32,
 
 
@@ -208,7 +208,7 @@ enum cudaError
 
 
   cudaErrorInsufficientDriver = 35,
-# 392 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 387 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorSetOnActiveProcess = 36,
 
 
@@ -262,7 +262,7 @@ enum cudaError
 
 
   cudaErrorDuplicateSurfaceName = 45,
-# 453 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 449 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorDevicesUnavailable = 46,
 
 
@@ -277,7 +277,7 @@ enum cudaError
 
 
   cudaErrorNoKernelImageForDevice = 48,
-# 479 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 475 "/usr/local/cuda/bin/../include/driver_types.h" 3
   cudaErrorIncompatibleDriverContext = 49,
 
 
@@ -286,20 +286,13 @@ enum cudaError
 
 
   cudaErrorPeerAccessAlreadyEnabled = 50,
-# 495 "/usr/local/cuda/bin/../include/driver_types.h" 3
+
+
+
+
+
+
   cudaErrorPeerAccessNotEnabled = 51,
-
-
-
-
-
-  cudaErrorPeerMemoryAlreadyRegistered = 52,
-
-
-
-
-
-  cudaErrorPeerMemoryNotRegistered = 53,
 
 
 
@@ -385,7 +378,7 @@ struct cudaArray;
 enum cudaMemoryType
 {
   cudaMemoryTypeHost = 1,
-  cudaMemoryTypeDevice = 2,
+  cudaMemoryTypeDevice = 2
 };
 
 
@@ -528,7 +521,7 @@ struct cudaPointerAttributes
 
 
     enum cudaMemoryType memoryType;
-# 746 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 728 "/usr/local/cuda/bin/../include/driver_types.h" 3
     int device;
 
 
@@ -675,11 +668,16 @@ struct cudaDeviceProp
   int ECCEnabled;
   int pciBusID;
   int pciDeviceID;
+  int pciDomainID;
   int tccDriver;
   int asyncEngineCount;
   int unifiedAddressing;
+  int memoryClockRate;
+  int memoryBusWidth;
+  int l2CacheSize;
+  int maxThreadsPerMultiProcessor;
 };
-# 944 "/usr/local/cuda/bin/../include/driver_types.h" 3
+# 936 "/usr/local/cuda/bin/../include/driver_types.h" 3
 typedef enum cudaError cudaError_t;
 
 
@@ -1197,35 +1195,35 @@ typedef struct dim3 dim3;
 # 70 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
 # 71 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 213 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 2 3
-# 123 "/usr/local/cuda/bin/../include/driver_types.h"
-# 559 "/usr/local/cuda/bin/../include/driver_types.h"
-# 571 "/usr/local/cuda/bin/../include/driver_types.h"
-# 584 "/usr/local/cuda/bin/../include/driver_types.h"
-# 590 "/usr/local/cuda/bin/../include/driver_types.h"
-# 600 "/usr/local/cuda/bin/../include/driver_types.h"
-# 614 "/usr/local/cuda/bin/../include/driver_types.h"
-# 627 "/usr/local/cuda/bin/../include/driver_types.h"
-# 639 "/usr/local/cuda/bin/../include/driver_types.h"
+# 214 "/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include/stddef.h" 2 3
+# 118 "/usr/local/cuda/bin/../include/driver_types.h"
+# 541 "/usr/local/cuda/bin/../include/driver_types.h"
+# 553 "/usr/local/cuda/bin/../include/driver_types.h"
+# 566 "/usr/local/cuda/bin/../include/driver_types.h"
+# 572 "/usr/local/cuda/bin/../include/driver_types.h"
+# 582 "/usr/local/cuda/bin/../include/driver_types.h"
+# 596 "/usr/local/cuda/bin/../include/driver_types.h"
+# 609 "/usr/local/cuda/bin/../include/driver_types.h"
+# 621 "/usr/local/cuda/bin/../include/driver_types.h"
+# 632 "/usr/local/cuda/bin/../include/driver_types.h"
 # 650 "/usr/local/cuda/bin/../include/driver_types.h"
-# 668 "/usr/local/cuda/bin/../include/driver_types.h"
+# 669 "/usr/local/cuda/bin/../include/driver_types.h"
+# 675 "/usr/local/cuda/bin/../include/driver_types.h"
 # 687 "/usr/local/cuda/bin/../include/driver_types.h"
-# 693 "/usr/local/cuda/bin/../include/driver_types.h"
-# 705 "/usr/local/cuda/bin/../include/driver_types.h"
-# 716 "/usr/local/cuda/bin/../include/driver_types.h"
-# 729 "/usr/local/cuda/bin/../include/driver_types.h"
-# 765 "/usr/local/cuda/bin/../include/driver_types.h"
-# 816 "/usr/local/cuda/bin/../include/driver_types.h"
-# 827 "/usr/local/cuda/bin/../include/driver_types.h"
-# 839 "/usr/local/cuda/bin/../include/driver_types.h"
-# 850 "/usr/local/cuda/bin/../include/driver_types.h"
-# 860 "/usr/local/cuda/bin/../include/driver_types.h"
-# 944 "/usr/local/cuda/bin/../include/driver_types.h"
-# 950 "/usr/local/cuda/bin/../include/driver_types.h"
-# 956 "/usr/local/cuda/bin/../include/driver_types.h"
-# 962 "/usr/local/cuda/bin/../include/driver_types.h"
-# 968 "/usr/local/cuda/bin/../include/driver_types.h"
-# 974 "/usr/local/cuda/bin/../include/driver_types.h"
+# 698 "/usr/local/cuda/bin/../include/driver_types.h"
+# 711 "/usr/local/cuda/bin/../include/driver_types.h"
+# 747 "/usr/local/cuda/bin/../include/driver_types.h"
+# 798 "/usr/local/cuda/bin/../include/driver_types.h"
+# 809 "/usr/local/cuda/bin/../include/driver_types.h"
+# 821 "/usr/local/cuda/bin/../include/driver_types.h"
+# 832 "/usr/local/cuda/bin/../include/driver_types.h"
+# 842 "/usr/local/cuda/bin/../include/driver_types.h"
+# 936 "/usr/local/cuda/bin/../include/driver_types.h"
+# 942 "/usr/local/cuda/bin/../include/driver_types.h"
+# 948 "/usr/local/cuda/bin/../include/driver_types.h"
+# 954 "/usr/local/cuda/bin/../include/driver_types.h"
+# 960 "/usr/local/cuda/bin/../include/driver_types.h"
+# 966 "/usr/local/cuda/bin/../include/driver_types.h"
 # 77 "/usr/local/cuda/bin/../include/surface_types.h"
 # 88 "/usr/local/cuda/bin/../include/surface_types.h"
 # 98 "/usr/local/cuda/bin/../include/surface_types.h"
@@ -1361,203 +1359,197 @@ extern "C" cudaError_t cudaGetLastError();
 extern "C" cudaError_t cudaPeekAtLastError();
 # 638 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" const char *cudaGetErrorString(cudaError_t );
-# 667 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 668 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceCount(int * );
-# 812 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 829 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDeviceProperties(cudaDeviceProp * , int );
-# 831 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 848 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaChooseDevice(int * , const cudaDeviceProp * );
-# 864 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaSetDevice(int );
 # 881 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+extern "C" cudaError_t cudaSetDevice(int );
+# 898 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetDevice(int * );
-# 910 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 927 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetValidDevices(int * , int );
-# 970 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 987 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDeviceFlags(unsigned );
-# 996 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1013 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamCreate(cudaStream_t * );
-# 1017 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1034 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamDestroy(cudaStream_t );
-# 1053 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1070 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamWaitEvent(cudaStream_t , cudaEvent_t , unsigned );
-# 1072 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1089 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamSynchronize(cudaStream_t );
-# 1090 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1107 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaStreamQuery(cudaStream_t );
-# 1122 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1139 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreate(cudaEvent_t * );
-# 1153 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1170 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventCreateWithFlags(cudaEvent_t * , unsigned );
-# 1186 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1203 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventRecord(cudaEvent_t , cudaStream_t = 0);
-# 1215 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1232 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventQuery(cudaEvent_t );
-# 1247 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1264 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventSynchronize(cudaEvent_t );
-# 1272 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1289 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventDestroy(cudaEvent_t );
-# 1313 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1330 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaEventElapsedTime(float * , cudaEvent_t , cudaEvent_t );
-# 1352 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1369 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaConfigureCall(dim3 , dim3 , size_t = (0), cudaStream_t = 0);
-# 1379 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1396 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetupArgument(const void * , size_t , size_t );
-# 1425 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1442 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFuncSetCacheConfig(const char * , cudaFuncCache );
-# 1460 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1477 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaLaunch(const char * );
-# 1493 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1510 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFuncGetAttributes(cudaFuncAttributes * , const char * );
-# 1515 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1532 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForDevice(double * );
-# 1537 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1554 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaSetDoubleForHost(double * );
-# 1569 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1586 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc(void ** , size_t );
-# 1598 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1615 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMallocHost(void ** , size_t );
-# 1637 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1654 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMallocPitch(void ** , size_t * , size_t , size_t );
-# 1676 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1693 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMallocArray(cudaArray ** , const cudaChannelFormatDesc * , size_t , size_t = (0), unsigned = (0));
-# 1700 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1717 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFree(void * );
-# 1720 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1737 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFreeHost(void * );
-# 1742 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1759 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaFreeArray(cudaArray * );
-# 1801 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1818 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostAlloc(void ** , size_t , unsigned );
-# 1857 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1874 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostRegister(void * , size_t , unsigned );
-# 1876 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1893 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostUnregister(void * );
-# 1903 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1920 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostGetDevicePointer(void ** , void * , unsigned );
-# 1922 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1939 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaHostGetFlags(unsigned * , void * );
-# 1957 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 1974 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3D(cudaPitchedPtr * , cudaExtent );
-# 2018 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2035 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMalloc3DArray(cudaArray ** , const cudaChannelFormatDesc * , cudaExtent , unsigned = (0));
-# 2115 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2132 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy3D(const cudaMemcpy3DParms * );
-# 2142 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2159 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy3DPeer(const cudaMemcpy3DPeerParms * );
-# 2247 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2264 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy3DAsync(const cudaMemcpy3DParms * , cudaStream_t = 0);
-# 2268 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2285 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy3DPeerAsync(const cudaMemcpy3DPeerParms * , cudaStream_t = 0);
-# 2287 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2304 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemGetInfo(size_t * , size_t * );
-# 2320 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2337 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy(void * , const void * , size_t , cudaMemcpyKind );
-# 2351 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2368 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyPeer(void * , int , const void * , int , size_t );
-# 2384 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2401 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyToArray(cudaArray * , size_t , size_t , const void * , size_t , cudaMemcpyKind );
-# 2417 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2434 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyFromArray(void * , const cudaArray * , size_t , size_t , size_t , cudaMemcpyKind );
-# 2452 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2469 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyArrayToArray(cudaArray * , size_t , size_t , const cudaArray * , size_t , size_t , size_t , cudaMemcpyKind = cudaMemcpyDeviceToDevice);
-# 2494 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2511 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2D(void * , size_t , const void * , size_t , size_t , size_t , cudaMemcpyKind );
-# 2535 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2552 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DToArray(cudaArray * , size_t , size_t , const void * , size_t , size_t , size_t , cudaMemcpyKind );
-# 2576 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2593 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DFromArray(void * , size_t , const cudaArray * , size_t , size_t , size_t , size_t , cudaMemcpyKind );
-# 2615 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2632 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DArrayToArray(cudaArray * , size_t , size_t , const cudaArray * , size_t , size_t , size_t , size_t , cudaMemcpyKind = cudaMemcpyDeviceToDevice);
-# 2650 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2667 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyToSymbol(const char * , const void * , size_t , size_t = (0), cudaMemcpyKind = cudaMemcpyHostToDevice);
-# 2684 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2701 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyFromSymbol(void * , const char * , size_t , size_t = (0), cudaMemcpyKind = cudaMemcpyDeviceToHost);
-# 2727 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2744 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyAsync(void * , const void * , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 2757 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2774 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyPeerAsync(void * , int , const void * , int , size_t , cudaStream_t = 0);
-# 2799 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2816 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyToArrayAsync(cudaArray * , size_t , size_t , const void * , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 2841 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2858 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyFromArrayAsync(void * , const cudaArray * , size_t , size_t , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 2892 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2909 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DAsync(void * , size_t , const void * , size_t , size_t , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 2942 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 2959 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DToArrayAsync(cudaArray * , size_t , size_t , const void * , size_t , size_t , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 2992 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3009 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpy2DFromArrayAsync(void * , size_t , const cudaArray * , size_t , size_t , size_t , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 3036 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3053 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyToSymbolAsync(const char * , const void * , size_t , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 3079 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3096 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemcpyFromSymbolAsync(void * , const char * , size_t , size_t , cudaMemcpyKind , cudaStream_t = 0);
-# 3101 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3118 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset(void * , int , size_t );
-# 3127 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3144 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset2D(void * , size_t , int , size_t , size_t );
-# 3166 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3183 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset3D(cudaPitchedPtr , int , cudaExtent );
-# 3193 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3210 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemsetAsync(void * , int , size_t , cudaStream_t = 0);
-# 3225 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3242 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset2DAsync(void * , size_t , int , size_t , size_t , cudaStream_t = 0);
-# 3270 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3287 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaMemset3DAsync(cudaPitchedPtr , int , cudaExtent , cudaStream_t = 0);
-# 3297 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3314 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolAddress(void ** , const char * );
-# 3320 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3337 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSymbolSize(size_t * , const char * );
-# 3466 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3482 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaPointerGetAttributes(cudaPointerAttributes * , void * );
-# 3503 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3516 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDeviceCanAccessPeer(int * , int , int );
-# 3547 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3557 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDeviceEnablePeerAccess(int , unsigned );
-# 3575 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3582 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDeviceDisablePeerAccess(int );
-# 3637 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaPeerRegister(void * , int , unsigned );
-# 3669 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaPeerUnregister(void * , int );
-# 3715 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
-extern "C" cudaError_t cudaPeerGetDevicePointer(void ** , void * , int , unsigned );
-# 3761 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3628 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsUnregisterResource(cudaGraphicsResource_t );
-# 3793 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3660 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsResourceSetMapFlags(cudaGraphicsResource_t , unsigned );
-# 3828 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3695 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsMapResources(int , cudaGraphicsResource_t * , cudaStream_t = 0);
-# 3859 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3726 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsUnmapResources(int , cudaGraphicsResource_t * , cudaStream_t = 0);
-# 3888 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3755 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsResourceGetMappedPointer(void ** , size_t * , cudaGraphicsResource_t );
-# 3922 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3789 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGraphicsSubResourceGetMappedArray(cudaArray ** , cudaGraphicsResource_t , unsigned , unsigned );
-# 3955 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3822 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetChannelDesc(cudaChannelFormatDesc * , const cudaArray * );
-# 3990 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3857 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaChannelFormatDesc cudaCreateChannelDesc(int , int , int , int , cudaChannelFormatKind );
-# 4032 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3899 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture(size_t * , const textureReference * , const void * , const cudaChannelFormatDesc * , size_t = (((2147483647) * 2U) + 1U));
-# 4075 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3942 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTexture2D(size_t * , const textureReference * , const void * , const cudaChannelFormatDesc * , size_t , size_t , size_t );
-# 4103 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3970 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindTextureToArray(const textureReference * , const cudaArray * , const cudaChannelFormatDesc * );
-# 4124 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 3991 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaUnbindTexture(const textureReference * );
-# 4149 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4016 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetTextureAlignmentOffset(size_t * , const textureReference * );
-# 4173 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4040 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetTextureReference(const textureReference ** , const char * );
-# 4206 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4073 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaBindSurfaceToArray(const surfaceReference * , const cudaArray * , const cudaChannelFormatDesc * );
-# 4224 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4091 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetSurfaceReference(const surfaceReference ** , const char * );
-# 4251 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4118 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaDriverGetVersion(int * );
-# 4268 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4135 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaRuntimeGetVersion(int * );
-# 4273 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
+# 4140 "/usr/local/cuda/bin/../include/cuda_runtime_api.h"
 extern "C" cudaError_t cudaGetExportTable(const void ** , const cudaUUID_t * );
 # 107 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template< class T> inline cudaChannelFormatDesc cudaCreateChannelDesc()
@@ -2625,105 +2617,105 @@ char *basename(char * ) throw() __asm__("basename")
 const char *basename(const char * ) throw() __asm__("basename")
 # 604 "/usr/include/string.h" 3
  __attribute((__nonnull__(1)));
-# 31 "/usr/include/bits/types.h" 3
+# 31 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned char __u_char; }
-# 32 "/usr/include/bits/types.h" 3
+# 32 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned short __u_short; }
-# 33 "/usr/include/bits/types.h" 3
+# 33 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __u_int; }
-# 34 "/usr/include/bits/types.h" 3
+# 34 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __u_long; }
-# 37 "/usr/include/bits/types.h" 3
+# 37 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef signed char __int8_t; }
-# 38 "/usr/include/bits/types.h" 3
+# 38 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned char __uint8_t; }
-# 39 "/usr/include/bits/types.h" 3
+# 39 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef signed short __int16_t; }
-# 40 "/usr/include/bits/types.h" 3
+# 40 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned short __uint16_t; }
-# 41 "/usr/include/bits/types.h" 3
+# 41 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef signed int __int32_t; }
-# 42 "/usr/include/bits/types.h" 3
+# 42 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __uint32_t; }
-# 44 "/usr/include/bits/types.h" 3
+# 44 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef signed long __int64_t; }
-# 45 "/usr/include/bits/types.h" 3
+# 45 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __uint64_t; }
-# 53 "/usr/include/bits/types.h" 3
+# 53 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __quad_t; }
-# 54 "/usr/include/bits/types.h" 3
+# 54 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __u_quad_t; }
-# 134 "/usr/include/bits/types.h" 3
+# 134 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __dev_t; }
-# 135 "/usr/include/bits/types.h" 3
+# 135 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __uid_t; }
-# 136 "/usr/include/bits/types.h" 3
+# 136 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __gid_t; }
-# 137 "/usr/include/bits/types.h" 3
+# 137 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __ino_t; }
-# 138 "/usr/include/bits/types.h" 3
+# 138 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __ino64_t; }
-# 139 "/usr/include/bits/types.h" 3
+# 139 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __mode_t; }
-# 140 "/usr/include/bits/types.h" 3
+# 140 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __nlink_t; }
-# 141 "/usr/include/bits/types.h" 3
+# 141 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __off_t; }
-# 142 "/usr/include/bits/types.h" 3
+# 142 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __off64_t; }
-# 143 "/usr/include/bits/types.h" 3
+# 143 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef int __pid_t; }
-# 144 "/usr/include/bits/types.h" 3
+# 144 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef struct { int __val[2]; } __fsid_t; }
-# 145 "/usr/include/bits/types.h" 3
+# 145 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __clock_t; }
-# 146 "/usr/include/bits/types.h" 3
+# 146 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim_t; }
-# 147 "/usr/include/bits/types.h" 3
+# 147 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim64_t; }
-# 148 "/usr/include/bits/types.h" 3
+# 148 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __id_t; }
-# 149 "/usr/include/bits/types.h" 3
+# 149 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __time_t; }
-# 150 "/usr/include/bits/types.h" 3
+# 150 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __useconds_t; }
-# 151 "/usr/include/bits/types.h" 3
+# 151 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __suseconds_t; }
-# 153 "/usr/include/bits/types.h" 3
+# 153 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef int __daddr_t; }
-# 154 "/usr/include/bits/types.h" 3
+# 154 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __swblk_t; }
-# 155 "/usr/include/bits/types.h" 3
+# 155 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef int __key_t; }
-# 158 "/usr/include/bits/types.h" 3
+# 158 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef int __clockid_t; }
-# 161 "/usr/include/bits/types.h" 3
+# 161 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef void *__timer_t; }
-# 164 "/usr/include/bits/types.h" 3
+# 164 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __blksize_t; }
-# 169 "/usr/include/bits/types.h" 3
+# 169 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __blkcnt_t; }
-# 170 "/usr/include/bits/types.h" 3
+# 170 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __blkcnt64_t; }
-# 173 "/usr/include/bits/types.h" 3
+# 173 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt_t; }
-# 174 "/usr/include/bits/types.h" 3
+# 174 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt64_t; }
-# 177 "/usr/include/bits/types.h" 3
+# 177 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt_t; }
-# 178 "/usr/include/bits/types.h" 3
+# 178 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt64_t; }
-# 180 "/usr/include/bits/types.h" 3
+# 180 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __ssize_t; }
-# 184 "/usr/include/bits/types.h" 3
+# 184 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef __off64_t __loff_t; }
-# 185 "/usr/include/bits/types.h" 3
+# 185 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef __quad_t *__qaddr_t; }
-# 186 "/usr/include/bits/types.h" 3
+# 186 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef char *__caddr_t; }
-# 189 "/usr/include/bits/types.h" 3
+# 189 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef long __intptr_t; }
-# 192 "/usr/include/bits/types.h" 3
+# 192 "/usr/include/x86_64-linux-gnu/bits/types.h" 3
 extern "C" { typedef unsigned __socklen_t; }
 # 60 "/usr/include/time.h" 3
 extern "C" { typedef __clock_t clock_t; }
@@ -2869,497 +2861,497 @@ extern "C" clock_t clock() throw();
 extern "C" void *memset(void *, int, size_t) throw();
 # 75 "/usr/local/cuda/bin/../include/common_functions.h"
 extern "C" void *memcpy(void *, const void *, size_t) throw();
-# 31 "/usr/include/bits/mathdef.h" 3
+# 31 "/usr/include/x86_64-linux-gnu/bits/mathdef.h" 3
 extern "C" { typedef float float_t; }
-# 32 "/usr/include/bits/mathdef.h" 3
+# 32 "/usr/include/x86_64-linux-gnu/bits/mathdef.h" 3
 extern "C" { typedef double double_t; }
-# 55 "/usr/include/bits/mathcalls.h" 3
+# 55 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double acos(double ) throw(); extern "C" double __acos(double ) throw();
-# 57 "/usr/include/bits/mathcalls.h" 3
+# 57 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double asin(double ) throw(); extern "C" double __asin(double ) throw();
-# 59 "/usr/include/bits/mathcalls.h" 3
+# 59 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double atan(double ) throw(); extern "C" double __atan(double ) throw();
-# 61 "/usr/include/bits/mathcalls.h" 3
+# 61 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double atan2(double , double ) throw(); extern "C" double __atan2(double , double ) throw();
-# 64 "/usr/include/bits/mathcalls.h" 3
+# 64 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double cos(double ) throw(); extern "C" double __cos(double ) throw();
-# 66 "/usr/include/bits/mathcalls.h" 3
+# 66 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double sin(double ) throw(); extern "C" double __sin(double ) throw();
-# 68 "/usr/include/bits/mathcalls.h" 3
+# 68 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double tan(double ) throw(); extern "C" double __tan(double ) throw();
-# 73 "/usr/include/bits/mathcalls.h" 3
+# 73 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double cosh(double ) throw(); extern "C" double __cosh(double ) throw();
-# 75 "/usr/include/bits/mathcalls.h" 3
+# 75 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double sinh(double ) throw(); extern "C" double __sinh(double ) throw();
-# 77 "/usr/include/bits/mathcalls.h" 3
+# 77 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double tanh(double ) throw(); extern "C" double __tanh(double ) throw();
-# 82 "/usr/include/bits/mathcalls.h" 3
+# 82 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" void sincos(double , double * , double * ) throw(); extern "C" void __sincos(double , double * , double * ) throw();
-# 89 "/usr/include/bits/mathcalls.h" 3
+# 89 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double acosh(double ) throw(); extern "C" double __acosh(double ) throw();
-# 91 "/usr/include/bits/mathcalls.h" 3
+# 91 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double asinh(double ) throw(); extern "C" double __asinh(double ) throw();
-# 93 "/usr/include/bits/mathcalls.h" 3
+# 93 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double atanh(double ) throw(); extern "C" double __atanh(double ) throw();
-# 101 "/usr/include/bits/mathcalls.h" 3
+# 101 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double exp(double ) throw(); extern "C" double __exp(double ) throw();
-# 104 "/usr/include/bits/mathcalls.h" 3
+# 104 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double frexp(double , int * ) throw(); extern "C" double __frexp(double , int * ) throw();
-# 107 "/usr/include/bits/mathcalls.h" 3
+# 107 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double ldexp(double , int ) throw(); extern "C" double __ldexp(double , int ) throw();
-# 110 "/usr/include/bits/mathcalls.h" 3
+# 110 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double log(double ) throw(); extern "C" double __log(double ) throw();
-# 113 "/usr/include/bits/mathcalls.h" 3
+# 113 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double log10(double ) throw(); extern "C" double __log10(double ) throw();
-# 116 "/usr/include/bits/mathcalls.h" 3
+# 116 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double modf(double , double * ) throw(); extern "C" double __modf(double , double * ) throw();
-# 121 "/usr/include/bits/mathcalls.h" 3
+# 121 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double exp10(double ) throw(); extern "C" double __exp10(double ) throw();
-# 123 "/usr/include/bits/mathcalls.h" 3
+# 123 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double pow10(double ) throw(); extern "C" double __pow10(double ) throw();
-# 129 "/usr/include/bits/mathcalls.h" 3
+# 129 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double expm1(double ) throw(); extern "C" double __expm1(double ) throw();
-# 132 "/usr/include/bits/mathcalls.h" 3
+# 132 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double log1p(double ) throw(); extern "C" double __log1p(double ) throw();
-# 135 "/usr/include/bits/mathcalls.h" 3
+# 135 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double logb(double ) throw(); extern "C" double __logb(double ) throw();
-# 142 "/usr/include/bits/mathcalls.h" 3
+# 142 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double exp2(double ) throw(); extern "C" double __exp2(double ) throw();
-# 145 "/usr/include/bits/mathcalls.h" 3
+# 145 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double log2(double ) throw(); extern "C" double __log2(double ) throw();
-# 154 "/usr/include/bits/mathcalls.h" 3
+# 154 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double pow(double , double ) throw(); extern "C" double __pow(double , double ) throw();
-# 157 "/usr/include/bits/mathcalls.h" 3
+# 157 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double sqrt(double ) throw(); extern "C" double __sqrt(double ) throw();
-# 163 "/usr/include/bits/mathcalls.h" 3
+# 163 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double hypot(double , double ) throw(); extern "C" double __hypot(double , double ) throw();
-# 170 "/usr/include/bits/mathcalls.h" 3
+# 170 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double cbrt(double ) throw(); extern "C" double __cbrt(double ) throw();
-# 179 "/usr/include/bits/mathcalls.h" 3
+# 179 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double ceil(double ) throw() __attribute((const)); extern "C" double __ceil(double ) throw() __attribute((const));
-# 182 "/usr/include/bits/mathcalls.h" 3
+# 182 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double fabs(double ) throw() __attribute((const)); extern "C" double __fabs(double ) throw() __attribute((const));
-# 185 "/usr/include/bits/mathcalls.h" 3
+# 185 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double floor(double ) throw() __attribute((const)); extern "C" double __floor(double ) throw() __attribute((const));
-# 188 "/usr/include/bits/mathcalls.h" 3
+# 188 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double fmod(double , double ) throw(); extern "C" double __fmod(double , double ) throw();
-# 193 "/usr/include/bits/mathcalls.h" 3
+# 193 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __isinf(double ) throw() __attribute((const));
-# 196 "/usr/include/bits/mathcalls.h" 3
+# 196 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __finite(double ) throw() __attribute((const));
-# 202 "/usr/include/bits/mathcalls.h" 3
+# 202 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int isinf(double ) throw() __attribute((const));
-# 205 "/usr/include/bits/mathcalls.h" 3
+# 205 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int finite(double ) throw() __attribute((const));
-# 208 "/usr/include/bits/mathcalls.h" 3
+# 208 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double drem(double , double ) throw(); extern "C" double __drem(double , double ) throw();
-# 212 "/usr/include/bits/mathcalls.h" 3
+# 212 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double significand(double ) throw(); extern "C" double __significand(double ) throw();
-# 218 "/usr/include/bits/mathcalls.h" 3
+# 218 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double copysign(double , double ) throw() __attribute((const)); extern "C" double __copysign(double , double ) throw() __attribute((const));
-# 225 "/usr/include/bits/mathcalls.h" 3
+# 225 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double nan(const char * ) throw() __attribute((const)); extern "C" double __nan(const char * ) throw() __attribute((const));
-# 231 "/usr/include/bits/mathcalls.h" 3
+# 231 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __isnan(double ) throw() __attribute((const));
-# 235 "/usr/include/bits/mathcalls.h" 3
+# 235 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int isnan(double ) throw() __attribute((const));
-# 238 "/usr/include/bits/mathcalls.h" 3
+# 238 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double j0(double) throw(); extern "C" double __j0(double) throw();
-# 239 "/usr/include/bits/mathcalls.h" 3
+# 239 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double j1(double) throw(); extern "C" double __j1(double) throw();
-# 240 "/usr/include/bits/mathcalls.h" 3
+# 240 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double jn(int, double) throw(); extern "C" double __jn(int, double) throw();
-# 241 "/usr/include/bits/mathcalls.h" 3
+# 241 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double y0(double) throw(); extern "C" double __y0(double) throw();
-# 242 "/usr/include/bits/mathcalls.h" 3
+# 242 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double y1(double) throw(); extern "C" double __y1(double) throw();
-# 243 "/usr/include/bits/mathcalls.h" 3
+# 243 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double yn(int, double) throw(); extern "C" double __yn(int, double) throw();
-# 250 "/usr/include/bits/mathcalls.h" 3
+# 250 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double erf(double) throw(); extern "C" double __erf(double) throw();
-# 251 "/usr/include/bits/mathcalls.h" 3
+# 251 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double erfc(double) throw(); extern "C" double __erfc(double) throw();
-# 252 "/usr/include/bits/mathcalls.h" 3
+# 252 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double lgamma(double) throw(); extern "C" double __lgamma(double) throw();
-# 259 "/usr/include/bits/mathcalls.h" 3
+# 259 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double tgamma(double) throw(); extern "C" double __tgamma(double) throw();
-# 265 "/usr/include/bits/mathcalls.h" 3
+# 265 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double gamma(double) throw(); extern "C" double __gamma(double) throw();
-# 272 "/usr/include/bits/mathcalls.h" 3
+# 272 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double lgamma_r(double, int * ) throw(); extern "C" double __lgamma_r(double, int * ) throw();
-# 280 "/usr/include/bits/mathcalls.h" 3
+# 280 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double rint(double ) throw(); extern "C" double __rint(double ) throw();
-# 283 "/usr/include/bits/mathcalls.h" 3
+# 283 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double nextafter(double , double ) throw() __attribute((const)); extern "C" double __nextafter(double , double ) throw() __attribute((const));
-# 285 "/usr/include/bits/mathcalls.h" 3
+# 285 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double nexttoward(double , long double ) throw() __attribute((const)); extern "C" double __nexttoward(double , long double ) throw() __attribute((const));
-# 289 "/usr/include/bits/mathcalls.h" 3
+# 289 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double remainder(double , double ) throw(); extern "C" double __remainder(double , double ) throw();
-# 293 "/usr/include/bits/mathcalls.h" 3
+# 293 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double scalbn(double , int ) throw(); extern "C" double __scalbn(double , int ) throw();
-# 297 "/usr/include/bits/mathcalls.h" 3
+# 297 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int ilogb(double ) throw(); extern "C" int __ilogb(double ) throw();
-# 302 "/usr/include/bits/mathcalls.h" 3
+# 302 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double scalbln(double , long ) throw(); extern "C" double __scalbln(double , long ) throw();
-# 306 "/usr/include/bits/mathcalls.h" 3
+# 306 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double nearbyint(double ) throw(); extern "C" double __nearbyint(double ) throw();
-# 310 "/usr/include/bits/mathcalls.h" 3
+# 310 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double round(double ) throw() __attribute((const)); extern "C" double __round(double ) throw() __attribute((const));
-# 314 "/usr/include/bits/mathcalls.h" 3
+# 314 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double trunc(double ) throw() __attribute((const)); extern "C" double __trunc(double ) throw() __attribute((const));
-# 319 "/usr/include/bits/mathcalls.h" 3
+# 319 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double remquo(double , double , int * ) throw(); extern "C" double __remquo(double , double , int * ) throw();
-# 326 "/usr/include/bits/mathcalls.h" 3
+# 326 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long lrint(double ) throw(); extern "C" long __lrint(double ) throw();
-# 327 "/usr/include/bits/mathcalls.h" 3
+# 327 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long long llrint(double ) throw(); extern "C" long long __llrint(double ) throw();
-# 331 "/usr/include/bits/mathcalls.h" 3
+# 331 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long lround(double ) throw(); extern "C" long __lround(double ) throw();
-# 332 "/usr/include/bits/mathcalls.h" 3
+# 332 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long long llround(double ) throw(); extern "C" long long __llround(double ) throw();
-# 336 "/usr/include/bits/mathcalls.h" 3
+# 336 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double fdim(double , double ) throw(); extern "C" double __fdim(double , double ) throw();
-# 339 "/usr/include/bits/mathcalls.h" 3
+# 339 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double fmax(double , double ) throw(); extern "C" double __fmax(double , double ) throw();
-# 342 "/usr/include/bits/mathcalls.h" 3
+# 342 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double fmin(double , double ) throw(); extern "C" double __fmin(double , double ) throw();
-# 346 "/usr/include/bits/mathcalls.h" 3
+# 346 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __fpclassify(double ) throw()
-# 347 "/usr/include/bits/mathcalls.h" 3
+# 347 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
  __attribute((const));
-# 350 "/usr/include/bits/mathcalls.h" 3
+# 350 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __signbit(double ) throw()
-# 351 "/usr/include/bits/mathcalls.h" 3
+# 351 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
  __attribute((const));
-# 355 "/usr/include/bits/mathcalls.h" 3
+# 355 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double fma(double , double , double ) throw(); extern "C" double __fma(double , double , double ) throw();
-# 364 "/usr/include/bits/mathcalls.h" 3
+# 364 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" double scalb(double , double ) throw(); extern "C" double __scalb(double , double ) throw();
-# 55 "/usr/include/bits/mathcalls.h" 3
+# 55 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float acosf(float ) throw(); extern "C" float __acosf(float ) throw();
-# 57 "/usr/include/bits/mathcalls.h" 3
+# 57 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float asinf(float ) throw(); extern "C" float __asinf(float ) throw();
-# 59 "/usr/include/bits/mathcalls.h" 3
+# 59 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float atanf(float ) throw(); extern "C" float __atanf(float ) throw();
-# 61 "/usr/include/bits/mathcalls.h" 3
+# 61 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float atan2f(float , float ) throw(); extern "C" float __atan2f(float , float ) throw();
-# 64 "/usr/include/bits/mathcalls.h" 3
+# 64 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float cosf(float ) throw();
-# 66 "/usr/include/bits/mathcalls.h" 3
+# 66 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float sinf(float ) throw();
-# 68 "/usr/include/bits/mathcalls.h" 3
+# 68 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float tanf(float ) throw();
-# 73 "/usr/include/bits/mathcalls.h" 3
+# 73 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float coshf(float ) throw(); extern "C" float __coshf(float ) throw();
-# 75 "/usr/include/bits/mathcalls.h" 3
+# 75 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float sinhf(float ) throw(); extern "C" float __sinhf(float ) throw();
-# 77 "/usr/include/bits/mathcalls.h" 3
+# 77 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float tanhf(float ) throw(); extern "C" float __tanhf(float ) throw();
-# 83 "/usr/include/bits/mathcalls.h" 3
+# 83 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" void sincosf(float , float * , float * ) throw();
-# 89 "/usr/include/bits/mathcalls.h" 3
+# 89 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float acoshf(float ) throw(); extern "C" float __acoshf(float ) throw();
-# 91 "/usr/include/bits/mathcalls.h" 3
+# 91 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float asinhf(float ) throw(); extern "C" float __asinhf(float ) throw();
-# 93 "/usr/include/bits/mathcalls.h" 3
+# 93 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float atanhf(float ) throw(); extern "C" float __atanhf(float ) throw();
-# 101 "/usr/include/bits/mathcalls.h" 3
+# 101 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float expf(float ) throw();
-# 104 "/usr/include/bits/mathcalls.h" 3
+# 104 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float frexpf(float , int * ) throw(); extern "C" float __frexpf(float , int * ) throw();
-# 107 "/usr/include/bits/mathcalls.h" 3
+# 107 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float ldexpf(float , int ) throw(); extern "C" float __ldexpf(float , int ) throw();
-# 110 "/usr/include/bits/mathcalls.h" 3
+# 110 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float logf(float ) throw();
-# 113 "/usr/include/bits/mathcalls.h" 3
+# 113 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float log10f(float ) throw();
-# 116 "/usr/include/bits/mathcalls.h" 3
+# 116 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float modff(float , float * ) throw(); extern "C" float __modff(float , float * ) throw();
-# 121 "/usr/include/bits/mathcalls.h" 3
+# 121 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float exp10f(float ) throw();
-# 123 "/usr/include/bits/mathcalls.h" 3
+# 123 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float pow10f(float ) throw(); extern "C" float __pow10f(float ) throw();
-# 129 "/usr/include/bits/mathcalls.h" 3
+# 129 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float expm1f(float ) throw(); extern "C" float __expm1f(float ) throw();
-# 132 "/usr/include/bits/mathcalls.h" 3
+# 132 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float log1pf(float ) throw(); extern "C" float __log1pf(float ) throw();
-# 135 "/usr/include/bits/mathcalls.h" 3
+# 135 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float logbf(float ) throw(); extern "C" float __logbf(float ) throw();
-# 142 "/usr/include/bits/mathcalls.h" 3
+# 142 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float exp2f(float ) throw(); extern "C" float __exp2f(float ) throw();
-# 145 "/usr/include/bits/mathcalls.h" 3
+# 145 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float log2f(float ) throw();
-# 154 "/usr/include/bits/mathcalls.h" 3
+# 154 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float powf(float , float ) throw();
-# 157 "/usr/include/bits/mathcalls.h" 3
+# 157 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float sqrtf(float ) throw(); extern "C" float __sqrtf(float ) throw();
-# 163 "/usr/include/bits/mathcalls.h" 3
+# 163 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float hypotf(float , float ) throw(); extern "C" float __hypotf(float , float ) throw();
-# 170 "/usr/include/bits/mathcalls.h" 3
+# 170 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float cbrtf(float ) throw(); extern "C" float __cbrtf(float ) throw();
-# 179 "/usr/include/bits/mathcalls.h" 3
+# 179 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float ceilf(float ) throw() __attribute((const)); extern "C" float __ceilf(float ) throw() __attribute((const));
-# 182 "/usr/include/bits/mathcalls.h" 3
+# 182 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float fabsf(float ) throw() __attribute((const)); extern "C" float __fabsf(float ) throw() __attribute((const));
-# 185 "/usr/include/bits/mathcalls.h" 3
+# 185 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float floorf(float ) throw() __attribute((const)); extern "C" float __floorf(float ) throw() __attribute((const));
-# 188 "/usr/include/bits/mathcalls.h" 3
+# 188 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float fmodf(float , float ) throw(); extern "C" float __fmodf(float , float ) throw();
-# 193 "/usr/include/bits/mathcalls.h" 3
+# 193 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __isinff(float ) throw() __attribute((const));
-# 196 "/usr/include/bits/mathcalls.h" 3
+# 196 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __finitef(float ) throw() __attribute((const));
-# 202 "/usr/include/bits/mathcalls.h" 3
+# 202 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int isinff(float ) throw() __attribute((const));
-# 205 "/usr/include/bits/mathcalls.h" 3
+# 205 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int finitef(float ) throw() __attribute((const));
-# 208 "/usr/include/bits/mathcalls.h" 3
+# 208 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float dremf(float , float ) throw(); extern "C" float __dremf(float , float ) throw();
-# 212 "/usr/include/bits/mathcalls.h" 3
+# 212 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float significandf(float ) throw(); extern "C" float __significandf(float ) throw();
-# 218 "/usr/include/bits/mathcalls.h" 3
+# 218 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float copysignf(float , float ) throw() __attribute((const)); extern "C" float __copysignf(float , float ) throw() __attribute((const));
-# 225 "/usr/include/bits/mathcalls.h" 3
+# 225 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float nanf(const char * ) throw() __attribute((const)); extern "C" float __nanf(const char * ) throw() __attribute((const));
-# 231 "/usr/include/bits/mathcalls.h" 3
+# 231 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __isnanf(float ) throw() __attribute((const));
-# 235 "/usr/include/bits/mathcalls.h" 3
+# 235 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int isnanf(float ) throw() __attribute((const));
-# 238 "/usr/include/bits/mathcalls.h" 3
+# 238 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float j0f(float) throw(); extern "C" float __j0f(float) throw();
-# 239 "/usr/include/bits/mathcalls.h" 3
+# 239 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float j1f(float) throw(); extern "C" float __j1f(float) throw();
-# 240 "/usr/include/bits/mathcalls.h" 3
+# 240 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float jnf(int, float) throw(); extern "C" float __jnf(int, float) throw();
-# 241 "/usr/include/bits/mathcalls.h" 3
+# 241 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float y0f(float) throw(); extern "C" float __y0f(float) throw();
-# 242 "/usr/include/bits/mathcalls.h" 3
+# 242 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float y1f(float) throw(); extern "C" float __y1f(float) throw();
-# 243 "/usr/include/bits/mathcalls.h" 3
+# 243 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float ynf(int, float) throw(); extern "C" float __ynf(int, float) throw();
-# 250 "/usr/include/bits/mathcalls.h" 3
+# 250 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float erff(float) throw(); extern "C" float __erff(float) throw();
-# 251 "/usr/include/bits/mathcalls.h" 3
+# 251 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float erfcf(float) throw(); extern "C" float __erfcf(float) throw();
-# 252 "/usr/include/bits/mathcalls.h" 3
+# 252 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float lgammaf(float) throw(); extern "C" float __lgammaf(float) throw();
-# 259 "/usr/include/bits/mathcalls.h" 3
+# 259 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float tgammaf(float) throw(); extern "C" float __tgammaf(float) throw();
-# 265 "/usr/include/bits/mathcalls.h" 3
+# 265 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float gammaf(float) throw(); extern "C" float __gammaf(float) throw();
-# 272 "/usr/include/bits/mathcalls.h" 3
+# 272 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float lgammaf_r(float, int * ) throw(); extern "C" float __lgammaf_r(float, int * ) throw();
-# 280 "/usr/include/bits/mathcalls.h" 3
+# 280 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float rintf(float ) throw(); extern "C" float __rintf(float ) throw();
-# 283 "/usr/include/bits/mathcalls.h" 3
+# 283 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float nextafterf(float , float ) throw() __attribute((const)); extern "C" float __nextafterf(float , float ) throw() __attribute((const));
-# 285 "/usr/include/bits/mathcalls.h" 3
+# 285 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float nexttowardf(float , long double ) throw() __attribute((const)); extern "C" float __nexttowardf(float , long double ) throw() __attribute((const));
-# 289 "/usr/include/bits/mathcalls.h" 3
+# 289 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float remainderf(float , float ) throw(); extern "C" float __remainderf(float , float ) throw();
-# 293 "/usr/include/bits/mathcalls.h" 3
+# 293 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float scalbnf(float , int ) throw(); extern "C" float __scalbnf(float , int ) throw();
-# 297 "/usr/include/bits/mathcalls.h" 3
+# 297 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int ilogbf(float ) throw(); extern "C" int __ilogbf(float ) throw();
-# 302 "/usr/include/bits/mathcalls.h" 3
+# 302 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float scalblnf(float , long ) throw(); extern "C" float __scalblnf(float , long ) throw();
-# 306 "/usr/include/bits/mathcalls.h" 3
+# 306 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float nearbyintf(float ) throw(); extern "C" float __nearbyintf(float ) throw();
-# 310 "/usr/include/bits/mathcalls.h" 3
+# 310 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float roundf(float ) throw() __attribute((const)); extern "C" float __roundf(float ) throw() __attribute((const));
-# 314 "/usr/include/bits/mathcalls.h" 3
+# 314 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float truncf(float ) throw() __attribute((const)); extern "C" float __truncf(float ) throw() __attribute((const));
-# 319 "/usr/include/bits/mathcalls.h" 3
+# 319 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float remquof(float , float , int * ) throw(); extern "C" float __remquof(float , float , int * ) throw();
-# 326 "/usr/include/bits/mathcalls.h" 3
+# 326 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long lrintf(float ) throw(); extern "C" long __lrintf(float ) throw();
-# 327 "/usr/include/bits/mathcalls.h" 3
+# 327 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long long llrintf(float ) throw(); extern "C" long long __llrintf(float ) throw();
-# 331 "/usr/include/bits/mathcalls.h" 3
+# 331 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long lroundf(float ) throw(); extern "C" long __lroundf(float ) throw();
-# 332 "/usr/include/bits/mathcalls.h" 3
+# 332 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long long llroundf(float ) throw(); extern "C" long long __llroundf(float ) throw();
-# 336 "/usr/include/bits/mathcalls.h" 3
+# 336 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float fdimf(float , float ) throw(); extern "C" float __fdimf(float , float ) throw();
-# 339 "/usr/include/bits/mathcalls.h" 3
+# 339 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float fmaxf(float , float ) throw(); extern "C" float __fmaxf(float , float ) throw();
-# 342 "/usr/include/bits/mathcalls.h" 3
+# 342 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float fminf(float , float ) throw(); extern "C" float __fminf(float , float ) throw();
-# 346 "/usr/include/bits/mathcalls.h" 3
+# 346 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __fpclassifyf(float ) throw()
-# 347 "/usr/include/bits/mathcalls.h" 3
+# 347 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
  __attribute((const));
-# 350 "/usr/include/bits/mathcalls.h" 3
+# 350 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __signbitf(float ) throw()
-# 351 "/usr/include/bits/mathcalls.h" 3
+# 351 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
  __attribute((const));
-# 355 "/usr/include/bits/mathcalls.h" 3
+# 355 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float fmaf(float , float , float ) throw(); extern "C" float __fmaf(float , float , float ) throw();
-# 364 "/usr/include/bits/mathcalls.h" 3
+# 364 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" float scalbf(float , float ) throw(); extern "C" float __scalbf(float , float ) throw();
-# 55 "/usr/include/bits/mathcalls.h" 3
+# 55 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double acosl(long double ) throw(); extern "C" long double __acosl(long double ) throw();
-# 57 "/usr/include/bits/mathcalls.h" 3
+# 57 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double asinl(long double ) throw(); extern "C" long double __asinl(long double ) throw();
-# 59 "/usr/include/bits/mathcalls.h" 3
+# 59 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double atanl(long double ) throw(); extern "C" long double __atanl(long double ) throw();
-# 61 "/usr/include/bits/mathcalls.h" 3
+# 61 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double atan2l(long double , long double ) throw(); extern "C" long double __atan2l(long double , long double ) throw();
-# 64 "/usr/include/bits/mathcalls.h" 3
+# 64 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double cosl(long double ) throw(); extern "C" long double __cosl(long double ) throw();
-# 66 "/usr/include/bits/mathcalls.h" 3
+# 66 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double sinl(long double ) throw(); extern "C" long double __sinl(long double ) throw();
-# 68 "/usr/include/bits/mathcalls.h" 3
+# 68 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double tanl(long double ) throw(); extern "C" long double __tanl(long double ) throw();
-# 73 "/usr/include/bits/mathcalls.h" 3
+# 73 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double coshl(long double ) throw(); extern "C" long double __coshl(long double ) throw();
-# 75 "/usr/include/bits/mathcalls.h" 3
+# 75 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double sinhl(long double ) throw(); extern "C" long double __sinhl(long double ) throw();
-# 77 "/usr/include/bits/mathcalls.h" 3
+# 77 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double tanhl(long double ) throw(); extern "C" long double __tanhl(long double ) throw();
-# 83 "/usr/include/bits/mathcalls.h" 3
+# 83 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" void sincosl(long double , long double * , long double * ) throw();
-# 83 "/usr/include/bits/mathcalls.h" 3
+# 83 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" void __sincosl(long double , long double * , long double * ) throw();
-# 89 "/usr/include/bits/mathcalls.h" 3
+# 89 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double acoshl(long double ) throw(); extern "C" long double __acoshl(long double ) throw();
-# 91 "/usr/include/bits/mathcalls.h" 3
+# 91 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double asinhl(long double ) throw(); extern "C" long double __asinhl(long double ) throw();
-# 93 "/usr/include/bits/mathcalls.h" 3
+# 93 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double atanhl(long double ) throw(); extern "C" long double __atanhl(long double ) throw();
-# 101 "/usr/include/bits/mathcalls.h" 3
+# 101 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double expl(long double ) throw(); extern "C" long double __expl(long double ) throw();
-# 104 "/usr/include/bits/mathcalls.h" 3
+# 104 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double frexpl(long double , int * ) throw(); extern "C" long double __frexpl(long double , int * ) throw();
-# 107 "/usr/include/bits/mathcalls.h" 3
+# 107 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double ldexpl(long double , int ) throw(); extern "C" long double __ldexpl(long double , int ) throw();
-# 110 "/usr/include/bits/mathcalls.h" 3
+# 110 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double logl(long double ) throw(); extern "C" long double __logl(long double ) throw();
-# 113 "/usr/include/bits/mathcalls.h" 3
+# 113 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double log10l(long double ) throw(); extern "C" long double __log10l(long double ) throw();
-# 116 "/usr/include/bits/mathcalls.h" 3
+# 116 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double modfl(long double , long double * ) throw(); extern "C" long double __modfl(long double , long double * ) throw();
-# 121 "/usr/include/bits/mathcalls.h" 3
+# 121 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double exp10l(long double ) throw(); extern "C" long double __exp10l(long double ) throw();
-# 123 "/usr/include/bits/mathcalls.h" 3
+# 123 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double pow10l(long double ) throw(); extern "C" long double __pow10l(long double ) throw();
-# 129 "/usr/include/bits/mathcalls.h" 3
+# 129 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double expm1l(long double ) throw(); extern "C" long double __expm1l(long double ) throw();
-# 132 "/usr/include/bits/mathcalls.h" 3
+# 132 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double log1pl(long double ) throw(); extern "C" long double __log1pl(long double ) throw();
-# 135 "/usr/include/bits/mathcalls.h" 3
+# 135 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double logbl(long double ) throw(); extern "C" long double __logbl(long double ) throw();
-# 142 "/usr/include/bits/mathcalls.h" 3
+# 142 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double exp2l(long double ) throw(); extern "C" long double __exp2l(long double ) throw();
-# 145 "/usr/include/bits/mathcalls.h" 3
+# 145 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double log2l(long double ) throw(); extern "C" long double __log2l(long double ) throw();
-# 154 "/usr/include/bits/mathcalls.h" 3
+# 154 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double powl(long double , long double ) throw(); extern "C" long double __powl(long double , long double ) throw();
-# 157 "/usr/include/bits/mathcalls.h" 3
+# 157 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double sqrtl(long double ) throw(); extern "C" long double __sqrtl(long double ) throw();
-# 163 "/usr/include/bits/mathcalls.h" 3
+# 163 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double hypotl(long double , long double ) throw(); extern "C" long double __hypotl(long double , long double ) throw();
-# 170 "/usr/include/bits/mathcalls.h" 3
+# 170 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double cbrtl(long double ) throw(); extern "C" long double __cbrtl(long double ) throw();
-# 179 "/usr/include/bits/mathcalls.h" 3
+# 179 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double ceill(long double ) throw() __attribute((const)); extern "C" long double __ceill(long double ) throw() __attribute((const));
-# 182 "/usr/include/bits/mathcalls.h" 3
+# 182 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double fabsl(long double ) throw() __attribute((const)); extern "C" long double __fabsl(long double ) throw() __attribute((const));
-# 185 "/usr/include/bits/mathcalls.h" 3
+# 185 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double floorl(long double ) throw() __attribute((const)); extern "C" long double __floorl(long double ) throw() __attribute((const));
-# 188 "/usr/include/bits/mathcalls.h" 3
+# 188 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double fmodl(long double , long double ) throw(); extern "C" long double __fmodl(long double , long double ) throw();
-# 193 "/usr/include/bits/mathcalls.h" 3
+# 193 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __isinfl(long double ) throw() __attribute((const));
-# 196 "/usr/include/bits/mathcalls.h" 3
+# 196 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __finitel(long double ) throw() __attribute((const));
-# 202 "/usr/include/bits/mathcalls.h" 3
+# 202 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int isinfl(long double ) throw() __attribute((const));
-# 205 "/usr/include/bits/mathcalls.h" 3
+# 205 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int finitel(long double ) throw() __attribute((const));
-# 208 "/usr/include/bits/mathcalls.h" 3
+# 208 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double dreml(long double , long double ) throw(); extern "C" long double __dreml(long double , long double ) throw();
-# 212 "/usr/include/bits/mathcalls.h" 3
+# 212 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double significandl(long double ) throw(); extern "C" long double __significandl(long double ) throw();
-# 218 "/usr/include/bits/mathcalls.h" 3
+# 218 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double copysignl(long double , long double ) throw() __attribute((const)); extern "C" long double __copysignl(long double , long double ) throw() __attribute((const));
-# 225 "/usr/include/bits/mathcalls.h" 3
+# 225 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double nanl(const char * ) throw() __attribute((const)); extern "C" long double __nanl(const char * ) throw() __attribute((const));
-# 231 "/usr/include/bits/mathcalls.h" 3
+# 231 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __isnanl(long double ) throw() __attribute((const));
-# 235 "/usr/include/bits/mathcalls.h" 3
+# 235 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int isnanl(long double ) throw() __attribute((const));
-# 238 "/usr/include/bits/mathcalls.h" 3
+# 238 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double j0l(long double) throw(); extern "C" long double __j0l(long double) throw();
-# 239 "/usr/include/bits/mathcalls.h" 3
+# 239 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double j1l(long double) throw(); extern "C" long double __j1l(long double) throw();
-# 240 "/usr/include/bits/mathcalls.h" 3
+# 240 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double jnl(int, long double) throw(); extern "C" long double __jnl(int, long double) throw();
-# 241 "/usr/include/bits/mathcalls.h" 3
+# 241 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double y0l(long double) throw(); extern "C" long double __y0l(long double) throw();
-# 242 "/usr/include/bits/mathcalls.h" 3
+# 242 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double y1l(long double) throw(); extern "C" long double __y1l(long double) throw();
-# 243 "/usr/include/bits/mathcalls.h" 3
+# 243 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double ynl(int, long double) throw(); extern "C" long double __ynl(int, long double) throw();
-# 250 "/usr/include/bits/mathcalls.h" 3
+# 250 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double erfl(long double) throw(); extern "C" long double __erfl(long double) throw();
-# 251 "/usr/include/bits/mathcalls.h" 3
+# 251 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double erfcl(long double) throw(); extern "C" long double __erfcl(long double) throw();
-# 252 "/usr/include/bits/mathcalls.h" 3
+# 252 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double lgammal(long double) throw(); extern "C" long double __lgammal(long double) throw();
-# 259 "/usr/include/bits/mathcalls.h" 3
+# 259 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double tgammal(long double) throw(); extern "C" long double __tgammal(long double) throw();
-# 265 "/usr/include/bits/mathcalls.h" 3
+# 265 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double gammal(long double) throw(); extern "C" long double __gammal(long double) throw();
-# 272 "/usr/include/bits/mathcalls.h" 3
+# 272 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double lgammal_r(long double, int * ) throw(); extern "C" long double __lgammal_r(long double, int * ) throw();
-# 280 "/usr/include/bits/mathcalls.h" 3
+# 280 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double rintl(long double ) throw(); extern "C" long double __rintl(long double ) throw();
-# 283 "/usr/include/bits/mathcalls.h" 3
+# 283 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double nextafterl(long double , long double ) throw() __attribute((const)); extern "C" long double __nextafterl(long double , long double ) throw() __attribute((const));
-# 285 "/usr/include/bits/mathcalls.h" 3
+# 285 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double nexttowardl(long double , long double ) throw() __attribute((const)); extern "C" long double __nexttowardl(long double , long double ) throw() __attribute((const));
-# 289 "/usr/include/bits/mathcalls.h" 3
+# 289 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double remainderl(long double , long double ) throw(); extern "C" long double __remainderl(long double , long double ) throw();
-# 293 "/usr/include/bits/mathcalls.h" 3
+# 293 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double scalbnl(long double , int ) throw(); extern "C" long double __scalbnl(long double , int ) throw();
-# 297 "/usr/include/bits/mathcalls.h" 3
+# 297 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int ilogbl(long double ) throw(); extern "C" int __ilogbl(long double ) throw();
-# 302 "/usr/include/bits/mathcalls.h" 3
+# 302 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double scalblnl(long double , long ) throw(); extern "C" long double __scalblnl(long double , long ) throw();
-# 306 "/usr/include/bits/mathcalls.h" 3
+# 306 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double nearbyintl(long double ) throw(); extern "C" long double __nearbyintl(long double ) throw();
-# 310 "/usr/include/bits/mathcalls.h" 3
+# 310 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double roundl(long double ) throw() __attribute((const)); extern "C" long double __roundl(long double ) throw() __attribute((const));
-# 314 "/usr/include/bits/mathcalls.h" 3
+# 314 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double truncl(long double ) throw() __attribute((const)); extern "C" long double __truncl(long double ) throw() __attribute((const));
-# 319 "/usr/include/bits/mathcalls.h" 3
+# 319 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double remquol(long double , long double , int * ) throw(); extern "C" long double __remquol(long double , long double , int * ) throw();
-# 326 "/usr/include/bits/mathcalls.h" 3
+# 326 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long lrintl(long double ) throw(); extern "C" long __lrintl(long double ) throw();
-# 327 "/usr/include/bits/mathcalls.h" 3
+# 327 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long long llrintl(long double ) throw(); extern "C" long long __llrintl(long double ) throw();
-# 331 "/usr/include/bits/mathcalls.h" 3
+# 331 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long lroundl(long double ) throw(); extern "C" long __lroundl(long double ) throw();
-# 332 "/usr/include/bits/mathcalls.h" 3
+# 332 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long long llroundl(long double ) throw(); extern "C" long long __llroundl(long double ) throw();
-# 336 "/usr/include/bits/mathcalls.h" 3
+# 336 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double fdiml(long double , long double ) throw(); extern "C" long double __fdiml(long double , long double ) throw();
-# 339 "/usr/include/bits/mathcalls.h" 3
+# 339 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double fmaxl(long double , long double ) throw(); extern "C" long double __fmaxl(long double , long double ) throw();
-# 342 "/usr/include/bits/mathcalls.h" 3
+# 342 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double fminl(long double , long double ) throw(); extern "C" long double __fminl(long double , long double ) throw();
-# 346 "/usr/include/bits/mathcalls.h" 3
+# 346 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __fpclassifyl(long double ) throw()
-# 347 "/usr/include/bits/mathcalls.h" 3
+# 347 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
  __attribute((const));
-# 350 "/usr/include/bits/mathcalls.h" 3
+# 350 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" int __signbitl(long double ) throw()
-# 351 "/usr/include/bits/mathcalls.h" 3
+# 351 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
  __attribute((const));
-# 355 "/usr/include/bits/mathcalls.h" 3
+# 355 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double fmal(long double , long double , long double ) throw(); extern "C" long double __fmal(long double , long double , long double ) throw();
-# 364 "/usr/include/bits/mathcalls.h" 3
+# 364 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h" 3
 extern "C" long double scalbl(long double , long double ) throw(); extern "C" long double __scalbl(long double , long double ) throw();
 # 161 "/usr/include/math.h" 3
 extern "C" { extern int signgam; }
@@ -3411,33 +3403,33 @@ double retval;
 }; }
 # 331 "/usr/include/math.h" 3
 extern "C" int matherr(__exception * ) throw();
-# 67 "/usr/include/bits/waitstatus.h" 3
+# 67 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 extern "C" { union wait {
-# 69 "/usr/include/bits/waitstatus.h" 3
+# 69 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 int w_status;
-# 71 "/usr/include/bits/waitstatus.h" 3
+# 71 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 struct {
-# 73 "/usr/include/bits/waitstatus.h" 3
+# 73 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned __w_termsig:7;
-# 74 "/usr/include/bits/waitstatus.h" 3
+# 74 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned __w_coredump:1;
-# 75 "/usr/include/bits/waitstatus.h" 3
+# 75 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned __w_retcode:8;
-# 76 "/usr/include/bits/waitstatus.h" 3
+# 76 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned:16;
-# 84 "/usr/include/bits/waitstatus.h" 3
+# 84 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 } __wait_terminated;
-# 86 "/usr/include/bits/waitstatus.h" 3
+# 86 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 struct {
-# 88 "/usr/include/bits/waitstatus.h" 3
+# 88 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned __w_stopval:8;
-# 89 "/usr/include/bits/waitstatus.h" 3
+# 89 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned __w_stopsig:8;
-# 90 "/usr/include/bits/waitstatus.h" 3
+# 90 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 unsigned:16;
-# 97 "/usr/include/bits/waitstatus.h" 3
+# 97 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 } __wait_stopped;
-# 98 "/usr/include/bits/waitstatus.h" 3
+# 98 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h" 3
 }; }
 # 102 "/usr/include/stdlib.h" 3
 extern "C" { typedef
@@ -3557,305 +3549,305 @@ extern "C" char *l64a(long ) throw();
 extern "C" long a64l(const char * ) throw()
 # 315 "/usr/include/stdlib.h" 3
  __attribute((__pure__)) __attribute((__nonnull__(1)));
-# 34 "/usr/include/sys/types.h" 3
+# 34 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __u_char u_char; }
-# 35 "/usr/include/sys/types.h" 3
+# 35 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __u_short u_short; }
-# 36 "/usr/include/sys/types.h" 3
+# 36 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __u_int u_int; }
-# 37 "/usr/include/sys/types.h" 3
+# 37 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __u_long u_long; }
-# 38 "/usr/include/sys/types.h" 3
+# 38 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __quad_t quad_t; }
-# 39 "/usr/include/sys/types.h" 3
+# 39 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __u_quad_t u_quad_t; }
-# 40 "/usr/include/sys/types.h" 3
+# 40 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __fsid_t fsid_t; }
-# 45 "/usr/include/sys/types.h" 3
+# 45 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __loff_t loff_t; }
-# 49 "/usr/include/sys/types.h" 3
+# 49 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __ino_t ino_t; }
-# 56 "/usr/include/sys/types.h" 3
+# 56 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __ino64_t ino64_t; }
-# 61 "/usr/include/sys/types.h" 3
+# 61 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __dev_t dev_t; }
-# 66 "/usr/include/sys/types.h" 3
+# 66 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __gid_t gid_t; }
-# 71 "/usr/include/sys/types.h" 3
+# 71 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __mode_t mode_t; }
-# 76 "/usr/include/sys/types.h" 3
+# 76 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __nlink_t nlink_t; }
-# 81 "/usr/include/sys/types.h" 3
+# 81 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __uid_t uid_t; }
-# 87 "/usr/include/sys/types.h" 3
+# 87 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __off_t off_t; }
-# 94 "/usr/include/sys/types.h" 3
+# 94 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __off64_t off64_t; }
-# 105 "/usr/include/sys/types.h" 3
+# 105 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __id_t id_t; }
-# 110 "/usr/include/sys/types.h" 3
+# 110 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __ssize_t ssize_t; }
-# 116 "/usr/include/sys/types.h" 3
+# 116 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __daddr_t daddr_t; }
-# 117 "/usr/include/sys/types.h" 3
+# 117 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __caddr_t caddr_t; }
-# 123 "/usr/include/sys/types.h" 3
+# 123 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __key_t key_t; }
-# 137 "/usr/include/sys/types.h" 3
+# 137 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __useconds_t useconds_t; }
-# 141 "/usr/include/sys/types.h" 3
+# 141 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __suseconds_t suseconds_t; }
-# 151 "/usr/include/sys/types.h" 3
+# 151 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned long ulong; }
-# 152 "/usr/include/sys/types.h" 3
+# 152 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned short ushort; }
-# 153 "/usr/include/sys/types.h" 3
+# 153 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned uint; }
-# 195 "/usr/include/sys/types.h" 3
+# 195 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef signed char int8_t __attribute((__mode__(__QI__))); }
-# 196 "/usr/include/sys/types.h" 3
+# 196 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef short int16_t __attribute((__mode__(__HI__))); }
-# 197 "/usr/include/sys/types.h" 3
+# 197 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef int int32_t __attribute((__mode__(__SI__))); }
-# 198 "/usr/include/sys/types.h" 3
+# 198 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef long int64_t __attribute((__mode__(__DI__))); }
-# 201 "/usr/include/sys/types.h" 3
+# 201 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned char u_int8_t __attribute((__mode__(__QI__))); }
-# 202 "/usr/include/sys/types.h" 3
+# 202 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned short u_int16_t __attribute((__mode__(__HI__))); }
-# 203 "/usr/include/sys/types.h" 3
+# 203 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned u_int32_t __attribute((__mode__(__SI__))); }
-# 204 "/usr/include/sys/types.h" 3
+# 204 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef unsigned long u_int64_t __attribute((__mode__(__DI__))); }
-# 206 "/usr/include/sys/types.h" 3
+# 206 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef long register_t __attribute((__mode__(__word__))); }
-# 24 "/usr/include/bits/sigset.h" 3
+# 24 "/usr/include/x86_64-linux-gnu/bits/sigset.h" 3
 extern "C" { typedef int __sig_atomic_t; }
-# 32 "/usr/include/bits/sigset.h" 3
+# 32 "/usr/include/x86_64-linux-gnu/bits/sigset.h" 3
 extern "C" { typedef
-# 30 "/usr/include/bits/sigset.h" 3
+# 30 "/usr/include/x86_64-linux-gnu/bits/sigset.h" 3
 struct {
-# 31 "/usr/include/bits/sigset.h" 3
+# 31 "/usr/include/x86_64-linux-gnu/bits/sigset.h" 3
 unsigned long __val[(1024) / ((8) * sizeof(unsigned long))];
-# 32 "/usr/include/bits/sigset.h" 3
+# 32 "/usr/include/x86_64-linux-gnu/bits/sigset.h" 3
 } __sigset_t; }
-# 38 "/usr/include/sys/select.h" 3
+# 38 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 extern "C" { typedef __sigset_t sigset_t; }
-# 75 "/usr/include/bits/time.h" 3
+# 75 "/usr/include/x86_64-linux-gnu/bits/time.h" 3
 extern "C" { struct timeval {
-# 77 "/usr/include/bits/time.h" 3
+# 77 "/usr/include/x86_64-linux-gnu/bits/time.h" 3
 __time_t tv_sec;
-# 78 "/usr/include/bits/time.h" 3
+# 78 "/usr/include/x86_64-linux-gnu/bits/time.h" 3
 __suseconds_t tv_usec;
-# 79 "/usr/include/bits/time.h" 3
+# 79 "/usr/include/x86_64-linux-gnu/bits/time.h" 3
 }; }
-# 55 "/usr/include/sys/select.h" 3
+# 55 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 extern "C" { typedef long __fd_mask; }
-# 78 "/usr/include/sys/select.h" 3
+# 78 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 extern "C" { typedef
-# 68 "/usr/include/sys/select.h" 3
+# 68 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 struct {
-# 72 "/usr/include/sys/select.h" 3
+# 72 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 __fd_mask fds_bits[1024 / (8 * ((int)sizeof(__fd_mask)))];
-# 78 "/usr/include/sys/select.h" 3
+# 78 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 } fd_set; }
-# 85 "/usr/include/sys/select.h" 3
+# 85 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 extern "C" { typedef __fd_mask fd_mask; }
-# 109 "/usr/include/sys/select.h" 3
+# 109 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 extern "C" int select(int , fd_set *__restrict__ , fd_set *__restrict__ , fd_set *__restrict__ , timeval *__restrict__ );
-# 121 "/usr/include/sys/select.h" 3
+# 121 "/usr/include/x86_64-linux-gnu/sys/select.h" 3
 extern "C" int pselect(int , fd_set *__restrict__ , fd_set *__restrict__ , fd_set *__restrict__ , const timespec *__restrict__ , const __sigset_t *__restrict__ );
-# 31 "/usr/include/sys/sysmacros.h" 3
+# 31 "/usr/include/x86_64-linux-gnu/sys/sysmacros.h" 3
 extern "C" unsigned gnu_dev_major(unsigned long long ) throw();
-# 34 "/usr/include/sys/sysmacros.h" 3
+# 34 "/usr/include/x86_64-linux-gnu/sys/sysmacros.h" 3
 extern "C" unsigned gnu_dev_minor(unsigned long long ) throw();
-# 37 "/usr/include/sys/sysmacros.h" 3
+# 37 "/usr/include/x86_64-linux-gnu/sys/sysmacros.h" 3
 extern "C" unsigned long long gnu_dev_makedev(unsigned , unsigned ) throw();
-# 229 "/usr/include/sys/types.h" 3
+# 229 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __blksize_t blksize_t; }
-# 236 "/usr/include/sys/types.h" 3
+# 236 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __blkcnt_t blkcnt_t; }
-# 240 "/usr/include/sys/types.h" 3
+# 240 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __fsblkcnt_t fsblkcnt_t; }
-# 244 "/usr/include/sys/types.h" 3
+# 244 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __fsfilcnt_t fsfilcnt_t; }
-# 263 "/usr/include/sys/types.h" 3
+# 263 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __blkcnt64_t blkcnt64_t; }
-# 264 "/usr/include/sys/types.h" 3
+# 264 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __fsblkcnt64_t fsblkcnt64_t; }
-# 265 "/usr/include/sys/types.h" 3
+# 265 "/usr/include/x86_64-linux-gnu/sys/types.h" 3
 extern "C" { typedef __fsfilcnt64_t fsfilcnt64_t; }
-# 50 "/usr/include/bits/pthreadtypes.h" 3
+# 50 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef unsigned long pthread_t; }
-# 57 "/usr/include/bits/pthreadtypes.h" 3
+# 57 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 54 "/usr/include/bits/pthreadtypes.h" 3
+# 54 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 55 "/usr/include/bits/pthreadtypes.h" 3
+# 55 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[56];
-# 56 "/usr/include/bits/pthreadtypes.h" 3
+# 56 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 long __align;
-# 57 "/usr/include/bits/pthreadtypes.h" 3
+# 57 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_attr_t; }
-# 65 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 61 "/usr/include/bits/pthreadtypes.h" 3
+# 61 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 struct __pthread_internal_list {
-# 63 "/usr/include/bits/pthreadtypes.h" 3
+# 63 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __pthread_internal_list *__prev;
-# 64 "/usr/include/bits/pthreadtypes.h" 3
+# 64 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __pthread_internal_list *__next;
-# 65 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } __pthread_list_t; }
-# 104 "/usr/include/bits/pthreadtypes.h" 3
+# 104 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 77 "/usr/include/bits/pthreadtypes.h" 3
+# 77 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 78 "/usr/include/bits/pthreadtypes.h" 3
+# 78 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 struct __pthread_mutex_s {
-# 80 "/usr/include/bits/pthreadtypes.h" 3
+# 80 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __lock;
-# 81 "/usr/include/bits/pthreadtypes.h" 3
+# 81 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __count;
-# 82 "/usr/include/bits/pthreadtypes.h" 3
+# 82 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __owner;
-# 84 "/usr/include/bits/pthreadtypes.h" 3
+# 84 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __nusers;
-# 88 "/usr/include/bits/pthreadtypes.h" 3
+# 88 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __kind;
-# 90 "/usr/include/bits/pthreadtypes.h" 3
+# 90 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __spins;
-# 91 "/usr/include/bits/pthreadtypes.h" 3
+# 91 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __pthread_list_t __list;
-# 101 "/usr/include/bits/pthreadtypes.h" 3
+# 101 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } __data;
-# 102 "/usr/include/bits/pthreadtypes.h" 3
+# 102 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[40];
-# 103 "/usr/include/bits/pthreadtypes.h" 3
+# 103 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 long __align;
-# 104 "/usr/include/bits/pthreadtypes.h" 3
+# 104 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_mutex_t; }
-# 110 "/usr/include/bits/pthreadtypes.h" 3
+# 110 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 107 "/usr/include/bits/pthreadtypes.h" 3
+# 107 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 108 "/usr/include/bits/pthreadtypes.h" 3
+# 108 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[4];
-# 109 "/usr/include/bits/pthreadtypes.h" 3
+# 109 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __align;
-# 110 "/usr/include/bits/pthreadtypes.h" 3
+# 110 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_mutexattr_t; }
-# 130 "/usr/include/bits/pthreadtypes.h" 3
+# 130 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 116 "/usr/include/bits/pthreadtypes.h" 3
+# 116 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 118 "/usr/include/bits/pthreadtypes.h" 3
+# 118 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 struct {
-# 119 "/usr/include/bits/pthreadtypes.h" 3
+# 119 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __lock;
-# 120 "/usr/include/bits/pthreadtypes.h" 3
+# 120 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __futex;
-# 121 "/usr/include/bits/pthreadtypes.h" 3
+# 121 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __extension__ unsigned long long __total_seq;
-# 122 "/usr/include/bits/pthreadtypes.h" 3
+# 122 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __extension__ unsigned long long __wakeup_seq;
-# 123 "/usr/include/bits/pthreadtypes.h" 3
+# 123 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __extension__ unsigned long long __woken_seq;
-# 124 "/usr/include/bits/pthreadtypes.h" 3
+# 124 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 void *__mutex;
-# 125 "/usr/include/bits/pthreadtypes.h" 3
+# 125 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __nwaiters;
-# 126 "/usr/include/bits/pthreadtypes.h" 3
+# 126 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __broadcast_seq;
-# 127 "/usr/include/bits/pthreadtypes.h" 3
+# 127 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } __data;
-# 128 "/usr/include/bits/pthreadtypes.h" 3
+# 128 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[48];
-# 129 "/usr/include/bits/pthreadtypes.h" 3
+# 129 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 __extension__ long long __align;
-# 130 "/usr/include/bits/pthreadtypes.h" 3
+# 130 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_cond_t; }
-# 136 "/usr/include/bits/pthreadtypes.h" 3
+# 136 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 133 "/usr/include/bits/pthreadtypes.h" 3
+# 133 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 134 "/usr/include/bits/pthreadtypes.h" 3
+# 134 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[4];
-# 135 "/usr/include/bits/pthreadtypes.h" 3
+# 135 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __align;
-# 136 "/usr/include/bits/pthreadtypes.h" 3
+# 136 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_condattr_t; }
-# 140 "/usr/include/bits/pthreadtypes.h" 3
+# 140 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef unsigned pthread_key_t; }
-# 144 "/usr/include/bits/pthreadtypes.h" 3
+# 144 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef int pthread_once_t; }
-# 189 "/usr/include/bits/pthreadtypes.h" 3
+# 189 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 151 "/usr/include/bits/pthreadtypes.h" 3
+# 151 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 154 "/usr/include/bits/pthreadtypes.h" 3
+# 154 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 struct {
-# 155 "/usr/include/bits/pthreadtypes.h" 3
+# 155 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __lock;
-# 156 "/usr/include/bits/pthreadtypes.h" 3
+# 156 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __nr_readers;
-# 157 "/usr/include/bits/pthreadtypes.h" 3
+# 157 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __readers_wakeup;
-# 158 "/usr/include/bits/pthreadtypes.h" 3
+# 158 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __writer_wakeup;
-# 159 "/usr/include/bits/pthreadtypes.h" 3
+# 159 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __nr_readers_queued;
-# 160 "/usr/include/bits/pthreadtypes.h" 3
+# 160 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __nr_writers_queued;
-# 161 "/usr/include/bits/pthreadtypes.h" 3
+# 161 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __writer;
-# 162 "/usr/include/bits/pthreadtypes.h" 3
+# 162 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __shared;
-# 163 "/usr/include/bits/pthreadtypes.h" 3
+# 163 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned long __pad1;
-# 164 "/usr/include/bits/pthreadtypes.h" 3
+# 164 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned long __pad2;
-# 167 "/usr/include/bits/pthreadtypes.h" 3
+# 167 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 unsigned __flags;
-# 168 "/usr/include/bits/pthreadtypes.h" 3
+# 168 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } __data;
-# 187 "/usr/include/bits/pthreadtypes.h" 3
+# 187 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[56];
-# 188 "/usr/include/bits/pthreadtypes.h" 3
+# 188 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 long __align;
-# 189 "/usr/include/bits/pthreadtypes.h" 3
+# 189 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_rwlock_t; }
-# 195 "/usr/include/bits/pthreadtypes.h" 3
+# 195 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 192 "/usr/include/bits/pthreadtypes.h" 3
+# 192 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 193 "/usr/include/bits/pthreadtypes.h" 3
+# 193 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[8];
-# 194 "/usr/include/bits/pthreadtypes.h" 3
+# 194 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 long __align;
-# 195 "/usr/include/bits/pthreadtypes.h" 3
+# 195 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_rwlockattr_t; }
-# 201 "/usr/include/bits/pthreadtypes.h" 3
+# 201 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef volatile int pthread_spinlock_t; }
-# 210 "/usr/include/bits/pthreadtypes.h" 3
+# 210 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 207 "/usr/include/bits/pthreadtypes.h" 3
+# 207 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 208 "/usr/include/bits/pthreadtypes.h" 3
+# 208 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[32];
-# 209 "/usr/include/bits/pthreadtypes.h" 3
+# 209 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 long __align;
-# 210 "/usr/include/bits/pthreadtypes.h" 3
+# 210 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_barrier_t; }
-# 216 "/usr/include/bits/pthreadtypes.h" 3
+# 216 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 213 "/usr/include/bits/pthreadtypes.h" 3
+# 213 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 union {
-# 214 "/usr/include/bits/pthreadtypes.h" 3
+# 214 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 char __size[4];
-# 215 "/usr/include/bits/pthreadtypes.h" 3
+# 215 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 int __align;
-# 216 "/usr/include/bits/pthreadtypes.h" 3
+# 216 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h" 3
 } pthread_barrierattr_t; }
 # 327 "/usr/include/stdlib.h" 3
 extern "C" long random() throw();
@@ -4185,669 +4177,1064 @@ extern "C" int getpt();
 extern "C" int getloadavg(double [], int ) throw()
 # 949 "/usr/include/stdlib.h" 3
  __attribute((__nonnull__(1)));
-# 69 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 153 "/usr/include/c++/4.6/x86_64-linux-gnu/./bits/c++config.h" 3
+namespace std {
+# 155 "/usr/include/c++/4.6/x86_64-linux-gnu/./bits/c++config.h" 3
+typedef unsigned long size_t;
+# 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
+# 74 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
+template <typename T>
+static inline void *__cudaAddressOf(T &val)
+{
+    return (void *)(&(const_cast<char &>(reinterpret_cast<const volatile char &>(val))));
+}
+# 103 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
+extern "C" {
+
+extern void** __cudaRegisterFatBinary(
+  void *fatCubin
+);
+
+extern void __cudaUnregisterFatBinary(
+  void **fatCubinHandle
+);
+
+extern void __cudaRegisterVar(
+        void **fatCubinHandle,
+        char *hostVar,
+        char *deviceAddress,
+  const char *deviceName,
+        int ext,
+        int size,
+        int constant,
+        int global
+);
+
+extern void __cudaRegisterTexture(
+        void **fatCubinHandle,
+  const struct textureReference *hostVar,
+  const void **deviceAddress,
+  const char *deviceName,
+        int dim,
+        int norm,
+        int ext
+);
+
+extern void __cudaRegisterSurface(
+        void **fatCubinHandle,
+  const struct surfaceReference *hostVar,
+  const void **deviceAddress,
+  const char *deviceName,
+        int dim,
+        int ext
+);
+
+extern void __cudaRegisterFunction(
+        void **fatCubinHandle,
+  const char *hostFun,
+        char *deviceFun,
+  const char *deviceName,
+        int thread_limit,
+        uint3 *tid,
+        uint3 *bid,
+        dim3 *bDim,
+        dim3 *gDim,
+        int *wSize
+);
+
+
+
+extern int atexit(void(*)(void)) throw();
+
+
+
+
+
+
+
+}
+
+static void **__cudaFatCubinHandle;
+
+static void __cudaUnregisterBinaryUtil(void)
+{
+  __cudaUnregisterFatBinary(__cudaFatCubinHandle);
+}
+
+# 1 "/usr/local/cuda/bin/../include/common_functions.h" 1 3
+# 147 "/usr/local/cuda/bin/../include/common_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions.h" 1 3
+# 1064 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_constants.h" 1 3
+# 1065 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 3135 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/crt/func_macro.h" 1 3
+# 3136 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 4849 "/usr/local/cuda/bin/../include/math_functions.h" 3
+inline double rsqrt(double a)
+{
+  return 1.0 / sqrt(a);
+}
+
+inline double rcbrt(double a)
+{
+  double s, t;
+
+  if (__isnan(a)) {
+    return a + a;
+  }
+  if (a == 0.0 || __isinf(a)) {
+    return 1.0 / a;
+  }
+  s = fabs(a);
+  t = exp2(-3.3333333333333333e-1 * log2(s));
+  t = ((t*t) * (-s*t) + 1.0) * (3.3333333333333333e-1*t) + t;
+
+
+
+  if (__signbit(a))
+
+  {
+    t = -t;
+  }
+  return t;
+}
+
+inline double sinpi(double a)
+{
+  int n;
+
+  if (__isnan(a)) {
+    return a + a;
+  }
+  if (a == 0.0 || __isinf(a)) {
+    return sin (a);
+  }
+  if (a == floor(a)) {
+    return ((a / 1.0e308) / 1.0e308) / 1.0e308;
+  }
+  a = remquo (a, 0.5, &n);
+  a = a * 3.1415926535897931e+0;
+  if (n & 1) {
+    a = cos (a);
+  } else {
+    a = sin (a);
+  }
+  if (n & 2) {
+    a = -a;
+  }
+  return a;
+}
+
+inline double cospi(double a)
+{
+  int n;
+
+  if (__isnan(a)) {
+    return a + a;
+  }
+  if (__isinf(a)) {
+    return cos (a);
+  }
+  if (fabs(a) > 9.0071992547409920e+015) {
+    a = 0.0;
+  }
+  a = remquo (a, 0.5, &n);
+  a = a * 3.1415926535897931e+0;
+  n++;
+  if (n & 1) {
+    a = cos (a);
+  } else {
+    a = sin (a);
+  }
+  if (n & 2) {
+    a = -a;
+  }
+  if (a == 0.0) {
+    a = fabs(a);
+  }
+  return a;
+}
+
+inline double erfinv(double a)
+{
+  double p, q, t, fa;
+  volatile union {
+    double d;
+    unsigned long long int l;
+  } cvt;
+
+  fa = fabs(a);
+  if (fa >= 1.0) {
+    cvt.l = 0xfff8000000000000ull;
+    t = cvt.d;
+    if (fa == 1.0) {
+      t = a * exp(1000.0);
+    }
+  } else if (fa >= 0.9375) {
+
+
+
+
+    t = log1p(-fa);
+    t = 1.0 / sqrt(-t);
+    p = 2.7834010353747001060e-3;
+    p = p * t + 8.6030097526280260580e-1;
+    p = p * t + 2.1371214997265515515e+0;
+    p = p * t + 3.1598519601132090206e+0;
+    p = p * t + 3.5780402569085996758e+0;
+    p = p * t + 1.5335297523989890804e+0;
+    p = p * t + 3.4839207139657522572e-1;
+    p = p * t + 5.3644861147153648366e-2;
+    p = p * t + 4.3836709877126095665e-3;
+    p = p * t + 1.3858518113496718808e-4;
+    p = p * t + 1.1738352509991666680e-6;
+    q = t + 2.2859981272422905412e+0;
+    q = q * t + 4.3859045256449554654e+0;
+    q = q * t + 4.6632960348736635331e+0;
+    q = q * t + 3.9846608184671757296e+0;
+    q = q * t + 1.6068377709719017609e+0;
+    q = q * t + 3.5609087305900265560e-1;
+    q = q * t + 5.3963550303200816744e-2;
+    q = q * t + 4.3873424022706935023e-3;
+    q = q * t + 1.3858762165532246059e-4;
+    q = q * t + 1.1738313872397777529e-6;
+    t = p / (q * t);
+    if (a < 0.0) t = -t;
+  } else if (fa >= 0.75) {
+
+
+
+
+    t = a * a - .87890625;
+    p = .21489185007307062000e+0;
+    p = p * t - .64200071507209448655e+1;
+    p = p * t + .29631331505876308123e+2;
+    p = p * t - .47644367129787181803e+2;
+    p = p * t + .34810057749357500873e+2;
+    p = p * t - .12954198980646771502e+2;
+    p = p * t + .25349389220714893917e+1;
+    p = p * t - .24758242362823355486e+0;
+    p = p * t + .94897362808681080020e-2;
+    q = t - .12831383833953226499e+2;
+    q = q * t + .41409991778428888716e+2;
+    q = q * t - .53715373448862143349e+2;
+    q = q * t + .33880176779595142685e+2;
+    q = q * t - .11315360624238054876e+2;
+    q = q * t + .20369295047216351160e+1;
+    q = q * t - .18611650627372178511e+0;
+    q = q * t + .67544512778850945940e-2;
+    p = p / q;
+    t = a * p;
+  } else {
+
+
+
+
+    t = a * a - .5625;
+    p = - .23886240104308755900e+2;
+    p = p * t + .45560204272689128170e+3;
+    p = p * t - .22977467176607144887e+4;
+    p = p * t + .46631433533434331287e+4;
+    p = p * t - .43799652308386926161e+4;
+    p = p * t + .19007153590528134753e+4;
+    p = p * t - .30786872642313695280e+3;
+    q = t - .83288327901936570000e+2;
+    q = q * t + .92741319160935318800e+3;
+    q = q * t - .35088976383877264098e+4;
+    q = q * t + .59039348134843665626e+4;
+    q = q * t - .48481635430048872102e+4;
+    q = q * t + .18997769186453057810e+4;
+    q = q * t - .28386514725366621129e+3;
+    p = p / q;
+    t = a * p;
+  }
+  return t;
+}
+
+inline double erfcinv(double a)
+{
+  double t;
+  volatile union {
+    double d;
+    unsigned long long int l;
+  } cvt;
+
+  if (__isnan(a)) {
+    return a + a;
+  }
+  if (a <= 0.0) {
+    cvt.l = 0xfff8000000000000ull;
+    t = cvt.d;
+    if (a == 0.0) {
+        t = (1.0 - a) * exp(1000.0);
+    }
+  }
+  else if (a >= 0.0625) {
+    t = erfinv (1.0 - a);
+  }
+  else if (a >= 1e-100) {
+
+
+
+
+    double p, q;
+    t = log(a);
+    t = 1.0 / sqrt(-t);
+    p = 2.7834010353747001060e-3;
+    p = p * t + 8.6030097526280260580e-1;
+    p = p * t + 2.1371214997265515515e+0;
+    p = p * t + 3.1598519601132090206e+0;
+    p = p * t + 3.5780402569085996758e+0;
+    p = p * t + 1.5335297523989890804e+0;
+    p = p * t + 3.4839207139657522572e-1;
+    p = p * t + 5.3644861147153648366e-2;
+    p = p * t + 4.3836709877126095665e-3;
+    p = p * t + 1.3858518113496718808e-4;
+    p = p * t + 1.1738352509991666680e-6;
+    q = t + 2.2859981272422905412e+0;
+    q = q * t + 4.3859045256449554654e+0;
+    q = q * t + 4.6632960348736635331e+0;
+    q = q * t + 3.9846608184671757296e+0;
+    q = q * t + 1.6068377709719017609e+0;
+    q = q * t + 3.5609087305900265560e-1;
+    q = q * t + 5.3963550303200816744e-2;
+    q = q * t + 4.3873424022706935023e-3;
+    q = q * t + 1.3858762165532246059e-4;
+    q = q * t + 1.1738313872397777529e-6;
+    t = p / (q * t);
+  }
+  else {
+
+
+
+
+    double p, q;
+    t = log(a);
+    t = 1.0 / sqrt(-t);
+    p = 6.9952990607058154858e-1;
+    p = p * t + 1.9507620287580568829e+0;
+    p = p * t + 8.2810030904462690216e-1;
+    p = p * t + 1.1279046353630280005e-1;
+    p = p * t + 6.0537914739162189689e-3;
+    p = p * t + 1.3714329569665128933e-4;
+    p = p * t + 1.2964481560643197452e-6;
+    p = p * t + 4.6156006321345332510e-9;
+    p = p * t + 4.5344689563209398450e-12;
+    q = t + 1.5771922386662040546e+0;
+    q = q * t + 2.1238242087454993542e+0;
+    q = q * t + 8.4001814918178042919e-1;
+    q = q * t + 1.1311889334355782065e-1;
+    q = q * t + 6.0574830550097140404e-3;
+    q = q * t + 1.3715891988350205065e-4;
+    q = q * t + 1.2964671850944981713e-6;
+    q = q * t + 4.6156017600933592558e-9;
+    q = q * t + 4.5344687377088206783e-12;
+    t = p / (q * t);
+  }
+  return t;
+}
+
+inline float rsqrtf(float a)
+{
+  return (float)rsqrt((double)a);
+}
+
+inline float rcbrtf(float a)
+{
+  return (float)rcbrt((double)a);
+}
+
+inline float sinpif(float a)
+{
+  return (float)sinpi((double)a);
+}
+
+inline float cospif(float a)
+{
+  return (float)cospi((double)a);
+}
+
+inline float erfinvf(float a)
+{
+  return (float)erfinv((double)a);
+}
+
+inline float erfcinvf(float a)
+{
+  return (float)erfcinv((double)a);
+}
+
+
+
+
+
+
+
+inline int min(int a, int b)
+{
+  return a < b ? a : b;
+}
+
+inline unsigned int umin(unsigned int a, unsigned int b)
+{
+  return a < b ? a : b;
+}
+
+inline long long int llmin(long long int a, long long int b)
+{
+  return a < b ? a : b;
+}
+
+inline unsigned long long int ullmin(unsigned long long int a, unsigned long long int b)
+{
+  return a < b ? a : b;
+}
+
+inline int max(int a, int b)
+{
+  return a > b ? a : b;
+}
+
+inline unsigned int umax(unsigned int a, unsigned int b)
+{
+  return a > b ? a : b;
+}
+
+inline long long int llmax(long long int a, long long int b)
+{
+  return a > b ? a : b;
+}
+
+inline unsigned long long int ullmax(unsigned long long int a, unsigned long long int b)
+{
+  return a > b ? a : b;
+}
+# 5207 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
+# 5208 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 148 "/usr/local/cuda/bin/../include/common_functions.h" 2 3
+# 176 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
+
+
+
+
+
+
+
+#pragma pack()
+# 157 "/usr/include/c++/4.6/x86_64-linux-gnu/./bits/c++config.h" 2 3
+# 156 "/usr/include/c++/4.6/x86_64-linux-gnu/./bits/c++config.h" 3
+typedef long ptrdiff_t;
+# 161 "/usr/include/c++/4.6/x86_64-linux-gnu/./bits/c++config.h" 3
+}
+# 69 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute((__visibility__("default"))) {
-# 71 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 73 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Iterator, class _Container> class __normal_iterator;
-# 74 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 77 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 }
-# 76 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 79 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 namespace std __attribute((__visibility__("default")))
-# 77 "/usr/include/c++/4.5/cmath" 3
+# 77 "/usr/include/c++/4.6/cmath" 3
  __attribute((__visibility__("default")))
-# 498 "/usr/include/c++/4.5/cmath" 3
+# 487 "/usr/include/c++/4.6/cmath" 3
  __attribute((__visibility__("default")))
-# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
- __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.5/cstddef" 3
- __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.5/cstdlib" 3
+# 98 "/usr/include/c++/4.6/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 78 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 83 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __true_type { };
-# 79 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 84 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __false_type { };
-# 81 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 86 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< bool __T0>
-# 82 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 87 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __truth_type {
-# 83 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 88 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type; };
-# 86 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 91 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __truth_type< true> {
-# 87 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 92 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type; };
-# 91 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 96 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Sp, class _Tp>
-# 92 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 97 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __traitor {
-# 94 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 99 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = (((bool)_Sp::__value) || ((bool)_Tp::__value))};
-# 95 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 100 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef typename __truth_type< __value> ::__type __type;
-# 96 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 101 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 99 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 104 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class , class >
-# 100 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 105 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __are_same {
-# 102 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 107 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 103 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 108 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 104 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 109 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 106 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 111 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 107 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 112 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __are_same< _Tp, _Tp> {
-# 109 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 114 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 110 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 115 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 111 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 116 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 114 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 119 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 115 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 120 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_void {
-# 117 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 122 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 118 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 123 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 119 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 124 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 122 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 127 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_void< void> {
-# 124 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 129 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 125 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 130 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 126 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 131 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 131 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 136 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 132 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 137 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_integer {
-# 134 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 139 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 135 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 140 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 136 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 141 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 142 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 147 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< bool> {
-# 144 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 149 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 145 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 150 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 146 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 151 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 149 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 154 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< char> {
-# 151 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 156 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 152 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 157 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 153 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 158 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 156 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 161 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< signed char> {
-# 158 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 163 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 159 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 164 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 160 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 165 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 163 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 168 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned char> {
-# 165 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 170 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 166 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 171 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 167 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 172 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 171 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 176 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< wchar_t> {
-# 173 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 178 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 174 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 179 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 175 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 180 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 195 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 200 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< short> {
-# 197 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 202 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 198 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 203 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 199 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 204 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 202 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 207 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned short> {
-# 204 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 209 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 205 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 210 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 206 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 211 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 209 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 214 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< int> {
-# 211 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 216 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 212 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 217 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 213 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 218 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 216 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 221 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned> {
-# 218 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 223 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 219 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 224 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 220 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 225 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 223 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 228 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< long> {
-# 225 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 230 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 226 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 231 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 227 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 232 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 230 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 235 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned long> {
-# 232 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 237 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 233 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 238 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 234 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 239 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 237 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 242 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< long long> {
-# 239 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 244 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 240 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 245 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 241 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 246 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 244 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 249 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned long long> {
-# 246 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 251 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 247 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 252 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 248 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 253 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 253 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 258 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 254 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 259 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_floating {
-# 256 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 261 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 257 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 262 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 258 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 263 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 262 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 267 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_floating< float> {
-# 264 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 269 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 265 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 270 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 266 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 271 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 269 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 274 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_floating< double> {
-# 271 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 276 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 272 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 277 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 273 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 278 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 276 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 281 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_floating< long double> {
-# 278 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 283 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 279 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 284 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 280 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 285 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 285 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 290 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 286 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 291 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_pointer {
-# 288 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 293 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 289 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 294 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 290 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 295 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 292 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 297 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 293 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 298 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_pointer< _Tp *> {
-# 295 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 300 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 296 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 301 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 297 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 302 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 302 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 307 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 303 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 308 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_normal_iterator {
-# 305 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 310 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 306 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 311 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 307 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 312 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 309 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 314 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Iterator, class _Container>
-# 310 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 315 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_normal_iterator< __gnu_cxx::__normal_iterator< _Iterator, _Container> > {
-# 313 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 318 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 314 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 319 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 315 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 320 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 320 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 325 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 321 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 326 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_arithmetic : public __traitor< __is_integer< _Tp> , __is_floating< _Tp> > {
-# 323 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 328 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 328 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 333 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 329 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 334 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_fundamental : public __traitor< __is_void< _Tp> , __is_arithmetic< _Tp> > {
-# 331 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 336 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 336 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 341 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 337 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 342 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_scalar : public __traitor< __is_arithmetic< _Tp> , __is_pointer< _Tp> > {
-# 339 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 344 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 344 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 349 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 345 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 350 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_char {
-# 347 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 352 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 348 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 353 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 349 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 354 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 352 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 357 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_char< char> {
-# 354 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 359 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 355 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 360 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 356 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 361 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 360 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 365 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_char< wchar_t> {
-# 362 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 367 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 363 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 368 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 364 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 369 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 367 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 372 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 368 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 373 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_byte {
-# 370 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 375 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 371 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 376 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 372 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 377 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 375 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 380 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_byte< char> {
-# 377 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 382 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 378 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 383 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 379 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 384 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 382 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 387 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_byte< signed char> {
-# 384 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 389 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 385 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 390 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 386 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 391 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 389 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 394 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template<> struct __is_byte< unsigned char> {
-# 391 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 396 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 392 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 397 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 393 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 398 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 398 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 403 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 399 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 404 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 struct __is_move_iterator {
-# 401 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 406 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 enum { __value};
-# 402 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 407 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 403 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 408 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 };
-# 417 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-template< class _Tp>
-# 418 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-class __is_iterator_helper {
-# 420 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-typedef char __one;
-# 421 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-typedef struct { char __arr[2]; } __two;
-# 423 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-template< class _Up>
-# 424 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-struct _Wrap_type {
-# 425 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-};
-# 427 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-template< class _Up> static __one __test(_Wrap_type< typename _Up::iterator_category> *);
-# 430 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-template< class _Up> static __two __test(...);
-# 434 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-public: static const bool __value = ((sizeof(__test< _Tp> (0)) == (1)) || __is_pointer< _Tp> ::__value);
-# 436 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-};
-# 438 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-template< class _Tp>
-# 439 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-struct __is_iterator {
-# 441 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-enum { __value = __is_iterator_helper< _Tp> ::__value};
-# 442 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-typedef typename __truth_type< __value> ::__type __type;
-# 443 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
-};
-# 445 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+# 423 "/usr/include/c++/4.6/bits/cpp_type_traits.h" 3
 }
-# 37 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 37 "/usr/include/c++/4.6/ext/type_traits.h" 3
 namespace __gnu_cxx __attribute((__visibility__("default")))
-# 157 "/usr/include/c++/4.5/cstdlib" 3
+# 158 "/usr/include/c++/4.6/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 40 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 42 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< bool __T1, class >
-# 41 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 43 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __enable_if {
-# 42 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 44 "/usr/include/c++/4.6/ext/type_traits.h" 3
 };
-# 44 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 46 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp>
-# 45 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 47 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __enable_if< true, _Tp> {
-# 46 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 48 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef _Tp __type; };
-# 50 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 52 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< bool _Cond, class _Iftrue, class _Iffalse>
-# 51 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 53 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __conditional_type {
-# 52 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 54 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef _Iftrue __type; };
-# 54 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 56 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Iftrue, class _Iffalse>
-# 55 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 57 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __conditional_type< false, _Iftrue, _Iffalse> {
-# 56 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 58 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef _Iffalse __type; };
-# 60 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 62 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp>
-# 61 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 63 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __add_unsigned {
-# 64 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 66 "/usr/include/c++/4.6/ext/type_traits.h" 3
 private: typedef __enable_if< std::__is_integer< _Tp> ::__value, _Tp> __if_type;
-# 67 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 69 "/usr/include/c++/4.6/ext/type_traits.h" 3
 public: typedef typename __enable_if< std::__is_integer< _Tp> ::__value, _Tp> ::__type __type;
-# 68 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 70 "/usr/include/c++/4.6/ext/type_traits.h" 3
 };
-# 71 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 73 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< char> {
-# 72 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 74 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef unsigned char __type; };
-# 75 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 77 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< signed char> {
-# 76 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 78 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef unsigned char __type; };
-# 79 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 81 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< short> {
-# 80 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 82 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef unsigned short __type; };
-# 83 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 85 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< int> {
-# 84 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 86 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef unsigned __type; };
-# 87 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 89 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< long> {
-# 88 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 90 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef unsigned long __type; };
-# 91 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 93 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< long long> {
-# 92 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 94 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef unsigned long long __type; };
-# 96 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 98 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< bool> ;
-# 99 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 101 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __add_unsigned< wchar_t> ;
-# 103 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 105 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp>
-# 104 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 106 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __remove_unsigned {
-# 107 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 109 "/usr/include/c++/4.6/ext/type_traits.h" 3
 private: typedef __enable_if< std::__is_integer< _Tp> ::__value, _Tp> __if_type;
-# 110 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 112 "/usr/include/c++/4.6/ext/type_traits.h" 3
 public: typedef typename __enable_if< std::__is_integer< _Tp> ::__value, _Tp> ::__type __type;
-# 111 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 113 "/usr/include/c++/4.6/ext/type_traits.h" 3
 };
-# 114 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 116 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< char> {
-# 115 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 117 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef signed char __type; };
-# 118 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 120 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned char> {
-# 119 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 121 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef signed char __type; };
-# 122 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 124 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned short> {
-# 123 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 125 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef short __type; };
-# 126 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 128 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned> {
-# 127 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 129 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef int __type; };
-# 130 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 132 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned long> {
-# 131 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 133 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef long __type; };
-# 134 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 136 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned long long> {
-# 135 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 137 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef long long __type; };
-# 139 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 141 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< bool> ;
-# 142 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 144 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template<> struct __remove_unsigned< wchar_t> ;
-# 146 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 148 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template < typename _Type >
     inline bool
     __is_null_pointer ( _Type * __ptr )
     { return __ptr == 0; }
-# 151 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 153 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template < typename _Type >
     inline bool
     __is_null_pointer ( _Type )
     { return false; }
-# 158 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 160 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp, bool __T2 = std::__is_integer< _Tp> ::__value>
-# 159 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 161 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __promote {
-# 160 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 162 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef double __type; };
-# 162 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 164 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp>
-# 163 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 165 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __promote< _Tp, false> {
-# 164 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 166 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef _Tp __type; };
-# 166 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 168 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp, class _Up>
-# 167 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 169 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __promote_2 {
-# 170 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 172 "/usr/include/c++/4.6/ext/type_traits.h" 3
 private: typedef typename __promote< _Tp, std::__is_integer< _Tp> ::__value> ::__type __type1;
-# 171 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 173 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef typename __promote< _Up, std::__is_integer< _Up> ::__value> ::__type __type2;
-# 174 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 176 "/usr/include/c++/4.6/ext/type_traits.h" 3
 public: typedef __typeof__((__type1() + __type2())) __type;
-# 175 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 177 "/usr/include/c++/4.6/ext/type_traits.h" 3
 };
-# 177 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 179 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp, class _Up, class _Vp>
-# 178 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 180 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __promote_3 {
-# 181 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 183 "/usr/include/c++/4.6/ext/type_traits.h" 3
 private: typedef typename __promote< _Tp, std::__is_integer< _Tp> ::__value> ::__type __type1;
-# 182 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 184 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef typename __promote< _Up, std::__is_integer< _Up> ::__value> ::__type __type2;
-# 183 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 185 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef typename __promote< _Vp, std::__is_integer< _Vp> ::__value> ::__type __type3;
-# 186 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 188 "/usr/include/c++/4.6/ext/type_traits.h" 3
 public: typedef __typeof__(((__type1() + __type2()) + __type3())) __type;
-# 187 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 189 "/usr/include/c++/4.6/ext/type_traits.h" 3
 };
-# 189 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 191 "/usr/include/c++/4.6/ext/type_traits.h" 3
 template< class _Tp, class _Up, class _Vp, class _Wp>
-# 190 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 192 "/usr/include/c++/4.6/ext/type_traits.h" 3
 struct __promote_4 {
-# 193 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 195 "/usr/include/c++/4.6/ext/type_traits.h" 3
 private: typedef typename __promote< _Tp, std::__is_integer< _Tp> ::__value> ::__type __type1;
-# 194 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 196 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef typename __promote< _Up, std::__is_integer< _Up> ::__value> ::__type __type2;
-# 195 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 197 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef typename __promote< _Vp, std::__is_integer< _Vp> ::__value> ::__type __type3;
-# 196 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 198 "/usr/include/c++/4.6/ext/type_traits.h" 3
 typedef typename __promote< _Wp, std::__is_integer< _Wp> ::__value> ::__type __type4;
-# 199 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 201 "/usr/include/c++/4.6/ext/type_traits.h" 3
 public: typedef __typeof__((((__type1() + __type2()) + __type3()) + __type4())) __type;
-# 200 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 202 "/usr/include/c++/4.6/ext/type_traits.h" 3
 };
-# 202 "/usr/include/c++/4.5/ext/type_traits.h" 3
+# 205 "/usr/include/c++/4.6/ext/type_traits.h" 3
 }
-# 77 "/usr/include/c++/4.5/cmath" 3
+# 77 "/usr/include/c++/4.6/cmath" 3
 namespace std __attribute((__visibility__("default")))
-# 498 "/usr/include/c++/4.5/cmath" 3
+# 487 "/usr/include/c++/4.6/cmath" 3
  __attribute((__visibility__("default")))
-# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
- __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.5/cstddef" 3
- __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.5/cstdlib" 3
+# 98 "/usr/include/c++/4.6/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 81 "/usr/include/c++/4.5/cmath" 3
-template < typename _Tp >
-    _Tp __cmath_power ( _Tp, unsigned int );
-# 84 "/usr/include/c++/4.5/cmath" 3
-template < typename _Tp >
-    inline _Tp
-    __pow_helper ( _Tp __x, int __n )
-    {
-      return __n < 0
-        ? _Tp ( 1 ) / __cmath_power ( __x, - __n )
-        : __cmath_power ( __x, __n );
-    }
-# 94 "/usr/include/c++/4.5/cmath" 3
+# 82 "/usr/include/c++/4.6/cmath" 3
 inline double abs(double __x)
-# 95 "/usr/include/c++/4.5/cmath" 3
+# 83 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fabs(__x); }
-# 98 "/usr/include/c++/4.5/cmath" 3
+# 86 "/usr/include/c++/4.6/cmath" 3
 inline float abs(float __x)
-# 99 "/usr/include/c++/4.5/cmath" 3
+# 87 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fabsf(__x); }
-# 102 "/usr/include/c++/4.5/cmath" 3
+# 90 "/usr/include/c++/4.6/cmath" 3
 inline long double abs(long double __x)
-# 103 "/usr/include/c++/4.5/cmath" 3
+# 91 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fabsl(__x); }
-# 105 "/usr/include/c++/4.5/cmath" 3
+# 93 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     abs ( _Tp __x )
     { return __builtin_fabs ( __x ); }
-# 111 "/usr/include/c++/4.5/cmath" 3
+# 99 "/usr/include/c++/4.6/cmath" 3
 using ::acos;
-# 114 "/usr/include/c++/4.5/cmath" 3
+# 102 "/usr/include/c++/4.6/cmath" 3
 inline float acos(float __x)
-# 115 "/usr/include/c++/4.5/cmath" 3
+# 103 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_acosf(__x); }
-# 118 "/usr/include/c++/4.5/cmath" 3
+# 106 "/usr/include/c++/4.6/cmath" 3
 inline long double acos(long double __x)
-# 119 "/usr/include/c++/4.5/cmath" 3
+# 107 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_acosl(__x); }
-# 121 "/usr/include/c++/4.5/cmath" 3
+# 109 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     acos ( _Tp __x )
     { return __builtin_acos ( __x ); }
-# 127 "/usr/include/c++/4.5/cmath" 3
+# 115 "/usr/include/c++/4.6/cmath" 3
 using ::asin;
-# 130 "/usr/include/c++/4.5/cmath" 3
+# 118 "/usr/include/c++/4.6/cmath" 3
 inline float asin(float __x)
-# 131 "/usr/include/c++/4.5/cmath" 3
+# 119 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_asinf(__x); }
-# 134 "/usr/include/c++/4.5/cmath" 3
+# 122 "/usr/include/c++/4.6/cmath" 3
 inline long double asin(long double __x)
-# 135 "/usr/include/c++/4.5/cmath" 3
+# 123 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_asinl(__x); }
-# 137 "/usr/include/c++/4.5/cmath" 3
+# 125 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     asin ( _Tp __x )
     { return __builtin_asin ( __x ); }
-# 143 "/usr/include/c++/4.5/cmath" 3
+# 131 "/usr/include/c++/4.6/cmath" 3
 using ::atan;
-# 146 "/usr/include/c++/4.5/cmath" 3
+# 134 "/usr/include/c++/4.6/cmath" 3
 inline float atan(float __x)
-# 147 "/usr/include/c++/4.5/cmath" 3
+# 135 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_atanf(__x); }
-# 150 "/usr/include/c++/4.5/cmath" 3
+# 138 "/usr/include/c++/4.6/cmath" 3
 inline long double atan(long double __x)
-# 151 "/usr/include/c++/4.5/cmath" 3
+# 139 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_atanl(__x); }
-# 153 "/usr/include/c++/4.5/cmath" 3
+# 141 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     atan ( _Tp __x )
     { return __builtin_atan ( __x ); }
-# 159 "/usr/include/c++/4.5/cmath" 3
+# 147 "/usr/include/c++/4.6/cmath" 3
 using ::atan2;
-# 162 "/usr/include/c++/4.5/cmath" 3
+# 150 "/usr/include/c++/4.6/cmath" 3
 inline float atan2(float __y, float __x)
-# 163 "/usr/include/c++/4.5/cmath" 3
+# 151 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_atan2f(__y, __x); }
-# 166 "/usr/include/c++/4.5/cmath" 3
+# 154 "/usr/include/c++/4.6/cmath" 3
 inline long double atan2(long double __y, long double __x)
-# 167 "/usr/include/c++/4.5/cmath" 3
+# 155 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_atan2l(__y, __x); }
-# 169 "/usr/include/c++/4.5/cmath" 3
+# 157 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
@@ -4859,209 +5246,209 @@ template < typename _Tp, typename _Up >
       typedef typename __gnu_cxx :: __promote_2 < _Tp, _Up > :: __type __type;
       return atan2 ( __type ( __y ), __type ( __x ) );
     }
-# 181 "/usr/include/c++/4.5/cmath" 3
+# 169 "/usr/include/c++/4.6/cmath" 3
 using ::ceil;
-# 184 "/usr/include/c++/4.5/cmath" 3
+# 172 "/usr/include/c++/4.6/cmath" 3
 inline float ceil(float __x)
-# 185 "/usr/include/c++/4.5/cmath" 3
+# 173 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_ceilf(__x); }
-# 188 "/usr/include/c++/4.5/cmath" 3
+# 176 "/usr/include/c++/4.6/cmath" 3
 inline long double ceil(long double __x)
-# 189 "/usr/include/c++/4.5/cmath" 3
+# 177 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_ceill(__x); }
-# 191 "/usr/include/c++/4.5/cmath" 3
+# 179 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     ceil ( _Tp __x )
     { return __builtin_ceil ( __x ); }
-# 197 "/usr/include/c++/4.5/cmath" 3
+# 185 "/usr/include/c++/4.6/cmath" 3
 using ::cos;
-# 200 "/usr/include/c++/4.5/cmath" 3
+# 188 "/usr/include/c++/4.6/cmath" 3
 inline float cos(float __x)
-# 201 "/usr/include/c++/4.5/cmath" 3
+# 189 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_cosf(__x); }
-# 204 "/usr/include/c++/4.5/cmath" 3
+# 192 "/usr/include/c++/4.6/cmath" 3
 inline long double cos(long double __x)
-# 205 "/usr/include/c++/4.5/cmath" 3
+# 193 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_cosl(__x); }
-# 207 "/usr/include/c++/4.5/cmath" 3
+# 195 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     cos ( _Tp __x )
     { return __builtin_cos ( __x ); }
-# 213 "/usr/include/c++/4.5/cmath" 3
+# 201 "/usr/include/c++/4.6/cmath" 3
 using ::cosh;
-# 216 "/usr/include/c++/4.5/cmath" 3
+# 204 "/usr/include/c++/4.6/cmath" 3
 inline float cosh(float __x)
-# 217 "/usr/include/c++/4.5/cmath" 3
+# 205 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_coshf(__x); }
-# 220 "/usr/include/c++/4.5/cmath" 3
+# 208 "/usr/include/c++/4.6/cmath" 3
 inline long double cosh(long double __x)
-# 221 "/usr/include/c++/4.5/cmath" 3
+# 209 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_coshl(__x); }
-# 223 "/usr/include/c++/4.5/cmath" 3
+# 211 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     cosh ( _Tp __x )
     { return __builtin_cosh ( __x ); }
-# 229 "/usr/include/c++/4.5/cmath" 3
+# 217 "/usr/include/c++/4.6/cmath" 3
 using ::exp;
-# 232 "/usr/include/c++/4.5/cmath" 3
+# 220 "/usr/include/c++/4.6/cmath" 3
 inline float exp(float __x)
-# 233 "/usr/include/c++/4.5/cmath" 3
+# 221 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_expf(__x); }
-# 236 "/usr/include/c++/4.5/cmath" 3
+# 224 "/usr/include/c++/4.6/cmath" 3
 inline long double exp(long double __x)
-# 237 "/usr/include/c++/4.5/cmath" 3
+# 225 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_expl(__x); }
-# 239 "/usr/include/c++/4.5/cmath" 3
+# 227 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     exp ( _Tp __x )
     { return __builtin_exp ( __x ); }
-# 245 "/usr/include/c++/4.5/cmath" 3
+# 233 "/usr/include/c++/4.6/cmath" 3
 using ::fabs;
-# 248 "/usr/include/c++/4.5/cmath" 3
+# 236 "/usr/include/c++/4.6/cmath" 3
 inline float fabs(float __x)
-# 249 "/usr/include/c++/4.5/cmath" 3
+# 237 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fabsf(__x); }
-# 252 "/usr/include/c++/4.5/cmath" 3
+# 240 "/usr/include/c++/4.6/cmath" 3
 inline long double fabs(long double __x)
-# 253 "/usr/include/c++/4.5/cmath" 3
+# 241 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fabsl(__x); }
-# 255 "/usr/include/c++/4.5/cmath" 3
+# 243 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     fabs ( _Tp __x )
     { return __builtin_fabs ( __x ); }
-# 261 "/usr/include/c++/4.5/cmath" 3
+# 249 "/usr/include/c++/4.6/cmath" 3
 using ::floor;
-# 264 "/usr/include/c++/4.5/cmath" 3
+# 252 "/usr/include/c++/4.6/cmath" 3
 inline float floor(float __x)
-# 265 "/usr/include/c++/4.5/cmath" 3
+# 253 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_floorf(__x); }
-# 268 "/usr/include/c++/4.5/cmath" 3
+# 256 "/usr/include/c++/4.6/cmath" 3
 inline long double floor(long double __x)
-# 269 "/usr/include/c++/4.5/cmath" 3
+# 257 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_floorl(__x); }
-# 271 "/usr/include/c++/4.5/cmath" 3
+# 259 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     floor ( _Tp __x )
     { return __builtin_floor ( __x ); }
-# 277 "/usr/include/c++/4.5/cmath" 3
+# 265 "/usr/include/c++/4.6/cmath" 3
 using ::fmod;
-# 280 "/usr/include/c++/4.5/cmath" 3
+# 268 "/usr/include/c++/4.6/cmath" 3
 inline float fmod(float __x, float __y)
-# 281 "/usr/include/c++/4.5/cmath" 3
+# 269 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fmodf(__x, __y); }
-# 284 "/usr/include/c++/4.5/cmath" 3
+# 272 "/usr/include/c++/4.6/cmath" 3
 inline long double fmod(long double __x, long double __y)
-# 285 "/usr/include/c++/4.5/cmath" 3
+# 273 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_fmodl(__x, __y); }
-# 287 "/usr/include/c++/4.5/cmath" 3
+# 275 "/usr/include/c++/4.6/cmath" 3
 using ::frexp;
-# 290 "/usr/include/c++/4.5/cmath" 3
+# 278 "/usr/include/c++/4.6/cmath" 3
 inline float frexp(float __x, int *__exp)
-# 291 "/usr/include/c++/4.5/cmath" 3
+# 279 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_frexpf(__x, __exp); }
-# 294 "/usr/include/c++/4.5/cmath" 3
+# 282 "/usr/include/c++/4.6/cmath" 3
 inline long double frexp(long double __x, int *__exp)
-# 295 "/usr/include/c++/4.5/cmath" 3
+# 283 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_frexpl(__x, __exp); }
-# 297 "/usr/include/c++/4.5/cmath" 3
+# 285 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     frexp ( _Tp __x, int * __exp )
     { return __builtin_frexp ( __x, __exp ); }
-# 303 "/usr/include/c++/4.5/cmath" 3
+# 291 "/usr/include/c++/4.6/cmath" 3
 using ::ldexp;
-# 306 "/usr/include/c++/4.5/cmath" 3
+# 294 "/usr/include/c++/4.6/cmath" 3
 inline float ldexp(float __x, int __exp)
-# 307 "/usr/include/c++/4.5/cmath" 3
+# 295 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_ldexpf(__x, __exp); }
-# 310 "/usr/include/c++/4.5/cmath" 3
+# 298 "/usr/include/c++/4.6/cmath" 3
 inline long double ldexp(long double __x, int __exp)
-# 311 "/usr/include/c++/4.5/cmath" 3
+# 299 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_ldexpl(__x, __exp); }
-# 313 "/usr/include/c++/4.5/cmath" 3
+# 301 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
   ldexp ( _Tp __x, int __exp )
   { return __builtin_ldexp ( __x, __exp ); }
-# 319 "/usr/include/c++/4.5/cmath" 3
+# 307 "/usr/include/c++/4.6/cmath" 3
 using ::log;
-# 322 "/usr/include/c++/4.5/cmath" 3
+# 310 "/usr/include/c++/4.6/cmath" 3
 inline float log(float __x)
-# 323 "/usr/include/c++/4.5/cmath" 3
+# 311 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_logf(__x); }
-# 326 "/usr/include/c++/4.5/cmath" 3
+# 314 "/usr/include/c++/4.6/cmath" 3
 inline long double log(long double __x)
-# 327 "/usr/include/c++/4.5/cmath" 3
+# 315 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_logl(__x); }
-# 329 "/usr/include/c++/4.5/cmath" 3
+# 317 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     log ( _Tp __x )
     { return __builtin_log ( __x ); }
-# 335 "/usr/include/c++/4.5/cmath" 3
+# 323 "/usr/include/c++/4.6/cmath" 3
 using ::log10;
-# 338 "/usr/include/c++/4.5/cmath" 3
+# 326 "/usr/include/c++/4.6/cmath" 3
 inline float log10(float __x)
-# 339 "/usr/include/c++/4.5/cmath" 3
+# 327 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_log10f(__x); }
-# 342 "/usr/include/c++/4.5/cmath" 3
+# 330 "/usr/include/c++/4.6/cmath" 3
 inline long double log10(long double __x)
-# 343 "/usr/include/c++/4.5/cmath" 3
+# 331 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_log10l(__x); }
-# 345 "/usr/include/c++/4.5/cmath" 3
+# 333 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     log10 ( _Tp __x )
     { return __builtin_log10 ( __x ); }
-# 351 "/usr/include/c++/4.5/cmath" 3
+# 339 "/usr/include/c++/4.6/cmath" 3
 using ::modf;
-# 354 "/usr/include/c++/4.5/cmath" 3
+# 342 "/usr/include/c++/4.6/cmath" 3
 inline float modf(float __x, float *__iptr)
-# 355 "/usr/include/c++/4.5/cmath" 3
+# 343 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_modff(__x, __iptr); }
-# 358 "/usr/include/c++/4.5/cmath" 3
+# 346 "/usr/include/c++/4.6/cmath" 3
 inline long double modf(long double __x, long double *__iptr)
-# 359 "/usr/include/c++/4.5/cmath" 3
+# 347 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_modfl(__x, __iptr); }
-# 361 "/usr/include/c++/4.5/cmath" 3
+# 349 "/usr/include/c++/4.6/cmath" 3
 using ::pow;
-# 364 "/usr/include/c++/4.5/cmath" 3
+# 352 "/usr/include/c++/4.6/cmath" 3
 inline float pow(float __x, float __y)
-# 365 "/usr/include/c++/4.5/cmath" 3
+# 353 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_powf(__x, __y); }
-# 368 "/usr/include/c++/4.5/cmath" 3
+# 356 "/usr/include/c++/4.6/cmath" 3
 inline long double pow(long double __x, long double __y)
-# 369 "/usr/include/c++/4.5/cmath" 3
+# 357 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_powl(__x, __y); }
-# 375 "/usr/include/c++/4.5/cmath" 3
+# 363 "/usr/include/c++/4.6/cmath" 3
 inline double pow(double __x, int __i)
-# 376 "/usr/include/c++/4.5/cmath" 3
+# 364 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_powi(__x, __i); }
-# 379 "/usr/include/c++/4.5/cmath" 3
+# 367 "/usr/include/c++/4.6/cmath" 3
 inline float pow(float __x, int __n)
-# 380 "/usr/include/c++/4.5/cmath" 3
+# 368 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_powif(__x, __n); }
-# 383 "/usr/include/c++/4.5/cmath" 3
+# 371 "/usr/include/c++/4.6/cmath" 3
 inline long double pow(long double __x, int __n)
-# 384 "/usr/include/c++/4.5/cmath" 3
+# 372 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_powil(__x, __n); }
-# 387 "/usr/include/c++/4.5/cmath" 3
+# 375 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
@@ -5073,99 +5460,93 @@ template < typename _Tp, typename _Up >
       typedef typename __gnu_cxx :: __promote_2 < _Tp, _Up > :: __type __type;
       return pow ( __type ( __x ), __type ( __y ) );
     }
-# 399 "/usr/include/c++/4.5/cmath" 3
+# 387 "/usr/include/c++/4.6/cmath" 3
 using ::sin;
-# 402 "/usr/include/c++/4.5/cmath" 3
+# 390 "/usr/include/c++/4.6/cmath" 3
 inline float sin(float __x)
-# 403 "/usr/include/c++/4.5/cmath" 3
+# 391 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_sinf(__x); }
-# 406 "/usr/include/c++/4.5/cmath" 3
+# 394 "/usr/include/c++/4.6/cmath" 3
 inline long double sin(long double __x)
-# 407 "/usr/include/c++/4.5/cmath" 3
+# 395 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_sinl(__x); }
-# 409 "/usr/include/c++/4.5/cmath" 3
+# 397 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     sin ( _Tp __x )
     { return __builtin_sin ( __x ); }
-# 415 "/usr/include/c++/4.5/cmath" 3
+# 403 "/usr/include/c++/4.6/cmath" 3
 using ::sinh;
-# 418 "/usr/include/c++/4.5/cmath" 3
+# 406 "/usr/include/c++/4.6/cmath" 3
 inline float sinh(float __x)
-# 419 "/usr/include/c++/4.5/cmath" 3
+# 407 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_sinhf(__x); }
-# 422 "/usr/include/c++/4.5/cmath" 3
+# 410 "/usr/include/c++/4.6/cmath" 3
 inline long double sinh(long double __x)
-# 423 "/usr/include/c++/4.5/cmath" 3
+# 411 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_sinhl(__x); }
-# 425 "/usr/include/c++/4.5/cmath" 3
+# 413 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     sinh ( _Tp __x )
     { return __builtin_sinh ( __x ); }
-# 431 "/usr/include/c++/4.5/cmath" 3
+# 419 "/usr/include/c++/4.6/cmath" 3
 using ::sqrt;
-# 434 "/usr/include/c++/4.5/cmath" 3
+# 422 "/usr/include/c++/4.6/cmath" 3
 inline float sqrt(float __x)
-# 435 "/usr/include/c++/4.5/cmath" 3
+# 423 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_sqrtf(__x); }
-# 438 "/usr/include/c++/4.5/cmath" 3
+# 426 "/usr/include/c++/4.6/cmath" 3
 inline long double sqrt(long double __x)
-# 439 "/usr/include/c++/4.5/cmath" 3
+# 427 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_sqrtl(__x); }
-# 441 "/usr/include/c++/4.5/cmath" 3
+# 429 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     sqrt ( _Tp __x )
     { return __builtin_sqrt ( __x ); }
-# 447 "/usr/include/c++/4.5/cmath" 3
+# 435 "/usr/include/c++/4.6/cmath" 3
 using ::tan;
-# 450 "/usr/include/c++/4.5/cmath" 3
+# 438 "/usr/include/c++/4.6/cmath" 3
 inline float tan(float __x)
-# 451 "/usr/include/c++/4.5/cmath" 3
+# 439 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_tanf(__x); }
-# 454 "/usr/include/c++/4.5/cmath" 3
+# 442 "/usr/include/c++/4.6/cmath" 3
 inline long double tan(long double __x)
-# 455 "/usr/include/c++/4.5/cmath" 3
+# 443 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_tanl(__x); }
-# 457 "/usr/include/c++/4.5/cmath" 3
+# 445 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     tan ( _Tp __x )
     { return __builtin_tan ( __x ); }
-# 463 "/usr/include/c++/4.5/cmath" 3
+# 451 "/usr/include/c++/4.6/cmath" 3
 using ::tanh;
-# 466 "/usr/include/c++/4.5/cmath" 3
+# 454 "/usr/include/c++/4.6/cmath" 3
 inline float tanh(float __x)
-# 467 "/usr/include/c++/4.5/cmath" 3
+# 455 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_tanhf(__x); }
-# 470 "/usr/include/c++/4.5/cmath" 3
+# 458 "/usr/include/c++/4.6/cmath" 3
 inline long double tanh(long double __x)
-# 471 "/usr/include/c++/4.5/cmath" 3
+# 459 "/usr/include/c++/4.6/cmath" 3
 { return __builtin_tanhl(__x); }
-# 473 "/usr/include/c++/4.5/cmath" 3
+# 461 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     tanh ( _Tp __x )
     { return __builtin_tanh ( __x ); }
-# 479 "/usr/include/c++/4.5/cmath" 3
+# 468 "/usr/include/c++/4.6/cmath" 3
 }
-# 498 "/usr/include/c++/4.5/cmath" 3
+# 487 "/usr/include/c++/4.6/cmath" 3
 namespace std __attribute((__visibility__("default")))
-# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
- __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.5/cstddef" 3
- __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.5/cstdlib" 3
+# 98 "/usr/include/c++/4.6/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 500 "/usr/include/c++/4.5/cmath" 3
+# 737 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5175,7 +5556,7 @@ template < typename _Tp >
       return __builtin_fpclassify ( FP_NAN, FP_INFINITE, FP_NORMAL,
       FP_SUBNORMAL, FP_ZERO, __type ( __f ) );
     }
-# 510 "/usr/include/c++/4.5/cmath" 3
+# 747 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5184,7 +5565,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isfinite ( __type ( __f ) );
     }
-# 519 "/usr/include/c++/4.5/cmath" 3
+# 756 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5193,7 +5574,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isinf ( __type ( __f ) );
     }
-# 528 "/usr/include/c++/4.5/cmath" 3
+# 765 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5202,7 +5583,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isnan ( __type ( __f ) );
     }
-# 537 "/usr/include/c++/4.5/cmath" 3
+# 774 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5211,7 +5592,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isnormal ( __type ( __f ) );
     }
-# 546 "/usr/include/c++/4.5/cmath" 3
+# 783 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5220,7 +5601,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_signbit ( __type ( __f ) );
     }
-# 555 "/usr/include/c++/4.5/cmath" 3
+# 792 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5229,7 +5610,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isgreater ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 564 "/usr/include/c++/4.5/cmath" 3
+# 801 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5238,7 +5619,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isgreaterequal ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 573 "/usr/include/c++/4.5/cmath" 3
+# 810 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5247,7 +5628,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isless ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 582 "/usr/include/c++/4.5/cmath" 3
+# 819 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5256,7 +5637,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_islessequal ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 591 "/usr/include/c++/4.5/cmath" 3
+# 828 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5265,7 +5646,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_islessgreater ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 600 "/usr/include/c++/4.5/cmath" 3
+# 837 "/usr/include/c++/4.6/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5274,169 +5655,129 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isunordered ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 609 "/usr/include/c++/4.5/cmath" 3
+# 849 "/usr/include/c++/4.6/cmath" 3
 }
-# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
-namespace std __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.5/cstddef" 3
- __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default"))) {
-# 37 "/usr/include/c++/4.5/bits/cmath.tcc" 3
-template < typename _Tp >
-    inline _Tp
-    __cmath_power ( _Tp __x, unsigned int __n )
-    {
-      _Tp __y = __n % 2 ? __x : _Tp ( 1 );
-
-      while ( __n >>= 1 )
-        {
-          __x = __x * __x;
-          if ( __n % 2 )
-            __y = __y * __x;
-        }
-
-      return __y;
-    }
-# 53 "/usr/include/c++/4.5/bits/cmath.tcc" 3
-}
-# 49 "/usr/include/c++/4.5/cstddef" 3
-namespace std __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default"))) {
-# 51 "/usr/include/c++/4.5/cstddef" 3
-using ::ptrdiff_t;
-# 52 "/usr/include/c++/4.5/cstddef" 3
-using ::size_t;
-# 54 "/usr/include/c++/4.5/cstddef" 3
-}
-# 100 "/usr/include/c++/4.5/cstdlib" 3
-namespace std __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.5/cstdlib" 3
- __attribute((__visibility__("default"))) {
-# 102 "/usr/include/c++/4.5/cstdlib" 3
-using ::div_t;
-# 103 "/usr/include/c++/4.5/cstdlib" 3
-using ::ldiv_t;
-# 105 "/usr/include/c++/4.5/cstdlib" 3
-using ::abort;
-# 106 "/usr/include/c++/4.5/cstdlib" 3
-using ::abs;
-# 107 "/usr/include/c++/4.5/cstdlib" 3
-using ::atexit;
-# 108 "/usr/include/c++/4.5/cstdlib" 3
-using ::atof;
-# 109 "/usr/include/c++/4.5/cstdlib" 3
-using ::atoi;
-# 110 "/usr/include/c++/4.5/cstdlib" 3
-using ::atol;
-# 111 "/usr/include/c++/4.5/cstdlib" 3
-using ::bsearch;
-# 112 "/usr/include/c++/4.5/cstdlib" 3
-using ::calloc;
-# 113 "/usr/include/c++/4.5/cstdlib" 3
-using ::div;
-# 114 "/usr/include/c++/4.5/cstdlib" 3
-using ::exit;
-# 115 "/usr/include/c++/4.5/cstdlib" 3
-using ::free;
-# 116 "/usr/include/c++/4.5/cstdlib" 3
-using ::getenv;
-# 117 "/usr/include/c++/4.5/cstdlib" 3
-using ::labs;
-# 118 "/usr/include/c++/4.5/cstdlib" 3
-using ::ldiv;
-# 119 "/usr/include/c++/4.5/cstdlib" 3
-using ::malloc;
-# 121 "/usr/include/c++/4.5/cstdlib" 3
-using ::mblen;
-# 122 "/usr/include/c++/4.5/cstdlib" 3
-using ::mbstowcs;
-# 123 "/usr/include/c++/4.5/cstdlib" 3
-using ::mbtowc;
-# 125 "/usr/include/c++/4.5/cstdlib" 3
-using ::qsort;
-# 126 "/usr/include/c++/4.5/cstdlib" 3
-using ::rand;
-# 127 "/usr/include/c++/4.5/cstdlib" 3
-using ::realloc;
-# 128 "/usr/include/c++/4.5/cstdlib" 3
-using ::srand;
-# 129 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtod;
-# 130 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtol;
-# 131 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtoul;
-# 132 "/usr/include/c++/4.5/cstdlib" 3
-using ::system;
-# 134 "/usr/include/c++/4.5/cstdlib" 3
-using ::wcstombs;
-# 135 "/usr/include/c++/4.5/cstdlib" 3
-using ::wctomb;
-# 139 "/usr/include/c++/4.5/cstdlib" 3
-inline long abs(long __i) { return labs(__i); }
-# 142 "/usr/include/c++/4.5/cstdlib" 3
-inline ldiv_t div(long __i, long __j) { return ldiv(__i, __j); }
-# 144 "/usr/include/c++/4.5/cstdlib" 3
-}
-# 157 "/usr/include/c++/4.5/cstdlib" 3
-namespace __gnu_cxx __attribute((__visibility__("default"))) {
-# 160 "/usr/include/c++/4.5/cstdlib" 3
-using ::lldiv_t;
-# 166 "/usr/include/c++/4.5/cstdlib" 3
-using ::_Exit;
-# 170 "/usr/include/c++/4.5/cstdlib" 3
-inline long long abs(long long __x) { return (__x >= (0)) ? __x : (-__x); }
-# 173 "/usr/include/c++/4.5/cstdlib" 3
-using ::llabs;
-# 176 "/usr/include/c++/4.5/cstdlib" 3
-inline lldiv_t div(long long __n, long long __d)
-# 177 "/usr/include/c++/4.5/cstdlib" 3
-{ lldiv_t __q; (__q.quot) = (__n / __d); (__q.rem) = (__n % __d); return __q; }
-# 179 "/usr/include/c++/4.5/cstdlib" 3
-using ::lldiv;
-# 190 "/usr/include/c++/4.5/cstdlib" 3
-using ::atoll;
-# 191 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtoll;
-# 192 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtoull;
-# 194 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtof;
-# 195 "/usr/include/c++/4.5/cstdlib" 3
-using ::strtold;
-# 197 "/usr/include/c++/4.5/cstdlib" 3
-}
-# 199 "/usr/include/c++/4.5/cstdlib" 3
+# 98 "/usr/include/c++/4.6/cstdlib" 3
 namespace std __attribute((__visibility__("default"))) {
-# 202 "/usr/include/c++/4.5/cstdlib" 3
+# 102 "/usr/include/c++/4.6/cstdlib" 3
+using ::div_t;
+# 103 "/usr/include/c++/4.6/cstdlib" 3
+using ::ldiv_t;
+# 105 "/usr/include/c++/4.6/cstdlib" 3
+using ::abort;
+# 106 "/usr/include/c++/4.6/cstdlib" 3
+using ::abs;
+# 107 "/usr/include/c++/4.6/cstdlib" 3
+using ::atexit;
+# 108 "/usr/include/c++/4.6/cstdlib" 3
+using ::atof;
+# 109 "/usr/include/c++/4.6/cstdlib" 3
+using ::atoi;
+# 110 "/usr/include/c++/4.6/cstdlib" 3
+using ::atol;
+# 111 "/usr/include/c++/4.6/cstdlib" 3
+using ::bsearch;
+# 112 "/usr/include/c++/4.6/cstdlib" 3
+using ::calloc;
+# 113 "/usr/include/c++/4.6/cstdlib" 3
+using ::div;
+# 114 "/usr/include/c++/4.6/cstdlib" 3
+using ::exit;
+# 115 "/usr/include/c++/4.6/cstdlib" 3
+using ::free;
+# 116 "/usr/include/c++/4.6/cstdlib" 3
+using ::getenv;
+# 117 "/usr/include/c++/4.6/cstdlib" 3
+using ::labs;
+# 118 "/usr/include/c++/4.6/cstdlib" 3
+using ::ldiv;
+# 119 "/usr/include/c++/4.6/cstdlib" 3
+using ::malloc;
+# 121 "/usr/include/c++/4.6/cstdlib" 3
+using ::mblen;
+# 122 "/usr/include/c++/4.6/cstdlib" 3
+using ::mbstowcs;
+# 123 "/usr/include/c++/4.6/cstdlib" 3
+using ::mbtowc;
+# 125 "/usr/include/c++/4.6/cstdlib" 3
+using ::qsort;
+# 126 "/usr/include/c++/4.6/cstdlib" 3
+using ::rand;
+# 127 "/usr/include/c++/4.6/cstdlib" 3
+using ::realloc;
+# 128 "/usr/include/c++/4.6/cstdlib" 3
+using ::srand;
+# 129 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtod;
+# 130 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtol;
+# 131 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtoul;
+# 132 "/usr/include/c++/4.6/cstdlib" 3
+using ::system;
+# 134 "/usr/include/c++/4.6/cstdlib" 3
+using ::wcstombs;
+# 135 "/usr/include/c++/4.6/cstdlib" 3
+using ::wctomb;
+# 139 "/usr/include/c++/4.6/cstdlib" 3
+inline long abs(long __i) { return labs(__i); }
+# 142 "/usr/include/c++/4.6/cstdlib" 3
+inline ldiv_t div(long __i, long __j) { return ldiv(__i, __j); }
+# 145 "/usr/include/c++/4.6/cstdlib" 3
+}
+# 158 "/usr/include/c++/4.6/cstdlib" 3
+namespace __gnu_cxx __attribute((__visibility__("default"))) {
+# 163 "/usr/include/c++/4.6/cstdlib" 3
+using ::lldiv_t;
+# 169 "/usr/include/c++/4.6/cstdlib" 3
+using ::_Exit;
+# 173 "/usr/include/c++/4.6/cstdlib" 3
+inline long long abs(long long __x) { return (__x >= (0)) ? __x : (-__x); }
+# 176 "/usr/include/c++/4.6/cstdlib" 3
+using ::llabs;
+# 179 "/usr/include/c++/4.6/cstdlib" 3
+inline lldiv_t div(long long __n, long long __d)
+# 180 "/usr/include/c++/4.6/cstdlib" 3
+{ lldiv_t __q; (__q.quot) = (__n / __d); (__q.rem) = (__n % __d); return __q; }
+# 182 "/usr/include/c++/4.6/cstdlib" 3
+using ::lldiv;
+# 193 "/usr/include/c++/4.6/cstdlib" 3
+using ::atoll;
+# 194 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtoll;
+# 195 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtoull;
+# 197 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtof;
+# 198 "/usr/include/c++/4.6/cstdlib" 3
+using ::strtold;
+# 201 "/usr/include/c++/4.6/cstdlib" 3
+}
+# 203 "/usr/include/c++/4.6/cstdlib" 3
+namespace std {
+# 206 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::lldiv_t;
-# 204 "/usr/include/c++/4.5/cstdlib" 3
+# 208 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::_Exit;
-# 205 "/usr/include/c++/4.5/cstdlib" 3
+# 209 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::abs;
-# 207 "/usr/include/c++/4.5/cstdlib" 3
+# 211 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::llabs;
-# 208 "/usr/include/c++/4.5/cstdlib" 3
+# 212 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::div;
-# 209 "/usr/include/c++/4.5/cstdlib" 3
+# 213 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::lldiv;
-# 211 "/usr/include/c++/4.5/cstdlib" 3
+# 215 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::atoll;
-# 212 "/usr/include/c++/4.5/cstdlib" 3
+# 216 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::strtof;
-# 213 "/usr/include/c++/4.5/cstdlib" 3
+# 217 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::strtoll;
-# 214 "/usr/include/c++/4.5/cstdlib" 3
+# 218 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::strtoull;
-# 215 "/usr/include/c++/4.5/cstdlib" 3
+# 219 "/usr/include/c++/4.6/cstdlib" 3
 using __gnu_cxx::strtold;
-# 217 "/usr/include/c++/4.5/cstdlib" 3
+# 220 "/usr/include/c++/4.6/cstdlib" 3
 }
 # 85 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int abs(int) throw();
@@ -5474,909 +5815,909 @@ extern "C" float fmaxf(float, float) throw();
 extern "C" double fmax(double, double) throw();
 # 122 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double sin(double) throw();
-# 124 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float sinf(float) throw();
-# 127 "/usr/local/cuda/bin/../include/math_functions.h"
+# 125 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double cos(double) throw();
-# 129 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float cosf(float) throw();
-# 132 "/usr/local/cuda/bin/../include/math_functions.h"
+# 128 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" void sincos(double, double *, double *) throw();
-# 134 "/usr/local/cuda/bin/../include/math_functions.h"
+# 130 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" void sincosf(float, float *, float *) throw();
-# 137 "/usr/local/cuda/bin/../include/math_functions.h"
+# 133 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double tan(double) throw();
-# 139 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float tanf(float) throw();
-# 142 "/usr/local/cuda/bin/../include/math_functions.h"
+# 136 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double sqrt(double) throw();
-# 144 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float sqrtf(float) throw();
-# 147 "/usr/local/cuda/bin/../include/math_functions.h"
+# 139 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double rsqrt(double);
-# 149 "/usr/local/cuda/bin/../include/math_functions.h"
+# 141 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float rsqrtf(float);
-# 152 "/usr/local/cuda/bin/../include/math_functions.h"
+# 144 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double exp2(double) throw();
-# 154 "/usr/local/cuda/bin/../include/math_functions.h"
+# 146 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float exp2f(float) throw();
-# 157 "/usr/local/cuda/bin/../include/math_functions.h"
+# 149 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double exp10(double) throw();
-# 159 "/usr/local/cuda/bin/../include/math_functions.h"
+# 151 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float exp10f(float) throw();
-# 162 "/usr/local/cuda/bin/../include/math_functions.h"
+# 154 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double expm1(double) throw();
-# 164 "/usr/local/cuda/bin/../include/math_functions.h"
+# 156 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float expm1f(float) throw();
-# 167 "/usr/local/cuda/bin/../include/math_functions.h"
+# 159 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double log2(double) throw();
-# 169 "/usr/local/cuda/bin/../include/math_functions.h"
+# 161 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float log2f(float) throw();
-# 172 "/usr/local/cuda/bin/../include/math_functions.h"
+# 164 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double log10(double) throw();
-# 174 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float log10f(float) throw();
-# 177 "/usr/local/cuda/bin/../include/math_functions.h"
+# 167 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double log(double) throw();
-# 179 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float logf(float) throw();
-# 182 "/usr/local/cuda/bin/../include/math_functions.h"
+# 170 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double log1p(double) throw();
-# 184 "/usr/local/cuda/bin/../include/math_functions.h"
+# 172 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float log1pf(float) throw();
-# 187 "/usr/local/cuda/bin/../include/math_functions.h"
+# 175 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double floor(double) throw();
-# 189 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float floorf(float) throw();
-# 192 "/usr/local/cuda/bin/../include/math_functions.h"
+# 178 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double exp(double) throw();
-# 194 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float expf(float) throw();
-# 197 "/usr/local/cuda/bin/../include/math_functions.h"
+# 181 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double cosh(double) throw();
-# 199 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float coshf(float) throw();
-# 202 "/usr/local/cuda/bin/../include/math_functions.h"
+# 184 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double sinh(double) throw();
-# 204 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float sinhf(float) throw();
-# 207 "/usr/local/cuda/bin/../include/math_functions.h"
+# 187 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double tanh(double) throw();
-# 209 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float tanhf(float) throw();
-# 212 "/usr/local/cuda/bin/../include/math_functions.h"
+# 190 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double acosh(double) throw();
-# 214 "/usr/local/cuda/bin/../include/math_functions.h"
+# 192 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float acoshf(float) throw();
-# 217 "/usr/local/cuda/bin/../include/math_functions.h"
+# 195 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double asinh(double) throw();
-# 219 "/usr/local/cuda/bin/../include/math_functions.h"
+# 197 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float asinhf(float) throw();
-# 222 "/usr/local/cuda/bin/../include/math_functions.h"
+# 200 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double atanh(double) throw();
-# 224 "/usr/local/cuda/bin/../include/math_functions.h"
+# 202 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float atanhf(float) throw();
-# 227 "/usr/local/cuda/bin/../include/math_functions.h"
+# 205 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double ldexp(double, int) throw();
-# 229 "/usr/local/cuda/bin/../include/math_functions.h"
+# 207 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float ldexpf(float, int) throw();
-# 232 "/usr/local/cuda/bin/../include/math_functions.h"
+# 210 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double logb(double) throw();
-# 234 "/usr/local/cuda/bin/../include/math_functions.h"
+# 212 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float logbf(float) throw();
-# 237 "/usr/local/cuda/bin/../include/math_functions.h"
+# 215 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int ilogb(double) throw();
-# 239 "/usr/local/cuda/bin/../include/math_functions.h"
+# 217 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int ilogbf(float) throw();
-# 242 "/usr/local/cuda/bin/../include/math_functions.h"
+# 220 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double scalbn(double, int) throw();
-# 244 "/usr/local/cuda/bin/../include/math_functions.h"
+# 222 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float scalbnf(float, int) throw();
-# 247 "/usr/local/cuda/bin/../include/math_functions.h"
+# 225 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double scalbln(double, long) throw();
-# 249 "/usr/local/cuda/bin/../include/math_functions.h"
+# 227 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float scalblnf(float, long) throw();
-# 252 "/usr/local/cuda/bin/../include/math_functions.h"
+# 230 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double frexp(double, int *) throw();
-# 254 "/usr/local/cuda/bin/../include/math_functions.h"
+# 232 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float frexpf(float, int *) throw();
-# 257 "/usr/local/cuda/bin/../include/math_functions.h"
+# 235 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double round(double) throw();
-# 259 "/usr/local/cuda/bin/../include/math_functions.h"
+# 237 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float roundf(float) throw();
-# 262 "/usr/local/cuda/bin/../include/math_functions.h"
+# 240 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long lround(double) throw();
-# 264 "/usr/local/cuda/bin/../include/math_functions.h"
+# 242 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long lroundf(float) throw();
-# 267 "/usr/local/cuda/bin/../include/math_functions.h"
+# 245 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long long llround(double) throw();
-# 269 "/usr/local/cuda/bin/../include/math_functions.h"
+# 247 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long long llroundf(float) throw();
-# 272 "/usr/local/cuda/bin/../include/math_functions.h"
+# 250 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double rint(double) throw();
-# 274 "/usr/local/cuda/bin/../include/math_functions.h"
+# 252 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float rintf(float) throw();
-# 277 "/usr/local/cuda/bin/../include/math_functions.h"
+# 255 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long lrint(double) throw();
-# 279 "/usr/local/cuda/bin/../include/math_functions.h"
+# 257 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long lrintf(float) throw();
-# 282 "/usr/local/cuda/bin/../include/math_functions.h"
+# 260 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long long llrint(double) throw();
-# 284 "/usr/local/cuda/bin/../include/math_functions.h"
+# 262 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" long long llrintf(float) throw();
-# 287 "/usr/local/cuda/bin/../include/math_functions.h"
+# 265 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double nearbyint(double) throw();
-# 289 "/usr/local/cuda/bin/../include/math_functions.h"
+# 267 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float nearbyintf(float) throw();
-# 292 "/usr/local/cuda/bin/../include/math_functions.h"
+# 270 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double ceil(double) throw();
-# 294 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float ceilf(float) throw();
-# 297 "/usr/local/cuda/bin/../include/math_functions.h"
+# 273 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double trunc(double) throw();
-# 299 "/usr/local/cuda/bin/../include/math_functions.h"
+# 275 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float truncf(float) throw();
-# 302 "/usr/local/cuda/bin/../include/math_functions.h"
+# 278 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double fdim(double, double) throw();
-# 304 "/usr/local/cuda/bin/../include/math_functions.h"
+# 280 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float fdimf(float, float) throw();
-# 307 "/usr/local/cuda/bin/../include/math_functions.h"
+# 283 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double atan2(double, double) throw();
-# 309 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float atan2f(float, float) throw();
-# 312 "/usr/local/cuda/bin/../include/math_functions.h"
+# 286 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double atan(double) throw();
-# 314 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float atanf(float) throw();
-# 317 "/usr/local/cuda/bin/../include/math_functions.h"
+# 289 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double asin(double) throw();
-# 319 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float asinf(float) throw();
-# 322 "/usr/local/cuda/bin/../include/math_functions.h"
+# 292 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double acos(double) throw();
-# 324 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float acosf(float) throw();
-# 328 "/usr/local/cuda/bin/../include/math_functions.h"
+# 296 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double hypot(double, double) throw();
-# 334 "/usr/local/cuda/bin/../include/math_functions.h"
+# 302 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float hypotf(float, float) throw();
-# 337 "/usr/local/cuda/bin/../include/math_functions.h"
+# 305 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double cbrt(double) throw();
-# 339 "/usr/local/cuda/bin/../include/math_functions.h"
+# 307 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float cbrtf(float) throw();
-# 342 "/usr/local/cuda/bin/../include/math_functions.h"
+# 310 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double rcbrt(double);
-# 344 "/usr/local/cuda/bin/../include/math_functions.h"
+# 312 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float rcbrtf(float);
-# 347 "/usr/local/cuda/bin/../include/math_functions.h"
+# 315 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double sinpi(double);
-# 349 "/usr/local/cuda/bin/../include/math_functions.h"
+# 317 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float sinpif(float);
-# 352 "/usr/local/cuda/bin/../include/math_functions.h"
+# 320 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double cospi(double);
-# 354 "/usr/local/cuda/bin/../include/math_functions.h"
+# 322 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float cospif(float);
-# 357 "/usr/local/cuda/bin/../include/math_functions.h"
+# 325 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double pow(double, double) throw();
-# 359 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float powf(float, float) throw();
-# 362 "/usr/local/cuda/bin/../include/math_functions.h"
+# 328 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double modf(double, double *) throw();
-# 364 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float modff(float, float *) throw();
-# 367 "/usr/local/cuda/bin/../include/math_functions.h"
+# 331 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double fmod(double, double) throw();
-# 369 "/usr/local/cuda/bin/../include/math_functions.h"
-extern "C" float fmodf(float, float) throw();
-# 372 "/usr/local/cuda/bin/../include/math_functions.h"
+# 334 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double remainder(double, double) throw();
-# 374 "/usr/local/cuda/bin/../include/math_functions.h"
+# 336 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float remainderf(float, float) throw();
-# 377 "/usr/local/cuda/bin/../include/math_functions.h"
+# 339 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double remquo(double, double, int *) throw();
-# 379 "/usr/local/cuda/bin/../include/math_functions.h"
+# 341 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float remquof(float, float, int *) throw();
-# 382 "/usr/local/cuda/bin/../include/math_functions.h"
+# 344 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double erf(double) throw();
-# 384 "/usr/local/cuda/bin/../include/math_functions.h"
+# 346 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float erff(float) throw();
-# 387 "/usr/local/cuda/bin/../include/math_functions.h"
+# 349 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double erfinv(double);
-# 389 "/usr/local/cuda/bin/../include/math_functions.h"
+# 351 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float erfinvf(float);
-# 392 "/usr/local/cuda/bin/../include/math_functions.h"
+# 354 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double erfc(double) throw();
-# 394 "/usr/local/cuda/bin/../include/math_functions.h"
+# 356 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float erfcf(float) throw();
-# 397 "/usr/local/cuda/bin/../include/math_functions.h"
+# 359 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double erfcinv(double);
-# 399 "/usr/local/cuda/bin/../include/math_functions.h"
+# 361 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float erfcinvf(float);
-# 402 "/usr/local/cuda/bin/../include/math_functions.h"
+# 364 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double lgamma(double) throw();
-# 404 "/usr/local/cuda/bin/../include/math_functions.h"
+# 366 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float lgammaf(float) throw();
-# 407 "/usr/local/cuda/bin/../include/math_functions.h"
+# 369 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double tgamma(double) throw();
-# 409 "/usr/local/cuda/bin/../include/math_functions.h"
+# 371 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float tgammaf(float) throw();
-# 412 "/usr/local/cuda/bin/../include/math_functions.h"
+# 374 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double copysign(double, double) throw();
-# 414 "/usr/local/cuda/bin/../include/math_functions.h"
+# 376 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float copysignf(float, float) throw();
-# 417 "/usr/local/cuda/bin/../include/math_functions.h"
+# 379 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double nextafter(double, double) throw();
-# 419 "/usr/local/cuda/bin/../include/math_functions.h"
+# 381 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float nextafterf(float, float) throw();
-# 422 "/usr/local/cuda/bin/../include/math_functions.h"
+# 384 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double nan(const char *) throw();
-# 424 "/usr/local/cuda/bin/../include/math_functions.h"
+# 386 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float nanf(const char *) throw();
-# 427 "/usr/local/cuda/bin/../include/math_functions.h"
+# 389 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __isinf(double) throw();
-# 429 "/usr/local/cuda/bin/../include/math_functions.h"
+# 391 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __isinff(float) throw();
-# 432 "/usr/local/cuda/bin/../include/math_functions.h"
+# 394 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __isnan(double) throw();
-# 434 "/usr/local/cuda/bin/../include/math_functions.h"
+# 397 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __isnanf(float) throw();
-# 448 "/usr/local/cuda/bin/../include/math_functions.h"
+# 411 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __finite(double) throw();
-# 450 "/usr/local/cuda/bin/../include/math_functions.h"
+# 414 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __finitef(float) throw();
-# 452 "/usr/local/cuda/bin/../include/math_functions.h"
+# 418 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __signbit(double) throw();
-# 457 "/usr/local/cuda/bin/../include/math_functions.h"
+# 423 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __signbitf(float) throw();
-# 460 "/usr/local/cuda/bin/../include/math_functions.h"
+# 426 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" double fma(double, double, double) throw();
-# 462 "/usr/local/cuda/bin/../include/math_functions.h"
+# 428 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" float fmaf(float, float, float) throw();
-# 470 "/usr/local/cuda/bin/../include/math_functions.h"
+# 436 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __signbitl(long double) throw();
-# 472 "/usr/local/cuda/bin/../include/math_functions.h"
+# 438 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __isinfl(long double) throw();
-# 474 "/usr/local/cuda/bin/../include/math_functions.h"
+# 440 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __isnanl(long double) throw();
-# 484 "/usr/local/cuda/bin/../include/math_functions.h"
+# 450 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int __finitel(long double) throw();
-# 521 "/usr/local/cuda/bin/../include/math_functions.h"
-namespace __gnu_cxx {
-# 523 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline long long abs(long long);
-# 524 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 526 "/usr/local/cuda/bin/../include/math_functions.h"
-namespace std {
+# 516 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float acosf(float) throw();
+# 519 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float asinf(float) throw();
+# 522 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float atanf(float) throw();
+# 525 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float atan2f(float, float) throw();
 # 528 "/usr/local/cuda/bin/../include/math_functions.h"
-template< class T> extern inline T __pow_helper(T, int);
-# 529 "/usr/local/cuda/bin/../include/math_functions.h"
-template< class T> extern inline T __cmath_power(T, unsigned);
-# 530 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 532 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::abs;
-# 533 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::fabs;
+extern "C" float cosf(float) throw();
+# 531 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float sinf(float) throw();
 # 534 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::ceil;
-# 535 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::floor;
-# 536 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::sqrt;
+extern "C" float tanf(float) throw();
 # 537 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::pow;
-# 538 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::log;
-# 539 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::log10;
+extern "C" float coshf(float) throw();
 # 540 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::fmod;
-# 541 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::modf;
-# 542 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::exp;
+extern "C" float sinhf(float) throw();
 # 543 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::frexp;
-# 544 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::ldexp;
-# 545 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::asin;
+extern "C" float tanhf(float) throw();
 # 546 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::sin;
-# 547 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::sinh;
-# 548 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::acos;
+extern "C" float expf(float) throw();
 # 549 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::cos;
-# 550 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::cosh;
-# 551 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::atan;
+extern "C" float logf(float) throw();
 # 552 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::atan2;
-# 553 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::tan;
-# 554 "/usr/local/cuda/bin/../include/math_functions.h"
-using std::tanh;
-# 611 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float log10f(float) throw();
+# 555 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float modff(float, float *) throw();
+# 558 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float powf(float, float) throw();
+# 561 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float sqrtf(float) throw();
+# 564 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float ceilf(float) throw();
+# 567 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float floorf(float) throw();
+# 570 "/usr/local/cuda/bin/../include/math_functions.h"
+extern "C" float fmodf(float, float) throw();
+# 605 "/usr/local/cuda/bin/../include/math_functions.h"
+namespace __gnu_cxx {
+# 607 "/usr/local/cuda/bin/../include/math_functions.h"
+extern inline long long abs(long long);
+# 608 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 610 "/usr/local/cuda/bin/../include/math_functions.h"
 namespace std {
+# 612 "/usr/local/cuda/bin/../include/math_functions.h"
+template< class T> extern T __pow_helper(T, int);
+# 613 "/usr/local/cuda/bin/../include/math_functions.h"
+template< class T> extern T __cmath_power(T, unsigned);
 # 614 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline long abs(long);
-# 615 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float abs(float);
+}
 # 616 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline double abs(double);
+using std::abs;
 # 617 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float fabs(float);
+using std::fabs;
 # 618 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float ceil(float);
+using std::ceil;
 # 619 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float floor(float);
+using std::floor;
 # 620 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float sqrt(float);
+using std::sqrt;
 # 621 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float pow(float, float);
+using std::pow;
 # 622 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float pow(float, int);
+using std::log;
 # 623 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline double pow(double, int);
+using std::log10;
 # 624 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float log(float);
+using std::fmod;
 # 625 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float log10(float);
+using std::modf;
 # 626 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float fmod(float, float);
+using std::exp;
 # 627 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float modf(float, float *);
+using std::frexp;
 # 628 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float exp(float);
+using std::ldexp;
 # 629 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float frexp(float, int *);
+using std::asin;
 # 630 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float ldexp(float, int);
+using std::sin;
 # 631 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float asin(float);
+using std::sinh;
 # 632 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float sin(float);
+using std::acos;
 # 633 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float sinh(float);
+using std::cos;
 # 634 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float acos(float);
+using std::cosh;
 # 635 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float cos(float);
+using std::atan;
 # 636 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float cosh(float);
+using std::atan2;
 # 637 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float atan(float);
+using std::tan;
 # 638 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float atan2(float, float);
-# 639 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float tan(float);
-# 640 "/usr/local/cuda/bin/../include/math_functions.h"
-extern inline float tanh(float);
-# 643 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 646 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float logb(float a)
-# 647 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 648 "/usr/local/cuda/bin/../include/math_functions.h"
-return logbf(a);
-# 649 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 651 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline int ilogb(float a)
-# 652 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 653 "/usr/local/cuda/bin/../include/math_functions.h"
-return ilogbf(a);
-# 654 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 656 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float scalbn(float a, int b)
-# 657 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 658 "/usr/local/cuda/bin/../include/math_functions.h"
-return scalbnf(a, b);
-# 659 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 661 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float scalbln(float a, long b)
-# 662 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 663 "/usr/local/cuda/bin/../include/math_functions.h"
-return scalblnf(a, b);
-# 664 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 666 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float exp2(float a)
-# 667 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 668 "/usr/local/cuda/bin/../include/math_functions.h"
-return exp2f(a);
-# 669 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 671 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float exp10(float a)
-# 672 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 673 "/usr/local/cuda/bin/../include/math_functions.h"
-return exp10f(a);
-# 674 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 676 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float expm1(float a)
-# 677 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 678 "/usr/local/cuda/bin/../include/math_functions.h"
-return expm1f(a);
-# 679 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 681 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float log2(float a)
-# 682 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 683 "/usr/local/cuda/bin/../include/math_functions.h"
-return log2f(a);
-# 684 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 686 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float log1p(float a)
-# 687 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 688 "/usr/local/cuda/bin/../include/math_functions.h"
-return log1pf(a);
-# 689 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 691 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float rsqrt(float a)
-# 692 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 693 "/usr/local/cuda/bin/../include/math_functions.h"
-return rsqrtf(a);
-# 694 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 696 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float acosh(float a)
-# 697 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+using std::tanh;
+# 695 "/usr/local/cuda/bin/../include/math_functions.h"
+namespace std {
 # 698 "/usr/local/cuda/bin/../include/math_functions.h"
-return acoshf(a);
+extern inline long abs(long);
 # 699 "/usr/local/cuda/bin/../include/math_functions.h"
-}
+extern inline float abs(float);
+# 700 "/usr/local/cuda/bin/../include/math_functions.h"
+extern inline double abs(double);
 # 701 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float asinh(float a)
+extern inline float fabs(float);
 # 702 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+extern inline float ceil(float);
 # 703 "/usr/local/cuda/bin/../include/math_functions.h"
-return asinhf(a);
+extern inline float floor(float);
 # 704 "/usr/local/cuda/bin/../include/math_functions.h"
-}
+extern inline float sqrt(float);
+# 705 "/usr/local/cuda/bin/../include/math_functions.h"
+extern inline float pow(float, float);
 # 706 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float atanh(float a)
+extern inline float pow(float, int);
 # 707 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+extern inline double pow(double, int);
 # 708 "/usr/local/cuda/bin/../include/math_functions.h"
-return atanhf(a);
+extern inline float log(float);
 # 709 "/usr/local/cuda/bin/../include/math_functions.h"
-}
+extern inline float log10(float);
+# 710 "/usr/local/cuda/bin/../include/math_functions.h"
+extern inline float fmod(float, float);
 # 711 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float hypot(float a, float b)
+extern inline float modf(float, float *);
 # 712 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+extern inline float exp(float);
 # 713 "/usr/local/cuda/bin/../include/math_functions.h"
-return hypotf(a, b);
+extern inline float frexp(float, int *);
 # 714 "/usr/local/cuda/bin/../include/math_functions.h"
-}
+extern inline float ldexp(float, int);
+# 715 "/usr/local/cuda/bin/../include/math_functions.h"
+extern inline float asin(float);
 # 716 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float cbrt(float a)
+extern inline float sin(float);
 # 717 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+extern inline float sinh(float);
 # 718 "/usr/local/cuda/bin/../include/math_functions.h"
-return cbrtf(a);
+extern inline float acos(float);
 # 719 "/usr/local/cuda/bin/../include/math_functions.h"
-}
+extern inline float cos(float);
+# 720 "/usr/local/cuda/bin/../include/math_functions.h"
+extern inline float cosh(float);
 # 721 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float rcbrt(float a)
+extern inline float atan(float);
 # 722 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+extern inline float atan2(float, float);
 # 723 "/usr/local/cuda/bin/../include/math_functions.h"
-return rcbrtf(a);
+extern inline float tan(float);
 # 724 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 726 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float sinpi(float a)
+extern inline float tanh(float);
 # 727 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 728 "/usr/local/cuda/bin/../include/math_functions.h"
-return sinpif(a);
-# 729 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 730 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float logb(float a)
 # 731 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float cospi(float a)
+{
 # 732 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return logbf(a);
 # 733 "/usr/local/cuda/bin/../include/math_functions.h"
-return cospif(a);
-# 734 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 735 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline int ilogb(float a)
 # 736 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline void sincos(float a, float *sptr, float *cptr)
+{
 # 737 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return ilogbf(a);
 # 738 "/usr/local/cuda/bin/../include/math_functions.h"
-sincosf(a, sptr, cptr);
-# 739 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 740 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float scalbn(float a, int b)
 # 741 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float erf(float a)
+{
 # 742 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return scalbnf(a, b);
 # 743 "/usr/local/cuda/bin/../include/math_functions.h"
-return erff(a);
-# 744 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 745 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float scalbln(float a, long b)
 # 746 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float erfinv(float a)
+{
 # 747 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return scalblnf(a, b);
 # 748 "/usr/local/cuda/bin/../include/math_functions.h"
-return erfinvf(a);
-# 749 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 750 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float exp2(float a)
 # 751 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float erfc(float a)
+{
 # 752 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return exp2f(a);
 # 753 "/usr/local/cuda/bin/../include/math_functions.h"
-return erfcf(a);
-# 754 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 755 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float exp10(float a)
 # 756 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float erfcinv(float a)
+{
 # 757 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return exp10f(a);
 # 758 "/usr/local/cuda/bin/../include/math_functions.h"
-return erfcinvf(a);
-# 759 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 760 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float expm1(float a)
 # 761 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float lgamma(float a)
+{
 # 762 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return expm1f(a);
 # 763 "/usr/local/cuda/bin/../include/math_functions.h"
-return lgammaf(a);
-# 764 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 765 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float log2(float a)
 # 766 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float tgamma(float a)
+{
 # 767 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return log2f(a);
 # 768 "/usr/local/cuda/bin/../include/math_functions.h"
-return tgammaf(a);
-# 769 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 770 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float log1p(float a)
 # 771 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float copysign(float a, float b)
+{
 # 772 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return log1pf(a);
 # 773 "/usr/local/cuda/bin/../include/math_functions.h"
-return copysignf(a, b);
-# 774 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 775 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float rsqrt(float a)
 # 776 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double copysign(double a, float b)
+{
 # 777 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return rsqrtf(a);
 # 778 "/usr/local/cuda/bin/../include/math_functions.h"
-return copysign(a, (double)b);
-# 779 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 780 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float acosh(float a)
 # 781 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float copysign(float a, double b)
+{
 # 782 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return acoshf(a);
 # 783 "/usr/local/cuda/bin/../include/math_functions.h"
-return copysignf(a, (float)b);
-# 784 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 785 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float asinh(float a)
 # 786 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float nextafter(float a, float b)
+{
 # 787 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return asinhf(a);
 # 788 "/usr/local/cuda/bin/../include/math_functions.h"
-return nextafterf(a, b);
-# 789 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 790 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float atanh(float a)
 # 791 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float remainder(float a, float b)
+{
 # 792 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return atanhf(a);
 # 793 "/usr/local/cuda/bin/../include/math_functions.h"
-return remainderf(a, b);
-# 794 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 795 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float hypot(float a, float b)
 # 796 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float remquo(float a, float b, int *quo)
+{
 # 797 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return hypotf(a, b);
 # 798 "/usr/local/cuda/bin/../include/math_functions.h"
-return remquof(a, b, quo);
-# 799 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 800 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float cbrt(float a)
 # 801 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float round(float a)
+{
 # 802 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return cbrtf(a);
 # 803 "/usr/local/cuda/bin/../include/math_functions.h"
-return roundf(a);
-# 804 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 805 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float rcbrt(float a)
 # 806 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline long lround(float a)
+{
 # 807 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return rcbrtf(a);
 # 808 "/usr/local/cuda/bin/../include/math_functions.h"
-return lroundf(a);
-# 809 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 810 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float sinpi(float a)
 # 811 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline long long llround(float a)
+{
 # 812 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return sinpif(a);
 # 813 "/usr/local/cuda/bin/../include/math_functions.h"
-return llroundf(a);
-# 814 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 815 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float cospi(float a)
 # 816 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float trunc(float a)
+{
 # 817 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return cospif(a);
 # 818 "/usr/local/cuda/bin/../include/math_functions.h"
-return truncf(a);
-# 819 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 820 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline void sincos(float a, float *sptr, float *cptr)
 # 821 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float rint(float a)
+{
 # 822 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+sincosf(a, sptr, cptr);
 # 823 "/usr/local/cuda/bin/../include/math_functions.h"
-return rintf(a);
-# 824 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 825 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float erf(float a)
 # 826 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline long lrint(float a)
+{
 # 827 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return erff(a);
 # 828 "/usr/local/cuda/bin/../include/math_functions.h"
-return lrintf(a);
-# 829 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 830 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float erfinv(float a)
 # 831 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline long long llrint(float a)
+{
 # 832 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return erfinvf(a);
 # 833 "/usr/local/cuda/bin/../include/math_functions.h"
-return llrintf(a);
-# 834 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 835 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float erfc(float a)
 # 836 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float nearbyint(float a)
+{
 # 837 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return erfcf(a);
 # 838 "/usr/local/cuda/bin/../include/math_functions.h"
-return nearbyintf(a);
-# 839 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 840 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float erfcinv(float a)
 # 841 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float fdim(float a, float b)
+{
 # 842 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return erfcinvf(a);
 # 843 "/usr/local/cuda/bin/../include/math_functions.h"
-return fdimf(a, b);
-# 844 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 845 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float lgamma(float a)
 # 846 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float fma(float a, float b, float c)
+{
 # 847 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return lgammaf(a);
 # 848 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmaf(a, b, c);
-# 849 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 850 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float tgamma(float a)
 # 851 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float fmax(float a, float b)
+{
 # 852 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return tgammaf(a);
 # 853 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmaxf(a, b);
-# 854 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 855 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float copysign(float a, float b)
 # 856 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float fmin(float a, float b)
+{
 # 857 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return copysignf(a, b);
 # 858 "/usr/local/cuda/bin/../include/math_functions.h"
-return fminf(a, b);
-# 859 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 860 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double copysign(double a, float b)
 # 861 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned min(unsigned a, unsigned b)
+{
 # 862 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return copysign(a, (double)b);
 # 863 "/usr/local/cuda/bin/../include/math_functions.h"
-return umin(a, b);
-# 864 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 865 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float copysign(float a, double b)
 # 866 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned min(int a, unsigned b)
+{
 # 867 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return copysignf(a, (float)b);
 # 868 "/usr/local/cuda/bin/../include/math_functions.h"
-return umin((unsigned)a, b);
-# 869 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 870 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float nextafter(float a, float b)
 # 871 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned min(unsigned a, int b)
+{
 # 872 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return nextafterf(a, b);
 # 873 "/usr/local/cuda/bin/../include/math_functions.h"
-return umin(a, (unsigned)b);
-# 874 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 875 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float remainder(float a, float b)
 # 876 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline long long min(long long a, long long b)
+{
 # 877 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return remainderf(a, b);
 # 878 "/usr/local/cuda/bin/../include/math_functions.h"
-return llmin(a, b);
-# 879 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 880 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float remquo(float a, float b, int *quo)
 # 881 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned long long min(unsigned long long a, unsigned long long b)
+{
 # 882 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return remquof(a, b, quo);
 # 883 "/usr/local/cuda/bin/../include/math_functions.h"
-return ullmin(a, b);
-# 884 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 885 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float round(float a)
 # 886 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned long long min(long long a, unsigned long long b)
+{
 # 887 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return roundf(a);
 # 888 "/usr/local/cuda/bin/../include/math_functions.h"
-return ullmin((unsigned long long)a, b);
-# 889 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 890 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline long lround(float a)
 # 891 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned long long min(unsigned long long a, long long b)
+{
 # 892 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return lroundf(a);
 # 893 "/usr/local/cuda/bin/../include/math_functions.h"
-return ullmin(a, (unsigned long long)b);
-# 894 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 895 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline long long llround(float a)
 # 896 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float min(float a, float b)
+{
 # 897 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return llroundf(a);
 # 898 "/usr/local/cuda/bin/../include/math_functions.h"
-return fminf(a, b);
-# 899 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 900 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float trunc(float a)
 # 901 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double min(double a, double b)
+{
 # 902 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return truncf(a);
 # 903 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmin(a, b);
-# 904 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 905 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float rint(float a)
 # 906 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double min(float a, double b)
+{
 # 907 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return rintf(a);
 # 908 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmin((double)a, b);
-# 909 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 910 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline long lrint(float a)
 # 911 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double min(double a, float b)
+{
 # 912 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return lrintf(a);
 # 913 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmin(a, (double)b);
-# 914 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 915 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline long long llrint(float a)
 # 916 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned max(unsigned a, unsigned b)
+{
 # 917 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return llrintf(a);
 # 918 "/usr/local/cuda/bin/../include/math_functions.h"
-return umax(a, b);
-# 919 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 920 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float nearbyint(float a)
 # 921 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned max(int a, unsigned b)
+{
 # 922 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return nearbyintf(a);
 # 923 "/usr/local/cuda/bin/../include/math_functions.h"
-return umax((unsigned)a, b);
-# 924 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 925 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float fdim(float a, float b)
 # 926 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned max(unsigned a, int b)
+{
 # 927 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return fdimf(a, b);
 # 928 "/usr/local/cuda/bin/../include/math_functions.h"
-return umax(a, (unsigned)b);
-# 929 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 930 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float fma(float a, float b, float c)
 # 931 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline long long max(long long a, long long b)
+{
 # 932 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return fmaf(a, b, c);
 # 933 "/usr/local/cuda/bin/../include/math_functions.h"
-return llmax(a, b);
-# 934 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 935 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float fmax(float a, float b)
 # 936 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned long long max(unsigned long long a, unsigned long long b)
+{
 # 937 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 938 "/usr/local/cuda/bin/../include/math_functions.h"
-return ullmax(a, b);
-# 939 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 941 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned long long max(long long a, unsigned long long b)
-# 942 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 943 "/usr/local/cuda/bin/../include/math_functions.h"
-return ullmax((unsigned long long)a, b);
-# 944 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 946 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline unsigned long long max(unsigned long long a, long long b)
-# 947 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 948 "/usr/local/cuda/bin/../include/math_functions.h"
-return ullmax(a, (unsigned long long)b);
-# 949 "/usr/local/cuda/bin/../include/math_functions.h"
-}
-# 951 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline float max(float a, float b)
-# 952 "/usr/local/cuda/bin/../include/math_functions.h"
-{
-# 953 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmaxf(a, b);
-# 954 "/usr/local/cuda/bin/../include/math_functions.h"
+# 938 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 940 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float fmin(float a, float b)
+# 941 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 942 "/usr/local/cuda/bin/../include/math_functions.h"
+return fminf(a, b);
+# 943 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 945 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned min(unsigned a, unsigned b)
+# 946 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 947 "/usr/local/cuda/bin/../include/math_functions.h"
+return umin(a, b);
+# 948 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 950 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned min(int a, unsigned b)
+# 951 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 952 "/usr/local/cuda/bin/../include/math_functions.h"
+return umin((unsigned)a, b);
+# 953 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 955 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned min(unsigned a, int b)
 # 956 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double max(double a, double b)
+{
 # 957 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return umin(a, (unsigned)b);
 # 958 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmax(a, b);
-# 959 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 960 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline long long min(long long a, long long b)
 # 961 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double max(float a, double b)
+{
 # 962 "/usr/local/cuda/bin/../include/math_functions.h"
-{
+return llmin(a, b);
 # 963 "/usr/local/cuda/bin/../include/math_functions.h"
-return fmax((double)a, b);
-# 964 "/usr/local/cuda/bin/../include/math_functions.h"
 }
+# 965 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned long long min(unsigned long long a, unsigned long long b)
 # 966 "/usr/local/cuda/bin/../include/math_functions.h"
-static inline double max(double a, float b)
-# 967 "/usr/local/cuda/bin/../include/math_functions.h"
 {
+# 967 "/usr/local/cuda/bin/../include/math_functions.h"
+return ullmin(a, b);
 # 968 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 970 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned long long min(long long a, unsigned long long b)
+# 971 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 972 "/usr/local/cuda/bin/../include/math_functions.h"
+return ullmin((unsigned long long)a, b);
+# 973 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 975 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned long long min(unsigned long long a, long long b)
+# 976 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 977 "/usr/local/cuda/bin/../include/math_functions.h"
+return ullmin(a, (unsigned long long)b);
+# 978 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 980 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float min(float a, float b)
+# 981 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 982 "/usr/local/cuda/bin/../include/math_functions.h"
+return fminf(a, b);
+# 983 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 985 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double min(double a, double b)
+# 986 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 987 "/usr/local/cuda/bin/../include/math_functions.h"
+return fmin(a, b);
+# 988 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 990 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double min(float a, double b)
+# 991 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 992 "/usr/local/cuda/bin/../include/math_functions.h"
+return fmin((double)a, b);
+# 993 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 995 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double min(double a, float b)
+# 996 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 997 "/usr/local/cuda/bin/../include/math_functions.h"
+return fmin(a, (double)b);
+# 998 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1000 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned max(unsigned a, unsigned b)
+# 1001 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1002 "/usr/local/cuda/bin/../include/math_functions.h"
+return umax(a, b);
+# 1003 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1005 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned max(int a, unsigned b)
+# 1006 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1007 "/usr/local/cuda/bin/../include/math_functions.h"
+return umax((unsigned)a, b);
+# 1008 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1010 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned max(unsigned a, int b)
+# 1011 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1012 "/usr/local/cuda/bin/../include/math_functions.h"
+return umax(a, (unsigned)b);
+# 1013 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1015 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline long long max(long long a, long long b)
+# 1016 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1017 "/usr/local/cuda/bin/../include/math_functions.h"
+return llmax(a, b);
+# 1018 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1020 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned long long max(unsigned long long a, unsigned long long b)
+# 1021 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1022 "/usr/local/cuda/bin/../include/math_functions.h"
+return ullmax(a, b);
+# 1023 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1025 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned long long max(long long a, unsigned long long b)
+# 1026 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1027 "/usr/local/cuda/bin/../include/math_functions.h"
+return ullmax((unsigned long long)a, b);
+# 1028 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1030 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline unsigned long long max(unsigned long long a, long long b)
+# 1031 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1032 "/usr/local/cuda/bin/../include/math_functions.h"
+return ullmax(a, (unsigned long long)b);
+# 1033 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1035 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline float max(float a, float b)
+# 1036 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1037 "/usr/local/cuda/bin/../include/math_functions.h"
+return fmaxf(a, b);
+# 1038 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1040 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double max(double a, double b)
+# 1041 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1042 "/usr/local/cuda/bin/../include/math_functions.h"
+return fmax(a, b);
+# 1043 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1045 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double max(float a, double b)
+# 1046 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1047 "/usr/local/cuda/bin/../include/math_functions.h"
+return fmax((double)a, b);
+# 1048 "/usr/local/cuda/bin/../include/math_functions.h"
+}
+# 1050 "/usr/local/cuda/bin/../include/math_functions.h"
+static inline double max(double a, float b)
+# 1051 "/usr/local/cuda/bin/../include/math_functions.h"
+{
+# 1052 "/usr/local/cuda/bin/../include/math_functions.h"
 return fmax(a, (double)b);
-# 969 "/usr/local/cuda/bin/../include/math_functions.h"
+# 1053 "/usr/local/cuda/bin/../include/math_functions.h"
 }
 # 74 "/usr/local/cuda/bin/../include/cuda_surface_types.h"
 template< class T, int dim = 1>
@@ -10064,7 +10405,7 @@ extern "C" { typedef int _G_int32_t __attribute((__mode__(__SI__))); }
 extern "C" { typedef unsigned short _G_uint16_t __attribute((__mode__(__HI__))); }
 # 56 "/usr/include/_G_config.h" 3
 extern "C" { typedef unsigned _G_uint32_t __attribute((__mode__(__SI__))); }
-# 40 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/va.h" 3
+# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -10446,13 +10787,13 @@ extern "C" int feof_unlocked(FILE * ) throw();
 extern "C" int ferror_unlocked(FILE * ) throw();
 # 839 "/usr/include/stdio.h" 3
 extern "C" void perror(const char * );
-# 27 "/usr/include/bits/sys_errlist.h" 3
+# 27 "/usr/include/x86_64-linux-gnu/bits/sys_errlist.h" 3
 extern "C" { extern int sys_nerr; }
-# 28 "/usr/include/bits/sys_errlist.h" 3
+# 28 "/usr/include/x86_64-linux-gnu/bits/sys_errlist.h" 3
 extern "C" { extern const char *const sys_errlist[]; }
-# 31 "/usr/include/bits/sys_errlist.h" 3
+# 31 "/usr/include/x86_64-linux-gnu/bits/sys_errlist.h" 3
 extern "C" { extern int _sys_nerr; }
-# 32 "/usr/include/bits/sys_errlist.h" 3
+# 32 "/usr/include/x86_64-linux-gnu/bits/sys_errlist.h" 3
 extern "C" { extern const char *const _sys_errlist[]; }
 # 851 "/usr/include/stdio.h" 3
 extern "C" int fileno(FILE * ) throw();
@@ -10482,230 +10823,230 @@ extern "C" void flockfile(FILE * ) throw();
 extern "C" int ftrylockfile(FILE * ) throw();
 # 913 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE * ) throw();
-# 10 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 10 "ocelot/cuda/test/globals/global.cu"
 static float Pi;
-# 12 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 12 "ocelot/cuda/test/globals/global.cu"
 extern "C" void copyFromGlobal(float *result) ;
-# 17 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 17 "ocelot/cuda/test/globals/global.cu"
 int main(int argc, char *arg[]) {
-# 18 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 18 "ocelot/cuda/test/globals/global.cu"
 int N = 64;
-# 19 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 19 "ocelot/cuda/test/globals/global.cu"
 bool verbose = false;
-# 20 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 20 "ocelot/cuda/test/globals/global.cu"
 size_t bytes = (sizeof(float) * N);
-# 21 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 21 "ocelot/cuda/test/globals/global.cu"
 float *results_gpu = (0);
-# 22 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 22 "ocelot/cuda/test/globals/global.cu"
 float *results_cpu = ((float *)malloc(bytes));
-# 23 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 23 "ocelot/cuda/test/globals/global.cu"
 int devices = 0;
-# 24 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 24 "ocelot/cuda/test/globals/global.cu"
 cudaGetDeviceCount(&devices);
-# 26 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 26 "ocelot/cuda/test/globals/global.cu"
 int errors = 0;
-# 27 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 27 "ocelot/cuda/test/globals/global.cu"
 for (int device = 0; device != devices; ++device) {
-# 28 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 28 "ocelot/cuda/test/globals/global.cu"
 cudaDeviceProp properties;
-# 29 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 29 "ocelot/cuda/test/globals/global.cu"
 cudaGetDeviceProperties(&properties, device);
-# 30 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 30 "ocelot/cuda/test/globals/global.cu"
 printf("cudaSetDevice() - %d - %s \n", device, properties.name);
-# 31 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 31 "ocelot/cuda/test/globals/global.cu"
 cudaSetDevice(device);
-# 32 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 32 "ocelot/cuda/test/globals/global.cu"
 errors = 0;
-# 34 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 34 "ocelot/cuda/test/globals/global.cu"
 if ((cudaMalloc((void **)(&results_gpu), bytes)) != (cudaSuccess)) {
-# 35 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 35 "ocelot/cuda/test/globals/global.cu"
 printf("cudaMalloc() failed to allocate %d bytes on device\n", (int)bytes);
-# 36 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 36 "ocelot/cuda/test/globals/global.cu"
 return -1;
-# 37 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 37 "ocelot/cuda/test/globals/global.cu"
 }
-# 39 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 39 "ocelot/cuda/test/globals/global.cu"
 for (int i = 0; i < N; i++) {
-# 40 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 40 "ocelot/cuda/test/globals/global.cu"
 (results_cpu[i]) = (-1);
-# 41 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 41 "ocelot/cuda/test/globals/global.cu"
 }
-# 42 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 42 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 43 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 43 "ocelot/cuda/test/globals/global.cu"
 printf(" [1]\n");
-# 44 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 44 "ocelot/cuda/test/globals/global.cu"
 }
-# 45 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 45 "ocelot/cuda/test/globals/global.cu"
 cudaMemcpy(results_gpu, results_cpu, bytes, cudaMemcpyHostToDevice);
-# 47 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 47 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 48 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 48 "ocelot/cuda/test/globals/global.cu"
 printf(" [2]\n");
-# 49 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 49 "ocelot/cuda/test/globals/global.cu"
 }
-# 51 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 51 "ocelot/cuda/test/globals/global.cu"
 float pi = (3.141590118F);
-# 52 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 52 "ocelot/cuda/test/globals/global.cu"
 if ((cudaMemcpyToSymbol("Pi", &pi, sizeof(float), 0, cudaMemcpyHostToDevice)) != (cudaSuccess))
-# 53 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 53 "ocelot/cuda/test/globals/global.cu"
 {
-# 55 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 55 "ocelot/cuda/test/globals/global.cu"
 printf("cudaMemcpyToSymbol() failed to copy 4 bytes to symbol \'Pi\'\n");
-# 57 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 57 "ocelot/cuda/test/globals/global.cu"
 cudaFree(results_gpu);
-# 58 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 58 "ocelot/cuda/test/globals/global.cu"
 free(results_cpu);
-# 59 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 59 "ocelot/cuda/test/globals/global.cu"
 return -1;
-# 60 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 60 "ocelot/cuda/test/globals/global.cu"
 }
-# 63 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 63 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 64 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 64 "ocelot/cuda/test/globals/global.cu"
 printf(" [3]\n");
-# 65 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 65 "ocelot/cuda/test/globals/global.cu"
 }
-# 66 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 66 "ocelot/cuda/test/globals/global.cu"
 float copy_pi = (0);
-# 67 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 67 "ocelot/cuda/test/globals/global.cu"
 if ((cudaMemcpyFromSymbol(&copy_pi, "Pi", sizeof(float), 0, cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 68 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 68 "ocelot/cuda/test/globals/global.cu"
 {
-# 70 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 70 "ocelot/cuda/test/globals/global.cu"
 printf("cudaMemcpyFromSymbol() failed to copy 4 bytes from symbol \'Pi\'\n");
-# 72 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 72 "ocelot/cuda/test/globals/global.cu"
 cudaFree(results_gpu);
-# 73 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 73 "ocelot/cuda/test/globals/global.cu"
 free(results_cpu);
-# 74 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 74 "ocelot/cuda/test/globals/global.cu"
 return -1;
-# 75 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 75 "ocelot/cuda/test/globals/global.cu"
 }
-# 77 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 77 "ocelot/cuda/test/globals/global.cu"
 if (fabs(copy_pi - (3.141590118F)) > (0.001000000047F)) {
-# 78 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 78 "ocelot/cuda/test/globals/global.cu"
 printf("value copied from symbol (%f) did not match expected 3.14159\n", copy_pi);
-# 81 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 81 "ocelot/cuda/test/globals/global.cu"
 cudaFree(results_gpu);
-# 82 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 82 "ocelot/cuda/test/globals/global.cu"
 free(results_cpu);
-# 83 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 83 "ocelot/cuda/test/globals/global.cu"
 return -1;
-# 84 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 84 "ocelot/cuda/test/globals/global.cu"
 }
-# 86 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 86 "ocelot/cuda/test/globals/global.cu"
 dim3 block(64, 1);
-# 87 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 87 "ocelot/cuda/test/globals/global.cu"
 dim3 grid(((63) + (block.x)) / (64), 1);
-# 89 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 89 "ocelot/cuda/test/globals/global.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : copyFromGlobal(results_gpu);
-# 91 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 91 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 92 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 92 "ocelot/cuda/test/globals/global.cu"
 printf(" [4]\n");
-# 93 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 93 "ocelot/cuda/test/globals/global.cu"
 }
-# 94 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 94 "ocelot/cuda/test/globals/global.cu"
 cudaMemcpy(results_cpu, results_gpu, bytes, cudaMemcpyDeviceToHost);
-# 96 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 96 "ocelot/cuda/test/globals/global.cu"
 for (int i = 0; i < N; i++) {
-# 97 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 97 "ocelot/cuda/test/globals/global.cu"
 float expected = ((3.141590118F) * ((float)(i % 128)));
-# 98 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 98 "ocelot/cuda/test/globals/global.cu"
 float got = (results_cpu[i]);
-# 99 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 99 "ocelot/cuda/test/globals/global.cu"
 if (fabs(expected - got) > (0.001000000047F)) {
-# 100 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 100 "ocelot/cuda/test/globals/global.cu"
 printf("ERROR 0 - [%d] - got: %f, expected: %f\n", i, got, expected);
-# 101 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 101 "ocelot/cuda/test/globals/global.cu"
 if ((++errors) > 5) { break; }
-# 102 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 102 "ocelot/cuda/test/globals/global.cu"
 }
-# 103 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 103 "ocelot/cuda/test/globals/global.cu"
 }
-# 105 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 105 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 106 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 106 "ocelot/cuda/test/globals/global.cu"
 printf("[5]\n");
-# 107 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 107 "ocelot/cuda/test/globals/global.cu"
 }
-# 108 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 108 "ocelot/cuda/test/globals/global.cu"
 float *pi_gpu = (0);
-# 109 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 109 "ocelot/cuda/test/globals/global.cu"
 if ((cudaGetSymbolAddress((void **)(&pi_gpu), "Pi")) != (cudaSuccess)) {
-# 110 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 110 "ocelot/cuda/test/globals/global.cu"
 printf("failed to get address of global variable \'Pi\'\n");
-# 111 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 111 "ocelot/cuda/test/globals/global.cu"
 cudaFree(results_gpu);
-# 112 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 112 "ocelot/cuda/test/globals/global.cu"
 free(results_cpu);
-# 113 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 113 "ocelot/cuda/test/globals/global.cu"
 return -1;
-# 114 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 114 "ocelot/cuda/test/globals/global.cu"
 }
-# 116 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 116 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 117 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 117 "ocelot/cuda/test/globals/global.cu"
 printf(" [6]\n");
-# 118 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 118 "ocelot/cuda/test/globals/global.cu"
 }
-# 119 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 119 "ocelot/cuda/test/globals/global.cu"
 copy_pi = ((2.0F) * (3.141590118F));
-# 120 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 120 "ocelot/cuda/test/globals/global.cu"
 if ((cudaMemcpy(pi_gpu, &copy_pi, sizeof(float), cudaMemcpyHostToDevice)) != (cudaSuccess))
-# 121 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 121 "ocelot/cuda/test/globals/global.cu"
 {
-# 123 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 123 "ocelot/cuda/test/globals/global.cu"
 printf("failed to copy value to symbol \'Pi\'\n");
-# 124 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 124 "ocelot/cuda/test/globals/global.cu"
 cudaFree(results_gpu);
-# 125 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 125 "ocelot/cuda/test/globals/global.cu"
 free(results_cpu);
-# 126 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 126 "ocelot/cuda/test/globals/global.cu"
 return -1;
-# 127 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 127 "ocelot/cuda/test/globals/global.cu"
 }
-# 129 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 129 "ocelot/cuda/test/globals/global.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : copyFromGlobal(results_gpu);
-# 131 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 131 "ocelot/cuda/test/globals/global.cu"
 if (verbose) {
-# 132 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 132 "ocelot/cuda/test/globals/global.cu"
 printf(" [7]\n");
-# 133 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 133 "ocelot/cuda/test/globals/global.cu"
 }
-# 134 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 134 "ocelot/cuda/test/globals/global.cu"
 cudaMemcpy(results_cpu, results_gpu, bytes, cudaMemcpyDeviceToHost);
-# 136 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 136 "ocelot/cuda/test/globals/global.cu"
 for (int i = 0; i < N; i++) {
-# 137 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 137 "ocelot/cuda/test/globals/global.cu"
 float expected = (((2.0F) * (3.141590118F)) * ((float)(i % 128)));
-# 138 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 138 "ocelot/cuda/test/globals/global.cu"
 float got = (results_cpu[i]);
-# 139 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 139 "ocelot/cuda/test/globals/global.cu"
 if (fabs(expected - got) > (0.001000000047F)) {
-# 140 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 140 "ocelot/cuda/test/globals/global.cu"
 printf("ERROR 1 - [%d] - got: %f, expected: %f\n", i, got, expected);
-# 141 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 142 "ocelot/cuda/test/globals/global.cu"
 if ((++errors) > 5) { break; }
-# 142 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 143 "ocelot/cuda/test/globals/global.cu"
 }
-# 143 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 144 "ocelot/cuda/test/globals/global.cu"
 }
-# 145 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 146 "ocelot/cuda/test/globals/global.cu"
 cudaFree(results_gpu);
-# 147 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 148 "ocelot/cuda/test/globals/global.cu"
 }
-# 149 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 150 "ocelot/cuda/test/globals/global.cu"
 printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
-# 151 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 152 "ocelot/cuda/test/globals/global.cu"
 free(results_cpu);
-# 153 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 154 "ocelot/cuda/test/globals/global.cu"
 return 0;
-# 154 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 155 "ocelot/cuda/test/globals/global.cu"
 }
-# 1 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 74 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 template <typename T>
@@ -10785,563 +11126,198 @@ static void __cudaUnregisterBinaryUtil(void)
 {
   __cudaUnregisterFatBinary(__cudaFatCubinHandle);
 }
-
-# 1 "/usr/local/cuda/bin/../include/common_functions.h" 1
-# 147 "/usr/local/cuda/bin/../include/common_functions.h"
-# 1 "/usr/local/cuda/bin/../include/math_functions.h" 1 3
-# 980 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_constants.h" 1 3
-# 981 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
-# 3051 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/crt/func_macro.h" 1 3
-# 3052 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
-# 4765 "/usr/local/cuda/bin/../include/math_functions.h" 3
-inline double rsqrt(double a)
-{
-  return 1.0 / sqrt(a);
-}
-
-inline double rcbrt(double a)
-{
-  double s, t;
-
-  if (__isnan(a)) {
-    return a + a;
-  }
-  if (a == 0.0 || __isinf(a)) {
-    return 1.0 / a;
-  }
-  s = fabs(a);
-  t = exp2(-3.3333333333333333e-1 * log2(s));
-  t = ((t*t) * (-s*t) + 1.0) * (3.3333333333333333e-1*t) + t;
-
-
-
-  if (__signbit(a))
-
-  {
-    t = -t;
-  }
-  return t;
-}
-
-inline double sinpi(double a)
-{
-  int n;
-
-  if (__isnan(a)) {
-    return a + a;
-  }
-  if (a == 0.0 || __isinf(a)) {
-    return sin (a);
-  }
-  if (a == floor(a)) {
-    return ((a / 1.0e308) / 1.0e308) / 1.0e308;
-  }
-  a = remquo (a, 0.5, &n);
-  a = a * 3.1415926535897931e+0;
-  if (n & 1) {
-    a = cos (a);
-  } else {
-    a = sin (a);
-  }
-  if (n & 2) {
-    a = -a;
-  }
-  return a;
-}
-
-inline double cospi(double a)
-{
-  int n;
-
-  if (__isnan(a)) {
-    return a + a;
-  }
-  if (__isinf(a)) {
-    return cos (a);
-  }
-  if (fabs(a) > 9.0071992547409920e+015) {
-    a = 0.0;
-  }
-  a = remquo (a, 0.5, &n);
-  a = a * 3.1415926535897931e+0;
-  n++;
-  if (n & 1) {
-    a = cos (a);
-  } else {
-    a = sin (a);
-  }
-  if (n & 2) {
-    a = -a;
-  }
-  if (a == 0.0) {
-    a = fabs(a);
-  }
-  return a;
-}
-
-inline double erfinv(double a)
-{
-  double p, q, t, fa;
-  volatile union {
-    double d;
-    unsigned long long int l;
-  } cvt;
-
-  fa = fabs(a);
-  if (fa >= 1.0) {
-    cvt.l = 0xfff8000000000000ull;
-    t = cvt.d;
-    if (fa == 1.0) {
-      t = a * exp(1000.0);
-    }
-  } else if (fa >= 0.9375) {
-
-
-
-
-    t = log1p(-fa);
-    t = 1.0 / sqrt(-t);
-    p = 2.7834010353747001060e-3;
-    p = p * t + 8.6030097526280260580e-1;
-    p = p * t + 2.1371214997265515515e+0;
-    p = p * t + 3.1598519601132090206e+0;
-    p = p * t + 3.5780402569085996758e+0;
-    p = p * t + 1.5335297523989890804e+0;
-    p = p * t + 3.4839207139657522572e-1;
-    p = p * t + 5.3644861147153648366e-2;
-    p = p * t + 4.3836709877126095665e-3;
-    p = p * t + 1.3858518113496718808e-4;
-    p = p * t + 1.1738352509991666680e-6;
-    q = t + 2.2859981272422905412e+0;
-    q = q * t + 4.3859045256449554654e+0;
-    q = q * t + 4.6632960348736635331e+0;
-    q = q * t + 3.9846608184671757296e+0;
-    q = q * t + 1.6068377709719017609e+0;
-    q = q * t + 3.5609087305900265560e-1;
-    q = q * t + 5.3963550303200816744e-2;
-    q = q * t + 4.3873424022706935023e-3;
-    q = q * t + 1.3858762165532246059e-4;
-    q = q * t + 1.1738313872397777529e-6;
-    t = p / (q * t);
-    if (a < 0.0) t = -t;
-  } else if (fa >= 0.75) {
-
-
-
-
-    t = a * a - .87890625;
-    p = .21489185007307062000e+0;
-    p = p * t - .64200071507209448655e+1;
-    p = p * t + .29631331505876308123e+2;
-    p = p * t - .47644367129787181803e+2;
-    p = p * t + .34810057749357500873e+2;
-    p = p * t - .12954198980646771502e+2;
-    p = p * t + .25349389220714893917e+1;
-    p = p * t - .24758242362823355486e+0;
-    p = p * t + .94897362808681080020e-2;
-    q = t - .12831383833953226499e+2;
-    q = q * t + .41409991778428888716e+2;
-    q = q * t - .53715373448862143349e+2;
-    q = q * t + .33880176779595142685e+2;
-    q = q * t - .11315360624238054876e+2;
-    q = q * t + .20369295047216351160e+1;
-    q = q * t - .18611650627372178511e+0;
-    q = q * t + .67544512778850945940e-2;
-    p = p / q;
-    t = a * p;
-  } else {
-
-
-
-
-    t = a * a - .5625;
-    p = - .23886240104308755900e+2;
-    p = p * t + .45560204272689128170e+3;
-    p = p * t - .22977467176607144887e+4;
-    p = p * t + .46631433533434331287e+4;
-    p = p * t - .43799652308386926161e+4;
-    p = p * t + .19007153590528134753e+4;
-    p = p * t - .30786872642313695280e+3;
-    q = t - .83288327901936570000e+2;
-    q = q * t + .92741319160935318800e+3;
-    q = q * t - .35088976383877264098e+4;
-    q = q * t + .59039348134843665626e+4;
-    q = q * t - .48481635430048872102e+4;
-    q = q * t + .18997769186453057810e+4;
-    q = q * t - .28386514725366621129e+3;
-    p = p / q;
-    t = a * p;
-  }
-  return t;
-}
-
-inline double erfcinv(double a)
-{
-  double t;
-  volatile union {
-    double d;
-    unsigned long long int l;
-  } cvt;
-
-  if (__isnan(a)) {
-    return a + a;
-  }
-  if (a <= 0.0) {
-    cvt.l = 0xfff8000000000000ull;
-    t = cvt.d;
-    if (a == 0.0) {
-        t = (1.0 - a) * exp(1000.0);
-    }
-  }
-  else if (a >= 0.0625) {
-    t = erfinv (1.0 - a);
-  }
-  else if (a >= 1e-100) {
-
-
-
-
-    double p, q;
-    t = log(a);
-    t = 1.0 / sqrt(-t);
-    p = 2.7834010353747001060e-3;
-    p = p * t + 8.6030097526280260580e-1;
-    p = p * t + 2.1371214997265515515e+0;
-    p = p * t + 3.1598519601132090206e+0;
-    p = p * t + 3.5780402569085996758e+0;
-    p = p * t + 1.5335297523989890804e+0;
-    p = p * t + 3.4839207139657522572e-1;
-    p = p * t + 5.3644861147153648366e-2;
-    p = p * t + 4.3836709877126095665e-3;
-    p = p * t + 1.3858518113496718808e-4;
-    p = p * t + 1.1738352509991666680e-6;
-    q = t + 2.2859981272422905412e+0;
-    q = q * t + 4.3859045256449554654e+0;
-    q = q * t + 4.6632960348736635331e+0;
-    q = q * t + 3.9846608184671757296e+0;
-    q = q * t + 1.6068377709719017609e+0;
-    q = q * t + 3.5609087305900265560e-1;
-    q = q * t + 5.3963550303200816744e-2;
-    q = q * t + 4.3873424022706935023e-3;
-    q = q * t + 1.3858762165532246059e-4;
-    q = q * t + 1.1738313872397777529e-6;
-    t = p / (q * t);
-  }
-  else {
-
-
-
-
-    double p, q;
-    t = log(a);
-    t = 1.0 / sqrt(-t);
-    p = 6.9952990607058154858e-1;
-    p = p * t + 1.9507620287580568829e+0;
-    p = p * t + 8.2810030904462690216e-1;
-    p = p * t + 1.1279046353630280005e-1;
-    p = p * t + 6.0537914739162189689e-3;
-    p = p * t + 1.3714329569665128933e-4;
-    p = p * t + 1.2964481560643197452e-6;
-    p = p * t + 4.6156006321345332510e-9;
-    p = p * t + 4.5344689563209398450e-12;
-    q = t + 1.5771922386662040546e+0;
-    q = q * t + 2.1238242087454993542e+0;
-    q = q * t + 8.4001814918178042919e-1;
-    q = q * t + 1.1311889334355782065e-1;
-    q = q * t + 6.0574830550097140404e-3;
-    q = q * t + 1.3715891988350205065e-4;
-    q = q * t + 1.2964671850944981713e-6;
-    q = q * t + 4.6156017600933592558e-9;
-    q = q * t + 4.5344687377088206783e-12;
-    t = p / (q * t);
-  }
-  return t;
-}
-
-inline float rsqrtf(float a)
-{
-  return (float)rsqrt((double)a);
-}
-
-inline float rcbrtf(float a)
-{
-  return (float)rcbrt((double)a);
-}
-
-inline float sinpif(float a)
-{
-  return (float)sinpi((double)a);
-}
-
-inline float cospif(float a)
-{
-  return (float)cospi((double)a);
-}
-
-inline float erfinvf(float a)
-{
-  return (float)erfinv((double)a);
-}
-
-inline float erfcinvf(float a)
-{
-  return (float)erfcinv((double)a);
-}
-
-
-
-
-
-
-
-inline int min(int a, int b)
-{
-  return a < b ? a : b;
-}
-
-inline unsigned int umin(unsigned int a, unsigned int b)
-{
-  return a < b ? a : b;
-}
-
-inline long long int llmin(long long int a, long long int b)
-{
-  return a < b ? a : b;
-}
-
-inline unsigned long long int ullmin(unsigned long long int a, unsigned long long int b)
-{
-  return a < b ? a : b;
-}
-
-inline int max(int a, int b)
-{
-  return a > b ? a : b;
-}
-
-inline unsigned int umax(unsigned int a, unsigned int b)
-{
-  return a > b ? a : b;
-}
-
-inline long long int llmax(long long int a, long long int b)
-{
-  return a > b ? a : b;
-}
-
-inline unsigned long long int ullmax(unsigned long long int a, unsigned long long int b)
-{
-  return a > b ? a : b;
-}
-# 5123 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
-# 5124 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
-# 148 "/usr/local/cuda/bin/../include/common_functions.h" 2
-# 176 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
-
-
-
-
-
-
-
+# 183 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 #pragma pack()
-# 2 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00000f5c_00000000-3_global.fatbin.c" 1
+# 2 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00004e6f_00000000-3_global.fatbin.c" 1
 asm(
 ".section .rodata\n"
 ".align 32\n"
 "fatbinData:\n"
-".quad 0x00100001ba55ed50,0x00000000000014bd,0x0000009001000001,0x0000000000000c8d\n"
-".quad 0x0000003800000000,0x0000001400020003,0x0000004900000040,0x0000000000000015\n"
-".quad 0x0000000000000000,0x0000000000000000,0x6f6e2f656d6f682f,0x6568632f6c616d72\n"
-".quad 0x70672f74756f6b63,0x2f746f6c65636f75,0x6f2f746f6c65636f,0x75632f746f6c6563\n"
-".quad 0x2f747365742f6164,0x2f736c61626f6c67,0x632e6c61626f6c67,0x0000000000000075\n"
-".quad 0x6f69737265762e09,0x2e090a332e32206e,0x7320746567726174,0x612e090a30325f6d\n"
-".quad 0x735f737365726464,0x090a343620657a69,0x69706d6f63202f2f,0x687469772064656c\n"
-".quad 0x6f6c2f7273752f20,0x616475632f6c6163,0x2f34366e65706f2f,0x0a65622f2f62696c\n"
-".quad 0x706f766e202f2f09,0x302e342063636e65,0x6f20746c69756220,0x302d31313032206e\n"
-".quad 0x2f090a0a38312d32,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2f2f090a2d2d2d2d,0x696c69706d6f4320,0x2f706d742f20676e,0x305f746678706d74\n"
-".quad 0x5f63356630303030,0x3030303030303030,0x61626f6c675f372d,0x692e337070632e6c\n"
-".quad 0x632f706d742f2820,0x5342632e23494263,0x2f2f090a29616e42,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a0a2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x202f2f090a2d2d2d,0x3a736e6f6974704f\n"
-".quad 0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d\n"
-".quad 0x72615420202f2f09,0x2c7874703a746567,0x5f6d733a41534920,0x69646e45202c3032\n"
-".quad 0x6c7474696c3a6e61,0x746e696f50202c65,0x3a657a6953207265,0x20202f2f090a3436\n"
-".quad 0x74704f2809334f2d,0x6f6974617a696d69,0x296c6576656c206e,0x672d20202f2f090a\n"
-".quad 0x6775626544280930,0x0a296c6576656c20,0x326d2d20202f2f09,0x74726f7065522809\n"
-".quad 0x726f736976646120,0x2f2f090a29736569,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d,0x3c22093109656c69,0x2d646e616d6d6f63\n"
-".quad 0x090a223e656e696c,0x093209656c69662e,0x6d742f706d742f22,0x3030305f74667870\n"
-".quad 0x30305f6335663030,0x362d303030303030,0x2e6c61626f6c675f,0x2e32656661647563\n"
-".quad 0x662e090a22757067,0x2f22093309656c69,0x2f62696c2f727375,0x6c2d34365f363878\n"
-".quad 0x756e672d78756e69,0x3638782f6363672f,0x756e696c2d34365f,0x2e342f756e672d78\n"
-".quad 0x6c636e692f322e35,0x646474732f656475,0x2e090a22682e6665,0x22093409656c6966\n"
-".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x632f6564756c636e\n"
-".quad 0x63697665642f7472,0x6d69746e75725f65,0x662e090a22682e65,0x2f22093509656c69\n"
-".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x6f682f6564756c63\n"
-".quad 0x6e696665645f7473,0x2e090a22682e7365,0x22093609656c6966,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x622f6564756c636e,0x745f6e69746c6975\n"
-".quad 0x0a22682e73657079,0x3709656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f6563697665642f,0x22682e7365707974\n"
-".quad 0x09656c69662e090a,0x2f7273752f220938,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x7265766972642f65,0x682e73657079745f,0x656c69662e090a22\n"
-".quad 0x7273752f22093909,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x61667275732f6564,0x73657079745f6563,0x69662e090a22682e,0x2f2209303109656c\n"
-".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x65742f6564756c63\n"
-".quad 0x79745f6572757478,0x090a22682e736570,0x313109656c69662e,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f726f746365762f\n"
-".quad 0x22682e7365707974,0x09656c69662e090a,0x7273752f22093231,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x63697665642f6564,0x68636e75616c5f65\n"
-".quad 0x74656d617261705f,0x090a22682e737265,0x333109656c69662e,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x6f74732f7472632f\n"
-".quad 0x616c635f65676172,0x2e090a22682e7373,0x09343109656c6966,0x6e692f7273752f22\n"
-".quad 0x69622f6564756c63,0x73657079742f7374,0x69662e090a22682e,0x2f2209353109656c\n"
-".quad 0x6c636e692f727375,0x656d69742f656475,0x69662e090a22682e,0x2f2209363109656c\n"
-".quad 0x726f6e2f656d6f68,0x636568632f6c616d,0x7570672f74756f6b,0x6f2f746f6c65636f\n"
-".quad 0x636f2f746f6c6563,0x6475632f746f6c65,0x672f747365742f61,0x672f736c61626f6c\n"
-".quad 0x75632e6c61626f6c,0x656c69662e090a22,0x73752f2209373109,0x2f6c61636f6c2f72\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x6d6d6f632f656475,0x74636e75665f6e6f\n"
-".quad 0x0a22682e736e6f69,0x3109656c69662e09,0x2f7273752f220938,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x665f6874616d2f65,0x736e6f6974636e75\n"
-".quad 0x69662e090a22682e,0x2f2209393109656c,0x61636f6c2f727375,0x622f616475632f6c\n"
-".quad 0x6e692f2e2e2f6e69,0x616d2f6564756c63,0x74736e6f635f6874,0x0a22682e73746e61\n"
-".quad 0x3209656c69662e09,0x2f7273752f220930,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x6563697665642f65,0x6f6974636e75665f,0x2e090a22682e736e\n"
-".quad 0x09313209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
-".quad 0x2f6564756c636e69,0x74615f31315f6d73,0x6e75665f63696d6f,0x682e736e6f697463\n"
-".quad 0x656c69662e090a22,0x73752f2209323209,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x315f6d732f656475,0x63696d6f74615f32,0x6f6974636e75665f\n"
-".quad 0x2e090a22682e736e,0x09333209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6f645f33315f6d73,0x6e75665f656c6275\n"
-".quad 0x682e736e6f697463,0x656c69662e090a22,0x73752f2209343209,0x2f6c61636f6c2f72\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x325f6d732f656475,0x63696d6f74615f30\n"
-".quad 0x6f6974636e75665f,0x2e090a22682e736e,0x09353209656c6966,0x6f6c2f7273752f22\n"
-".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6e695f30325f6d73\n"
-".quad 0x736369736e697274,0x69662e090a22682e,0x2f2209363209656c,0x61636f6c2f727375\n"
-".quad 0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75732f6564756c63,0x75665f6563616672\n"
-".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220937320965,0x6c61636f6c2f7273\n"
-".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x7865742f6564756c,0x7465665f65727574\n"
-".quad 0x74636e75665f6863,0x0a22682e736e6f69,0x3209656c69662e09,0x2f7273752f220938\n"
-".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x665f6874616d2f65\n"
-".quad 0x736e6f6974636e75,0x7874705f6c62645f,0x2e090a0a22682e33,0x2e206c61626f6c67\n"
-".quad 0x0a3b695020323366,0x7972746e652e090a,0x6f724679706f6320,0x206c61626f6c476d\n"
-".quad 0x7261702e09090a28,0x203436752e206d61,0x6170616475635f5f,0x4679706f635f6d72\n"
-".quad 0x61626f6c476d6f72,0x746c757365725f6c,0x722e090a7b090a29,0x203233752e206765\n"
-".quad 0x0a3b3e34313c7225,0x752e206765722e09,0x363c647225203436,0x6765722e090a3b3e\n"
-".quad 0x6625203233662e20,0x6c2e090a3b3e353c,0x323109363109636f,0x6257444c240a3009\n"
-".quad 0x706f635f6e696765,0x6f6c476d6f724679,0x6c2e090a3a6c6162,0x343109363109636f\n"
-".quad 0x2e766f6d090a3009,0x3172250920323375,0x782e64697425202c,0x752e766f6d090a3b\n"
-".quad 0x2c32722509203233,0x2e64696174632520,0x2e766f6d090a3b78,0x3372250920323375\n"
-".quad 0x2e6469746e25202c,0x2e6c756d090a3b78,0x09203233752e6f6c,0x327225202c347225\n"
-".quad 0x090a3b337225202c,0x203233752e646461,0x7225202c35722509,0x0a3b347225202c31\n"
-".quad 0x3233732e72687309,0x25202c3672250920,0x0a3b3133202c3572,0x3233732e766f6d09\n"
-".quad 0x31202c3772250920,0x646e61090a3b3732,0x722509203233622e,0x202c367225202c38\n"
-".quad 0x6461090a3b377225,0x2509203233732e64,0x2c387225202c3972,0x73090a3b35722520\n"
-".quad 0x09203233732e7268,0x7225202c30317225,0x6d090a3b37202c39,0x33732e6f6c2e6c75\n"
-".quad 0x2c31317225092032,0x31202c3031722520,0x627573090a3b3832,0x722509203233732e\n"
-".quad 0x2c357225202c3231,0x090a3b3131722520,0x662e6e722e747663,0x09203233732e3233\n"
-".quad 0x317225202c316625,0x672e646c090a3b32,0x33662e6c61626f6c,0x202c326625092032\n"
-".quad 0x6d090a3b5d69505b,0x09203233662e6c75,0x316625202c336625,0x090a3b326625202c\n"
-".quad 0x6d617261702e646c,0x722509203436752e,0x635f5f5b202c3164,0x5f6d726170616475\n"
-".quad 0x6d6f724679706f63,0x725f6c61626f6c47,0x0a3b5d746c757365,0x3436732e74766309\n"
-".quad 0x722509203233732e,0x3b357225202c3264,0x69772e6c756d090a,0x09203233732e6564\n"
-".quad 0x7225202c33647225,0x61090a3b34202c35,0x09203436752e6464,0x7225202c34647225\n"
-".quad 0x33647225202c3164,0x6c672e7473090a3b,0x3233662e6c61626f,0x2b346472255b0920\n"
-".quad 0x3b336625202c5d30,0x3109636f6c2e090a,0x090a300935310936,0x4c240a3b74697865\n"
-".quad 0x6f635f646e655744,0x6c476d6f72467970,0x7d090a3a6c61626f,0x79706f63202f2f20\n"
-".quad 0x626f6c476d6f7246,0x000002000a0a6c61,0x0007180000008801,0x0000000000000000\n"
-".quad 0x0100040000000000,0x0000380000001500,0x0000150000004900,0x0000000000000000\n"
-".quad 0x6f682f0000000000,0x616d726f6e2f656d,0x6f6b636568632f6c,0x636f7570672f7475\n"
-".quad 0x65636f2f746f6c65,0x6c65636f2f746f6c,0x2f616475632f746f,0x6f6c672f74736574\n"
-".quad 0x6f6c672f736c6162,0x000075632e6c6162,0x4c457f0000000000,0x0000043301010246\n"
-".quad 0xbe00020000000000,0x0000000000000100,0x0006380000000000,0x0000400000000000\n"
-".quad 0x1405150000000000,0x4000040038004000,0x0000000001000b00,0x0000000000000000\n"
+".quad 0x00100001ba55ed50,0x0000000000001446,0x0000006001000002,0x0000000000000718\n"
+".quad 0x0000000000000000,0x0000001700010004,0x0000002200000038,0x0000000000000015\n"
+".quad 0x0000000000000000,0x632f746f6c65636f,0x747365742f616475,0x736c61626f6c672f\n"
+".quad 0x2e6c61626f6c672f,0x0000000000007563,0x33010102464c457f,0x0000000000000004\n"
+".quad 0x0000000100be0002,0x0000000000000000,0x0000000000000638,0x0000000000000040\n"
+".quad 0x0038004000140517,0x0001000b00400004,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000010000000000,0x0000000000000300\n"
-".quad 0x0000000000000000,0x0003000000000000,0x0000ab0000000000,0x0000000000000000\n"
-".quad 0x0000040000000000,0x0000000000000000,0x00000b0000000000,0x0000000000000300\n"
-".quad 0x0000000000000000,0x0003ab0000000000,0x0000130000000000,0x0000000000000000\n"
-".quad 0x0000010000000000,0x0000000000000000,0x0000130000000000,0x0000000000000200\n"
-".quad 0x0000000000000000,0x0003be0000000000,0x0001500000000000,0x0000020000000000\n"
-".quad 0x0000010000000c00,0x0000180000000000,0x0000360000000000,0x0000060000000100\n"
-".quad 0x0000000000000000,0x00050e0000000000,0x0000a80000000000,0x0000030000000000\n"
-".quad 0x0000040600000600,0x0000000000000000,0x00006c0000000000,0x0000020000000100\n"
-".quad 0x0000000000000000,0x0005b60000000000,0x0000280000000000,0x0000000000000000\n"
-".quad 0x0000040000000400,0x0000000000000000,0x0000540000000000,0x0000020000000100\n"
-".quad 0x0000000000000000,0x0005de0000000000,0x0000280000000000,0x0000000000000000\n"
-".quad 0x0000010000000400,0x0000000000000000,0x0000890000000000,0x0000020000000100\n"
-".quad 0x0000000000000000,0x0006060000000000,0x0000080000000000,0x0000000000000000\n"
-".quad 0x0000080000000000,0x0000000000000000,0x0000980000000000,0x0000000000000900\n"
-".quad 0x0000000000000000,0x00060e0000000000,0x0000100000000000,0x0000030000000000\n"
-".quad 0x0000040000000700,0x0000100000000000,0x00002b0000000000,0x0000030000000800\n"
-".quad 0x0000000000000000,0x00061e0000000000,0x0000040000000000,0x0000000000000000\n"
-".quad 0x0000040000000000,0x0000000000000000,0x00004b0000000000,0x0000020000000100\n"
-".quad 0x0000000000000000,0x00061e0000000000,0x0000180000000000,0x0000000000000000\n"
-".quad 0x0000010000000000,0x0000000000000000,0x732e000000000000,0x0062617472747368\n"
-".quad 0x006261747274732e,0x006261746d79732e,0x626f6c672e766e2e,0x0074696e692e6c61\n"
-".quad 0x626f6c672e766e2e,0x747865742e006c61,0x6f724679706f632e,0x006c61626f6c476d\n"
-".quad 0x6f666e692e766e2e,0x666e692e766e2e00,0x724679706f632e6f,0x6c61626f6c476d6f\n"
-".quad 0x6e6f632e766e2e00,0x632e30746e617473,0x476d6f724679706f,0x6e2e006c61626f6c\n"
-".quad 0x6174736e6f632e76,0x65722e003431746e,0x6e6f632e766e2e6c,0x003431746e617473\n"
-".quad 0x6f724679706f6300,0x006c61626f6c476d,0x0000000000006950,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0300000000000000,0x0000000000000100,0x0000000000000000\n"
-".quad 0x0300000000000000,0x0000000000000200,0x0000000000000000,0x0300000000000000\n"
-".quad 0x0000000000000300,0x0000000000000000,0x0300000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0300000000000000,0x0000000000000900,0x0000000000000000\n"
-".quad 0x0300000000000000,0x0000000000000400,0x00000000a8000000,0x0300000000000000\n"
-".quad 0x0000000000000a00,0x0000000000000000,0x0300000000000000,0x0000000000000600\n"
-".quad 0x0000000000000000,0x0300000000000000,0x0000000000000500,0x0000000000000000\n"
-".quad 0x0300000000000000,0x0000000000000700,0x0000000000000000,0x0300000000000000\n"
-".quad 0x0000000000000800,0x0000000000000000,0x1200000001000000,0x0000000000000410\n"
-".quad 0x00000000a8000000,0x1100000010000000,0x0000000000000900,0x0000000004000000\n"
-".quad 0x0400005de4000000,0x0000001de4280044,0x0000011de4400000,0x0010015de4280078\n"
-".quad 0x0000401c85280078,0x0080011de4840000,0x0084009c04280040,0x009400dc042c0000\n"
-".quad 0x0020309c032c0000,0x007c20dc23200440,0x0010211ca35800c0,0x01fc30dc032009c0\n"
-".quad 0x000830dc036800c0,0x001c30dc23480000,0x000830dce35800c0,0x0010209ce3410000\n"
-".quad 0x000d20de045000c0,0x0090215c43180000,0x0000301c00480040,0x0000401c85580000\n"
-".quad 0x0000001de7940000,0x0000000000800000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000040c04000000,0x0900080a04000000\n"
-".quad 0x0300080020000000,0xff000c1704000819,0x0000000000ffffff,0x00000000000021f0\n"
-".quad 0x0000000000000000,0x0d00000002000000,0x0c00081204000000,0x0400000000000000\n"
-".quad 0x000000000c000811,0x0000060000000000,0x0006380000000500,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000e00000000000,0x0000e00000000000,0x0000040000000000\n"
-".quad 0x0000000000000000,0x00050e00000c0560,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000f80000000000,0x0000f80000000000,0x0000040000000000,0x0000010000000000\n"
-".quad 0x0006060000000500,0x0000000000000000,0x0000000000000000,0x0000180000000000\n"
-".quad 0x0000180000000000,0x0000040000000000,0x0000010000000000,0x00061e0000000600\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000040000000000\n"
-".quad 0x0000040000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000300000001,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000300,0x00000000000000ab,0x0000000000000000\n"
+".quad 0x0000000000000004,0x0000000000000000,0x000000030000000b,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000000003ab,0x0000000000000013,0x0000000000000000\n"
+".quad 0x0000000000000001,0x0000000000000000,0x0000000200000013,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000000003be,0x0000000000000150,0x0000000c00000002\n"
+".quad 0x0000000000000001,0x0000000000000018,0x0000000100000036,0x0000000000000006\n"
+".quad 0x0000000000000000,0x000000000000050e,0x00000000000000a8,0x0600000600000003\n"
+".quad 0x0000000000000004,0x0000000000000000,0x000000010000006c,0x0000000000000002\n"
+".quad 0x0000000000000000,0x00000000000005b6,0x0000000000000028,0x0000000400000000\n"
+".quad 0x0000000000000004,0x0000000000000000,0x0000000100000054,0x0000000000000002\n"
+".quad 0x0000000000000000,0x00000000000005de,0x0000000000000028,0x0000000400000000\n"
+".quad 0x0000000000000001,0x0000000000000000,0x0000000100000089,0x0000000000000002\n"
+".quad 0x0000000000000000,0x0000000000000606,0x0000000000000008,0x0000000000000000\n"
+".quad 0x0000000000000008,0x0000000000000000,0x0000000900000098,0x0000000000000000\n"
+".quad 0x0000000000000000,0x000000000000060e,0x0000000000000010,0x0000000700000003\n"
+".quad 0x0000000000000004,0x0000000000000010,0x000000080000002b,0x0000000000000003\n"
+".quad 0x0000000000000000,0x000000000000061e,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000000000004,0x0000000000000000,0x000000010000004b,0x0000000000000002\n"
+".quad 0x0000000000000000,0x000000000000061e,0x0000000000000018,0x0000000000000000\n"
+".quad 0x0000000000000001,0x0000000000000000,0x7472747368732e00,0x747274732e006261\n"
+".quad 0x746d79732e006261,0x672e766e2e006261,0x6e692e6c61626f6c,0x672e766e2e007469\n"
+".quad 0x742e006c61626f6c,0x79706f632e747865,0x626f6c476d6f7246,0x692e766e2e006c61\n"
+".quad 0x2e766e2e006f666e,0x706f632e6f666e69,0x6f6c476d6f724679,0x2e766e2e006c6162\n"
+".quad 0x746e6174736e6f63,0x724679706f632e30,0x6c61626f6c476d6f,0x6e6f632e766e2e00\n"
+".quad 0x003431746e617473,0x2e766e2e6c65722e,0x746e6174736e6f63,0x79706f6300003431\n"
+".quad 0x626f6c476d6f7246,0x0000006950006c61,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000100030000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000200030000,0x0000000000000000,0x0000000000000000,0x0000000300030000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000030000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000900030000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000400030000,0x00a8000000000000,0x0000000000000000,0x0000000a00030000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000600030000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000500030000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000700030000,0x0000000000000000,0x0000000000000000,0x0000000800030000\n"
+".quad 0x0000000000000000,0x0001000000000000,0x0000000410120000,0x00a8000000000000\n"
+".quad 0x0010000000000000,0x0000000900110000,0x0004000000000000,0x5de4000000000000\n"
+".quad 0x1de4280044040000,0x1de4400000000000,0x5de4280078000001,0x1c85280078001001\n"
+".quad 0x9c04840000000040,0xdc042c0000008400,0x9c032c0000009400,0xdc23200440002030\n"
+".quad 0x1de45800c0007c20,0xdc03280040008001,0x1ca36800c001fc30,0xdc032009c0001021\n"
+".quad 0xdc23480000000830,0xdce35800c0001c30,0x9ce3410000000830,0xde045000c0001020\n"
+".quad 0x5c43180000000d20,0x1c00480040009021,0x1c85580000000030,0x1de7940000000040\n"
+".quad 0x0000800000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0c04000000000000,0x0a04000000000004,0x0020000000090008\n"
+".quad 0x1704000819030008,0x0000ffffffff000c,0x00000021f0000000,0x0000000000000000\n"
+".quad 0x0002000000000000,0x12040000000d0000,0x00000000000c0008,0x000c000811040000\n"
+".quad 0x0000000000000000,0x0000000500000006,0x0000000000000638,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000000000e0,0x00000000000000e0,0x0000000000000004\n"
+".quad 0x00000c0560000000,0x000000000000050e,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00000000000000f8,0x00000000000000f8,0x0000000000000004,0x0000000500000001\n"
+".quad 0x0000000000000606,0x0000000000000000,0x0000000000000000,0x0000000000000018\n"
+".quad 0x0000000000000018,0x0000000000000004,0x0000000600000001,0x000000000000061e\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000004\n"
+".quad 0x0000000000000004,0x0000006801000001,0x0000000000000c66,0x0000003800000000\n"
+".quad 0x0000001400020003,0x0000002200000040,0x0000000000000015,0x0000000000000000\n"
+".quad 0x0000000000000000,0x632f746f6c65636f,0x747365742f616475,0x736c61626f6c672f\n"
+".quad 0x2e6c61626f6c672f,0x0000000000007563,0x6f69737265762e09,0x2e090a332e32206e\n"
+".quad 0x7320746567726174,0x612e090a30325f6d,0x735f737365726464,0x090a343620657a69\n"
+".quad 0x69706d6f63202f2f,0x687469772064656c,0x6f6c2f7273752f20,0x616475632f6c6163\n"
+".quad 0x2f34366e65706f2f,0x0a65622f2f62696c,0x706f766e202f2f09,0x302e342063636e65\n"
+".quad 0x6f20746c69756220,0x302d31313032206e,0x2f090a0a32312d35,0x2d2d2d2d2d2d2d2f\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x696c69706d6f4320\n"
+".quad 0x2f706d742f20676e,0x305f746678706d74,0x5f66366534303030,0x3030303030303030\n"
+".quad 0x61626f6c675f372d,0x692e337070632e6c,0x632f706d742f2820,0x364d4f2e23494263\n"
+".quad 0x2f2f090a29393041,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2f2f090a0a2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x202f2f090a2d2d2d,0x3a736e6f6974704f,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d,0x72615420202f2f09,0x2c7874703a746567\n"
+".quad 0x5f6d733a41534920,0x69646e45202c3032,0x6c7474696c3a6e61,0x746e696f50202c65\n"
+".quad 0x3a657a6953207265,0x20202f2f090a3436,0x74704f2809334f2d,0x6f6974617a696d69\n"
+".quad 0x296c6576656c206e,0x672d20202f2f090a,0x6775626544280930,0x0a296c6576656c20\n"
+".quad 0x326d2d20202f2f09,0x74726f7065522809,0x726f736976646120,0x2f2f090a29736569\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d\n"
+".quad 0x3c22093109656c69,0x2d646e616d6d6f63,0x090a223e656e696c,0x093209656c69662e\n"
+".quad 0x6d742f706d742f22,0x3030305f74667870,0x30305f6636653430,0x362d303030303030\n"
+".quad 0x2e6c61626f6c675f,0x2e32656661647563,0x662e090a22757067,0x2f22093309656c69\n"
+".quad 0x2f62696c2f727375,0x5f3638782f636367,0x78756e696c2d3436,0x362e342f756e672d\n"
+".quad 0x756c636e692f312e,0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x72632f6564756c63\n"
+".quad 0x6563697665642f74,0x656d69746e75725f,0x69662e090a22682e,0x752f22093509656c\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x736f682f6564756c\n"
+".quad 0x656e696665645f74,0x662e090a22682e73,0x2f22093609656c69,0x61636f6c2f727375\n"
+".quad 0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75622f6564756c63,0x79745f6e69746c69\n"
+".quad 0x090a22682e736570,0x093709656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x745f656369766564,0x0a22682e73657079\n"
+".quad 0x3809656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
+".quad 0x6564756c636e692f,0x5f7265766972642f,0x22682e7365707974,0x09656c69662e090a\n"
+".quad 0x2f7273752f220939,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x6361667275732f65,0x2e73657079745f65,0x6c69662e090a2268,0x752f220930310965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x7865742f6564756c\n"
+".quad 0x7079745f65727574,0x2e090a22682e7365,0x09313109656c6966,0x6f6c2f7273752f22\n"
+".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x745f726f74636576\n"
+".quad 0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220932,0x75632f6c61636f6c\n"
+".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65,0x5f68636e75616c5f\n"
+".quad 0x6574656d61726170,0x2e090a22682e7372,0x09333109656c6966,0x6f6c2f7273752f22\n"
+".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x726f74732f747263\n"
+".quad 0x73616c635f656761,0x662e090a22682e73,0x2209343109656c69,0x636e692f7273752f\n"
+".quad 0x3638782f6564756c,0x756e696c2d34365f,0x69622f756e672d78,0x73657079742f7374\n"
+".quad 0x69662e090a22682e,0x2f2209353109656c,0x6c636e692f727375,0x656d69742f656475\n"
+".quad 0x69662e090a22682e,0x6f2209363109656c,0x75632f746f6c6563,0x2f747365742f6164\n"
+".quad 0x2f736c61626f6c67,0x632e6c61626f6c67,0x6c69662e090a2275,0x752f220937310965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x6d6f632f6564756c\n"
+".quad 0x636e75665f6e6f6d,0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093831\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x5f6874616d2f6564\n"
+".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209393109656c69,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x736e6f635f687461\n"
+".quad 0x22682e73746e6174,0x09656c69662e090a,0x7273752f22093032,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x63697665642f6564,0x6974636e75665f65\n"
+".quad 0x090a22682e736e6f,0x313209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x615f31315f6d732f,0x75665f63696d6f74\n"
+".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220932320965,0x6c61636f6c2f7273\n"
+".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x696d6f74615f3231\n"
+".quad 0x6974636e75665f63,0x090a22682e736e6f,0x333209656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x645f33315f6d732f\n"
+".quad 0x75665f656c62756f,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220934320965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c\n"
+".quad 0x696d6f74615f3032,0x6974636e75665f63,0x090a22682e736e6f,0x353209656c69662e\n"
+".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
+".quad 0x695f30325f6d732f,0x6369736e6972746e,0x662e090a22682e73,0x2209363209656c69\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x732f6564756c636e\n"
+".quad 0x665f656361667275,0x736e6f6974636e75,0x69662e090a22682e,0x2f2209373209656c\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x65742f6564756c63\n"
+".quad 0x65665f6572757478,0x636e75665f686374,0x22682e736e6f6974,0x09656c69662e090a\n"
+".quad 0x7273752f22093832,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
+".quad 0x5f6874616d2f6564,0x6e6f6974636e7566,0x74705f6c62645f73,0x090a0a22682e3378\n"
+".quad 0x206c61626f6c672e,0x3b6950203233662e,0x72746e652e090a0a,0x724679706f632079\n"
+".quad 0x6c61626f6c476d6f,0x61702e09090a2820,0x3436752e206d6172,0x70616475635f5f20\n"
+".quad 0x79706f635f6d7261,0x626f6c476d6f7246,0x6c757365725f6c61,0x2e090a7b090a2974\n"
+".quad 0x3233752e20676572,0x3b3e34313c722520,0x2e206765722e090a,0x3c64722520343675\n"
+".quad 0x65722e090a3b3e36,0x25203233662e2067,0x2e090a3b3e353c66,0x3109363109636f6c\n"
+".quad 0x57444c240a300932,0x6f635f6e69676562,0x6c476d6f72467970,0x2e090a3a6c61626f\n"
+".quad 0x3109363109636f6c,0x766f6d090a300934,0x722509203233752e,0x2e64697425202c31\n"
+".quad 0x2e766f6d090a3b78,0x3272250920323375,0x646961746325202c,0x766f6d090a3b782e\n"
+".quad 0x722509203233752e,0x6469746e25202c33,0x6c756d090a3b782e,0x203233752e6f6c2e\n"
+".quad 0x7225202c34722509,0x0a3b337225202c32,0x3233752e64646109,0x25202c3572250920\n"
+".quad 0x3b347225202c3172,0x33732e726873090a,0x202c367225092032,0x3b3133202c357225\n"
+".quad 0x33732e766f6d090a,0x202c377225092032,0x6e61090a3b373231,0x2509203233622e64\n"
+".quad 0x2c367225202c3872,0x61090a3b37722520,0x09203233732e6464,0x387225202c397225\n"
+".quad 0x090a3b357225202c,0x203233732e726873,0x25202c3031722509,0x090a3b37202c3972\n"
+".quad 0x732e6f6c2e6c756d,0x3131722509203233,0x202c30317225202c,0x7573090a3b383231\n"
+".quad 0x2509203233732e62,0x357225202c323172,0x0a3b31317225202c,0x2e6e722e74766309\n"
+".quad 0x203233732e323366,0x7225202c31662509,0x2e646c090a3b3231,0x662e6c61626f6c67\n"
+".quad 0x2c32662509203233,0x090a3b5d69505b20,0x203233662e6c756d,0x6625202c33662509\n"
+".quad 0x0a3b326625202c31,0x617261702e646c09,0x2509203436752e6d,0x5f5f5b202c316472\n"
+".quad 0x6d72617061647563,0x6f724679706f635f,0x5f6c61626f6c476d,0x3b5d746c75736572\n"
+".quad 0x36732e747663090a,0x2509203233732e34,0x357225202c326472,0x772e6c756d090a3b\n"
+".quad 0x203233732e656469,0x25202c3364722509,0x090a3b34202c3572,0x203436752e646461\n"
+".quad 0x25202c3464722509,0x647225202c316472,0x672e7473090a3b33,0x33662e6c61626f6c\n"
+".quad 0x346472255b092032,0x336625202c5d302b,0x09636f6c2e090a3b,0x0a30093531093631\n"
+".quad 0x240a3b7469786509,0x635f646e6557444c,0x476d6f724679706f,0x090a3a6c61626f6c\n"
+".quad 0x706f63202f2f207d,0x6f6c476d6f724679,0x0000000a0a6c6162\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long fatbinData[666];
+extern const unsigned long long fatbinData[651];
 
 }
 
 
-static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))=
+static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceText __attribute__ ((aligned (8))) __attribute__ ((section (".nvFatBinSegment")))=
  { 0x466243b1, 1, fatbinData, 0 };
-# 3 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.stub.c" 2
 extern void __device_stub__Z14copyFromGlobalPf(float *);
-static void __sti____cudaRegisterAll_41_tmpxft_00000f5c_00000000_4_global_cpp1_ii_dfa4079a(void) __attribute__((__constructor__));
-void __device_stub__Z14copyFromGlobalPf(float *__par0){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *))copyFromGlobal)); (void)cudaLaunch(((char *)((void ( *)(float *))copyFromGlobal))); };}
+static void __sti____cudaRegisterAll_41_tmpxft_00004e6f_00000000_4_global_cpp1_ii_dfa4079a(void) __attribute__((__constructor__));
+void __device_stub__Z14copyFromGlobalPf(float *__par0){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;{ (void)cudaLaunch(((char *)((void ( *)(float *))copyFromGlobal))); };}
 void copyFromGlobal( float *__cuda_0)
-# 12 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/globals/global.cu"
+# 12 "ocelot/cuda/test/globals/global.cu"
 {__device_stub__Z14copyFromGlobalPf( __cuda_0);
 
 
 }
-# 1 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_41_tmpxft_00000f5c_00000000_4_global_cpp1_ii_dfa4079a(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *))copyFromGlobal), (char*)"copyFromGlobal", "copyFromGlobal", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&Pi, (char*)"Pi", "Pi", 0, 4, 0, 0); }
-# 1 "/tmp/tmpxft_00000f5c_00000000-1_global.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_41_tmpxft_00004e6f_00000000_4_global_cpp1_ii_dfa4079a(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *))copyFromGlobal), (char*)"copyFromGlobal", "copyFromGlobal", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&Pi, (char*)"Pi", "Pi", 0, 4, 0, 0); }
+# 1 "/tmp/tmpxft_00004e6f_00000000-1_global.cudafe1.stub.c" 2

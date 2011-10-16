@@ -149,39 +149,44 @@ struct cudaExtent {
 
 struct cudaDeviceProp
 {
-  char   name[256];                 /**< ASCII string identifying device */
-  size_t totalGlobalMem;            /**< Global memory available on device in bytes */
-  size_t sharedMemPerBlock;         /**< Shared memory available per block in bytes */
-  int    regsPerBlock;              /**< 32-bit registers available per block */
-  int    warpSize;                  /**< Warp size in threads */
-  size_t memPitch;                  /**< Maximum pitch in bytes allowed by memory copies */
-  int    maxThreadsPerBlock;        /**< Maximum number of threads per block */
-  int    maxThreadsDim[3];          /**< Maximum size of each dimension of a block */
-  int    maxGridSize[3];            /**< Maximum size of each dimension of a grid */
-  int    clockRate;                 /**< Clock frequency in kilohertz */
-  size_t totalConstMem;             /**< Constant memory available on device in bytes */
-  int    major;                     /**< Major compute capability */
-  int    minor;                     /**< Minor compute capability */
-  size_t textureAlignment;          /**< Alignment requirement for textures */
-  int    deviceOverlap;             /**< Device can concurrently copy memory and execute a kernel. Deprecated. Use instead asyncEngineCount. */
-  int    multiProcessorCount;       /**< Number of multiprocessors on device */
-  int    kernelExecTimeoutEnabled;  /**< Specified whether there is a run time limit on kernels */
-  int    integrated;                /**< Device is integrated as opposed to discrete */
-  int    canMapHostMemory;          /**< Device can map host memory with cudaHostAlloc/cudaHostGetDevicePointer */
-  int    computeMode;               /**< Compute mode (See ::cudaComputeMode) */
-  int    maxTexture1D;              /**< Maximum 1D texture size */
-  int    maxTexture2D[2];           /**< Maximum 2D texture dimensions */
-  int    maxTexture3D[3];           /**< Maximum 3D texture dimensions */
-  int    maxTexture1DLayered[2];    /**< Maximum 1D layered texture dimensions */
-  int    maxTexture2DLayered[3];    /**< Maximum 2D layered texture dimensions */
-  size_t surfaceAlignment;          /**< Alignment requirements for surfaces */
-  int    concurrentKernels;         /**< Device can possibly execute multiple kernels concurrently */
-  int    ECCEnabled;                /**< Device has ECC support enabled */
-  int    pciBusID;                  /**< PCI bus ID of the device */
-  int    pciDeviceID;               /**< PCI device ID of the device */
-  int    tccDriver;                 /**< 1 if device is a Tesla device using TCC driver, 0 otherwise */
-  int    asyncEngineCount;          /**< Number of asynchronous engines */
-  int    unifiedAddressing;         /**< Device shares a unified address space with the host */
+  char   name[256];                  /**< ASCII string identifying device */
+  size_t totalGlobalMem;             /**< Global memory available on device in bytes */
+  size_t sharedMemPerBlock;          /**< Shared memory available per block in bytes */
+  int    regsPerBlock;               /**< 32-bit registers available per block */
+  int    warpSize;                   /**< Warp size in threads */
+  size_t memPitch;                   /**< Maximum pitch in bytes allowed by memory copies */
+  int    maxThreadsPerBlock;         /**< Maximum number of threads per block */
+  int    maxThreadsDim[3];           /**< Maximum size of each dimension of a block */
+  int    maxGridSize[3];             /**< Maximum size of each dimension of a grid */
+  int    clockRate;                  /**< Clock frequency in kilohertz */
+  size_t totalConstMem;              /**< Constant memory available on device in bytes */
+  int    major;                      /**< Major compute capability */
+  int    minor;                      /**< Minor compute capability */
+  size_t textureAlignment;           /**< Alignment requirement for textures */
+  int    deviceOverlap;              /**< Device can concurrently copy memory and execute a kernel. Deprecated. Use instead asyncEngineCount. */
+  int    multiProcessorCount;        /**< Number of multiprocessors on device */
+  int    kernelExecTimeoutEnabled;   /**< Specified whether there is a run time limit on kernels */
+  int    integrated;                 /**< Device is integrated as opposed to discrete */
+  int    canMapHostMemory;           /**< Device can map host memory with cudaHostAlloc/cudaHostGetDevicePointer */
+  int    computeMode;                /**< Compute mode (See ::cudaComputeMode) */
+  int    maxTexture1D;               /**< Maximum 1D texture size */
+  int    maxTexture2D[2];            /**< Maximum 2D texture dimensions */
+  int    maxTexture3D[3];            /**< Maximum 3D texture dimensions */
+  int    maxTexture1DLayered[2];     /**< Maximum 1D layered texture dimensions */
+  int    maxTexture2DLayered[3];     /**< Maximum 2D layered texture dimensions */
+  size_t surfaceAlignment;           /**< Alignment requirements for surfaces */
+  int    concurrentKernels;          /**< Device can possibly execute multiple kernels concurrently */
+  int    ECCEnabled;                 /**< Device has ECC support enabled */
+  int    pciBusID;                   /**< PCI bus ID of the device */
+  int    pciDeviceID;                /**< PCI device ID of the device */
+  int    pciDomainID;                /**< PCI domain ID of the device */
+  int    tccDriver;                  /**< 1 if device is a Tesla device using TCC driver, 0 otherwise */
+  int    asyncEngineCount;           /**< Number of asynchronous engines */
+  int    unifiedAddressing;          /**< Device shares a unified address space with the host */
+  int    memoryClockRate;            /**< Peak memory clock frequency in kilohertz */
+  int    memoryBusWidth;             /**< Global memory bus width in bits */
+  int    l2CacheSize;                /**< Size of L2 cache in bytes */
+  int    maxThreadsPerMultiProcessor;/**< Maximum resident threads per multiprocessor */
 };
 
 struct cudaChannelFormatDesc {

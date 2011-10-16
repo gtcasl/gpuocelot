@@ -137,7 +137,8 @@ int main(int argc, char *arg[]) {
 			float expected = 2.0f * 3.14159f * (float)(i % 128);
 			float got = results_cpu[i];
 			if (fabs(expected - got) > 0.001f) {
-				printf("ERROR 1 - [%d] - got: %f, expected: %f\n", i, got, expected);
+				printf("ERROR 1 - [%d] - got: %f, expected: %f\n",
+					i, got, expected);
 				if (++errors > 5) { break; }
 			}
 		}

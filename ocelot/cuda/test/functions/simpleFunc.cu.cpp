@@ -11188,7 +11188,7 @@ static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceT
 # 3 "/tmp/tmpxft_00000e17_00000000-1_simpleFunc.cudafe1.stub.c" 2
 extern void __device_stub__Z6kernelPfi(float *, int);
 static void __sti____cudaRegisterAll_45_tmpxft_00000e17_00000000_4_simpleFunc_cpp1_ii_square(void) __attribute__((__constructor__));
-void __device_stub__Z6kernelPfi(float *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int))kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int))kernel))); };}
+void __device_stub__Z6kernelPfi(float *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ (void)cudaLaunch(((char *)((void ( *)(float *, int))kernel))); };}
 void kernel( float *__cuda_0,int __cuda_1)
 # 13 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/functions/simpleFunc.cu"
 {__device_stub__Z6kernelPfi( __cuda_0,__cuda_1);

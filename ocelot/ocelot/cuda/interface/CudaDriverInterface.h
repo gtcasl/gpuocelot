@@ -13,14 +13,10 @@
 // C++ includes
 #include <string>
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
-
 #include <GL/gl.h>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/cuda_internal.h>
 
 namespace cuda
 {
@@ -146,6 +142,8 @@ namespace cuda
 				const void *srcHost, unsigned int ByteCount );
 			virtual CUresult cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, 
 				unsigned int ByteCount );
+			virtual CUresult cuMemcpyHtoH (void *dstHost, const void *srcHost, 
+				unsigned int ByteCount );
 
 			// device <-> device memory
 			virtual CUresult cuMemcpyDtoD (CUdeviceptr dstDevice, 
@@ -251,6 +249,7 @@ namespace cuda
 				unsigned int bytes);
 			virtual CUresult cuFuncGetAttribute (int *pi, 
 				CUfunction_attribute attrib, CUfunction hfunc);
+			virtual CUresult cuFuncSetCacheConfig(CUfunction hfunc, CUfunc_cache config);
 
 			/************************************
 			**

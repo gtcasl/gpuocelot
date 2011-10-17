@@ -442,6 +442,7 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 }
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
+	trace::DynamicCompilationOverhead::instance.start();
 	
 	if(module->second.loaded()) return;
 	module->second.loadNow();
@@ -449,18 +450,10 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
     HostThreadContext& thread = _getCurrentThread();    
     for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
         instrumentor != thread.instrumentors.end(); ++instrumentor){
-        
         (*instrumentor)->checkConditions();
         if((*instrumentor)->conditionsMet) {
             (*instrumentor)->analyze(module->second, *_devices[0]);
-
-            trace::DynamicCompilationOverhead::instance.start();
-
             (*instrumentor)->instrument(module->second);
-    
-            trace::DynamicCompilationOverhead::instance.stop(
-		        & trace::DynamicCompilationOverhead::instrumentPtx);
-
         }
     }
    
@@ -492,6 +485,9 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 		(*device)->setOptimizationLevel(_optimization);
 		(*device)->unselect();
 	}
+	
+	trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::instrumentPtx);
 }
 
 void cuda::CudaRuntime::_registerModule(const std::string& name) {
@@ -577,6 +573,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
 	_lock();
 
+	trace::DynamicCompilationOverhead::instance.start();
 
 	handle = _fatBinaries.size();
 	
@@ -603,6 +600,9 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	reportE(REPORT_ALL_PTX, " with PTX\n" << cubinContext.ptx());
 		
 	_unlock();
+	
+	trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::ptxParseOcelot);
 	
 	return (void **)handle;
 }
@@ -2658,18 +2658,9 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			thread.nextTraceGenerators.end());
 
 		_inExecute = true;
-		
-		trace::DynamicCompilationOverhead::instance.start();
-		
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, paramSize, traceGens, &_externals);
-			
-        _getDevice().synchronize();    
-    
-	    trace::DynamicCompilationOverhead::instance.stop(
-		& trace::DynamicCompilationOverhead::kernelExecute);		
-			
 		_inExecute = false;
 		report(" launch completed successfully");	
 	}

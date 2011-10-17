@@ -146,19 +146,11 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
                 api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::executionCount;
     }
     
-    basicBlockConfig = config["threadInstructionCount"];
+    basicBlockConfig = config["dynamicInstructionCount"];
     if (!basicBlockConfig.is_null()) {
             instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
             instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
             instrument.basicBlockInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
-    }
-    
-    basicBlockConfig = config["measureThreadIC"];
-    if (!basicBlockConfig.is_null()) {
-            instrument.measureBasicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
-            instrument.measureBasicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
-            instrument.measureBasicBlockInstrumentor.type =        
                 api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
     }
 
@@ -183,14 +175,6 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
             instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
             instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
             instrument.warpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
-    }
-    
-    warpReductionConfig = config["measureWarpIC"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.measureWarpReductionInstrumentor.type =        
                 api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
     }
 

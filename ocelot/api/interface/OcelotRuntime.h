@@ -43,9 +43,6 @@ namespace ocelot
 		analysis::WarpReductionInstrumentor _warpReductionInstrumentor;
 		analysis::AlignmentCheckInstrumentor _alignmentCheckInstrumentor;
 		
-		analysis::MeasureBasicBlockInstrumentor _measureBasicBlockInstrumentor;
-		analysis::MeasureWarpReductionInstrumentor _measureWarpReductionInstrumentor;
-		
 		bool _initialized;
 		
 	public:

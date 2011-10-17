@@ -22,6 +22,7 @@
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/Casts.h>
@@ -1318,24 +1319,46 @@ CUresult cuda::CudaDriverFrontend::cuFuncGetAttribute (int *pi, CUfunction_attri
 			// thsi function isn't needed
 		}
 		else {
-			report("cuParamSetSize() - kernel not found");
+			report("cuFuncGetAttribute() - kernel not found");
 			result = CUDA_ERROR_INVALID_CONTEXT;
 		}
 	}
 	else {
-		report("cuParamSetSize() - context not valid");
+		report("cuFuncGetAttribute() - context not valid");
 		result = CUDA_ERROR_INVALID_CONTEXT;
 	}
 	_unbind();
 	return result;
-	
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+}
+
+static executive::ExecutableKernel::CacheConfiguration _translateCacheConfiguration(CUfunc_cache config) {
+	switch (config) {
+		case CU_FUNC_CACHE_PREFER_SHARED:
+			return executive::ExecutableKernel::CachePreferShared;
+		case CU_FUNC_CACHE_PREFER_L1:
+			return executive::ExecutableKernel::CachePreferL1;
+		default:
+			break;
+	}
+	return executive::ExecutableKernel::CacheConfigurationDefault;
 }
 
 CUresult cuda::CudaDriverFrontend::cuFuncSetCacheConfig(CUfunction hfunc, CUfunc_cache config) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		executive::ExecutableKernel *executableKernel = context->_getDevice().getKernel(
+			ptxKernel->module->path(), ptxKernel->name);
+		executableKernel->setCacheConfiguration(_translateCacheConfiguration(config));
+	}
+	else {
+		report("cuFuncSetCacheConfig() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 /************************************

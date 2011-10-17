@@ -26,6 +26,13 @@ namespace executive {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
 		typedef std::vector< const ir::Texture* > TextureVector;
+		
+		enum CacheConfiguration {
+			CacheConfigurationDefault,
+			CachePreferShared,
+			CachePreferL1,
+			CacheConfiguration_invalid
+		};
 
 	public:
 		executive::Device* device;
@@ -71,6 +78,12 @@ namespace executive {
 
 		/*! \brief Changes the amount of external shared memory */
 		virtual void setExternSharedMemorySize(unsigned int)=0;
+		
+		/*! \brief sets the cache configuration of the kernele */
+		virtual void setCacheConfiguration(CacheConfiguration config);
+		
+		/*! \brief sets the cache configuration of the kernele */
+		virtual CacheConfiguration getCacheConfiguration() const;
 		
 		/*! \brief Sets the max number of pthreads this kernel can use */
 		virtual void setWorkerThreads(unsigned int workerThreadLimit)=0;
@@ -149,7 +162,8 @@ namespace executive {
 		TraceGeneratorVector _generators;
 		/*! \brief Registered external functions */
 		const ir::ExternalFunctionSet* _externals;
-
+		/*! \brief configuration of cache */
+		CacheConfiguration _cacheConfiguration;
 	};
 	
 }

@@ -35,7 +35,7 @@ ExecutableKernel::ExecutableKernel( const ir::IRKernel& k,
 	_constMemorySize( 0 ), _localMemorySize( 0 ), _globalLocalMemorySize( 0 ),
 	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _argumentMemorySize( 0 ),
-	_parameterMemorySize( 0 )
+	_parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
 {
 	mapArgumentOffsets();
 }
@@ -44,7 +44,7 @@ ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ),
 	_globalLocalMemorySize( 0 ),  _maxThreadsPerBlock( 16384 ),
 	_registerCount( 0 ), _sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
-	_argumentMemorySize( 0 ), _parameterMemorySize( 0 )
+	_argumentMemorySize( 0 ), _parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
 {
 	
 }
@@ -111,6 +111,17 @@ unsigned int ExecutableKernel::registerCount() const
 unsigned int ExecutableKernel::sharedMemorySize() const 
 { 
 	return _sharedMemorySize; 
+}
+
+
+/*! \brief sets the cache configuration of the kernele */
+void ExecutableKernel::setCacheConfiguration(ExecutableKernel::CacheConfiguration config) {
+	_cacheConfiguration = config;
+}
+
+/*! \brief sets the cache configuration of the kernele */
+ExecutableKernel::CacheConfiguration ExecutableKernel::getCacheConfiguration() const {
+	return _cacheConfiguration;
 }
 
 unsigned int ExecutableKernel::externSharedMemorySize() const 

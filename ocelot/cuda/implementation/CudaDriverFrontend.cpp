@@ -82,6 +82,7 @@ public:
 cuda::CudaDriverFrontend::CudaDriverFrontend():
 	_devicesLoaded(false), _computeCapability(2)
 {
+	_flags = 0;
 	_enumerateDevices();
 }
 
@@ -171,7 +172,11 @@ cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
 	std::cout << "  _bind()" << std::endl;
 #endif
 	_lock();
-	return _getContext();
+	cuda::CudaDriverFrontend::Context *ctx = _getContext();
+	if (!ctx->_getDevice().selected()) {
+		ctx->_getDevice().select();
+	}
+	return ctx;
 }
 
 //! \brief unlocks thread's active context
@@ -259,7 +264,7 @@ CUresult cuda::CudaDriverFrontend::cuInit(unsigned int Flags) {
 ** Driver Version Query
 *********************************/
 CUresult cuda::CudaDriverFrontend::cuDriverGetVersion(int *driverVersion) {
-	*driverVersion = 0x3001;
+	*driverVersion = 0x3002;
 	return CUDA_SUCCESS;
 }
 

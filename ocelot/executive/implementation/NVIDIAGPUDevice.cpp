@@ -45,10 +45,10 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 // if 1, adds line numbers to reported PTX
-#define REPORT_PTX_WITH_LINENUMBERS 1
+#define REPORT_PTX_WITH_LINENUMBERS 0
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -607,6 +607,7 @@ namespace executive
 	}
 
 	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
+
 	{
 		
 	}
@@ -655,10 +656,13 @@ namespace executive
 	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags,
 		int computeCapability)
 	{
+		report("NVIDIAGPUDevice::createDevices()");
 		if(!_cudaDriverInitialized)
 		{
 			driver::cuInit(0);
 			_cudaDriverInitialized = true;
+			
+			report("driver::cuInit(0) called");
 		}
 
 		DeviceVector devices;
@@ -732,12 +736,15 @@ namespace executive
 		
 		_opengl = hydrazine::isAnOpenGLContextAvailable();
 
+		report(" creating context");
 		if(_opengl)
 		{
+			report(" creating GL context - flags: " << flags << ", device: " << device);
 			checkError(driver::cuGLCtxCreate(&_context, flags, device));
 		}
 		else
 		{
+			report(" creating context - flags: " << flags << ", device: " << device);
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		

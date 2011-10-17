@@ -270,7 +270,7 @@ namespace parser
 					void returnType( int token );
 					void argumentType( int token );
 					void callPrototype( const std::string& name, 
-						YYLTYPE& location );
+						const std::string& identifier, YYLTYPE& location );
 					void callTargets( const std::string& name, 
 						YYLTYPE& location );
 			};

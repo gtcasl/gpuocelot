@@ -1750,7 +1750,7 @@ CUresult cuda::CudaDriverFrontend::cuEventCreate( CUevent *phEvent,
 	Context *context = _bind();
 	if (context) {
 		unsigned int eventHandle = context->_getDevice().createEvent(Flags);
-		*phEvent = (CUevent)eventHandle;
+		*phEvent = hydrazine::bit_cast<CUevent>(eventHandle);
 		context->_events.insert(*phEvent);
 		result = CUDA_SUCCESS;
 	}
@@ -1902,7 +1902,7 @@ CUresult cuda::CudaDriverFrontend::cuStreamCreate( CUstream *phStream,
 	Context *context = _bind();
 	if (context) {
 		unsigned int streamHandle = context->_getDevice().createStream();
-		*phStream = (CUstream)streamHandle;
+		*phStream = hydrazine::bit_cast<CUstream>(streamHandle);
 		context->_streams.insert(*phStream);
 		result = CUDA_SUCCESS;
 	}

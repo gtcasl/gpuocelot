@@ -1995,7 +1995,7 @@ namespace parser
 	}
 	
 	void PTXParser::State::callPrototype( const std::string& name, 
-		YYLTYPE& location )
+		const std::string& identifier, YYLTYPE& location )
 	{
 		report( "  Rule callPrototype: TOKEN_LABEL TOKEN_CALL_PROTOTYPE " 
 			<< "returnTypeList identifier argumentTypeList ';'" );
@@ -2018,12 +2018,13 @@ namespace parser
 		
 		prototypes.insert( std::make_pair( name, prototype ) );
 		
-		operands.insert( std::make_pair( name, 
+		operands.insert( std::make_pair( identifier, 
 			ir::PTXOperand( ir::PTXOperand::FunctionName, 
 			ir::PTXOperand::TypeSpecifier_invalid, name ) ) );
+
 	
 		localPrototypes.back().insert( name );
-		localOperands.back().insert( name );
+		localOperands.back().insert( identifier );
 		
 		statement.directive     = ir::PTXStatement::FunctionPrototype;
 		statement.returnTypes   = prototype.returnTypes;

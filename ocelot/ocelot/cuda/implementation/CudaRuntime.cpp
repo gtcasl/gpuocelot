@@ -15,6 +15,7 @@
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
@@ -2733,11 +2734,34 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	return _setLastError(result);
 }
 
-cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *func, 
+static executive::ExecutableKernel::CacheConfiguration _translateCacheConfiguration(
+	enum cudaFuncCache config) {
+	switch (config) {
+		case cudaFuncCachePreferShared:
+			return executive::ExecutableKernel::CachePreferShared;
+		case cudaFuncCachePreferL1:
+			return executive::ExecutableKernel::CachePreferL1;
+		default:
+			break;
+	}
+	return executive::ExecutableKernel::CacheConfigurationDefault;
+}
+
+cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *entry, 
 	enum cudaFuncCache cacheConfig)
 {
-	// TODO implement this, right now it is a nop
 	cudaError_t result = cudaSuccess;
+	
+	_lock();
+	
+	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
+	assert(kernel != _kernels.end());
+	
+	executive::ExecutableKernel *executableKernel = _getDevice().getKernel(kernel->second.module, 
+		kernel->second.kernel);
+	executableKernel->setCacheConfiguration( _translateCacheConfiguration(cacheConfig));
+
+	_unlock();
 	
 	return _setLastError(result);
 }

@@ -171,6 +171,8 @@ class CudaDriver
 					unsigned int bytes);
 				CUresult (*cuFuncGetAttribute)(int *pi, 
 					CUfunction_attribute attrib, CUfunction hfunc);
+				CUresult (*cuFuncSetCacheConfig)(CUfunction hFunc, CUfunc_cache config);
+				
 				CUresult (*cuArrayCreate)( CUarray *pHandle, 
 					const CUDA_ARRAY_DESCRIPTOR *pAllocateArray );
 				CUresult (*cuArrayGetDescriptor)( 
@@ -514,6 +516,7 @@ class CudaDriver
 			unsigned int bytes);
 		static CUresult cuFuncGetAttribute (int *pi, 
 			CUfunction_attribute attrib, CUfunction hfunc);
+		static CUresult cuFuncSetCacheConfig(CUfunction hFunc, CUfunc_cache config);
 
 		/************************************
 		**

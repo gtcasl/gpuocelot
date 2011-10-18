@@ -789,8 +789,9 @@ std::string ir::PTXOperand::toString() const {
 }
 
 std::string ir::PTXOperand::registerName() const {
-	assert( addressMode == Indirect || addressMode == Register
-		|| addressMode == BitBucket );
+	assertM( addressMode == Indirect || addressMode == Register
+		|| addressMode == BitBucket, "invalid register address mode "
+	    << toString(addressMode) );
 	
 	if (addressMode == BitBucket) return "_";
 	

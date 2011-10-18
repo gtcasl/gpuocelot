@@ -295,7 +295,7 @@ namespace ir {
 	
 		switch( directive ) {
 			case Instr: {
-				return instruction.toString() + ";";
+				return instruction.toString() + ";" + instruction.metadata;
 				break;
 			}
 			case AddressSize: {
@@ -369,7 +369,7 @@ namespace ir {
 					result += ") ";
 				}
 				
-				result += "_ (";
+				result += name + " (";
 				for(TypeVector::const_iterator type = argumentTypes.begin(); 
 					type != argumentTypes.end(); ++type) {
 					if( type != argumentTypes.begin() ) result += ", ";
@@ -400,7 +400,7 @@ namespace ir {
 				break;
 			}
 			case Label: {
-				return name + ":";
+				return name + ":" + instruction.metadata;
 				break;
 			}
 			case Local: {

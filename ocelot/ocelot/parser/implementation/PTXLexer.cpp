@@ -21,7 +21,7 @@ namespace parser
 {
 	PTXLexer::PTXLexer( std::istream* arg_yyin, std::ostream* arg_yyout ):
 		yyFlexLexer( arg_yyin, arg_yyout ), yylval( 0 ), column( 0 ), 
-		nextColumn( 0 ), commentLength( 0 )
+		nextColumn( 0 )
 	{
 	
 	}
@@ -196,6 +196,7 @@ namespace parser
 			CASE(TOKEN_RP)
 			CASE(TOKEN_SAT)
 			CASE(TOKEN_VOLATILE)
+			CASE(TOKEN_METADATA)
 			CASE(TOKEN_TAIL)
 			CASE(TOKEN_UNI)
 			CASE(TOKEN_ALIGN)

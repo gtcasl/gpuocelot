@@ -48,7 +48,7 @@
 %lex-param {parser::PTXParser::State& state}
 %pure-parser
 
-%token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
+%token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING TOKEN_METADATA
 %token<text> TOKEN_INV_PREDICATE_IDENTIFIER TOKEN_PREDICATE_IDENTIFIER
 
 %token<text> OPCODE_COPYSIGN OPCODE_COS OPCODE_SQRT OPCODE_ADD OPCODE_RSQRT
@@ -201,6 +201,16 @@ decimalListSingle : decimalListSingle ',' identifier
 decimalListSingle : TOKEN_DECIMAL_CONSTANT
 {
 	state.decimalListSingle( $<value>1 );
+};
+
+optionalMetadata : /* empty string */
+{
+    state.metadata("");
+};
+
+optionalMetadata : TOKEN_METADATA
+{
+    state.metadata( $<text>1 );
 };
 
 decimalListSingle : decimalListSingle ',' TOKEN_DECIMAL_CONSTANT
@@ -530,7 +540,7 @@ completeEntryStatement : entryStatement
 	state.statementEnd( @1 );
 };
 
-completeEntryStatement : guard instruction
+completeEntryStatement : guard instruction optionalMetadata
 {
 	state.entryStatement( @2 );
 	state.instruction();
@@ -651,7 +661,7 @@ location : TOKEN_LOC TOKEN_DECIMAL_CONSTANT TOKEN_DECIMAL_CONSTANT
 	state.location( $<value>2, $<value>3, $<value>4 );
 };
 
-label : TOKEN_LABEL
+label : TOKEN_LABEL optionalMetadata
 {
 	state.label( $<text>1 );
 };
@@ -757,7 +767,8 @@ offsetAddressableOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
 	state.addressableOperand( $<text>1, $<value>3, @1, true );
 };
 
-callOperand : constantOperand | addressableOperand | '[' addressableOperand ']' | '[' offsetAddressableOperand ']';
+callOperand : constantOperand | addressableOperand | '[' addressableOperand ']'
+    | '[' offsetAddressableOperand ']';
 operand : constantOperand | nonLabelOperand;
 
 memoryOperand : constantOperand | addressableOperand | offsetAddressableOperand;
@@ -1530,23 +1541,10 @@ int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer,
 	location->first_line   = lexer.lineno();
 	location->first_column = lexer.column;
 	
-	if(lexer.commentLength != 0)
-	{
-		state.comment = lexer.comment;
-		lexer.commentLength = 0;
-
-		report( " Lexer (" << location->first_line << ","
-			<< location->first_column 
-			<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
-			<< lexer.YYText() << "\", comment '" << state.comment << "'" );
-	}
-	else
-	{
-		report( " Lexer (" << location->first_line << ","
-			<< location->first_column 
-			<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
-			<< lexer.YYText() << "\"");
-	}
+	report( " Lexer (" << location->first_line << ","
+		<< location->first_column 
+		<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
+		<< lexer.YYText() << "\"");
 	
 	return tokenValue;
 }

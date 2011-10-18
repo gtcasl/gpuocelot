@@ -90,7 +90,7 @@ namespace parser
 		
 		stream << "(";
 		for( TypeVector::const_iterator type = returnTypes.begin(); 
-			type != returnTypes.end(); ++type )	
+			type != returnTypes.end(); ++type )
 		{
 			if( type != returnTypes.begin() )
 			{
@@ -603,18 +603,6 @@ namespace parser
 	{
 		statement.line   = location.first_line;
 		statement.column = location.first_column;		
-
-		if(!statements.empty())
-		{
-			if(comment.find("//!") == 0)
-			{
-				statements.back().instruction.metadata = std::move( comment );
-			}
-			else
-			{
-				comment.clear();
-			}
-		}
 		
 		report( "   At (" << statement.line << "," << statement.column
 			<< ") : Parsed statement " << statements.size() 
@@ -1176,8 +1164,7 @@ namespace parser
 		assert( !statements.empty() );
 		assert( statements.back().directive == ir::PTXStatement::Instr );
 	
-		std::string message = 
-			statements.back().instruction.valid();
+		std::string message = statements.back().instruction.valid();
 	
 		if( message != "" )
 		{
@@ -1190,6 +1177,12 @@ namespace parser
 		operandVector.clear();
 	}
 
+    void PTXParser::State::metadata( const std::string& metadata )
+    {
+    	report( "   Added metadata " << metadata);
+		statement.instruction.metadata = metadata;
+    }
+	
 	void PTXParser::State::locationAddress( int token )
 	{
 		directive = tokenToDirective( token );

@@ -48,9 +48,9 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::const_iterator parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
-		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
-		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
-		report("   " << parameter->identifier);
+		if(parameter->addressMode != ir::PTXOperand::Address) continue;
+		report("   " << parameter->identifier << " ("
+		    << ir::PTXOperand::toString(parameter->addressMode) << ")");
 		parameterNames.insert(parameter->identifier);
 		outputNames.insert(parameter->identifier);
 	}
@@ -59,9 +59,9 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::const_iterator parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
-		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
-		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
-		report("   " << parameter->identifier);
+		if(parameter->addressMode != ir::PTXOperand::Address) continue;
+		report("   " << parameter->identifier << " ("
+		    << ir::PTXOperand::toString(parameter->addressMode) << ")");
 		parameterNames.insert(parameter->identifier);
 		inputNames.insert(parameter->identifier);
 	}
@@ -197,8 +197,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::iterator parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
-		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
-		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
+		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		assertM(mapping != nameToRegister.end(),
@@ -214,8 +213,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::iterator parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
-		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
-		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
+		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		assert(mapping != nameToRegister.end());

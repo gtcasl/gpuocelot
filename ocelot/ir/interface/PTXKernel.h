@@ -68,7 +68,6 @@ namespace ir
 				void clear();
 
 			public:
-			
 				//! \brief indicates .entry or .func
 				CallType callType;
 			

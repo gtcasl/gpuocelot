@@ -256,7 +256,7 @@ int main(int argc, char** argv)
 	parser.parse( "-v", "--verbose", test.verbose, false, 
 		"Print out information after the test has finished." );
 	parser.parse();
-
+	
 	test.test();
 		
 	return test.passed();	

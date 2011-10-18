@@ -112,7 +112,7 @@ if 'install' in COMMAND_LINE_TARGETS:
 if os.name == 'nt':
 	ocelot_libs = ['ocelot.lib', 'opengl32.lib']
 else:
-	ocelot_libs = ['-locelot',]
+	ocelot_libs = ['-locelot']
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \

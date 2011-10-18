@@ -101,27 +101,27 @@ std::string ir::PTXInstruction::toString( ReductionOperation operation ) {
 
 std::string ir::PTXInstruction::toString( SurfaceQuery query ) {
 	switch (query) {
-		case Width: return "width";
-		case Height: return "height";
-		case Depth: return "depth";
-		case ChannelDataType: return "channel_data_type";
-		case ChannelOrder: return "channel_order";
+		case Width:                  return "width";
+		case Height:                 return "height";
+		case Depth:                  return "depth";
+		case ChannelDataType:        return "channel_data_type";
+		case ChannelOrder:           return "channel_order";
 		case NormalizedCoordinates:  return "normalized_coords";
-		case SamplerFilterMode: return "filter_mode";
-		case SamplerAddrMode0: return "addr_mode_0";
-		case SamplerAddrMode1: return "addr_mode_1";
-		case SamplerAddrMode2: return "addr_mode_2";
-		default: break;
+		case SamplerFilterMode:      return "filter_mode";
+		case SamplerAddrMode0:       return "addr_mode_0";
+		case SamplerAddrMode1:       return "addr_mode_1";
+		case SamplerAddrMode2:       return "addr_mode_2";
+		default:                     break;
 	}
 	return "";
 }
 
 std::string ir::PTXInstruction::toString( FormatMode mode ) {
 	switch (mode) {
-		case Unformatted: return ".b";
-		case Formatted:   return ".p";
+		case Unformatted:        return ".b";
+		case Formatted:          return ".p";
 		case FormatMode_Invalid: break;
-		default: break;
+		default:                 break;
 	}
 	return "";
 }
@@ -133,7 +133,7 @@ std::string ir::PTXInstruction::toString( ClampOperation clamp ) {
 		case Zero:                   return ".zero";
 		case Mirror:                 return ".mirror";
 		case ClampOperation_Invalid: break;
-		default: break;
+		default:                     break;
 	}
 	return "";
 }

@@ -607,7 +607,6 @@ namespace executive
 	}
 
 	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
-
 	{
 		
 	}

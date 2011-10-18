@@ -466,6 +466,7 @@ void ControlFlowGraph::clear() {
 	}
 	_blocks.clear();
 	_edges.clear();
+	
 	_entry = insert_block(BasicBlock("entry", 0));
 	_exit = insert_block(BasicBlock("exit", 1));
 	_nextId = 2;

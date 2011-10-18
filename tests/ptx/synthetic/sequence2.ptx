@@ -12,10 +12,10 @@
 	.reg .pred %p<3>;
 	
 	.loc	28	6	0
-$LDWbegin_sequence:
+$LDWbegin_sequence: //! I am a comment
 	mov.u32 	%r1, %ctaid.x;
 	mov.u32 	%r2, %ntid.x;
-	mul.lo.u32 	%r3, %r1, %r2;
+	mul.lo.u32 	%r3, %r1, %r2; //! me too
 	mov.u32 	%r4, %tid.x;
 	add.u32 	%r5, %r4, %r3;
 	

@@ -19,8 +19,6 @@ namespace parser
 			YYSTYPE*     yylval;
 			int          column;
 			int          nextColumn;
-			char         comment[1024];
-			unsigned int commentLength;
 
 		public:
 			PTXLexer( std::istream* arg_yyin = 0, 

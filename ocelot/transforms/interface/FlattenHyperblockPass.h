@@ -34,40 +34,54 @@ public:
 	class PredicateTerm
 	{
 	public:
-		enum Operator
-		{
-			Or,
-			And,
-			Invalid
-		};
-		
-	public:
 		PredicateTerm(ir::Instruction::RegisterType r = 0,
-			ir::PTXOperand::PredicateCondition c = ir::PTXOperand::PT,
-			Operator o = Invalid);
-		
+			ir::PTXOperand::PredicateCondition c = ir::PTXOperand::PT);
+	
+	public:
+		std::string toString() const;
+	
 	public:
 		ir::Instruction::RegisterType      reg;
 		ir::PTXOperand::PredicateCondition condition;
-		Operator                           op;
 	};
 	
 	/*! \brief A predicate equation */
 	class PredicateEquation
 	{
 	public:
-		typedef std::vector<PredicateTerm> TermVector;
+		enum Operator
+		{
+			Or,
+			And,
+			Invalid
+		};
 	
 	public:
 		PredicateEquation();
+		~PredicateEquation();
+		
+		PredicateEquation(const PredicateEquation& eq);
+		PredicateEquation& operator=(const PredicateEquation& eq);
 		
 	public:
-		void createAndInsertInstructions(ir::Instruction::RegisterType& regId,
-			ir::BasicBlock& bb);
-		void mergeEquations(const PredicateEquation& eq);
+		ir::Instruction::RegisterType createAndInsertInstructions(
+			ir::Instruction::RegisterType& regId, ir::BasicBlock& bb,
+			bool insert = true, ir::BasicBlock::InstructionList* addedList = 0);
+		ir::PTXOperand::PredicateCondition condition() const;
+		void andEquation(const PredicateEquation& eq);
+		void orEquation(const PredicateEquation& eq);
+		void andTerm(const PredicateTerm& term);
+		void simplify();
+		void clear();
 	
 	public:
-		TermVector terms;
+		std::string toString() const;
+	
+	public:
+		PredicateEquation* left;
+		Operator           op;
+		PredicateEquation* right;
+		PredicateTerm      term;
 		
 	};
 	

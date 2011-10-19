@@ -11430,7 +11430,7 @@ static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceT
 extern void __device_stub__Z12kernelMemsetPfiif(float *, int, int, float);
 extern void __device_stub__Z6kernelPfii(float *, int, int);
 static void __sti____cudaRegisterAll_44_tmpxft_00000ddb_00000000_4_texture3D_cpp1_ii_Surface(void) __attribute__((__constructor__));
-void __device_stub__Z12kernelMemsetPfiif(float *__par0, int __par1, int __par2, float __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, float))kernelMemset)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, float))kernelMemset))); };}
+void __device_stub__Z12kernelMemsetPfiif(float *__par0, int __par1, int __par2, float __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ (void)cudaLaunch(((char *)((void ( *)(float *, int, int, float))kernelMemset))); };}
 void kernelMemset( float *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3)
 # 21 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/textures/texture3D.cu"
 {__device_stub__Z12kernelMemsetPfiif( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
@@ -11440,7 +11440,7 @@ void kernelMemset( float *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3)
 
 }
 # 1 "/tmp/tmpxft_00000ddb_00000000-1_texture3D.cudafe1.stub.c"
-void __device_stub__Z6kernelPfii( float *__par0, int __par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel))); }; }
+void __device_stub__Z6kernelPfii( float *__par0, int __par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; { (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel))); }; }
 void kernel( float *__cuda_0,int __cuda_1,int __cuda_2)
 # 35 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/textures/texture3D.cu"
 {__device_stub__Z6kernelPfii( __cuda_0,__cuda_1,__cuda_2);

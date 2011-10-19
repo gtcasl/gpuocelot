@@ -11,6 +11,7 @@
 // Standard Library Includes
 #include <cassert>
 #include <unordered_set>
+#include <stack>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -126,16 +127,15 @@ static FlattenHyperblockPass::PredicateEquation getEquation(
 		
 			if(fallthrough)
 			{
-				report("  Inverting predicate condition");
+				report("    Inverting predicate condition");
 				invert(condition);
 			}
 			
-			report("  Adding term p" << nextRegister
-				<< " to equation from BB_" << block->id);
-			equation.terms.push_back(PredicateTerm(ptx.pg.reg,
-				condition, PredicateTerm::Invalid));
+			report("    Adding term p" << nextRegister
+				<< " to equation from predecessor BB_" << block->id);
+			equation.andTerm(PredicateTerm(ptx.pg.reg, condition));
 			
-			break;		
+			break;
 		}
 	}
 	
@@ -246,7 +246,7 @@ void FlattenHyperblockPass::_flattenBlock(
 			auto predecessorEquation = equations.find(*predecessor);
 			assert(predecessorEquation != equations.end());
 			
-			equation->second.mergeEquations(predecessorEquation->second);
+			auto equationForPathHere = predecessorEquation->second;
 			
 			bool fallthrough = false;
 			
@@ -256,15 +256,23 @@ void FlattenHyperblockPass::_flattenBlock(
 					(*predecessor)->get_fallthrough_edge()->tail;
 			}
 			
-			equation->second.mergeEquations(
-				getEquation(nextRegister, *predecessor, fallthrough));
+			equationForPathHere.andEquation(getEquation(nextRegister,
+				*predecessor, fallthrough));
+			
+			equation->second.orEquation(equationForPathHere);
 		}
+
+		equation->second.simplify();
+		
+		report("    " << equation->second.toString());
 	}
 	
 	// predicate each instruction with its condition
 	for(auto equation = equations.begin();
 		equation != equations.end(); ++equation)
 	{
+		report("   predicating instructions in BB_" << equation->first->id);
+		
 		equation->second.createAndInsertInstructions(nextRegister,
 			*equation->first);
 	}
@@ -345,119 +353,458 @@ void FlattenHyperblockPass::_flattenBlock(
 }
 
 FlattenHyperblockPass::PredicateTerm::PredicateTerm(
-	ir::Instruction::RegisterType r, ir::PTXOperand::PredicateCondition c,
-	Operator o)
-: reg(r), condition(c), op(o)
+	ir::Instruction::RegisterType r, ir::PTXOperand::PredicateCondition c)
+: reg(r), condition(c)
 {
 
+}
+
+std::string FlattenHyperblockPass::PredicateTerm::toString() const
+{
+	std::stringstream stream;
+
+	switch(condition)
+	{
+	case ir::PTXOperand::PT:
+	{
+		stream << "pt";
+		break;
+	}
+	case ir::PTXOperand::nPT:
+	{
+		stream << "pt";
+		break;
+	}
+	case ir::PTXOperand::Pred:
+	{
+		stream << "p" << reg;
+		break;
+	}
+	case ir::PTXOperand::InvPred:
+	{
+		stream << "!p" << reg;
+		break;
+	}
+	}
+	
+	return stream.str();
 }
 
 FlattenHyperblockPass::PredicateEquation::PredicateEquation()
+: left(0), op(Invalid), right(0)
 {
 
 }
 
-void FlattenHyperblockPass::PredicateEquation::createAndInsertInstructions(
-	ir::Instruction::RegisterType& nextRegister, ir::BasicBlock& bb)
+FlattenHyperblockPass::PredicateEquation::~PredicateEquation()
 {
-	if(terms.empty()) return;
-
-	// compute the predicate condition for the block
-	// TODO simplify conditions
-	auto term = terms.begin();
-	PredicateTerm previous = *term;
-	
-	ir::BasicBlock::InstructionList added;
-
-	report("  Inserting instructions to compute predicates");	
-	if(terms.size() > 1)
-	{
-		for(++term; term != terms.end(); ++term)
-		{
-			auto setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
-		
-			setp->d = ir::PTXOperand(ir::PTXOperand::Register,
-				ir::PTXOperand::pred, nextRegister++);
-			setp->d.condition = ir::PTXOperand::Pred;
-			
-			setp->type = ir::PTXOperand::pred;
-			
-			setp->a = ir::PTXOperand(ir::PTXOperand::Register,
-				ir::PTXOperand::pred, previous.reg);
-			setp->a.condition = previous.condition;
-			setp->b = ir::PTXOperand(ir::PTXOperand::Register,
-				ir::PTXOperand::pred);
-			setp->b.condition = ir::PTXOperand::PT;
-			setp->c = ir::PTXOperand(ir::PTXOperand::Register,
-				ir::PTXOperand::pred, term->reg);
-			setp->c.condition = term->condition;
-			
-			report("   " << setp->toString());
-			
-			assert(previous.op != PredicateTerm::Invalid);
-
-			if(previous.op == PredicateTerm::And)
-			{
-				setp->booleanOperator = ir::PTXInstruction::BoolAnd;
-			}
-			else
-			{
-				setp->booleanOperator = ir::PTXInstruction::BoolOr;
-			}
-		
-			added.push_back(setp);
-			
-			previous = PredicateTerm(setp->d.reg, setp->d.condition,
-				PredicateTerm::Or);
-		}
-	}
-		
-	for(auto instruction = bb.instructions.begin();
-		instruction != bb.instructions.end(); ++instruction)
-	{
-		ir::PTXInstruction& ptx =
-		static_cast<ir::PTXInstruction&>(**instruction);
-		
-		// don't predicate side exits
-		if(ptx.isBranch()) continue;
-		
-		assertM(ptx.pg.condition == ir::PTXOperand::PT, "Instruction '"
-			<< ptx.toString() << "' was already predicated.");
-		
-		ptx.pg.addressMode = ir::PTXOperand::Register;
-		ptx.pg.condition   = previous.condition;
-		ptx.pg.reg         = previous.reg;
-	}
-	
-	bb.instructions.insert(bb.instructions.begin(), added.begin(), added.end());
+	clear();
 }
 
-void FlattenHyperblockPass::PredicateEquation::mergeEquations(
+FlattenHyperblockPass::PredicateEquation::PredicateEquation(
+	const PredicateEquation& eq)
+: left(0), op(eq.op), right(0), term(eq.term)
+{
+	if(eq.left != 0)  left  = new PredicateEquation(*eq.left);
+	if(eq.right != 0) right = new PredicateEquation(*eq.right);
+}
+
+FlattenHyperblockPass::PredicateEquation&
+	FlattenHyperblockPass::PredicateEquation::operator=(
 	const PredicateEquation& eq)
 {
-	report("  Merging predicate conditions...");
+	clear();
+	
+	left  = new PredicateEquation(*eq.left);
+	op    = eq.op;
+	right = new PredicateEquation(*eq.right);
+	
+	return *this;
+}
 
-	if(terms.empty())
+ir::Instruction::RegisterType
+	FlattenHyperblockPass::PredicateEquation::createAndInsertInstructions(
+	ir::Instruction::RegisterType& nextRegister, ir::BasicBlock& bb,
+	bool insert, ir::BasicBlock::InstructionList* addedList)
+{
+	// compute the predicate condition for the block
+	// TODO simplify conditions
+	ir::BasicBlock::InstructionList added;
+
+	if(insert)
 	{
-		terms = eq.terms;
+		addedList = &added;
 	}
-	else if(!eq.terms.empty())
+
+	PredicateTerm resultTerm = term;
+
+	if(op != Invalid)
 	{
-		report("   ");
-		TermVector::const_iterator mineBegin = terms.begin();
-		TermVector::const_iterator theirsBegin = eq.terms.begin();
-		
-		for(; mineBegin != terms.end() && theirsBegin != eq.terms.end();
-			++theirsBegin, ++mineBegin)
+		auto setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
+
+		setp->d = ir::PTXOperand(ir::PTXOperand::Register,
+			ir::PTXOperand::pred, nextRegister++);
+		setp->d.condition = ir::PTXOperand::Pred;
+	
+		setp->type = ir::PTXOperand::pred;
+	
+		setp->a = ir::PTXOperand(ir::PTXOperand::Register,
+			ir::PTXOperand::pred,
+			left->createAndInsertInstructions(nextRegister, bb,
+			false, addedList));
+		setp->a.condition = left->condition();
+
+		setp->b = ir::PTXOperand(ir::PTXOperand::Register,
+			ir::PTXOperand::pred);
+		setp->b.condition = ir::PTXOperand::PT;
+
+		setp->c = ir::PTXOperand(ir::PTXOperand::Register,
+			ir::PTXOperand::pred,
+			right->createAndInsertInstructions(nextRegister, bb,
+			false, addedList));
+		setp->c.condition = right->condition();
+	
+		report("   " << setp->toString());
+	
+		if(op == And)
 		{
-			if(mineBegin->reg != theirsBegin->reg)
+			setp->booleanOperator = ir::PTXInstruction::BoolAnd;
+		}
+		else
+		{
+			setp->booleanOperator = ir::PTXInstruction::BoolOr;
+		}
+
+		addedList->push_back(setp);
+		
+		resultTerm.condition = setp->d.condition;
+		resultTerm.reg       = setp->d.reg;
+	}
+	
+	if(insert)
+	{
+		report("    adding predicate " << resultTerm.toString());	
+		for(auto instruction = bb.instructions.begin();
+			instruction != bb.instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx =
+			static_cast<ir::PTXInstruction&>(**instruction);
+		
+			// don't predicate side exits
+			if(ptx.isBranch()) continue;
+		
+			assertM(ptx.pg.condition == ir::PTXOperand::PT, "Instruction '"
+				<< ptx.toString() << "' was already predicated.");
+		
+			ptx.pg.addressMode = ir::PTXOperand::Register;
+			ptx.pg.condition   = resultTerm.condition;
+			ptx.pg.reg         = resultTerm.reg;
+		}
+
+		bb.instructions.insert(bb.instructions.begin(),
+			added.begin(), added.end());
+	}
+	
+	return resultTerm.reg;
+}
+
+ir::PTXOperand::PredicateCondition
+	FlattenHyperblockPass::PredicateEquation::condition() const
+{
+	if(op == Invalid)
+	{
+		return term.condition;
+	}
+	
+	return ir::PTXOperand::Pred;
+}
+	
+void FlattenHyperblockPass::PredicateEquation::andEquation(
+	const PredicateEquation& eq)
+{
+	if(op == Invalid && term.condition == ir::PTXOperand::PT &&
+		eq.op == Invalid)
+	{
+		term = eq.term;
+	}
+	else
+	{
+		left  = new PredicateEquation(*this);
+		right = new PredicateEquation(eq);
+		op    = And;
+	}
+}
+
+void FlattenHyperblockPass::PredicateEquation::orEquation(
+	const PredicateEquation& eq)
+{
+	if(op == Invalid && term.condition == ir::PTXOperand::PT &&
+		eq.op == Invalid)
+	{
+		term = eq.term;
+	}
+	else
+	{
+		left  = new PredicateEquation(*this);
+		right = new PredicateEquation(eq);
+		op    = Or;
+	}
+}
+
+void FlattenHyperblockPass::PredicateEquation::andTerm(const PredicateTerm& term)
+{
+	PredicateEquation temp;
+	
+	temp.term = term;
+	
+	andEquation(temp);
+}
+
+typedef std::vector<bool> BitVector;
+typedef std::unordered_map<ir::Instruction::RegisterType,
+	unsigned int> IndexMap;
+
+bool evaluate(const BitVector& bitvector, IndexMap& indexes,
+	const FlattenHyperblockPass::PredicateEquation& equation)
+{	
+	bool result = true;
+	
+	if(equation.op == FlattenHyperblockPass::PredicateEquation::Invalid)
+	{
+		switch(equation.term.condition)
+		{
+		case ir::PTXOperand::PT:
+		{
+			result = true;
+			break;
+		}
+		case ir::PTXOperand::nPT:
+		{
+			result = false;
+			break;
+		}
+		case ir::PTXOperand::Pred:
+		{
+			result = bitvector[indexes[equation.term.reg]];
+			break;
+		}
+		case ir::PTXOperand::InvPred:
+		{
+			result = !bitvector[indexes[equation.term.reg]];
+			break;
+		}
+		}
+	}
+	else
+	{
+		if(equation.op == FlattenHyperblockPass::PredicateEquation::Or)
+		{
+			result = evaluate(bitvector, indexes, *equation.left) ||
+				evaluate(bitvector, indexes, *equation.right);
+		}
+		else
+		{
+			result = evaluate(bitvector, indexes, *equation.left) &&
+				evaluate(bitvector, indexes, *equation.right);
+		}
+	}
+	
+	return result;
+}
+
+void FlattenHyperblockPass::PredicateEquation::simplify()
+{
+	typedef std::vector<PredicateTerm>                 EquationVector;
+	typedef std::stack<PredicateEquation*>             EquationStack;
+	typedef std::vector<EquationVector>                MinTermVector;
+	typedef std::vector<ir::Instruction::RegisterType> RegisterVector;
+
+	report("    Simplifying boolean equations...");
+	report("     before min terms: " << toString());
+
+	MinTermVector  minterms;
+	EquationStack  stack;
+	IndexMap       indexes;
+	RegisterVector reverseIndexes;
+
+	// fan out to minterms
+	stack.push(this);
+	
+	report("     finding all uses registers");
+	while(!stack.empty())
+	{
+		PredicateEquation* eq = stack.top();
+		stack.pop();
+		
+		if(eq->op == Invalid)
+		{
+			if(eq->term.condition == ir::PTXOperand::Pred ||
+				eq->term.condition == ir::PTXOperand::InvPred)
 			{
-				terms.back().op = PredicateTerm::Or;
-				break;
+				if(indexes.count(eq->term.reg) == 0)
+				{
+					report("      used p" << eq->term.reg);
+					indexes.insert(std::make_pair(
+						eq->term.reg, indexes.size()));
+					reverseIndexes.push_back(eq->term.reg);
+				}
 			}
 		}
+		else
+		{
+			stack.push(eq->left);
+			stack.push(eq->right);
+		}
+	}
+	
+	assert(indexes.size() < 30);
+
+	BitVector bitvector(indexes.size());
+	
+	for(unsigned int i = 0; i < (1 << indexes.size()); ++i)
+	{
+		unsigned int key = i;
+		for(unsigned int j = 0; j < indexes.size(); ++j)
+		{
+			bitvector[j] = key & 0x1;
+			key >>= 1;
+		}
 		
-		terms.insert(terms.end(), theirsBegin, eq.terms.end());
+		// evaluate the equation to create a minterm
+		if(evaluate(bitvector, indexes, *this))
+		{
+			EquationVector minterm;
+
+			for(unsigned int j = 0; j < indexes.size(); ++j)
+			{
+				if(bitvector[j])
+				{
+					minterm.push_back(PredicateTerm(reverseIndexes[j],
+						ir::PTXOperand::Pred));
+				}
+				else
+				{
+					minterm.push_back(PredicateTerm(reverseIndexes[j],
+						ir::PTXOperand::InvPred));
+				}
+			}
+
+			minterms.push_back(minterm);
+		}
+	}
+	
+	clear();
+	
+	for(auto minterm = minterms.begin(); minterm != minterms.end(); ++minterm)
+	{
+		PredicateEquation equation;
+		
+		for(auto eq = minterm->begin(); eq != minterm->end(); ++eq)
+		{
+			equation.andTerm(*eq);
+		}
+		
+		orEquation(equation);
+	}
+	
+	report("     after min terms: " << toString());
+
+	bool changed = true;
+	
+	while(changed)
+	{
+		stack.push(this);
+		changed = false;
+		
+		while(!stack.empty())
+		{
+			PredicateEquation* eq = stack.top();
+			stack.pop();
+		
+			if(eq->op != Invalid)
+			{
+				if(eq->left->term.condition == ir::PTXOperand::PT)
+				{
+					delete eq->left; eq->left = 0;
+					eq->op = Invalid;
+					eq->term = eq->right->term;
+					delete eq->right; eq->right = 0;
+					
+					changed = true;
+				}
+				else if(eq->right->term.condition == ir::PTXOperand::PT)
+				{
+					delete eq->right; eq->right = 0;
+					eq->op = Invalid;
+					eq->term = eq->left->term;
+					delete eq->left; eq->left = 0;
+					
+					changed = true;
+				}
+				else if(eq->left->op == Invalid && eq->right->op == Invalid)
+				{
+					if(eq->right->term.condition == ir::PTXOperand::Pred &&
+						eq->left->term.condition == ir::PTXOperand::InvPred)
+					{
+						delete eq->right; eq->right = 0;
+						delete eq->left;  eq->left  = 0;
+						eq->op = Invalid;
+						eq->term.condition = ir::PTXOperand::PT;
+						
+						changed = true;
+					}
+					else if(eq->left->term.condition == ir::PTXOperand::Pred &&
+						eq->right->term.condition == ir::PTXOperand::InvPred)
+					{
+						delete eq->right; eq->right = 0;
+						delete eq->left;  eq->left  = 0;
+						eq->op = Invalid;
+						eq->term.condition = ir::PTXOperand::PT;
+						
+						changed = true;
+					}
+					
+					if(changed) break;
+				}
+				else
+				{
+					stack.push(eq->left);
+					stack.push(eq->right);
+				}
+			}
+		}
+			
+	}
+		
+	report("     after collection: " << toString());
+}
+
+void FlattenHyperblockPass::PredicateEquation::clear()
+{
+	delete left;  left  = 0;
+	delete right; right = 0;
+	
+	op   = Invalid;
+	term = PredicateTerm();
+}
+
+std::string FlattenHyperblockPass::PredicateEquation::toString() const
+{
+	if(op == Invalid)
+	{
+		return term.toString();
+	}
+
+	std::string l = left->toString();
+	std::string r = right->toString();
+	
+	if(op == And)
+	{
+		return "(" + l + ") & (" + r + ")";
+	}
+	else
+	{
+		return "(" + l + ") | (" + r + ")";
 	}
 }
 

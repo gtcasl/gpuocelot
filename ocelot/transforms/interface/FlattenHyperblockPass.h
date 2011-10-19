@@ -75,6 +75,7 @@ public:
 		void clear();
 	
 	public:
+		bool isAlwaysTrue() const;
 		std::string toString() const;
 	
 	public:

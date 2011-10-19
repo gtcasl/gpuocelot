@@ -259,7 +259,14 @@ void FlattenHyperblockPass::_flattenBlock(
 			equationForPathHere.andEquation(getEquation(nextRegister,
 				*predecessor, fallthrough));
 			
-			equation->second.orEquation(equationForPathHere);
+			if(equation->second.isAlwaysTrue())
+			{
+				equation->second = equationForPathHere;
+			}
+			else
+			{
+				equation->second.orEquation(equationForPathHere);
+			}
 		}
 
 		equation->second.simplify();
@@ -415,9 +422,11 @@ FlattenHyperblockPass::PredicateEquation&
 {
 	clear();
 	
-	left  = new PredicateEquation(*eq.left);
-	op    = eq.op;
-	right = new PredicateEquation(*eq.right);
+	if(eq.left)  left  = new PredicateEquation(*eq.left);
+	if(eq.right) right = new PredicateEquation(*eq.right);
+
+	op   = eq.op;
+	term = eq.term;
 	
 	return *this;
 }
@@ -806,6 +815,11 @@ std::string FlattenHyperblockPass::PredicateEquation::toString() const
 	{
 		return "(" + l + ") | (" + r + ")";
 	}
+}
+
+bool FlattenHyperblockPass::PredicateEquation::isAlwaysTrue() const
+{
+	return op == Invalid && term.condition == ir::PTXOperand::PT;
 }
 
 }

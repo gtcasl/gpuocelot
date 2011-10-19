@@ -2015,7 +2015,7 @@ namespace parser
 		{
 			operands.insert( std::make_pair( identifier, 
 				ir::PTXOperand( ir::PTXOperand::FunctionName, 
-				ir::PTXOperand::TypeSpecifier_invalid, name ) ) );
+				ir::PTXOperand::TypeSpecifier_invalid, identifier ) ) );
 			localOperands.back().insert( identifier );
 		}
 		

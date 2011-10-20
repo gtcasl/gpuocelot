@@ -41,7 +41,7 @@
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 0
-#define REPORT_DYNAMIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
@@ -342,6 +342,7 @@ void executive::CooperativeThreadArray::postTrace() {
 	if (traceEvents) {
 		currentEvent.contextStackSize =
 			(ir::PTXU32)reconvergenceMechanism->stackSize();
+
 		kernel->tracePostEvent(currentEvent);
 	}
 }
@@ -553,10 +554,10 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				break;
 		}
 	
+		postTrace();
+
 		running = reconvergenceMechanism->nextInstruction(
 			getActiveContext(), opcode);
-
-		postTrace();
 
 		clock += 4;
 		++counter;
@@ -2519,6 +2520,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				reportE(REPORT_CALL, " lazy linking against kernel '" 
 					<< instr.a.identifier << "'");
 				kernel->lazyLink(context.PC, instr.a.identifier);
+				currentEvent.instruction = &currentInstruction(context);
 			}
 
 			const PTXInstruction& jittedInstr = currentInstruction(context);
@@ -5651,6 +5653,8 @@ void executive::CooperativeThreadArray::eval_Mov_func(CTAContext &context,
 	
 	const ir::PTXInstruction& jittedInstr = currentInstruction(context);
 	
+	currentEvent.instruction = &jittedInstr;
+
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, jittedInstr)) continue;
 		setRegAsU64(threadID, jittedInstr.d.reg,
@@ -6319,6 +6323,12 @@ void executive::CooperativeThreadArray::eval_Rem(CTAContext &context,
 void executive::CooperativeThreadArray::eval_Ret(CTAContext &context, 
 	const PTXInstruction &instr) {
 	trace();
+	
+	if (functionCallStack.isTheCurrentFrameMain()) {
+		eval_Exit(context, instr);
+		return;
+	}
+	
 	reportE(REPORT_RET, "Returned from function call at PC " 
 		<< functionCallStack.returnPC() );
 	const PTXInstruction& call = kernel->instructions[

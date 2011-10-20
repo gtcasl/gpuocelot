@@ -32,7 +32,8 @@ namespace tools
 				StructuralTransform  = 0x8,
 				MIMDThreadScheduling = 0x10,
 				DeadCodeElimination  = 0x20,
-				SplitBasicBlocks     = 0x40
+				SplitBasicBlocks     = 0x40,
+				SyncElimination      = 0x80
 			};
 	
 		public:

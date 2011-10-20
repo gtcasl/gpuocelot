@@ -329,6 +329,14 @@ namespace executive
 		_properties.concurrentKernels = 0;
 		_properties.major = 2;
 		_properties.minor = 0;
+		
+		_properties.integrated = true;
+		_properties.unifiedAddressing = true;
+		_properties.memoryClockRate = 1;
+		_properties.memoryBusWidth = 1;
+		_properties.l2CacheSize = 1;
+		_properties.maxThreadsPerMultiProcessor =
+			_properties.maxThreadsPerBlock;
 	}
 	
 	EmulatorDevice::~EmulatorDevice()

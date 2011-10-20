@@ -90,7 +90,7 @@ namespace parser
 		
 		stream << "(";
 		for( TypeVector::const_iterator type = returnTypes.begin(); 
-			type != returnTypes.end(); ++type )	
+			type != returnTypes.end(); ++type )
 		{
 			if( type != returnTypes.begin() )
 			{
@@ -602,7 +602,7 @@ namespace parser
 	{
 		statement.line   = location.first_line;
 		statement.column = location.first_column;		
-
+		
 		report( "   At (" << statement.line << "," << statement.column
 			<< ") : Parsed statement " << statements.size() 
 			<< " \"" << statement.toString() << "\"" );
@@ -683,7 +683,7 @@ namespace parser
 			operand.array.clear();
 			if( inEntry )
 			{
-				localOperands.push_back( statement.name );
+				localOperands.back().insert( statement.name );
 			}
 		}
 		
@@ -727,7 +727,7 @@ namespace parser
 			operand.array.clear();
 			if( inEntry )
 			{
-				localOperands.push_back( name.str() );
+				localOperands.back().insert( name.str() );
 			}
 		}
 	}
@@ -812,7 +812,7 @@ namespace parser
 	
 		if( inEntry )
 		{
-			localOperands.push_back( statement.name );
+			localOperands.back().insert( statement.name );
 		}
 	}
 
@@ -911,8 +911,8 @@ namespace parser
 
 		operands.insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, ir::PTXInstruction::Param ) ) );
-
-		localOperands.push_back( statement.name );
+		
+		localOperands.back().insert( statement.name );
 
 		if( inReturnList )
 		{
@@ -939,13 +939,19 @@ namespace parser
 	void PTXParser::State::openBrace( YYLTYPE& location )
 	{
 		report( "  Rule: '{'" );
-
-		assert( !inEntry );
-		inEntry = true;
-
-		statement.directive = ir::PTXStatement::StartScope;	
 		
-		statementEnd( location );
+		if( !inEntry )
+		{
+			statement.directive = ir::PTXStatement::StartScope;	
+			statementEnd( location );
+			inEntry = true;
+		}
+		else
+		{	
+			localOperands.push_back( StringSet() );
+		}
+		
+		localPrototypes.push_back( StringSet() );
 	}
 	
 	void PTXParser::State::closeBrace( YYLTYPE& location )
@@ -953,13 +959,18 @@ namespace parser
 		report( "  Rule: '}'" );
 
 		assert( inEntry );
-		inEntry = false;
+		assert( !localOperands.empty() );
 
-		statement.directive = ir::PTXStatement::EndScope;	
-		statementEnd( location );
-	
-		for( StringList::iterator operand = localOperands.begin(); 
-			operand != localOperands.end(); ++operand )
+		inEntry = localOperands.size() > 1;
+		
+		if( !inEntry )
+		{
+			statement.directive = ir::PTXStatement::EndScope;	
+			statementEnd( location );
+		}
+		
+		for( StringSet::iterator operand = localOperands.back().begin(); 
+			operand != localOperands.back().end(); ++operand )
 		{
 			report( "   Local variable " << *operand << " went out of scope" );
 			OperandMap::iterator fi = operands.find( *operand );
@@ -967,7 +978,18 @@ namespace parser
 			operands.erase( fi );
 		}
 	
-		localOperands.clear();
+		for( StringSet::iterator prototype = localPrototypes.back().begin(); 
+			prototype != localPrototypes.back().end(); ++prototype )
+		{
+			report( "   Local prototype " << *prototype
+				<< " went out of scope" );
+			PrototypeMap::iterator fi = prototypes.find( *prototype );
+			assert( fi != prototypes.end() );
+			prototypes.erase( fi );
+		}
+		
+		localOperands.pop_back();
+		localPrototypes.pop_back();
 	}
 
 	void PTXParser::State::argumentListBegin( YYLTYPE& location )
@@ -991,7 +1013,7 @@ namespace parser
 		statement.directive = ir::PTXStatement::EndParam;
 		statement.isReturnArgument = false;
 	
-		statementEnd( location );		
+		statementEnd( location );
 	}
 
 	void PTXParser::State::returnArgumentListBegin( YYLTYPE& location )
@@ -1023,6 +1045,8 @@ namespace parser
 		report( "  Rule: .func" );
 		statement.directive = ir::PTXStatement::Func;
 		
+		localOperands.push_back( StringSet() );
+		
 		statementEnd( location );
 	}
 
@@ -1052,9 +1076,11 @@ namespace parser
 					<< " already declared in this scope.", 
 					DuplicateDeclaration );
 			}
-		
-			for( StringList::iterator operand = localOperands.begin(); 
-				operand != localOperands.end(); ++operand )
+
+			assert(!localOperands.empty());
+
+			for( StringSet::iterator operand = localOperands.back().begin(); 
+				operand != localOperands.back().end(); ++operand )
 			{
 				report( "   Local variable " << *operand 
 					<< " went out of scope" );
@@ -1063,8 +1089,8 @@ namespace parser
 				operands.erase( fi );
 			}
 	
-			localOperands.clear();
-			
+			localOperands.pop_back();
+		
 			statement.directive = ir::PTXStatement::EndFuncDec;
 			statementEnd( location );
 		}
@@ -1105,6 +1131,8 @@ namespace parser
 		prototype.name = name;
 	
 		statementEnd( location );
+		
+		localOperands.push_back( StringSet() );
 	}	
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )
@@ -1135,8 +1163,7 @@ namespace parser
 		assert( !statements.empty() );
 		assert( statements.back().directive == ir::PTXStatement::Instr );
 	
-		std::string message = 
-			statements.back().instruction.valid();
+		std::string message = statements.back().instruction.valid();
 	
 		if( message != "" )
 		{
@@ -1149,6 +1176,12 @@ namespace parser
 		operandVector.clear();
 	}
 
+    void PTXParser::State::metadata( const std::string& metadata )
+    {
+    	report( "   Added metadata " << metadata);
+		statement.instruction.metadata = metadata;
+    }
+	
 	void PTXParser::State::locationAddress( int token )
 	{
 		directive = tokenToDirective( token );
@@ -1179,7 +1212,7 @@ namespace parser
 		
 		if( inEntry )
 		{
-			localOperands.push_back( statement.name );
+			localOperands.back().insert( statement.name );
 		}
 	}
 
@@ -1745,15 +1778,36 @@ namespace parser
 
 		if( operand == operands.end() )
 		{
-			throw_exception( toString( location, *this ) << "Operand '" 
+			throw_exception( toString( location, *this )
+				<< "Function call name/operand '" 
 				<< identifier << "' not declared in this scope.", 
 				InvalidInstruction );
 		}
 		
-		report( "   name: " << operand->second.operand.identifier );
+		report( "   name: " << identifier );
 		
 		statement.instruction.a = operand->second.operand;
 	
+		if( statement.instruction.a.addressMode == ir::PTXOperand::Register )
+		{
+			statement.instruction.c.addressMode = ir::PTXOperand::FunctionName;
+			statement.instruction.c.identifier  = prototype.name;
+		}
+		else if( prototype.name.empty() )
+		{
+			prototype.name = statement.instruction.a.identifier;
+		}
+		
+		PrototypeMap::iterator pi = prototypes.find( prototype.name );
+		if( pi == prototypes.end() )
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Function/Prototype '" 
+				<< statement.instruction.a.identifier 
+				<< "' not declared in this scope.", 
+				NoDeclaration );	
+		}
+
 		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
 
 		FunctionPrototype proto;
@@ -1768,42 +1822,42 @@ namespace parser
 		unsigned int operandIndex = 1;
 		for( ; returnOperands > 0; --returnOperands, ++operandIndex )
 		{
-			report( "    " << operandVector[ operandIndex ].toString() );
+			ir::PTXOperand& operand = operandVector[ operandIndex ];
+
+			if( operand.addressMode == ir::PTXOperand::BitBucket )
+			{
+				operand.type = pi->second.returnTypes[
+					proto.returnTypes.size() ];
+			}
+
+			proto.returnTypes.push_back( operand.type );
+
 			statement.instruction.d.array.push_back( 
 				operandVector[ operandIndex ] );
-			proto.returnTypes.push_back( operandVector[ operandIndex ].type );
+
+			report( "    " << operand.toString() );				
 		}
 
 		report( "   operands:" );
 		
 		for( ; operandIndex < operandVector.size(); ++operandIndex )
 		{
-			report( "    " << operandVector[ operandIndex ].toString() );
+			ir::PTXOperand& operand = operandVector[ operandIndex ];
+
+			if( operand.addressMode == ir::PTXOperand::BitBucket )
+			{
+				operand.type = pi->second.argumentTypes[
+					proto.argumentTypes.size() ];
+			}
+
+			proto.argumentTypes.push_back( operand.type );
+
 			statement.instruction.b.array.push_back(
 				operandVector[ operandIndex ] );
-			proto.argumentTypes.push_back( operandVector[ operandIndex ].type );
+
+			report( "    " << operand.toString() );				
 		}
-		
-		if( statement.instruction.a.addressMode == ir::PTXOperand::Register )
-		{
-			statement.instruction.c.addressMode = ir::PTXOperand::FunctionName;
-			statement.instruction.c.identifier  = prototype.name;
-		}
-		else
-		{
-			prototype.name = statement.instruction.a.identifier;
-		}
-		
-		PrototypeMap::iterator pi = prototypes.find( prototype.name );
-		if( pi == prototypes.end() )
-		{
-			throw_exception( toString( location, *this ) 
-				<< "Function/Prototype '" 
-				<< statement.instruction.a.identifier 
-				<< "' not declared in this scope.", 
-				NoDeclaration );	
-		}
-		
+				
 		if( !pi->second.compare( proto ) )
 		{
 			throw_exception( toString( location, *this ) 
@@ -1933,7 +1987,7 @@ namespace parser
 	}
 	
 	void PTXParser::State::callPrototype( const std::string& name, 
-		YYLTYPE& location )
+		const std::string& identifier, YYLTYPE& location )
 	{
 		report( "  Rule callPrototype: TOKEN_LABEL TOKEN_CALL_PROTOTYPE " 
 			<< "returnTypeList identifier argumentTypeList ';'" );
@@ -1956,13 +2010,16 @@ namespace parser
 		
 		prototypes.insert( std::make_pair( name, prototype ) );
 		
-		operands.insert( std::make_pair( name, 
-			ir::PTXOperand( ir::PTXOperand::FunctionName, 
-			ir::PTXOperand::TypeSpecifier_invalid, name ) ) );
-	
-		localPrototypes.push_back( name );
-		localOperands.push_back( name );
-	
+		if(identifier != "_")
+		{
+			operands.insert( std::make_pair( identifier, 
+				ir::PTXOperand( ir::PTXOperand::FunctionName, 
+				ir::PTXOperand::TypeSpecifier_invalid, identifier ) ) );
+			localOperands.back().insert( identifier );
+		}
+		
+		localPrototypes.back().insert( name );
+		
 		statement.directive     = ir::PTXStatement::FunctionPrototype;
 		statement.returnTypes   = prototype.returnTypes;
 		statement.argumentTypes = prototype.argumentTypes;
@@ -2645,7 +2702,6 @@ namespace parser
 				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
 			delete[] temp;
 		
-
 			report("parse error");
 			report(e.what());
 			throw e;

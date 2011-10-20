@@ -136,58 +136,6 @@ namespace transforms
         inst.pg.condition = ir::PTXOperand::PT;
         inst.pg.identifier.clear();
         
-        
-        ir::PTXStatement leastActiveThread(ir::PTXStatement::Label);
-        leastActiveThread.name = LEAST_ACTIVE_THREAD;
-        statements.push_back(leastActiveThread);
-        
-        //mov.u32 %lmask, %lanemask_lt;
-        inst.opcode = ir::PTXInstruction::Mov;
-        inst.type = inst.d.type = ir::PTXOperand::u32; 
-                 
-        inst.d.identifier = "lmask";
-                     
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.a = ir::PTXOperand(ir::PTXOperand::lanemask_lt, ir::PTXOperand::u32);
-        inst.a.addressMode = ir::PTXOperand::Special;
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);     
-        
-        //and %rb0, bitmask, %lmask
-        inst.opcode = ir::PTXInstruction::And;
-        inst.type = ir::PTXOperand::b32;
-        inst.d.identifier = "rb0";
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "bitmask";
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.identifier = "lmask";
-
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        //setp.eq.u32 pLeastActiveThread, rb0, 0
-        inst.opcode = ir::PTXInstruction::SetP;
-                
-        inst.d.type = ir::PTXOperand::pred;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = "leastActiveThreadPred";
-
-        inst.comparisonOperator = ir::PTXInstruction::Eq;
-        inst.a.type = type;
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "rb0";
-        inst.b.type = type;
-        inst.b.addressMode = ir::PTXOperand::Immediate;
-        inst.b.imm_uint = 0;
-
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-    
-        inst.pg.condition = ir::PTXOperand::PT;
-        inst.pg.identifier.clear();
-        inst.type = inst.d.type = inst.a.type = inst.b.type = type;
-    
         if(overHalfWarp)
         {
         
@@ -506,9 +454,6 @@ namespace transforms
         inst.a.identifier = "i_offset";
         inst.a.offset = 0;
 
-        inst.pg.condition = ir::PTXOperand::Pred;
-        inst.pg.identifier = "leastActiveThreadPred";
-
         stmt.instruction = inst;
         statements.push_back(stmt);        
         
@@ -587,9 +532,6 @@ namespace transforms
         inst.a.identifier = "j_offset";
         inst.a.addressMode = ir::PTXOperand::Indirect;
         inst.a.offset = 0;
-
-        inst.pg.condition = ir::PTXOperand::Pred;
-        inst.pg.identifier = "leastActiveThreadPred";
         
         stmt.instruction = inst;
         statements.push_back(stmt);
@@ -677,36 +619,6 @@ namespace transforms
         inst.d.identifier.clear();
         inst.a.identifier.clear();
         inst.b.identifier.clear();
-
-        inst.opcode = ir::PTXInstruction::SelP;
-        inst.type = inst.d.type = inst.a.type = inst.b.type = type;
-      
-        inst.d.addressMode = inst.c.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = "leastActiveThreadValue";
-
-        inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Immediate;
-        inst.a.imm_uint = 1;
-        inst.b.imm_uint = 0;
-
-        inst.c.type = ir::PTXOperand::pred;
-        inst.c.identifier = "leastActiveThreadPred";
-
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::And;
-        inst.type = ir::PTXOperand::b64;
-        inst.d.identifier = "leastActiveThreadAndIsUnique";
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "isUnique";
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.identifier = "leastActiveThreadValue";
-
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-
-        inst.type = type;
-        inst.c.addressMode = ir::PTXOperand::Invalid;
         
         inst.opcode = ir::PTXInstruction::SetP;
             
@@ -717,7 +629,7 @@ namespace transforms
         inst.comparisonOperator = ir::PTXInstruction::Eq;
         inst.a.type = type;
         inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "leastActiveThreadAndIsUnique";
+        inst.a.identifier = "isUnique";
         inst.b.type = type;
         inst.b.addressMode = ir::PTXOperand::Immediate;
         inst.b.imm_uint = 1;
@@ -888,9 +800,6 @@ namespace transforms
 
         inst.a.identifier = "uniqueCount";
         inst.a.addressMode = ir::PTXOperand::Register;
-
-        inst.pg.condition = ir::PTXOperand::Pred;
-        inst.pg.identifier = "leastActiveThreadPred";
 
         stmt.instruction = inst;
         statements.push_back(stmt);

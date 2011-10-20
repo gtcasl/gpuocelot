@@ -18,6 +18,7 @@
 #include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
 #include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
 #include <ocelot/transforms/interface/SplitBasicBlockPass.h>
+#include <ocelot/transforms/interface/SyncEliminationPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -107,6 +108,12 @@ namespace tools
 			manager.addPass( *pass );
 		}
 		
+		if( passes & SyncElimination )
+		{
+			transforms::Pass* pass = new transforms::SyncEliminationPass;
+			manager.addPass( *pass );
+		}
+		
 		if( input.empty() )
 		{
 			std::cout << "No input file name given.  Bailing out." << std::endl;
@@ -193,6 +200,11 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched split-blocks." );
 			types |= tools::PTXOptimizer::SplitBasicBlocks;
 		}
+		else if( *pass == "sync-elimination" )
+		{
+			report( "  Matched sync-elimination." );
+			types |= tools::PTXOptimizer::SyncElimination;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -225,7 +237,8 @@ int main( int argc, char** argv )
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
-		"mimd-threading, dead-code-elimination, split-blocks)" );
+		"mimd-threading, dead-code-elimination, split-blocks, "
+		"sync-elimination)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

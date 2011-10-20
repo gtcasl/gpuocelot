@@ -4,6 +4,7 @@
 */
 
 #include <ocelot/cuda/interface/cuda.h>
+//#include <cuda.h>
 
 #include <iostream>
 
@@ -87,7 +88,7 @@ int main() {
 	}
 	report("  compute mode: " << pi);
 	
-	result = cuModuleLoad(&module, "ocelot/cuda/test/driver/sequence2.ptx");
+	result = cuModuleLoad(&module, "ocelot/cuda/test/driver/sequence.ptx");
 	if (result != CUDA_SUCCESS) {
 		report("cuModuleLoad() failed: " << result);
 		return 1;
@@ -161,6 +162,7 @@ int main() {
 		int got = A_cpu[i];
 		if (expected != got) {
 			report("ERROR [" << i << "] - expected: " << expected << ", got: " << got);
+			report("  A_gpu[" << i << "] = " << ((int *)A_gpu)[i]);
 			++errors;
 			if (errors >= 10) {
 				break;

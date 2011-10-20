@@ -57,6 +57,7 @@ static bool canRemoveAliveOut(analysis::DataflowGraph& dfg,
 		for(RegisterSet::iterator aliveIn = (*successor)->aliveIn().begin();
 			aliveIn != (*successor)->aliveIn().end(); ++aliveIn)
 		{
+			// A target successor uses the value
 			if(aliveIn->id == aliveOut.id) return false;
 		}
 	}
@@ -67,10 +68,12 @@ static bool canRemoveAliveOut(analysis::DataflowGraph& dfg,
 		for(RegisterSet::iterator aliveIn = successor->aliveIn().begin();
 			aliveIn != successor->aliveIn().end(); ++aliveIn)
 		{
+			// A fallthrough successor uses the value
 			if(aliveIn->id == aliveOut.id) return false;
 		}
 	}
 	
+	// No successors use the value
 	return true;
 }
 
@@ -105,6 +108,7 @@ static bool canRemoveInstruction(iterator block,
 
 static bool canRemovePhi(iterator block, const PhiInstruction& phi)
 {
+	// The value produced by the phi is alive out of the block
 	if(block->aliveOut().count(phi.d.id) != 0) return false;
 
 	for(InstructionVector::iterator next = block->instructions().begin();
@@ -118,6 +122,7 @@ static bool canRemovePhi(iterator block, const PhiInstruction& phi)
 		}
 	}
 	
+	// There are no users in the block and it is dead outside the block
 	return true;
 }
 
@@ -134,6 +139,7 @@ static bool canRemoveAliveIn(iterator block, const Register& aliveIn)
 		}
 	}
 	
+	// The are no users in the block
 	return true;
 }
 

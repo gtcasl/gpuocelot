@@ -466,6 +466,7 @@ void ControlFlowGraph::clear() {
 	}
 	_blocks.clear();
 	_edges.clear();
+	
 	_entry = insert_block(BasicBlock("entry", 0));
 	_exit = insert_block(BasicBlock("exit", 1));
 	_nextId = 2;
@@ -763,7 +764,8 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		assert( block_map.count( e_it->head ) );
 		assert( block_map.count( e_it->tail ) );
 		
-		report("\n  " << e_it->head->label << " -> " << e_it->tail->label << " [" << e_it->type << "]");
+		report("\n  " << e_it->head->label << " -> " << e_it->tail->label
+			<< " [" << e_it->type << "]");
 		
 		insert_edge(Edge(block_map[e_it->head], 
 			block_map[e_it->tail], e_it->type));

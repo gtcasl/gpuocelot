@@ -19,7 +19,12 @@ namespace transforms
 class SimplifyExternalCallsPass : public KernelPass
 {
 public:
-	SimplifyExternalCallsPass(const ir::ExternalFunctionSet&);
+	/*! \brief The constructor configures the pass
+	
+		\param simplifyAll Convert all parameter arguments to registers.
+	 */
+	SimplifyExternalCallsPass(const ir::ExternalFunctionSet&,
+		bool simplifyAll = false);
 
 public:
 	/*! \brief Initialize the pass using a specific module */
@@ -31,6 +36,7 @@ public:
 
 private:
 	const ir::ExternalFunctionSet* _externals;
+	bool                           _simplifyAll;
 };
 
 }

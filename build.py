@@ -24,6 +24,9 @@ def build(options):
 	if options.debug:
 		command += " mode=debug"
 
+        if options.no_werr:
+                command += " Werror=false"
+
 	if options.no_llvm:
 		command += " enable_llvm=false"
 
@@ -122,6 +125,11 @@ def submit(options, testPassed):
 ################################################################################
 ## Main
 def main():
+	defaultInstallPath = '/usr/local'
+	
+	if 'OCELOT_INSTALL_PATH' in os.environ:
+		defaultInstallPath = os.environ['OCELOT_INSTALL_PATH']
+
 	parser = OptionParser()
 	
 	parser.add_option( "-c", "--clean", \
@@ -138,8 +146,10 @@ def main():
 		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \
 		default = "", help = "build a specific target." )
+	parser.add_option( "-w", "--no_werr", \
+		default = False, action = "store_true", help = "don't turn warnings into errors." )
 	parser.add_option( "-p", "--install_prefix", \
-		default = "/usr/local", help = "The base path to install ocelot in." )
+		default = defaultInstallPath, help = "The base path to install ocelot in." )
 	parser.add_option( "--build_deb", \
 		default = False, action = "store_true",
 		help = "Build a .deb package of Ocelot." )

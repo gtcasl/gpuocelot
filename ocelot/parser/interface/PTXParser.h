@@ -59,12 +59,13 @@ namespace parser
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
+					typedef std::unordered_set< std::string > StringSet;
+					typedef std::vector< StringSet > StringSetStack;
 					typedef std::vector< unsigned int > UintStack;
 					typedef std::vector< unsigned int > DimensionVector;
 					typedef std::vector< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
 						OperandWrapper > OperandMap;
-					typedef std::unordered_set< std::string > StringSet;
 					typedef std::vector< ir::PTXOperand > OperandVector;
 					typedef std::unordered_map< std::string, 
 						FunctionPrototype > PrototypeMap;
@@ -103,10 +104,10 @@ namespace parser
 					
 					StringList identifiers;
 					OperandMap operands;
-					StringList localOperands;
+					StringSetStack localOperands;
 
 					PrototypeMap prototypes;
-					StringList localPrototypes;
+					StringSetStack localPrototypes;
 					
 					bool inEntry;
 					bool inArgumentList;
@@ -120,6 +121,7 @@ namespace parser
 					FunctionPrototype prototype;
 					
 					ir::PTXStatement::Directive directive;
+					std::string comment;
 									
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
@@ -201,6 +203,7 @@ namespace parser
 					void entry( const std::string& name, YYLTYPE& location );
 					void entryDeclaration( YYLTYPE& location );
 					void entryStatement( YYLTYPE& location );
+					void metadata( const std::string& comment );
 					
 					void locationAddress( int token );
 					void uninitializableDeclaration( const std::string& name );
@@ -268,7 +271,7 @@ namespace parser
 					void returnType( int token );
 					void argumentType( int token );
 					void callPrototype( const std::string& name, 
-						YYLTYPE& location );
+						const std::string& identifier, YYLTYPE& location );
 					void callTargets( const std::string& name, 
 						YYLTYPE& location );
 			};

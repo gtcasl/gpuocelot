@@ -434,7 +434,7 @@ static void initializeOptimizations(
 			
 	optimizations.mimdThreadScheduling =
 		config.parse<bool>("mimdThreadScheduling", false);
-			
+	
 	optimizations.syncElimination =
 		config.parse<bool>("syncElimination", false);			
 }

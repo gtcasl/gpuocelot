@@ -42,8 +42,8 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 {
 	typedef std::vector<int> TypeVector;
 	
-	#if defined(__clang__)
-	// clang doesn't support initializer lists yet
+	#if defined(__clang__) || defined(_WIN32)
+	// clang/win32 doesn't support initializer lists yet
 	TypeVector types;
 	
 	types.push_back(analysis::Analysis::DivergenceAnalysis);
@@ -138,7 +138,8 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			allocateNewDataStructures(analyses, k, graph->required, manager);
 			graph->analyze(*k);
 		}
-		if(type & analysis::Analysis::StaticSingleAssignment)
+		if( (type & analysis::Analysis::StaticSingleAssignment) &&
+		  !(static_cast<analysis::DataflowGraph*>(dfg->second)->ssa()))
 		{
 			report("   Converting DFG into SSA for " << k->name);
 			static_cast<analysis::DataflowGraph*>(dfg->second)->toSsa();
@@ -151,9 +152,11 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			report("   Allocating divergence analysis for kernel " << k->name);
 			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
 				analysis::Analysis::DivergenceAnalysis,
-				new analysis::DivergenceAnalysis(*k))).first;
+				new analysis::DivergenceAnalysis())).first;
 			
 			analysis->second->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, analysis->second->required, manager);
+			static_cast<analysis::DivergenceAnalysis*>(analysis->second)->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)
@@ -538,7 +541,13 @@ const analysis::Analysis* PassManager::getAnalysis(int type) const
 
 void PassManager::invalidateAnalysis(int type)
 {
-	assertM(false, "Not implemented.");
+	assert(_analyses != 0);
+
+	AnalysisMap::iterator analysis = _analyses->find(type);
+	assert(analysis != _analyses->end());
+	
+	delete analysis->second;
+	_analyses->erase(analysis);
 }
 
 

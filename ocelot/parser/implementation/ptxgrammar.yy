@@ -23,7 +23,8 @@
 	namespace ptx
 	{
 	
-	int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer );
+	int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer, 
+		parser::PTXParser::State& state );
 	void yyerror( YYLTYPE* location, parser::PTXLexer& lexer, 
 		parser::PTXParser::State& state, char const* message );
 	
@@ -44,9 +45,10 @@
 %parse-param {parser::PTXLexer& lexer}
 %parse-param {parser::PTXParser::State& state}
 %lex-param {parser::PTXLexer& lexer}
+%lex-param {parser::PTXParser::State& state}
 %pure-parser
 
-%token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
+%token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING TOKEN_METADATA
 %token<text> TOKEN_INV_PREDICATE_IDENTIFIER TOKEN_PREDICATE_IDENTIFIER
 
 %token<text> OPCODE_COPYSIGN OPCODE_COS OPCODE_SQRT OPCODE_ADD OPCODE_RSQRT
@@ -172,6 +174,7 @@ version : TOKEN_VERSION TOKEN_DOUBLE_CONSTANT
 };
 
 identifier : '_' | TOKEN_IDENTIFIER | opcode;
+optionalIdentifier : /* empty string */ | identifier;
 
 identifierList : identifier
 {
@@ -198,6 +201,16 @@ decimalListSingle : decimalListSingle ',' identifier
 decimalListSingle : TOKEN_DECIMAL_CONSTANT
 {
 	state.decimalListSingle( $<value>1 );
+};
+
+optionalMetadata : /* empty string */
+{
+    state.metadata("");
+};
+
+optionalMetadata : TOKEN_METADATA
+{
+    state.metadata( $<text>1 );
 };
 
 decimalListSingle : decimalListSingle ',' TOKEN_DECIMAL_CONSTANT
@@ -421,6 +434,11 @@ parameter : TOKEN_PARAM
 	state.locationAddress( $<value>1 );
 };
 
+parameter : TOKEN_REG
+{
+	state.locationAddress( $<value>1 );
+};
+
 argumentDeclaration : parameter addressableVariablePrefix identifier 
 	arrayDimensions
 {
@@ -478,8 +496,11 @@ functionName : identifier
 	state.functionName( $<text>1, @1 );
 };
 
+optionalSemicolon: ';'
+optionalSemicolon: /* empty string */
+
 functionDeclaration : externOrVisible functionBegin optionalReturnArgumentList 
-	functionName argumentList
+	functionName argumentList optionalSemicolon
 {
 	state.functionDeclaration( @4, false );
 };
@@ -519,11 +540,13 @@ completeEntryStatement : entryStatement
 	state.statementEnd( @1 );
 };
 
-completeEntryStatement : guard instruction
+completeEntryStatement : guard instruction optionalMetadata
 {
 	state.entryStatement( @2 );
 	state.instruction();
 };
+
+completeEntryStatement : openBrace entryStatements closeBrace;
 
 entryStatements : completeEntryStatement;
 entryStatements : entryStatements completeEntryStatement;
@@ -638,7 +661,7 @@ location : TOKEN_LOC TOKEN_DECIMAL_CONSTANT TOKEN_DECIMAL_CONSTANT
 	state.location( $<value>2, $<value>3, $<value>4 );
 };
 
-label : TOKEN_LABEL
+label : TOKEN_LABEL optionalMetadata
 {
 	state.label( $<text>1 );
 };
@@ -648,7 +671,7 @@ labelOperand : identifier
 	state.labelOperand( $<text>1 );
 };
 
-returnType : TOKEN_PARAM dataTypeId identifier
+returnType : parameter dataTypeId optionalIdentifier
 {
 	state.returnType( $<value>2 );
 };
@@ -657,7 +680,7 @@ returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
 returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
 
-argumentType : TOKEN_PARAM dataTypeId identifier
+argumentType : parameter dataTypeId optionalIdentifier
 {
 	state.argumentType( $<value>2 );
 };
@@ -669,7 +692,7 @@ argumentTypeList : '(' argumentTypeListBody ')' | '(' ')';
 callprototype : TOKEN_LABEL TOKEN_CALL_PROTOTYPE returnTypeList identifier 
 	argumentTypeList ';'
 {
-	state.callPrototype( $<text>1, @1 );
+	state.callPrototype( $<text>1, $<text>4, @1 );
 };
 
 calltargets : TOKEN_LABEL TOKEN_CALL_TARGETS identifierList ';'
@@ -744,7 +767,8 @@ offsetAddressableOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
 	state.addressableOperand( $<text>1, $<value>3, @1, true );
 };
 
-callOperand : constantOperand | addressableOperand;
+callOperand : constantOperand | addressableOperand | '[' addressableOperand ']'
+    | '[' offsetAddressableOperand ']';
 operand : constantOperand | nonLabelOperand;
 
 memoryOperand : constantOperand | addressableOperand | offsetAddressableOperand;
@@ -886,7 +910,8 @@ optionalPrototypeName : ',' identifier
 	state.callPrototypeName( $<text>2 );
 };
 
-optionalPrototypeName : ',' '(' callArgumentList ')' | /* empty string */;
+optionalPrototypeName : ',' '(' callArgumentList ')'
+	| ',' '(' ')' | /* empty string */;
 
 optionalUniOrTail : TOKEN_TAIL
 {
@@ -1507,17 +1532,19 @@ vote : OPCODE_VOTE voteOperation voteDataType operand ',' operand ';'
 
 %%
 
-int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer )
+int yylex( YYSTYPE* token, YYLTYPE* location, parser::PTXLexer& lexer, 
+	parser::PTXParser::State& state )
 {
 	lexer.yylval = token;
 	
-	int tokenValue = lexer.yylexPosition();
-	location->first_line = lexer.lineno();
+	int tokenValue         = lexer.yylexPosition();
+	location->first_line   = lexer.lineno();
 	location->first_column = lexer.column;
 	
-	report( " Lexer (" << location->first_line << "," << location->first_column 
+	report( " Lexer (" << location->first_line << ","
+		<< location->first_column 
 		<< "): " << parser::PTXLexer::toString( tokenValue ) << " \"" 
-		<< lexer.YYText() << "\"" );
+		<< lexer.YYText() << "\"");
 	
 	return tokenValue;
 }

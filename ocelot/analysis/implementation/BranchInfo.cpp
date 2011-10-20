@@ -56,8 +56,8 @@ bool BranchInfo::operator>=(const BranchInfo& x) const
 
 bool BranchInfo::isTainted(const DivergenceGraph::node_type &node) const
 {
-	return ((_branchVariables.find(node) != _branchVariables.end()) || (_fallThroughVariables.find(node)
-	    != _fallThroughVariables.end()));
+	return ((_branchVariables.find(node) != _branchVariables.end()) ||
+	    (_fallThroughVariables.find(node) != _fallThroughVariables.end()));
 }
 
 void BranchInfo::populate()
@@ -111,11 +111,11 @@ void BranchInfo::_taintVariables(const Block *block, node_set &variables)
 
 	for (; ins != endIns; ins++) {
 		DataflowGraph::RegisterPointerVector::const_iterator
-			destiny = ins->d.begin();
+			destination = ins->d.begin();
 		DataflowGraph::RegisterPointerVector::const_iterator
-			endDestiny = ins->d.end();
-		for (; destiny != endDestiny; destiny++) {
-			_insertVariable(*destiny->pointer, variables);
+			endDestination = ins->d.end();
+		for (; destination != endDestination; destination++) {
+			_insertVariable(*destination->pointer, variables);
 		}
 	}
 }

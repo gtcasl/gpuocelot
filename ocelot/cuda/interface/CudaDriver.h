@@ -7,7 +7,7 @@
 #define CUDA_DRIVER_H_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/cuda_internal.h>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -171,6 +171,8 @@ class CudaDriver
 					unsigned int bytes);
 				CUresult (*cuFuncGetAttribute)(int *pi, 
 					CUfunction_attribute attrib, CUfunction hfunc);
+				CUresult (*cuFuncSetCacheConfig)(CUfunction hFunc, CUfunc_cache config);
+				
 				CUresult (*cuArrayCreate)( CUarray *pHandle, 
 					const CUDA_ARRAY_DESCRIPTOR *pAllocateArray );
 				CUresult (*cuArrayGetDescriptor)( 
@@ -514,6 +516,7 @@ class CudaDriver
 			unsigned int bytes);
 		static CUresult cuFuncGetAttribute (int *pi, 
 			CUfunction_attribute attrib, CUfunction hfunc);
+		static CUresult cuFuncSetCacheConfig(CUfunction hFunc, CUfunc_cache config);
 
 		/************************************
 		**

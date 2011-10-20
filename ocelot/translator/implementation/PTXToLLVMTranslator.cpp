@@ -1014,11 +1014,9 @@ void PTXToLLVMTranslator::_translateInstructions()
 			{			
 				ir::LLVMPhi::Node node;
 				
-				try
-				{
-					node.label = "%" + block->producer( *s );
-				}
-				catch( analysis::DataflowGraph::NoProducerException& )
+				const std::string* producer = block->producer( *s );
+				
+				if(producer == 0)
 				{
 					node.label = "%$OcelotRegisterInitializerBlock";
 					_uninitialized.push_back( *s );
@@ -1034,6 +1032,10 @@ void PTXToLLVMTranslator::_translateInstructions()
 				
 					p.nodes.push_back( node );
 					continue;
+				}
+				else
+				{
+					node.label = "%" + *producer;
 				}
 				
 				node.reg = s->id;
@@ -5221,10 +5223,36 @@ void PTXToLLVMTranslator::_translateShl( const ir::PTXInstruction& i )
 	
 	if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
 	{
+    ir::LLVMIcmp compare;
 		ir::LLVMTrunc truncate;
-		
-		truncate.a = _translate( i.b );
-		truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
+	
+    compare.d.name = _tempRegister();
+    compare.d.type.type = ir::LLVMInstruction::I1;
+    compare.d.type.category = ir::LLVMInstruction::Type::Element;
+    compare.comparison = ir::LLVMInstruction::Ult;
+    compare.a = _translate( i.b );
+    compare.b.type.type = ir::LLVMInstruction::I32;
+    compare.b.type.category = ir::LLVMInstruction::Type::Element;
+    compare.b.constant = true;
+    compare.b.i32 = USHRT_MAX;
+
+    _add(compare);
+	
+    ir::LLVMSelect select;
+
+    select.d.name = _tempRegister();
+    select.d.type.type = ir::LLVMInstruction::I32;
+    select.d.type.category = ir::LLVMInstruction::Type::Element;
+
+    select.condition = compare.d;
+    select.a = compare.a;
+    select.b = compare.b;
+
+    _add(select);
+
+		truncate.a = select.d;
+    
+    truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
 			shift.a.type );
 
 		shift.b = truncate.d;
@@ -5260,9 +5288,34 @@ void PTXToLLVMTranslator::_translateShr( const ir::PTXInstruction& i )
 	if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
 	{
 		ir::LLVMTrunc truncate;
+    ir::LLVMIcmp compare;	
+  	
+    compare.d.name = _tempRegister();
+    compare.d.type.type = ir::LLVMInstruction::I1;
+    compare.d.type.category = ir::LLVMInstruction::Type::Element;
+    compare.comparison = ir::LLVMInstruction::Ult;
+    compare.a = _translate( i.b );
+    compare.b.type.type = ir::LLVMInstruction::I32;
+    compare.b.type.category = ir::LLVMInstruction::Type::Element;
+    compare.b.constant = true;
+    compare.b.i32 = USHRT_MAX;
+
+    _add(compare);
+	
+    ir::LLVMSelect select;
+
+    select.d.name = _tempRegister();
+    select.d.type.type = ir::LLVMInstruction::I32;
+    select.d.type.category = ir::LLVMInstruction::Type::Element;
+
+    select.condition = compare.d;
+    select.a = compare.a;
+    select.b = compare.b;
+
+    _add(select);
 		
-		truncate.a = _translate( i.b );
-		truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
+		truncate.a  = select.d;
+    truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
 			a.type );
 
 		b = truncate.d;

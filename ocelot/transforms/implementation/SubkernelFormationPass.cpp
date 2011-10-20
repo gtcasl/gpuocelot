@@ -550,6 +550,7 @@ static void updateTailCallTargets(
 				block->instructions.back());
 		
 			if(call->opcode != ir::PTXInstruction::Call) continue;
+			if(!call->tailCall) continue;
 			
 			IdToSubkernelMap::const_iterator 
 				kernelName = idToKernelMap.find(call->branchTargetInstruction);

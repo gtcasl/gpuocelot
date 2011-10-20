@@ -76,10 +76,10 @@ def getBoostPaths():
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
 	elif os.name == 'nt':
-		boost_path = 'C:\\code\\boost_1_46_1\\stage-64'
-		bin_path = boost_path + "\\bin"
-		lib_path = boost_path + "\\lib"
-		inc_path = boost_path + "\\.."
+		boost_path = '../../tools/boost_1_46_1'
+		bin_path = boost_path + "/bin"
+		lib_path = boost_path + "/lib/win" + os.environ['VC_BITNESS']
+		inc_path = boost_path + "/"
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
 
@@ -101,15 +101,15 @@ def getFlexPaths(env):
 
 	# determine defaults
 	if os.name == 'posix':
-		inc_path = '/usr/include'
+		inc_path = ['/usr/include']
 	elif os.name == 'nt':
-		inc_path = 'C:\MinGW\1.0'
+		inc_path = inc_path = ['../../tools/MinGW/msys/1.0/include']
 	else:
-		raise ValueError, 'Error: unknown OS.  Where is GLEW installed?'
+		raise ValueError, 'Error: unknown OS.  Where is FLEX installed?'
 
 	# override with environement variables
 	if 'FLEX_INC_PATH' in os.environ:
-		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
+		inc_path = os.path.abspath(os.environ['FLEX_INC_PATH'])
 
 	return (inc_path)
 
@@ -123,6 +123,7 @@ def getGLEWPaths(env):
 	glew = configure.CheckLib('GLEW')		
 	
 	if not glew:
+		print "Glew disabled: not found"
 		return (glew, '', '', '')
 
 	# determine defaults
@@ -180,6 +181,11 @@ def getLLVMPaths(enabled):
 		if lib[0:2] == "-L":
 			libs.remove(lib)
 
+	# remove inc_path from cflags
+	for flag in cflags:
+		if flag[0:2] == "-I":
+			cflags.remove(flag)
+
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
 def getTools():
@@ -199,19 +205,26 @@ OldEnvironment = Environment;
 # this dictionary maps the name of a compiler program to a dictionary mapping the name of
 # a compiler switch of interest to the specific switch implementing the feature
 gCompilerOptions = {
-		'gcc' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'gcc' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g', 
 			'exception_handling' : '', 'standard': ''},
-		'g++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'g++' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g', 
 			'exception_handling' : '', 'standard': '-std=c++0x'},
-		'c++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+		'c++' : {'warn_all' : '-Wall',
+			'warn_errors' : '-Werror',
 			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '',
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
-		'cl'  : {'warn_all' : '', 'warn_errors' : '/WX',
-				'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 
-				'exception_handling' : '/EHsc', 'standard': ''}
+		'cl'  : {'warn_all' : '/Wall',
+				 'warn_errors' : '/WX', 
+		         'optimization' : ['/Ox', '/MD', '/Zi', '/DNDEBUG'], 
+				 'debug' : ['/Zi', '/Od', '/D_DEBUG', '/RTC1', '/MDd'], 
+				 'exception_handling': '/EHsc', 
+				 'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
+				 	'/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H']}
 	}
 
 
@@ -329,26 +342,34 @@ def getExtraLibs():
 	if os.name == 'nt':
 		return ['libboost_system-vc100-mt-s-1_46_1.lib',
 			'libboost_filesystem-vc100-mt-s-1_46_1.lib',
-			'libboost_thread-vc100-mt-s-1_46_1.lib']
+			'libboost_thread-vc100-mt-s-1_46_1.lib', 'opengl32.lib']
 	else:
 		return ['-lboost_system-mt', '-lboost_filesystem-mt',
 			'-lboost_thread-mt', '-lcod', '-latl', '-lfm', '-ldill']
 
 
+def fixPath(path):
+	if (os.name == 'nt'):
+		return path.replace('\\', '\\\\')
+	else:
+		return path
+ 
 def defineConfigFlags(env):
 	
 	include_path = os.path.join(env['INSTALL_PATH'], "include")
 	library_path = os.path.join(env['INSTALL_PATH'], "lib")
 	bin_path     = os.path.join(env['INSTALL_PATH'], "bin")
 
-	configFlags =  '-DOCELOT_CXXFLAGS="\\"' + env['CXXFLAGS'] + '\\""' \
+	configFlags = env['CXXFLAGS'] + '-DOCELOT_CXXFLAGS="\\"' \
+		+ env['CXXFLAGS'] + '\\""' \
 		+ ' -DPACKAGE="\\"ocelot\\""' \
 		+ ' -DVERSION="\\"' + env['VERSION'] + '\\""' \
-		+ ' -DOCELOT_PREFIX_PATH="\\"' + env['INSTALL_PATH'] + '\\""' \
-		+ ' -DOCELOT_LDFLAGS="\\"' + env['OCELOT_LDFLAGS'] + '\\""' \
-		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ include_path + '\\""' \
-		+ ' -DOCELOT_LIB_PATH="\\"' + library_path + '\\""' \
-		+ ' -DOCELOT_BIN_PATH="\\"' + bin_path + '\\""'
+		+ ' -DOCELOT_PREFIX_PATH="\\"' + fixPath(env['INSTALL_PATH']) + '\\""' \
+		+ ' -DOCELOT_LDFLAGS="\\"' + fixPath(env['OCELOT_LDFLAGS']) + ' -L' \
+			+ fixPath(library_path) + '\\""' \
+		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ fixPath(include_path) + '\\""' \
+		+ ' -DOCELOT_LIB_PATH="\\"' + fixPath(library_path) + '\\""' \
+		+ ' -DOCELOT_BIN_PATH="\\"' + fixPath(bin_path) + '\\""'
 
 	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
 
@@ -377,7 +398,7 @@ def Environment():
 
 	# allow the user discretion to choose the MSVC version
 	if os.name == 'nt':
-		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version', \
+		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version',
 			None, allowed_values=('8.0', '9.0', '10.0')))
 
 	# add a variable to handle RELEASE/DEBUG mode
@@ -386,29 +407,43 @@ def Environment():
 
 	# add a variable to handle warnings
 	vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 1))
-
+	
+	# shared or static libraries
+	libraryDefault = 'shared'
+	if os.name == 'nt':
+		libraryDefault = 'static'
+	
+	vars.Add(EnumVariable('library', 'Build shared or static library',
+		libraryDefault, allowed_values = ('shared', 'static')))
+	
 	# add a variable to treat warnings as errors
 	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 1))
 
 	# add a variable to treat warnings as errors
-	vars.Add(BoolVariable('enable_llvm', \
+	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
 	
 	# add a variable to compile the ocelot unit tests
-	vars.Add(EnumVariable('test_level', \
-		'Build the ocelot unit tests at the given test level', 'none', \
+	vars.Add(EnumVariable('test_level',
+		'Build the ocelot unit tests at the given test level', 'none',
 		allowed_values = ('none', 'basic', 'full')))
 
 	# add a variable to determine the install path
-	vars.Add(PathVariable('install_path', 'The ocelot install path', \
-		'/usr/local'))
+	default_install_path = '/usr/local'
+	
+	if 'OCELOT_INSTALL_PATH' in os.environ:
+		default_install_path = os.environ['OCELOT_INSTALL_PATH']
+	
+	vars.Add(PathVariable('install_path', 'The ocelot install path',
+		default_install_path))
 
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \
 		tools = getTools(), variables = vars)
 
 	# always link with the c++ compiler
-	env['LINK'] = env['CXX']
+	if os.name != 'nt':
+		env['LINK'] = env['CXX']
 	
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
@@ -447,6 +482,14 @@ def Environment():
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
 
+	# append the default VC++ paths
+	if os.name == 'nt':
+		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
+		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
+	
+	# include the build directory in case of generated files
+	env.Prepend(CPPPATH = env.Dir('.'))
+
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
 	env.AppendUnique(LIBPATH = [boost_lib_path])
@@ -484,21 +527,20 @@ def Environment():
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=getExtraLibs())
 
+	if os.name == 'nt':      
+               env.AppendUnique(CFLAGS   = "-DYY_NO_UNISTD_H")
+               env.AppendUnique(CXXFLAGS = "-DYY_NO_UNISTD_H")
+
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
 	
-	# we need libdl on linux
+	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-lrt']) 
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-	
-	# include the build directory in case of generated files
-	env.Prepend(CPPPATH = env.Dir('.'))
-	if os.name == 'nt':
-		env.AppendUnique(CPPPATH = ["D:\\MinGW\\msys\\1.0\\include"])
 
 	# generate OcelotConfig flags
 	defineConfigFlags(env)

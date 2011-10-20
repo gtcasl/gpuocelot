@@ -61,6 +61,11 @@ class EmulatorCallStack
 			unsigned int localSize = 0, unsigned int globalLocalSize = 0,
 			unsigned int sharedSize = 0);
 	
+		/*! \brief Get a pointer to the base of the stack */
+		void* stackBase();
+		/*! \brief Get the total size of the stack */
+		unsigned int totalStackSize() const;
+		
 		/*! \brief Get a pointer to the base of the current stack frame */
 		void* stackFramePointer(unsigned int thread);
 		/*! \brief Get a pointer to the stack frame at the saved offset */
@@ -105,6 +110,8 @@ class EmulatorCallStack
 		unsigned int callerOffset() const;
 		/*! \brief Get the offset of the caller frame */
 		unsigned int callerFrameSize() const;
+		/*! \brief Is the only frame on the stack the entry point? */
+		bool isTheCurrentFrameMain() const;
 
 		/*! \brief Push a new frame onto the stack */
 		void pushFrame(unsigned int stackSize, unsigned int registers, 

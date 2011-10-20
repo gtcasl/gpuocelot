@@ -51,11 +51,9 @@ UNSIGNED_DECIMAL_CONSTANT {DECIMAL_CONSTANT}U
 UNSIGNED_HEX_CONSTANT {HEX_CONSTANT}U
 UNSIGNED_OCT_CONSTANT {OCT_CONSTANT}U
 
-STRING_FIRST ([^\"\\\n]|(\\['\"?\\abfnrtv])
-STRING_SECOND {STRING_FIRST}|(\\([0123456]{1,3}))|(\\x[[:xdigit:]]+)
-
-STRING L?\"{STRING_SECOND}|(\\u([[:xdigit:]]{4}))|(\\U([[:xdigit:]]{8})))*\"
+STRING L?\"(\\.|[^\\"])*\"
 COMMENT ("/*"([^*]|"*"[^/])*"*/")|("/"(\\\n)*"/"[^\n]*)
+METADATA ("//!"[^\n]*)
 
 DSEQ ([[:digit:]]+)
 DSEQ_OPT ([[:digit:]]*)
@@ -538,10 +536,12 @@ WHITESPACE [ \t]*
                                     MIN( strlen( yytext ) - 1, 1024 ) ); \
                                     return TOKEN_STRING;}
 
+{METADATA}                      { sstrcpy( yylval->text, yytext, 1024 );
+                                    return TOKEN_METADATA; }
 {COMMENT}                       { nextColumn += strlen( yytext ); }
 {TAB}                           { nextColumn += strlen( yytext ) * 4; }
 {SPACE}                         { nextColumn += strlen( yytext ); }
-{NEW_LINE}                      { nextColumn = 1; }
+{NEW_LINE}                      { nextColumn  = 1; }
 
 ","                             { yylval->text[0] = ','; 
                                     yylval->text[1] = '\0'; return (','); }

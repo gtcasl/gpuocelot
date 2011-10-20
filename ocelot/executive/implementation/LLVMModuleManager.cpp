@@ -1080,6 +1080,9 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 	
 		if(external != 0)
 		{
+			// Would you ever want to call into address 0?
+			assert(external->functionPointer() != 0);
+			
 			llvm::GlobalValue* value = module.getNamedValue(external->name());
 			assertM(value != 0, "Global function " << external->name() 
 				<< " not found in llvm module.");
@@ -1293,14 +1296,17 @@ LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 {
-	DatabaseMessage message;
+	if(!killed())
+	{
+		DatabaseMessage message;
 	
-	message.type = DatabaseMessage::KillThread;
+		message.type = DatabaseMessage::KillThread;
 	
-	send(&message);
+		send(&message);
 
-	DatabaseMessage* reply;	
-	receive(reply);
+		DatabaseMessage* reply;	
+		receive(reply);
+	}
 	
 	for(KernelVector::iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel)

@@ -16,13 +16,13 @@
 // LLVM Includes
 #include <configure.h>
 
-//#if HAVE_LLVM
+#if HAVE_LLVM
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/LLVMContext.h>
 #include <llvm/Module.h>
-//#endif
+#endif
 
 // Preprocessor Defines
 #ifdef REPORT_BASE
@@ -46,7 +46,7 @@ LLVMState::StateWrapper::StateWrapper() : _jit(0), _module(0)
 
 llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 {
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	if(_jit == 0)
 	{
 		report("Bringing the LLVM JIT-Compiler online.");
@@ -63,7 +63,7 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 		assertM(_jit != 0, "Creating the JIT failed.");
 		report(" The JIT is alive.");
 	}
-	//#endif
+	#endif
 	return _jit;
 }
 

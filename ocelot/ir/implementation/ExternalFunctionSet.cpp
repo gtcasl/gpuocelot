@@ -21,7 +21,7 @@
 #include <hydrazine/implementation/Exception.h>
 
 // LLVM Includes
-//#if HAVE_LLVM
+#if HAVE_LLVM
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
@@ -32,7 +32,7 @@
 #include <llvm/Module.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
-//#endif
+#endif
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -44,7 +44,7 @@
 namespace ir
 {
 
-//#if HAVE_LLVM
+#if HAVE_LLVM
 static unsigned int align(unsigned int address, unsigned int alignment)
 {
 	unsigned int remainder = address % alignment;
@@ -338,7 +338,7 @@ static llvm::Function* jitFunction(
 	return m->getFunction(f.mangledName());
 }
 
-//#endif
+#endif
 
 ExternalFunctionSet::ExternalFunction::ExternalFunction(const std::string& i,
 	void* f, llvm::Module* m)
@@ -350,7 +350,7 @@ ExternalFunctionSet::ExternalFunction::ExternalFunction(const std::string& i,
 void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 	const ir::PTXKernel::Prototype& p)
 {
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	if(!_externalFunctionPointer)
 	{	
 		assert(_module);
@@ -367,9 +367,9 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 	// call through the interface to the external function
 	_externalFunctionPointer(parameters);
 	
-	//#else
-	//assertM(false, "LLVM required to call external host functions from PTX.");
-	//#endif
+	#else
+	assertM(false, "LLVM required to call external host functions from PTX.");
+	#endif
 }
 
 const std::string& ExternalFunctionSet::ExternalFunction::name() const
@@ -390,15 +390,15 @@ std::string ExternalFunctionSet::ExternalFunction::mangledName() const
 ExternalFunctionSet::ExternalFunctionSet()
 : _module(0)
 {
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	_module = new llvm::Module("_ZOcelotExternalFunctionModule",
 		llvm::getGlobalContext());
-	//#endif
+	#endif
 }
 
 ExternalFunctionSet::~ExternalFunctionSet()
 {
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	for(FunctionSet::const_iterator external = _functions.begin();
 		external != _functions.end(); ++external)
 	{
@@ -413,7 +413,7 @@ ExternalFunctionSet::~ExternalFunctionSet()
 	executive::LLVMState::jit()->removeModule(_module);
 
 	delete _module;
-	//#endif
+	#endif
 }
 
 void ExternalFunctionSet::add(const std::string& name, void* pointer)
@@ -440,7 +440,7 @@ void ExternalFunctionSet::remove(const std::string& name)
 	
 	report("Removing function " << name);
 
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	llvm::Function* llvmFunction = _module->getFunction(
 		function->second.mangledName());
 	if(llvmFunction != 0)
@@ -455,7 +455,7 @@ void ExternalFunctionSet::remove(const std::string& name)
 			<< function->second.name() << " in module.");
 		global->eraseFromParent();
 	}
-	//#endif
+	#endif
 
 	_functions.erase(function);
 }

@@ -2467,7 +2467,7 @@ bool ir::PTXInstruction::mayHaveAddressableOperand() const {
 }
 
 bool ir::PTXInstruction::hasSideEffects() const {
-	return opcode == St || opcode == Atom || opcode == Ld || opcode == Bar
+	return opcode == St || opcode == Atom || opcode == Bar
 		|| opcode == Bra || opcode == Call || opcode == Exit || opcode == Ldu
 		|| opcode == Membar || opcode == Tex || opcode == Tld4
 		|| opcode == Prefetch || opcode == Sust || opcode == Suq

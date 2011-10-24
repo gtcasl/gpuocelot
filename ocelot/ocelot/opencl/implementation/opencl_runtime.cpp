@@ -561,8 +561,7 @@ clEnqueueNDRangeKernel(cl_command_queue command_queue,
                        cl_uint          num_events_in_wait_list,
                        const cl_event * event_wait_list,
                        cl_event *       event) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clEnqueueNDRangeKernel(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, event);
 }
 
 cl_int

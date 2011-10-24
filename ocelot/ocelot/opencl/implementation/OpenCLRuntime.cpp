@@ -49,26 +49,18 @@ typedef api::OcelotConfiguration config;
 ////////////////////////////////////////////////////////////////////////////////
 
 opencl::HostThreadContext::HostThreadContext(): selectedDevice(0),
-	lastError(CL_SUCCESS), parameterBlock(0), parameterBlockSize(1<<13) {
-	parameterBlock = (unsigned char *)malloc(parameterBlockSize);
+	lastError(CL_SUCCESS) {
 }
 
 opencl::HostThreadContext::~HostThreadContext() {
-	::free(parameterBlock);
 }
 
 opencl::HostThreadContext::HostThreadContext(const HostThreadContext& c): 
 	selectedDevice(c.selectedDevice),
 	validDevices(c.validDevices),
-	launchConfigurations(c.launchConfigurations),
 	lastError(c.lastError),
-	parameterBlock((unsigned char *)malloc(c.parameterBlockSize)),
-	parameterBlockSize(c.parameterBlockSize),
-	parameterIndices(c.parameterIndices),
-	parameterSizes(c.parameterSizes),
 	persistentTraceGenerators(c.persistentTraceGenerators),
 	nextTraceGenerators(c.nextTraceGenerators) {
-	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
 opencl::HostThreadContext& opencl::HostThreadContext::operator=(
@@ -77,17 +69,13 @@ opencl::HostThreadContext& opencl::HostThreadContext::operator=(
 	selectedDevice = c.selectedDevice;
 	validDevices = c.validDevices;
 	lastError = c.lastError;
-	launchConfigurations = c.launchConfigurations;
-	parameterIndices = c.parameterIndices;
-	parameterSizes = c.parameterSizes;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
-	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 	return *this;
 }
 
 opencl::HostThreadContext::HostThreadContext(HostThreadContext&& c): 
-	selectedDevice(0), parameterBlock(0), parameterBlockSize(1<<13) {
+	selectedDevice(0) {
 	*this = std::move(c);
 }
 
@@ -97,83 +85,19 @@ opencl::HostThreadContext& opencl::HostThreadContext::operator=(
 	std::swap(selectedDevice, c.selectedDevice);
 	std::swap(validDevices, c.validDevices);
 	std::swap(lastError, c.lastError);
-	std::swap(parameterBlock, c.parameterBlock);
-	std::swap(launchConfigurations, c.launchConfigurations);
-	std::swap(parameterIndices, c.parameterIndices);
-	std::swap(parameterSizes, c.parameterSizes);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
 	return *this;
 }
 
-void opencl::HostThreadContext::clearParameters() {
-	parameterIndices.clear();
-	parameterSizes.clear();
-}
 
 void opencl::HostThreadContext::clear() {
 	validDevices.clear();
-	launchConfigurations.clear();
-	clearParameters();
 	persistentTraceGenerators.clear();
 	nextTraceGenerators.clear();
 }
 
-unsigned int opencl::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
-	unsigned int dst = 0;
 
-	if (kernel->arguments.size() == parameterIndices.size()) {
-		IndexVector::iterator offset = parameterIndices.begin();
-		SizeVector::iterator size = parameterSizes.begin();
-		unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
-		for (ir::Kernel::ParameterVector::const_iterator 
-			parameter = kernel->arguments.begin(); 
-			parameter != kernel->arguments.end();
-			++parameter, ++offset, ++size) {
-			unsigned int misalignment = dst % parameter->getAlignment();
-			unsigned int alignmentOffset = misalignment == 0 
-				? 0 : parameter->getAlignment() - misalignment;
-			dst += alignmentOffset;
-		
-			memset(temp + dst, 0, parameter->getSize());
-			memcpy(temp + dst, parameterBlock + *offset, *size);
-			report( "Mapping parameter at offset " << *offset << " of size " 
-				<< *size << " to offset " << dst << " of size " 
-				<< parameter->getSize() << "\n   data = " 
-				<< hydrazine::dataToString(temp + dst, parameter->getSize()));
-			dst += parameter->getSize();
-		}
-		free(parameterBlock);
-		parameterBlock = temp;
-		clearParameters();
-	}
-	else if (parameterIndices.size() == 1
-		&& parameterIndices[0] == 0 && parameterSizes[0]) {
-		
-		parameterBlockSize = parameterSizes[0];
-		
-		unsigned char *temp = (unsigned char *)malloc(parameterBlockSize);
-		memcpy(temp, parameterBlock, parameterBlockSize);
-		free(parameterBlock);
-		parameterBlock = temp;
-		
-		report("parameter block formatted by client: offset "
-			<< parameterIndices[0] << ", " 
-			<< parameterSizes[0] << " bytes");
-		clearParameters();
-
-		dst = parameterBlockSize;
-	}
-	else {
-		report("Parameter ERROR: offset " << parameterIndices[0] << ", "
-			<< parameterSizes[0] << " bytes. Expected parameter sizes of "
-			<< parameterBlockSize);
-		assert((kernel->arguments.size() == parameterIndices.size()) && 
-			"unaccepted argument formatting");
-	}
-
-	return dst;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int opencl::Program::_id = 0;
@@ -191,6 +115,9 @@ opencl::Program::Program(const std::string & s, const void * c):
 opencl::RegisteredKernel::RegisteredKernel(const std::string &k, const int p,
 const void * c): kernel(k), program(p), context(c) {
 }
+
+
+
 /*
 opencl::RegisteredTexture::RegisteredTexture(const std::string& m, 
 	const std::string& t, bool n) : module(m), texture(t), norm(n) {
@@ -466,6 +393,45 @@ void opencl::OpenCLRuntime::_registerAllModules(int device) {
 	}
 }
 
+unsigned int opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int device) {
+	unsigned int dst = 0;
+
+	const Program & prog = *(_programs[kernel.program]);
+	assert(prog.ptxModule.find(device) != prog.ptxModule.end());
+
+	const std::string & moduleName = prog.ptxModule.find(device)->second;
+	assert(_modules.find(moduleName) != _modules.end());
+
+	const std::string & kernelName = kernel.kernel;
+	const ir::Kernel * k = _modules.find(moduleName)->second.getKernel(kernelName);
+
+	assert(k->arguments.size() == kernel.parameterIndices.size());
+		
+	IndexVector::iterator offset = kernel.parameterIndices.begin();
+	SizeVector::iterator size = kernel.parameterSizes.begin();
+	unsigned char* temp = (unsigned char*)malloc(kernel.parameterBlockSize);
+	for (ir::Kernel::ParameterVector::const_iterator 
+		parameter = k->arguments.begin(); 
+		parameter != k->arguments.end();
+		++parameter, ++offset, ++size) {
+		unsigned int misalignment = dst % parameter->getAlignment();
+		unsigned int alignmentOffset = misalignment == 0 
+			? 0 : parameter->getAlignment() - misalignment;
+		dst += alignmentOffset;
+	
+		memset(temp + dst, 0, parameter->getSize());
+		memcpy(temp + dst, kernel.parameterBlock + *offset, *size);
+		report( "Mapping parameter at offset " << *offset << " of size " 
+			<< *size << " to offset " << dst << " of size " 
+			<< parameter->getSize() << "\n   data = " 
+			<< hydrazine::dataToString(temp + dst, parameter->getSize()));
+		dst += parameter->getSize();
+	}
+	free(kernel.parameterBlock);
+	kernel.parameterBlock = temp;
+
+	return dst;
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 opencl::OpenCLRuntime::OpenCLRuntime() : _inExecute(false), _deviceCount(0),
@@ -809,10 +775,10 @@ void opencl::OpenCLRuntime::unregisterModule(const std::string& name) {
 	_unlock();
 }
 
-static ir::Dim3 convert(const cl_uint dim, const size_t * d) {
-	assertM(dim <= 3, "dim > 3");
-	return std::move(ir::Dim3((dim >= 1 ? d[0] : 1), (dim >= 2 ? d[1] : 1), (dim >= 3 ? d[2] : 1)));
-}
+//static ir::Dim3 convert(const cl_uint dim, const size_t * d) {
+//	assertM(dim <= 3, "dim > 3");
+//	return std::move(ir::Dim3((dim >= 1 ? d[0] : 1), (dim >= 2 ? d[1] : 1), (dim >= 3 ? d[2] : 1)));
+//}
 
 cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName, 
 	const std::string& kernelName )
@@ -844,12 +810,12 @@ cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName,
 	HostThreadContext& thread = _getCurrentThread();
 	cl_int result = CL_SUCCESS;
 	
-	assert(thread.launchConfigurations.size());
+//	assert(thread.launchConfigurations.size());
 	
-	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
-	thread.launchConfigurations.pop_back();
+//	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
+//	thread.launchConfigurations.pop_back();
 	
-	unsigned int paramSize = thread.mapParameters(k);
+//	unsigned int paramSize = thread.mapParameters(k);
 	
 	report("kernel launch (" << kernelName 
 		<< ") on thread " << boost::this_thread::get_id());
@@ -863,9 +829,9 @@ cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName,
 			thread.nextTraceGenerators.end());
 
 		_inExecute = true;
-		_getDevice().launch(moduleName, kernelName, convert(launch.workDim, launch.globalWorkSize), 
-			convert(launch.workDim, launch.localWorkSize), /*launch.sharedMemory*/0, 
-			thread.parameterBlock, paramSize, traceGens, NULL/*&_externals*/);
+//		_getDevice().launch(moduleName, kernelName, convert(launch.workDim, launch.globalWorkSize), 
+//			convert(launch.workDim, launch.localWorkSize), /*launch.sharedMemory*/0, 
+//			thread.parameterBlock, paramSize, traceGens, NULL/*&_externals*/);
 		_inExecute = false;
 		report(" launch completed successfully");	
 	}
@@ -1645,7 +1611,6 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 		executive::Device & d = *(_devices[device]);
 		executive::Device::MemoryAllocation * allocation = allocations.find(device)->second;
 		assert(d.checkMemoryAccess((char *)allocation->pointer() + offset, cb));
-		std::cout << std::hex << allocation->pointer() << std::endl;
 		allocation->copy(ptr, offset, cb);
 
 	}
@@ -1718,7 +1683,6 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		executive::Device::MemoryAllocation * allocation = allocations.find(device)->second;
 		assert(d.checkMemoryAccess((char *)allocation->pointer() + offset, cb));
 		
-		std::cout << std::hex << allocation->pointer() << std::endl;
 		allocation->copy(offset, ptr, cb);
 
 	}
@@ -1728,6 +1692,23 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	catch(...) {
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
+	_unlock();
+	return _setLastError(result);
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_queue,
+	cl_kernel kernel,
+	cl_uint work_dim,
+	const size_t * global_work_offset,
+	const size_t * global_work_size,
+	const size_t * local_work_size,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
 	_unlock();
 	return _setLastError(result);
 }

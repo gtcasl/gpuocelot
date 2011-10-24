@@ -27,36 +27,6 @@ namespace transforms { class Pass; }
 
 namespace opencl {
 
-	/***************************************************************/
-	/*!	configuration of kernel launch */
-	class KernelLaunchConfiguration {
-	public:
-		KernelLaunchConfiguration(cl_uint dim, size_t * gWorkOffset,
-			size_t * gWorkSize, size_t * lWorkSize, cl_command_queue q): 
-			workDim(dim), globalWorkOffset(gWorkOffset), 
-			globalWorkSize(gWorkSize), localWorkSize(lWorkSize), commandQueue(q) { 
-		}
-			
-	public:
-		//! number of dimensions for work-items
-		cl_uint workDim;
-		
-		//! global ID offset for work-items
-		size_t * globalWorkOffset;
-
-		//! global dimensions of work-items
-		size_t * globalWorkSize;
-
-		//! local dimensions of work-items in work-group
-		size_t * localWorkSize;
-		
-		//! command queue to which kernel launch is to be queued
-		cl_command_queue commandQueue;
-	
-	};
-
-	typedef std::list< KernelLaunchConfiguration > KernelLaunchStack;
-	
 	/*!	\brief Set of thread ids */
 	typedef std::set< boost::thread::id > ThreadSet;	
 	
@@ -79,6 +49,31 @@ namespace opencl {
 
 		//! associated context
 		const void * context;
+	
+		//! Offsets for individual parameters
+		IndexVector parameterIndices;
+		
+		//! Sizes for individual parameters
+		SizeVector parameterSizes;
+
+		//! parameter memory
+		unsigned char *parameterBlock;
+		
+		//! size of parameter memory
+		size_t parameterBlockSize;
+
+		//! number of dimensions for work-items
+		cl_uint workDim;
+		
+		//! global ID offset for work-items
+		size_t * globalWorkOffset;
+
+		//! global dimensions of work-items
+		size_t * globalWorkSize;
+
+		//! local dimensions of work-items in work-group
+		size_t * localWorkSize;
+			
 	};
 	
 	typedef std::vector< RegisteredKernel * > RegisteredKernelVector;
@@ -135,23 +130,8 @@ namespace opencl {
 		//! set of valid command queues
 		IndexSet validQueues;
 	
-		//! stack of launch configurations
-		KernelLaunchStack launchConfigurations;
-	
 		//! last result returned by a OpenCL call
 		cl_int lastError;
-		
-		//! parameter memory
-		unsigned char *parameterBlock;
-		
-		//! size of parameter memory
-		size_t parameterBlockSize;
-
-		//! Offsets for individual parameters
-		IndexVector parameterIndices;
-		
-		//! Sizes for individual parameters
-		SizeVector parameterSizes;
 		
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector persistentTraceGenerators;
@@ -169,9 +149,7 @@ namespace opencl {
 		HostThreadContext(HostThreadContext&& c);	
 		HostThreadContext& operator=(HostThreadContext&& c);
 
-		void clearParameters();
 		void clear();
-		unsigned int mapParameters(const ir::Kernel* kernel);
 	};
 	
 	typedef std::map<boost::thread::id, HostThreadContext *> HostThreadContextMap;
@@ -283,6 +261,8 @@ namespace opencl {
 		void _registerModule(const std::string& name, int device);
 		// Load all modules and register them with all devices
 		void _registerAllModules(int device);
+		// Map kernel parameters for device
+		unsigned int _mapKernelParameters(RegisteredKernel & kernel, int device);
 
 	private:
 		//! locking object for opencl runtime
@@ -516,7 +496,15 @@ namespace opencl {
 					cl_uint num_events_in_wait_list,
 					const cl_event * event_wait_list,
 					cl_event * event);
-
+		virtual cl_int clEnqueueNDRangeKernel(cl_command_queue command_queue,
+					cl_kernel kernel,
+					cl_uint work_dim,
+					const size_t * global_work_offset,
+					const size_t * global_work_size,
+					const size_t * local_work_size,
+					cl_uint num_events_in_wait_list,
+					const cl_event * event_wait_list,
+					cl_event * event);
 
 
 

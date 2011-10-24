@@ -108,7 +108,7 @@ cl_command_queue opencl::OpenCLRuntimeInterface::clCreateCommandQueue(cl_context
 	cl_command_queue_properties properties,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	return NULL;
+	return -1;
 }
 
 cl_program opencl::OpenCLRuntimeInterface::clCreateProgramWithSource(cl_context context,
@@ -117,7 +117,7 @@ cl_program opencl::OpenCLRuntimeInterface::clCreateProgramWithSource(cl_context 
 	const size_t * lengths,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	return NULL;
+	return -1;
 }
 
 cl_int opencl::OpenCLRuntimeInterface::clBuildProgram(cl_program program,
@@ -143,7 +143,7 @@ cl_kernel opencl::OpenCLRuntimeInterface::clCreateKernel(cl_program program,
 	const char * kernel_name,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	return NULL;
+	return -1;
 }
 
 cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
@@ -152,7 +152,7 @@ cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
 	void * host_ptr,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	return NULL;
+	return -1;
 }
 
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueReadBuffer(cl_command_queue command_queue,

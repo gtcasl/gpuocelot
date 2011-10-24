@@ -15,6 +15,7 @@
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/MemoryObject.h>
+#include <ocelot/opencl/interface/CommandQueue.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
@@ -130,6 +131,9 @@ namespace opencl {
 
 		//! set of valid buffer objects
 		IndexSet validBuffers;
+
+		//! set of valid command queues
+		IndexSet validQueues;
 	
 		//! stack of launch configurations
 		KernelLaunchStack launchConfigurations;
@@ -228,6 +232,7 @@ namespace opencl {
 
 
 	typedef std::vector< BufferObject * > BufferObjectVector;
+	typedef std::vector< CommandQueue * > CommandQueueVector;
 //	typedef std::vector< FatBinaryContext > FatBinaryVector;
 //	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 //	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
@@ -303,6 +308,9 @@ namespace opencl {
 
 		//! vectors of buffer objects
 		BufferObjectVector _buffers;
+
+		//! vectors of command queues;
+		CommandQueueVector _queues;
 		
 		//! maps texture symbols to module-textures
 		//RegisteredTextureMap _textures;

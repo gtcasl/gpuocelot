@@ -951,14 +951,23 @@ cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries,
 	cl_uint * num_platforms) {
 	cl_int result = CL_SUCCESS;
 	_lock();
-	if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
-		result = CL_INVALID_VALUE;
-	else {
+
+	try {
+		if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
+			throw CL_INVALID_VALUE;
+
 		//Assume only 1 platform, platform_id = 0
 		if(platforms)
 			*platforms = 0;
+
 		if(num_platforms)
 			*num_platforms = 1;
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
     return _setLastError(result);
@@ -1021,23 +1030,35 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
-	if(platform) //Temorarily assume platform=0
-		result = CL_INVALID_PLATFORM;
-	else if(device_type < CL_DEVICE_TYPE_CPU || device_type > CL_DEVICE_TYPE_ALL)
-		result = CL_INVALID_DEVICE_TYPE;
-	else if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
-		result = CL_INVALID_VALUE;
-	else { 
+
+	try {
+		if(platform) //Temorarily assume platform=0
+			throw CL_INVALID_PLATFORM;
+		
+		if(device_type < CL_DEVICE_TYPE_CPU || device_type > CL_DEVICE_TYPE_ALL)
+			throw CL_INVALID_DEVICE_TYPE;
+		
+		if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
+			throw CL_INVALID_VALUE;
+ 
 		_enumerateDevices();
+		if (_devices.empty())
+			throw CL_DEVICE_NOT_FOUND;
+		
 		if(num_devices != 0)
 			*num_devices = _devices.size();
+	
 		if(devices != 0) {
 			for(cl_uint i = 0; i < std::min(_devices.size(), (size_t)num_entries); i++)
 				devices[i] = i;
 		}
-		if (_devices.empty()) {
-			result = CL_DEVICE_NOT_FOUND;
-		}
+	
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
     return _setLastError(result);
@@ -1131,30 +1152,53 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	_lock();
 	cl_int err = CL_SUCCESS;
 
-	HostThreadContext &thread = _getCurrentThread();
-	if(context != (void *)&thread)
-		err = CL_INVALID_CONTEXT;
-	else if(thread.validDevices.find(device) == thread.validDevices.end())//Not found
-		err = CL_INVALID_DEVICE;
-	else if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
-					CL_QUEUE_PROFILING_ENABLE))
-		err = CL_INVALID_VALUE;
-	else if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
-		||(properties & CL_QUEUE_PROFILING_ENABLE)) {
-		assertM(false, "unimplemented queue properties");
-		err = CL_INVALID_QUEUE_PROPERTIES;
-	}
-	else {
+	try {
+		HostThreadContext &thread = _getCurrentThread();
+		if(context != (void *)&thread)
+			throw CL_INVALID_CONTEXT;
+		
+		if(thread.validDevices.find(device) == thread.validDevices.end())//Not found
+			throw CL_INVALID_DEVICE;
+	
+		if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
+						CL_QUEUE_PROFILING_ENABLE))
+			throw CL_INVALID_VALUE;
+		
+		if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
+			||(properties & CL_QUEUE_PROFILING_ENABLE)) {
+			assertM(false, "unimplemented queue properties");
+			throw CL_UNIMPLEMENTED;
+		}
+
 		executive::Device &d = *(_devices[device]);
 		d.select();
+		unsigned int stream;
 		try {
-			queue = d.createStream();
+			stream = d.createStream();
 		}
-		catch (...) {
-			err = CL_OUT_OF_RESOURCES;
+		catch(...) {
+			d.unselect();
+			throw CL_OUT_OF_RESOURCES;
 		}
 		d.unselect();
+
+		try {
+			_queues.push_back(new CommandQueue(context, device, properties, stream));
+		}
+		catch(...) {
+			throw CL_OUT_OF_HOST_MEMORY;
+		}
+		queue = _queues.size()-1;
+		thread.validQueues.insert(queue);
+		
 	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1194,6 +1238,7 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 		}
 	}
 
+	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1311,7 +1356,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	}
 	
 	_unlock();
-	return result;
+	return _setLastError(result);
 }
 
 cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
@@ -1400,7 +1445,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 	}
 
 	_unlock();
-	return result;
+	return _setLastError(result);
 }
 
 cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
@@ -1456,6 +1501,7 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 		err = CL_OUT_OF_HOST_MEMORY;
 	}
 
+	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1499,15 +1545,15 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 			throw CL_UNIMPLEMENTED;
 		}
 
-		std::map< int, void * > addresses;
+		std::map< int, executive::Device::MemoryAllocation * > allocations;
 		for(IndexSet::iterator it = thread.validDevices.begin();
 			it != thread.validDevices.end(); it++) {
 			executive::Device &device = *(_devices[*it]);
 			device.select();
 			try {
-				void * addr =  device.allocate(size)->pointer();
-				addresses.insert(std::make_pair(*it, addr));
-				report("clCreateBuffer() return address = " << addr << ", size = " << size);
+				executive::Device::MemoryAllocation * allocation =  device.allocate(size);
+				allocations.insert(std::make_pair(*it, allocation));
+				report("clCreateBuffer() return address = " <<  allocation->pointer() << ", size = " << size);
 			}
 			catch(...) {
 				device.unselect();
@@ -1518,7 +1564,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		}
 
 		try {
-			_buffers.push_back(new BufferObject(addresses, context, flags, size));
+			_buffers.push_back(new BufferObject(allocations, context, flags, size));
 		}
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
@@ -1534,6 +1580,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		err = CL_OUT_OF_HOST_MEMORY;
 	}
 
+	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1551,8 +1598,65 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 	cl_event * event) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+
+	try {
+		HostThreadContext & thread = _getCurrentThread();
+		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(_queues[command_queue]->context() != (void *)&thread || _buffers[buffer]->context() != (void *)&thread)
+			throw CL_INVALID_CONTEXT;
+
+		if(thread.validBuffers.find(buffer) == thread.validBuffers.end() || _buffers[buffer]->type() != CL_MEM_OBJECT_BUFFER)
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(offset >= _buffers[buffer]->size() || cb + offset > _buffers[buffer]->size())
+			throw CL_INVALID_VALUE;
+		
+		if(ptr == NULL)
+			throw CL_INVALID_VALUE;
+
+		if(event_wait_list == NULL && num_events_in_wait_list > 0)
+			throw CL_INVALID_EVENT_WAIT_LIST;
+
+		if(event_wait_list && num_events_in_wait_list == 0)
+			throw CL_INVALID_EVENT_WAIT_LIST;
+
+		if(event_wait_list) {
+			assertM(false, "non-null event wait list is no supported!");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		if(event) {
+			assertM(false, "non-null event is not supported!");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		if(blocking_read == false) {
+			assertM(false, "unblocking read is not supported!");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		std::map<int, executive::Device::MemoryAllocation *> & allocations = _buffers[buffer]->allocations;
+		cl_device_id device = _queues[command_queue]->device();
+		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
+			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+		executive::Device & d = *(_devices[device]);
+		executive::Device::MemoryAllocation * allocation = allocations.find(device)->second;
+		assert(d.checkMemoryAccess((char *)allocation->pointer() + offset, cb));
+		std::cout << std::hex << allocation->pointer() << std::endl;
+		allocation->copy(ptr, offset, cb);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
 	_unlock();
-	return result;
+	return _setLastError(result);
 }
 
 cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queue,
@@ -1566,6 +1670,64 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	cl_event * event) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+
+	try {
+		HostThreadContext & thread = _getCurrentThread();
+		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(_queues[command_queue]->context() != (void *)&thread || _buffers[buffer]->context() != (void *)&thread)
+			throw CL_INVALID_CONTEXT;
+
+		if(thread.validBuffers.find(buffer) == thread.validBuffers.end() || _buffers[buffer]->type() != CL_MEM_OBJECT_BUFFER)
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(offset >= _buffers[buffer]->size() || cb + offset > _buffers[buffer]->size())
+			throw CL_INVALID_VALUE;
+		
+		if(ptr == NULL)
+			throw CL_INVALID_VALUE;
+
+		if(event_wait_list == NULL && num_events_in_wait_list > 0)
+			throw CL_INVALID_EVENT_WAIT_LIST;
+
+		if(event_wait_list && num_events_in_wait_list == 0)
+			throw CL_INVALID_EVENT_WAIT_LIST;
+
+		if(event_wait_list) {
+			assertM(false, "non-null event wait list is no supported!");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		if(event) {
+			assertM(false, "non-null event is not supported!");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		if(blocking_write == false) {
+			assertM(false, "unblocking write is not supported!");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		std::map<int, executive::Device::MemoryAllocation *> & allocations = _buffers[buffer]->allocations;
+		cl_device_id device = _queues[command_queue]->device();
+		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
+			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+		executive::Device & d = *(_devices[device]);
+		executive::Device::MemoryAllocation * allocation = allocations.find(device)->second;
+		assert(d.checkMemoryAccess((char *)allocation->pointer() + offset, cb));
+		
+		std::cout << std::hex << allocation->pointer() << std::endl;
+		allocation->copy(offset, ptr, cb);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
 	_unlock();
-	return result;
+	return _setLastError(result);
 }

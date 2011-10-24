@@ -88,12 +88,6 @@ namespace cuda {
 		//! Sizes for individual parameters
 		SizeVector parameterSizes;
 		
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector persistentTraceGenerators;
-
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector nextTraceGenerators;
-			
 	public:
 		HostThreadContext();
 		~HostThreadContext();
@@ -293,6 +287,12 @@ namespace cuda {
 		
 		//! PTX passes
 		PassSet _passes;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector _persistentTraceGenerators;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector _nextTraceGenerators;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 

@@ -53,7 +53,7 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 		case ntid:         return "%ntid";         break;
 		case laneId:       return "%laneid";       break;
 		case warpId:       return "%warpid";       break;
-		case nwarpId:      return "%nwarpid";       break;
+		case nwarpId:      return "%nwarpid";      break;
 		case warpSize:     return "WARP_SZ";       break;
 		case ctaId:        return "%ctaid";        break;
 		case nctaId:       return "%nctaid";       break;

@@ -110,13 +110,15 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 
 std::string ir::PTXOperand::toString( AddressMode mode ) {
 	switch( mode ) {
-		case Register:  return "Register";  break;
-		case Indirect:  return "Indirect";  break;
-		case Immediate: return "Immediate"; break;
-		case Address:   return "Address";   break;
-		case Label:     return "Label";     break;
-		case Special:   return "Special";   break;
-		case BitBucket: return "BitBucket"; break;
+		case Register:     return "Register";     break;
+		case Indirect:     return "Indirect";     break;
+		case Immediate:    return "Immediate";    break;
+		case Address:      return "Address";      break;
+		case Label:        return "Label";        break;
+		case Special:      return "Special";      break;
+		case BitBucket:    return "BitBucket";    break;
+		case ArgumentList: return "ArgumentList"; break;
+		case FunctionName: return "FunctionName"; break;
 		default: break;
 	}
 	return "Invalid";

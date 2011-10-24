@@ -25,12 +25,13 @@
 namespace transforms
 {
 
+typedef std::unordered_set<std::string> StringSet;
+	
 static void simplifyCall(ir::PTXKernel& kernel,
 	ir::ControlFlowGraph::iterator block,
 	ir::BasicBlock::InstructionList::iterator callIterator,
-	analysis::DataflowGraph& dfg)
+	analysis::DataflowGraph& dfg, StringSet& parameterNames)
 {
-	typedef std::unordered_set<std::string> StringSet;
 	typedef std::unordered_map<std::string,
 		ir::PTXOperand::RegisterType> RegisterMap;
 	typedef std::vector<ir::BasicBlock::InstructionList::iterator>
@@ -39,7 +40,6 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	ir::PTXInstruction& call = static_cast<ir::PTXInstruction&>(**callIterator);
 
 	// Get the names of parameters
-	StringSet parameterNames;
 	StringSet inputNames;
 	StringSet outputNames;
 	
@@ -48,9 +48,9 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::const_iterator parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
-		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		report("   " << parameter->identifier << " ("
 		    << ir::PTXOperand::toString(parameter->addressMode) << ")");
+		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		parameterNames.insert(parameter->identifier);
 		outputNames.insert(parameter->identifier);
 	}
@@ -59,9 +59,9 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::const_iterator parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
-		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		report("   " << parameter->identifier << " ("
 		    << ir::PTXOperand::toString(parameter->addressMode) << ")");
+		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		parameterNames.insert(parameter->identifier);
 		inputNames.insert(parameter->identifier);
 	}
@@ -194,20 +194,28 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	}
 	
 	// Modify the call to replace parameter operands with register operands
+	report("  mapping parameters to registers");
 	for(ir::PTXOperand::Array::iterator parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
 		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
-		assertM(mapping != nameToRegister.end(),
-			"Could not find register source of operand "
-			<< parameter->identifier);
 		
 		parameter->addressMode = ir::PTXOperand::Register;
-		parameter->reg         = mapping->second;
-
 		parameter->identifier.clear();
+		
+		if(mapping != nameToRegister.end())
+		{
+			parameter->reg = mapping->second;
+		}
+		else
+		{
+			// This is a write to a dead register, assign a temp value
+			parameter->reg = dfg.newRegister();
+			report("   assuming output " << parameter->identifier
+				<< " is dead, assigning temp value r" << parameter->reg);
+		}
 	}
 
 	for(ir::PTXOperand::Array::iterator parameter = call.b.array.begin();
@@ -216,11 +224,20 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		if(parameter->addressMode != ir::PTXOperand::Address) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
-		assert(mapping != nameToRegister.end());
+		
+		if(mapping != nameToRegister.end())
+		{
+			parameter->reg = mapping->second;
+		}
+		else
+		{
+			// This is a read from a dead register, assign a temp value
+			parameter->reg = dfg.newRegister();
+			report("   assuming input " << parameter->identifier
+				<< " is dead, assigning temp value r" << parameter->reg);
+		}
 		
 		parameter->addressMode = ir::PTXOperand::Register;
-		parameter->reg         = mapping->second;
-
 		parameter->identifier.clear();
 	}
 	
@@ -235,21 +252,6 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		block->instructions.erase(*killed);
 	}
 	
-	// Remove the parameters from the kernels
-	report("  removing parameters:");
-	for(StringSet::const_iterator parameterName = parameterNames.begin();
-		parameterName != parameterNames.end(); ++parameterName)
-	{
-		report("   " << *parameterName);
-		ir::Kernel::ParameterMap::iterator
-			parameter = kernel.parameters.find(*parameterName);
-			
-		// we may have already erased the parameter
-		if(parameter != kernel.parameters.end())
-		{
-			kernel.parameters.erase(parameter);
-		}
-	}
 }
 
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
@@ -268,12 +270,14 @@ void SimplifyExternalCallsPass::initialize(const ir::Module& m)
 void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 {
 	ir::PTXKernel& kernel = static_cast<ir::PTXKernel&>(k);
-
+	
 	Analysis* analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(analysis != 0);
 	
 	analysis::DataflowGraph* dfg =
 		static_cast<analysis::DataflowGraph*>(analysis);
+
+	StringSet parameterNames;
 
 	report("Running SimplifyExternalCallsPass on kernel '" + k.name + "'");
 
@@ -289,20 +293,31 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 		
 			if(ptx.opcode == ir::PTXInstruction::Call)
 			{
-				if(_simplifyAll)
+				if(_simplifyAll ||
+					(k.module->kernels().count(ptx.a.identifier) == 0 &&
+					_externals->find(ptx.a.identifier) != 0))
 				{
 					report(" For " << ptx.toString());
-					simplifyCall(kernel, block, instruction, *dfg);
-				}
-				else if(k.module->kernels().count(ptx.a.identifier) == 0)
-				{
-					if(_externals->find(ptx.a.identifier) != 0)
-					{
-						report(" For " << ptx.toString());
-						simplifyCall(kernel, block, instruction, *dfg);
-					}
+					simplifyCall(kernel, block, instruction,
+						*dfg, parameterNames);
 				}
 			}
+		}
+	}
+	
+	// Remove the parameters from the kernels
+	report("  removing parameters:");
+	for(StringSet::const_iterator parameterName = parameterNames.begin();
+		parameterName != parameterNames.end(); ++parameterName)
+	{
+		report("   " << *parameterName);
+		ir::Kernel::ParameterMap::iterator
+			parameter = kernel.parameters.find(*parameterName);
+			
+		// we may have already erased the parameter
+		if(parameter != kernel.parameters.end())
+		{
+			kernel.parameters.erase(parameter);
 		}
 	}
 }

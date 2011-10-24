@@ -71,9 +71,8 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	parameterBlock((unsigned char *)malloc(c.parameterBlockSize)),
 	parameterBlockSize(c.parameterBlockSize),
 	parameterIndices(c.parameterIndices),
-	parameterSizes(c.parameterSizes),
-	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators) {
+	parameterSizes(c.parameterSizes)
+{
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
@@ -86,8 +85,6 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	launchConfigurations = c.launchConfigurations;
 	parameterIndices = c.parameterIndices;
 	parameterSizes = c.parameterSizes;
-	persistentTraceGenerators = c.persistentTraceGenerators;
-	nextTraceGenerators = c.nextTraceGenerators;
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 	return *this;
 }
@@ -107,8 +104,6 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	std::swap(launchConfigurations, c.launchConfigurations);
 	std::swap(parameterIndices, c.parameterIndices);
 	std::swap(parameterSizes, c.parameterSizes);
-	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
-	std::swap(nextTraceGenerators, c.nextTraceGenerators);
 	return *this;
 }
 
@@ -121,8 +116,6 @@ void cuda::HostThreadContext::clear() {
 	validDevices.clear();
 	launchConfigurations.clear();
 	clearParameters();
-	persistentTraceGenerators.clear();
-	nextTraceGenerators.clear();
 }
 
 unsigned int cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
@@ -2633,10 +2626,10 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	try {
 		trace::TraceGeneratorVector traceGens;
 
-		traceGens = thread.persistentTraceGenerators;
+		traceGens = _persistentTraceGenerators;
 		traceGens.insert(traceGens.end(),
-			thread.nextTraceGenerators.begin(), 
-			thread.nextTraceGenerators.end());
+			_nextTraceGenerators.begin(), 
+			_nextTraceGenerators.end());
 
 		_inExecute = true;
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
@@ -3313,21 +3306,23 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
 void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
 	_lock();
-	HostThreadContext& thread = _getCurrentThread();
+
 	if (persistent) {
-		thread.persistentTraceGenerators.push_back(&gen);
+		_persistentTraceGenerators.push_back(&gen);
 	}
 	else {
-		thread.nextTraceGenerators.push_back(&gen);
+		_nextTraceGenerators.push_back(&gen);
 	}
+
 	_unlock();
 }
 
 void cuda::CudaRuntime::clearTraceGenerators() {
 	_lock();
-	HostThreadContext& thread = _getCurrentThread();
-	thread.persistentTraceGenerators.clear();
-	thread.nextTraceGenerators.clear();
+	
+	_persistentTraceGenerators.clear();
+	_nextTraceGenerators.clear();
+	
 	_unlock();
 }
 

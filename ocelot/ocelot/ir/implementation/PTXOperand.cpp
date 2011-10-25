@@ -654,7 +654,9 @@ std::string ir::PTXOperand::toString() const {
 		}
 	
 		if( offset < 0 ) {
-			stream << " - " << ( offset );
+			// The NVIDIA driver does not support 
+			//   '- offset' it needs '+ -offset'
+			stream << " + " << ( offset );
 		} else if ( offset > 0 ) {
 			stream << " + " << ( offset );
 		}

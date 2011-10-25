@@ -202,16 +202,17 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		
-		parameter->addressMode = ir::PTXOperand::Register;
 		parameter->identifier.clear();
 		
 		if(mapping != nameToRegister.end())
 		{
+			parameter->addressMode = ir::PTXOperand::Register;
 			parameter->reg = mapping->second;
 		}
 		else
 		{
 			// This is a write to a dead register, assign a temp value
+			parameter->addressMode = ir::PTXOperand::BitBucket;
 			parameter->reg = dfg.newRegister();
 			report("   assuming output " << parameter->identifier
 				<< " is dead, assigning temp value r" << parameter->reg);

@@ -35,6 +35,7 @@ namespace opencl {
 
 	typedef std::set< int > IndexSet;
 
+	typedef std::set< MemoryObject * > MemoryObjectSet;
 	//! references a kernel registered to OpenCL runtime
 	class RegisteredKernel {
 	public:
@@ -125,7 +126,7 @@ namespace opencl {
 		IndexSet validPrograms;
 
 		//! set of valid buffer objects
-		IndexSet validBuffers;
+		MemoryObjectSet validMemories;
 
 		//! set of valid command queues
 		IndexSet validQueues;
@@ -209,7 +210,6 @@ namespace opencl {
 //	typedef std::set< transforms::Pass* > PassSet;
 
 
-	typedef std::vector< BufferObject * > BufferObjectVector;
 	typedef std::vector< CommandQueue * > CommandQueueVector;
 //	typedef std::vector< FatBinaryContext > FatBinaryVector;
 //	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
@@ -287,7 +287,7 @@ namespace opencl {
 		RegisteredKernelVector _kernels;
 
 		//! vectors of buffer objects
-		BufferObjectVector _buffers;
+		MemoryObjectSet _memories;
 
 		//! vectors of command queues;
 		CommandQueueVector _queues;

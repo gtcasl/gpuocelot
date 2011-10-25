@@ -1480,7 +1480,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	void * host_ptr,
 	cl_int * errcode_ret) {
 
-	cl_mem buffer = -1;
+	cl_mem buffer = NULL;
 	_lock();
 	cl_int err = CL_SUCCESS;
 
@@ -1529,14 +1529,16 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 			device.unselect();
 		}
 
+		BufferObject * bf;
 		try {
-			_buffers.push_back(new BufferObject(allocations, context, flags, size));
+			bf = new BufferObject(allocations, context, flags, size);
+			_memories.insert(bf);
 		}
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
 		}
-		buffer = _buffers.size()-1;
-		thread.validBuffers.insert(buffer);
+		thread.validMemories.insert(bf);
+		buffer = (void *)bf;
 
 	}
 	catch(cl_int exception) {
@@ -1570,13 +1572,14 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(_queues[command_queue]->context() != (void *)&thread || _buffers[buffer]->context() != (void *)&thread)
+		MemoryObject * bf = (MemoryObject *) buffer;
+		if(_queues[command_queue]->context() != (void *)&thread || bf->context() != (void *)&thread)
 			throw CL_INVALID_CONTEXT;
 
-		if(thread.validBuffers.find(buffer) == thread.validBuffers.end() || _buffers[buffer]->type() != CL_MEM_OBJECT_BUFFER)
+		if(thread.validMemories.find(bf) == thread.validMemories.end() || bf->type() != CL_MEM_OBJECT_BUFFER)
 			throw CL_INVALID_MEM_OBJECT;
 
-		if(offset >= _buffers[buffer]->size() || cb + offset > _buffers[buffer]->size())
+		if(offset >= bf->size() || cb + offset > bf->size())
 			throw CL_INVALID_VALUE;
 		
 		if(ptr == NULL)
@@ -1603,7 +1606,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 			throw CL_UNIMPLEMENTED;
 		}
 
-		std::map<int, executive::Device::MemoryAllocation *> & allocations = _buffers[buffer]->allocations;
+		std::map<int, executive::Device::MemoryAllocation *> & allocations = bf->allocations;
 		cl_device_id device = _queues[command_queue]->device();
 		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
@@ -1641,13 +1644,14 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(_queues[command_queue]->context() != (void *)&thread || _buffers[buffer]->context() != (void *)&thread)
+		MemoryObject * bf = (MemoryObject *)buffer;
+		if(_queues[command_queue]->context() != (void *)&thread || bf->context() != (void *)&thread)
 			throw CL_INVALID_CONTEXT;
 
-		if(thread.validBuffers.find(buffer) == thread.validBuffers.end() || _buffers[buffer]->type() != CL_MEM_OBJECT_BUFFER)
+		if(thread.validMemories.find(bf) == thread.validMemories.end() || bf->type() != CL_MEM_OBJECT_BUFFER)
 			throw CL_INVALID_MEM_OBJECT;
 
-		if(offset >= _buffers[buffer]->size() || cb + offset > _buffers[buffer]->size())
+		if(offset >= bf->size() || cb + offset > bf->size())
 			throw CL_INVALID_VALUE;
 		
 		if(ptr == NULL)
@@ -1674,7 +1678,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 			throw CL_UNIMPLEMENTED;
 		}
 
-		std::map<int, executive::Device::MemoryAllocation *> & allocations = _buffers[buffer]->allocations;
+		std::map<int, executive::Device::MemoryAllocation *> & allocations = bf->allocations;
 		cl_device_id device = _queues[command_queue]->device();
 		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;

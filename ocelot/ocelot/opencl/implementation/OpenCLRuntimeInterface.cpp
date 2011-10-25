@@ -152,7 +152,7 @@ cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
 	void * host_ptr,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
-	return -1;
+	return NULL;
 }
 
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueReadBuffer(cl_command_queue command_queue,

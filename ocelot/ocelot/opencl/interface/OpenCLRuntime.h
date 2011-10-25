@@ -34,6 +34,7 @@ namespace opencl {
 	
 	typedef std::map< unsigned int, size_t > SizeMap;
 	typedef std::map< unsigned int, char * > PointerMap;
+	typedef std::map< unsigned int, unsigned int > OffsetMap;
 
 	typedef std::set< MemoryObject * > MemoryObjectSet;
 	//! references a kernel registered to OpenCL runtime
@@ -59,22 +60,25 @@ namespace opencl {
 		PointerMap parameterPointers;
 
 		//! parameter memory
-		unsigned char *parameterBlock;
+		char *parameterBlock;
 		
 		//! size of parameter memory
 		size_t parameterBlockSize;
+
+		//! offset of parameters
+		OffsetMap parameterOffsets;	
 
 		//! number of dimensions for work-items
 		cl_uint workDim;
 		
 		//! global ID offset for work-items
-		size_t * globalWorkOffset;
+		size_t globalWorkOffset[3];
 
 		//! global dimensions of work-items
-		size_t * globalWorkSize;
+		size_t globalWorkSize[3];
 
 		//! local dimensions of work-items in work-group
-		size_t * localWorkSize;
+		size_t localWorkSize[3];
 			
 	};
 	
@@ -263,7 +267,7 @@ namespace opencl {
 		// Load all modules and register them with all devices
 		void _registerAllModules(int device);
 		// Map kernel parameters for device
-		unsigned int _mapKernelParameters(RegisteredKernel & kernel, int device);
+		void _mapKernelParameters(RegisteredKernel & kernel, int device);
 
 	private:
 		//! locking object for opencl runtime
@@ -339,8 +343,7 @@ namespace opencl {
 	//	PassSet _passes;
 	
 	private:
-		cl_int _launchKernel(const std::string& module, 
-			const std::string& kernel);
+		void _launchKernel(RegisteredKernel & kernel, cl_device_id device);
 		
 	public:
 		OpenCLRuntime();
@@ -417,8 +420,8 @@ namespace opencl {
 		virtual ocelot::PointerMap contextSwitch( 
 			unsigned int destinationDevice, unsigned int sourceDevice);
 		virtual void unregisterModule(const std::string& name);
-		virtual void launch(const std::string& moduleName, 
-			const std::string& kernelName);
+//		virtual void launch(const std::string& moduleName, 
+//			const std::string& kernelName);
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);
 //		virtual void registerExternalFunction(const std::string& name,

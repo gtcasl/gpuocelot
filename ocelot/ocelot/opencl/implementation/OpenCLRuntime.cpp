@@ -30,7 +30,7 @@
 #define OPENCL_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // report all ptx modules
 //#define REPORT_ALL_PTX 0
@@ -115,9 +115,6 @@ opencl::Program::Program(const std::string & s, const void * c):
 opencl::RegisteredKernel::RegisteredKernel(const std::string &k, const int p,
 const void * c): kernel(k), program(p), context(c) {
 	parameterBlock = NULL;
-	globalWorkOffset = NULL;
-	globalWorkSize = NULL;
-	localWorkSize = NULL;
 }
 
 opencl::RegisteredKernel::~RegisteredKernel()
@@ -152,77 +149,6 @@ size_t opencl::Dimension::pitch() const {
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
-/*
-void opencl::OpenCLRuntime::_memcpy(void* dst, const void* src, size_t count, 
-	enum openclMemcpyKind kind) {
-	
-	switch(kind) {
-		case openclMemcpyHostToHost: {
-			report("  _memcpy(" << (void *)dst << ", " << src
-				<< ", " << count << " bytes) h-to-h");
-			memcpy(dst, src, count);
-		}
-		break;
-		case openclMemcpyDeviceToHost: {
-			report("  _memcpy(" << (void *)dst << ", " << src
-				<< ", " << count << " bytes) d-to-h");
-			if (!_getDevice().checkMemoryAccess(src, count)) {
-				_release();
-				_memoryError(src, count, "openclMemcpy");
-			}
-			
-			executive::Device::MemoryAllocation* allocation = 
-				_getDevice().getMemoryAllocation(src);
-			size_t offset = (char*)src - (char*)allocation->pointer();
-			allocation->copy(dst, offset, count);
-		}
-		break;
-		case openclMemcpyDeviceToDevice: {
-			report("  _memcpy(" << (void *)dst << ", "
-				<< src << ", " << count << " bytes) d-to-d");
-			if (!_getDevice().checkMemoryAccess(src, count)) {
-				_release();
-				_memoryError(src, count, "openclMemcpy");
-			}
-			if (!_getDevice().checkMemoryAccess(dst, count)) {
-				_release();
-				_memoryError(dst, count, "openclMemcpy");
-			}
-				
-			executive::Device::MemoryAllocation* fromAllocation = 
-				_getDevice().getMemoryAllocation(src);
-			executive::Device::MemoryAllocation* toAllocation =
-				_getDevice().getMemoryAllocation(dst);
-			size_t fromOffset = (char*)src 
-				- (char*)fromAllocation->pointer();
-			size_t toOffset = (char*)dst - (char*)toAllocation->pointer();
-			fromAllocation->copy(toAllocation, toOffset, fromOffset, count);
-		}
-		break;
-		case openclMemcpyHostToDevice: {
-			report("  _memcpy(" << (void *)dst << ", "
-				<< src << ", " << count << " bytes) h-to-d");
-			if (!_getDevice().checkMemoryAccess(dst, count)) {
-				_release();
-				_memoryError(dst, count, "openclMemcpy");
-			}
-			
-			executive::Device::MemoryAllocation* allocation = 
-				_getDevice().getMemoryAllocation(dst);
-			size_t offset = (char*)dst - (char*)allocation->pointer();
-			allocation->copy(offset, src, count);
-		}
-		break;
-	}
-}
-*/
-void opencl::OpenCLRuntime::_memoryError(const void* address, size_t count, 
-	const std::string& function) {
-	std::stringstream stream;
-	stream << "In function - " << function << " - invalid memory access at " 
-		<< address << "(" << count << " bytes)"; 
-	throw hydrazine::Exception(stream.str());
-}
 
 void opencl::OpenCLRuntime::_enumerateDevices() {
 	if(_devicesLoaded) return;
@@ -406,10 +332,9 @@ void opencl::OpenCLRuntime::_registerAllModules(int device) {
 	}
 }
 
-unsigned int opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int device) {
-	unsigned int dst = 0;
+void opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int device) {
 
-/*	const Program & prog = *(_programs[kernel.program]);
+	const Program & prog = *(_programs[kernel.program]);
 	assert(prog.ptxModule.find(device) != prog.ptxModule.end());
 
 	const std::string & moduleName = prog.ptxModule.find(device)->second;
@@ -418,32 +343,75 @@ unsigned int opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kern
 	const std::string & kernelName = kernel.kernel;
 	const ir::Kernel * k = _modules.find(moduleName)->second.getKernel(kernelName);
 
-	assert(k->arguments.size() == kernel.parameterIndices.size());
-		
-	IndexVector::iterator offset = kernel.parameterIndices.begin();
-	SizeVector::iterator size = kernel.parameterSizes.begin();
-	unsigned char* temp = (unsigned char*)malloc(kernel.parameterBlockSize);
-	for (ir::Kernel::ParameterVector::const_iterator 
-		parameter = k->arguments.begin(); 
-		parameter != k->arguments.end();
-		++parameter, ++offset, ++size) {
-		unsigned int misalignment = dst % parameter->getAlignment();
+	if(k->arguments.size() != kernel.parameterSizes.size())
+		throw CL_INVALID_KERNEL_ARGS;
+
+	//Get aligned parameter sizes	
+	kernel.parameterBlockSize = 0;
+	kernel.parameterOffsets.clear();
+	unsigned int argId = 0;
+	for (ir::Kernel::ParameterVector::const_iterator parameter = k->arguments.begin(); 
+		parameter != k->arguments.end(); ++parameter, ++argId) {
+		kernel.parameterOffsets[argId] = kernel.parameterBlockSize;
+		unsigned int misalignment = (kernel.parameterBlockSize) % parameter->getAlignment();
 		unsigned int alignmentOffset = misalignment == 0 
 			? 0 : parameter->getAlignment() - misalignment;
-		dst += alignmentOffset;
-	
-		memset(temp + dst, 0, parameter->getSize());
-		memcpy(temp + dst, kernel.parameterBlock + *offset, *size);
-		report( "Mapping parameter at offset " << *offset << " of size " 
-			<< *size << " to offset " << dst << " of size " 
-			<< parameter->getSize() << "\n   data = " 
-			<< hydrazine::dataToString(temp + dst, parameter->getSize()));
-		dst += parameter->getSize();
+		kernel.parameterBlockSize += alignmentOffset;
+		kernel.parameterBlockSize += parameter->getSize();
 	}
-	free(kernel.parameterBlock);
-	kernel.parameterBlock = temp;
-*/
-	return dst;
+
+	if(kernel.parameterBlock)
+	{
+		delete[] kernel.parameterBlock;
+		kernel.parameterBlock = NULL;
+	}
+	try {
+		kernel.parameterBlock = new char[kernel.parameterBlockSize];
+		assert(kernel.parameterBlock);
+		memset(kernel.parameterBlock, 0, kernel.parameterBlockSize);
+	}
+	catch(...) {
+		throw CL_OUT_OF_HOST_MEMORY;
+	}
+
+	//Copy parameters to aligned offset
+	assert(kernel.parameterSizes.size() == kernel.parameterPointers.size());
+	assert(kernel.parameterSizes.size() == kernel.parameterOffsets.size());
+	argId = 0;
+	for(SizeMap::iterator size = kernel.parameterSizes.begin();
+		size != kernel.parameterSizes.end(); size++, argId++) {
+		assert(size->first == argId);
+		assert(kernel.parameterPointers.find(argId) != kernel.parameterPointers.end());
+		assert(kernel.parameterOffsets.find(argId) != kernel.parameterOffsets.end());
+		
+		unsigned int offset = kernel.parameterOffsets[argId];
+		size_t oriSize = size->second;
+		size_t argSize = k->arguments[argId].getSize();
+		void * pointer = kernel.parameterPointers[argId];
+
+		//check if it is a memory address argument
+		if( _memories.find((MemoryObject *)pointer) != _memories.end()) {//pointer is memory object
+			if(oriSize != sizeof(cl_mem))
+				throw CL_INVALID_KERNEL_ARGS;
+		
+			if(argSize != sizeof(void *))
+				throw CL_INVALID_KERNEL_ARGS;
+
+			MemoryObject & mem = *((MemoryObject *)pointer);
+			if(mem.allocations.find(device) == mem.allocations.end())
+				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+			void * addr = mem.allocations[device]->pointer();
+			memcpy(kernel.parameterBlock + offset, &addr, argSize);
+		}
+		else { //non-memory argument
+			if(oriSize != argSize)
+				throw CL_INVALID_KERNEL_ARGS;
+
+			memcpy(kernel.parameterBlock + offset, pointer, argSize);
+		}
+
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -814,52 +782,22 @@ void opencl::OpenCLRuntime::unregisterModule(const std::string& name) {
 	_unlock();
 }
 
-//static ir::Dim3 convert(const cl_uint dim, const size_t * d) {
-//	assertM(dim <= 3, "dim > 3");
-//	return std::move(ir::Dim3((dim >= 1 ? d[0] : 1), (dim >= 2 ? d[1] : 1), (dim >= 3 ? d[2] : 1)));
-//}
+static ir::Dim3 convert(const size_t d[3]) {
+	return std::move(ir::Dim3(d[0], d[1], d[2]));
+}
 
-cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName, 
-	const std::string& kernelName )
+void opencl::OpenCLRuntime::_launchKernel(RegisteredKernel &kernel, cl_device_id device)
 {
-	_lock();
+	const std::string & kernelName = kernel.kernel;
+	assert(_programs[kernel.program]->built);
+	assert(_programs[kernel.program]->ptxModule.find(device) != _programs[kernel.program]->ptxModule.end());
+	const std::string & moduleName = _programs[kernel.program]->ptxModule[device];
 
-	_enumerateDevices();
-	if (_devices.empty()) {
-		_unlock();
-		return _setLastError(CL_INVALID_CONTEXT);
-	}
-	
-	ModuleMap::iterator module = _modules.find(moduleName);
-	assert(module != _modules.end());
-
-//	try {
-//		_registerModule(module, _devices);
-//	}
-//	catch(...) {
-//		_unlock();
-//		throw;
-//	}
-
-	ir::Kernel* k = module->second.getKernel(kernelName);
-	assert(k != 0);
-
-	_bind();
-
-	HostThreadContext& thread = _getCurrentThread();
-	cl_int result = CL_SUCCESS;
-	
-//	assert(thread.launchConfigurations.size());
-	
-//	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
-//	thread.launchConfigurations.pop_back();
-	
-//	unsigned int paramSize = thread.mapParameters(k);
-	
 	report("kernel launch (" << kernelName 
 		<< ") on thread " << boost::this_thread::get_id());
 	
 	try {
+		HostThreadContext &thread = _getCurrentThread();
 		trace::TraceGeneratorVector traceGens;
 
 		traceGens = thread.persistentTraceGenerators;
@@ -868,9 +806,11 @@ cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName,
 			thread.nextTraceGenerators.end());
 
 		_inExecute = true;
-//		_getDevice().launch(moduleName, kernelName, convert(launch.workDim, launch.globalWorkSize), 
-//			convert(launch.workDim, launch.localWorkSize), /*launch.sharedMemory*/0, 
-//			thread.parameterBlock, paramSize, traceGens, NULL/*&_externals*/);
+
+		executive::Device & d = *(_devices[device]);
+		d.launch(moduleName, kernelName, convert(kernel.globalWorkSize), 
+			convert(kernel.localWorkSize), /*launch.sharedMemory*/0, 
+			kernel.parameterBlock, kernel.parameterBlockSize, traceGens, NULL/*&_externals*/);
 		_inExecute = false;
 		report(" launch completed successfully");	
 	}
@@ -880,9 +820,7 @@ cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName,
 			<< "\" with exception: \n";
 		std::cerr << _formatError( e.toString() ) 
 			<< "\n" << std::flush;
-		thread.lastError = CL_INVALID_KERNEL;
 		_inExecute = false;
-		_release();
 		throw;
 	}
 	catch( const std::exception& e ) {
@@ -892,26 +830,13 @@ cl_int opencl::OpenCLRuntime::_launchKernel(const std::string& moduleName,
 			<< "\" with exception: \n";
 		std::cerr << _formatError( e.what() )
 			<< "\n" << std::flush;
-		thread.lastError = CL_INVALID_KERNEL;
-		_inExecute = false;
-		_release();
 		throw;
 	}
 	catch(...) {
-		thread.lastError = CL_INVALID_KERNEL;
-		_inExecute = false;
-		_release();
 		throw;
 	}
-	_release();
-	
-	return result;
 }
 
-void opencl::OpenCLRuntime::launch(const std::string& moduleName,
-	const std::string& kernelName) {
-	_launchKernel(moduleName, kernelName);
-}
 
 void opencl::OpenCLRuntime::setOptimizationLevel(
 	translator::Translator::OptimizationLevel l) {
@@ -1557,6 +1482,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 			device.select();
 			try {
 				executive::Device::MemoryAllocation * allocation =  device.allocate(size);
+				if(allocation == NULL) throw;
 				allocations.insert(std::make_pair(*it, allocation));
 				report("clCreateBuffer() return address = " <<  allocation->pointer() << ", size = " << size);
 			}
@@ -1752,6 +1678,10 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 			throw CL_INVALID_KERNEL;
 
 		RegisteredKernel & k = *(_kernels[kernel]);
+		HostThreadContext & thread = _getCurrentThread();
+		if(k.context != (void *) &thread)
+			throw CL_INVALID_KERNEL;
+
 		k.parameterSizes[arg_index] = arg_size;
 		char * paramVal = new char[arg_size];
 		memcpy(paramVal, arg_value, arg_size);
@@ -1784,6 +1714,73 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	_lock();
 
 	try {
+		HostThreadContext &thread = _getCurrentThread();
+		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(kernel < 0 || kernel >= (cl_kernel)_kernels.size())
+			throw CL_INVALID_KERNEL;
+
+		CommandQueue & q = *(_queues[command_queue]);
+		RegisteredKernel & k = *(_kernels[kernel]);
+		if(q.context() != k.context)
+			throw CL_INVALID_CONTEXT;
+		
+		if(k.parameterSizes.size() == 0)
+			throw CL_INVALID_KERNEL_ARGS;
+
+		assert(k.parameterSizes.size() == k.parameterPointers.size());
+		
+		_mapKernelParameters(k, q.device());
+
+		if(work_dim < 1 || work_dim > 3)
+			throw CL_INVALID_WORK_DIMENSION;
+
+		if(global_work_size == NULL)
+			throw CL_INVALID_GLOBAL_WORK_SIZE;
+
+		for(cl_uint dim = 0; dim < work_dim; dim++) {
+			if (global_work_size[dim] == 0)
+				throw CL_INVALID_GLOBAL_WORK_SIZE;
+		}
+
+		if(global_work_offset != NULL) {
+			assertM(false, "non-null global work offset unsupported");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		if(local_work_size) {
+			for(cl_uint dim = 0; dim < work_dim; dim++) {
+			if(local_work_size[dim] == 0)
+				throw CL_INVALID_WORK_ITEM_SIZE;
+
+			if (global_work_size[dim] / local_work_size[dim] * local_work_size[dim] != global_work_size[dim])
+				throw CL_INVALID_WORK_GROUP_SIZE;
+			}
+		}
+
+		if((event_wait_list == NULL && num_events_in_wait_list > 0) || (event_wait_list && num_events_in_wait_list == 0))
+			throw CL_INVALID_EVENT_WAIT_LIST;
+
+
+		for(cl_uint dim = 0; dim < 3; dim++) {
+			if(dim < work_dim) {
+				k.globalWorkSize[dim] = global_work_size[dim];
+				if(local_work_size)
+					k.localWorkSize[dim] = local_work_size[dim];
+			}
+			else {
+				k.globalWorkSize[dim] = 1;
+				k.localWorkSize[dim] = 1;
+			}
+		}
+
+		try {
+			_launchKernel(k, q.device());
+		}
+		catch(...) {
+			throw CL_OUT_OF_RESOURCES;
+		}
 	}
 	catch(cl_int exception) {
 		result = exception;

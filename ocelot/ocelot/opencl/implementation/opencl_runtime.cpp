@@ -304,8 +304,7 @@ clSetKernelArg(cl_kernel    kernel,
                cl_uint      arg_index,
                size_t       arg_size,
                const void * arg_value) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clSetKernelArg(kernel, arg_index, arg_size, arg_value);
 }
 
 cl_int

@@ -114,8 +114,21 @@ opencl::Program::Program(const std::string & s, const void * c):
 ////////////////////////////////////////////////////////////////////////////////
 opencl::RegisteredKernel::RegisteredKernel(const std::string &k, const int p,
 const void * c): kernel(k), program(p), context(c) {
+	parameterBlock = NULL;
+	globalWorkOffset = NULL;
+	globalWorkSize = NULL;
+	localWorkSize = NULL;
 }
 
+opencl::RegisteredKernel::~RegisteredKernel()
+{
+	PointerMap::iterator pointer;
+	for(pointer = parameterPointers.begin(); pointer != parameterPointers.end(); pointer++) {
+		delete pointer->second;
+	}
+
+	delete parameterBlock;
+}
 
 
 /*
@@ -396,7 +409,7 @@ void opencl::OpenCLRuntime::_registerAllModules(int device) {
 unsigned int opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int device) {
 	unsigned int dst = 0;
 
-	const Program & prog = *(_programs[kernel.program]);
+/*	const Program & prog = *(_programs[kernel.program]);
 	assert(prog.ptxModule.find(device) != prog.ptxModule.end());
 
 	const std::string & moduleName = prog.ptxModule.find(device)->second;
@@ -429,7 +442,7 @@ unsigned int opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kern
 	}
 	free(kernel.parameterBlock);
 	kernel.parameterBlock = temp;
-
+*/
 	return dst;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -476,10 +489,36 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// mutex
 
 	// thread contexts
+	for(HostThreadContextMap::iterator thread = _threads.begin();
+		thread != _threads.end(); ++thread) {
+		delete thread->second;
+	}
 	
 	// textures
 	
+	// programs
+	for (ProgramVector::iterator program = _programs.begin();
+		program != _programs.end(); ++program) {
+		delete *program;
+	}
+
 	// kernels
+	for (RegisteredKernelVector::iterator kernel = _kernels.begin();
+		kernel != _kernels.end(); ++kernel) {
+		delete *kernel;
+	}
+
+	// memory objects
+	for (MemoryObjectSet::iterator memory = _memories.begin();
+		memory != _memories.end(); ++memory) {
+		delete *memory;
+	}
+
+	// command queues
+	for (CommandQueueVector::iterator queue = _queues.begin();
+		queue != _queues.end(); ++queue) {
+		delete *queue;
+	}
 	
 	// fat binaries
 	
@@ -1700,6 +1739,37 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	return _setLastError(result);
 }
 
+cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
+	cl_uint arg_index,
+	size_t arg_size,
+	const void * arg_value) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		if(kernel < 0 || kernel >= (cl_kernel)_kernels.size())
+			throw CL_INVALID_KERNEL;
+
+		RegisteredKernel & k = *(_kernels[kernel]);
+		k.parameterSizes[arg_index] = arg_size;
+		char * paramVal = new char[arg_size];
+		memcpy(paramVal, arg_value, arg_size);
+		k.parameterPointers[arg_index] = paramVal;
+		
+		
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return _setLastError(result);
+}
+
 cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_queue,
 	cl_kernel kernel,
 	cl_uint work_dim,
@@ -1712,6 +1782,15 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+
+	try {
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
 
 	_unlock();
 	return _setLastError(result);

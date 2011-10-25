@@ -29,17 +29,18 @@ namespace opencl {
 
 	/*!	\brief Set of thread ids */
 	typedef std::set< boost::thread::id > ThreadSet;	
-	
-	typedef std::vector< int > IndexVector;
-	typedef std::vector< unsigned int > SizeVector;
 
 	typedef std::set< int > IndexSet;
+	
+	typedef std::map< unsigned int, size_t > SizeMap;
+	typedef std::map< unsigned int, char * > PointerMap;
 
 	typedef std::set< MemoryObject * > MemoryObjectSet;
 	//! references a kernel registered to OpenCL runtime
 	class RegisteredKernel {
 	public:
 		RegisteredKernel(const std::string& kernel, const int program, const void * context);
+		~RegisteredKernel();
 
 	public:
 		//! name of kernel
@@ -51,11 +52,11 @@ namespace opencl {
 		//! associated context
 		const void * context;
 	
-		//! Offsets for individual parameters
-		IndexVector parameterIndices;
+		//! Sizes for individual parameter
+		SizeMap parameterSizes;
 		
 		//! Sizes for individual parameters
-		SizeVector parameterSizes;
+		PointerMap parameterPointers;
 
 		//! parameter memory
 		unsigned char *parameterBlock;
@@ -496,6 +497,10 @@ namespace opencl {
 					cl_uint num_events_in_wait_list,
 					const cl_event * event_wait_list,
 					cl_event * event);
+		virtual cl_int clSetKernelArg(cl_kernel kernel,
+					cl_uint arg_index,
+					size_t arg_size,
+					const void * arg_value);
 		virtual cl_int clEnqueueNDRangeKernel(cl_command_queue command_queue,
 					cl_kernel kernel,
 					cl_uint work_dim,

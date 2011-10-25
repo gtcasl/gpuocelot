@@ -181,6 +181,14 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueWriteBuffer(cl_command_queue com
 	return CL_UNIMPLEMENTED;
 }
 
+cl_int opencl::OpenCLRuntimeInterface::clSetKernelArg(cl_kernel kernel,
+	cl_uint arg_index,
+	size_t arg_size,
+	const void * arg_value) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueNDRangeKernel(cl_command_queue command_queue,
 	cl_kernel kernel,
 	cl_uint work_dim,

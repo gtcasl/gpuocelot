@@ -106,6 +106,10 @@ namespace opencl {
 					cl_uint num_events_in_wait_list,
 					const cl_event * event_wait_list,
 					cl_event * event);
+		virtual cl_int clSetKernelArg(cl_kernel kernel,
+					cl_uint arg_index,
+					size_t arg_size,
+					const void * arg_value);
 		virtual cl_int clEnqueueNDRangeKernel(cl_command_queue command_queue,
 					cl_kernel kernel,
 					cl_uint work_dim,

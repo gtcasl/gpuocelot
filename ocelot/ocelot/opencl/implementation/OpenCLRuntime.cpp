@@ -30,7 +30,7 @@
 #define OPENCL_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // report all ptx modules
 //#define REPORT_ALL_PTX 0
@@ -124,7 +124,8 @@ opencl::RegisteredKernel::~RegisteredKernel()
 		delete pointer->second;
 	}
 
-	delete parameterBlock;
+	if(parameterBlock)
+		delete parameterBlock;
 }
 
 
@@ -390,14 +391,13 @@ void opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int 
 		void * pointer = kernel.parameterPointers[argId];
 
 		//check if it is a memory address argument
-		if( _memories.find((MemoryObject *)pointer) != _memories.end()) {//pointer is memory object
-			if(oriSize != sizeof(cl_mem))
-				throw CL_INVALID_KERNEL_ARGS;
+		if(oriSize == sizeof(cl_mem) &&  
+			_memories.find((MemoryObject *)(*(cl_mem *)pointer)) != _memories.end()) {//pointer is memory object
 		
 			if(argSize != sizeof(void *))
 				throw CL_INVALID_KERNEL_ARGS;
 
-			MemoryObject & mem = *((MemoryObject *)pointer);
+			MemoryObject & mem = *((MemoryObject *)(*(cl_mem *)pointer));
 			if(mem.allocations.find(device) == mem.allocations.end())
 				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
@@ -808,7 +808,7 @@ void opencl::OpenCLRuntime::_launchKernel(RegisteredKernel &kernel, cl_device_id
 		_inExecute = true;
 
 		executive::Device & d = *(_devices[device]);
-		d.launch(moduleName, kernelName, convert(kernel.globalWorkSize), 
+		d.launch(moduleName, kernelName, convert(kernel.workGroupNum), 
 			convert(kernel.localWorkSize), /*launch.sharedMemory*/0, 
 			kernel.parameterBlock, kernel.parameterBlockSize, traceGens, NULL/*&_externals*/);
 		_inExecute = false;
@@ -1768,11 +1768,15 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 				k.globalWorkSize[dim] = global_work_size[dim];
 				if(local_work_size)
 					k.localWorkSize[dim] = local_work_size[dim];
+				else
+					k.localWorkSize[dim] = global_work_size[dim];
 			}
 			else {
 				k.globalWorkSize[dim] = 1;
 				k.localWorkSize[dim] = 1;
 			}
+
+			k.workGroupNum[dim] = k.globalWorkSize[dim] / k.localWorkSize[dim];
 		}
 
 		try {

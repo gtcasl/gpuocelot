@@ -79,6 +79,9 @@ namespace opencl {
 
 		//! local dimensions of work-items in work-group
 		size_t localWorkSize[3];
+
+		//! number of work groups
+		size_t workGroupNum[3];
 			
 	};
 	

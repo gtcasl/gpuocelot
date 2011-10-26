@@ -730,7 +730,7 @@ std::string ir::PTXOperand::toString() const {
 		for( Array::const_iterator fi = array.begin(); 
 			fi != array.end(); ++fi ) {
 			result += fi->toString();
-			if( fi != --array.end() ) {
+			if( std::next(fi) != array.end() ) {
 				result += ", ";
 			}
 		}

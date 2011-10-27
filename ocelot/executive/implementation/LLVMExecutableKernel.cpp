@@ -68,7 +68,11 @@ void LLVMExecutableKernel::launchGrid(int x, int y, int z)
 	_gridDim.y = y;
 	_gridDim.z = z;
 	
+	initializeTraceGenerators();
+	
 	LLVMExecutionManager::launch(*this);
+	
+	finalizeTraceGenerators();
 }
 
 void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

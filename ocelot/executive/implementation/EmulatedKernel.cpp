@@ -106,6 +106,9 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 		it != _generators.end(); ++it) {
 		(*it)->initialize(*this);
 	}
+	
+	
+	initializeTraceGenerators();
 
 #if REPORT_LAUNCH_CONFIGURATION == 1
 	report("EmulatedKernel::launchGrid(" << width << ", " << height << ")");
@@ -136,11 +139,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 		}
 	}
 	
-	// notify trace generator(s)
-	for (TraceGeneratorVector::iterator it = _generators.begin(); 
-		it != _generators.end(); ++it) {
-		(*it)->finish();
-	}
+	finalizeTraceGenerators();
 	CTA = 0;
 }
 
@@ -160,22 +159,6 @@ void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
 }
 
 void executive::EmulatedKernel::setWorkerThreads(unsigned int limit) {
-}
-
-void executive::EmulatedKernel::addTraceGenerator(
-	trace::TraceGenerator *generator) {
-	_generators.push_back(generator);
-}
-
-void executive::EmulatedKernel::removeTraceGenerator(
-	trace::TraceGenerator *generator) {
-	TraceGeneratorVector temp = std::move(_generators);
-	for (TraceGeneratorVector::iterator gi = temp.begin(); 
-		gi != temp.end(); ++gi) {
-		if (*gi != generator) {
-			_generators.push_back(*gi);
-		}
-	}
 }
 
 

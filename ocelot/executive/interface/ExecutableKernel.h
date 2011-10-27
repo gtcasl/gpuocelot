@@ -104,10 +104,10 @@ namespace executive {
 		void tracePostEvent(const trace::TraceEvent & event) const;
 		
 		/*!	adds a trace generator to the EmulatedKernel */
-		virtual void addTraceGenerator(trace::TraceGenerator* generator)=0;
+		virtual void addTraceGenerator(trace::TraceGenerator* generator);
 
 		/*!	removes a trace generator from an EmulatedKernel */
-		virtual void removeTraceGenerator(trace::TraceGenerator* generator)=0;
+		virtual void removeTraceGenerator(trace::TraceGenerator* generator);
 
 		/*! sets an external function table for the emulated kernel */
 		virtual void setExternalFunctionSet(
@@ -134,6 +134,11 @@ namespace executive {
 		unsigned int parameterMemorySize() const;
 		const ir::Dim3& blockDim() const;
 		const ir::Dim3& gridDim() const;
+		
+	protected:
+	
+		void initializeTraceGenerators();
+		void finalizeTraceGenerators();
 
 	protected:
 		/*! \brief Total amount of allocated constant memory size */

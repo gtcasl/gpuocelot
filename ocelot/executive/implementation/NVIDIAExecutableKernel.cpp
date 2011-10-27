@@ -93,6 +93,8 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 		throw hydrazine::Exception("cuFuncSetCacheConfig() failed ");
 	}
 
+	initializeTraceGenerators();
+
 	result = cuda::CudaDriver::cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
@@ -110,6 +112,8 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 	else {
 		report("  - cuCtxSynchronize() after cuLaunchGrid() succeeded!");
 	}
+	
+	finalizeTraceGenerators();
 }
 
 /*!

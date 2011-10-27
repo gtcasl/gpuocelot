@@ -336,7 +336,7 @@ api::OcelotConfiguration::OcelotConfiguration(
 	initialize(file);
 }
 
-void api::OcelotConfiguration::initialize(std::istream &stream) {
+void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) {
 	hydrazine::json::Parser parser;
 	hydrazine::json::Object *config = 0;
 	try {
@@ -368,7 +368,11 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 			
 		std::cerr << "exception:\n" << exp.what() << std::endl;
 	}
-	delete config;
+	if (!preserve) {
+		delete config;
+		config = 0;
+	}
+	return config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

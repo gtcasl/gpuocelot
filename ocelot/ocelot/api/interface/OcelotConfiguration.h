@@ -205,14 +205,14 @@ namespace api {
 		OcelotConfiguration(const std::string &path);
 
 		//! \brief initializes configuration object from a stream as JSON
-		void initialize(std::istream &stream);
+		void *initialize(std::istream &stream, bool preserve = false);
 
-        //! \brief gets singleton configuration object or 
-        //	constructs from 'configure.ocelot'
-        static const OcelotConfiguration& get();
+    //! \brief gets singleton configuration object or 
+    //	constructs from 'configure.ocelot'
+    static const OcelotConfiguration& get();
 
-        //! \brief destroys the singleton
-        static void destroy();
+    //! \brief destroys the singleton
+    static void destroy();
 
 	public:
 		//! \brief path to configuration file for reparsing 

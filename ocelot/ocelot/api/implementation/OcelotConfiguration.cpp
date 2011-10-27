@@ -336,6 +336,12 @@ api::OcelotConfiguration::OcelotConfiguration(
 	initialize(file);
 }
 
+//! \brief invokes initialize() on the previously parsed configuration object
+void *api::OcelotConfiguration::configuration() {
+	std::ifstream file(path.c_str());
+	return initialize(file, true);
+}
+
 void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) {
 	hydrazine::json::Parser parser;
 	hydrazine::json::Object *config = 0;

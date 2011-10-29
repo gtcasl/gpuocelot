@@ -18,8 +18,9 @@
 
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
-#include <ocelot/executive/interface/Device.h>
 #include <ocelot/cuda/interface/FatBinaryContext.h>
+#include <ocelot/cuda/interface/CudaWorkerThread.h>
+#include <ocelot/executive/interface/Device.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
@@ -185,6 +186,9 @@ namespace cuda {
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
 
+	/*! \brief List of worker threads */
+	typedef std::vector<CudaWorkerThread> ThreadVector;
+
 	////////////////////////////////////////////////////////////////////////////
 	/*! Cuda runtime context */
 	class CudaRuntime: public CudaRuntimeInterface {
@@ -211,8 +215,12 @@ namespace cuda {
 		void _acquire();
 		/*! \brief Unbind the thread and unlock the mutex */
 		void _release();
+		/*! \brief Wait for all running kernels to finish */
+		void _wait();
 		//! \brief gets the current device for the current thread
 		executive::Device& _getDevice();
+		//! \brief gets the current worker thread for the current thread
+		CudaWorkerThread& _getWorkerThread();
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
@@ -228,11 +236,8 @@ namespace cuda {
 		//! locking object for cuda runtime
 		boost::mutex _mutex;
 		
-		//! There is a thread in execute
-		bool _inExecute;
-		
-		//! locking object for access to the runtime from worker threads
-		boost::mutex _executingMutex;
+		//! worker threads for each device
+		ThreadVector _workers;
 		
 		//! Registered modules
 		ModuleMap _modules;

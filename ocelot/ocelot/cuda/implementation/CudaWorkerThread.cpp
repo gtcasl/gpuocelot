@@ -47,6 +47,8 @@ CudaWorkerThread::CudaWorkerThread()
 
 CudaWorkerThread::~CudaWorkerThread()
 {
+	if(!started()) return;
+
 	WorkerMessage message;
 	message.type = WorkerMessage::Kill;
 	send(&message);

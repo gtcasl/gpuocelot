@@ -138,7 +138,8 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			allocateNewDataStructures(analyses, k, graph->required, manager);
 			graph->analyze(*k);
 		}
-		if(type & analysis::Analysis::StaticSingleAssignment)
+		if( (type & analysis::Analysis::StaticSingleAssignment) &&
+		  !(static_cast<analysis::DataflowGraph*>(dfg->second)->ssa()))
 		{
 			report("   Converting DFG into SSA for " << k->name);
 			static_cast<analysis::DataflowGraph*>(dfg->second)->toSsa();
@@ -149,19 +150,13 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 		if(analyses.count(analysis::Analysis::DivergenceAnalysis) == 0)
 		{
 			report("   Allocating divergence analysis for kernel " << k->name);
-			analysis::DivergenceAnalysis* divergenceAnalysis =
-				new analysis::DivergenceAnalysis;			
-			
-			analyses.insert(std::make_pair(
+			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
 				analysis::Analysis::DivergenceAnalysis,
-				divergenceAnalysis)).first;
+				new analysis::DivergenceAnalysis())).first;
 			
-			divergenceAnalysis->setPassManager(manager);
-			
-			allocateNewDataStructures(analyses, k,
-				divergenceAnalysis->required, manager);
-			
-			divergenceAnalysis->runOnKernel(*k);
+			analysis->second->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, analysis->second->required, manager);
+			static_cast<analysis::DivergenceAnalysis*>(analysis->second)->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)

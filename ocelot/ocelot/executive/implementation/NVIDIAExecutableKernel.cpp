@@ -59,6 +59,18 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	report("  constructed new NVIDIAExecutableKernel");
 }
 
+static CUfunc_cache _translateCacheConfiguration(executive::ExecutableKernel::CacheConfiguration config) {
+	switch (config) {
+		case executive::ExecutableKernel::CachePreferShared:
+			return CU_FUNC_CACHE_PREFER_SHARED;
+		case executive::ExecutableKernel::CachePreferL1:
+			return CU_FUNC_CACHE_PREFER_L1;
+		default:
+			break;
+	}
+	return CU_FUNC_CACHE_PREFER_NONE;
+}
+
 /*!
 	Launch a kernel on a 2D grid
 */
@@ -73,6 +85,15 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 			"Ocelot does not support the new cuda driver interface for this "
 			"feature, please file a bug against Ocelot.");
 	}
+	
+	if (_cacheConfiguration != ExecutableKernel::CacheConfigurationDefault) {
+		result = cuda::CudaDriver::cuFuncSetCacheConfig(cuFunction, 
+			_translateCacheConfiguration(_cacheConfiguration));
+		report("  - cuFuncSetCacheConfig() failed: " << result);
+		throw hydrazine::Exception("cuFuncSetCacheConfig() failed ");
+	}
+
+	initializeTraceGenerators();
 
 	result = cuda::CudaDriver::cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
@@ -91,6 +112,8 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 	else {
 		report("  - cuCtxSynchronize() after cuLaunchGrid() succeeded!");
 	}
+	
+	finalizeTraceGenerators();
 }
 
 /*!

@@ -26,6 +26,13 @@ namespace executive {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
 		typedef std::vector< const ir::Texture* > TextureVector;
+		
+		enum CacheConfiguration {
+			CacheConfigurationDefault,
+			CachePreferShared,
+			CachePreferL1,
+			CacheConfiguration_invalid
+		};
 
 	public:
 		executive::Device* device;
@@ -72,6 +79,12 @@ namespace executive {
 		/*! \brief Changes the amount of external shared memory */
 		virtual void setExternSharedMemorySize(unsigned int)=0;
 		
+		/*! \brief sets the cache configuration of the kernele */
+		virtual void setCacheConfiguration(CacheConfiguration config);
+		
+		/*! \brief sets the cache configuration of the kernele */
+		virtual CacheConfiguration getCacheConfiguration() const;
+		
 		/*! \brief Sets the max number of pthreads this kernel can use */
 		virtual void setWorkerThreads(unsigned int workerThreadLimit)=0;
 			
@@ -91,10 +104,10 @@ namespace executive {
 		void tracePostEvent(const trace::TraceEvent & event) const;
 		
 		/*!	adds a trace generator to the EmulatedKernel */
-		virtual void addTraceGenerator(trace::TraceGenerator* generator)=0;
+		virtual void addTraceGenerator(trace::TraceGenerator* generator);
 
 		/*!	removes a trace generator from an EmulatedKernel */
-		virtual void removeTraceGenerator(trace::TraceGenerator* generator)=0;
+		virtual void removeTraceGenerator(trace::TraceGenerator* generator);
 
 		/*! sets an external function table for the emulated kernel */
 		virtual void setExternalFunctionSet(
@@ -121,6 +134,11 @@ namespace executive {
 		unsigned int parameterMemorySize() const;
 		const ir::Dim3& blockDim() const;
 		const ir::Dim3& gridDim() const;
+		
+	protected:
+	
+		void initializeTraceGenerators();
+		void finalizeTraceGenerators();
 
 	protected:
 		/*! \brief Total amount of allocated constant memory size */
@@ -149,7 +167,8 @@ namespace executive {
 		TraceGeneratorVector _generators;
 		/*! \brief Registered external functions */
 		const ir::ExternalFunctionSet* _externals;
-
+		/*! \brief configuration of cache */
+		CacheConfiguration _cacheConfiguration;
 	};
 	
 }

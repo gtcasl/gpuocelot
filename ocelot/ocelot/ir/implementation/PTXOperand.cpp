@@ -53,7 +53,7 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 		case ntid:         return "%ntid";         break;
 		case laneId:       return "%laneid";       break;
 		case warpId:       return "%warpid";       break;
-		case nwarpId:      return "%nwarpid";       break;
+		case nwarpId:      return "%nwarpid";      break;
 		case warpSize:     return "WARP_SZ";       break;
 		case ctaId:        return "%ctaid";        break;
 		case nctaId:       return "%nctaid";       break;
@@ -110,13 +110,15 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 
 std::string ir::PTXOperand::toString( AddressMode mode ) {
 	switch( mode ) {
-		case Register:  return "Register";  break;
-		case Indirect:  return "Indirect";  break;
-		case Immediate: return "Immediate"; break;
-		case Address:   return "Address";   break;
-		case Label:     return "Label";     break;
-		case Special:   return "Special";   break;
-		case BitBucket: return "BitBucket"; break;
+		case Register:     return "Register";     break;
+		case Indirect:     return "Indirect";     break;
+		case Immediate:    return "Immediate";    break;
+		case Address:      return "Address";      break;
+		case Label:        return "Label";        break;
+		case Special:      return "Special";      break;
+		case BitBucket:    return "BitBucket";    break;
+		case ArgumentList: return "ArgumentList"; break;
+		case FunctionName: return "FunctionName"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -643,25 +645,23 @@ std::string ir::PTXOperand::toString() const {
 		return "_";
 	} else if( addressMode == Indirect ) {
 		std::stringstream stream;
-		if( offset < 0 ) {
-			if ( identifier != "" ) {
-				stream << identifier;
-			}
-			else {
-				stream << "%r" << reg;
-			}
-			stream << " + " << ( offset );
-			return stream.str();
-		} else {
-			if ( identifier != "" ) {
-				stream << identifier;
-			}
-			else {
-				stream << "%r" << reg;
-			}
-			stream << " + " << ( offset );
-			return stream.str();
+
+		if ( identifier != "" ) {
+			stream << identifier;
 		}
+		else {
+			stream << "%r" << reg;
+		}
+	
+		if( offset < 0 ) {
+			// The NVIDIA driver does not support 
+			//   '- offset' it needs '+ -offset'
+			stream << " + " << ( offset );
+		} else if ( offset > 0 ) {
+			stream << " + " << ( offset );
+		}
+
+		return stream.str();
 	} else if( addressMode == Address ) {
 		std::stringstream stream;
 		if( offset == 0 ) {
@@ -730,7 +730,7 @@ std::string ir::PTXOperand::toString() const {
 		for( Array::const_iterator fi = array.begin(); 
 			fi != array.end(); ++fi ) {
 			result += fi->toString();
-			if( fi != --array.end() ) {
+			if( std::next(fi) != array.end() ) {
 				result += ", ";
 			}
 		}
@@ -793,8 +793,9 @@ std::string ir::PTXOperand::toString() const {
 }
 
 std::string ir::PTXOperand::registerName() const {
-	assert( addressMode == Indirect || addressMode == Register
-		|| addressMode == BitBucket );
+	assertM( addressMode == Indirect || addressMode == Register
+		|| addressMode == BitBucket, "invalid register address mode "
+	    << toString(addressMode) );
 	
 	if (addressMode == BitBucket) return "_";
 	

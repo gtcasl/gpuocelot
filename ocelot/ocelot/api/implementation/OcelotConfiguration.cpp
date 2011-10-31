@@ -124,20 +124,20 @@ api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation()
 }
 
 api::OcelotConfiguration::OpenCLRuntimeImplementation::OpenCLRuntimeImplementation():
-	implementation("OpenCLRuntime")
-	/*runtimeApiTrace("trace/CudaAPI.trace")*/
+    implementation("OpenCLRuntime")
+    /*runtimeApiTrace("trace/CudaAPI.trace")*/
 {
 
 }
 
 static void initializeOpenCLRuntimeImplementation(
-	api::OcelotConfiguration::OpenCLRuntimeImplementation &opencl, 
-	hydrazine::json::Visitor config) {
+    api::OcelotConfiguration::OpenCLRuntimeImplementation &opencl, 
+    hydrazine::json::Visitor config) {
 
-	opencl.implementation = config.parse<std::string>(
-		"implementation", "OpenCLRuntime");
-//	opencl.runtimeApiTrace = config.parse<std::string>(
-//		"runtimeApiTrace", "trace/CudaAPI.trace");
+    opencl.implementation = config.parse<std::string>(
+        "implementation", "OpenCLRuntime");
+//  opencl.runtimeApiTrace = config.parse<std::string>(
+//      "runtimeApiTrace", "trace/CudaAPI.trace");
 }
 
 static void initializeCudaRuntimeImplementation(
@@ -334,7 +334,7 @@ static void initializeOptimizations(
 			
 	optimizations.mimdThreadScheduling =
 		config.parse<bool>("mimdThreadScheduling", false);
-			
+	
 	optimizations.syncElimination =
 		config.parse<bool>("syncElimination", false);			
 }
@@ -353,7 +353,13 @@ api::OcelotConfiguration::OcelotConfiguration(
 	initialize(file);
 }
 
-void api::OcelotConfiguration::initialize(std::istream &stream) {
+//! \brief invokes initialize() on the previously parsed configuration object
+void *api::OcelotConfiguration::configuration() {
+	std::ifstream file(path.c_str());
+	return initialize(file, true);
+}
+
+void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) {
 	hydrazine::json::Parser parser;
 	hydrazine::json::Object *config = 0;
 	try {
@@ -363,11 +369,11 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		if (main.find("trace")) {
 			initializeTrace(trace, main["trace"]);
 		}
+        if (main.find("opencl")) {
+            initializeOpenCLRuntimeImplementation(opencl, main["opencl"]);
+        }
 		if (main.find("cuda")) {
 			initializeCudaRuntimeImplementation(cuda, main["cuda"]);
-		}
-		if (main.find("opencl")) {
-			initializeOpenCLRuntimeImplementation(opencl, main["opencl"]);
 		}
 		if (main.find("executive")) {
 			initializeExecutive(executive, main["executive"]);
@@ -388,7 +394,11 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 			
 		std::cerr << "exception:\n" << exp.what() << std::endl;
 	}
-	delete config;
+	if (!preserve) {
+		delete config;
+		config = 0;
+	}
+	return config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

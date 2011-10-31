@@ -53,6 +53,7 @@ UNSIGNED_OCT_CONSTANT {OCT_CONSTANT}U
 
 STRING L?\"(\\.|[^\\"])*\"
 COMMENT ("/*"([^*]|"*"[^/])*"*/")|("/"(\\\n)*"/"[^\n]*)
+METADATA ("//!"[^\n]*)
 
 DSEQ ([[:digit:]]+)
 DSEQ_OPT ([[:digit:]]*)
@@ -535,10 +536,12 @@ WHITESPACE [ \t]*
                                     MIN( strlen( yytext ) - 1, 1024 ) ); \
                                     return TOKEN_STRING;}
 
+{METADATA}                      { sstrcpy( yylval->text, yytext, 1024 );
+                                    return TOKEN_METADATA; }
 {COMMENT}                       { nextColumn += strlen( yytext ); }
 {TAB}                           { nextColumn += strlen( yytext ) * 4; }
 {SPACE}                         { nextColumn += strlen( yytext ); }
-{NEW_LINE}                      { nextColumn = 1; }
+{NEW_LINE}                      { nextColumn  = 1; }
 
 ","                             { yylval->text[0] = ','; 
                                     yylval->text[1] = '\0'; return (','); }

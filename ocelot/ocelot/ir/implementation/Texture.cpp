@@ -100,35 +100,35 @@ namespace ir
 
 	ir::PTXOperand::DataType Texture::convertFromChannelDataType(Texture::ChannelDataType channelData) {
 		switch (channelData) {
-		case SNORM_INT8:
-			 break;
-		case SNORM_INT16:
-			 break;
-		case UNORM_INT8:
-			 break;
-		case UNORM_INT16:
-			 break;
-		case UNORM_SHORT_565:
-			 break;
-		case UNORM_SHORT_555:
-			 break;
-		case UNORM_INT_101010:
-			 break;
-		case SIGNED_INT8:
-			 return ir::PTXOperand::s8;
-		case SIGNED_INT16:
-			 return ir::PTXOperand::s16;
-		case SIGNED_INT32:
-			 return ir::PTXOperand::s32;
-		case UNSIGNED_INT8:
-			 return ir::PTXOperand::u8;
-		case UNSIGNED_INT16:
-			 return ir::PTXOperand::u16;
-		case UNSIGNED_INT32:
-			 return ir::PTXOperand::u32;
-		case HALF_FLOAT:
-			 return ir::PTXOperand::f16;
-		case FLOAT:
+		case CL_SNORM_INT8:
+				break;
+		case CL_SNORM_INT16:
+				break;
+		case CL_UNORM_INT8:
+				break;
+		case CL_UNORM_INT16:
+				break;
+		case CL_UNORM_SHORT_565:
+				break;
+		case CL_UNORM_SHORT_555:
+				break;
+		case CL_UNORM_INT_101010:
+				break;
+		case CL_SIGNED_INT8:
+				return ir::PTXOperand::s8;
+		case CL_SIGNED_INT16:
+				return ir::PTXOperand::s16;
+		case CL_SIGNED_INT32:
+				return ir::PTXOperand::s32;
+		case CL_UNSIGNED_INT8:
+				return ir::PTXOperand::u8;
+		case CL_UNSIGNED_INT16:
+				return ir::PTXOperand::u16;
+		case CL_UNSIGNED_INT32:
+				return ir::PTXOperand::u32;
+		case CL_HALF_FLOAT:
+				return ir::PTXOperand::f16;
+		case CL_FLOAT:
 				return ir::PTXOperand::f32;
 				break;
 		default:
@@ -140,24 +140,24 @@ namespace ir
 	Texture::ChannelDataType Texture::convertFromPTXDataType(PTXOperand::DataType ptxData) {
 		switch (ptxData) {
 		case PTXOperand::s8:
-			return SIGNED_INT8;
+			return CL_SIGNED_INT8;
 		case PTXOperand::s16:
-			return SIGNED_INT16;
+			return CL_SIGNED_INT16;
 		case PTXOperand::s32:
-			return SIGNED_INT32;
+			return CL_SIGNED_INT32;
 		case PTXOperand::b8:	// fall through
 		case PTXOperand::u8:
-			return UNSIGNED_INT8;
+			return CL_UNSIGNED_INT8;
 		case PTXOperand::b16:	// fall through
 		case PTXOperand::u16:
-			return UNSIGNED_INT16;
+			return CL_UNSIGNED_INT16;
 		case PTXOperand::b32: // fall through
 		case PTXOperand::u32:
-			return UNSIGNED_INT32;
+			return CL_UNSIGNED_INT32;
 		case PTXOperand::f16:
-			return HALF_FLOAT;
+			return CL_HALF_FLOAT;
 		case PTXOperand::f32:
-			return FLOAT;
+			return CL_FLOAT;
 		default:
 			break;
 		}

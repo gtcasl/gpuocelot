@@ -168,6 +168,7 @@ namespace cuda
 		DynLink(cuFuncSetBlockShape);
 		DynLink(cuFuncSetSharedSize);
 		DynLink(cuFuncGetAttribute);
+		DynLink(cuFuncSetCacheConfig);
 		
 		DynLinkV(cuArrayCreate);
 		DynLinkV(cuArrayGetDescriptor);
@@ -710,6 +711,12 @@ namespace cuda
 	{
 		CHECK();
 		return (*_interface.cuFuncGetAttribute)(pi, attrib, hfunc);
+	}
+	
+	CUresult CudaDriver::cuFuncSetCacheConfig(CUfunction hFunc, CUfunc_cache config)
+	{
+		CHECK();
+		return (*_interface.cuFuncSetCacheConfig)(hFunc, config);
 	}
 
 	CUresult CudaDriver::cuArrayCreate( CUarray *pHandle, 

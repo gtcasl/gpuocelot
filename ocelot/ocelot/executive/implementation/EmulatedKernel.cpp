@@ -43,7 +43,7 @@
 #define REPORT_BASE 0
 
 #define REPORT_KERNEL_INSTRUCTIONS 1
-#define REPORT_LAUNCH_CONFIGURATION 0
+#define REPORT_LAUNCH_CONFIGURATION 1
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -106,6 +106,9 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 		it != _generators.end(); ++it) {
 		(*it)->initialize(*this);
 	}
+	
+	
+	initializeTraceGenerators();
 
 #if REPORT_LAUNCH_CONFIGURATION == 1
 	report("EmulatedKernel::launchGrid(" << width << ", " << height << ")");
@@ -136,11 +139,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 		}
 	}
 	
-	// notify trace generator(s)
-	for (TraceGeneratorVector::iterator it = _generators.begin(); 
-		it != _generators.end(); ++it) {
-		(*it)->finish();
-	}
+	finalizeTraceGenerators();
 	CTA = 0;
 }
 
@@ -160,22 +159,6 @@ void executive::EmulatedKernel::setExternSharedMemorySize(unsigned int bytes) {
 }
 
 void executive::EmulatedKernel::setWorkerThreads(unsigned int limit) {
-}
-
-void executive::EmulatedKernel::addTraceGenerator(
-	trace::TraceGenerator *generator) {
-	_generators.push_back(generator);
-}
-
-void executive::EmulatedKernel::removeTraceGenerator(
-	trace::TraceGenerator *generator) {
-	TraceGeneratorVector temp = std::move(_generators);
-	for (TraceGeneratorVector::iterator gi = temp.begin(); 
-		gi != temp.end(); ++gi) {
-		if (*gi != generator) {
-			_generators.push_back(*gi);
-		}
-	}
 }
 
 
@@ -278,44 +261,46 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	Data movement instructions: ld, st
 */
 void executive::EmulatedKernel::updateParamReferences() {
-  using namespace std;
-  for (PTXInstructionVector::iterator 
-    i_it = instructions.begin();
-    i_it != instructions.end(); ++i_it) {
-    ir::PTXInstruction& instr = *i_it;
-    if (instr.addressSpace == ir::PTXInstruction::Param) {
-      if (instr.opcode == ir::PTXInstruction::Ld 
-        && instr.a.addressMode == ir::PTXOperand::Address) {
-        
-        ir::Parameter *pParam = getParameter(instr.a.identifier);
-        if (pParam) {
-          ir::Parameter &param = *pParam;
-          instr.a.isArgument = param.isArgument() && !function();
-          report("For instruction '" << instr.toString() 
-              << "' setting source parameter '" << instr.a.toString() 
-              << "' offset to " << param.offset << " " 
-              << ( instr.a.isArgument ? "(argument)" : "" ) );
-          instr.a.offset += param.offset;
-          instr.a.imm_uint = 0;
+	using namespace std;
+	for (PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+		i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction& instr = *i_it;
+		if (instr.addressSpace == ir::PTXInstruction::Param) {
+			if (instr.opcode == ir::PTXInstruction::Ld 
+				&& instr.a.addressMode == ir::PTXOperand::Address) {
+				
+				ir::Parameter *pParam = getParameter(instr.a.identifier);
+				if (pParam) {
+					ir::Parameter &param = *pParam;
+					instr.a.isArgument = param.isArgument() && !function();
+					report("For instruction '" << instr.toString() 
+							<< "' setting source parameter '"
+							<< instr.a.toString() 
+							<< "' offset to " << param.offset << " " 
+							<< ( instr.a.isArgument ? "(argument)" : "" ) );
+					instr.a.offset += param.offset;
+					instr.a.imm_uint = 0;
 				}
-		  }
-		  else if (instr.opcode == ir::PTXInstruction::St
-        && instr.d.addressMode == ir::PTXOperand::Address) {
-        ir::Parameter *pParam = getParameter(instr.d.identifier);
-        if (pParam) {
-          ir::Parameter &param = *pParam;
-          instr.d.isArgument = param.isArgument() && !function();
-          report("For instruction '" << instr.toString() 
-              << "' setting destination parameter '" << instr.d.toString() 
-              << "' offset to " << param.offset << " " 
-              << ( instr.d.isArgument ? "(argument)" : "" ) );
+			}
+			else if (instr.opcode == ir::PTXInstruction::St
+				&& instr.d.addressMode == ir::PTXOperand::Address) {
+				ir::Parameter *pParam = getParameter(instr.d.identifier);
+				if (pParam) {
+					ir::Parameter &param = *pParam;
+					instr.d.isArgument = param.isArgument() && !function();
+					report("For instruction '" << instr.toString() 
+							<< "' setting destination parameter '"
+							<< instr.d.toString() 
+							<< "' offset to " << param.offset << " " 
+							<< ( instr.d.isArgument ? "(argument)" : "" ) );
 
-          instr.d.offset += param.offset;
-          instr.d.imm_uint = 0;
+					instr.d.offset += param.offset;
+					instr.d.imm_uint = 0;
 				}
-      }
-    }
-  }
+			}
+		}
+	}
 }
 
 void executive::EmulatedKernel::initializeArgumentMemory() {

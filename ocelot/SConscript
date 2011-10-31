@@ -124,6 +124,10 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 
+KernelDrawer = env.Program('KernelDrawer', \
+	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
+env.Depends(KernelDrawer, libocelot)
+
 ocelot_server_libs = ['']
 
 if os.name != 'nt':
@@ -194,6 +198,8 @@ tests.append(('TestExternalFunctions', \
 	'ocelot/api/test/TestExternalFunctions.cpp', 'full'))
 tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
+tests.append(('TestDriverAPISequence', \
+	'ocelot/cuda/test/driver/sequence.cpp', 'full'))
 
 for test in tests:
 	libs = ocelot_libs
@@ -220,8 +226,7 @@ directories = ['ocelot/ir/interface',
 	'ocelot/cal/interface', 
 	'ocelot/cuda/interface', 
 	'ocelot/executive/interface', 
-	'ocelot/opencl/interface',
-	'ocelot/opencl/interface/CL',
+	'ocelot/opencl/interface', 
 	'ocelot/graphs/interface', 
 	'ocelot/parser/interface', 
 	'ocelot/trace/interface', 

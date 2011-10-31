@@ -115,19 +115,19 @@ namespace api {
 			std::string runtimeApiTrace;
 		};
 
-		class OpenCLRuntimeImplementation {
-		public:
-			OpenCLRuntimeImplementation();
+       class OpenCLRuntimeImplementation {
+        public:
+            OpenCLRuntimeImplementation();
 
-		public:
+        public:
 
-			//! \brief names particular OpenCL Runtime implementation 
-			//         to instantiate
-			std::string implementation;
-			
-			//! \brief for TraceGeneratingRuntime, path to output file
-		//	std::string runtimeApiTrace;
-		};
+            //! \brief names particular OpenCL Runtime implementation 
+            //         to instantiate
+            std::string implementation;
+
+            //! \brief for TraceGeneratingRuntime, path to output file
+        //  std::string runtimeApiTrace;
+        };
 
 		class Executive {
 		public:
@@ -219,14 +219,17 @@ namespace api {
 		OcelotConfiguration(const std::string &path);
 
 		//! \brief initializes configuration object from a stream as JSON
-		void initialize(std::istream &stream);
+		void *initialize(std::istream &stream, bool preserve = false);
+		
+		//! \brief invokes initialize() on the previously parsed configuration object
+		void *configuration();
 
-        //! \brief gets singleton configuration object or 
-        //	constructs from 'configure.ocelot'
-        static const OcelotConfiguration& get();
+    //! \brief gets singleton configuration object or 
+    //	constructs from 'configure.ocelot'
+    static const OcelotConfiguration& get();
 
-        //! \brief destroys the singleton
-        static void destroy();
+    //! \brief destroys the singleton
+    static void destroy();
 
 	public:
 		//! \brief path to configuration file for reparsing 
@@ -243,9 +246,9 @@ namespace api {
 
 		//! \brief configuration for CUDA runtime implementation
 		CudaRuntimeImplementation cuda;
-		
-		//! \brief configuration for OpenCL runtime implementation
-		OpenCLRuntimeImplementation opencl;
+
+        //! \brief configuration for OpenCL runtime implementation
+        OpenCLRuntimeImplementation opencl;
 
 		//! \brief configuration for Ocelot Executive
 		Executive executive;

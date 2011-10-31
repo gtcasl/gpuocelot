@@ -81,6 +81,16 @@ namespace executive
 					size_t stackSize;
 					/*! printfFIFOSize */
 					size_t printfFIFOSize;
+					/**< This device shares a unified address with the host */
+					bool unifiedAddressing;          
+					/**< Peak memory clock frequency in kilohertz */
+					int memoryClockRate;
+					/**< Global memory bus width in bits */
+					int memoryBusWidth;
+					/**< Size of L2 cache in bytes */
+					int l2CacheSize;
+					/**< Maximum resident threads per multiprocessor */
+					int maxThreadsPerMultiProcessor;
 			
 			};
 			

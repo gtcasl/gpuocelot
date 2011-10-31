@@ -45,10 +45,10 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 // if 1, adds line numbers to reported PTX
-#define REPORT_PTX_WITH_LINENUMBERS 1
+#define REPORT_PTX_WITH_LINENUMBERS 0
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -655,10 +655,13 @@ namespace executive
 	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags,
 		int computeCapability)
 	{
+		report("NVIDIAGPUDevice::createDevices()");
 		if(!_cudaDriverInitialized)
 		{
 			driver::cuInit(0);
 			_cudaDriverInitialized = true;
+			
+			report("driver::cuInit(0) called");
 		}
 
 		DeviceVector devices;
@@ -732,12 +735,15 @@ namespace executive
 		
 		_opengl = hydrazine::isAnOpenGLContextAvailable();
 
+		report(" creating context");
 		if(_opengl)
 		{
+			report(" creating GL context - flags: " << flags << ", device: " << device);
 			checkError(driver::cuGLCtxCreate(&_context, flags, device));
 		}
 		else
 		{
+			report(" creating context - flags: " << flags << ", device: " << device);
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
@@ -795,6 +801,22 @@ namespace executive
 			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
 			&_properties.minor, device));
+		
+		int unifiedAddressing = false;
+		checkError(driver::cuDeviceGetAttribute(&unifiedAddressing, 
+			CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING, device));
+			
+		_properties.unifiedAddressing = unifiedAddressing;
+		
+		checkError(driver::cuDeviceGetAttribute(&_properties.memoryClockRate, 
+			CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE, device));
+		checkError(driver::cuDeviceGetAttribute(&_properties.memoryBusWidth, 
+			CU_DEVICE_ATTRIBUTE_GLOBAL_MEMORY_BUS_WIDTH, device));
+		checkError(driver::cuDeviceGetAttribute(&_properties.l2CacheSize, 
+			CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, device));
+		checkError(driver::cuDeviceGetAttribute(
+			&_properties.maxThreadsPerMultiProcessor, 
+			CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, device));
 	}
 
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()

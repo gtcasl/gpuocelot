@@ -11499,7 +11499,7 @@ static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceT
 # 3 "/tmp/tmpxft_00000e4a_00000000-1_indirectCall.cudafe1.stub.c" 2
 extern void __device_stub__Z11kernelEntryPii(int *, int);
 static void __sti____cudaRegisterAll_47_tmpxft_00000e4a_00000000_4_indirectCall_cpp1_ii_96f12850(void) __attribute__((__constructor__));
-void __device_stub__Z11kernelEntryPii(int *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))kernelEntry)); (void)cudaLaunch(((char *)((void ( *)(int *, int))kernelEntry))); };}
+void __device_stub__Z11kernelEntryPii(int *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ (void)cudaLaunch(((char *)((void ( *)(int *, int))kernelEntry))); };}
 void kernelEntry( int *__cuda_0,int __cuda_1)
 # 24 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/functions/indirectCall.cu"
 {__device_stub__Z11kernelEntryPii( __cuda_0,__cuda_1);

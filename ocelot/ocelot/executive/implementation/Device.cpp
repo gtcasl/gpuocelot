@@ -138,7 +138,7 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 		break;
 		case ir::Instruction::LLVM:
 		{
-			#ifdef HAVE_LLVM
+			#if HAVE_LLVM
 			return 1;
 			#else
 			return 0;

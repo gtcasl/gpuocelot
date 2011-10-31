@@ -1251,7 +1251,23 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyAsync(void *dst, const void *src, 
 	size_t count, enum cudaMemcpyKind kind, cudaStream_t stream) {
-	return cudaMemcpy(dst, src, count, kind);
+	cudaError_t result = cudaErrorInvalidDevicePointer;
+	if (kind >= 0 && kind <= 3) {
+		_acquire();
+		if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+		report("cudaMemcpyAsync(" << dst << ", " << src
+			<< ", " << count << ")");
+		_memcpy(dst, src, count, kind);
+		result = cudaSuccess;
+
+		_release();
+	}
+	else {
+		result = cudaErrorInvalidMemcpyDirection;
+	}
+
+	return _setLastError(result);
 }
 
 cudaError_t cuda::CudaRuntime::cudaMemcpyToArray(struct cudaArray *dst, 
@@ -2838,7 +2854,14 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	
 	try {
 		if (_getDevice().queryEvent(event)) {
-			result = cudaSuccess;
+			if(!_getWorkerThread().areAnyKernelsRunning())
+			{
+				result = cudaSuccess;
+			}
+			else
+			{
+				result = cudaErrorNotReady;
+			}
 		}
 		else {
 			result = cudaErrorNotReady;
@@ -2855,6 +2878,8 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 
 cudaError_t cuda::CudaRuntime::cudaEventSynchronize(cudaEvent_t event) {
 	cudaError_t result = cudaErrorInvalidValue;
+	
+	_wait();
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
@@ -2894,6 +2919,8 @@ cudaError_t cuda::CudaRuntime::cudaEventDestroy(cudaEvent_t event) {
 cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms, 
 	cudaEvent_t start, cudaEvent_t end) {
 	cudaError_t result = cudaErrorInvalidValue;
+	
+	_wait();
 	
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
@@ -3082,6 +3109,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 
 cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	cudaError_t result = cudaSuccess;
+	_wait();
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 

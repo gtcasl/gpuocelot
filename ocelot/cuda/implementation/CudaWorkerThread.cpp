@@ -40,7 +40,7 @@ public:
 
 
 CudaWorkerThread::CudaWorkerThread()
-: _anyLaunch(false), _device(0)
+: _launched(0), _finished(0), _device(0)
 {
 
 }
@@ -76,7 +76,7 @@ void CudaWorkerThread::launch(const std::string& module,
 	assert(_device != 0);
 	report("Launching kernel '" << kernel << "' executing on device '"
 		<< _device->properties().name << "'");
-	_anyLaunch = true;
+	++_launched;
 
 	Launch* l = new Launch;
 
@@ -102,7 +102,7 @@ void CudaWorkerThread::launch(const std::string& module,
 
 void CudaWorkerThread::wait()
 {
-	if(!_anyLaunch) return;
+	if(!areAnyKernelsRunning()) return;
 
 	assert(_device != 0);
 	report("Waiting for all kernels to finish executing on device '"
@@ -119,8 +119,11 @@ void CudaWorkerThread::wait()
 
 	report(" received ack message " << reply);
 	assert(reply == &message);
-	
-	_anyLaunch = false;
+}
+
+bool CudaWorkerThread::areAnyKernelsRunning()
+{
+	return _launched - _finished > 0;
 }
 
 void CudaWorkerThread::execute()
@@ -145,6 +148,7 @@ void CudaWorkerThread::execute()
 				{
 					_launchNext();
 				}
+
 				threadSend(message);
 				break;
 			}
@@ -190,6 +194,8 @@ void CudaWorkerThread::_launchNext()
 		l.parameters.data(), l.parameters.size(), l.generators, l.externals);
 
 	report("  kernel '" << l.kernel << "' finished.");
+	
+	++_finished;
 	
 	_launches.pop();
 }

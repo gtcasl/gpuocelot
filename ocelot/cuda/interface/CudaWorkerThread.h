@@ -56,6 +56,9 @@ public:
 	/*! \brief Wait for all kernels that have been launched on this
 		device to complete */
 	void wait();
+	
+	/*! \brief Check if there are any running kernels */
+	bool areAnyKernelsRunning();
 
 public:
 	/*! \brief The entry point to the threaded function */
@@ -88,7 +91,8 @@ private:
 	
 private:
 	LaunchQueue        _launches;
-	bool               _anyLaunch;
+	unsigned int       _launched;
+	unsigned int       _finished;
 	executive::Device* _device;
 };
 

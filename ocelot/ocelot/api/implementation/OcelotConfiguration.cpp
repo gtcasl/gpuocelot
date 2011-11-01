@@ -336,10 +336,21 @@ api::OcelotConfiguration::OcelotConfiguration(
 	initialize(file);
 }
 
-//! \brief invokes initialize() on the previously parsed configuration object
-void *api::OcelotConfiguration::configuration() {
+//! \brief parses and returns configuration object
+void *api::OcelotConfiguration::configuration() const {
 	std::ifstream file(path.c_str());
-	return initialize(file, true);
+	hydrazine::json::Parser parser;
+	hydrazine::json::Object *config = 0;
+	try {
+		config = parser.parse_object(file);
+	}
+	catch (hydrazine::Exception exp) {
+		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
+			<< path << "', loading defaults.\n" << std::endl;
+			
+		std::cerr << "exception:\n" << exp.what() << std::endl;
+	}
+	return config;
 }
 
 void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) {

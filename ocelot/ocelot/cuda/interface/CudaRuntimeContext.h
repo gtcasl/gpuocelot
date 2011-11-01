@@ -107,7 +107,7 @@ namespace cuda {
 
 		void clearParameters();
 		void clear();
-		void mapParameters(const ir::Kernel* kernel);
+		unsigned int mapParameters(const ir::Kernel* kernel);
 	};
 	
 	typedef std::map< boost::thread::id, HostThreadContext > HostThreadContextMap;

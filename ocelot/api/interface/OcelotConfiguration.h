@@ -207,8 +207,8 @@ namespace api {
 		//! \brief initializes configuration object from a stream as JSON
 		void *initialize(std::istream &stream, bool preserve = false);
 		
-		//! \brief invokes initialize() on the previously parsed configuration object
-		void *configuration();
+		//! \brief parses and returns configuration object if need be
+		void *configuration() const;
 
     //! \brief gets singleton configuration object or 
     //	constructs from 'configure.ocelot'

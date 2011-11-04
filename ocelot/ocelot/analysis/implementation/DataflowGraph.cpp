@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE    0
 #define REPORT_CONVERT 0
 
 namespace analysis
@@ -105,7 +105,7 @@ namespace analysis
 					fi = ( i.*sources[ j ] ).array.begin(); 
 					fi != ( i.*sources[ j ] ).array.end(); ++fi )
 				{
-					if( fi->addressMode != ir::PTXOperand::Register )
+					if( !fi->isRegister() )
 					{
 						continue;
 					}
@@ -117,8 +117,7 @@ namespace analysis
 						RegisterPointer( &fi->reg, fi->type ) );
 				}
 			}			
-			else if( ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Register 
-				|| ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Indirect )
+			else if( ( i.*sources[ j ] ).isRegister() )
 			{
 				if( ( i.*sources[ j ] ).type == ir::PTXOperand::pred )
 				{
@@ -167,7 +166,7 @@ namespace analysis
 					fi =  ( i.*destinations[ j ] ).array.begin(); 
 					fi != ( i.*destinations[ j ] ).array.end(); ++fi )
 				{
-					if( fi->addressMode != ir::PTXOperand::Register )
+					if( !fi->isRegister() )
 					{
 						continue;
 					}
@@ -180,8 +179,7 @@ namespace analysis
 						RegisterPointer( &fi->reg, fi->type ) );
 				}
 			} 
-			else if( ( i.*destinations[ j ] ).addressMode 
-				== ir::PTXOperand::Register )
+			else if( ( i.*destinations[ j ] ).isRegister() )
 			{
 				if( ( i.*destinations[ j ] ).type == ir::PTXOperand::pred )
 				{

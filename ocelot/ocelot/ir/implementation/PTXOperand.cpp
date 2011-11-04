@@ -828,4 +828,8 @@ unsigned int ir::PTXOperand::bytes() const {
 	return bytes( type ) * vec;
 }
 
+bool ir::PTXOperand::isRegister() const {
+	return addressMode == Register || addressMode == Indirect;
+}
+
 

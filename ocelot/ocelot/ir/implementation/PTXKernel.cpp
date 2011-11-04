@@ -202,10 +202,7 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand = d.array.begin(); 
 							operand != d.array.end(); ++operand )
 						{
-							if( operand->addressMode
-								!= ir::PTXOperand::Register
-								&& operand->addressMode
-								!= ir::PTXOperand::Indirect) continue;
+							if( operand->isRegister() ) continue;
 							report( "   Added %r" << operand->reg );
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );
@@ -454,9 +451,8 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 					&& (instr.*operands[i]).condition == PTXOperand::PT) {
 					continue;
 				}
-				if ((instr.*operands[i]).addressMode == PTXOperand::Register
+				if ((instr.*operands[i]).isRegister()
 					|| (instr.*operands[i]).addressMode 
-					== PTXOperand::Indirect || (instr.*operands[i]).addressMode 
 					== PTXOperand::ArgumentList) {
 					if (!(instr.*operands[i]).array.empty()) {
 						for (PTXOperand::Array::iterator a_it = 
@@ -464,9 +460,7 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 							a_it != (instr.*operands[i]).array.end();
 							++a_it) {
 							
-							if( a_it->addressMode != ir::PTXOperand::Indirect
-							    && a_it->addressMode
-							    != ir::PTXOperand::Register ) continue;
+							if( !a_it->isRegister() ) continue;
 							
 							RegisterMap::iterator it =
 								map.find(a_it->registerName());

@@ -183,6 +183,7 @@ namespace ir {
 		std::string toString() const;
 		std::string registerName() const;
 		unsigned int bytes() const;
+		bool isRegister() const;
 
 		//! identifier of operand
 		std::string identifier;

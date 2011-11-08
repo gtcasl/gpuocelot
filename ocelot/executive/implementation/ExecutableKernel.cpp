@@ -35,7 +35,7 @@ ExecutableKernel::ExecutableKernel( const ir::IRKernel& k,
 	_constMemorySize( 0 ), _localMemorySize( 0 ), _globalLocalMemorySize( 0 ),
 	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _argumentMemorySize( 0 ),
-	_parameterMemorySize( 0 )
+	_parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
 {
 	mapArgumentOffsets();
 }
@@ -44,7 +44,7 @@ ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ),
 	_globalLocalMemorySize( 0 ),  _maxThreadsPerBlock( 16384 ),
 	_registerCount( 0 ), _sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
-	_argumentMemorySize( 0 ), _parameterMemorySize( 0 )
+	_argumentMemorySize( 0 ), _parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
 {
 	
 }
@@ -113,6 +113,17 @@ unsigned int ExecutableKernel::sharedMemorySize() const
 	return _sharedMemorySize; 
 }
 
+
+/*! \brief sets the cache configuration of the kernele */
+void ExecutableKernel::setCacheConfiguration(ExecutableKernel::CacheConfiguration config) {
+	_cacheConfiguration = config;
+}
+
+/*! \brief sets the cache configuration of the kernele */
+ExecutableKernel::CacheConfiguration ExecutableKernel::getCacheConfiguration() const {
+	return _cacheConfiguration;
+}
+
 unsigned int ExecutableKernel::externSharedMemorySize() const 
 { 
 	return _externSharedMemorySize; 
@@ -142,6 +153,41 @@ const ir::Dim3& ExecutableKernel::gridDim() const
 {
 	return _gridDim;
 }
+
+void ExecutableKernel::addTraceGenerator(
+	trace::TraceGenerator *generator) {
+	_generators.push_back(generator);
+}
+
+void ExecutableKernel::removeTraceGenerator(
+	trace::TraceGenerator *generator) {
+	TraceGeneratorVector temp = std::move(_generators);
+	for (TraceGeneratorVector::iterator gi = temp.begin(); 
+		gi != temp.end(); ++gi) {
+		if (*gi != generator) {
+			_generators.push_back(*gi);
+		}
+	}
+}
+
+void ExecutableKernel::initializeTraceGenerators() {
+
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->initialize(*this);
+	}
+}
+
+void ExecutableKernel::finalizeTraceGenerators() {
+
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->finish();
+	}
+}
+
 
 /*!
 	\brief compute parameter offsets for parameter data

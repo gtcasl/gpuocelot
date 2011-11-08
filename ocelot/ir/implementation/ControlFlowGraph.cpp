@@ -461,6 +461,8 @@ std::string ControlFlowGraph::toString( Edge::Type t ) {
 
 
 void ControlFlowGraph::clear() {
+	report("Clearing CFG");
+
 	for (iterator block = begin(); block != end(); ++block) {
 		block->clear();
 	}
@@ -468,8 +470,7 @@ void ControlFlowGraph::clear() {
 	_edges.clear();
 	
 	_entry = insert_block(BasicBlock("entry", 0));
-	_exit  = insert_block(BasicBlock("exit", 1));
-
+	_exit = insert_block(BasicBlock("exit", 1));
 	_nextId = 2;
 }
 

@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
@@ -112,7 +112,11 @@ void HyperblockAnalysis::analyze(ir::IRKernel& kernel)
 					}
 				}
 
-				if(allPredecessorsContained && noSuccessorsContained)
+				bool notEntryBlock = *block != _cfg->get_entry_block();
+
+				if(allPredecessorsContained
+					&& noSuccessorsContained
+					&& notEntryBlock)
 				{
 					report("   Added successor " << (*successor)->label
 						<< " (" << (*successor)->id << ")");

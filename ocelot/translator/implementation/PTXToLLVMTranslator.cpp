@@ -5223,14 +5223,40 @@ void PTXToLLVMTranslator::_translateShl( const ir::PTXInstruction& i )
 	
 	if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
 	{
+		ir::LLVMIcmp compare;
 		ir::LLVMTrunc truncate;
-		
-		truncate.a = _translate( i.b );
+
+		compare.d.name = _tempRegister();
+		compare.d.type.type = ir::LLVMInstruction::I1;
+		compare.d.type.category = ir::LLVMInstruction::Type::Element;
+		compare.comparison = ir::LLVMInstruction::Ult;
+		compare.a = _translate( i.b );
+		compare.b.type.type = ir::LLVMInstruction::I32;
+		compare.b.type.category = ir::LLVMInstruction::Type::Element;
+		compare.b.constant = true;
+		compare.b.i32 = USHRT_MAX;
+
+		_add(compare);
+
+		ir::LLVMSelect select;
+
+		select.d.name = _tempRegister();
+		select.d.type.type = ir::LLVMInstruction::I32;
+		select.d.type.category = ir::LLVMInstruction::Type::Element;
+
+		select.condition = compare.d;
+		select.a = compare.a;
+		select.b = compare.b;
+
+		_add(select);
+
+		truncate.a = select.d;
+
 		truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
 			shift.a.type );
 
 		shift.b = truncate.d;
-		
+
 		_add( truncate );
 	}
 	else if( ir::PTXOperand::bytes(i.b.type) 
@@ -5262,8 +5288,33 @@ void PTXToLLVMTranslator::_translateShr( const ir::PTXInstruction& i )
 	if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
 	{
 		ir::LLVMTrunc truncate;
-		
-		truncate.a = _translate( i.b );
+		ir::LLVMIcmp compare;	
+
+		compare.d.name = _tempRegister();
+		compare.d.type.type = ir::LLVMInstruction::I1;
+		compare.d.type.category = ir::LLVMInstruction::Type::Element;
+		compare.comparison = ir::LLVMInstruction::Ult;
+		compare.a = _translate( i.b );
+		compare.b.type.type = ir::LLVMInstruction::I32;
+		compare.b.type.category = ir::LLVMInstruction::Type::Element;
+		compare.b.constant = true;
+		compare.b.i32 = USHRT_MAX;
+
+		_add(compare);
+
+		ir::LLVMSelect select;
+
+		select.d.name = _tempRegister();
+		select.d.type.type = ir::LLVMInstruction::I32;
+		select.d.type.category = ir::LLVMInstruction::Type::Element;
+
+		select.condition = compare.d;
+		select.a = compare.a;
+		select.b = compare.b;
+
+		_add(select);
+
+		truncate.a  = select.d;
 		truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
 			a.type );
 

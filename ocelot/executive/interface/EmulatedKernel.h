@@ -68,11 +68,6 @@ namespace executive {
 		TextureVector textureReferences() const;
 
 	public:
-		/*!	adds a trace generator to the EmulatedKernel */
-		void addTraceGenerator(trace::TraceGenerator *generator);
-		
-		/*!	removes a trace generator from an EmulatedKernel */
-		void removeTraceGenerator(trace::TraceGenerator *generator);
 
 		/*! sets an external function table for the emulated kernel */
 		void setExternalFunctionSet(const ir::ExternalFunctionSet& s);

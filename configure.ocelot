@@ -35,6 +35,7 @@
 		warpSize: 4
 	},
 	optimizations: {
+		hyperblockFormation: true,
 		subkernelSize: 1000,
 		programStructureType: "default"
 	},

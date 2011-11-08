@@ -321,6 +321,9 @@ static void initializeOptimizations(
 	optimizations.syncElimination =
 		config.parse<bool>("syncElimination", false);			
 
+	optimizations.hyperblockFormation =
+		config.parse<bool>("hyperblockFormation", false);			
+
 	optimizations.programStructureType =
 		config.parse<std::string>("programStructureType", "default");			
 }

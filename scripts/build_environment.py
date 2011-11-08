@@ -366,7 +366,8 @@ def defineConfigFlags(env):
 		+ ' -DPACKAGE="\\"ocelot\\""' \
 		+ ' -DVERSION="\\"' + env['VERSION'] + '\\""' \
 		+ ' -DOCELOT_PREFIX_PATH="\\"' + fixPath(env['INSTALL_PATH']) + '\\""' \
-		+ ' -DOCELOT_LDFLAGS="\\"' + fixPath(env['OCELOT_LDFLAGS']) + '\\""' \
+		+ ' -DOCELOT_LDFLAGS="\\"' + fixPath(env['OCELOT_LDFLAGS']) + ' -L' \
+			+ fixPath(library_path) + '\\""' \
 		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ fixPath(include_path) + '\\""' \
 		+ ' -DOCELOT_LIB_PATH="\\"' + fixPath(library_path) + '\\""' \
 		+ ' -DOCELOT_BIN_PATH="\\"' + fixPath(bin_path) + '\\""'

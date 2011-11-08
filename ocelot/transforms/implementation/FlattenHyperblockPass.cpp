@@ -18,7 +18,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -36,7 +36,7 @@ void FlattenHyperblockPass::initialize(const ir::Module& m)
 
 static ir::Instruction::RegisterType getNextRegisterId(ir::IRKernel& k)
 {
-	auto ptx = static_cast<ir::PTXKernel&>(k);
+	ir::PTXKernel& ptx = static_cast<ir::PTXKernel&>(k);
 	
 	auto usedRegisters = ptx.getReferencedRegisters();
 	
@@ -63,6 +63,9 @@ void FlattenHyperblockPass::runOnKernel(ir::IRKernel& k)
 	analysis::HyperblockAnalysis& hyperblockGraph =
 		*static_cast<analysis::HyperblockAnalysis*>(a);
 	
+	report(" \"" << k.name << "\"  has "
+		<< k.cfg()->size() << " basic blocks.");
+	
 	for(auto block = hyperblockGraph.begin();
 		block != hyperblockGraph.end(); ++block)
 	{
@@ -70,6 +73,10 @@ void FlattenHyperblockPass::runOnKernel(ir::IRKernel& k)
 	}
 	
 	invalidateAnalysis(analysis::Analysis::HyperblockAnalysis);
+
+	report(" \"" << k.name << "\"  has "
+		<< k.cfg()->size() << " basic blocks.");
+
 }
 
 void FlattenHyperblockPass::finalize()
@@ -119,7 +126,8 @@ static FlattenHyperblockPass::PredicateEquation getEquation(
 	for(auto instruction = block->instructions.rbegin();
 		instruction != block->instructions.rend(); ++instruction)
 	{
-		auto ptx = static_cast<const ir::PTXInstruction&>(**instruction);
+		const ir::PTXInstruction& ptx = static_cast<const ir::PTXInstruction&>(
+			**instruction);
 		
 		if(ptx.isBranch())
 		{
@@ -168,7 +176,8 @@ static void sinkSideExits(ir::ControlFlowGraph::iterator block)
 	for(auto instruction = block->instructions.begin();
 		instruction != block->instructions.end(); ++instruction)
 	{
-		auto ptx = static_cast<const ir::PTXInstruction&>(**instruction);
+		const ir::PTXInstruction& ptx = static_cast<const ir::PTXInstruction&>(
+			**instruction);
 	
 		if(ptx.isBranch()) branches.push_back(instruction);
 	}
@@ -351,6 +360,7 @@ void FlattenHyperblockPass::_flattenBlock(
 				cfg.insert_edge(*edge);
 			}
 			
+			report("   removing BB_" << bb->id);
 			cfg.remove_block(*(bb_iterator) bb);
 		}
 	}

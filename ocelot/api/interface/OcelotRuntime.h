@@ -18,6 +18,7 @@
 #include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
 #include <ocelot/transforms/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/FlattenHyperblockPass.h>
 
 namespace ocelot
 {
@@ -33,6 +34,7 @@ namespace ocelot
 		transforms::LinearScanRegisterAllocationPass _linearScanAllocation;
 		transforms::MIMDThreadSchedulingPass _mimdThreadScheduling;
 		transforms::SyncEliminationPass _syncElimination;
+		transforms::FlattenHyperblockPass _flattenHyperblocks;
 		
 		bool _initialized;
 		

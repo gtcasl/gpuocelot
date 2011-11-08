@@ -22,16 +22,17 @@ INFO       /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCa
 INFO       /home/normal/checkout/vliw-ocelot/.debug_build/TestExternalFunctions
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCall 
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTextureArray 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCall
-INFO     Test completed in 0.173993110657 seconds
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestKernels 
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCalVectorScale 
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCalVectorScale
+INFO     Test completed in 0.16105890274 seconds
 INFO      It produced the following output:
+No CAL devices found
 Pass/Fail : Pass
 
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestKernels 
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMKernels 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestKernels
-INFO     Test completed in 0.252452135086 seconds
+INFO     Test completed in 0.403760910034 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -41,8 +42,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1319027106
-Test time : 0.213049
+Test Seed : 1320674545
+Test time : 0.273376
 
 Status : Test output:
 looping kernel succeeded
@@ -50,43 +51,9 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestLexer -i ../../trunk/tests/ptx 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestLexer
-INFO     Test completed in 0.0303170681 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1319027106
-Test time : 7.62939e-05
-
-Status : 
-
-
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCalVectorScale 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCalVectorScale
-INFO     Test completed in 0.0342609882355 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMKernels 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMKernels
-INFO     Test completed in 0.218842983246 seconds
-INFO      It produced the following output:
-TestLLVMKernels: ocelot/executive/implementation/LLVMModuleManager.cpp:1212: executive::LLVMModuleManager::KernelAndTranslation::MetaData* executive::LLVMModuleManager::KernelAndTranslation::metadata(): Assertion `false' failed.
-(0.193891) LLVMModuleManager.cpp:1212: Assertion message: LLVM support not compiled into ocelot.
-
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestParser -i ../../trunk/tests/ptx 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestParser
-INFO     Test completed in 0.0562660694122 seconds
+INFO     Test completed in 0.0817549228668 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -99,35 +66,43 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1319027106
-Test time : 7.62939e-05
+Test Seed : 1320674545
+Test time : 0.000113249
 
 Status : 
 
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestExternalFunctions 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestExternalFunctions
-INFO     Test completed in 0.0789260864258 seconds
+INFO     Test completed in 0.124782085419 seconds
 INFO      It produced the following output:
-TestExternalFunctions: ocelot/ir/implementation/ExternalFunctionSet.cpp:371: void ir::ExternalFunctionSet::ExternalFunction::call(void*, const ir::PTXKernel::Prototype&): Assertion `false' failed.
-(0.041136) ExternalFunctionSet.cpp:371:  Assertion message: LLVM required to call external host functions from PTX.
+==Ocelot== Ocelot PTX Emulator failed to run kernel "kernel" with exception: 
+==Ocelot== [PC 3] [thread 0] [cta 0] st.global.u64 [%r1], %r0 - Global memory access 0 is not within any allocated or mapped range.
+==Ocelot== 
+==Ocelot== Nearby Device Allocations
+==Ocelot== [0x10ffb00] - [0x10ffb08] (8 bytes)
+==Ocelot== 
+==Ocelot== Near :0:0
+==Ocelot== 
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  [PC 3] [thread 0] [cta 0] st.global.u64 [%r1], %r0 - Global memory access 0 is not within any allocated or mapped range.
+
+Nearby Device Allocations
+[0x10ffb00] - [0x10ffb08] (8 bytes)
+
+Near :0:0
+
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaGlobals 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTextureArray
-INFO     Test completed in 0.95768904686 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestDataflowGraph -i ../../trunk/tests/ptx 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaGlobals
-INFO     Test completed in 0.151903867722 seconds
+INFO     Test completed in 0.226593017578 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
 Pass/Fail : Pass
 
-INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXAssembly 
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestDataflowGraph -i ../../trunk/tests/ptx 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestDataflowGraph
-INFO     Test completed in 0.065997838974 seconds
+INFO     Test completed in 0.0744650363922 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -142,8 +117,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1319027107
-Test time : 0.00880575
+Test Seed : 1320674546
+Test time : 0.000109434
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -154,9 +129,58 @@ Testing SSA then back Dataflow
 
 
 
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXAssembly 
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMKernels
+INFO     Test completed in 2.42303514481 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLLVMKernels
+
+Description: A unit test for the LLVM executive runtime. Test Points: 1) 
+             Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
+
+
+Test Seed : 1320674545
+Test time : 2.31417
+
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
+
+
+
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaMalloc 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaMalloc
-INFO     Test completed in 1.70655894279 seconds
+INFO     Test completed in 1.9093708992 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -175,7 +199,7 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestEmulator 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestEmulator
-INFO     Test completed in 0.10099196434 seconds
+INFO     Test completed in 0.161520004272 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -185,8 +209,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1319027108
-Test time : 0.0682468
+Test Seed : 1320674549
+Test time : 0.0882413
 
 Status : Test output:
 10 registers
@@ -200,7 +224,7 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestDeviceSwitching 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestDeviceSwitching
-INFO     Test completed in 0.0926918983459 seconds
+INFO     Test completed in 0.243658781052 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -219,8 +243,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1319027108
-Test time : 0.0614624
+Test Seed : 1320674550
+Test time : 0.114309
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -230,7 +254,7 @@ Test Point 3 Passed
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMInstructions
-INFO     Test completed in 0.0375640392303 seconds
+INFO     Test completed in 0.0802149772644 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -244,8 +268,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1319027109
-Test time : 0.00690842
+Test Seed : 1320674550
+Test time : 0.00888109
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -377,20 +401,148 @@ Zext Instruction Passed
 
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestFunctionCall 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestFunctionCall
-INFO     Test completed in 0.0978529453278 seconds
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXAssembly
+INFO     Test completed in 4.23610711098 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+Pass/Fail : Fail
+
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1320674546
+Test time : 4.12717
+
+Status : Ran 'TestVectorElements-u32' for 1 iterations.
+Ran 'TestAdd-u16' for 1 iterations.
+Ran 'TestAdd-s16' for 2 iterations.
+Ran 'TestAdd-u32' for 2 iterations.
+Ran 'TestAdd-s32' for 2 iterations.
+Ran 'TestAdd-s32-sat' for 2 iterations.
+Ran 'TestAdd-u64' for 1 iterations.
+Ran 'TestAdd-s64' for 2 iterations.
+Ran 'TestSub-u16' for 1 iterations.
+Ran 'TestSub-s16' for 2 iterations.
+Ran 'TestSub-u32' for 1 iterations.
+Ran 'TestSub-s32' for 1 iterations.
+Ran 'TestSub-s32-sat' for 2 iterations.
+Ran 'TestSub-u64' for 1 iterations.
+Ran 'TestSub-s64' for 2 iterations.
+Ran 'TestSub-Carry-s32' for 1 iterations.
+Ran 'TestSub-Carry-u32' for 1 iterations.
+Ran 'TestAdd-Carry-s32' for 1 iterations.
+Ran 'TestAdd-Carry-u32' for 1 iterations.
+Ran 'TestMul-Lo-u16' for 1 iterations.
+Ran 'TestMul-Hi-u16' for 2 iterations.
+Ran 'TestMul-Wide-u16' for 1 iterations.
+Ran 'TestMul-Lo-s16' for 1 iterations.
+Ran 'TestMul-Hi-s16' for 2 iterations.
+Ran 'TestMul-Wide-s16' for 1 iterations.
+Ran 'TestMul-Lo-u32' for 1 iterations.
+Ran 'TestMul-Hi-u32' for 2 iterations.
+Ran 'TestMul-Wide-u32' for 1 iterations.
+Ran 'TestMul-Lo-s32' for 2 iterations.
+Ran 'TestMul-Hi-s32' for 1 iterations.
+Ran 'TestMul-Wide-s32' for 2 iterations.
+Ran 'TestMul-Lo-u64' for 1 iterations.
+Ran 'TestMul-Hi-u64' for 1 iterations.
+Ran 'TestMul-Lo-s64' for 2 iterations.
+Ran 'TestMul-Hi-s64' for 2 iterations.
+Ran 'TestMad-Lo-u16' for 1 iterations.
+Ran 'TestMad-Hi-u16' for 1 iterations.
+Ran 'TestMad-Wide-u16' for 1 iterations.
+Ran 'TestMad-Lo-s16' for 2 iterations.
+Ran 'TestMad-Hi-s16' for 2 iterations.
+Ran 'TestMad-Wide-s16' for 2 iterations.
+Ran 'TestMad-Lo-u32' for 1 iterations.
+Ran 'TestMad-Hi-u32' for 2 iterations.
+Ran 'TestMad-Wide-u32' for 2 iterations.
+Ran 'TestMad-Lo-s32' for 2 iterations.
+Ran 'TestMad-Hi-s32' for 2 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 2 iterations.
+Ran 'TestMad-Wide-s32' for 2 iterations.
+Ran 'TestMad-Lo-u64' for 2 iterations.
+Ran 'TestMad-Hi-u64' for 2 iterations.
+Ran 'TestMad-Lo-s64' for 2 iterations.
+Ran 'TestMad-Hi-s64' for 2 iterations.
+Ran 'TestSad-u16' for 2 iterations.
+Ran 'TestSad-s16' for 2 iterations.
+Ran 'TestSad-u32' for 2 iterations.
+Ran 'TestSad-s32' for 2 iterations.
+Ran 'TestSad-u64' for 2 iterations.
+Ran 'TestSad-s64' for 2 iterations.
+Ran 'TestDiv-u16' for 2 iterations.
+Ran 'TestDiv-s16' for 2 iterations.
+Ran 'TestDiv-u32' for 2 iterations.
+Ran 'TestDiv-s32' for 2 iterations.
+Ran 'TestDiv-u64' for 2 iterations.
+Ran 'TestDiv-s64' for 2 iterations.
+Ran 'TestRem-u16' for 2 iterations.
+Ran 'TestRem-s16' for 2 iterations.
+Ran 'TestRem-u32' for 2 iterations.
+Ran 'TestRem-s32' for 2 iterations.
+Ran 'TestRem-u64' for 2 iterations.
+Ran 'TestRem-s64' for 2 iterations.
+Ran 'TestAbs-s16' for 2 iterations.
+Ran 'TestAbs-s32' for 2 iterations.
+Ran 'TestAbs-s64' for 2 iterations.
+Ran 'TestNeg-s16' for 2 iterations.
+Ran 'TestNeg-s32' for 2 iterations.
+Ran 'TestNeg-s64' for 2 iterations.
+Ran 'TestMax-u16' for 2 iterations.
+Ran 'TestMax-u32' for 2 iterations.
+Ran 'TestMax-u64' for 2 iterations.
+Ran 'TestMax-s16' for 2 iterations.
+Ran 'TestMax-s32' for 2 iterations.
+Ran 'TestMax-s64' for 2 iterations.
+Ran 'TestMin-u16' for 2 iterations.
+Ran 'TestMin-u32' for 2 iterations.
+Ran 'TestMin-u64' for 2 iterations.
+Ran 'TestMin-s16' for 2 iterations.
+Ran 'TestMin-s32' for 2 iterations.
+Ran 'TestMin-s64' for 2 iterations.
+Ran 'TestPopc-b32' for 2 iterations.
+Ran 'TestPopc-b64' for 2 iterations.
+Ran 'TestClz-b32' for 2 iterations.
+Ran 'TestClz-b64' for 2 iterations.
+Ran 'TestBfind-u32' for 2 iterations.
+Ran 'TestBfind-u64' for 2 iterations.
+Ran 'TestBfind-s32' for 2 iterations.
+Ran 'TestBfind-s64' for 2 iterations.
+Ran 'TestBfind-shiftamount-u32' for 2 iterations.
+Ran 'TestBfind-shiftamount-u64' for 2 iterations.
+Ran 'TestBfind-shiftamount-s32' for 2 iterations.
+Ran 'TestBfind-shiftamount-s64' for 2 iterations.
+Ran 'TestBrev-b32' for 1 iterations.
+Ran 'TestBrev-b64' for 2 iterations.
+Ran 'TestBfi-b32' for 2 iterations.
+Ran 'TestBfi-b64' for 2 iterations.
+Ran 'TestPrmt-b32' for 2 iterations.
+Ran 'TestPrmt-f4e-b32' for 2 iterations.
+Ran 'TestPrmt-b4e-b32' for 1 iterations.
+Ran 'TestPrmt-rc8-b32' for 2 iterations.
+Ran 'TestPrmt-ecl-b32' for 1 iterations.
+Ran 'TestPrmt-ecr-b32' for 2 iterations.
+Ran 'TestPrmt-rc16-b32' for 2 iterations.
+Test 'TestCall-Uni' (seed 1320674546): failed, output parameter 0 (I32) computed value - 0 does not match reference value - 378460290
+  On device - 0 - 'Ocelot PTX Emulator'
+Test 'TestCall-Uni' seed '1320674546' failed.
+
+
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTexture2D 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTexture2D
-INFO     Test completed in 0.817674160004 seconds
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestFunctionCall
+INFO     Test completed in 0.221315145493 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+Error[ 5 ] - expected 25.000000, got 0.000000
+Pass/Fail : Fail
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestInstructions 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestInstructions
-INFO     Test completed in 0.145437955856 seconds
+INFO     Test completed in 0.181022167206 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -400,8 +552,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1319027110
-Test time : 0.042455
+Test Seed : 1320674550
+Test time : 0.0380418
 
 Status : Test output:
 Accessors test passed.
@@ -418,13 +570,13 @@ pass: predicated Add and Ld isntructions
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaSequence 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaSequence
-INFO     Test completed in 0.16628909111 seconds
+INFO     Test completed in 0.212028980255 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXToLLVMTranslator -i ../../trunk/tests/ptx 
 INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0443000793457 seconds
+INFO     Test completed in 0.066036939621 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -437,38 +589,78 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1319027110
-Test time : 8.15392e-05
+Test Seed : 1320674550
+Test time : 7.98702e-05
 
 Status : 
 
 
-INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXAssembly
-INFO     Test completed in 11.2795269489 seconds
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestLexer -i ../../trunk/tests/ptx 
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestLexer
+INFO     Test completed in 0.0655488967896 seconds
 INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1320674551
+Test time : 8.24928e-05
+
+Status : 
+
+
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCall 
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTexture2D
+INFO     Test completed in 0.83823800087 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTextureArray 
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCall
+INFO     Test completed in 0.234238147736 seconds
+INFO      It produced the following output:
+Error[1] - expected: 3, got: 0
+Error[2] - expected: 8, got: 0
+Error[3] - expected: 15, got: 0
+Error[4] - expected: 8, got: 0
+Error[5] - expected: 15, got: 0
+Error[6] - expected: 24, got: 0
+FAILED
+ with 6 errors
+
+INFO     Test /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTextureArray
+INFO     Test completed in 0.492443084717 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
 
 INFO     
 Passing tests:
- (0.152s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaGlobals : Passed
- (0.093s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestDeviceSwitching : Passed
- (0.056s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestParser : Passed
- (0.818s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTexture2D : Passed
- (0.958s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTextureArray : Passed
- (0.145s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestInstructions : Passed
- (0.044s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
- (1.707s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaMalloc : Passed
- (0.038s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMInstructions : Passed
- (0.101s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestEmulator : Passed
- (0.098s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestFunctionCall : Passed
- (0.166s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaSequence : Passed
- (0.034s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCalVectorScale : Passed
- (0.252s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestKernels : Passed
- (0.174s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCall : Passed
- (0.030s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestLexer : Passed
- (0.066s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestDataflowGraph : Passed
+ (0.227s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaGlobals : Passed
+ (0.244s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestDeviceSwitching : Passed
+ (0.082s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestParser : Passed
+ (0.838s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTexture2D : Passed
+ (0.492s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaTextureArray : Passed
+ (0.181s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestInstructions : Passed
+ (0.066s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
+ (1.909s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaMalloc : Passed
+ (0.080s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMInstructions : Passed
+ (0.162s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestEmulator : Passed
+ (0.212s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCudaSequence : Passed
+ (0.161s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestCalVectorScale : Passed
+ (2.423s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMKernels : Passed
+ (0.404s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestKernels : Passed
+ (0.066s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestLexer : Passed
+ (0.074s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestDataflowGraph : Passed
 
 Failing tests:
- (11.280s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXAssembly : Did not complete.
- (0.219s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestLLVMKernels : Did not complete.
- (0.079s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestExternalFunctions : Did not complete.
+ (4.236s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestPTXAssembly : Failed
+ (0.234s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestIndirectFunctionCall : Failed
+ (0.221s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestFunctionCall : Failed
+ (0.125s) : /home/normal/checkout/vliw-ocelot/.debug_build/TestExternalFunctions : Did not complete.
 

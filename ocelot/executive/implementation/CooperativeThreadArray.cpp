@@ -41,7 +41,7 @@
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 0
-#define REPORT_DYNAMIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1

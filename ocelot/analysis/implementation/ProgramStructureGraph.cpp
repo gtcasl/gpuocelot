@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_ITERATORS 0
 
 namespace analysis

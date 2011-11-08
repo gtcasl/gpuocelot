@@ -7,10 +7,6 @@
 #ifndef IR_CONTROL_FLOW_GRAPH_H
 #define IR_CONTROL_FLOW_GRAPH_H
 
-// Ocelot Includes
-#include <ocelot/ir/interface/Instruction.h>
-
-// Standard Library Includes
 #include <iostream>
 #include <deque>
 #include <vector>
@@ -18,6 +14,8 @@
 #include <unordered_map>
 
 namespace ir {
+
+class Instruction;
 
 /*! \brief A basic block contains a series of instructions 
 	terminated by control flow */
@@ -353,7 +351,7 @@ private:
 	iterator _entry;
 	iterator _exit;
 	
-	BasicBlock::Id                _nextId;
+	BasicBlock::Id _nextId;
 };
 
 }

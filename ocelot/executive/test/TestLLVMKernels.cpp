@@ -14,6 +14,8 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 
+#include <configure.h>
+
 // Standard Library Includes
 #include <cmath>
 

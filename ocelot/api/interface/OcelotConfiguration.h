@@ -191,6 +191,9 @@ namespace api {
 			/*! \brief Sync elimination pass */
 			bool syncElimination;
 			
+			/*! \brief Hyperblock formation pass */
+			bool hyperblockFormation;
+			
 			/*! \brief The type of program structure to use */
 			std::string programStructureType;
 		};

@@ -208,8 +208,7 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand = d.array.begin(); 
 							operand != d.array.end(); ++operand )
 						{
-							if( operand->addressMode
-								!= ir::PTXOperand::Register ) continue;
+							if( operand->isRegister() ) continue;
 							report( "   Added %r" << operand->reg );
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );
@@ -295,8 +294,14 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 			}
 			
 			block->label = statement.name;
+			block->comment = statement.instruction.metadata;
+			
+			report( "Added block with label " << block->label << ", comment "
+				<< block->comment );
+			
 			assertM( blocksByLabel.count( block->label ) == 0, 
-				"Duplicate blocks with label " << block->label )
+				"Duplicate blocks with label " << block->label << ", comment "
+				<< block->comment )
 			blocksByLabel.insert( std::make_pair( block->label, block ) );
 		}
 		else if( statement.directive == PTXStatement::Instr ) 
@@ -452,19 +457,16 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 					&& (instr.*operands[i]).condition == PTXOperand::PT) {
 					continue;
 				}
-				if ((instr.*operands[i]).addressMode == PTXOperand::Register
+				if ((instr.*operands[i]).isRegister()
 					|| (instr.*operands[i]).addressMode 
-					== PTXOperand::Indirect || (instr.*operands[i]).addressMode 
 					== PTXOperand::ArgumentList) {
-					if ((instr.*operands[i]).vec != PTXOperand::v1
-						|| (instr.*operands[i]).addressMode
-						== PTXOperand::ArgumentList) {
+					if (!(instr.*operands[i]).array.empty()) {
 						for (PTXOperand::Array::iterator a_it = 
 							(instr.*operands[i]).array.begin(); 
-							a_it != (instr.*operands[i]).array.end(); ++a_it) {
-							if (a_it->addressMode ==
-								PTXOperand::Address) continue;
+							a_it != (instr.*operands[i]).array.end();
+							++a_it) {
 							
+							if( !a_it->isRegister() ) continue;
 							
 							RegisterMap::iterator it =
 								map.find(a_it->registerName());
@@ -492,7 +494,8 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 							}
 						}
 					}
-					else {
+					else if((instr.*operands[i]).addressMode 
+					    != PTXOperand::ArgumentList) {
 						RegisterMap::iterator it 
 							= map.find((instr.*operands[i]).registerName());
 
@@ -651,7 +654,7 @@ void PTXKernel::write(std::ostream& stream) const
 					stream << ")";
 				}
 				
-				stream << " _ (";
+				stream << " " << indCall->first << " (";
 				unsigned int n = 0;
 				for (ir::PTXOperand::Array::const_iterator
 					arg_it = indCall->second->b.array.begin();
@@ -694,11 +697,7 @@ void PTXKernel::write(std::ostream& stream) const
 					static_cast<PTXInstruction&>(**instruction);
 				
 				report(" " << (*instruction)->toString());
-				stream << "\t\t" << (*instruction)->toString() << ";";
-				
-				if(!ptx.metadata.empty()) stream << " " << ptx.metadata;
-				
-				stream << "\n";
+				stream << "\t\t" << (*instruction)->toString() << "; " << ptx.metadata << "\n";
 			}
 		}
 		
@@ -727,7 +726,7 @@ void PTXKernel::canonicalBlockLabels(int kernelID) {
 		ss << block->id;
 		ss.width(0);
 		labelMap[block->label] = ss.str();
-		block->comment = block->label;
+		if(block->comment.empty()) block->comment = "/*" + block->label + "*/";
 		block->label = ss.str();
 	}
 	

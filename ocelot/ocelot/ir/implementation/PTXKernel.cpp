@@ -202,7 +202,7 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand = d.array.begin(); 
 							operand != d.array.end(); ++operand )
 						{
-							if( operand->isRegister() ) continue;
+							if( !operand->isRegister() ) continue;
 							report( "   Added %r" << operand->reg );
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );

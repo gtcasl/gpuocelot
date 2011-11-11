@@ -526,6 +526,9 @@ cuda::CudaRuntime::CudaRuntime() :
 }
 
 cuda::CudaRuntime::~CudaRuntime() {
+	// wait for all devices to finish
+	_wait();
+
 	//
 	// free things that need freeing
 	//

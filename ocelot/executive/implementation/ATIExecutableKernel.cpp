@@ -397,14 +397,14 @@ namespace executive
 		CalDriver()->calResMap((CALvoid **)&cb1, &pitch, *_cb1Resource, flags);
 
 		int i = 0;
-		ParameterVector::const_iterator it;
-		for (it = arguments.begin(); it != arguments.end(); it++) {
+		for (ParameterVector::const_iterator it = arguments.begin();
+                it != arguments.end(); it++) {
+
 			report("Updating argument " << it->name <<
 					", type " << ir::PTXOperand::toString(it->type) <<
 					", array size " << it->arrayValues.size());
 
-			unsigned int j;
-			for (j = 0 ; j < it->arrayValues.size() ; j++)
+			for (unsigned int j = 0 ; j < it->arrayValues.size() ; j++)
 			{
 				ir::Parameter::ValueType v = it->arrayValues[j];
 

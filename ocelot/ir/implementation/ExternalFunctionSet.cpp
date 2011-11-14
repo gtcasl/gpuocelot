@@ -313,7 +313,7 @@ static llvm::Function* jitFunction(
 		std::string string;
 		llvm::raw_string_ostream message(string);
 		message << "LLVM Parser failed: ";
-		error.Print(kernel.name.c_str(), message);
+		error.print(kernel.name.c_str(), message);
 
 		throw hydrazine::Exception(message.str());
 	}

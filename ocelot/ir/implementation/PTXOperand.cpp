@@ -53,7 +53,7 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 		case ntid:         return "%ntid";         break;
 		case laneId:       return "%laneid";       break;
 		case warpId:       return "%warpid";       break;
-		case nwarpId:      return "%nwarpid";       break;
+		case nwarpId:      return "%nwarpid";      break;
 		case warpSize:     return "WARP_SZ";       break;
 		case ctaId:        return "%ctaid";        break;
 		case nctaId:       return "%nctaid";       break;
@@ -110,13 +110,15 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 
 std::string ir::PTXOperand::toString( AddressMode mode ) {
 	switch( mode ) {
-		case Register:  return "Register";  break;
-		case Indirect:  return "Indirect";  break;
-		case Immediate: return "Immediate"; break;
-		case Address:   return "Address";   break;
-		case Label:     return "Label";     break;
-		case Special:   return "Special";   break;
-		case BitBucket: return "BitBucket"; break;
+		case Register:     return "Register";     break;
+		case Indirect:     return "Indirect";     break;
+		case Immediate:    return "Immediate";    break;
+		case Address:      return "Address";      break;
+		case Label:        return "Label";        break;
+		case Special:      return "Special";      break;
+		case BitBucket:    return "BitBucket";    break;
+		case ArgumentList: return "ArgumentList"; break;
+		case FunctionName: return "FunctionName"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -652,7 +654,9 @@ std::string ir::PTXOperand::toString() const {
 		}
 	
 		if( offset < 0 ) {
-			stream << " - " << ( offset );
+			// The NVIDIA driver does not support 
+			//   '- offset' it needs '+ -offset'
+			stream << " + " << ( offset );
 		} else if ( offset > 0 ) {
 			stream << " + " << ( offset );
 		}
@@ -725,7 +729,7 @@ std::string ir::PTXOperand::toString() const {
 		for( Array::const_iterator fi = array.begin(); 
 			fi != array.end(); ++fi ) {
 			result += fi->toString();
-			if( fi != --array.end() ) {
+			if( std::next(fi) != array.end() ) {
 				result += ", ";
 			}
 		}
@@ -821,6 +825,10 @@ std::string ir::PTXOperand::registerName() const {
 
 unsigned int ir::PTXOperand::bytes() const {
 	return bytes( type ) * vec;
+}
+
+bool ir::PTXOperand::isRegister() const {
+	return addressMode == Register || addressMode == Indirect;
 }
 
 

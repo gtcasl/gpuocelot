@@ -790,7 +790,7 @@ namespace executive
 		{
 			Throw("Invalid event - " << handle);
 		}
-		return true;	
+		return true;
 	}
 	
 	void EmulatorDevice::recordEvent(unsigned int handle, unsigned int sHandle)

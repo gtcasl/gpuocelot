@@ -54,6 +54,8 @@ public:
 	typedef std::vector<ConstPointer>       ConstBlockPointerVector;
 	typedef std::vector<EdgeList::iterator> EdgePointerVector;
 	typedef std::list<Instruction*>         InstructionList;
+	typedef InstructionList::iterator       instruction_iterator;
+	typedef InstructionList::const_iterator const_instruction_iterator;
 	typedef unsigned int                    Id;
 
 public:

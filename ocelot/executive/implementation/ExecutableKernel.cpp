@@ -154,6 +154,41 @@ const ir::Dim3& ExecutableKernel::gridDim() const
 	return _gridDim;
 }
 
+void ExecutableKernel::addTraceGenerator(
+	trace::TraceGenerator *generator) {
+	_generators.push_back(generator);
+}
+
+void ExecutableKernel::removeTraceGenerator(
+	trace::TraceGenerator *generator) {
+	TraceGeneratorVector temp = std::move(_generators);
+	for (TraceGeneratorVector::iterator gi = temp.begin(); 
+		gi != temp.end(); ++gi) {
+		if (*gi != generator) {
+			_generators.push_back(*gi);
+		}
+	}
+}
+
+void ExecutableKernel::initializeTraceGenerators() {
+
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->initialize(*this);
+	}
+}
+
+void ExecutableKernel::finalizeTraceGenerators() {
+
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->finish();
+	}
+}
+
+
 /*!
 	\brief compute parameter offsets for parameter data
 */

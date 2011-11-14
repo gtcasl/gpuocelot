@@ -79,9 +79,10 @@ static int printfWrapper(size_t string, size_t parameters)
 			}
 			else if (*f == 's')
 			{
+				parameters = align(parameters, sizeof(long long unsigned int));
 				std::string temp(*(const char**)parameters);
 				result += temp;
-				parameters += sizeof(const char*);
+				parameters += sizeof(long long unsigned int); // gpus use 64-bit
 			}
 			else if (*f == 'u')
 			{
@@ -89,11 +90,12 @@ static int printfWrapper(size_t string, size_t parameters)
 			}
 			else if (*f == 'x')
 			{
-				parse<unsigned>(result, parameters, std::hex);			
+				parse<unsigned>(result, parameters, std::hex);
 			}
 			else if (*f == 'p')
 			{
-				parse<void*>(result, parameters);			
+				parse<void*>(result, parameters);
+				parameters += sizeof(long long unsigned int) - sizeof(void*);
 			}
 			else
 			{

@@ -36,7 +36,7 @@
 #endif
 
 #define REPORT_BASE 0
-#define REPORT_ALL_CALLS 0
+#define REPORT_ALL_CALLS 1
 
 ////////////////////////////////////////////////////////////////////////////////
 // Dynamic linking

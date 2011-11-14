@@ -10,6 +10,8 @@
 import os
 import inspect
 
+enableKernelExtractor = False
+
 ## Hepler functions
 def config_h_build(target, source, env):
 
@@ -144,6 +146,33 @@ env.Depends(OcelotHarness, libocelot)
 CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
 env.Depends(CFG, libocelot)
 
+if enableKernelExtractor and os.name != 'nt':
+	print "Adding kernelExtractorLib"
+		
+	kernelExtractorSources = [
+		'ocelot/tools/KernelExtractor.cpp',
+		'ocelot/util/implementation/ExtractedDeviceState.cpp',
+		'ocelot/cuda/implementation/CudaDriver.cpp',
+		'ocelot/cuda/implementation/CudaDriverApi.cpp',
+		'ocelot/cuda/implementation/CudaDriverInterface.cpp',
+		'ocelot/ir/implementation/Texture.cpp',
+		'ocelot/ir/implementation/Dim3.cpp',
+		'ocelot/cuda/implementation/FatBinaryContext.cpp',
+		"hydrazine/implementation/ArgumentParser.cpp",
+		"hydrazine/implementation/json.cpp",
+		"hydrazine/implementation/debug.cpp",
+		"hydrazine/implementation/Timer.cpp",
+		"hydrazine/implementation/LowLevelTimer.cpp",
+		"hydrazine/implementation/XmlLexer.cpp",
+		"hydrazine/implementation/Exception.cpp",
+		"hydrazine/implementation/string.cpp",
+		"hydrazine/implementation/FloatingPoint.cpp",
+		"hydrazine/implementation/SystemCompatibility.cpp",
+		"hydrazine/interface/Stringable.cpp",
+		]
+	KernelExtractorLib = env.SharedLibrary('kernelExtractor', kernelExtractorSources, LIBS=ocelot_dep_libs)
+	print KernelExtractorLib
+
 Default(OcelotConfig)
 
 # Create the ocelot unit tests
@@ -254,6 +283,9 @@ if 'install' in COMMAND_LINE_TARGETS:
 		env['install_path'], "bin"), OcelotServer))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotHarness))
+		
+	if enableKernelExtractor and os.name != 'nt':
+		installed.append(env.Install(os.path.join(env['install_path'], "lib"), KernelExtractorLib))
 
 	for header in headers:
 		(directoryPath, headerName) = os.path.split( \

@@ -27,7 +27,7 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0482611656189 seconds
+INFO     Test completed in 0.0578639507294 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -41,8 +41,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1320182624
-Test time : 0.00088644
+Test Seed : 1320704621
+Test time : 0.000854731
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -174,14 +174,22 @@ Zext Instruction Passed
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall
-INFO     Test completed in 0.0670208930969 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.05730509758 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestCudaTexture2D: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.016477) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall
+INFO     Test completed in 0.0629317760468 seconds
+INFO      It produced the following output:
+TestFunctionCall: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.021271) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 3 entries.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0741560459137 seconds
+INFO     Test completed in 0.0771949291229 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -200,8 +208,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1320182624
-Test time : 0.0181081
+Test Seed : 1320704621
+Test time : 0.0172944
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -209,15 +217,9 @@ Test Point 3 Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0999460220337 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions
-INFO     Test completed in 0.065938949585 seconds
+INFO     Test completed in 0.0511560440063 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -227,8 +229,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1320182624
-Test time : 0.000885248
+Test Seed : 1320704621
+Test time : 0.00061512
 
 Status : Test output:
 Accessors test passed.
@@ -245,19 +247,182 @@ pass: predicated Add and Ld isntructions
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence
-INFO     Test completed in 0.124625921249 seconds
+INFO     Test completed in 0.0556130409241 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestCudaSequence: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.011835) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 5 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.092983007431 seconds
+INFO     Test completed in 0.0415341854095 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+terminate called after throwing an instance of 'parser::PTXParser::Exception'
+  what():  
+Failed to parse file '/home/andrew/repositories/gpuocelot/trunk/ocelot/ocelot/cuda/test/functions/indirectCall.cu':
+1 
+2 
+3 
+4 
+5 
+6 
+7 .version 3.0
+8 .target sm_20
+9 .address_size 64
+10 
+11 .file	1 "/tmp/tmpxft_000015b9_00000000-7_indirectCall.cpp3.i"
+12 .file	2 "/home/andrew/repositories/gpuocelot/trunk/ocelot/ocelot/cuda/test/functions/indirectCall.cu"
+13 
+14 .visible .func (.param .b32 func_retval0) funcDouble(
+15 .param .b32 funcDouble_param_0
+16 )
+17 {
+18 .reg .s32 %r<3>;
+19 
+20 
+21 ld.param.u32 %r1, [funcDouble_param_0];
+22 shl.b32 %r2, %r1, 1;
+23 st.param.b32	[func_retval0+0], %r2;
+24 .loc 2 10 1
+25 ret;
+26 }
+27 
+28 .visible .func (.param .b32 func_retval0) funcTriple(
+29 .param .b32 funcTriple_param_0
+30 )
+31 {
+32 .reg .s32 %r<3>;
+33 
+34 
+35 ld.param.u32 %r1, [funcTriple_param_0];
+36 .loc 2 14 1
+37 mul.lo.s32 %r2, %r1, 3;
+38 st.param.b32	[func_retval0+0], %r2;
+39 ret;
+40 }
+41 
+42 .visible .func (.param .b32 func_retval0) funcQuadruple(
+43 .param .b32 funcQuadruple_param_0
+44 )
+45 {
+46 .reg .s32 %r<3>;
+47 
+48 
+49 ld.param.u32 %r1, [funcQuadruple_param_0];
+50 shl.b32 %r2, %r1, 2;
+51 st.param.b32	[func_retval0+0], %r2;
+52 .loc 2 18 1
+53 ret;
+54 }
+55 
+56 .visible .func (.param .b32 func_retval0) funcPentuple(
+57 .param .b32 funcPentuple_param_0
+58 )
+59 {
+60 .reg .s32 %r<3>;
+61 
+62 
+63 ld.param.u32 %r1, [funcPentuple_param_0];
+64 .loc 2 21 1
+65 mul.lo.s32 %r2, %r1, 5;
+66 st.param.b32	[func_retval0+0], %r2;
+67 ret;
+68 }
+69 
+70 .entry kernelEntry(
+71 .param .u64 kernelEntry_param_0,
+72 .param .u32 kernelEntry_param_1
+73 )
+74 {
+75 .reg .pred %p<4>;
+76 .reg .s32 %r<10>;
+77 .reg .s64 %rl<11>;
+78 
+79 
+80 ld.param.u64 %rl3, [kernelEntry_param_0];
+81 ld.param.u32 %r3, [kernelEntry_param_1];
+82 cvta.to.global.u64 %rl1, %rl3;
+83 .loc 2 35 1
+84 mov.u32 %r4, %ctaid.x;
+85 mov.u32 %r5, %ntid.x;
+86 mov.u32 %r6, %tid.x;
+87 mad.lo.s32 %r1, %r4, %r5, %r6;
+88 .loc 2 36 1
+89 add.s32 %r7, %r1, %r3;
+90 and.b32 %r2, %r7, 3;
+91 .loc 2 39 1
+92 setp.eq.s32 %p1, %r2, 0;
+93 @%p1 bra BB4_6;
+94 
+95 .loc 2 42 1
+96 setp.eq.s32 %p2, %r2, 1;
+97 @%p2 bra BB4_5;
+98 
+99 .loc 2 45 1
+100 setp.eq.s32 %p3, %r2, 2;
+101 @%p3 bra BB4_4;
+102 
+103 mov.u64 %rl10, funcPentuple;
+104 bra.uni BB4_7;
+105 
+106 BB4_4:
+107 mov.u64 %rl10, funcQuadruple;
+108 bra.uni BB4_7;
+109 
+110 BB4_5:
+111 mov.u64 %rl10, funcTriple;
+112 bra.uni BB4_7;
+113 
+114 BB4_6:
+115 mov.u64 %rl10, funcDouble;
+116 
+117 BB4_7:
+118 
+119 	{
+120 .reg .b32 temp_param_reg;
+121 .param .b32 param0;
+122 st.param.b32	[param0+0], %r1;
+123 .param .b32 retval0;
+124 
+125 	prototype_0 : .callprototype (.param .b32 _) _ (.param .b32 _);
+126 
+127 	.loc 2 52 1
+128 call (retval0), 
+129 %rl10, 
+130 (
+131 param0
+132 )
+133 , prototype_0;
+134 ld.param.b32	%r8, [retval0+0];
+135 }
+136 
+137 	mul.wide.s32 %rl8, %r1, 4;
+138 add.s64 %rl9, %rl1, %rl8;
+139 st.global.u32 [%rl9], %r8;
+140 .loc 2 53 2
+141 ret;
+142 }
+143 
+144 
+145 
+/home/andrew/repositories/gpuocelot/trunk/ocelot/ocelot/cuda/test/functions/indirectCall.cu (125, 5):  syntax error, unexpected TOKEN_IDENTIFIER
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray
+INFO     Test completed in 0.0484290122986 seconds
+INFO      It produced the following output:
+TestCudaTextureArray: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.011188) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale
+INFO     Test completed in 0.0457429885864 seconds
+INFO      It produced the following output:
+No CAL devices found
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels
-INFO     Test completed in 0.0597488880157 seconds
+INFO     Test completed in 0.0653200149536 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -267,8 +432,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1320182624
-Test time : 0.0128329
+Test Seed : 1320704621
+Test time : 0.0123951
 
 Status : Test output:
 looping kernel succeeded
@@ -276,22 +441,9 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0874269008636 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0374460220337 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels
-INFO     Test completed in 0.0914421081543 seconds
+INFO     Test completed in 0.0945780277252 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -302,8 +454,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1320182624
-Test time : 0.0537891
+Test Seed : 1320704621
+Test time : 0.0496314
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -340,7 +492,7 @@ R = [
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0473709106445 seconds
+INFO     Test completed in 0.0612471103668 seconds
 INFO      It produced the following output:
 Hello CUDA 2
 Pass/Fail : Pass
@@ -354,23 +506,23 @@ Description: A unit test for calling an external host function from PTX 1)
              user defined function from a PTX kernel. 
 
 
-Test Seed : 1320182625
-Test time : 0.01156
+Test Seed : 1320704621
+Test time : 0.0182502
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0453238487244 seconds
+INFO     Test completed in 0.0440120697021 seconds
 INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
-cudaSetDevice() - 1 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
+TestCudaGlobals: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+(0.009178) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator
-INFO     Test completed in 0.0396020412445 seconds
+INFO     Test completed in 0.0570070743561 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -380,8 +532,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1320182625
-Test time : 0.00351906
+Test Seed : 1320704621
+Test time : 0.0134585
 
 Status : Test output:
 10 registers
@@ -395,7 +547,7 @@ Full kernel test passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer
-INFO     Test completed in 10.0813291073 seconds
+INFO     Test completed in 9.92313504219 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -407,8 +559,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1320182624
-Test time : 10.0176
+Test Seed : 1320704621
+Test time : 9.85567
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Scan): Passed
@@ -517,6 +669,7 @@ For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/unstructured/vm.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/complex.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/unstructured/mcx_core.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
@@ -554,7 +707,7 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Scan): Pas
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0691728591919 seconds
+INFO     Test completed in 0.104256868362 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -573,7 +726,7 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly
-INFO     Test completed in 10.9069859982 seconds
+INFO     Test completed in 10.8136460781 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -584,449 +737,449 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1320182625
-Test time : 10.8703
+Test Seed : 1320704621
+Test time : 10.7665
 
-Status : Ran 'TestVectorElements-u32' for 12 iterations.
-Ran 'TestAdd-u16' for 10 iterations.
-Ran 'TestAdd-s16' for 10 iterations.
-Ran 'TestAdd-u32' for 18 iterations.
-Ran 'TestAdd-s32' for 18 iterations.
-Ran 'TestAdd-s32-sat' for 17 iterations.
-Ran 'TestAdd-u64' for 16 iterations.
-Ran 'TestAdd-s64' for 16 iterations.
-Ran 'TestSub-u16' for 10 iterations.
-Ran 'TestSub-s16' for 10 iterations.
-Ran 'TestSub-u32' for 18 iterations.
-Ran 'TestSub-s32' for 19 iterations.
-Ran 'TestSub-s32-sat' for 17 iterations.
-Ran 'TestSub-u64' for 16 iterations.
-Ran 'TestSub-s64' for 16 iterations.
-Ran 'TestSub-Carry-s32' for 15 iterations.
-Ran 'TestSub-Carry-u32' for 15 iterations.
-Ran 'TestAdd-Carry-s32' for 15 iterations.
-Ran 'TestAdd-Carry-u32' for 15 iterations.
-Ran 'TestMul-Lo-u16' for 10 iterations.
-Ran 'TestMul-Hi-u16' for 10 iterations.
-Ran 'TestMul-Wide-u16' for 10 iterations.
-Ran 'TestMul-Lo-s16' for 10 iterations.
-Ran 'TestMul-Hi-s16' for 10 iterations.
-Ran 'TestMul-Wide-s16' for 10 iterations.
-Ran 'TestMul-Lo-u32' for 16 iterations.
-Ran 'TestMul-Hi-u32' for 18 iterations.
-Ran 'TestMul-Wide-u32' for 18 iterations.
-Ran 'TestMul-Lo-s32' for 18 iterations.
-Ran 'TestMul-Hi-s32' for 17 iterations.
-Ran 'TestMul-Wide-s32' for 18 iterations.
-Ran 'TestMul-Lo-u64' for 14 iterations.
-Ran 'TestMul-Hi-u64' for 14 iterations.
-Ran 'TestMul-Lo-s64' for 16 iterations.
-Ran 'TestMul-Hi-s64' for 15 iterations.
-Ran 'TestMad-Lo-u16' for 11 iterations.
-Ran 'TestMad-Hi-u16' for 10 iterations.
-Ran 'TestMad-Wide-u16' for 16 iterations.
-Ran 'TestMad-Lo-s16' for 10 iterations.
-Ran 'TestMad-Hi-s16' for 10 iterations.
-Ran 'TestMad-Wide-s16' for 16 iterations.
-Ran 'TestMad-Lo-u32' for 13 iterations.
-Ran 'TestMad-Hi-u32' for 13 iterations.
-Ran 'TestMad-Wide-u32' for 16 iterations.
-Ran 'TestMad-Lo-s32' for 13 iterations.
-Ran 'TestMad-Hi-s32' for 13 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 13 iterations.
-Ran 'TestMad-Wide-s32' for 16 iterations.
-Ran 'TestMad-Lo-u64' for 12 iterations.
-Ran 'TestMad-Hi-u64' for 12 iterations.
-Ran 'TestMad-Lo-s64' for 12 iterations.
-Ran 'TestMad-Hi-s64' for 12 iterations.
-Ran 'TestSad-u16' for 10 iterations.
-Ran 'TestSad-s16' for 9 iterations.
-Ran 'TestSad-u32' for 13 iterations.
-Ran 'TestSad-s32' for 13 iterations.
-Ran 'TestSad-u64' for 12 iterations.
-Ran 'TestSad-s64' for 12 iterations.
-Ran 'TestDiv-u16' for 10 iterations.
-Ran 'TestDiv-s16' for 10 iterations.
-Ran 'TestDiv-u32' for 18 iterations.
-Ran 'TestDiv-s32' for 16 iterations.
-Ran 'TestDiv-u64' for 16 iterations.
-Ran 'TestDiv-s64' for 16 iterations.
-Ran 'TestRem-u16' for 10 iterations.
-Ran 'TestRem-s16' for 10 iterations.
-Ran 'TestRem-u32' for 18 iterations.
-Ran 'TestRem-s32' for 18 iterations.
-Ran 'TestRem-u64' for 16 iterations.
-Ran 'TestRem-s64' for 16 iterations.
-Ran 'TestAbs-s16' for 10 iterations.
-Ran 'TestAbs-s32' for 10 iterations.
-Ran 'TestAbs-s64' for 18 iterations.
-Ran 'TestNeg-s16' for 10 iterations.
-Ran 'TestNeg-s32' for 10 iterations.
-Ran 'TestNeg-s64' for 19 iterations.
-Ran 'TestMax-u16' for 10 iterations.
-Ran 'TestMax-u32' for 2 iterations.
-Ran 'TestMax-u64' for 4 iterations.
+Status : Ran 'TestVectorElements-u32' for 6 iterations.
+Ran 'TestAdd-u16' for 8 iterations.
+Ran 'TestAdd-s16' for 8 iterations.
+Ran 'TestAdd-u32' for 7 iterations.
+Ran 'TestAdd-s32' for 8 iterations.
+Ran 'TestAdd-s32-sat' for 7 iterations.
+Ran 'TestAdd-u64' for 8 iterations.
+Ran 'TestAdd-s64' for 8 iterations.
+Ran 'TestSub-u16' for 8 iterations.
+Ran 'TestSub-s16' for 8 iterations.
+Ran 'TestSub-u32' for 8 iterations.
+Ran 'TestSub-s32' for 8 iterations.
+Ran 'TestSub-s32-sat' for 7 iterations.
+Ran 'TestSub-u64' for 8 iterations.
+Ran 'TestSub-s64' for 8 iterations.
+Ran 'TestSub-Carry-s32' for 7 iterations.
+Ran 'TestSub-Carry-u32' for 7 iterations.
+Ran 'TestAdd-Carry-s32' for 7 iterations.
+Ran 'TestAdd-Carry-u32' for 7 iterations.
+Ran 'TestMul-Lo-u16' for 8 iterations.
+Ran 'TestMul-Hi-u16' for 8 iterations.
+Ran 'TestMul-Wide-u16' for 8 iterations.
+Ran 'TestMul-Lo-s16' for 8 iterations.
+Ran 'TestMul-Hi-s16' for 7 iterations.
+Ran 'TestMul-Wide-s16' for 8 iterations.
+Ran 'TestMul-Lo-u32' for 8 iterations.
+Ran 'TestMul-Hi-u32' for 8 iterations.
+Ran 'TestMul-Wide-u32' for 8 iterations.
+Ran 'TestMul-Lo-s32' for 8 iterations.
+Ran 'TestMul-Hi-s32' for 8 iterations.
+Ran 'TestMul-Wide-s32' for 8 iterations.
+Ran 'TestMul-Lo-u64' for 8 iterations.
+Ran 'TestMul-Hi-u64' for 8 iterations.
+Ran 'TestMul-Lo-s64' for 8 iterations.
+Ran 'TestMul-Hi-s64' for 7 iterations.
+Ran 'TestMad-Lo-u16' for 8 iterations.
+Ran 'TestMad-Hi-u16' for 7 iterations.
+Ran 'TestMad-Wide-u16' for 8 iterations.
+Ran 'TestMad-Lo-s16' for 8 iterations.
+Ran 'TestMad-Hi-s16' for 7 iterations.
+Ran 'TestMad-Wide-s16' for 7 iterations.
+Ran 'TestMad-Lo-u32' for 7 iterations.
+Ran 'TestMad-Hi-u32' for 8 iterations.
+Ran 'TestMad-Wide-u32' for 8 iterations.
+Ran 'TestMad-Lo-s32' for 8 iterations.
+Ran 'TestMad-Hi-s32' for 8 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 7 iterations.
+Ran 'TestMad-Wide-s32' for 7 iterations.
+Ran 'TestMad-Lo-u64' for 8 iterations.
+Ran 'TestMad-Hi-u64' for 7 iterations.
+Ran 'TestMad-Lo-s64' for 7 iterations.
+Ran 'TestMad-Hi-s64' for 7 iterations.
+Ran 'TestSad-u16' for 7 iterations.
+Ran 'TestSad-s16' for 7 iterations.
+Ran 'TestSad-u32' for 7 iterations.
+Ran 'TestSad-s32' for 8 iterations.
+Ran 'TestSad-u64' for 7 iterations.
+Ran 'TestSad-s64' for 7 iterations.
+Ran 'TestDiv-u16' for 8 iterations.
+Ran 'TestDiv-s16' for 8 iterations.
+Ran 'TestDiv-u32' for 8 iterations.
+Ran 'TestDiv-s32' for 8 iterations.
+Ran 'TestDiv-u64' for 8 iterations.
+Ran 'TestDiv-s64' for 8 iterations.
+Ran 'TestRem-u16' for 8 iterations.
+Ran 'TestRem-s16' for 8 iterations.
+Ran 'TestRem-u32' for 8 iterations.
+Ran 'TestRem-s32' for 8 iterations.
+Ran 'TestRem-u64' for 8 iterations.
+Ran 'TestRem-s64' for 7 iterations.
+Ran 'TestAbs-s16' for 8 iterations.
+Ran 'TestAbs-s32' for 7 iterations.
+Ran 'TestAbs-s64' for 8 iterations.
+Ran 'TestNeg-s16' for 8 iterations.
+Ran 'TestNeg-s32' for 8 iterations.
+Ran 'TestNeg-s64' for 8 iterations.
+Ran 'TestMax-u16' for 8 iterations.
+Ran 'TestMax-u32' for 8 iterations.
+Ran 'TestMax-u64' for 8 iterations.
 Ran 'TestMax-s16' for 8 iterations.
-Ran 'TestMax-s32' for 15 iterations.
-Ran 'TestMax-s64' for 15 iterations.
-Ran 'TestMin-u16' for 2 iterations.
-Ran 'TestMin-u32' for 1 iterations.
-Ran 'TestMin-u64' for 4 iterations.
-Ran 'TestMin-s16' for 2 iterations.
-Ran 'TestMin-s32' for 11 iterations.
-Ran 'TestMin-s64' for 9 iterations.
+Ran 'TestMax-s32' for 8 iterations.
+Ran 'TestMax-s64' for 7 iterations.
+Ran 'TestMin-u16' for 7 iterations.
+Ran 'TestMin-u32' for 8 iterations.
+Ran 'TestMin-u64' for 8 iterations.
+Ran 'TestMin-s16' for 8 iterations.
+Ran 'TestMin-s32' for 8 iterations.
+Ran 'TestMin-s64' for 8 iterations.
 Ran 'TestPopc-b32' for 8 iterations.
-Ran 'TestPopc-b64' for 17 iterations.
+Ran 'TestPopc-b64' for 8 iterations.
 Ran 'TestClz-b32' for 8 iterations.
-Ran 'TestClz-b64' for 16 iterations.
-Ran 'TestBfind-u32' for 9 iterations.
-Ran 'TestBfind-u64' for 15 iterations.
+Ran 'TestClz-b64' for 8 iterations.
+Ran 'TestBfind-u32' for 8 iterations.
+Ran 'TestBfind-u64' for 8 iterations.
 Ran 'TestBfind-s32' for 8 iterations.
-Ran 'TestBfind-s64' for 11 iterations.
+Ran 'TestBfind-s64' for 7 iterations.
 Ran 'TestBfind-shiftamount-u32' for 7 iterations.
-Ran 'TestBfind-shiftamount-u64' for 14 iterations.
+Ran 'TestBfind-shiftamount-u64' for 7 iterations.
 Ran 'TestBfind-shiftamount-s32' for 7 iterations.
-Ran 'TestBfind-shiftamount-s64' for 12 iterations.
-Ran 'TestBrev-b32' for 9 iterations.
-Ran 'TestBrev-b64' for 12 iterations.
-Ran 'TestBfi-b32' for 14 iterations.
-Ran 'TestBfi-b64' for 10 iterations.
-Ran 'TestPrmt-b32' for 13 iterations.
-Ran 'TestPrmt-f4e-b32' for 13 iterations.
-Ran 'TestPrmt-b4e-b32' for 13 iterations.
-Ran 'TestPrmt-rc8-b32' for 13 iterations.
-Ran 'TestPrmt-ecl-b32' for 13 iterations.
-Ran 'TestPrmt-ecr-b32' for 11 iterations.
-Ran 'TestPrmt-rc16-b32' for 13 iterations.
-Ran 'TestCall-Uni' for 10 iterations.
-Ran 'TestCall-Nondivergent' for 9 iterations.
-Ran 'TestCall-Divergent' for 8 iterations.
+Ran 'TestBfind-shiftamount-s64' for 8 iterations.
+Ran 'TestBrev-b32' for 8 iterations.
+Ran 'TestBrev-b64' for 8 iterations.
+Ran 'TestBfi-b32' for 7 iterations.
+Ran 'TestBfi-b64' for 7 iterations.
+Ran 'TestPrmt-b32' for 7 iterations.
+Ran 'TestPrmt-f4e-b32' for 7 iterations.
+Ran 'TestPrmt-b4e-b32' for 7 iterations.
+Ran 'TestPrmt-rc8-b32' for 7 iterations.
+Ran 'TestPrmt-ecl-b32' for 7 iterations.
+Ran 'TestPrmt-ecr-b32' for 7 iterations.
+Ran 'TestPrmt-rc16-b32' for 7 iterations.
+Ran 'TestCall-Uni' for 4 iterations.
+Ran 'TestCall-Nondivergent' for 4 iterations.
+Ran 'TestCall-Divergent' for 3 iterations.
 Ran 'TestCall-Recursive' for 3 iterations.
 Ran 'TestCall-Indirect' for 2 iterations.
 Ran 'TestFunctionPointerArray' for 2 iterations.
-Ran 'TestTestP-f32-Finite' for 7 iterations.
-Ran 'TestTestP-f32-Infinite' for 7 iterations.
-Ran 'TestTestP-f32-Number' for 8 iterations.
-Ran 'TestTestP-f32-NotANumber' for 5 iterations.
-Ran 'TestTestP-f32-Normal' for 5 iterations.
-Ran 'TestTestP-f32-SubNormal' for 6 iterations.
+Ran 'TestTestP-f32-Finite' for 8 iterations.
+Ran 'TestTestP-f32-Infinite' for 8 iterations.
+Ran 'TestTestP-f32-Number' for 6 iterations.
+Ran 'TestTestP-f32-NotANumber' for 7 iterations.
+Ran 'TestTestP-f32-Normal' for 7 iterations.
+Ran 'TestTestP-f32-SubNormal' for 7 iterations.
 Ran 'TestTestP-f64-Finite' for 8 iterations.
-Ran 'TestTestP-f64-Infinite' for 7 iterations.
-Ran 'TestTestP-f64-Number' for 5 iterations.
-Ran 'TestTestP-f64-NotANumber' for 6 iterations.
+Ran 'TestTestP-f64-Infinite' for 8 iterations.
+Ran 'TestTestP-f64-Number' for 7 iterations.
+Ran 'TestTestP-f64-NotANumber' for 7 iterations.
 Ran 'TestTestP-f64-Normal' for 7 iterations.
-Ran 'TestTestP-f64-SubNormal' for 4 iterations.
+Ran 'TestTestP-f64-SubNormal' for 7 iterations.
 Ran 'TestCopysign-f32' for 7 iterations.
-Ran 'TestCopysign-f64' for 8 iterations.
+Ran 'TestCopysign-f64' for 7 iterations.
 Ran 'TestAdd-f32' for 8 iterations.
 Ran 'TestAdd-f32-sat' for 7 iterations.
-Ran 'TestAdd-f32-ftz' for 8 iterations.
+Ran 'TestAdd-f32-ftz' for 7 iterations.
 Ran 'TestAdd-f32-ftz-sat' for 7 iterations.
-Ran 'TestAdd-f64' for 9 iterations.
-Ran 'TestSub-f32' for 9 iterations.
-Ran 'TestSub-f32-sat' for 9 iterations.
+Ran 'TestAdd-f64' for 8 iterations.
+Ran 'TestSub-f32' for 8 iterations.
+Ran 'TestSub-f32-sat' for 7 iterations.
 Ran 'TestSub-f32-ftz' for 7 iterations.
-Ran 'TestSub-f32-ftz-sat' for 5 iterations.
-Ran 'TestSub-f64' for 7 iterations.
-Ran 'TestMul-f32' for 7 iterations.
-Ran 'TestMul-f32-sat' for 8 iterations.
-Ran 'TestMul-f32-ftz' for 5 iterations.
-Ran 'TestMul-f32-ftz-sat' for 7 iterations.
-Ran 'TestMul-f64' for 9 iterations.
-Ran 'TestMad-f32' for 11 iterations.
-Ran 'TestMad-f32-sat' for 11 iterations.
-Ran 'TestMad-f32-ftz' for 10 iterations.
-Ran 'TestMad-f32-ftz-sat' for 8 iterations.
-Ran 'TestMad-f64' for 11 iterations.
-Ran 'TestFma-f32' for 11 iterations.
-Ran 'TestFma-f32-sat' for 10 iterations.
-Ran 'TestFma-f32-ftz' for 3 iterations.
-Ran 'TestFma-f32-ftz-sat' for 1 iterations.
-Ran 'TestFma-f64' for 3 iterations.
-Ran 'TestDiv-f32' for 3 iterations.
+Ran 'TestSub-f32-ftz-sat' for 7 iterations.
+Ran 'TestSub-f64' for 8 iterations.
+Ran 'TestMul-f32' for 8 iterations.
+Ran 'TestMul-f32-sat' for 7 iterations.
+Ran 'TestMul-f32-ftz' for 6 iterations.
+Ran 'TestMul-f32-ftz-sat' for 6 iterations.
+Ran 'TestMul-f64' for 8 iterations.
+Ran 'TestMad-f32' for 8 iterations.
+Ran 'TestMad-f32-sat' for 7 iterations.
+Ran 'TestMad-f32-ftz' for 6 iterations.
+Ran 'TestMad-f32-ftz-sat' for 6 iterations.
+Ran 'TestMad-f64' for 8 iterations.
+Ran 'TestFma-f32' for 8 iterations.
+Ran 'TestFma-f32-sat' for 7 iterations.
+Ran 'TestFma-f32-ftz' for 6 iterations.
+Ran 'TestFma-f32-ftz-sat' for 6 iterations.
+Ran 'TestFma-f64' for 8 iterations.
+Ran 'TestDiv-f32' for 8 iterations.
 Ran 'TestDiv-f32-ftz' for 6 iterations.
-Ran 'TestDiv-f32-approx' for 6 iterations.
-Ran 'TestDiv-f32-full' for 6 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 7 iterations.
-Ran 'TestDiv-f32-full-ftz' for 7 iterations.
+Ran 'TestDiv-f32-approx' for 8 iterations.
+Ran 'TestDiv-f32-full' for 8 iterations.
+Ran 'TestDiv-f32-approx-ftz' for 6 iterations.
+Ran 'TestDiv-f32-full-ftz' for 6 iterations.
 Ran 'TestDiv-f64' for 8 iterations.
-Ran 'TestAbs-f32' for 4 iterations.
-Ran 'TestAbs-f32-ftz' for 5 iterations.
-Ran 'TestAbs-f64' for 7 iterations.
-Ran 'TestNeg-f32' for 4 iterations.
-Ran 'TestNeg-f32-ftz' for 5 iterations.
-Ran 'TestNeg-f64' for 5 iterations.
-Ran 'TestMin-f32' for 5 iterations.
+Ran 'TestAbs-f32' for 8 iterations.
+Ran 'TestAbs-f32-ftz' for 7 iterations.
+Ran 'TestAbs-f64' for 8 iterations.
+Ran 'TestNeg-f32' for 8 iterations.
+Ran 'TestNeg-f32-ftz' for 7 iterations.
+Ran 'TestNeg-f64' for 8 iterations.
+Ran 'TestMin-f32' for 7 iterations.
 Ran 'TestMin-f32-ftz' for 7 iterations.
-Ran 'TestMin-f64' for 8 iterations.
+Ran 'TestMin-f64' for 7 iterations.
 Ran 'TestMax-f32' for 7 iterations.
-Ran 'TestMax-f32-ftz' for 8 iterations.
-Ran 'TestMax-f64' for 9 iterations.
-Ran 'TestRcp-f32' for 9 iterations.
-Ran 'TestRcp-f32-approx' for 11 iterations.
-Ran 'TestRcp-f32-ftz' for 4 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 5 iterations.
-Ran 'TestRcp-f64' for 7 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 7 iterations.
+Ran 'TestMax-f32-ftz' for 7 iterations.
+Ran 'TestMax-f64' for 7 iterations.
+Ran 'TestRcp-f32' for 8 iterations.
+Ran 'TestRcp-f32-approx' for 8 iterations.
+Ran 'TestRcp-f32-ftz' for 7 iterations.
+Ran 'TestRcp-f32-approx-ftz' for 7 iterations.
+Ran 'TestRcp-f64' for 8 iterations.
+Ran 'TestRcp-f64-approx-ftz' for 8 iterations.
 Ran 'TestSqrt-f32' for 8 iterations.
 Ran 'TestSqrt-f32-approx' for 7 iterations.
-Ran 'TestSqrt-f32-ftz' for 5 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 6 iterations.
-Ran 'TestSqrt-f64' for 7 iterations.
-Ran 'TestRsqrt-f32' for 7 iterations.
-Ran 'TestRsqrt-f32-ftz' for 5 iterations.
-Ran 'TestRsqrt-f64' for 7 iterations.
+Ran 'TestSqrt-f32-ftz' for 7 iterations.
+Ran 'TestSqrt-f32-approx-ftz' for 7 iterations.
+Ran 'TestSqrt-f64' for 8 iterations.
+Ran 'TestRsqrt-f32' for 8 iterations.
+Ran 'TestRsqrt-f32-ftz' for 7 iterations.
+Ran 'TestRsqrt-f64' for 8 iterations.
 Ran 'TestCos-f32' for 7 iterations.
-Ran 'TestCos-f32-ftz' for 4 iterations.
-Ran 'TestSin-f32' for 5 iterations.
-Ran 'TestSin-f32-ftz' for 5 iterations.
-Ran 'TestEx2-f32' for 6 iterations.
-Ran 'TestEx2-f32-ftz' for 5 iterations.
-Ran 'TestLg2-f32' for 7 iterations.
-Ran 'TestLg2-f32-ftz' for 5 iterations.
-Ran 'TestSet-lt-u32-u16' for 8 iterations.
+Ran 'TestCos-f32-ftz' for 6 iterations.
+Ran 'TestSin-f32' for 7 iterations.
+Ran 'TestSin-f32-ftz' for 6 iterations.
+Ran 'TestEx2-f32' for 8 iterations.
+Ran 'TestEx2-f32-ftz' for 7 iterations.
+Ran 'TestLg2-f32' for 8 iterations.
+Ran 'TestLg2-f32-ftz' for 6 iterations.
+Ran 'TestSet-lt-u32-u16' for 7 iterations.
 Ran 'TestSet-lt-s32-u16' for 7 iterations.
 Ran 'TestSet-lt-f32-u16' for 7 iterations.
-Ran 'TestSet-lt-s32-u32' for 6 iterations.
-Ran 'TestSet-lt-s32-u64' for 8 iterations.
-Ran 'TestSet-lt-s32-s16' for 6 iterations.
-Ran 'TestSet-lt-s32-s32' for 7 iterations.
-Ran 'TestSet-lt-s32-s64' for 8 iterations.
-Ran 'TestSet-lt-s32-f32' for 10 iterations.
-Ran 'TestSet-lt-s32-f64' for 11 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 11 iterations.
+Ran 'TestSet-lt-s32-u32' for 7 iterations.
+Ran 'TestSet-lt-s32-u64' for 7 iterations.
+Ran 'TestSet-lt-s32-s16' for 7 iterations.
+Ran 'TestSet-lt-s32-s32' for 6 iterations.
+Ran 'TestSet-lt-s32-s64' for 6 iterations.
+Ran 'TestSet-lt-s32-f32' for 7 iterations.
+Ran 'TestSet-lt-s32-f64' for 6 iterations.
+Ran 'TestSet-lt-ftz-s32-f32' for 5 iterations.
 Ran 'TestSet-Eq-s32-s32' for 7 iterations.
 Ran 'TestSet-Ne-s32-s32' for 7 iterations.
-Ran 'TestSet-Le-s32-s32' for 9 iterations.
-Ran 'TestSet-Gt-s32-s32' for 9 iterations.
+Ran 'TestSet-Le-s32-s32' for 6 iterations.
+Ran 'TestSet-Gt-s32-s32' for 6 iterations.
 Ran 'TestSet-Ge-s32-s32' for 7 iterations.
-Ran 'TestSet-Lo-s32-u32' for 6 iterations.
-Ran 'TestSet-Ls-s32-u32' for 6 iterations.
+Ran 'TestSet-Lo-s32-u32' for 7 iterations.
+Ran 'TestSet-Ls-s32-u32' for 7 iterations.
 Ran 'TestSet-Hi-s32-u32' for 7 iterations.
 Ran 'TestSet-Hs-s32-u32' for 7 iterations.
-Ran 'TestSet-Eq-s32-f32' for 11 iterations.
-Ran 'TestSet-Ne-s32-f32' for 11 iterations.
-Ran 'TestSet-Lt-s32-f32' for 11 iterations.
-Ran 'TestSet-Le-s32-f32' for 11 iterations.
-Ran 'TestSet-Gt-s32-f32' for 11 iterations.
-Ran 'TestSet-Ge-s32-f32' for 11 iterations.
-Ran 'TestSet-Lo-s32-u32' for 9 iterations.
-Ran 'TestSet-Ls-s32-u32' for 9 iterations.
-Ran 'TestSet-Hi-s32-u32' for 9 iterations.
-Ran 'TestSet-Hs-s32-u32' for 9 iterations.
-Ran 'TestSet-Equ-s32-f32' for 11 iterations.
-Ran 'TestSet-Neu-s32-f32' for 11 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 10 iterations.
-Ran 'TestSet-Leu-s32-f32' for 11 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 11 iterations.
-Ran 'TestSet-Geu-s32-f32' for 11 iterations.
-Ran 'TestSet-Num-s32-f32' for 11 iterations.
-Ran 'TestSet-Nan-s32-f32' for 11 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 9 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 9 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 9 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 9 iterations.
-Ran 'TestSetP-lt-u16' for 8 iterations.
-Ran 'TestSetP-lt-u32' for 9 iterations.
-Ran 'TestSetP-lt-u32-pq' for 9 iterations.
-Ran 'TestSetP-lt-u64' for 11 iterations.
-Ran 'TestSetP-lt-s16' for 8 iterations.
-Ran 'TestSetP-lt-s32' for 9 iterations.
-Ran 'TestSetP-lt-s64' for 11 iterations.
-Ran 'TestSetP-lt-f32' for 9 iterations.
-Ran 'TestSetP-lt-f64' for 11 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 9 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 9 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 8 iterations.
-Ran 'TestSelp-u16' for 9 iterations.
-Ran 'TestSelp-u32' for 9 iterations.
-Ran 'TestSelp-u64' for 11 iterations.
-Ran 'TestSelp-s16' for 9 iterations.
-Ran 'TestSelp-s32' for 9 iterations.
-Ran 'TestSelp-s64' for 11 iterations.
-Ran 'TestSelp-f32' for 11 iterations.
-Ran 'TestSelp-f64' for 11 iterations.
-Ran 'TestSlct-u16-s32' for 15 iterations.
-Ran 'TestSlct-u32-s32' for 13 iterations.
-Ran 'TestSlct-u64-s32' for 10 iterations.
-Ran 'TestSlct-s16-s32' for 16 iterations.
-Ran 'TestSlct-s32-s32' for 13 iterations.
-Ran 'TestSlct-s64-s32' for 9 iterations.
-Ran 'TestSlct-f32-s32' for 11 iterations.
-Ran 'TestSlct-f64-s32' for 10 iterations.
-Ran 'TestSlct-u16-f32' for 11 iterations.
-Ran 'TestSlct-u32-f32' for 11 iterations.
-Ran 'TestSlct-u64-f32' for 9 iterations.
-Ran 'TestSlct-s16-f32' for 16 iterations.
-Ran 'TestSlct-s32-f32' for 13 iterations.
-Ran 'TestSlct-s64-f32' for 10 iterations.
-Ran 'TestSlct-f32-f32' for 11 iterations.
-Ran 'TestSlct-f64-f32' for 12 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 13 iterations.
-Ran 'TestAnd-pred' for 10 iterations.
-Ran 'TestAnd-b16' for 11 iterations.
-Ran 'TestAnd-b32' for 13 iterations.
-Ran 'TestAnd-b64' for 12 iterations.
-Ran 'TestOr-pred' for 10 iterations.
-Ran 'TestOr-b16' for 10 iterations.
-Ran 'TestOr-b32' for 13 iterations.
-Ran 'TestOr-b64' for 12 iterations.
-Ran 'TestXor-pred' for 9 iterations.
-Ran 'TestXor-b16' for 9 iterations.
-Ran 'TestXor-b32' for 11 iterations.
-Ran 'TestXor-b64' for 12 iterations.
-Ran 'TestNot-pred' for 9 iterations.
-Ran 'TestNot-b16' for 10 iterations.
-Ran 'TestNot-b32' for 18 iterations.
-Ran 'TestNot-b64' for 16 iterations.
-Ran 'TestCNot-b16' for 9 iterations.
-Ran 'TestCNot-b32' for 14 iterations.
-Ran 'TestCNot-b64' for 16 iterations.
-Ran 'TestShl-b16' for 16 iterations.
-Ran 'TestShl-b32' for 13 iterations.
-Ran 'TestShl-b64' for 11 iterations.
-Ran 'TestShr-u16' for 16 iterations.
-Ran 'TestShr-u32' for 13 iterations.
-Ran 'TestShr-u64' for 12 iterations.
-Ran 'TestShr-s16' for 15 iterations.
-Ran 'TestShr-s32' for 13 iterations.
-Ran 'TestShr-s64' for 10 iterations.
-Ran 'TestMov-pred' for 9 iterations.
-Ran 'TestMov-u16' for 10 iterations.
-Ran 'TestMov-u32' for 10 iterations.
-Ran 'TestMov-u64' for 15 iterations.
-Ran 'TestMov-s16' for 10 iterations.
-Ran 'TestMov-s32' for 10 iterations.
-Ran 'TestMov-s64' for 16 iterations.
-Ran 'TestMov-f32' for 11 iterations.
-Ran 'TestMov-f64' for 11 iterations.
-Ran 'TestMovLabel-global-v1' for 10 iterations.
-Ran 'TestMovLabel-global-v1-index' for 9 iterations.
-Ran 'TestMovLabel-global-v2' for 9 iterations.
-Ran 'TestMovLabel-global-v4' for 9 iterations.
-Ran 'TestMovLabel-local-v1' for 8 iterations.
-Ran 'TestMovLabel-local-v1-index' for 9 iterations.
-Ran 'TestMovLabel-local-v2' for 9 iterations.
-Ran 'TestMovLabel-local-v4' for 9 iterations.
-Ran 'TestMovLabel-shared-v1' for 10 iterations.
-Ran 'TestMovLabel-shared-v1-index' for 8 iterations.
+Ran 'TestSet-Eq-s32-f32' for 7 iterations.
+Ran 'TestSet-Ne-s32-f32' for 7 iterations.
+Ran 'TestSet-Lt-s32-f32' for 7 iterations.
+Ran 'TestSet-Le-s32-f32' for 7 iterations.
+Ran 'TestSet-Gt-s32-f32' for 7 iterations.
+Ran 'TestSet-Ge-s32-f32' for 7 iterations.
+Ran 'TestSet-Lo-s32-u32' for 7 iterations.
+Ran 'TestSet-Ls-s32-u32' for 7 iterations.
+Ran 'TestSet-Hi-s32-u32' for 7 iterations.
+Ran 'TestSet-Hs-s32-u32' for 7 iterations.
+Ran 'TestSet-Equ-s32-f32' for 7 iterations.
+Ran 'TestSet-Neu-s32-f32' for 7 iterations.
+Ran 'TestSet-Ltu-s32-f32' for 7 iterations.
+Ran 'TestSet-Leu-s32-f32' for 7 iterations.
+Ran 'TestSet-Gtu-s32-f32' for 7 iterations.
+Ran 'TestSet-Geu-s32-f32' for 7 iterations.
+Ran 'TestSet-Num-s32-f32' for 7 iterations.
+Ran 'TestSet-Nan-s32-f32' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-And' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-Or' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-Xor' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-And-Inv' for 7 iterations.
+Ran 'TestSetP-lt-u16' for 7 iterations.
+Ran 'TestSetP-lt-u32' for 7 iterations.
+Ran 'TestSetP-lt-u32-pq' for 6 iterations.
+Ran 'TestSetP-lt-u64' for 7 iterations.
+Ran 'TestSetP-lt-s16' for 7 iterations.
+Ran 'TestSetP-lt-s32' for 7 iterations.
+Ran 'TestSetP-lt-s64' for 7 iterations.
+Ran 'TestSetP-lt-f32' for 7 iterations.
+Ran 'TestSetP-lt-f64' for 7 iterations.
+Ran 'TestSetP-lt-u32-pq-and' for 7 iterations.
+Ran 'TestSetP-lt-u32-pq-or' for 7 iterations.
+Ran 'TestSetP-lt-u32-pq-xor' for 7 iterations.
+Ran 'TestSetP-lt-f32-pq-and-ftz' for 6 iterations.
+Ran 'TestSelp-u16' for 7 iterations.
+Ran 'TestSelp-u32' for 7 iterations.
+Ran 'TestSelp-u64' for 7 iterations.
+Ran 'TestSelp-s16' for 7 iterations.
+Ran 'TestSelp-s32' for 7 iterations.
+Ran 'TestSelp-s64' for 7 iterations.
+Ran 'TestSelp-f32' for 7 iterations.
+Ran 'TestSelp-f64' for 7 iterations.
+Ran 'TestSlct-u16-s32' for 7 iterations.
+Ran 'TestSlct-u32-s32' for 7 iterations.
+Ran 'TestSlct-u64-s32' for 8 iterations.
+Ran 'TestSlct-s16-s32' for 8 iterations.
+Ran 'TestSlct-s32-s32' for 7 iterations.
+Ran 'TestSlct-s64-s32' for 8 iterations.
+Ran 'TestSlct-f32-s32' for 7 iterations.
+Ran 'TestSlct-f64-s32' for 7 iterations.
+Ran 'TestSlct-u16-f32' for 8 iterations.
+Ran 'TestSlct-u32-f32' for 7 iterations.
+Ran 'TestSlct-u64-f32' for 7 iterations.
+Ran 'TestSlct-s16-f32' for 7 iterations.
+Ran 'TestSlct-s32-f32' for 8 iterations.
+Ran 'TestSlct-s64-f32' for 7 iterations.
+Ran 'TestSlct-f32-f32' for 7 iterations.
+Ran 'TestSlct-f64-f32' for 8 iterations.
+Ran 'TestSlct-f32-f32-ftz' for 7 iterations.
+Ran 'TestAnd-pred' for 7 iterations.
+Ran 'TestAnd-b16' for 8 iterations.
+Ran 'TestAnd-b32' for 8 iterations.
+Ran 'TestAnd-b64' for 8 iterations.
+Ran 'TestOr-pred' for 7 iterations.
+Ran 'TestOr-b16' for 8 iterations.
+Ran 'TestOr-b32' for 8 iterations.
+Ran 'TestOr-b64' for 8 iterations.
+Ran 'TestXor-pred' for 7 iterations.
+Ran 'TestXor-b16' for 8 iterations.
+Ran 'TestXor-b32' for 8 iterations.
+Ran 'TestXor-b64' for 8 iterations.
+Ran 'TestNot-pred' for 7 iterations.
+Ran 'TestNot-b16' for 8 iterations.
+Ran 'TestNot-b32' for 8 iterations.
+Ran 'TestNot-b64' for 8 iterations.
+Ran 'TestCNot-b16' for 8 iterations.
+Ran 'TestCNot-b32' for 8 iterations.
+Ran 'TestCNot-b64' for 8 iterations.
+Ran 'TestShl-b16' for 7 iterations.
+Ran 'TestShl-b32' for 8 iterations.
+Ran 'TestShl-b64' for 8 iterations.
+Ran 'TestShr-u16' for 7 iterations.
+Ran 'TestShr-u32' for 8 iterations.
+Ran 'TestShr-u64' for 8 iterations.
+Ran 'TestShr-s16' for 7 iterations.
+Ran 'TestShr-s32' for 8 iterations.
+Ran 'TestShr-s64' for 8 iterations.
+Ran 'TestMov-pred' for 7 iterations.
+Ran 'TestMov-u16' for 8 iterations.
+Ran 'TestMov-u32' for 8 iterations.
+Ran 'TestMov-u64' for 8 iterations.
+Ran 'TestMov-s16' for 8 iterations.
+Ran 'TestMov-s32' for 8 iterations.
+Ran 'TestMov-s64' for 8 iterations.
+Ran 'TestMov-f32' for 8 iterations.
+Ran 'TestMov-f64' for 8 iterations.
+Ran 'TestMovLabel-global-v1' for 8 iterations.
+Ran 'TestMovLabel-global-v1-index' for 7 iterations.
+Ran 'TestMovLabel-global-v2' for 7 iterations.
+Ran 'TestMovLabel-global-v4' for 7 iterations.
+Ran 'TestMovLabel-local-v1' for 7 iterations.
+Ran 'TestMovLabel-local-v1-index' for 7 iterations.
+Ran 'TestMovLabel-local-v2' for 7 iterations.
+Ran 'TestMovLabel-local-v4' for 7 iterations.
+Ran 'TestMovLabel-shared-v1' for 8 iterations.
+Ran 'TestMovLabel-shared-v1-index' for 7 iterations.
 Ran 'TestMovLabel-shared-v4' for 7 iterations.
-Ran 'TestCvt-u8-u8' for 4 iterations.
-Ran 'TestCvt-u8-u16' for 7 iterations.
-Ran 'TestCvt-u8-u32' for 7 iterations.
-Ran 'TestCvt-u8-u64' for 15 iterations.
-Ran 'TestCvt-u8-s8' for 11 iterations.
-Ran 'TestCvt-u8-s16' for 9 iterations.
-Ran 'TestCvt-u8-s32' for 10 iterations.
-Ran 'TestCvt-u8-s64' for 18 iterations.
+Ran 'TestCvt-u8-u8' for 8 iterations.
+Ran 'TestCvt-u8-u16' for 8 iterations.
+Ran 'TestCvt-u8-u32' for 8 iterations.
+Ran 'TestCvt-u8-u64' for 8 iterations.
+Ran 'TestCvt-u8-s8' for 8 iterations.
+Ran 'TestCvt-u8-s16' for 8 iterations.
+Ran 'TestCvt-u8-s32' for 8 iterations.
+Ran 'TestCvt-u8-s64' for 8 iterations.
 Ran 'TestCvt-u8-f32' for 7 iterations.
 Ran 'TestCvt-u8-f64' for 7 iterations.
-Ran 'TestCvt-u16-u8' for 10 iterations.
-Ran 'TestCvt-u16-u16' for 10 iterations.
-Ran 'TestCvt-u16-u32' for 10 iterations.
-Ran 'TestCvt-u16-u64' for 17 iterations.
-Ran 'TestCvt-u16-s8' for 11 iterations.
-Ran 'TestCvt-u16-s16' for 9 iterations.
-Ran 'TestCvt-u16-s32' for 10 iterations.
-Ran 'TestCvt-u16-s64' for 16 iterations.
-Ran 'TestCvt-u16-f32' for 7 iterations.
-Ran 'TestCvt-u16-f64' for 7 iterations.
-Ran 'TestCvt-u32-u8' for 11 iterations.
-Ran 'TestCvt-u32-u16' for 10 iterations.
-Ran 'TestCvt-u32-u32' for 9 iterations.
-Ran 'TestCvt-u32-u64' for 17 iterations.
-Ran 'TestCvt-u32-s8' for 11 iterations.
-Ran 'TestCvt-u32-s16' for 10 iterations.
-Ran 'TestCvt-u32-s32' for 10 iterations.
-Ran 'TestCvt-u32-s64' for 12 iterations.
-Ran 'TestCvt-u32-f32' for 5 iterations.
-Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 8 iterations.
-Ran 'TestCvt-u32-f32-rmi' for 5 iterations.
-Ran 'TestCvt-u32-f64' for 3 iterations.
-Ran 'TestCvt-u64-u8' for 7 iterations.
+Ran 'TestCvt-u16-u8' for 8 iterations.
+Ran 'TestCvt-u16-u16' for 8 iterations.
+Ran 'TestCvt-u16-u32' for 8 iterations.
+Ran 'TestCvt-u16-u64' for 6 iterations.
+Ran 'TestCvt-u16-s8' for 7 iterations.
+Ran 'TestCvt-u16-s16' for 7 iterations.
+Ran 'TestCvt-u16-s32' for 7 iterations.
+Ran 'TestCvt-u16-s64' for 6 iterations.
+Ran 'TestCvt-u16-f32' for 5 iterations.
+Ran 'TestCvt-u16-f64' for 6 iterations.
+Ran 'TestCvt-u32-u8' for 7 iterations.
+Ran 'TestCvt-u32-u16' for 7 iterations.
+Ran 'TestCvt-u32-u32' for 6 iterations.
+Ran 'TestCvt-u32-u64' for 7 iterations.
+Ran 'TestCvt-u32-s8' for 8 iterations.
+Ran 'TestCvt-u32-s16' for 8 iterations.
+Ran 'TestCvt-u32-s32' for 8 iterations.
+Ran 'TestCvt-u32-s64' for 8 iterations.
+Ran 'TestCvt-u32-f32' for 7 iterations.
+Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 7 iterations.
+Ran 'TestCvt-u32-f32-rmi' for 7 iterations.
+Ran 'TestCvt-u32-f64' for 7 iterations.
+Ran 'TestCvt-u64-u8' for 8 iterations.
 Ran 'TestCvt-u64-u16' for 8 iterations.
 Ran 'TestCvt-u64-u32' for 8 iterations.
-Ran 'TestCvt-u64-u64' for 11 iterations.
-Ran 'TestCvt-u64-s8' for 2 iterations.
-Ran 'TestCvt-u64-s16' for 9 iterations.
-Ran 'TestCvt-u64-s32' for 9 iterations.
-Ran 'TestCvt-u64-s64' for 2 iterations.
-Ran 'TestCvt-u64-f32' for 2 iterations.
-Ran 'TestCvt-u64-f64' for 2 iterations.
-Ran 'TestCvt-s8-u8' for 2 iterations.
-Ran 'TestCvt-s8-u16' for 4 iterations.
-Ran 'TestCvt-s8-u32' for 6 iterations.
-Ran 'TestCvt-s8-u64' for 2 iterations.
-Ran 'TestCvt-s8-s8' for 3 iterations.
-Ran 'TestCvt-s8-s16' for 10 iterations.
-Ran 'TestCvt-s8-s32' for 10 iterations.
-Ran 'TestCvt-s8-s64' for 18 iterations.
+Ran 'TestCvt-u64-u64' for 8 iterations.
+Ran 'TestCvt-u64-s8' for 8 iterations.
+Ran 'TestCvt-u64-s16' for 8 iterations.
+Ran 'TestCvt-u64-s32' for 8 iterations.
+Ran 'TestCvt-u64-s64' for 8 iterations.
+Ran 'TestCvt-u64-f32' for 7 iterations.
+Ran 'TestCvt-u64-f64' for 7 iterations.
+Ran 'TestCvt-s8-u8' for 8 iterations.
+Ran 'TestCvt-s8-u16' for 8 iterations.
+Ran 'TestCvt-s8-u32' for 8 iterations.
+Ran 'TestCvt-s8-u64' for 8 iterations.
+Ran 'TestCvt-s8-s8' for 8 iterations.
+Ran 'TestCvt-s8-s16' for 8 iterations.
+Ran 'TestCvt-s8-s32' for 8 iterations.
+Ran 'TestCvt-s8-s64' for 8 iterations.
 Ran 'TestCvt-s8-f32' for 7 iterations.
 Ran 'TestCvt-s8-f64' for 7 iterations.
-Ran 'TestCvt-s16-u8' for 11 iterations.
-Ran 'TestCvt-s16-u16' for 10 iterations.
-Ran 'TestCvt-s16-u32' for 10 iterations.
-Ran 'TestCvt-s16-u64' for 18 iterations.
-Ran 'TestCvt-s16-s8' for 11 iterations.
-Ran 'TestCvt-s16-s16' for 10 iterations.
-Ran 'TestCvt-s16-s32' for 10 iterations.
-Ran 'TestCvt-s16-s64' for 17 iterations.
-Ran 'TestCvt-s16-f32' for 7 iterations.
-Ran 'TestCvt-s16-f64' for 8 iterations.
-Ran 'TestCvt-s32-u8' for 11 iterations.
-Ran 'TestCvt-s32-u16' for 10 iterations.
-Ran 'TestCvt-s32-u32' for 10 iterations.
-Ran 'TestCvt-s32-u64' for 18 iterations.
-Ran 'TestCvt-s32-s8' for 10 iterations.
-Ran 'TestCvt-s32-s16' for 10 iterations.
-Ran 'TestCvt-s32-s32' for 10 iterations.
-Ran 'TestCvt-s32-s64' for 18 iterations.
+Ran 'TestCvt-s16-u8' for 8 iterations.
+Ran 'TestCvt-s16-u16' for 8 iterations.
+Ran 'TestCvt-s16-u32' for 8 iterations.
+Ran 'TestCvt-s16-u64' for 8 iterations.
+Ran 'TestCvt-s16-s8' for 8 iterations.
+Ran 'TestCvt-s16-s16' for 8 iterations.
+Ran 'TestCvt-s16-s32' for 8 iterations.
+Ran 'TestCvt-s16-s64' for 8 iterations.
+Ran 'TestCvt-s16-f32' for 6 iterations.
+Ran 'TestCvt-s16-f64' for 7 iterations.
+Ran 'TestCvt-s32-u8' for 8 iterations.
+Ran 'TestCvt-s32-u16' for 6 iterations.
+Ran 'TestCvt-s32-u32' for 8 iterations.
+Ran 'TestCvt-s32-u64' for 8 iterations.
+Ran 'TestCvt-s32-s8' for 8 iterations.
+Ran 'TestCvt-s32-s16' for 8 iterations.
+Ran 'TestCvt-s32-s32' for 8 iterations.
+Ran 'TestCvt-s32-s64' for 8 iterations.
 Ran 'TestCvt-s32-f32' for 7 iterations.
 Ran 'TestCvt-s32-f64' for 7 iterations.
-Ran 'TestCvt-s64-u8' for 11 iterations.
-Ran 'TestCvt-s64-u16' for 10 iterations.
-Ran 'TestCvt-s64-u32' for 10 iterations.
-Ran 'TestCvt-s64-u64' for 17 iterations.
-Ran 'TestCvt-s64-s8' for 11 iterations.
-Ran 'TestCvt-s64-s16' for 10 iterations.
-Ran 'TestCvt-s64-s32' for 10 iterations.
-Ran 'TestCvt-s64-s64' for 17 iterations.
-Ran 'TestCvt-s64-f32' for 7 iterations.
+Ran 'TestCvt-s64-u8' for 8 iterations.
+Ran 'TestCvt-s64-u16' for 8 iterations.
+Ran 'TestCvt-s64-u32' for 8 iterations.
+Ran 'TestCvt-s64-u64' for 8 iterations.
+Ran 'TestCvt-s64-s8' for 8 iterations.
+Ran 'TestCvt-s64-s16' for 8 iterations.
+Ran 'TestCvt-s64-s32' for 8 iterations.
+Ran 'TestCvt-s64-s64' for 8 iterations.
+Ran 'TestCvt-s64-f32' for 6 iterations.
 Ran 'TestCvt-s64-f64' for 7 iterations.
-Ran 'TestCvt-f32-u8' for 10 iterations.
-Ran 'TestCvt-f32-u16' for 10 iterations.
-Ran 'TestCvt-f32-u32' for 10 iterations.
-Ran 'TestCvt-f32-u64' for 16 iterations.
-Ran 'TestCvt-f32-s8' for 10 iterations.
-Ran 'TestCvt-f32-s16' for 10 iterations.
-Ran 'TestCvt-f32-s32' for 10 iterations.
-Ran 'TestCvt-f32-s64' for 16 iterations.
-Ran 'TestCvt-f32-f32' for 9 iterations.
-Ran 'TestCvt-f32-f32-rz' for 10 iterations.
-Ran 'TestCvt-f32-f64' for 11 iterations.
-Ran 'TestCvt-f64-u8' for 11 iterations.
-Ran 'TestCvt-f64-u16' for 10 iterations.
-Ran 'TestCvt-f64-u32' for 10 iterations.
-Ran 'TestCvt-f64-u64' for 16 iterations.
-Ran 'TestCvt-f64-s8' for 11 iterations.
-Ran 'TestCvt-f64-s16' for 10 iterations.
-Ran 'TestCvt-f64-s32' for 10 iterations.
-Ran 'TestCvt-f64-s64' for 18 iterations.
-Ran 'TestCvt-f64-f32' for 11 iterations.
-Ran 'TestCvt-f64-f64' for 11 iterations.
-Ran 'TestLocalMemory-u8' for 10 iterations.
-Ran 'TestLocalMemory-u8-global' for 9 iterations.
+Ran 'TestCvt-f32-u8' for 8 iterations.
+Ran 'TestCvt-f32-u16' for 8 iterations.
+Ran 'TestCvt-f32-u32' for 7 iterations.
+Ran 'TestCvt-f32-u64' for 8 iterations.
+Ran 'TestCvt-f32-s8' for 8 iterations.
+Ran 'TestCvt-f32-s16' for 8 iterations.
+Ran 'TestCvt-f32-s32' for 7 iterations.
+Ran 'TestCvt-f32-s64' for 8 iterations.
+Ran 'TestCvt-f32-f32' for 8 iterations.
+Ran 'TestCvt-f32-f32-rz' for 8 iterations.
+Ran 'TestCvt-f32-f64' for 8 iterations.
+Ran 'TestCvt-f64-u8' for 8 iterations.
+Ran 'TestCvt-f64-u16' for 8 iterations.
+Ran 'TestCvt-f64-u32' for 8 iterations.
+Ran 'TestCvt-f64-u64' for 7 iterations.
+Ran 'TestCvt-f64-s8' for 8 iterations.
+Ran 'TestCvt-f64-s16' for 8 iterations.
+Ran 'TestCvt-f64-s32' for 8 iterations.
+Ran 'TestCvt-f64-s64' for 8 iterations.
+Ran 'TestCvt-f64-f32' for 8 iterations.
+Ran 'TestCvt-f64-f64' for 8 iterations.
+Ran 'TestLocalMemory-u8' for 8 iterations.
+Ran 'TestLocalMemory-u8-global' for 7 iterations.
 Ran 'TestLocalMemory-u8-scoped' for 4 iterations.
 Ran 'TestLocalMemory-u8-global-scoped' for 4 iterations.
 Ran 'TestCvta-local-u64' for 7 iterations.
-Ran 'TestCvta-global-u64' for 9 iterations.
-Ran 'TestCvta-shared-u64' for 8 iterations.
+Ran 'TestCvta-global-u64' for 7 iterations.
+Ran 'TestCvta-shared-u64' for 7 iterations.
 
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser
-INFO     Test completed in 35.3420391083 seconds
+INFO     Test completed in 34.8980739117 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1039,8 +1192,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1320182624
-Test time : 35.2937
+Test Seed : 1320704621
+Test time : 34.8492
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Parse): Passed
@@ -1149,6 +1302,7 @@ For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/unstructured/vm.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/complex.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/unstructured/mcx_core.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx, Test Point 1 (Parse): Passed
@@ -1185,7 +1339,7 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Parse): Pa
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph
-INFO     Test completed in 45.0407681465 seconds
+INFO     Test completed in 44.7649128437 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1200,8 +1354,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1320182634
-Test time : 44.9956
+Test Seed : 1320704631
+Test time : 44.7105
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
@@ -2305,6 +2459,268 @@ Status : Testing Generic Dataflow
   For Kernel: _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
   For Kernel: _Z20_cudaRemoveShadowGMMifffi
   For Kernel: _Z20_cudaUpdateFastBgGMMifffPi
+ For File: ../tests/ptx/unstructured/complex.ptx
+  For Kernel: nv_sts_condattr_place_set
+  For Kernel: nv_sts_tqattr_ordered_get
+  For Kernel: nv_sts_cqattr_pshared_set
+  For Kernel: nv_hal_atomic_float64_add
+  For Kernel: nv_sts_sema_acquire
+  For Kernel: nv_sts_init_user
+  For Kernel: nv_atoi
+  For Kernel: nv_sts_cqattr_data_ptr_set
+  For Kernel: nv_hal_lq_unbind
+  For Kernel: nv_hal_interrupts_enable
+  For Kernel: nv_sts_wq_enqueue_me_and_reschedule
+  For Kernel: nv_hal_atomic_int_add
+  For Kernel: nv_hal_atomic_int_and
+  For Kernel: _Z26nv_hal_topology_node_allocP20nv_hal_topology_node
+  For Kernel: nv_sts_wq_cond_await
+  For Kernel: nv_sts_tq_gridattr_subdivision_dims_set
+  For Kernel: nv_vm_obj_destroy
+  For Kernel: nv_hal_thread_list_push_tail
+  For Kernel: nv_sts_cond_wait
+  For Kernel: nv_sts_tq_gridattr_join_count_get
+  For Kernel: nv_sts_cqattr_consumer_ordered_set
+  For Kernel: nv_sts_cqattr_place_set
+  For Kernel: nv_mts_tq_bind
+  For Kernel: nv_hal_thread_hdl_get
+  For Kernel: nv_sts_lq_destroy
+  For Kernel: nv_sts_condattr_destroy
+  For Kernel: nv_vm_objattr_file_hdl_set
+  For Kernel: nv_hal_in_kernel_mode
+  For Kernel: nv_vm_objattr_page_size_set
+  For Kernel: nv_hal_thread_size_get
+  For Kernel: nv_sts_cqattr_consumer_ordered_get
+  For Kernel: nv_sts_barrier_init
+  For Kernel: nv_hal_topology_node_first_child
+  For Kernel: nv_hal_atomic_float32_add
+  For Kernel: nv_hal_thread_context_ptr_get
+  For Kernel: nv_sts_mutexattr_init
+  For Kernel: nv_sts_cq_push_alloc
+  For Kernel: nv_sts_cqattr_init
+  For Kernel: nv_hal_atomic_int_or
+  For Kernel: nv_hal_complete_writes
+  For Kernel: nv_sts_channel_create
+  For Kernel: nv_sts_barrierattr_destroy
+  For Kernel: nv_sts_tq_create
+  For Kernel: nv_sts_cqattr_producer_ordered_get
+  For Kernel: nv_hal_phys_malloc
+  For Kernel: nv_sts_cq_pop_alloc
+  For Kernel: nv_hal_thread_tg_ptr_get
+  For Kernel: nv_sts_mutexattr_pshared_get
+  For Kernel: nv_sts_cqattr_consumer_single_set
+  For Kernel: nv_sts_barrierattr_place_get
+  For Kernel: nv_sts_tqattr_destroy
+  For Kernel: CUDAFE
+  For Kernel: nv_sts_tq_grid_create
+  For Kernel: nv_sts_tq_gridattr_destroy
+  For Kernel: nv_sts_spin_unlock
+  For Kernel: nv_sts_spin_lock
+  For Kernel: nv_sts_cq_pop_opaque
+  For Kernel: nv_sts_tq_gridattr_subdivision_levels_get
+  For Kernel: nv_sts_tq_gridattr_join_count_set
+  For Kernel: nv_sts_channel_connect
+  For Kernel: nv_hal_console_printf
+  For Kernel: nv_vm_objattr_pshared_get
+  For Kernel: nv_hal_thread_context_size_get
+  For Kernel: nv_sts_wqattr_init
+  For Kernel: nv_sts_spin_destroy
+  For Kernel: _Z23nv_sts_wqattr_place_getP15nv_sts_wqattr_tPP11nv_vm_place
+  For Kernel: nv_sts_mutexattr_place_get
+  For Kernel: _Z14GetNextCommandP11CUcmdBuffer
+  For Kernel: nv_hal_interrupts_disabled
+  For Kernel: nv_hal_config_params_get
+  For Kernel: nv_vm_objattr_file_hdl_get
+  For Kernel: nv_sts_semaattr_pshared_get
+  For Kernel: nv_sts_condattr_init
+  For Kernel: nv_hal_atomic_uint_add
+  For Kernel: nv_sts_semaattr_place_get
+  For Kernel: nv_vm_objattr_page_size_get
+  For Kernel: nv_hal_topology_node_sibling
+  For Kernel: nv_hal_atomic_uint_max
+  For Kernel: nv_hal_atomic_uint_exchange
+  For Kernel: nv_hal_atomic_int_sub
+  For Kernel: nv_sts_wq_barrier_await
+  For Kernel: nv_sts_sema_release
+  For Kernel: nv_sts_cq_push_commit
+  For Kernel: nv_sts_tqattr_buff_size_get
+  For Kernel: nv_sts_mutex_trylock
+  For Kernel: nv_sts_cqattr_kind_set
+  For Kernel: nv_sts_mutex_unlock
+  For Kernel: nv_sts_barrierattr_pshared_get
+  For Kernel: nv_sts_cq_push_opaque
+  For Kernel: nv_sts_sema_destroy
+  For Kernel: nv_hal_thread_unblock
+  For Kernel: nv_hal_thread_wait_count_set
+  For Kernel: nv_sts_cqattr_kind_get
+  For Kernel: nv_hal_thread_joined_exit_status_set
+  For Kernel: __nv_assert_func
+  For Kernel: nv_sts_wq_wakeup
+  For Kernel: nv_sts_semaattr_count_set
+  For Kernel: nv_hal_thread_wait_count_get
+  For Kernel: nv_sts_channelattr_place_get
+  For Kernel: nv_sts_cqattr_place_get
+  For Kernel: nv_hal_topology_node_cache_size
+  For Kernel: nv_sts_tqattr_prio_set
+  For Kernel: nv_sts_cqattr_consumer_single_get
+  For Kernel: nv_memcpy
+  For Kernel: nv_sts_mutex_destroy
+  For Kernel: nv_vm_objattr_pshared_set
+  For Kernel: nv_hal_atomic_uint_and
+  For Kernel: nv_hal_thread_exit
+  For Kernel: nv_sts_mutex_lock
+  For Kernel: nv_sts_semaattr_count_get
+  For Kernel: nv_hal_thread_block
+  For Kernel: nv_hal_atomic_uint_dec
+  For Kernel: nv_hal_topology_node_cpu_id
+  For Kernel: nv_hal_atomic_uint_compare_and_swap
+  For Kernel: nv_sts_sema_tryacquire
+  For Kernel: nv_sts_semaattr_pshared_set
+  For Kernel: nv_hal_topology_node_dram_size
+  For Kernel: _Z8cuBlockZv
+  For Kernel: nv_hal_enclosing_pow2
+  For Kernel: nv_sts_wq_sema_await
+  For Kernel: nv_sts_wq_mutex_await
+  For Kernel: nv_hal_atomic_int_exchange
+  For Kernel: nv_sts_sema_init
+  For Kernel: nv_hal_thread_prestart
+  For Kernel: nv_sts_cqattr_pshared_get
+  For Kernel: nv_sts_tq_destroy
+  For Kernel: nv_mts_tq_unbind
+  For Kernel: nv_hal_atomic_int_min
+  For Kernel: nv_hal_interrupts_disable
+  For Kernel: nv_hal_topology_node_is_active
+  For Kernel: nv_sts_tq_gridattr_subdivision_levels_set
+  For Kernel: nv_vm_init_phase1
+  For Kernel: nv_sts_wqattr_place_set
+  For Kernel: nv_sts_condattr_pshared_set
+  For Kernel: nv_sts_spin_trylock
+  For Kernel: nv_sts_wq_cq_await
+  For Kernel: _Z25nv_sts_wqattr_pshared_getP15nv_sts_wqattr_tPi
+  For Kernel: nv_sts_lq_thread_free_list_free
+  For Kernel: nv_hal_thread_joined_exit_status_get
+  For Kernel: nv_sts_cond_signal
+  For Kernel: nv_hal_topology_node_is_dram
+  For Kernel: nv_hal_thread_destroy
+  For Kernel: nv_sts_grid_retire
+  For Kernel: nv_sts_wqattr_pshared_set
+  For Kernel: nv_sts_tq_task_enqueue
+  For Kernel: nv_sts_lq_thread_free_list_malloc
+  For Kernel: nv_sts_condattr_pshared_get
+  For Kernel: cuMemAlloc_v2
+  For Kernel: nv_hal_thread_lq_channel_ptr_set
+  For Kernel: nv_sts_cond_init
+  For Kernel: nv_hal_topology_node_mp_set
+  For Kernel: nv_strcmp
+  For Kernel: nv_hal_thread_list_peek_head
+  For Kernel: nv_sts_cq_destroy
+  For Kernel: nv_hal_shutdown
+  For Kernel: nv_sts_cq_create
+  For Kernel: nv_vm_malloc_ext
+  For Kernel: nv_sts_grid_join
+  For Kernel: nv_hal_thread_init
+  For Kernel: nv_hal_atomic_int_max
+  For Kernel: nv_sts_lq_tg_retire
+  For Kernel: nv_vm_map_create
+  For Kernel: nv_sts_barrier_destroy
+  For Kernel: nv_sts_tqattr_ordered_set
+  For Kernel: nv_sts_cqattr_producer_ordered_set
+  For Kernel: nv_sts_tqattr_place_get
+  For Kernel: nv_hal_topology_init
+  For Kernel: nv_sts_channelattr_pshared_set
+  For Kernel: nv_hal_atomic_uint_xor
+  For Kernel: nv_mts_init
+  For Kernel: nv_sts_barrier_arrive
+  For Kernel: nv_hal_atomic_int_xor
+  For Kernel: nv_sts_tq_gridattr_init
+  For Kernel: nv_sts_tqattr_buff_size_set
+  For Kernel: nv_sts_semaattr_place_set
+  For Kernel: nv_sts_barrierattr_place_set
+  For Kernel: nv_hal_atomic_uint_or
+  For Kernel: nv_hal_topology_node_root
+  For Kernel: nv_vm_obj_resize
+  For Kernel: nv_sts_spin_init
+  For Kernel: nv_sts_cqattr_producer_single_set
+  For Kernel: nv_hal_atomic_safe_add
+  For Kernel: nv_sts_barrierattr_init
+  For Kernel: nv_sts_cq_pop_commit
+  For Kernel: nv_hal_thread_context_ptr_set
+  For Kernel: nv_hal_topology_node_is_latency_cpu
+  For Kernel: nv_vm_objattr_place_get
+  For Kernel: nv_hal_console_puts
+  For Kernel: _Z8cuBlockYv
+  For Kernel: cuLaunchKernel
+  For Kernel: nv_hal_topology_node_is_throughput_cpu
+  For Kernel: nv_sts_lq_init
+  For Kernel: nv_sts_wq_destroy
+  For Kernel: nv_hal_init
+  For Kernel: nv_hal_topology_node_cache_line_size
+  For Kernel: nv_sts_tq_gridattr_subdivision_dims_get
+  For Kernel: nv_sts_tqattr_pshared_get
+  For Kernel: _Z26nv_hal_thread_context_exitP14nv_hal_lq_tg_ti
+  For Kernel: nv_hal_atomic_uint_sub
+  For Kernel: nv_hal_lq_bind
+  For Kernel: nv_hal_thread_list_init
+  For Kernel: nv_sts_channelattr_place_set
+  For Kernel: nv_hal_thread_user_data_ptr_get_my
+  For Kernel: nv_vm_objattr_destroy
+  For Kernel: nv_hal_atomic_int_compare_and_swap
+  For Kernel: nv_sts_tqattr_pshared_set
+  For Kernel: nv_hal_topology_node_mp_get
+  For Kernel: nv_sts_mutex_init
+  For Kernel: nv_sts_channelattr_pshared_get
+  For Kernel: nv_vm_map_destroy
+  For Kernel: nv_sts_tqattr_place_set
+  For Kernel: nv_sts_mutexattr_pshared_set
+  For Kernel: nv_sts_cond_destroy
+  For Kernel: nv_sts_cqattr_producer_single_get
+  For Kernel: nv_hal_thread_user_stack_ptr_get
+  For Kernel: nv_hal_topology_node_is_cpu
+  For Kernel: nv_vm_obj_create
+  For Kernel: _Z9cuThreadZv
+  For Kernel: nv_hal_phys_free
+  For Kernel: nv_vm_free
+  For Kernel: _Z9cuThreadXv
+  For Kernel: nv_hal_topology_node_next_in_order
+  For Kernel: nv_hal_topology_node_max_threads_for_cpu
+  For Kernel: _Z8cuBlockXv
+  For Kernel: nv_sts_semaattr_init
+  For Kernel: _Z28nv_cuda_error_code_translatei
+  For Kernel: nv_sts_mutexattr_destroy
+  For Kernel: nv_sts_channelattr_destroy
+  For Kernel: _Z18nv_vm_malloc_largeP19nv_vm_malloc_pool_ty
+  For Kernel: nv_hal_topology_node_is_cache
+  For Kernel: nv_hal_topology_node_parent
+  For Kernel: cuMemcpyDtoD_v2
+  For Kernel: nv_hal_thread_user_data_ptr_get
+  For Kernel: nv_sts_cqattr_destroy
+  For Kernel: _Z22nv_sts_channel_destroyP14nv_sts_channel
+  For Kernel: nv_sts_semaattr_destroy
+  For Kernel: nv_sts_condattr_place_get
+  For Kernel: nv_vm_objattr_place_set
+  For Kernel: nv_sts_cqattr_data_ptr_get
+  For Kernel: nv_sts_tqattr_init
+  For Kernel: cuMemFree_v2
+  For Kernel: _Z24nv_vm_malloc_pool_createv
+  For Kernel: nv_sts_channelattr_init
+  For Kernel: nv_hal_topology_node_is_chip
+  For Kernel: nv_vm_objattr_init
+  For Kernel: nv_hal_thread_lq_channel_ptr_get
+  For Kernel: nv_vm_init_phase2
+  For Kernel: _Z9cuThreadYv
+  For Kernel: nv_hal_thread_user_data_ptr_set
+  For Kernel: nv_vm_place_for_topology_node
+  For Kernel: nv_sts_wqattr_destroy
+  For Kernel: nv_sts_cond_broadcast
+  For Kernel: nv_sts_tqattr_prio_get
+  For Kernel: nv_hal_thread_list_pop_head
+  For Kernel: nv_hal_thread_context_exit
+  For Kernel: nv_hal_atomic_uint_inc
+  For Kernel: nv_hal_atomic_uint_min
+  For Kernel: nv_sts_barrierattr_pshared_set
+  For Kernel: nv_sts_mutexattr_place_set
+  For Kernel: nv_sts_wq_create
+  For Kernel: nv_hal_thread_user_stack_ptr_set
  For File: ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
   For Kernel: _Z9init_PRNGiiiP4int2
   For Kernel: _Z4GCOaPfPdPiP4int2P14compton_struct
@@ -3924,6 +4340,268 @@ Testing SSA Dataflow
   For Kernel: _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
   For Kernel: _Z20_cudaRemoveShadowGMMifffi
   For Kernel: _Z20_cudaUpdateFastBgGMMifffPi
+ For File: ../tests/ptx/unstructured/complex.ptx
+  For Kernel: nv_sts_condattr_place_set
+  For Kernel: nv_sts_tqattr_ordered_get
+  For Kernel: nv_sts_cqattr_pshared_set
+  For Kernel: nv_hal_atomic_float64_add
+  For Kernel: nv_sts_sema_acquire
+  For Kernel: nv_sts_init_user
+  For Kernel: nv_atoi
+  For Kernel: nv_sts_cqattr_data_ptr_set
+  For Kernel: nv_hal_lq_unbind
+  For Kernel: nv_hal_interrupts_enable
+  For Kernel: nv_sts_wq_enqueue_me_and_reschedule
+  For Kernel: nv_hal_atomic_int_add
+  For Kernel: nv_hal_atomic_int_and
+  For Kernel: _Z26nv_hal_topology_node_allocP20nv_hal_topology_node
+  For Kernel: nv_sts_wq_cond_await
+  For Kernel: nv_sts_tq_gridattr_subdivision_dims_set
+  For Kernel: nv_vm_obj_destroy
+  For Kernel: nv_hal_thread_list_push_tail
+  For Kernel: nv_sts_cond_wait
+  For Kernel: nv_sts_tq_gridattr_join_count_get
+  For Kernel: nv_sts_cqattr_consumer_ordered_set
+  For Kernel: nv_sts_cqattr_place_set
+  For Kernel: nv_mts_tq_bind
+  For Kernel: nv_hal_thread_hdl_get
+  For Kernel: nv_sts_lq_destroy
+  For Kernel: nv_sts_condattr_destroy
+  For Kernel: nv_vm_objattr_file_hdl_set
+  For Kernel: nv_hal_in_kernel_mode
+  For Kernel: nv_vm_objattr_page_size_set
+  For Kernel: nv_hal_thread_size_get
+  For Kernel: nv_sts_cqattr_consumer_ordered_get
+  For Kernel: nv_sts_barrier_init
+  For Kernel: nv_hal_topology_node_first_child
+  For Kernel: nv_hal_atomic_float32_add
+  For Kernel: nv_hal_thread_context_ptr_get
+  For Kernel: nv_sts_mutexattr_init
+  For Kernel: nv_sts_cq_push_alloc
+  For Kernel: nv_sts_cqattr_init
+  For Kernel: nv_hal_atomic_int_or
+  For Kernel: nv_hal_complete_writes
+  For Kernel: nv_sts_channel_create
+  For Kernel: nv_sts_barrierattr_destroy
+  For Kernel: nv_sts_tq_create
+  For Kernel: nv_sts_cqattr_producer_ordered_get
+  For Kernel: nv_hal_phys_malloc
+  For Kernel: nv_sts_cq_pop_alloc
+  For Kernel: nv_hal_thread_tg_ptr_get
+  For Kernel: nv_sts_mutexattr_pshared_get
+  For Kernel: nv_sts_cqattr_consumer_single_set
+  For Kernel: nv_sts_barrierattr_place_get
+  For Kernel: nv_sts_tqattr_destroy
+  For Kernel: CUDAFE
+  For Kernel: nv_sts_tq_grid_create
+  For Kernel: nv_sts_tq_gridattr_destroy
+  For Kernel: nv_sts_spin_unlock
+  For Kernel: nv_sts_spin_lock
+  For Kernel: nv_sts_cq_pop_opaque
+  For Kernel: nv_sts_tq_gridattr_subdivision_levels_get
+  For Kernel: nv_sts_tq_gridattr_join_count_set
+  For Kernel: nv_sts_channel_connect
+  For Kernel: nv_hal_console_printf
+  For Kernel: nv_vm_objattr_pshared_get
+  For Kernel: nv_hal_thread_context_size_get
+  For Kernel: nv_sts_wqattr_init
+  For Kernel: nv_sts_spin_destroy
+  For Kernel: _Z23nv_sts_wqattr_place_getP15nv_sts_wqattr_tPP11nv_vm_place
+  For Kernel: nv_sts_mutexattr_place_get
+  For Kernel: _Z14GetNextCommandP11CUcmdBuffer
+  For Kernel: nv_hal_interrupts_disabled
+  For Kernel: nv_hal_config_params_get
+  For Kernel: nv_vm_objattr_file_hdl_get
+  For Kernel: nv_sts_semaattr_pshared_get
+  For Kernel: nv_sts_condattr_init
+  For Kernel: nv_hal_atomic_uint_add
+  For Kernel: nv_sts_semaattr_place_get
+  For Kernel: nv_vm_objattr_page_size_get
+  For Kernel: nv_hal_topology_node_sibling
+  For Kernel: nv_hal_atomic_uint_max
+  For Kernel: nv_hal_atomic_uint_exchange
+  For Kernel: nv_hal_atomic_int_sub
+  For Kernel: nv_sts_wq_barrier_await
+  For Kernel: nv_sts_sema_release
+  For Kernel: nv_sts_cq_push_commit
+  For Kernel: nv_sts_tqattr_buff_size_get
+  For Kernel: nv_sts_mutex_trylock
+  For Kernel: nv_sts_cqattr_kind_set
+  For Kernel: nv_sts_mutex_unlock
+  For Kernel: nv_sts_barrierattr_pshared_get
+  For Kernel: nv_sts_cq_push_opaque
+  For Kernel: nv_sts_sema_destroy
+  For Kernel: nv_hal_thread_unblock
+  For Kernel: nv_hal_thread_wait_count_set
+  For Kernel: nv_sts_cqattr_kind_get
+  For Kernel: nv_hal_thread_joined_exit_status_set
+  For Kernel: __nv_assert_func
+  For Kernel: nv_sts_wq_wakeup
+  For Kernel: nv_sts_semaattr_count_set
+  For Kernel: nv_hal_thread_wait_count_get
+  For Kernel: nv_sts_channelattr_place_get
+  For Kernel: nv_sts_cqattr_place_get
+  For Kernel: nv_hal_topology_node_cache_size
+  For Kernel: nv_sts_tqattr_prio_set
+  For Kernel: nv_sts_cqattr_consumer_single_get
+  For Kernel: nv_memcpy
+  For Kernel: nv_sts_mutex_destroy
+  For Kernel: nv_vm_objattr_pshared_set
+  For Kernel: nv_hal_atomic_uint_and
+  For Kernel: nv_hal_thread_exit
+  For Kernel: nv_sts_mutex_lock
+  For Kernel: nv_sts_semaattr_count_get
+  For Kernel: nv_hal_thread_block
+  For Kernel: nv_hal_atomic_uint_dec
+  For Kernel: nv_hal_topology_node_cpu_id
+  For Kernel: nv_hal_atomic_uint_compare_and_swap
+  For Kernel: nv_sts_sema_tryacquire
+  For Kernel: nv_sts_semaattr_pshared_set
+  For Kernel: nv_hal_topology_node_dram_size
+  For Kernel: _Z8cuBlockZv
+  For Kernel: nv_hal_enclosing_pow2
+  For Kernel: nv_sts_wq_sema_await
+  For Kernel: nv_sts_wq_mutex_await
+  For Kernel: nv_hal_atomic_int_exchange
+  For Kernel: nv_sts_sema_init
+  For Kernel: nv_hal_thread_prestart
+  For Kernel: nv_sts_cqattr_pshared_get
+  For Kernel: nv_sts_tq_destroy
+  For Kernel: nv_mts_tq_unbind
+  For Kernel: nv_hal_atomic_int_min
+  For Kernel: nv_hal_interrupts_disable
+  For Kernel: nv_hal_topology_node_is_active
+  For Kernel: nv_sts_tq_gridattr_subdivision_levels_set
+  For Kernel: nv_vm_init_phase1
+  For Kernel: nv_sts_wqattr_place_set
+  For Kernel: nv_sts_condattr_pshared_set
+  For Kernel: nv_sts_spin_trylock
+  For Kernel: nv_sts_wq_cq_await
+  For Kernel: _Z25nv_sts_wqattr_pshared_getP15nv_sts_wqattr_tPi
+  For Kernel: nv_sts_lq_thread_free_list_free
+  For Kernel: nv_hal_thread_joined_exit_status_get
+  For Kernel: nv_sts_cond_signal
+  For Kernel: nv_hal_topology_node_is_dram
+  For Kernel: nv_hal_thread_destroy
+  For Kernel: nv_sts_grid_retire
+  For Kernel: nv_sts_wqattr_pshared_set
+  For Kernel: nv_sts_tq_task_enqueue
+  For Kernel: nv_sts_lq_thread_free_list_malloc
+  For Kernel: nv_sts_condattr_pshared_get
+  For Kernel: cuMemAlloc_v2
+  For Kernel: nv_hal_thread_lq_channel_ptr_set
+  For Kernel: nv_sts_cond_init
+  For Kernel: nv_hal_topology_node_mp_set
+  For Kernel: nv_strcmp
+  For Kernel: nv_hal_thread_list_peek_head
+  For Kernel: nv_sts_cq_destroy
+  For Kernel: nv_hal_shutdown
+  For Kernel: nv_sts_cq_create
+  For Kernel: nv_vm_malloc_ext
+  For Kernel: nv_sts_grid_join
+  For Kernel: nv_hal_thread_init
+  For Kernel: nv_hal_atomic_int_max
+  For Kernel: nv_sts_lq_tg_retire
+  For Kernel: nv_vm_map_create
+  For Kernel: nv_sts_barrier_destroy
+  For Kernel: nv_sts_tqattr_ordered_set
+  For Kernel: nv_sts_cqattr_producer_ordered_set
+  For Kernel: nv_sts_tqattr_place_get
+  For Kernel: nv_hal_topology_init
+  For Kernel: nv_sts_channelattr_pshared_set
+  For Kernel: nv_hal_atomic_uint_xor
+  For Kernel: nv_mts_init
+  For Kernel: nv_sts_barrier_arrive
+  For Kernel: nv_hal_atomic_int_xor
+  For Kernel: nv_sts_tq_gridattr_init
+  For Kernel: nv_sts_tqattr_buff_size_set
+  For Kernel: nv_sts_semaattr_place_set
+  For Kernel: nv_sts_barrierattr_place_set
+  For Kernel: nv_hal_atomic_uint_or
+  For Kernel: nv_hal_topology_node_root
+  For Kernel: nv_vm_obj_resize
+  For Kernel: nv_sts_spin_init
+  For Kernel: nv_sts_cqattr_producer_single_set
+  For Kernel: nv_hal_atomic_safe_add
+  For Kernel: nv_sts_barrierattr_init
+  For Kernel: nv_sts_cq_pop_commit
+  For Kernel: nv_hal_thread_context_ptr_set
+  For Kernel: nv_hal_topology_node_is_latency_cpu
+  For Kernel: nv_vm_objattr_place_get
+  For Kernel: nv_hal_console_puts
+  For Kernel: _Z8cuBlockYv
+  For Kernel: cuLaunchKernel
+  For Kernel: nv_hal_topology_node_is_throughput_cpu
+  For Kernel: nv_sts_lq_init
+  For Kernel: nv_sts_wq_destroy
+  For Kernel: nv_hal_init
+  For Kernel: nv_hal_topology_node_cache_line_size
+  For Kernel: nv_sts_tq_gridattr_subdivision_dims_get
+  For Kernel: nv_sts_tqattr_pshared_get
+  For Kernel: _Z26nv_hal_thread_context_exitP14nv_hal_lq_tg_ti
+  For Kernel: nv_hal_atomic_uint_sub
+  For Kernel: nv_hal_lq_bind
+  For Kernel: nv_hal_thread_list_init
+  For Kernel: nv_sts_channelattr_place_set
+  For Kernel: nv_hal_thread_user_data_ptr_get_my
+  For Kernel: nv_vm_objattr_destroy
+  For Kernel: nv_hal_atomic_int_compare_and_swap
+  For Kernel: nv_sts_tqattr_pshared_set
+  For Kernel: nv_hal_topology_node_mp_get
+  For Kernel: nv_sts_mutex_init
+  For Kernel: nv_sts_channelattr_pshared_get
+  For Kernel: nv_vm_map_destroy
+  For Kernel: nv_sts_tqattr_place_set
+  For Kernel: nv_sts_mutexattr_pshared_set
+  For Kernel: nv_sts_cond_destroy
+  For Kernel: nv_sts_cqattr_producer_single_get
+  For Kernel: nv_hal_thread_user_stack_ptr_get
+  For Kernel: nv_hal_topology_node_is_cpu
+  For Kernel: nv_vm_obj_create
+  For Kernel: _Z9cuThreadZv
+  For Kernel: nv_hal_phys_free
+  For Kernel: nv_vm_free
+  For Kernel: _Z9cuThreadXv
+  For Kernel: nv_hal_topology_node_next_in_order
+  For Kernel: nv_hal_topology_node_max_threads_for_cpu
+  For Kernel: _Z8cuBlockXv
+  For Kernel: nv_sts_semaattr_init
+  For Kernel: _Z28nv_cuda_error_code_translatei
+  For Kernel: nv_sts_mutexattr_destroy
+  For Kernel: nv_sts_channelattr_destroy
+  For Kernel: _Z18nv_vm_malloc_largeP19nv_vm_malloc_pool_ty
+  For Kernel: nv_hal_topology_node_is_cache
+  For Kernel: nv_hal_topology_node_parent
+  For Kernel: cuMemcpyDtoD_v2
+  For Kernel: nv_hal_thread_user_data_ptr_get
+  For Kernel: nv_sts_cqattr_destroy
+  For Kernel: _Z22nv_sts_channel_destroyP14nv_sts_channel
+  For Kernel: nv_sts_semaattr_destroy
+  For Kernel: nv_sts_condattr_place_get
+  For Kernel: nv_vm_objattr_place_set
+  For Kernel: nv_sts_cqattr_data_ptr_get
+  For Kernel: nv_sts_tqattr_init
+  For Kernel: cuMemFree_v2
+  For Kernel: _Z24nv_vm_malloc_pool_createv
+  For Kernel: nv_sts_channelattr_init
+  For Kernel: nv_hal_topology_node_is_chip
+  For Kernel: nv_vm_objattr_init
+  For Kernel: nv_hal_thread_lq_channel_ptr_get
+  For Kernel: nv_vm_init_phase2
+  For Kernel: _Z9cuThreadYv
+  For Kernel: nv_hal_thread_user_data_ptr_set
+  For Kernel: nv_vm_place_for_topology_node
+  For Kernel: nv_sts_wqattr_destroy
+  For Kernel: nv_sts_cond_broadcast
+  For Kernel: nv_sts_tqattr_prio_get
+  For Kernel: nv_hal_thread_list_pop_head
+  For Kernel: nv_hal_thread_context_exit
+  For Kernel: nv_hal_atomic_uint_inc
+  For Kernel: nv_hal_atomic_uint_min
+  For Kernel: nv_sts_barrierattr_pshared_set
+  For Kernel: nv_sts_mutexattr_place_set
+  For Kernel: nv_sts_wq_create
+  For Kernel: nv_hal_thread_user_stack_ptr_set
  For File: ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
   For Kernel: _Z9init_PRNGiiiP4int2
   For Kernel: _Z4GCOaPfPdPiP4int2P14compton_struct
@@ -5543,6 +6221,268 @@ Testing SSA then back Dataflow
   For Kernel: _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
   For Kernel: _Z20_cudaRemoveShadowGMMifffi
   For Kernel: _Z20_cudaUpdateFastBgGMMifffPi
+ For File: ../tests/ptx/unstructured/complex.ptx
+  For Kernel: nv_sts_condattr_place_set
+  For Kernel: nv_sts_tqattr_ordered_get
+  For Kernel: nv_sts_cqattr_pshared_set
+  For Kernel: nv_hal_atomic_float64_add
+  For Kernel: nv_sts_sema_acquire
+  For Kernel: nv_sts_init_user
+  For Kernel: nv_atoi
+  For Kernel: nv_sts_cqattr_data_ptr_set
+  For Kernel: nv_hal_lq_unbind
+  For Kernel: nv_hal_interrupts_enable
+  For Kernel: nv_sts_wq_enqueue_me_and_reschedule
+  For Kernel: nv_hal_atomic_int_add
+  For Kernel: nv_hal_atomic_int_and
+  For Kernel: _Z26nv_hal_topology_node_allocP20nv_hal_topology_node
+  For Kernel: nv_sts_wq_cond_await
+  For Kernel: nv_sts_tq_gridattr_subdivision_dims_set
+  For Kernel: nv_vm_obj_destroy
+  For Kernel: nv_hal_thread_list_push_tail
+  For Kernel: nv_sts_cond_wait
+  For Kernel: nv_sts_tq_gridattr_join_count_get
+  For Kernel: nv_sts_cqattr_consumer_ordered_set
+  For Kernel: nv_sts_cqattr_place_set
+  For Kernel: nv_mts_tq_bind
+  For Kernel: nv_hal_thread_hdl_get
+  For Kernel: nv_sts_lq_destroy
+  For Kernel: nv_sts_condattr_destroy
+  For Kernel: nv_vm_objattr_file_hdl_set
+  For Kernel: nv_hal_in_kernel_mode
+  For Kernel: nv_vm_objattr_page_size_set
+  For Kernel: nv_hal_thread_size_get
+  For Kernel: nv_sts_cqattr_consumer_ordered_get
+  For Kernel: nv_sts_barrier_init
+  For Kernel: nv_hal_topology_node_first_child
+  For Kernel: nv_hal_atomic_float32_add
+  For Kernel: nv_hal_thread_context_ptr_get
+  For Kernel: nv_sts_mutexattr_init
+  For Kernel: nv_sts_cq_push_alloc
+  For Kernel: nv_sts_cqattr_init
+  For Kernel: nv_hal_atomic_int_or
+  For Kernel: nv_hal_complete_writes
+  For Kernel: nv_sts_channel_create
+  For Kernel: nv_sts_barrierattr_destroy
+  For Kernel: nv_sts_tq_create
+  For Kernel: nv_sts_cqattr_producer_ordered_get
+  For Kernel: nv_hal_phys_malloc
+  For Kernel: nv_sts_cq_pop_alloc
+  For Kernel: nv_hal_thread_tg_ptr_get
+  For Kernel: nv_sts_mutexattr_pshared_get
+  For Kernel: nv_sts_cqattr_consumer_single_set
+  For Kernel: nv_sts_barrierattr_place_get
+  For Kernel: nv_sts_tqattr_destroy
+  For Kernel: CUDAFE
+  For Kernel: nv_sts_tq_grid_create
+  For Kernel: nv_sts_tq_gridattr_destroy
+  For Kernel: nv_sts_spin_unlock
+  For Kernel: nv_sts_spin_lock
+  For Kernel: nv_sts_cq_pop_opaque
+  For Kernel: nv_sts_tq_gridattr_subdivision_levels_get
+  For Kernel: nv_sts_tq_gridattr_join_count_set
+  For Kernel: nv_sts_channel_connect
+  For Kernel: nv_hal_console_printf
+  For Kernel: nv_vm_objattr_pshared_get
+  For Kernel: nv_hal_thread_context_size_get
+  For Kernel: nv_sts_wqattr_init
+  For Kernel: nv_sts_spin_destroy
+  For Kernel: _Z23nv_sts_wqattr_place_getP15nv_sts_wqattr_tPP11nv_vm_place
+  For Kernel: nv_sts_mutexattr_place_get
+  For Kernel: _Z14GetNextCommandP11CUcmdBuffer
+  For Kernel: nv_hal_interrupts_disabled
+  For Kernel: nv_hal_config_params_get
+  For Kernel: nv_vm_objattr_file_hdl_get
+  For Kernel: nv_sts_semaattr_pshared_get
+  For Kernel: nv_sts_condattr_init
+  For Kernel: nv_hal_atomic_uint_add
+  For Kernel: nv_sts_semaattr_place_get
+  For Kernel: nv_vm_objattr_page_size_get
+  For Kernel: nv_hal_topology_node_sibling
+  For Kernel: nv_hal_atomic_uint_max
+  For Kernel: nv_hal_atomic_uint_exchange
+  For Kernel: nv_hal_atomic_int_sub
+  For Kernel: nv_sts_wq_barrier_await
+  For Kernel: nv_sts_sema_release
+  For Kernel: nv_sts_cq_push_commit
+  For Kernel: nv_sts_tqattr_buff_size_get
+  For Kernel: nv_sts_mutex_trylock
+  For Kernel: nv_sts_cqattr_kind_set
+  For Kernel: nv_sts_mutex_unlock
+  For Kernel: nv_sts_barrierattr_pshared_get
+  For Kernel: nv_sts_cq_push_opaque
+  For Kernel: nv_sts_sema_destroy
+  For Kernel: nv_hal_thread_unblock
+  For Kernel: nv_hal_thread_wait_count_set
+  For Kernel: nv_sts_cqattr_kind_get
+  For Kernel: nv_hal_thread_joined_exit_status_set
+  For Kernel: __nv_assert_func
+  For Kernel: nv_sts_wq_wakeup
+  For Kernel: nv_sts_semaattr_count_set
+  For Kernel: nv_hal_thread_wait_count_get
+  For Kernel: nv_sts_channelattr_place_get
+  For Kernel: nv_sts_cqattr_place_get
+  For Kernel: nv_hal_topology_node_cache_size
+  For Kernel: nv_sts_tqattr_prio_set
+  For Kernel: nv_sts_cqattr_consumer_single_get
+  For Kernel: nv_memcpy
+  For Kernel: nv_sts_mutex_destroy
+  For Kernel: nv_vm_objattr_pshared_set
+  For Kernel: nv_hal_atomic_uint_and
+  For Kernel: nv_hal_thread_exit
+  For Kernel: nv_sts_mutex_lock
+  For Kernel: nv_sts_semaattr_count_get
+  For Kernel: nv_hal_thread_block
+  For Kernel: nv_hal_atomic_uint_dec
+  For Kernel: nv_hal_topology_node_cpu_id
+  For Kernel: nv_hal_atomic_uint_compare_and_swap
+  For Kernel: nv_sts_sema_tryacquire
+  For Kernel: nv_sts_semaattr_pshared_set
+  For Kernel: nv_hal_topology_node_dram_size
+  For Kernel: _Z8cuBlockZv
+  For Kernel: nv_hal_enclosing_pow2
+  For Kernel: nv_sts_wq_sema_await
+  For Kernel: nv_sts_wq_mutex_await
+  For Kernel: nv_hal_atomic_int_exchange
+  For Kernel: nv_sts_sema_init
+  For Kernel: nv_hal_thread_prestart
+  For Kernel: nv_sts_cqattr_pshared_get
+  For Kernel: nv_sts_tq_destroy
+  For Kernel: nv_mts_tq_unbind
+  For Kernel: nv_hal_atomic_int_min
+  For Kernel: nv_hal_interrupts_disable
+  For Kernel: nv_hal_topology_node_is_active
+  For Kernel: nv_sts_tq_gridattr_subdivision_levels_set
+  For Kernel: nv_vm_init_phase1
+  For Kernel: nv_sts_wqattr_place_set
+  For Kernel: nv_sts_condattr_pshared_set
+  For Kernel: nv_sts_spin_trylock
+  For Kernel: nv_sts_wq_cq_await
+  For Kernel: _Z25nv_sts_wqattr_pshared_getP15nv_sts_wqattr_tPi
+  For Kernel: nv_sts_lq_thread_free_list_free
+  For Kernel: nv_hal_thread_joined_exit_status_get
+  For Kernel: nv_sts_cond_signal
+  For Kernel: nv_hal_topology_node_is_dram
+  For Kernel: nv_hal_thread_destroy
+  For Kernel: nv_sts_grid_retire
+  For Kernel: nv_sts_wqattr_pshared_set
+  For Kernel: nv_sts_tq_task_enqueue
+  For Kernel: nv_sts_lq_thread_free_list_malloc
+  For Kernel: nv_sts_condattr_pshared_get
+  For Kernel: cuMemAlloc_v2
+  For Kernel: nv_hal_thread_lq_channel_ptr_set
+  For Kernel: nv_sts_cond_init
+  For Kernel: nv_hal_topology_node_mp_set
+  For Kernel: nv_strcmp
+  For Kernel: nv_hal_thread_list_peek_head
+  For Kernel: nv_sts_cq_destroy
+  For Kernel: nv_hal_shutdown
+  For Kernel: nv_sts_cq_create
+  For Kernel: nv_vm_malloc_ext
+  For Kernel: nv_sts_grid_join
+  For Kernel: nv_hal_thread_init
+  For Kernel: nv_hal_atomic_int_max
+  For Kernel: nv_sts_lq_tg_retire
+  For Kernel: nv_vm_map_create
+  For Kernel: nv_sts_barrier_destroy
+  For Kernel: nv_sts_tqattr_ordered_set
+  For Kernel: nv_sts_cqattr_producer_ordered_set
+  For Kernel: nv_sts_tqattr_place_get
+  For Kernel: nv_hal_topology_init
+  For Kernel: nv_sts_channelattr_pshared_set
+  For Kernel: nv_hal_atomic_uint_xor
+  For Kernel: nv_mts_init
+  For Kernel: nv_sts_barrier_arrive
+  For Kernel: nv_hal_atomic_int_xor
+  For Kernel: nv_sts_tq_gridattr_init
+  For Kernel: nv_sts_tqattr_buff_size_set
+  For Kernel: nv_sts_semaattr_place_set
+  For Kernel: nv_sts_barrierattr_place_set
+  For Kernel: nv_hal_atomic_uint_or
+  For Kernel: nv_hal_topology_node_root
+  For Kernel: nv_vm_obj_resize
+  For Kernel: nv_sts_spin_init
+  For Kernel: nv_sts_cqattr_producer_single_set
+  For Kernel: nv_hal_atomic_safe_add
+  For Kernel: nv_sts_barrierattr_init
+  For Kernel: nv_sts_cq_pop_commit
+  For Kernel: nv_hal_thread_context_ptr_set
+  For Kernel: nv_hal_topology_node_is_latency_cpu
+  For Kernel: nv_vm_objattr_place_get
+  For Kernel: nv_hal_console_puts
+  For Kernel: _Z8cuBlockYv
+  For Kernel: cuLaunchKernel
+  For Kernel: nv_hal_topology_node_is_throughput_cpu
+  For Kernel: nv_sts_lq_init
+  For Kernel: nv_sts_wq_destroy
+  For Kernel: nv_hal_init
+  For Kernel: nv_hal_topology_node_cache_line_size
+  For Kernel: nv_sts_tq_gridattr_subdivision_dims_get
+  For Kernel: nv_sts_tqattr_pshared_get
+  For Kernel: _Z26nv_hal_thread_context_exitP14nv_hal_lq_tg_ti
+  For Kernel: nv_hal_atomic_uint_sub
+  For Kernel: nv_hal_lq_bind
+  For Kernel: nv_hal_thread_list_init
+  For Kernel: nv_sts_channelattr_place_set
+  For Kernel: nv_hal_thread_user_data_ptr_get_my
+  For Kernel: nv_vm_objattr_destroy
+  For Kernel: nv_hal_atomic_int_compare_and_swap
+  For Kernel: nv_sts_tqattr_pshared_set
+  For Kernel: nv_hal_topology_node_mp_get
+  For Kernel: nv_sts_mutex_init
+  For Kernel: nv_sts_channelattr_pshared_get
+  For Kernel: nv_vm_map_destroy
+  For Kernel: nv_sts_tqattr_place_set
+  For Kernel: nv_sts_mutexattr_pshared_set
+  For Kernel: nv_sts_cond_destroy
+  For Kernel: nv_sts_cqattr_producer_single_get
+  For Kernel: nv_hal_thread_user_stack_ptr_get
+  For Kernel: nv_hal_topology_node_is_cpu
+  For Kernel: nv_vm_obj_create
+  For Kernel: _Z9cuThreadZv
+  For Kernel: nv_hal_phys_free
+  For Kernel: nv_vm_free
+  For Kernel: _Z9cuThreadXv
+  For Kernel: nv_hal_topology_node_next_in_order
+  For Kernel: nv_hal_topology_node_max_threads_for_cpu
+  For Kernel: _Z8cuBlockXv
+  For Kernel: nv_sts_semaattr_init
+  For Kernel: _Z28nv_cuda_error_code_translatei
+  For Kernel: nv_sts_mutexattr_destroy
+  For Kernel: nv_sts_channelattr_destroy
+  For Kernel: _Z18nv_vm_malloc_largeP19nv_vm_malloc_pool_ty
+  For Kernel: nv_hal_topology_node_is_cache
+  For Kernel: nv_hal_topology_node_parent
+  For Kernel: cuMemcpyDtoD_v2
+  For Kernel: nv_hal_thread_user_data_ptr_get
+  For Kernel: nv_sts_cqattr_destroy
+  For Kernel: _Z22nv_sts_channel_destroyP14nv_sts_channel
+  For Kernel: nv_sts_semaattr_destroy
+  For Kernel: nv_sts_condattr_place_get
+  For Kernel: nv_vm_objattr_place_set
+  For Kernel: nv_sts_cqattr_data_ptr_get
+  For Kernel: nv_sts_tqattr_init
+  For Kernel: cuMemFree_v2
+  For Kernel: _Z24nv_vm_malloc_pool_createv
+  For Kernel: nv_sts_channelattr_init
+  For Kernel: nv_hal_topology_node_is_chip
+  For Kernel: nv_vm_objattr_init
+  For Kernel: nv_hal_thread_lq_channel_ptr_get
+  For Kernel: nv_vm_init_phase2
+  For Kernel: _Z9cuThreadYv
+  For Kernel: nv_hal_thread_user_data_ptr_set
+  For Kernel: nv_vm_place_for_topology_node
+  For Kernel: nv_sts_wqattr_destroy
+  For Kernel: nv_sts_cond_broadcast
+  For Kernel: nv_sts_tqattr_prio_get
+  For Kernel: nv_hal_thread_list_pop_head
+  For Kernel: nv_hal_thread_context_exit
+  For Kernel: nv_hal_atomic_uint_inc
+  For Kernel: nv_hal_atomic_uint_min
+  For Kernel: nv_sts_barrierattr_pshared_set
+  For Kernel: nv_sts_mutexattr_place_set
+  For Kernel: nv_sts_wq_create
+  For Kernel: nv_hal_thread_user_stack_ptr_set
  For File: ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
   For Kernel: _Z9init_PRNGiiiP4int2
   For Kernel: _Z4GCOaPfPdPiP4int2P14compton_struct
@@ -6064,7 +7004,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 61.7800278664 seconds
+INFO     Test completed in 62.1831459999 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -6077,8 +7017,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1320182624
-Test time : 61.7182
+Test Seed : 1320704621
+Test time : 62.1296
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Translate): Passed
@@ -6187,6 +7127,7 @@ For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Translate): Pa
 For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/unstructured/vm.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/complex.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/unstructured/mcx_core.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx, Test Point 1 (Translate): Passed
@@ -6224,24 +7165,26 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Translate)
 
 INFO     
 Passing tests:
- (45.041s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph : Passed
- (0.067s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall : Passed
- (0.040s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator : Passed
- (35.342s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale : Passed
- (0.069s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc : Passed
- (0.100s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D : Passed
- (0.125s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence : Passed
- (10.081s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer : Passed
- (10.907s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly : Passed
- (0.087s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray : Passed
- (0.045s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals : Passed
- (0.093s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall : Passed
- (0.066s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions : Passed
- (0.074s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions : Passed
- (0.060s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels : Passed
- (0.091s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels : Passed
- (61.780s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator : Passed
+ (44.765s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph : Passed
+ (0.057s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator : Passed
+ (0.046s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale : Passed
+ (0.104s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc : Passed
+ (9.923s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer : Passed
+ (10.814s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly : Passed
+ (0.061s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions : Passed
+ (34.898s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser : Passed
+ (0.051s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions : Passed
+ (0.077s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching : Passed
+ (0.058s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions : Passed
+ (0.065s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels : Passed
+ (0.095s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels : Passed
+ (62.183s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator : Passed
+
+Failing tests:
+ (0.063s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall : Did not complete.
+ (0.057s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D : Did not complete.
+ (0.056s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence : Did not complete.
+ (0.044s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals : Did not complete.
+ (0.042s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray : Did not complete.
 

@@ -2463,7 +2463,7 @@ bool ir::PTXInstruction::isBranch() const {
 
 bool ir::PTXInstruction::mayHaveAddressableOperand() const {
 	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
-		|| opcode == Atom;
+		|| opcode == Atom || opcode == Ldu;
 }
 
 bool ir::PTXInstruction::hasSideEffects() const {

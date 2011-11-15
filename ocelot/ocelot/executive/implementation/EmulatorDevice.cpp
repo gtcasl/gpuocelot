@@ -247,10 +247,12 @@ namespace executive
 
 		AllocationVector allocations;
 		
+		report("Loading global variables");
 		for(ir::Module::GlobalMap::const_iterator 
 			global = ir->globals().begin(); 
 			global != ir->globals().end(); ++global)
 		{
+			report(" loading global variable '" << global->first << "'");
 			MemoryAllocation* allocation = new MemoryAllocation(global->second);
 			globals.insert(std::make_pair(global->first, 
 				allocation->pointer()));

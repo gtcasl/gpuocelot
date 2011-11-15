@@ -42,7 +42,7 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 1
+#define REPORT_KERNEL_INSTRUCTIONS  1
 #define REPORT_LAUNCH_CONFIGURATION 1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,12 +102,6 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 	_gridDim = ir::Dim3(width, height, depth);	
 	
 	// notify trace generator(s)
-	for (TraceGeneratorVector::iterator it = _generators.begin(); 
-		it != _generators.end(); ++it) {
-		(*it)->initialize(*this);
-	}
-	
-	
 	initializeTraceGenerators();
 
 #if REPORT_LAUNCH_CONFIGURATION == 1

@@ -60,7 +60,8 @@ public:
 
 public:
 	BasicBlock(const std::string& l = "", Id i = 0, 
-		const InstructionList& instructions = InstructionList());
+		const InstructionList& instructions = InstructionList(),
+		const std::string& c = "");
 	~BasicBlock();
 
 	/*! \brief Clear/delete all instructions owned by the block */

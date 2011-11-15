@@ -42,7 +42,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Turn on report messages
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
 #define REPORT_PTX 1
@@ -607,6 +607,7 @@ namespace executive
 	}
 
 	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
+
 
 	{
 		

@@ -45,7 +45,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 // if 1, adds line numbers to reported PTX
 #define REPORT_PTX_WITH_LINENUMBERS 0
@@ -386,6 +386,7 @@ namespace executive
 	void NVIDIAGPUDevice::Module::load()
 	{
 		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
+		
 		assert(!loaded());
 		std::stringstream stream;
 		
@@ -607,6 +608,7 @@ namespace executive
 	}
 
 	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
+
 
 
 	{
@@ -1383,6 +1385,8 @@ namespace executive
 	{
 		assert(!selected());
 		_selected = true;
+		
+		report("NVIDIAGPUDevice::select()");
 		checkError(driver::cuCtxPushCurrent(_context));
 	}
 	
@@ -1396,6 +1400,7 @@ namespace executive
 		assert(selected());
 		_selected = false;
 		checkError(driver::cuCtxPopCurrent(&_context));
+		report("NVIDIAGPUDevice::unselect()");
 	}
 		
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
@@ -1532,6 +1537,8 @@ namespace executive
 		{
 			Throw("Unknown module - " << moduleName);
 		}
+		
+		
 		
 		NVIDIAExecutableKernel* kernel = module->second.getKernel(kernelName);
 		

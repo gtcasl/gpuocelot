@@ -27,13 +27,14 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence
-INFO     Test completed in 0.0731430053711 seconds
+INFO     Test completed in 0.056412935257 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestCudaSequence: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.011117) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 5 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0827088356018 seconds
+INFO     Test completed in 0.0840020179749 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -52,19 +53,28 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0462028980255 seconds
+INFO     Test completed in 0.0700280666351 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestIndirectFunctionCall: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.021825) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 6 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0528531074524 seconds
+INFO     Test completed in 0.0515661239624 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestCudaTextureArray: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.010449) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale
+INFO     Test completed in 0.0451390743256 seconds
+INFO      It produced the following output:
+No CAL devices found
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels
-INFO     Test completed in 0.0559251308441 seconds
+INFO     Test completed in 0.0722320079803 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -74,8 +84,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1321553745
-Test time : 0.0123436
+Test Seed : 1321554729
+Test time : 0.0130394
 
 Status : Test output:
 looping kernel succeeded
@@ -83,16 +93,9 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0442540645599 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels
-INFO     Test completed in 0.0957980155945 seconds
+INFO     Test completed in 0.102061986923 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -103,8 +106,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1321553745
-Test time : 0.0486672
+Test Seed : 1321554729
+Test time : 0.0555444
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -141,26 +144,27 @@ R = [
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0406429767609 seconds
+INFO     Test completed in 0.0434010028839 seconds
 INFO      It produced the following output:
 TestExternalFunctions: ocelot/cuda/implementation/CudaRuntime.cpp:384: cuda::HostThreadContext& cuda::CudaRuntime::_bind(): Assertion `!device.selected()' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0478398799896 seconds
+INFO     Test completed in 0.0461900234222 seconds
 INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
-Pass/Fail : Pass
+TestCudaGlobals: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+(0.009451) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly
-INFO     Test completed in 0.0459768772125 seconds
+INFO     Test completed in 4.04012703896 seconds
 INFO      It produced the following output:
 TestPTXAssembly: ocelot/executive/implementation/EmulatorDevice.cpp:888: virtual void executive::EmulatorDevice::select(): Assertion `!selected()' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer
-INFO     Test completed in 10.0025770664 seconds
+INFO     Test completed in 10.4977910519 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -172,8 +176,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1321553745
-Test time : 9.94609
+Test Seed : 1321554729
+Test time : 10.4451
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Scan): Passed
@@ -320,7 +324,7 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Scan): Pas
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator
-INFO     Test completed in 0.0509531497955 seconds
+INFO     Test completed in 0.0499250888824 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -330,8 +334,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1321553755
-Test time : 0.00350761
+Test Seed : 1321554739
+Test time : 0.00348973
 
 Status : Test output:
 10 registers
@@ -345,37 +349,13 @@ Full kernel test passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0487260818481 seconds
+INFO     Test completed in 0.0479679107666 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1321553755
-Test time : 0.00399518
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
+TestDeviceSwitching: ocelot/executive/implementation/EmulatorDevice.cpp:888: virtual void executive::EmulatorDevice::select(): Assertion `!selected()' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0476629734039 seconds
+INFO     Test completed in 0.0642509460449 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -389,8 +369,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1321553755
-Test time : 0.000905752
+Test Seed : 1321554739
+Test time : 0.00108266
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -523,19 +503,21 @@ Zext Instruction Passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall
-INFO     Test completed in 0.0454380512238 seconds
+INFO     Test completed in 0.0544290542603 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestFunctionCall: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.017110) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 3 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0510759353638 seconds
+INFO     Test completed in 0.0654499530792 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestCudaTexture2D: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
+(0.010699) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions
-INFO     Test completed in 0.0438439846039 seconds
+INFO     Test completed in 0.0606029033661 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -545,8 +527,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1321553755
-Test time : 0.00061059
+Test Seed : 1321554740
+Test time : 0.000612259
 
 Status : Test output:
 Accessors test passed.
@@ -562,7 +544,7 @@ pass: predicated Add and Ld isntructions
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser
-INFO     Test completed in 35.5623879433 seconds
+INFO     Test completed in 35.228564024 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -575,8 +557,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1321553745
-Test time : 35.5032
+Test Seed : 1321554729
+Test time : 35.1811
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Parse): Passed
@@ -722,7 +704,7 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Parse): Pa
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph
-INFO     Test completed in 44.8932790756 seconds
+INFO     Test completed in 45.7022960186 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -737,8 +719,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1321553745
-Test time : 44.8462
+Test Seed : 1321554733
+Test time : 45.6496
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
@@ -6387,7 +6369,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 61.5822081566 seconds
+INFO     Test completed in 62.3648910522 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -6400,8 +6382,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1321553745
-Test time : 61.5242
+Test Seed : 1321554729
+Test time : 62.309
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Translate): Passed
@@ -6548,26 +6530,26 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Translate)
 
 INFO     
 Passing tests:
- (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals : Passed
- (0.051s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator : Passed
- (35.562s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser : Passed
- (0.044s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale : Passed
- (0.051s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D : Passed
- (0.073s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence : Passed
- (10.003s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer : Passed
- (44.893s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph : Passed
- (0.044s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions : Passed
- (0.045s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall : Passed
- (0.046s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall : Passed
- (0.083s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc : Passed
- (0.049s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray : Passed
- (0.096s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels : Passed
- (0.056s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions : Passed
- (61.582s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.050s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator : Passed
+ (0.045s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale : Passed
+ (0.061s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions : Passed
+ (10.498s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer : Passed
+ (45.702s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph : Passed
+ (0.084s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc : Passed
+ (35.229s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser : Passed
+ (0.102s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels : Passed
+ (62.365s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.064s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions : Passed
+ (0.072s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels : Passed
 
 Failing tests:
- (0.046s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly : Did not complete.
- (0.041s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions : Did not complete.
+ (0.046s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals : Did not complete.
+ (4.040s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly : Did not complete.
+ (0.065s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D : Did not complete.
+ (0.056s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence : Did not complete.
+ (0.052s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray : Did not complete.
+ (0.054s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall : Did not complete.
+ (0.070s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching : Did not complete.
+ (0.043s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions : Did not complete.
 

@@ -10,6 +10,9 @@
 import os
 import inspect
 
+##
+# Builds a wrapper for the CUDA Driver API that saves device state
+#
 enableKernelExtractor = False
 
 ## Hepler functions
@@ -24,7 +27,16 @@ def config_h_build(target, source, env):
 		config_h_in.close()
 		config_h.close()
 
+# 
+# Applies build rules to CUDA sources
+#
+def MapSource(env, source):
+	if source[-3:] == ".cu":
+		return env.Cuda(source)
+	return source
 
+#
+#
 ## The script begins here
 # try to import an environment first
 try:
@@ -146,9 +158,7 @@ env.Depends(OcelotHarness, libocelot)
 CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
 env.Depends(CFG, libocelot)
 
-if enableKernelExtractor and os.name != 'nt':
-	print "Adding kernelExtractorLib"
-		
+if enableKernelExtractor and os.name != 'nt':		
 	kernelExtractorSources = [
 		'ocelot/tools/KernelExtractor.cpp',
 		'ocelot/util/implementation/ExtractedDeviceState.cpp',
@@ -171,7 +181,6 @@ if enableKernelExtractor and os.name != 'nt':
 		"hydrazine/interface/Stringable.cpp",
 		]
 	KernelExtractorLib = env.SharedLibrary('kernelExtractor', kernelExtractorSources, LIBS=ocelot_dep_libs)
-	print KernelExtractorLib
 
 Default(OcelotConfig)
 
@@ -199,27 +208,27 @@ tests.append(('TestEmulator', \
 tests.append(('TestPTXToLLVMTranslator', \
 	'ocelot/translator/test/TestPTXToLLVMTranslator.cpp', 'basic', test_libs))
 tests.append(('TestCudaSequence', \
-	'ocelot/cuda/test/kernels/sequence.cu.cpp', 'full', ['-ldl']))
+	'ocelot/cuda/test/kernels/sequence.cu', 'full', ['-ldl']))
 tests.append(('TestCudaGenericMemory', \
 	'ocelot/cuda/test/memory/generic.cpp', 'full'))
 tests.append(('TestCudaMalloc', \
-	'ocelot/cuda/test/memory/malloc.cu.cpp', 'full'))
+	'ocelot/cuda/test/memory/malloc.cu', 'full'))
 tests.append(('TestCudaGlobals', \
-	'ocelot/cuda/test/globals/global.cu.cpp', 'full'))
+	'ocelot/cuda/test/globals/global.cu', 'full'))
 tests.append(('TestCudaTexture2D', \
-	'ocelot/cuda/test/textures/texture2D.cu.cpp', 'full'))
+	'ocelot/cuda/test/textures/texture2D.cu', 'full'))
 tests.append(('TestCudaTexture3D', \
-	'ocelot/cuda/test/textures/texture3D.cu.cpp', 'full'))
+	'ocelot/cuda/test/textures/texture3D.cu', 'full'))
 tests.append(('TestCudaTextureArray', \
-	'ocelot/cuda/test/textures/textureArray.cu.cpp', 'full'))
+	'ocelot/cuda/test/textures/textureArray.cu', 'full'))
 tests.append(('TestFunctionCall', \
-	'ocelot/cuda/test/functions/simpleFunc.cu.cpp', 'full'))
+	'ocelot/cuda/test/functions/simpleFunc.cu', 'full'))
 tests.append(('TestIndirectFunctionCall', \
-	'ocelot/cuda/test/functions/indirectCall.cu.cpp', 'full'))
+	'ocelot/cuda/test/functions/indirectCall.cu', 'full'))
 tests.append(('TestIndirectFunctionCallOcelot', \
 	'ocelot/cuda/test/functions/indirectCallOcelot.cpp', 'full'))
 tests.append(('TestCalVectorScale', \
-	'ocelot/cal/test/vectorScale.cu.cpp', 'full'))
+	'ocelot/cal/test/vectorScale.cu', 'full'))
 tests.append(('TestDeviceSwitching', \
 	'ocelot/api/test/TestDeviceSwitching.cpp', 'full'))
 tests.append(('TestExternalFunctions', \
@@ -232,8 +241,8 @@ tests.append(('TestDriverAPISequence', \
 for test in tests:
 	libs = ocelot_libs
 	if len(test) > 3:
-		libs = libs + test[3]
-	Test = env.Program(test[0], [test[1]], LIBS=libs)
+		libs = libs + test[3]	
+	Test = env.Program(test[0], [MapSource(env, test[1])], LIBS=libs)
 	env.Depends(Test, libocelot)
 
 if env['test_level'] != 'none':

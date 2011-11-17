@@ -4,7 +4,7 @@
 #	\file   build.py
 #	\author Gregory Diamos <gregory.diamos@gatech.edu>
 #   \date   Sunday March 13, 2011
-#	\brief  The Ocelot build script to direct scons builds and run unit tests
+#	\brief  The Ocelot build script to direct scons builds and run unit tests 
 ################################################################################
 
 import os
@@ -16,7 +16,7 @@ from optparse import OptionParser
 ################################################################################
 ## Build Ocelot
 def build(options):
-	command = "scons"
+	command = "scons -Q "
 
 	if options.clean:
 		command += " -c"

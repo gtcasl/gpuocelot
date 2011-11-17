@@ -271,7 +271,7 @@ void cuda::CudaRuntime::_memoryError(const void* address, size_t count,
 	throw hydrazine::Exception(stream.str());
 }
 
-void cuda::CudaRuntime::_enumerateDevices() {
+void cuda::CudaRuntime::_enumerateDevices() {	
 	if(_devicesLoaded) return;
 	report("Creating devices.");
 	if(config::get().executive.enableNVIDIA) {
@@ -293,6 +293,20 @@ void cuda::CudaRuntime::_enumerateDevices() {
 			executive::Device::createDevices(ir::Instruction::LLVM, _flags,
 				_computeCapability);
 		report(" - Added " << d.size() << " llvm-cpu devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+		
+		if (config::get().executive.workerThreadLimit > 0) {
+			for (executive::DeviceVector::iterator d_it = d.begin();
+				d_it != d.end(); ++d_it) {
+				(*d_it)->limitWorkerThreads(config::get().executive.workerThreadLimit);
+			}
+		}
+	}
+	if (config::get().executive.enableDynamicMulticore) {
+		executive::DeviceVector d = executive::Device::createDevices(
+			ir::Instruction::DynamicLLVM, _flags, _computeCapability);
+		
+		report(" - Added " << d.size() << " dynamic-multicore-CPU devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 		
 		if (config::get().executive.workerThreadLimit > 0) {

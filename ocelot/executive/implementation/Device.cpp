@@ -12,6 +12,7 @@
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
 #include <ocelot/executive/interface/RemoteDevice.h>
 #include <ocelot/executive/interface/PassThroughDevice.h>
+#include <ocelot/executive/interface/DynamicMulticoreDevice.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
 #include <configure.h>
@@ -101,6 +102,11 @@ executive::DeviceVector executive::Device::createDevices(
 		case ir::Instruction::Remote:
 		{
 			devices = RemoteDevice::createDevices(flags, computeCapability);
+		}
+		break;
+		case ir::Instruction::DynamicLLVM:
+		{
+			devices.push_back(new DynamicMulticoreDevice(flags));
 		}
 		break;
 		default:

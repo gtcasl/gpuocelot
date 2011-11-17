@@ -27,6 +27,7 @@ namespace ir {
 			x86_64,
 			SPU,
 			External,
+			DynamicLLVM,
 			Unknown
 		};
 

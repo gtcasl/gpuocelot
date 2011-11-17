@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -143,6 +143,7 @@ api::OcelotConfiguration::Executive::Executive():
 	enableNVIDIA(true),
 	enableAMD(true),
 	enableRemote(false),
+	enableDynamicMulticore(false),
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
@@ -262,6 +263,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
 	executive.enableRemote = config.parse<bool>("enableRemote", false);
+	executive.enableDynamicMulticore = config.parse<bool>("enableDynamic", false);
 	executive.port = config.parse<int>("port", 2011);
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
@@ -277,10 +279,12 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		executive.enableNVIDIA = false;
 		executive.enableAMD = false;
 		executive.enableRemote = false;
+		executive.enableDynamicMulticore = false;
 		
 		for (hydrazine::json::Array::ValueVector::iterator it = array->begin();
 			it != array->end(); ++it) {
 			hydrazine::json::Visitor dev(*it);
+			
 			if ((std::string)dev == "llvm") {
 				executive.enableLLVM = true;
 			}
@@ -295,6 +299,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			}
 			else if ((std::string)dev == "remote") {
 				executive.enableRemote = true;
+			}
+			else if ((std::string)dev == "dynamic") {
+				executive.enableDynamicMulticore = true;
 			}
 		}
 	}

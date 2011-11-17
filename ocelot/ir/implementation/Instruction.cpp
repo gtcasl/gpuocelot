@@ -23,6 +23,7 @@ std::string ir::Instruction::toString( Architecture a ) {
 		case SPU:      return "SPU";      break;
 		case External: return "External"; break;
 		case Remote:   return "Remote";   break;
+		case DynamicLLVM: return "DynamicLLVM"; break;
 		case Unknown:  return "Unknown";  break;
 	} 
 	return "Unknown";

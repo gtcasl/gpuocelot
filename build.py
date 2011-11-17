@@ -66,7 +66,7 @@ def runUnitTests(options, buildSucceeded):
 	if options.clean:
 		return False
 	
-	if options.test_level == 'none':
+	if options.test_level == 'none' or options.no_tests:
 		return False
 
 	if not buildSucceeded:
@@ -139,6 +139,8 @@ def main():
 		help = "build Ocelot in debug mode." )
 	parser.add_option( "-t", "--test_level", default = "none", \
 		help = "set the test level (none, basic, full)" )
+	parser.add_option( "-n", "--no_tests", default=False, \
+		help = "disable running of tests")
 	parser.add_option( "-j", "--threads", default = "1" )
 	parser.add_option( "-s", "--submit", \
 		default = False, action = "store_true" )

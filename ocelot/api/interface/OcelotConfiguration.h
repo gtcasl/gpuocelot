@@ -151,6 +151,9 @@ namespace api {
 			//! \brief filter enabling remote GPU devices if present
 			bool enableRemote;
 			
+			//! \brief enables dynamic multicore
+			bool enableDynamicMulticore;
+			
 			//! \brief The port to connect to an ocelot server for remoting
 			int port;
 

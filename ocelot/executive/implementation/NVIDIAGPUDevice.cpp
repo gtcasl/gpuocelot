@@ -1538,8 +1538,6 @@ namespace executive
 			Throw("Unknown module - " << moduleName);
 		}
 		
-		
-		
 		NVIDIAExecutableKernel* kernel = module->second.getKernel(kernelName);
 		
 		if(kernel == 0)
@@ -1584,6 +1582,7 @@ namespace executive
 		
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 		synchronize();
+		
 	}
 
 	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(const std::string& path, 

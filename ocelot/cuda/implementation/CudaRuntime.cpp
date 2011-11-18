@@ -2729,6 +2729,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	struct cudaFuncAttributes *attr, const char *symbol) {
 	cudaError_t result = cudaErrorInvalidDeviceFunction;		
 
+	_wait();
 	_lock();
 
 	_enumerateDevices();

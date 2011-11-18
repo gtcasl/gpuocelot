@@ -189,13 +189,10 @@ void CudaWorkerThread::_launchNext()
 	Launch& l = _launches.front();
 	
 	report(" Launching kernel '" << l.kernel << "' now.");
-	_device->select();
-			
+	
 	_device->launch(l.module, l.kernel, l.gridDim, l.blockDim, l.sharedMemory, 
 		l.parameters.data(), l.parameters.size(), l.generators, l.externals);
 	
-	_device->unselect();
-
 	report("  kernel '" << l.kernel << "' finished.");
 	
 	++_finished;

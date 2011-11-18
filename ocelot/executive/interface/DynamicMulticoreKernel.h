@@ -76,6 +76,18 @@ namespace executive {
 		
 		/*! \brief Get a vector of all textures references by the kernel */
 		virtual TextureVector textureReferences() const;
+	
+	private:
+	
+		void _allocateConstantMemory();
+		void _allocateArgumentMemory();
+		void _allocateMemory();
+	
+	private:
+		const ir::PTXKernel* _ptxKernel;
+		const Device *_device;
+		char *_argumentMemory;
+		char *_constantMemory;
 	};
 	typedef std::map< std::string, DynamicMulticoreKernel *> DynamicMulticoreKernelMap;
 	

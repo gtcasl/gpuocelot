@@ -22,12 +22,124 @@ INFO       /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.r
 INFO       /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.0683948993683 seconds
+INFO      It produced the following output:
+(0.001204) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.004790) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(ocelot/cuda/test/textures/texture2D.cu)
+failed to bind texture: cudaErrorInvalidValue
+(0.006971) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.006994) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.007053) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
+INFO     Test completed in 0.0699388980865 seconds
+INFO      It produced the following output:
+(0.001190) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.004837) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(ocelot/cuda/test/functions/simpleFunc.cu)
+(0.004878) CudaWorkerThread.cpp:78:   Launching kernel 'kernel' executing on device 'Ocelot Dynamic Multicore CPU'
+(0.004892) CudaWorkerThread.cpp:99:    sending message 0x1880a20
+(0.004915) CudaWorkerThread.cpp:109:  Waiting for all kernels to finish executing on device 'Ocelot Dynamic Multicore CPU'
+(0.004925) CudaWorkerThread.cpp:114:   sending message 0x7ffff9ba6090
+(0.004965) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.004984) CudaWorkerThread.cpp:138:   Received message 0x1880a20, type 2
+(0.004994) CudaWorkerThread.cpp:157:   Received kernel launch message.
+(0.005006) CudaWorkerThread.cpp:191:   Launching kernel 'kernel' now.
+(0.005017) DynamicMulticoreDevice.cpp:131:  DynamicMulticoreDevice::launch(ocelot/cuda/test/functions/simpleFunc.cu, kernel)
+(0.005028) DynamicMulticoreDevice.cpp:82:   DynamicMulticoreDevice::getKernel(ocelot/cuda/test/functions/simpleFunc.cu, kernel)
+(0.005047) DynamicMulticoreKernel.cpp:33:   DynamicMulticoreKernel(kernel, device)
+(0.005066) CudaWorkerThread.cpp:199:    kernel 'kernel' finished.
+(0.005077) CudaWorkerThread.cpp:138:   Received message 0x7ffff9ba6090, type 1
+(0.005087) CudaWorkerThread.cpp:146:   Waiting for all kernels to finish  on thread 3.
+(0.005109) CudaWorkerThread.cpp:120:   received ack message 0x7ffff9ba6090
+Error[ 6 ] - expected 36.000000, got 6.000000
+Pass/Fail : Fail
+(0.006968) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.007053) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
+INFO     Test completed in 0.0688109397888 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1321588973
+Test time : 0.000887871
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+
+
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
+INFO     Test completed in 0.0776219367981 seconds
+INFO      It produced the following output:
+(0.001138) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.007053) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(ocelot/cuda/test/kernels/sequence.cu)
+(0.007104) CudaWorkerThread.cpp:78:   Launching kernel 'sequence' executing on device 'Ocelot Dynamic Multicore CPU'
+(0.007119) CudaWorkerThread.cpp:99:    sending message 0x1300be0
+(0.007140) CudaWorkerThread.cpp:109:  Waiting for all kernels to finish executing on device 'Ocelot Dynamic Multicore CPU'
+(0.007151) CudaWorkerThread.cpp:114:   sending message 0x7fff0a744d80
+(0.007185) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.007203) CudaWorkerThread.cpp:138:   Received message 0x1300be0, type 2
+(0.007214) CudaWorkerThread.cpp:157:   Received kernel launch message.
+(0.007225) CudaWorkerThread.cpp:191:   Launching kernel 'sequence' now.
+(0.007236) DynamicMulticoreDevice.cpp:131:  DynamicMulticoreDevice::launch(ocelot/cuda/test/kernels/sequence.cu, sequence)
+(0.007249) DynamicMulticoreDevice.cpp:82:   DynamicMulticoreDevice::getKernel(ocelot/cuda/test/kernels/sequence.cu, sequence)
+(0.007266) DynamicMulticoreKernel.cpp:33:   DynamicMulticoreKernel(kernel, device)
+(0.007285) CudaWorkerThread.cpp:199:    kernel 'sequence' finished.
+(0.007296) CudaWorkerThread.cpp:138:   Received message 0x7fff0a744d80, type 1
+(0.007307) CudaWorkerThread.cpp:146:   Waiting for all kernels to finish  on thread 3.
+(0.007329) CudaWorkerThread.cpp:120:   received ack message 0x7fff0a744d80
+ERROR 1 [0] - expected: 0, got: -1
+ERROR 1 [1] - expected: 2, got: -1
+ERROR 1 [2] - expected: 4, got: -1
+ERROR 1 [3] - expected: 6, got: -1
+Pass/Fail : Fail
+(0.009403) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.009476) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
+INFO     Test completed in 0.0546820163727 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1321588973
+Test time : 2.31266e-05
+
+Status : 
+
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0500228404999 seconds
+INFO     Test completed in 0.0688109397888 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -40,75 +152,88 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1321566619
-Test time : 1.38283e-05
+Test Seed : 1321588973
+Test time : 2.81334e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0546410083771 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
+INFO     Test completed in 0.0667970180511 seconds
 INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-Initialization error:cudaErrorNoDevice
+(0.000947) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.004535) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(ocelot/cuda/test/textures/textureArray.cu)
+cudaBindTextureToArray() - failed to bind texture: cudaErrorInvalidValue
+(0.006617) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.006639) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.006712) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.0628559589386 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
+INFO     Test completed in 0.0727360248566 seconds
 INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-cudaThreadSynchronize() = cudaErrorNoDevice
-Failed to load CUDA library:
-(null)
+(0.001137) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.006716) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(ocelot/cuda/test/functions/indirectCall.cu)
+(0.006769) CudaWorkerThread.cpp:78:   Launching kernel 'kernelEntry' executing on device 'Ocelot Dynamic Multicore CPU'
+(0.006783) CudaWorkerThread.cpp:99:    sending message 0x1e70230
+(0.006804) CudaWorkerThread.cpp:109:  Waiting for all kernels to finish executing on device 'Ocelot Dynamic Multicore CPU'
+(0.006814) CudaWorkerThread.cpp:114:   sending message 0x7fff1c0adab0
+(0.006851) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.006869) CudaWorkerThread.cpp:138:   Received message 0x1e70230, type 2
+(0.006880) CudaWorkerThread.cpp:157:   Received kernel launch message.
+(0.006892) CudaWorkerThread.cpp:191:   Launching kernel 'kernelEntry' now.
+(0.006903) DynamicMulticoreDevice.cpp:131:  DynamicMulticoreDevice::launch(ocelot/cuda/test/functions/indirectCall.cu, kernelEntry)
+(0.006915) DynamicMulticoreDevice.cpp:82:   DynamicMulticoreDevice::getKernel(ocelot/cuda/test/functions/indirectCall.cu, kernelEntry)
+(0.006934) DynamicMulticoreKernel.cpp:33:   DynamicMulticoreKernel(kernel, device)
+(0.006953) CudaWorkerThread.cpp:199:    kernel 'kernelEntry' finished.
+(0.006964) CudaWorkerThread.cpp:138:   Received message 0x7fff1c0adab0, type 1
+(0.006974) CudaWorkerThread.cpp:146:   Waiting for all kernels to finish  on thread 3.
+(0.007005) CudaWorkerThread.cpp:120:   received ack message 0x7fff1c0adab0
+Error[1] - expected: 3, got: 0
+Error[2] - expected: 8, got: 0
+Error[3] - expected: 15, got: 0
+Error[4] - expected: 8, got: 0
+Error[5] - expected: 15, got: 0
+Error[6] - expected: 24, got: 0
+FAILED
+ with 6 errors
+(0.009100) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.009174) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.0620808601379 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
+INFO     Test completed in 0.0544421672821 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestLexer
+Name : TestDeviceSwitching
 
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
 
 
-Test Seed : 1321566619
-Test time : 1.4782e-05
+Test Seed : 1321588974
+Test time : 0.000749111
 
-Status : 
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0506410598755 seconds
-INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-failed to malloc array: cudaErrorNoDevice
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0508260726929 seconds
-INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-No CAL devices found
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 0.0547759532928 seconds
-INFO      Produced an output file with invalid encoding
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.0743889808655 seconds
+INFO     Test completed in 0.0897209644318 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -118,8 +243,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1321566619
-Test time : 0.0136478
+Test Seed : 1321588974
+Test time : 0.0210145
 
 Status : Test output:
 looping kernel succeeded
@@ -127,9 +252,9 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.0507462024689 seconds
+INFO     Test completed in 0.0492060184479 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -142,44 +267,15 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1321566619
-Test time : 1.35899e-05
+Test Seed : 1321588974
+Test time : 1.88351e-05
 
 Status : 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0489430427551 seconds
-INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-Pass/Fail : Fail
-
-
-Name : TestExternalFunctions
-
-Description: A unit test for calling an external host function from PTX 1) 
-             The first test calls malloc/free from a PTX kernel. 2) The 
-             second test calls printf from a PTX kernel. 3) The last test calls a 
-             user defined function from a PTX kernel. 
-
-
-Test Seed : 1321566619
-Test time : 0.000528097
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0467989444733 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.105658054352 seconds
+INFO     Test completed in 0.150486946106 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -190,8 +286,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1321566619
-Test time : 0.0523958
+Test Seed : 1321588974
+Test time : 0.0786934
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -226,19 +322,157 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
+INFO     Test completed in 0.0728089809418 seconds
+INFO      It produced the following output:
+(0.001273) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.003088) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(someModule)
+(0.003135) CudaWorkerThread.cpp:78:   Launching kernel 'kernel' executing on device 'Ocelot Dynamic Multicore CPU'
+(0.003149) CudaWorkerThread.cpp:99:    sending message 0x24516b0
+(0.003175) CudaWorkerThread.cpp:109:  Waiting for all kernels to finish executing on device 'Ocelot Dynamic Multicore CPU'
+(0.003186) CudaWorkerThread.cpp:114:   sending message 0x7fff50f588c0
+(0.003344) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.009242) CudaWorkerThread.cpp:138:   Received message 0x24516b0, type 2
+(0.009266) CudaWorkerThread.cpp:157:   Received kernel launch message.
+(0.009284) CudaWorkerThread.cpp:191:   Launching kernel 'kernel' now.
+(0.009295) DynamicMulticoreDevice.cpp:131:  DynamicMulticoreDevice::launch(someModule, kernel)
+(0.009311) DynamicMulticoreDevice.cpp:82:   DynamicMulticoreDevice::getKernel(someModule, kernel)
+(0.009332) DynamicMulticoreKernel.cpp:33:   DynamicMulticoreKernel(kernel, device)
+(0.009353) CudaWorkerThread.cpp:199:    kernel 'kernel' finished.
+(0.009365) CudaWorkerThread.cpp:138:   Received message 0x7fff50f588c0, type 1
+(0.009376) CudaWorkerThread.cpp:146:   Waiting for all kernels to finish  on thread 3.
+(0.009408) CudaWorkerThread.cpp:120:   received ack message 0x7fff50f588c0
+(0.009445) DynamicMulticoreDevice.cpp:71:   DynamicMulticoreDevice::unload(someModule)
+Pass/Fail : Fail
+
+
+Name : TestExternalFunctions
+
+Description: A unit test for calling an external host function from PTX 1) 
+             The first test calls malloc/free from a PTX kernel. 2) The 
+             second test calls printf from a PTX kernel. 3) The last test calls a 
+             user defined function from a PTX kernel. 
+
+
+Test Seed : 1321588974
+Test time : 0.0089674
+
+Status : 
+
+(0.011460) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.011493) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.0576159954071 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
+INFO     Test completed in 0.0608489513397 seconds
+INFO      It produced the following output:
+(0.006392) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.007958) DynamicMulticoreDevice.cpp:64:   DynamicMulticoreDevice::load(TestVectorElements-u32)
+(0.008007) CudaWorkerThread.cpp:78:   Launching kernel 'test' executing on device 'Ocelot Dynamic Multicore CPU'
+(0.008022) CudaWorkerThread.cpp:99:    sending message 0x1edaca0
+(0.008041) CudaWorkerThread.cpp:109:  Waiting for all kernels to finish executing on device 'Ocelot Dynamic Multicore CPU'
+(0.008051) CudaWorkerThread.cpp:114:   sending message 0x7fff1592cb30
+(0.008080) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.008098) CudaWorkerThread.cpp:138:   Received message 0x1edaca0, type 2
+(0.008109) CudaWorkerThread.cpp:157:   Received kernel launch message.
+(0.008121) CudaWorkerThread.cpp:191:   Launching kernel 'test' now.
+(0.008132) DynamicMulticoreDevice.cpp:131:  DynamicMulticoreDevice::launch(TestVectorElements-u32, test)
+(0.008144) DynamicMulticoreDevice.cpp:82:   DynamicMulticoreDevice::getKernel(TestVectorElements-u32, test)
+(0.008164) DynamicMulticoreKernel.cpp:33:   DynamicMulticoreKernel(kernel, device)
+(0.008184) CudaWorkerThread.cpp:199:    kernel 'test' finished.
+(0.008195) CudaWorkerThread.cpp:138:   Received message 0x7fff1592cb30, type 1
+(0.008206) CudaWorkerThread.cpp:146:   Waiting for all kernels to finish  on thread 3.
+(0.008231) CudaWorkerThread.cpp:120:   received ack message 0x7fff1592cb30
+(0.008260) DynamicMulticoreDevice.cpp:71:   DynamicMulticoreDevice::unload(TestVectorElements-u32)
+Pass/Fail : Fail
+
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1321588974
+Test time : 0.00760746
+
+Status : Test 'TestVectorElements-u32' (seed 1321588974): failed, output parameter 0 (I32) computed value - 0 does not match reference value - 2128577461
+  On device - 0 - 'Ocelot Dynamic Multicore CPU'
+Test 'TestVectorElements-u32' seed '1321588974' failed.
+
+
+(0.010659) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.010707) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
+INFO     Test completed in 0.0700430870056 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1321588974
+Test time : 0.00494814
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0425300598145 seconds
+INFO     Test completed in 0.115060091019 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-cudaMalloc() 0 - failed to allocate 131072 bytes
-Pass/Fail : Fail
+(0.001149) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.009714) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+(0.047943) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.048049) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
+INFO     Test completed in 0.0710468292236 seconds
+INFO      It produced the following output:
+(0.001148) DynamicMulticoreDevice.cpp:53:   DynamicMulticoreDevice()
+(0.001343) CudaWorkerThread.cpp:133:  CUDAWorker thread is alive, waiting for command.
+(0.001364) CudaWorkerThread.cpp:181:  Received kill command, joining.
+(0.001391) CudaWorkerThread.cpp:59:   Tearing down CUDA Worker Thread 3
+No CAL devices found
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.0430510044098 seconds
+INFO     Test completed in 0.0526020526886 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -253,8 +487,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1321566619
-Test time : 1.66893e-05
+Test Seed : 1321588974
+Test time : 2.43187e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -265,72 +499,8 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.0480790138245 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1321566619
-Test time : 0.00442147
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0462019443512 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1321566619
-Test time : 0.000481606
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.0539038181305 seconds
-INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-Error[ 6 ] - expected 36.000000, got 6.000000
-Pass/Fail : Fail
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0582120418549 seconds
+INFO     Test completed in 0.0624101161957 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -344,8 +514,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1321566619
-Test time : 0.00088644
+Test Seed : 1321588974
+Test time : 0.00132966
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -476,62 +646,28 @@ Zext Instruction Passed
 
 
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0410871505737 seconds
-INFO      It produced the following output:
-==Ocelot== WARNING - No CUDA devices found or all devices disabled!
-==Ocelot==  Consider enabling the emulator in configure.ocelot.
-failed to bind texture: cudaErrorNoDevice
-
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.0468609333038 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1321566619
-Test time : 0.000600576
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-
-
-
 INFO     
 Passing tests:
- (0.051s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
- (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
- (0.050s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
- (0.043s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
- (0.106s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
- (0.051s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
- (0.046s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
- (0.074s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
+ (0.053s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
+ (0.049s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
+ (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
+ (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
+ (0.069s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.115s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
+ (0.070s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
+ (0.054s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
+ (0.069s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
+ (0.150s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
+ (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
+ (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
+ (0.090s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
 
 Failing tests:
- (0.063s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Did not complete.
- (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Did not complete.
- (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.051s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Did not complete.
- (0.043s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Failed
- (0.049s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Failed
- (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Did not complete.
- (0.054s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Failed
+ (0.078s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Failed
+ (0.068s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Did not complete.
+ (0.073s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Failed
+ (0.067s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Did not complete.
+ (0.073s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Failed
+ (0.061s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
+ (0.070s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Failed
 

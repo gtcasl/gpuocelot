@@ -552,6 +552,9 @@ void PTXKernel::write(std::ostream& stream) const
 	if (argCount) {
 		stream << "(" << strArguments.str() << ")\n";
 	}
+	else {
+		stream << "()\n";
+	}
 	stream << "{\n";
 	
 	for (LocalMap::const_iterator local = locals.begin();

@@ -345,7 +345,7 @@ def getExtraLibs():
 			'libboost_thread-vc100-mt-s-1_46_1.lib', 'opengl32.lib']
 	else:
 		return ['-lboost_system-mt', '-lboost_filesystem-mt',
-			'-lboost_thread-mt', '-lcod', '-latl', '-lfm', '-ldill']
+			'-lboost_thread-mt', '-lcod', '-latl', '-lfm', '-ldill', '-lkernelprofile']
 
 
 def fixPath(path):

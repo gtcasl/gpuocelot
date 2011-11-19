@@ -23,6 +23,8 @@
 
 #include <fstream>
 
+#include <kernel_profile.h>
+
 using namespace hydrazine;
 
 namespace analysis
@@ -167,6 +169,13 @@ namespace analysis
 
         if(info)
             delete[] info;
+            
+        int id;
+        kernel_profile profile;
+        profile.type = KERNEL_RUNTIME;
+        profile.data.kernel_runtime = _kernelProfile.maxSMRuntime;
+        
+        update_kernel_profile(profile, &id);
             
     }
 

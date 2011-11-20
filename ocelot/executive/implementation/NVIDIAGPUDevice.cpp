@@ -1383,22 +1383,16 @@ namespace executive
 			
 	void NVIDIAGPUDevice::select()
 	{
-		assert(!selected());
-		_selected = true;
+		Device::select();
 		
 		report("NVIDIAGPUDevice::select()");
 		checkError(driver::cuCtxPushCurrent(_context));
 	}
 	
-	bool NVIDIAGPUDevice::selected() const
-	{
-		return _selected;
-	}
-
 	void NVIDIAGPUDevice::unselect()
 	{
-		assert(selected());
-		_selected = false;
+		Device::unselect();
+		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		report("NVIDIAGPUDevice::unselect()");
 	}

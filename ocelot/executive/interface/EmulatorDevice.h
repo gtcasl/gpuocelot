@@ -274,15 +274,6 @@ namespace executive
 			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
 			void setStream(unsigned int stream);
-			
-		public:
-			/*! \brief Select this device as the current device. 
-				Only one device is allowed to be selected at any time. */
-			void select();
-			/*! \brief is this device selected? */
-			bool selected() const;
-			/*! \brief Deselect this device. */
-			void unselect();
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */

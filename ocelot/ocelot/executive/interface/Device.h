@@ -16,6 +16,9 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/translator/interface/Translator.h>
 
+// Boost includes
+#include <boost/thread/thread.hpp>
+
 // forward declarations
 struct cudaChannelFormatDesc;
 struct cudaFuncAttributes;
@@ -165,6 +168,11 @@ namespace executive
 			};
 
 		protected:
+			/*! \brief The status of each thread that is
+				connected to this device */
+			typedef std::map<boost::thread::id, bool> ThreadMap;
+
+		protected:
 			/*! \brief The properties of this device */
 			Properties _properties;
 			/*! \brief The driver version */
@@ -173,7 +181,13 @@ namespace executive
 			int _runtimeVersion;
 			/*! \brief Device flags */
 			unsigned int _flags;
-
+			
+		protected:
+			/*! \brief Threads that have selected this device */
+			ThreadMap _selected;
+			/*! \brief Locking object for updating selected threads */
+			boost::mutex _mutex;
+			
 		public:
 			/*! \brief Create devices with the selected isa */
 			static DeviceVector createDevices(ir::Instruction::Architecture isa,
@@ -278,11 +292,11 @@ namespace executive
 		public:
 			/*! \brief Select this device as the current device. 
 				Only one device is allowed to be selected at any time. */
-			virtual void select() = 0;
+			virtual void select();
 			/*! \brief is this device selected? */
-			virtual bool selected() const = 0;
+			virtual bool selected();
 			/*! \brief Deselect this device. */
-			virtual void unselect() = 0;
+			virtual void unselect();
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */

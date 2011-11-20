@@ -187,7 +187,6 @@ bool executive::Device::checkMemoryAccess(const void* pointer,
 	return false;
 }
 
-
 std::string executive::Device::nearbyAllocationsToString(void* pointer) const
 {
 	std::stringstream result;
@@ -207,6 +206,47 @@ std::string executive::Device::nearbyAllocationsToString(void* pointer) const
 const executive::Device::Properties& executive::Device::properties() const
 {
 	return _properties;
+}
+
+void executive::Device::select()
+{
+	_mutex.lock();
+	
+	assert(!_selected[boost::this_thread::get_id()]);
+	
+	_selected[boost::this_thread::get_id()] = true;
+
+	_mutex.unlock();
+}
+
+bool executive::Device::selected()
+{
+	bool selected = false;
+
+	_mutex.lock();
+	
+	ThreadMap::const_iterator threadState = _selected.find(
+		boost::this_thread::get_id());
+	
+	if(threadState != _selected.end())
+	{
+		selected = threadState->second;
+	}
+
+	_mutex.unlock();
+
+	return selected;
+}
+
+void executive::Device::unselect()
+{
+	_mutex.lock();
+	
+	assert(_selected[boost::this_thread::get_id()]);
+	
+	_selected[boost::this_thread::get_id()] = false;
+
+	_mutex.unlock();
 }
 
 int executive::Device::driverVersion() const

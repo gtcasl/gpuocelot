@@ -180,14 +180,6 @@ namespace executive
 			/*! \brief Sets the current stream */
 			void setStream(unsigned int stream);
 			
-			/*! \brief Select this device as the current device.
-			 *  Only one device is allowed to be selected at any time. */
-			void select();
-			/*! \brief Is this device selected? */
-			bool selected() const;
-			/*! \brief Deselect this device */
-			void unselect();
-			
 			/*! \brief Binds a texture to a memory allocation at a pointer */
 			void bindTexture(void* pointer, const std::string& moduleName,
 				const std::string& textureName, 
@@ -298,9 +290,6 @@ namespace executive
 
 			/*! \brief The modules that have been loaded */
 			ModuleMap _modules;
-
-			/*! \brief Has this device been selected? */
-			bool _selected;
 
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */

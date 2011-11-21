@@ -13,6 +13,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 #include <ocelot/executive/interface/DynamicMulticoreCPUDevice.h>
+#include <ocelot/executive/interface/DynamicExecutionManager.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -73,44 +74,15 @@ void executive::DynamicMulticoreKernel::launchGrid(int width, int height, int de
 
 	report( "Launching kernel \"" << name << "\" on grid ( x = " 
 		<< width << ", y = " << height << " )"  );
+	report("  shared memory size: " << this->sharedMemorySize() + this->externSharedMemorySize());
 	
 	_gridDim.x = width;
 	_gridDim.y = height;
 	
-//	LLVMDynamicExecutionManager::get().launch(*this, this->sharedMemorySize() + this->externSharedMemorySize());
+	DynamicExecutionManager::get().launch(*this, 
+		this->sharedMemorySize() + this->externSharedMemorySize());
 }
 
-/*!
-	\brief compute argument offsets for argument data
-	\return number of bytes required for argument memory
-*/
-size_t executive::DynamicMulticoreKernel::mapArgumentOffsets() {
-
-	return 0;
-}
-
-/*!
-	\brief given a block of argument memory, sets the values of 
-		each argument
-	\param argument pointer to argument memory
-	\param argumentSize number of bytes to write to argument memory
-*/
-void executive::DynamicMulticoreKernel::setArgumentBlock(const unsigned char *argument, 
-	size_t argumentSize) {
-
-}
-
-/*!
-	\brief gets the values of each argument as a block of binary data
-	\param argument pointer to argument memory
-	\param maxSize maximum number of bytes to write to argument memory
-	\return actual number of bytes required by argument memory
-*/
-size_t executive::DynamicMulticoreKernel::getArgumentBlock(unsigned char *argument,
-	size_t maxSize) const {
-
-	return 0;
-}
 
 /*!	\brief Sets the shape of a kernel */
 void executive::DynamicMulticoreKernel::setKernelShape(int x, int y, int z) {
@@ -124,6 +96,7 @@ void executive::DynamicMulticoreKernel::setKernelShape(int x, int y, int z) {
 
 /*! \brief Changes the amount of external shared memory */
 void executive::DynamicMulticoreKernel::setExternSharedMemorySize(unsigned int bytes) {
+
 	_externSharedMemorySize = bytes;
 }
 
@@ -146,10 +119,9 @@ void executive::DynamicMulticoreKernel::updateArgumentMemory() {
 			value != argument->arrayValues.end(); ++value) {
 		
 			assertM(size < argumentMemorySize(), "Size " << size 
-				<< " not less than allocated parameter size " 
-				<< argumentMemorySize());
-			std::memcpy(_argumentMemory + size, &value->val_b16, 
-				argument->getElementSize());
+				<< " not less than allocated parameter size " << argumentMemorySize());
+			
+			std::memcpy(_argumentMemory + size, &value->val_b16, argument->getElementSize());
 			size += argument->getElementSize();
 		}
 	}

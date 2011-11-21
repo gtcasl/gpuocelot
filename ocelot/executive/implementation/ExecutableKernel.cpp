@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -212,9 +212,10 @@ size_t ExecutableKernel::mapArgumentOffsets() {
 
 void ExecutableKernel::setArgumentBlock(const unsigned char *parameter, 
 	size_t size) {
-	mapArgumentOffsets();
-
+	
 	report("ExecutableKernel::setArgumentBlock() - parameterSize = " << size);
+
+	_argumentMemorySize = mapArgumentOffsets();
 
 	for (ParameterVector::iterator it = arguments.begin();
 		it != arguments.end(); ++it) {

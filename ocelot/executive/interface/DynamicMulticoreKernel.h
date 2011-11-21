@@ -27,31 +27,7 @@ namespace executive {
 		
 		/*!	\brief Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height, int depth);
-
-		/*!
-			\brief compute argument offsets for argument data
-			\return number of bytes required for argument memory
-		*/
-		virtual size_t mapArgumentOffsets();
-
-		/*!
-			\brief given a block of argument memory, sets the values of 
-				each argument
-			\param argument pointer to argument memory
-			\param argumentSize number of bytes to write to argument memory
-		*/
-		virtual void setArgumentBlock(const unsigned char *argument, 
-			size_t argumentSize);
-
-		/*!
-			\brief gets the values of each argument as a block of binary data
-			\param argument pointer to argument memory
-			\param maxSize maximum number of bytes to write to argument memory
-			\return actual number of bytes required by argument memory
-		*/
-		virtual size_t getArgumentBlock(unsigned char *argument,
-			size_t maxSize) const;
-	
+		
 		/*!	\brief Sets the shape of a kernel */
 		virtual void setKernelShape(int x, int y, int z);
 

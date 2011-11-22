@@ -34,3 +34,26 @@ executive::DynamicTranslationCache::~DynamicTranslationCache() {
 
 }
 
+executive::DynamicTranslationCache::Translation *
+executive::DynamicTranslationCache::getOrInsertTranslation(
+	int warpsize, SubkernelId subkernel, unsigned int specialization) {
+	
+	report(" DynamicTranslationCache::getOrInsertTranslation(ws: " << warpsize 
+		<< ", skId: " << subkernel << ", specialization = " << specialization << ")");
+		
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+executive::DynamicTranslationCache::Translation::Translation(llvm::Function *_llvmFunction):
+	llvmFunction(_llvmFunction), function(0) {
+
+}
+
+void executive::DynamicTranslationCache::Translation::execute() {
+	assert(function);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+

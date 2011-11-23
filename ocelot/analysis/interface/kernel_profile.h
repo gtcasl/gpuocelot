@@ -9,7 +9,7 @@
 #ifndef _KERNEL_PROFILE_H
 #define _KERNEL_PROFILE_H
 
-#define MSG_QUEUE "lynx"
+#define MSG_QUEUE "/lynx"
 
 
 /*-------------------------------------- DEFINITIONS -------------------------*/

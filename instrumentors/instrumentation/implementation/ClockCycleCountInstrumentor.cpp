@@ -30,6 +30,12 @@
 
 #include <fstream>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
+
 using namespace hydrazine;
 
 namespace instrumentation
@@ -103,7 +109,9 @@ namespace instrumentation
         _profile.type = KERNEL_RUNTIME;
         _profile.data.kernel_runtime = _kernelProfile.maxSMRuntime;
         
-        sendKernelProfile();
+        int err = sendKernelProfile();
+        if(err < 0)
+            report("Unable to send kernel profile");
     
         switch(fmt) {
     

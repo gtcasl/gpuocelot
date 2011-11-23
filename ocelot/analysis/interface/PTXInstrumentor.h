@@ -123,13 +123,13 @@ namespace analysis
             
             KernelDataMap kernelDataMap;
 
+            mqd_t messageQueue;
 
         protected:
             
             KernelProfile _kernelProfile;
             
             kernel_profile _profile;
-			mqd_t _msgQueue;
 			
 		public:
 		

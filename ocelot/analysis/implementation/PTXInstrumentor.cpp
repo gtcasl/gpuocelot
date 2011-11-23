@@ -175,7 +175,7 @@ namespace analysis
         int err;
         
         do {
-            err = mq_send(_msgQueue, (char *)&_profile, sizeof(_profile), MQ_DFT_PRIO);
+            err = mq_send(messageQueue, (char *)&_profile, sizeof(kernel_profile), MQ_DFT_PRIO);
             if(err == 0)
                 break;
         } 

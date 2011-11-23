@@ -8,6 +8,7 @@
 #define WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
 
 #include <instrumentation/interface/WarpReductionInstrumentor.h>
+#include <instrumentation/interface/InstrumentationConfiguration.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -185,7 +186,7 @@ namespace instrumentation
             break;
         }
         
-        sendKernelProfile();
+        sendKernelProfile(InstrumentationConfiguration::Singleton.messageQueue);
 
         if(info)
             delete[] info;

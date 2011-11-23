@@ -8,6 +8,7 @@
 #define BASIC_BLOCK_INSTRUMENTOR_CPP_INCLUDED
 
 #include <instrumentation/interface/BasicBlockInstrumentor.h>
+#include <instrumentation/interface/InstrumentationConfiguration.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -146,7 +147,7 @@ namespace instrumentation
         
         _profile.data.instruction_count = _kernelProfile.instructionCount;
         
-        sendKernelProfile();
+        sendKernelProfile(InstrumentationConfiguration::Singleton.messageQueue);
 
         if(info)
             delete[] info;

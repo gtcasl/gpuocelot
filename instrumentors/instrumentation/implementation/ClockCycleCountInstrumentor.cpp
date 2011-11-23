@@ -8,6 +8,7 @@
 #define CLOCK_CYCLE_COUNT_INSTRUMENTOR_CPP_INCLUDED
 
 #include <instrumentation/interface/ClockCycleCountInstrumentor.h>
+#include <instrumentation/interface/InstrumentationConfiguration.h>
 
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 
@@ -109,7 +110,7 @@ namespace instrumentation
         _profile.type = KERNEL_RUNTIME;
         _profile.data.kernel_runtime = _kernelProfile.maxSMRuntime;
         
-        int err = sendKernelProfile();
+        int err = sendKernelProfile(InstrumentationConfiguration::Singleton.messageQueue);
         if(err < 0)
             report("Unable to send kernel profile");
     

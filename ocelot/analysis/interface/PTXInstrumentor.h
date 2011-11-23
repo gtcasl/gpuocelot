@@ -123,8 +123,6 @@ namespace analysis
             
             KernelDataMap kernelDataMap;
 
-            mqd_t messageQueue;
-
         protected:
             
             KernelProfile _kernelProfile;
@@ -170,7 +168,7 @@ namespace analysis
             KernelProfile kernelProfile();
             
             /*! \brief send kernel profile data */
-            int sendKernelProfile();
+            int sendKernelProfile(mqd_t messageQueue);
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

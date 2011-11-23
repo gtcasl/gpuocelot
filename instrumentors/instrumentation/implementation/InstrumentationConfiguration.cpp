@@ -34,6 +34,22 @@ InstrumentationConfiguration InstrumentationConfiguration::Singleton;
 
 InstrumentationConfiguration::InstrumentationConfiguration()
 {
+
+    // Open a message queue for writing (sending data)
+    messageQueue = mq_open (MSG_QUEUE, O_RDWR);
+    if(messageQueue < 0)
+    {
+        report( "Failed to open message queue for writing" );       
+        if(errno == EACCES)
+            report("invalid permissions");
+        if(errno == ENOENT)
+            report("no queue with this name exists");
+        if(errno == EEXIST)
+            report("queue with this name already exists");
+        if(errno == EINVAL)
+            report("invalid attribute properties");
+    }
+
 	hydrazine::json::Parser parser;
 	hydrazine::json::Object* object = 0;
 
@@ -161,25 +177,7 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 
 	delete object;
 
-    // Open a message queue for writing (sending data)
-    messageQueue = mq_open (MSG_QUEUE, O_RDWR);
-    if(messageQueue < 0)
-    {
-        report( "Failed to open message queue for writing" );       
-        if(errno == EACCES)
-            report("invalid permissions");
-        if(errno == ENOENT)
-            report("no queue with this name exists");
-        if(errno == EEXIST)
-            report("queue with this name already exists");
-        if(errno == EINVAL)
-            report("invalid attribute properties");
-    }
-    
-    _clockCycleCountInstrumentor.messageQueue = messageQueue;
-    _warpReductionInstrumentor.messageQueue = messageQueue;
-    _basicBlockInstrumentor.messageQueue = messageQueue;
-
+   
 	if(clockCycleCount)
 	{
 		report( "Creating clock cycle count instrumentor" );

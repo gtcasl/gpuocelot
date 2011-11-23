@@ -170,7 +170,7 @@ namespace analysis
 
     }
     
-    int PTXInstrumentor::sendKernelProfile() {
+    int PTXInstrumentor::sendKernelProfile(mqd_t messageQueue) {
     
         int err;
         

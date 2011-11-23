@@ -24,7 +24,7 @@
 
 using namespace hydrazine;
 
-namespace analysis
+namespace instrumentation
 {
 
     void MeasureWarpReductionInstrumentor::checkConditions() {

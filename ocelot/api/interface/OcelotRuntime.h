@@ -12,11 +12,6 @@
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
 #include <ocelot/trace/interface/InteractiveDebugger.h>
-#include <ocelot/analysis/interface/ClockCycleCountInstrumentor.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
-#include <ocelot/analysis/interface/WarpReductionInstrumentor.h>
-#include <ocelot/analysis/interface/MeasureBasicBlockInstrumentor.h>
-#include <ocelot/analysis/interface/MeasureWarpReductionInstrumentor.h>
 
 #include <ocelot/transforms/interface/StructuralTransform.h>
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
@@ -38,13 +33,6 @@ namespace ocelot
 		transforms::LinearScanRegisterAllocationPass _linearScanAllocation;
 		transforms::MIMDThreadSchedulingPass _mimdThreadScheduling;
 		transforms::SyncEliminationPass _syncElimination;
-		
-        analysis::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
-		analysis::BasicBlockInstrumentor _basicBlockInstrumentor;
-		analysis::WarpReductionInstrumentor _warpReductionInstrumentor;
-		
-		analysis::MeasureBasicBlockInstrumentor _measureBasicBlockInstrumentor;
-		analysis::MeasureWarpReductionInstrumentor _measureWarpReductionInstrumentor;
 		
 		bool _initialized;
 		

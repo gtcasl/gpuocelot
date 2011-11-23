@@ -1,21 +1,21 @@
-/*! \file MeasureBasicBlockInstrumentor.h
+/*! \file BasicBlockInstrumentor.h
 	\date Monday November 15, 2010
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The header file for MeasureBasicBlockInstrumentor
+	\brief The header file for BasicBlockInstrumentor
 */
 
-#ifndef MEASURE_BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
-#define MEASURE_BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
+#ifndef BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
+#define BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
 
 #include <string>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/transforms/interface/Pass.h>
 
-namespace analysis
+namespace instrumentation
 {
     /*! \brief Able to run the basic block instrumentation passes over PTX modules */
-	class MeasureBasicBlockInstrumentor : public analysis::PTXInstrumentor
+	class BasicBlockInstrumentor : public analysis::PTXInstrumentor
 	{
 		public:
 		
@@ -39,7 +39,7 @@ namespace analysis
 			
 		public:
 			/*! \brief The default constructor */
-			MeasureBasicBlockInstrumentor();
+			BasicBlockInstrumentor();
 
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             void checkConditions();

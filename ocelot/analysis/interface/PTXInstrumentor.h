@@ -10,11 +10,16 @@
 #include <string>
 #include <vector>
 #include <map>
+
+#include <ocelot/analysis/interface/kernel_profile.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/transforms/interface/Pass.h>
+
 #include <hydrazine/implementation/json.h>
 
 #include <ostream>
+
+#include <mqueue.h>
 
 namespace analysis
 {
@@ -122,6 +127,9 @@ namespace analysis
         protected:
             
             KernelProfile _kernelProfile;
+            
+            kernel_profile _profile;
+			mqd_t _msgQueue;
 			
 		public:
 		
@@ -160,6 +168,9 @@ namespace analysis
 
             /*! \brief obtain kernel profile */
             KernelProfile kernelProfile();
+            
+            /*! \brief send kernel profile data */
+            int sendKernelProfile();
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

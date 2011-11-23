@@ -108,92 +108,11 @@ namespace api {
       //! \brief Memory checker
       MemoryChecker memoryChecker;
       
-      //! 
+      //! \brief Dynamic compilation
       DynamicCompilationOverhead dynamicCompilation;
-		};
+    };
 
-        //! Configuration for instrumentation facilities
-		class Instrumentation {
-		public:
-			
-			/*! \brief configuration properties for ClockCycleCountInstrumentor */
-			class ClockCycleCountInstrumentor
-			{
-			public:
-					ClockCycleCountInstrumentor();
-				
-			public:
-					//! \brief specifies if instrumentation is enabled */
-					bool enabled;
-                    //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;
-			};
-			
-            /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
-			class BasicBlockInstrumentor
-			{
-			public:
-					BasicBlockInstrumentor();
-				
-			public:
-			        enum BasicBlockInstrumentationType {
-			            executionCount,
-			            instructionCount,
-                        memoryIntensity
-		            };	
-			
-					//! \brief specifies if instrumentation is enabled */
-					bool enabled;
-                    //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;			
-                    //! \brief type of basic block instrumentation */
-                    BasicBlockInstrumentationType type;
-			};
-
-            /*! \brief configuration properties for analysis::WarpReductionInstrumentor */
-			class WarpReductionInstrumentor
-			{
-			public:
-					WarpReductionInstrumentor();
-				
-            public:
-                    enum InstrumentationType {
-			            memoryEfficiency,
-			            branchDivergence,
-                        instructionCount
-		            };	
-
-			public:
-			
-					//! \brief specifies if instrumentation is enabled */
-					bool enabled;
-                    //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;		
-                    //! \brief type of instrumentation */
-                    InstrumentationType type;	
-			};
-			
-		public:
-			Instrumentation();
-
-		public:
-			/*! \brief Clock cycle count instrumentor */
-			ClockCycleCountInstrumentor clockCycleCountInstrumentor;
-
-            //! \brief Basic block instrumentor
-			BasicBlockInstrumentor basicBlockInstrumentor;
-			
-			//! \brief Warp reduction instrumentor
-			WarpReductionInstrumentor warpReductionInstrumentor;
-			
-			//! \brief Measure warp reduction instrumentor
-			WarpReductionInstrumentor measureWarpReductionInstrumentor;
-			
-			//! \brief Measure basic block instrumentor
-			BasicBlockInstrumentor measureBasicBlockInstrumentor;
-		};
-
-		class CudaRuntimeImplementation {
+        class CudaRuntimeImplementation {
 		public:
 			CudaRuntimeImplementation();
 
@@ -330,9 +249,6 @@ namespace api {
 		
 		//! \brief configuration for Ocelot checkpoint
 		Checkpoint checkpoint;
-
-        //! \brief configuration for PTX instrumentation
-        Instrumentation instrument;
 		
 		//! \brief configuration for Ocelot optimizations
 		Optimizations optimizations;

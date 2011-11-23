@@ -1,45 +1,45 @@
-/*! \file BasicBlockInstrumentor.h
-	\date Monday November 15, 2010
+/*! \file WarpReductionInstrumentor.h
+	\date Saturday July 30, 2011
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The header file for BasicBlockInstrumentor
+	\brief The header file for WarpReductionInstrumentor
 */
 
-#ifndef BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
-#define BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
+#ifndef WARP_REDUCTION_INSTRUMENTOR_H_INCLUDED
+#define WARP_REDUCTION_INSTRUMENTOR_H_INCLUDED
 
 #include <string>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/transforms/interface/Pass.h>
 
-namespace analysis
+namespace instrumentation
 {
-    /*! \brief Able to run the basic block instrumentation passes over PTX modules */
-	class BasicBlockInstrumentor : public analysis::PTXInstrumentor
+    /*! \brief Able to run the warp-level reduction instrumentation passes over PTX modules */
+	class WarpReductionInstrumentor : public analysis::PTXInstrumentor
 	{
 		public:
-		
-		    enum BasicBlockInstrumentationType {
-		        instructionCount,
-		        executionCount,
-                memoryIntensity
-		    };
+            
+            enum InstrumentationType {
+		        memoryEfficiency,
+		        branchDivergence,
+                instructionCount
+		    };		
 
-            /*! \brief The basic block counter */
+            InstrumentationType type;
+
+            /*! \brief The counter */
             size_t *counter;        
-
-            /*! \brief Number of entries per basic block */
-            size_t entries;
 
             /*! \brief The description of the specified pass */
             std::string description;
             
-            /*! \brief type of basic block instrumentation */
-            BasicBlockInstrumentationType type;
-			
+            unsigned int warpCount;
+            
+            unsigned int entries;
+        	
 		public:
 			/*! \brief The default constructor */
-			BasicBlockInstrumentor();
+			WarpReductionInstrumentor();
 
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             void checkConditions();
@@ -50,17 +50,14 @@ namespace analysis
             /*! \brief The initialize method performs any necessary CUDA runtime initialization prior to instrumentation */
             void initialize();
 
-            /*! \brief The createPass method instantiates the instrumentation passes */
+            /*! \brief The createPasses method instantiates the instrumentation passes */
             void createPasses();
 
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	
 
-            /*! \brief extracts results for the basic block execution count instrumentation */
+            /*! \brief extracts results for the instrumentation */
             void extractResults(std::ostream *out);
-
-            /*! \brief emits JSON for the basic block execution count instrumentation */
-            void emitJSON(size_t* info);
 	};
 
 }

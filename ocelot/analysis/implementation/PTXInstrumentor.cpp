@@ -22,6 +22,8 @@
 
 #include <ocelot/transforms/interface/CToPTXModulePass.h>
 
+#define MQ_DFT_PRIO 0
+
 namespace analysis
 {
 
@@ -166,6 +168,21 @@ namespace analysis
 
         *out << "\n\n";
 
+    }
+    
+    int PTXInstrumentor::sendKernelProfile() {
+    
+        int err;
+        
+        do {
+            err = mq_send(_msgQueue, (char *)&_profile, sizeof(_profile), MQ_DFT_PRIO);
+            if(err == 0)
+                break;
+        } 
+        /* keep sending message while a signal interrupted call or msg is created as non-block and is full */
+        while(errno == EINTR || errno == EAGAIN);
+        
+        return err;
     }
     
     PTXInstrumentor::PTXInstrumentor() : conditionsMet(false), fmt(text), deviceInfoWritten(false), sharedMemSize(0) {

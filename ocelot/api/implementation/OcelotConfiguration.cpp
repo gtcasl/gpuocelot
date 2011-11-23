@@ -61,32 +61,6 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-api::OcelotConfiguration::Instrumentation::ClockCycleCountInstrumentor::ClockCycleCountInstrumentor():
-        enabled(false)
-{
-
-}
-
-api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::WarpReductionInstrumentor():
-        enabled(false)
-{
-
-}
-
-
-api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockInstrumentor():
-        enabled(false)
-{
-
-}
-
-api::OcelotConfiguration::Instrumentation::Instrumentation()
-{
-
-}
-
-
 api::OcelotConfiguration::TraceGeneration::RaceDetector::RaceDetector():
         enabled(false),
         ignoreIrrelevantWrites(true)
@@ -115,90 +89,6 @@ api::OcelotConfiguration::TraceGeneration::DynamicCompilationOverhead::DynamicCo
 api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
 
-}
-
-static void initializeInstrument(api::OcelotConfiguration::Instrumentation &instrument, 
-	hydrazine::json::Visitor config) 
-{
-	hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
-    if (!clockCycleCountConfig.is_null()) {
-            instrument.clockCycleCountInstrumentor.enabled = clockCycleCountConfig.parse<bool>("enabled", true);
-            instrument.clockCycleCountInstrumentor.logfile = clockCycleCountConfig.parse<std::string>("logfile", "");
-    }
-    
-    hydrazine::json::Visitor basicBlockConfig = config["basicBlockExecutionCount"];
-    if (!basicBlockConfig.is_null()) {
-            instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
-            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
-            instrument.basicBlockInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::executionCount;
-    }
-    
-    basicBlockConfig = config["threadInstructionCount"];
-    if (!basicBlockConfig.is_null()) {
-            instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
-            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
-            instrument.basicBlockInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
-    }
-    
-    basicBlockConfig = config["measureThreadIC"];
-    if (!basicBlockConfig.is_null()) {
-            instrument.measureBasicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
-            instrument.measureBasicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
-            instrument.measureBasicBlockInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
-    }
-
-    hydrazine::json::Visitor warpReductionConfig = config["branchDivergence"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.warpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence;
-    }
-    
-    warpReductionConfig = config["memoryEfficiency"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.warpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency;
-    }
-    
-    warpReductionConfig = config["warpInstructionCount"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.warpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
-    }
-    
-    warpReductionConfig = config["measureWarpIC"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.measureWarpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
-    }
-
-    warpReductionConfig = config["measureMemEfficiency"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.measureWarpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency;
-    }
-
-    warpReductionConfig = config["measureBranchDivergence"];
-    if (!warpReductionConfig.is_null()) {
-            instrument.measureWarpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
-            instrument.measureWarpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
-            instrument.measureWarpReductionInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence;
-    }
-
-    
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
@@ -477,10 +367,8 @@ void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) 
 		config = parser.parse_object(stream);
 
 		hydrazine::json::Visitor main(config);
-        if (main.find("instrument")) {
-			initializeInstrument(instrument, main["instrument"]);
-		}		
-		if (main.find("trace")) {
+        
+        if (main.find("trace")) {
 			initializeTrace(trace, main["trace"]);
 		}
 		if (main.find("cuda")) {

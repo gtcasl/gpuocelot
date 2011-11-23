@@ -1,45 +1,33 @@
-/*! \file WarpReductionInstrumentor.h
-	\date Saturday July 30, 2011
+/*! \file ClockCycleCountInstrumentor.h
+	\date Monday November 15, 2010
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The header file for WarpReductionInstrumentor
+	\brief The header file for ClockCycleCountInstrumentor
 */
 
-#ifndef WARP_REDUCTION_INSTRUMENTOR_H_INCLUDED
-#define WARP_REDUCTION_INSTRUMENTOR_H_INCLUDED
+#ifndef CLOCK_CYCLE_COUNT_INSTRUMENTOR_H_INCLUDED
+#define CLOCK_CYCLE_COUNT_INSTRUMENTOR_H_INCLUDED
 
 #include <string>
+#include <map>
+#include <algorithm>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/transforms/interface/Pass.h>
 
-namespace analysis
+namespace instrumentation
 {
-    /*! \brief Able to run the warp-level reduction instrumentation passes over PTX modules */
-	class WarpReductionInstrumentor : public analysis::PTXInstrumentor
+	/*! \brief Able to run the clock cycle count instrumentation pass over PTX modules */
+	class ClockCycleCountInstrumentor : public analysis::PTXInstrumentor
 	{
-		public:
-            
-            enum InstrumentationType {
-		        memoryEfficiency,
-		        branchDivergence,
-                instructionCount
-		    };		
-
-            InstrumentationType type;
-
-            /*! \brief The counter */
-            size_t *counter;        
-
+		public:       
             /*! \brief The description of the specified pass */
             std::string description;
-            
-            unsigned int warpCount;
-            
-            unsigned int entries;
-        	
+      
+            size_t *clock_sm_info;
+			
 		public:
 			/*! \brief The default constructor */
-			WarpReductionInstrumentor();
+			ClockCycleCountInstrumentor();
 
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             void checkConditions();
@@ -56,10 +44,12 @@ namespace analysis
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	
 
-            /*! \brief extracts results for the instrumentation */
+            /*! \brief extracts results for the clock cycle count instrumentation */
             void extractResults(std::ostream *out);
-	};
 
+        private:
+            bool pred(const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs);
+	};
 }
 
 #endif

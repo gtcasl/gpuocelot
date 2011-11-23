@@ -7,7 +7,9 @@
 #ifndef CLOCK_CYCLE_COUNT_INSTRUMENTOR_CPP_INCLUDED
 #define CLOCK_CYCLE_COUNT_INSTRUMENTOR_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/ClockCycleCountInstrumentor.h>
+#include <instrumentation/interface/ClockCycleCountInstrumentor.h>
+
+#include <ocelot/analysis/interface/PTXInstrumentor.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -21,13 +23,16 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/json.h>
 
-#include <fstream>
+#include <mqueue.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
 
-#include <kernel_profile.h>
+#include <fstream>
 
 using namespace hydrazine;
 
-namespace analysis
+namespace instrumentation
 {
 
     void ClockCycleCountInstrumentor::checkConditions() {
@@ -87,13 +92,18 @@ namespace analysis
         std::vector<double> clockCyclesPerSM;
         clockCyclesPerSM.clear();
 
-        for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = _kernelProfile.processorToClockCyclesMap.begin();
+        for(analysis::KernelProfile::ProcessorToClockCyclesMap::const_iterator it = _kernelProfile.processorToClockCyclesMap.begin();
             it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
             clockCyclesPerSM.push_back(it->second);
         }
 
         _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), clockCyclesPerSM.end()))/properties.clockRate;
         _kernelProfile.name = kernelName;
+        
+        _profile.type = KERNEL_RUNTIME;
+        _profile.data.kernel_runtime = _kernelProfile.maxSMRuntime;
+        
+        sendKernelProfile();
     
         switch(fmt) {
     
@@ -102,7 +112,7 @@ namespace analysis
                 *out << kernelName << "_maxSMRuntime = " << _kernelProfile.maxSMRuntime << "\n\n";
                 *out << kernelName << "_threadBlockToProcessorMap = {";
 
-                for (KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
+                for (analysis::KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
                     it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
 			        *out << it->first << ":(";
                     
@@ -116,7 +126,7 @@ namespace analysis
                 *out << "}\n\n";   
 
                 *out << kernelName << "_processorToThreadBlockCountMap = {";
-                    for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
+                    for(analysis::KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
                         it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it){
                         *out << it->first << ":" << it->second << ",";
                     }
@@ -127,56 +137,15 @@ namespace analysis
             
             case text:   
 
-                if(!deviceInfoWritten){
-                    //deviceInfo(out);
-                    deviceInfoWritten = true;
-                }
-    
-                /*
-                *out << "Kernel Name: " << kernelName << "\n";
-                *out << "Thread Block Count: " << threadBlocks << "\n";
-                *out << "Thread Count: " << threads << "\n";
-                */
-
                 *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << " ms\n";
-                /*
-                *out << "\nSM to CTA Mapping [SM ID: (CTA ID, Clock Cycles)]:\n\n";
-                
-                for(KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin();
-            it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
-                    *out << "[" << it->first << ": (";
 
-                    for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
-                        *out << *mappedIt << ","; 
-                    }
-
-                    *out << ")\n";
-                }
-
-                *out << "\nCTAs per SM [SM ID: CTA Count]:\n\n";
-                
-                for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
-            it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it) {
-                    *out << "[" << it->first << ":" << it->second << "]\n";
-                }
-    
-                *out << "\n\n";
-                */    
-            
             break;
 
         }
 
         if(info)
             delete[] info;
-            
-        int id;
-        kernel_profile profile;
-        profile.type = KERNEL_RUNTIME;
-        profile.data.kernel_runtime = _kernelProfile.maxSMRuntime;
-        
-        update_kernel_profile(profile, &id);
-            
+     
     }
 
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {

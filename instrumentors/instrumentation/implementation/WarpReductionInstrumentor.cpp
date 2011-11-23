@@ -7,7 +7,7 @@
 #ifndef WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
 #define WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/WarpReductionInstrumentor.h>
+#include <instrumentation/interface/WarpReductionInstrumentor.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -24,7 +24,7 @@
 
 using namespace hydrazine;
 
-namespace analysis
+namespace instrumentation
 {
 
     void WarpReductionInstrumentor::checkConditions() {
@@ -63,6 +63,7 @@ namespace analysis
             case memoryEfficiency:
             {
                 transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/memoryEfficiency.c");
+                _profile.type = MEM_EFFICIENCY;
                 symbol = pass->baseAddress;
                 transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass(UNIQUE_ELEMENT_COUNT);
                 modulePass->parameterMap = pass->parameterMap;
@@ -76,6 +77,7 @@ namespace analysis
             case branchDivergence:
             {
                 transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/branchDivergence.c");
+                _profile.type = BRANCH_DIVERGENCE;
                 symbol = pass->baseAddress;
                 
                 passes[0] = pass;   
@@ -86,6 +88,7 @@ namespace analysis
             case instructionCount:
             {
                 transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/warpInstructionCount.c");
+                _profile.type = INST_COUNT;
                 symbol = pass->baseAddress;
                 
                 passes[0] = pass;   
@@ -121,9 +124,9 @@ namespace analysis
             break;
             case text:
 
-                //*out << "Thread Block Count: " << threadBlocks << "\n";
-		        //*out << "Kernel Name: " << kernelName << "\n";		
-		        //*out << "Thread Count: " << threads << "\n";
+                *out << "Thread Block Count: " << threadBlocks << "\n";
+		        *out << "Kernel Name: " << kernelName << "\n";		
+		        *out << "Thread Count: " << threads << "\n";
             
                 switch(type)
                 {
@@ -141,6 +144,8 @@ namespace analysis
                         *out << "Dynamic Warps Executing Global Memory Operations: " << dynamicWarps << "\n";
                         *out << "Memory Transactions: " << memTransactions << "\n\n";              
                         *out << "Memory Efficiency: " << ((double)dynamicWarps/(double)memTransactions) * 100 << "%\n\n";
+                        
+                        _profile.data.memory_efficiency = ((double)dynamicWarps/(double)memTransactions) * 100 ;
                     }
                     break;
                     case branchDivergence:
@@ -157,6 +162,8 @@ namespace analysis
                         *out << "Divergent Dynamic Branches: " << divergentBranches << "\n";
                         *out << "Total Dynamic Branches: " << totalBranches << "\n\n";              
                         *out << "Branch Divergence: " << ((double)divergentBranches/(double)totalBranches) * 100 << "%\n\n";
+                        
+                        _profile.data.branch_divergence = ((double)divergentBranches/(double)totalBranches) * 100;
                     
                     }
                     break;
@@ -167,6 +174,8 @@ namespace analysis
                             _kernelProfile.instructionCount += info[i];
                         
                         *out << "\nDynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
+                        
+                        _profile.data.instruction_count = _kernelProfile.instructionCount;
                     }                    
                     break;
                     default:
@@ -175,6 +184,8 @@ namespace analysis
 
             break;
         }
+        
+        sendKernelProfile();
 
         if(info)
             delete[] info;

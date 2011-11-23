@@ -204,13 +204,15 @@ InstrumentationConfiguration::InstrumentationConfiguration()
     // Open a message queue for writing (sending data)
     messageQueue = mq_open (MSG_QUEUE, O_WRONLY);
     if(messageQueue < 0)
-        std::cout << "mq_open failed\n";       
+        report( "Failed to open message queue for writing" );       
 
 }
 
 InstrumentationConfiguration::~InstrumentationConfiguration()
 {
-    mq_close(messageQueue);
+    int err = mq_close(messageQueue);
+    if(err < 0)
+        report( "Failed to close message queue" );
 }
 
 }

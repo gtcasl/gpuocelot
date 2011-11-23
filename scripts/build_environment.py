@@ -345,7 +345,7 @@ def getExtraLibs():
 			'libboost_thread-vc100-mt-s-1_46_1.lib', 'opengl32.lib']
 	else:
 		return ['-lboost_system-mt', '-lboost_filesystem-mt',
-			'-lboost_thread-mt', '-lcod', '-latl', '-lfm', '-ldill', '-lkernelprofile']
+			'-lboost_thread-mt', '-lcod', '-latl', '-lfm', '-ldill']
 
 
 def fixPath(path):
@@ -482,6 +482,14 @@ def Environment():
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
 
+  # CUDA builder
+	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
+	env.Append(BUILDERS = {'Cuda': Builder(
+		action= nvccPath + 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
+		suffix = '.o',
+		src_suffix = '.cu'
+	)})
+	
 	# append the default VC++ paths
 	if os.name == 'nt':
 		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))

@@ -248,10 +248,12 @@ namespace executive
 
 		AllocationVector allocations;
 		
+		report("Loading global variables");
 		for(ir::Module::GlobalMap::const_iterator 
 			global = ir->globals().begin(); 
 			global != ir->globals().end(); ++global)
 		{
+			report(" loading global variable '" << global->first << "'");
 			MemoryAllocation* allocation = new MemoryAllocation(global->second);
 			globals.insert(std::make_pair(global->first, 
 				allocation->pointer()));
@@ -881,23 +883,6 @@ namespace executive
 		// this is a nop, there are FOUR streams (I mean only one stream)
 	}
 	
-	void EmulatorDevice::select()
-	{
-		assert(!selected());
-		_selected = true;
-	}
-	
-	bool EmulatorDevice::selected() const
-	{
-		return _selected;
-	}
-
-	void EmulatorDevice::unselect()
-	{
-		assert(selected());
-		_selected = false;
-	}
-
 	static ir::Texture::Interpolation convert(cudaTextureFilterMode filter)
 	{
 		switch(filter)
@@ -1062,6 +1047,8 @@ namespace executive
 			kernel->addTraceGenerator(*gen);
 		}
 	
+		unselect();
+	
 		try
 		{
 			kernel->launchGrid(grid.x, grid.y, grid.z);
@@ -1076,6 +1063,8 @@ namespace executive
 			}
 			throw;
 		}
+		
+		select();
 		
 		for(trace::TraceGeneratorVector::const_iterator 
 			gen = traceGenerators.begin(); 

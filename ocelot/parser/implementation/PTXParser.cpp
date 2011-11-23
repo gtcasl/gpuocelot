@@ -1760,7 +1760,7 @@ namespace parser
 	
 	void PTXParser::State::callPrototypeName( const std::string& identifier )
 	{
-		report( "  Rule: callPrototypeName" );
+		report( "  Rule: callPrototypeName '" << identifier << "'" );
 		prototype.name = identifier;
 	}
 					
@@ -1803,7 +1803,7 @@ namespace parser
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Function/Prototype '" 
-				<< statement.instruction.a.identifier 
+				<< prototype.name
 				<< "' not declared in this scope.", 
 				NoDeclaration );	
 		}
@@ -2007,6 +2007,8 @@ namespace parser
 					DuplicateDeclaration );
 			}
 		}
+		
+		report( "   name: '" << name << "'" );
 		
 		prototypes.insert( std::make_pair( name, prototype ) );
 		

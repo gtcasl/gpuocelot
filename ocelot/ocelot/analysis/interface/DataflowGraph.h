@@ -313,6 +313,12 @@ class DataflowGraph : public KernelAnalysis
 		DataflowGraph();
 		/*! \brief The destructor */
 		~DataflowGraph();
+		
+	public:
+		#ifndef _WIN32
+		DataflowGraph(const DataflowGraph& ) = delete;
+		DataflowGraph& operator=(const DataflowGraph& ) = delete;
+		#endif
 
 	public:
 		/*! \brief Return an iterator to the program entry point */

@@ -164,9 +164,11 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 
 executive::Device::Device( unsigned int flags) : _driverVersion(3000), 
 	_runtimeVersion(3000), _flags(flags) {
+	report("Creating device" << this);
 }
 
 executive::Device::~Device() {
+	report("Destroying device.");
 }
 
 bool executive::Device::checkMemoryAccess(const void* pointer, 
@@ -210,29 +212,49 @@ const executive::Device::Properties& executive::Device::properties() const
 
 void executive::Device::select()
 {
+	boost::thread::id id = boost::this_thread::get_id();
+
+	report("Selecting device for thread " << id << " on device " << this);
+	
 	_mutex.lock();
 	
-	assert(!_selected[boost::this_thread::get_id()]);
+	ThreadMap::iterator threadState = _selected.find(id);
 	
-	_selected[boost::this_thread::get_id()] = true;
-
+	if(threadState == _selected.end())
+	{
+		_selected.insert(threadState, std::make_pair(id, true));
+	}
+	else
+	{
+		assert(!threadState->second);
+			
+		threadState->second = true;
+	}
+	
 	_mutex.unlock();
 }
 
 bool executive::Device::selected()
 {
 	bool selected = false;
-
+	
+	boost::thread::id id = boost::this_thread::get_id();
+	
+	report("Is device selected for thread " << id << " on device "
+		<< this << " ?");
+	
 	_mutex.lock();
 	
-	ThreadMap::const_iterator threadState = _selected.find(
-		boost::this_thread::get_id());
+	ThreadMap::const_iterator threadState = _selected.find(id);
 	
 	if(threadState != _selected.end())
 	{
+		report(" thread has an entry...");
 		selected = threadState->second;
 	}
-
+	
+	report("  thread was " << (selected ? "selected" : "not selected"));
+	
 	_mutex.unlock();
 
 	return selected;
@@ -240,11 +262,17 @@ bool executive::Device::selected()
 
 void executive::Device::unselect()
 {
+	boost::thread::id id = boost::this_thread::get_id();
+
+	report("Unselecting device for thread " << id << " on device " << this);
+	
 	_mutex.lock();
 	
-	assert(_selected[boost::this_thread::get_id()]);
+	ThreadMap::iterator threadState = _selected.find(id);
 	
-	_selected[boost::this_thread::get_id()] = false;
+	assert(threadState != _selected.end());
+
+	threadState->second = false;
 
 	_mutex.unlock();
 }

@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
 	instrument: {
-	    warpInstructionCount: {  }
+	    clockCycleCount: {  }
 	},
 	trace: { 
 		database: "traces-ipdom/database.trace",

@@ -172,15 +172,33 @@ namespace analysis
     
     int PTXInstrumentor::sendKernelProfile(mqd_t messageQueue) {
     
-        int err;
+        int err = 0;
+        
+        _profile.pid = getpid();
+        
+        int len = kernelName.size() > MAX_KERNEL_NAME_SIZE - 1 
+            ? MAX_KERNEL_NAME_SIZE - 1 : kernelName.size();
+        
+        strncpy(_profile.name, kernelName.data(), len);
+        _profile.name[len] = '\0';
         
         do {
             err = mq_send(messageQueue, (char *)&_profile, sizeof(kernel_profile), MQ_DFT_PRIO);
+            
             if(err == 0)
                 break;
+            else {
+                /* if O_NONBLOCK is set and the message queue is full, EAGAIN is returned. In this
+                case, we do nothing so that if the messages we send are not consumed by anyone, 
+                we still function normally */
+                if(errno == EAGAIN)
+                    break;
+            
+            }
         } 
-        /* keep sending message while a signal interrupted call or msg is created as non-block and is full */
-        while(errno == EINTR || errno == EAGAIN);
+        /* keep sending message while a signal interrupted call */
+        while(errno == EINTR);
+        std::cout << "kernel name: " << _profile.name << std::endl;
         
         return err;
     }

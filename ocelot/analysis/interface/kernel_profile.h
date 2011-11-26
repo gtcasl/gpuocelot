@@ -11,12 +11,17 @@
 
 #define MSG_QUEUE "/lynx"
 
+#define MAX_KERNEL_NAME_SIZE    256
+
 
 /*-------------------------------------- DEFINITIONS -------------------------*/
 
 typedef enum { NONE, KERNEL_RUNTIME, MEM_EFFICIENCY, INST_COUNT, EXECUTION_COUNT, BRANCH_DIVERGENCE } profile_type;
 
 typedef struct _kernel_profile {
+    
+    int pid;
+
     profile_type type;
     union {
         unsigned long kernel_runtime;
@@ -24,6 +29,9 @@ typedef struct _kernel_profile {
         unsigned long instruction_count;
         unsigned long branch_divergence;
     } data;
+    
+    char *name;
+    
 } kernel_profile;
 
 #endif /* _KERNEL_PROFILE_H */

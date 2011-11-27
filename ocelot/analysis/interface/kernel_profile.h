@@ -30,7 +30,7 @@ typedef struct _kernel_profile {
         unsigned long branch_divergence;
     } data;
     
-    char *name;
+    char name[MAX_KERNEL_NAME_SIZE];
     
 } kernel_profile;
 

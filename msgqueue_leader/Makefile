@@ -12,7 +12,7 @@ all:	leader
 leader:	leader.o 
 	$(CC) $(LDFLAGS) -o $@ $^
 	
-src/leader.o:	leader.c
+leader.o:	leader.c
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 clean:

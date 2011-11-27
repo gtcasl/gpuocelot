@@ -198,7 +198,6 @@ namespace analysis
         } 
         /* keep sending message while a signal interrupted call */
         while(errno == EINTR);
-        std::cout << "kernel name: " << _profile.name << std::endl;
         
         return err;
     }

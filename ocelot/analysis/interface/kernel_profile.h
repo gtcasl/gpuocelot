@@ -32,10 +32,10 @@ typedef struct _kernel_profile {
 
     profile_type type;
     union {
-        unsigned long kernel_runtime;
-        unsigned long memory_efficiency;
-        unsigned long instruction_count;
-        unsigned long branch_divergence;
+        double kernel_runtime;
+        double memory_efficiency;
+        double instruction_count;
+        double branch_divergence;
     } data;
     
     char name[MAX_KERNEL_NAME_SIZE]; // don't change macro unless you also want to change EVPath

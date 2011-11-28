@@ -175,7 +175,9 @@ namespace analysis
         int err = 0;
         
         _profile.pid = getpid();
-        
+       
+	cudaGetDevice(&_profile.device);
+ 
         int len = kernelName.size() > MAX_KERNEL_NAME_SIZE - 1 
             ? MAX_KERNEL_NAME_SIZE - 1 : kernelName.size();
         

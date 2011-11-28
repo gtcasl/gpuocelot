@@ -5,7 +5,7 @@
 
 CC=gcc
 CCFLAGS=-fPIC -ggdb -O0 -Wall -Werror -Wextra -Wno-unused-parameter -I/usr/local/include
-LDFLAGS=-ggdb -lrt 
+LDFLAGS=-lrt 
 
 all:	leader
 

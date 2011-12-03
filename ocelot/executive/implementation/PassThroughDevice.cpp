@@ -387,7 +387,7 @@ void executive::PassThroughDevice::bindTexture(
 	{
 		throw hydrazine::Exception("Invalid Texture - " + textureName 
 			+ " in Module - " + moduleName);
-	}	
+	}
 
 	ir::Texture& texture = *tex->second;
 

@@ -544,6 +544,21 @@ namespace cuda {
 		virtual cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
 	
 	public:
+		/*
+			Device synchronization
+		*/
+		virtual cudaError_t cudaDeviceReset(void);
+		virtual cudaError_t cudaDeviceSynchronize(void);
+		virtual cudaError_t cudaDeviceSetLimit(enum cudaLimit limit,
+			size_t value);
+		virtual cudaError_t cudaDeviceGetLimit(size_t *pValue,
+			enum cudaLimit limit);
+		virtual cudaError_t cudaDeviceGetCacheConfig(
+			enum cudaFuncCache *pCacheConfig);
+		virtual cudaError_t cudaDeviceSetCacheConfig(
+			enum cudaFuncCache cacheConfig);
+	
+	public:
 		//
 		// kernel thread synchronization
 		//

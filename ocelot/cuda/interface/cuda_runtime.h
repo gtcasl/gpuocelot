@@ -624,6 +624,13 @@ extern cudaError_t cudaSetDoubleForHost(double *d);
 *                                                                              *
 *******************************************************************************/
 
+extern cudaError_t cudaDeviceReset(void);
+extern cudaError_t cudaDeviceSynchronize(void);
+extern cudaError_t cudaDeviceSetLimit(enum cudaLimit limit, size_t value);
+extern cudaError_t cudaDeviceGetLimit(size_t *pValue, enum cudaLimit limit);
+extern cudaError_t cudaDeviceGetCacheConfig(enum cudaFuncCache *pCacheConfig);
+extern cudaError_t cudaDeviceSetCacheConfig(enum cudaFuncCache cacheConfig);
+
 extern cudaError_t cudaThreadExit(void);
 extern cudaError_t cudaThreadSynchronize(void);
 

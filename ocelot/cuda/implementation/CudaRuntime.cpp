@@ -3086,6 +3086,38 @@ cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
 	return _setLastError(result);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+cudaError_t cuda::CudaRuntime::cudaDeviceReset(void) {
+	return CudaRuntimeInterface::cudaDeviceReset();
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSynchronize(void) {
+	return cudaThreadSynchronize();
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSetLimit(enum cudaLimit limit,
+	size_t value) {
+	return CudaRuntimeInterface::cudaDeviceSetLimit(limit, value);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceGetLimit(size_t *pValue,
+	enum cudaLimit limit) {
+	return CudaRuntimeInterface::cudaDeviceGetLimit(pValue, limit);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceGetCacheConfig(
+	enum cudaFuncCache *pCacheConfig) {
+	return CudaRuntimeInterface::cudaDeviceGetCacheConfig(pCacheConfig);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSetCacheConfig(
+	enum cudaFuncCache cacheConfig) {
+	return CudaRuntimeInterface::cudaDeviceSetCacheConfig(cacheConfig);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {

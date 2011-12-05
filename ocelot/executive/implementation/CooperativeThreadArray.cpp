@@ -6579,6 +6579,7 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 	switch (instr.type) {
 		
 		// unsigned int types [extended to 64-bit uint]
+		case PTXOperand::pred:
 		case PTXOperand::b16:
 		case PTXOperand::b32:
 		case PTXOperand::b64:
@@ -6595,6 +6596,10 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 				PTXU64 a, b;
 
 				switch (instr.type) {
+					case PTXOperand::pred:
+						a = (PTXU64)operandAsPredicate(threadID, instr.a) & 0xf;
+						b = (PTXU64)operandAsPredicate(threadID, instr.b) & 0xf;
+						break;
 					case PTXOperand::s16:
 					case PTXOperand::b16:
 					case PTXOperand::u16:

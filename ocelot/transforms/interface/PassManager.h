@@ -10,6 +10,7 @@
 // Standard Library Includes
 #include <map>
 #include <unordered_map>
+#include <list>
 #include <string>
 
 // Forward Declarations
@@ -28,9 +29,9 @@ class Pass;
 class PassManager
 {
 public:
-	/*! \brief A map from analysis id to an up to date copy */
 	typedef std::unordered_map<int, analysis::Analysis*> AnalysisMap;
-
+	typedef std::list<Pass*> PassList;
+	
 public:
 	/*! \brief The constructor creates an empty pass manager associated
 		with an existing Module.  
@@ -94,12 +95,10 @@ public:
 	#endif
 
 private:
-	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
-	
-private:
-	PassMap           _passes;
-	ir::Module*       _module;
-	AnalysisMap*      _analyses;
+	PassList     _passes;
+	PassList     _tempPasses;
+	ir::Module*  _module;
+	AnalysisMap* _analyses;
 };
 
 }

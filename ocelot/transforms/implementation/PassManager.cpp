@@ -37,57 +37,10 @@
 namespace transforms
 {
 
-typedef PassManager::AnalysisMap AnalysisMap;
-
-static void freeUnusedDataStructures(AnalysisMap& analyses,
-	ir::IRKernel* k, int type)
-{
-	typedef std::vector<int> TypeVector;
+typedef PassManager::AnalysisMap              AnalysisMap;
+typedef std::unordered_map<int, unsigned int> AnalysisUseMap;
+typedef PassManager::PassList                 PassList;
 	
-	#if defined(__clang__) || defined(_WIN32)
-	// clang/win32 doesn't support initializer lists yet
-	TypeVector types;
-	
-	types.push_back(analysis::Analysis::DivergenceAnalysis);
-	types.push_back(analysis::Analysis::DataflowGraphAnalysis);
-	types.push_back(analysis::Analysis::PostDominatorTreeAnalysis);
-	types.push_back(analysis::Analysis::DominatorTreeAnalysis);
-	types.push_back(analysis::Analysis::ControlTreeAnalysis);
-	types.push_back(analysis::Analysis::StructuralAnalysis);
-	types.push_back(analysis::Analysis::ThreadFrontierAnalysis); 
-	types.push_back(analysis::Analysis::SuperblockAnalysis); 
-	types.push_back(analysis::Analysis::HyperblockAnalysis); 
-	
-	#else
-	TypeVector types = {analysis::Analysis::DivergenceAnalysis,
-		analysis::Analysis::DataflowGraphAnalysis,
-		analysis::Analysis::PostDominatorTreeAnalysis,
-		analysis::Analysis::DominatorTreeAnalysis,
-		analysis::Analysis::ControlTreeAnalysis,
-		analysis::Analysis::StructuralAnalysis,
-		analysis::Analysis::ThreadFrontierAnalysis,
-		analysis::Analysis::SuperblockAnalysis,
-		analysis::Analysis::HyperblockAnalysis
-		};
-	#endif
-	
-	for(TypeVector::const_iterator t = types.begin(); t != types.end(); ++t)
-	{
-		if(type < *t)
-		{
-			AnalysisMap::iterator structure = analyses.find(*t);
-			
-			if(structure != analyses.end())
-			{
-				report("   Destroying " << structure->second->name
-					<< " for kernel" << k->name);
-				delete structure->second;
-				analyses.erase(structure);
-			}
-		}
-	}
-}
-
 static void allocateNewDataStructures(AnalysisMap& analyses,
 	ir::IRKernel* k, int type, PassManager* manager)
 {
@@ -242,6 +195,73 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			hyperblockAnalysis->analyze(*k);
 		}
 	}
+}
+
+static void freeUnusedDataStructures(AnalysisMap& analyses,
+	AnalysisUseMap& uses, int types)
+{
+	for(unsigned int i = 0; i < 8 * sizeof(int); ++i)
+	{
+		int type = 1 << i;
+		
+		if(types & type)
+		{
+			AnalysisUseMap::iterator use = uses.find(type);
+			assert(use != uses.end());
+			
+			--use->second;
+			
+			if(use->second == 0)
+			{
+				uses.erase(use);
+				
+				AnalysisMap::iterator analysis = analyses.find(type);
+				if(analysis != analyses.end())
+				{				
+					delete analysis->second;
+					analyses.erase(analysis);
+				}
+			}
+		}
+	}
+}
+
+static void freeAllDataStructures(AnalysisMap& analyses)
+{
+	for(auto analysis = analyses.begin();
+		analysis != analyses.end(); ++analysis)
+	{
+		delete analysis->second;
+	}
+	
+	analyses.clear();
+}
+
+static AnalysisUseMap initializeAnalysisUses(const PassList& passes)
+{
+	AnalysisUseMap uses;
+	
+	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
+	{
+		for(unsigned int i = 0; i < 8 * sizeof(int); ++i)
+		{
+			int type = 1 << i;
+			
+			if((*pass)->analyses & type)
+			{
+				AnalysisUseMap::iterator use = uses.find(type);
+				
+				if(use == uses.end())
+				{
+					use = uses.insert(std::make_pair(type, 0)).first;
+				}
+				
+				use->second++;
+			}
+		}
+	}
+	
+	return uses;
 }
 
 static void runKernelPass(ir::IRKernel* kernel, Pass* pass)
@@ -428,28 +448,75 @@ PassManager::PassManager(ir::Module* module) :
 	assert(_module != 0);
 }
 
+static PassList getDependentPasses(const Pass& pass)
+{
+	Pass::StringVector dependentPasses = pass.getDependentPasses();
+	
+	PassList passes;
+	
+	for(auto dependentPass = dependentPasses.begin();
+		dependentPass != dependentPasses.end(); ++dependentPass)
+	{
+		Pass* newPass = Pass::create(*dependentPass);
+		assert(newPass != 0);
+	
+		passes.push_back(newPass);
+	}
+	
+	return passes;
+}
+
 void PassManager::addPass(Pass& pass)
 {
 	report("Adding pass '" << pass.toString() << "'");
-	_passes.insert(std::make_pair(pass.analyses, &pass));
+
+	PassList dependentPasses = getDependentPasses(pass);
+
+	_tempPasses.insert(_tempPasses.end(), dependentPasses.begin(),
+		dependentPasses.end());
+
+	dependentPasses.push_back(&pass);
+
+	_passes.insert(_passes.end(), dependentPasses.begin(),
+		dependentPasses.end());
+		
 	pass.setPassManager(this);
 }
 
 void PassManager::clear()
 {
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(PassList::iterator pass = _passes.begin();
+		pass != _passes.end(); ++pass)
 	{
-		pass->second->setPassManager(0);
+		(*pass)->setPassManager(0);
 	}
+
+	for(PassList::iterator pass = _tempPasses.begin();
+		pass != _tempPasses.end(); ++pass)
+	{
+		delete *pass;
+	}
+
 	_passes.clear();
+	_tempPasses.clear();
 }
 
 void PassManager::destroyPasses()
 {
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(PassList::iterator pass = _passes.begin();
+		pass != _passes.end(); ++pass)
 	{
-		delete pass->second;
+		delete *pass;
 	}
+
+	for(PassList::iterator pass = _tempPasses.begin();
+		pass != _tempPasses.end(); ++pass)
+	{
+		delete *pass;
+	}
+
+	_passes.clear();
+	_tempPasses.clear();
 }
 
 void PassManager::runOnKernel(const std::string& name)
@@ -468,31 +535,36 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 
 	report("Running pass manager on kernel " << kernel.name);
 
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(PassList::iterator pass = _passes.begin();
+		pass != _passes.end(); ++pass)
 	{
-		initializeKernelPass(_module, pass->second);
+		initializeKernelPass(_module, *pass);
 	}
 	
-	AnalysisMap analyses;
+	AnalysisMap    analyses;
+	AnalysisUseMap uses = initializeAnalysisUses(_passes);
 	
 	_analyses = &analyses;
 	
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(PassList::iterator pass = _passes.begin();
+		pass != _passes.end(); ++pass)
 	{
-		freeUnusedDataStructures(analyses, &kernel, pass->first);
-		allocateNewDataStructures(analyses, &kernel, pass->first, this);
+		allocateNewDataStructures(analyses, &kernel,
+			(*pass)->analyses, this);
 		
-		runKernelPass(&kernel, pass->second);
+		runKernelPass(&kernel, *pass);
+		
+		freeUnusedDataStructures(analyses, uses, (*pass)->analyses);
 	}
 
-	freeUnusedDataStructures(analyses, &kernel,
-		analysis::Analysis::NoAnalysis);
+	freeAllDataStructures(analyses);
 
 	_analyses = 0;
 
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(PassList::iterator pass = _passes.begin();
+		pass != _passes.end(); ++pass)
 	{
-		finalizeKernelPass(_module, pass->second);
+		finalizeKernelPass(_module, *pass);
 	}
 }
 
@@ -502,16 +574,18 @@ void PassManager::runOnModule()
 
 	_module->loadNow();
 	
-	typedef std::vector<AnalysisMap> AnalysisMapVector;
+	typedef std::vector<AnalysisMap>    AnalysisMapVector;
+	typedef std::vector<AnalysisUseMap> AnalysisUseMapVector;
 	
-	AnalysisMapVector kernelAnalyses(_module->kernels().size());
+	AnalysisMapVector   kernelAnalyses(_module->kernels().size());
+	AnalysisUseMapVector kernelAnalysesUses(_module->kernels().size());
 	
 	// Run all module passes first
-	for(PassMap::iterator pass = _passes.begin();
+	for(PassList::iterator pass = _passes.begin();
 		pass != _passes.end(); ++pass)
 	{
-		if(pass->second->type == Pass::KernelPass)     continue;
-		if(pass->second->type == Pass::BasicBlockPass) continue;
+		if((*pass)->type == Pass::KernelPass)     continue;
+		if((*pass)->type == Pass::BasicBlockPass) continue;
 		
 		AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
 		for(ir::Module::KernelMap::const_iterator 
@@ -519,48 +593,50 @@ void PassManager::runOnModule()
 			kernel != _module->kernels().end(); ++kernel, ++analyses)
 		{
 			allocateNewDataStructures(*analyses,
-				kernel->second, pass->first, this);
+				kernel->second, (*pass)->analyses, this);
 		}
 		
-		runModulePass(_module, pass->second);
+		runModulePass(_module, *pass);
 	}
 	
 	// Run all kernel and bb passes
 	AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
+	AnalysisUseMapVector::iterator uses = kernelAnalysesUses.begin();
 	for(ir::Module::KernelMap::const_iterator 
 		kernel = _module->kernels().begin();
-		kernel != _module->kernels().end(); ++kernel, ++analyses)
+		kernel != _module->kernels().end(); ++kernel, ++analyses, ++uses)
 	{
-		for(PassMap::iterator pass = _passes.begin();
+		for(PassList::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)
 		{
-			initializeKernelPass(_module, pass->second);
+			initializeKernelPass(_module, *pass);
 		}
 		
 		_analyses = &*analyses;
+		*uses     = initializeAnalysisUses(_passes);
 
-		for(PassMap::iterator pass = _passes.begin();
+		for(PassList::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)
 		{
-			if(pass->second->type == Pass::ImmutablePass) continue;
-			if(pass->second->type == Pass::ModulePass)    continue;
+			if((*pass)->type == Pass::ImmutablePass) continue;
+			if((*pass)->type == Pass::ModulePass)    continue;
 			
-			freeUnusedDataStructures( *analyses, kernel->second, pass->first);
 			allocateNewDataStructures(*analyses, kernel->second,
-				pass->first, this);
-			
-			runKernelPass(_module, kernel->second, pass->second);
+				(*pass)->analyses, this);
+		
+			runKernelPass(_module, kernel->second, *pass);
+		
+			freeUnusedDataStructures(*analyses, *uses, (*pass)->analyses);
 		}
-		
-		freeUnusedDataStructures(*analyses, kernel->second,
-			analysis::Analysis::NoAnalysis);
-		
+
+		freeAllDataStructures(*analyses);
+				
 		_analyses = 0;
 
-		for(PassMap::iterator pass = _passes.begin();
+		for(PassList::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)
 		{
-			finalizeKernelPass(_module, pass->second);
+			finalizeKernelPass(_module, *pass);
 		}
 	}
 }
@@ -595,7 +671,6 @@ void PassManager::invalidateAnalysis(int type)
 	delete analysis->second;
 	_analyses->erase(analysis);
 }
-
 
 }
 

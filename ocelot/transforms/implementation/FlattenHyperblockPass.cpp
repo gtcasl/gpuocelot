@@ -84,6 +84,11 @@ void FlattenHyperblockPass::finalize()
 	// do nothing
 }
 
+Pass::StringVector FlattenHyperblockPass::getDependentPasses() const
+{
+	return StringVector(1, "ConvertPredicationToControlFlowPass");
+}
+
 static void removeAllBranches(ir::ControlFlowGraph::iterator basicBlock)
 {
 	for(auto instruction = basicBlock->instructions.begin();
@@ -129,7 +134,7 @@ static FlattenHyperblockPass::PredicateEquation getEquation(
 		const ir::PTXInstruction& ptx = static_cast<const ir::PTXInstruction&>(
 			**instruction);
 		
-		if(ptx.isBranch())
+		if(ptx.opcode == ir::PTXInstruction::Bra)
 		{
 			ir::PTXOperand::PredicateCondition condition = ptx.pg.condition;
 		
@@ -139,9 +144,9 @@ static FlattenHyperblockPass::PredicateEquation getEquation(
 				invert(condition);
 			}
 			
-			report("    Adding term p" << nextRegister
-				<< " to equation from predecessor BB_" << block->id);
 			equation.andTerm(PredicateTerm(ptx.pg.reg, condition));
+			report("    Adding term p" << ptx.pg.reg
+				<< " to equation from predecessor BB_" << block->id);
 			
 			break;
 		}
@@ -158,6 +163,8 @@ static bool wereAllPredecessorsVisited(const BlockSet& visited,
 	for(auto predecessor = block->predecessors.begin();
 		predecessor != block->predecessors.end(); ++predecessor)
 	{
+		if(*predecessor == block) continue;
+		
 		if(visited.count(*predecessor) == 0)
 		{
 			return false;
@@ -179,7 +186,10 @@ static void sinkSideExits(ir::ControlFlowGraph::iterator block)
 		const ir::PTXInstruction& ptx = static_cast<const ir::PTXInstruction&>(
 			**instruction);
 	
-		if(ptx.isBranch()) branches.push_back(instruction);
+		if(ptx.opcode == ir::PTXInstruction::Bra)
+		{
+			branches.push_back(instruction);
+		}
 	}
 	
 	for(auto branch = branches.begin(); branch != branches.end(); ++branch)
@@ -207,12 +217,12 @@ void FlattenHyperblockPass::_flattenBlock(
 	
 	// compute predicate conditions for each basic block
 	PredicateEquationMap equations;
-
+	
 	BlockList frontier;
 	BlockSet  visited;
 	
 	report("  Computing predicate equations");
-
+	
 	for(auto bb = block->block_begin(); bb != block->block_end(); ++bb)
 	{
 		// every block starts with PT
@@ -221,7 +231,7 @@ void FlattenHyperblockPass::_flattenBlock(
 		report("   creating equation for BB_" << bb->id);
 		
 		// queue up every block for visitation
-		frontier.push_back(*(bb_iterator) bb);
+		frontier.push_back(*(bb_iterator)bb);
 	}
 	
 	while(!frontier.empty())
@@ -407,8 +417,8 @@ std::string FlattenHyperblockPass::PredicateTerm::toString() const
 	return stream.str();
 }
 
-FlattenHyperblockPass::PredicateEquation::PredicateEquation()
-: left(0), op(Invalid), right(0)
+FlattenHyperblockPass::PredicateEquation::PredicateEquation(Operator o)
+: left(0), op(o), right(0)
 {
 
 }
@@ -457,7 +467,7 @@ ir::Instruction::RegisterType
 
 	PredicateTerm resultTerm = term;
 
-	if(op != Invalid)
+	if(op != Invalid && op != Uninitialized)
 	{
 		auto setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
 
@@ -510,8 +520,8 @@ ir::Instruction::RegisterType
 			static_cast<ir::PTXInstruction&>(**instruction);
 		
 			// don't predicate side exits
-			if(ptx.isBranch()) continue;
-		
+			if(ptx.opcode == ir::PTXInstruction::Bra) continue;
+			
 			assertM(ptx.pg.condition == ir::PTXOperand::PT, "Instruction '"
 				<< ptx.toString() << "' was already predicated.");
 		
@@ -541,10 +551,11 @@ ir::PTXOperand::PredicateCondition
 void FlattenHyperblockPass::PredicateEquation::andEquation(
 	const PredicateEquation& eq)
 {
-	if(op == Invalid && term.condition == ir::PTXOperand::PT &&
-		eq.op == Invalid)
+	if(eq.op == Uninitialized || eq.isAlwaysTrue()) return;
+
+	if(op == Uninitialized || isAlwaysTrue())
 	{
-		term = eq.term;
+		*this = eq;
 	}
 	else
 	{
@@ -557,10 +568,16 @@ void FlattenHyperblockPass::PredicateEquation::andEquation(
 void FlattenHyperblockPass::PredicateEquation::orEquation(
 	const PredicateEquation& eq)
 {
-	if(op == Invalid && term.condition == ir::PTXOperand::PT &&
-		eq.op == Invalid)
+	if(eq.op == Uninitialized) return;
+
+	if(op == Uninitialized)
 	{
-		term = eq.term;
+		*this = eq;
+	}
+	else if(isAlwaysTrue() || eq.isAlwaysTrue())
+	{
+		op = Invalid;
+		term.condition = ir::PTXOperand::PT;
 	}
 	else
 	{
@@ -570,9 +587,10 @@ void FlattenHyperblockPass::PredicateEquation::orEquation(
 	}
 }
 
-void FlattenHyperblockPass::PredicateEquation::andTerm(const PredicateTerm& term)
+void FlattenHyperblockPass::PredicateEquation::andTerm(
+	const PredicateTerm& term)
 {
-	PredicateEquation temp;
+	PredicateEquation temp(Invalid);
 	
 	temp.term = term;
 	
@@ -586,6 +604,9 @@ typedef std::unordered_map<ir::Instruction::RegisterType,
 bool evaluate(const BitVector& bitvector, IndexMap& indexes,
 	const FlattenHyperblockPass::PredicateEquation& equation)
 {	
+	assert(equation.op !=
+		FlattenHyperblockPass::PredicateEquation::Uninitialized);
+
 	bool result = true;
 	
 	if(equation.op == FlattenHyperblockPass::PredicateEquation::Invalid)
@@ -621,7 +642,7 @@ bool evaluate(const BitVector& bitvector, IndexMap& indexes,
 			result = evaluate(bitvector, indexes, *equation.left) ||
 				evaluate(bitvector, indexes, *equation.right);
 		}
-		else
+		else if(equation.op == FlattenHyperblockPass::PredicateEquation::And)
 		{
 			result = evaluate(bitvector, indexes, *equation.left) &&
 				evaluate(bitvector, indexes, *equation.right);
@@ -637,6 +658,8 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 	typedef std::stack<PredicateEquation*>             EquationStack;
 	typedef std::vector<EquationVector>                MinTermVector;
 	typedef std::vector<ir::Instruction::RegisterType> RegisterVector;
+
+	if(isAlwaysTrue()) return;
 
 	report("    Simplifying boolean equations...");
 	report("     before min terms: " << toString());
@@ -669,7 +692,7 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 				}
 			}
 		}
-		else
+		else if(eq->op != Uninitialized)
 		{
 			stack.push(eq->left);
 			stack.push(eq->right);
@@ -679,6 +702,8 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 	assert(indexes.size() < 30);
 
 	BitVector bitvector(indexes.size());
+	
+	bool allTrue = true;
 	
 	for(unsigned int i = 0; i < (1 << indexes.size()); ++i)
 	{
@@ -710,19 +735,38 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 
 			minterms.push_back(minterm);
 		}
+		else
+		{
+			allTrue = false;
+		}
 	}
-	
-	clear();
+
+	if(allTrue)
+	{
+		delete left;  left  = 0;
+		delete right; right = 0;
+		op = Invalid;
+		term.condition = ir::PTXOperand::PT;
+		return;
+	}
+	else
+	{
+		clear();
+	}
 	
 	for(auto minterm = minterms.begin(); minterm != minterms.end(); ++minterm)
 	{
 		PredicateEquation equation;
 		
+		report("      minterm " << equation.toString());
+				
 		for(auto eq = minterm->begin(); eq != minterm->end(); ++eq)
 		{
+			report("        and " << eq->toString());
 			equation.andTerm(*eq);
 		}
 		
+		report("       or " << equation.toString());
 		orEquation(equation);
 	}
 	
@@ -742,7 +786,7 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 		
 			if(eq->op != Invalid)
 			{
-				if(eq->left->term.condition == ir::PTXOperand::PT)
+				if(eq->left->isAlwaysTrue())
 				{
 					delete eq->left; eq->left = 0;
 					eq->op = Invalid;
@@ -751,7 +795,7 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 					
 					changed = true;
 				}
-				else if(eq->right->term.condition == ir::PTXOperand::PT)
+				else if(eq->right->isAlwaysTrue())
 				{
 					delete eq->right; eq->right = 0;
 					eq->op = Invalid;
@@ -763,7 +807,8 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 				else if(eq->left->op == Invalid && eq->right->op == Invalid)
 				{
 					if(eq->right->term.condition == ir::PTXOperand::Pred &&
-						eq->left->term.condition == ir::PTXOperand::InvPred)
+						eq->left->term.condition == ir::PTXOperand::InvPred &&
+						eq->right->term.reg == eq->left->term.reg)
 					{
 						delete eq->right; eq->right = 0;
 						delete eq->left;  eq->left  = 0;
@@ -773,7 +818,8 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 						changed = true;
 					}
 					else if(eq->left->term.condition == ir::PTXOperand::Pred &&
-						eq->right->term.condition == ir::PTXOperand::InvPred)
+						eq->right->term.condition == ir::PTXOperand::InvPred &&
+						eq->right->term.reg == eq->left->term.reg)
 					{
 						delete eq->right; eq->right = 0;
 						delete eq->left;  eq->left  = 0;
@@ -803,12 +849,17 @@ void FlattenHyperblockPass::PredicateEquation::clear()
 	delete left;  left  = 0;
 	delete right; right = 0;
 	
-	op   = Invalid;
+	op   = Uninitialized;
 	term = PredicateTerm();
 }
 
 std::string FlattenHyperblockPass::PredicateEquation::toString() const
 {
+	if(op == Uninitialized)
+	{
+		return "undefined";
+	}
+	
 	if(op == Invalid)
 	{
 		return term.toString();
@@ -829,7 +880,8 @@ std::string FlattenHyperblockPass::PredicateEquation::toString() const
 
 bool FlattenHyperblockPass::PredicateEquation::isAlwaysTrue() const
 {
-	return op == Invalid && term.condition == ir::PTXOperand::PT;
+	return (op == Invalid && term.condition == ir::PTXOperand::PT) ||
+		op == Uninitialized;
 }
 
 }

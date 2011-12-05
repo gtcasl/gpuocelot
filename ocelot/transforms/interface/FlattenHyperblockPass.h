@@ -28,6 +28,8 @@ public:
 	void runOnKernel(ir::IRKernel& k);
 	/*! \brief Finalize the pass */
 	void finalize();
+	/*! \brief Return a list of passes (by name) that this pass depends on */
+	StringVector getDependentPasses() const;
 
 public:
 	/*! \brief A predicate term */
@@ -53,11 +55,12 @@ public:
 		{
 			Or,
 			And,
-			Invalid
+			Invalid,
+			Uninitialized
 		};
 	
 	public:
-		PredicateEquation();
+		PredicateEquation(Operator o = Uninitialized);
 		~PredicateEquation();
 		
 		PredicateEquation(const PredicateEquation& eq);

@@ -89,7 +89,11 @@ public:
 public:
 	/*! \brief Report the name of the pass */
 	std::string toString() const;
-	
+
+public:
+	/*! \brief Create a default instance of a pass given the name */
+	static Pass* create(const std::string& name);
+
 private:
 	PassManager* _manager;
 };

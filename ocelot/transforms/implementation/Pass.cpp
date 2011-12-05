@@ -11,6 +11,19 @@
 #include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/transforms/interface/Pass.h>
 
+// Passes
+#include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
+#include <ocelot/transforms/interface/RemoveBarrierPass.h>
+#include <ocelot/transforms/interface/StructuralTransform.h>
+#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/SubkernelFormationPass.h>
+#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
+#include <ocelot/transforms/interface/SplitBasicBlockPass.h>
+#include <ocelot/transforms/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/FlattenHyperblockPass.h>
+#include <ocelot/transforms/interface/ConvertPredicationToControlFlowPass.h>
+
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 
@@ -63,6 +76,66 @@ Pass::StringVector Pass::getDependentPasses() const
 std::string Pass::toString() const
 {
 	return name;
+}
+
+Pass* Pass::create(const std::string& name)
+{
+	if(name == "LinearScanRegisterAllocationPass")
+	{
+		return new LinearScanRegisterAllocationPass;
+	}
+
+	if(name == "SubkernelFormationPass")
+	{
+		return new SubkernelFormationPass;
+	}
+	
+	if(name == "RemoveBarrierPass")
+	{
+		return new RemoveBarrierPass;
+	}
+
+	if(name == "StructuralTransform")
+	{
+		return new StructuralTransform;
+	}
+
+	if(name == "ConvertPredicationToSelectPass")
+	{
+		return new ConvertPredicationToSelectPass;
+	}
+
+	if(name == "MIMDThreadSchedulingPass")
+	{
+		return new MIMDThreadSchedulingPass;
+	}
+
+	if(name == "DeadCodeEliminationPass")
+	{
+		return new DeadCodeEliminationPass;
+	}
+	
+	if(name == "SplitBasicBlockPass")
+	{
+		return new SplitBasicBlockPass;
+	}
+	
+	if(name == "SyncEliminationPass")
+	{
+		return new SyncEliminationPass;
+	}
+	
+	if(name == "FlattenHyperblockPass")
+	{
+		return new FlattenHyperblockPass;
+	}
+
+	if(name == "ConvertPredicationToControlFlowPass")
+	{
+		return new ConvertPredicationToControlFlowPass;
+	}
+	
+	return 0;
 }
 
 ImmutablePass::ImmutablePass(int a, const std::string& n) 

@@ -486,7 +486,7 @@ def Environment():
   # CUDA builder
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action= nvccPath + 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
+		action= 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})

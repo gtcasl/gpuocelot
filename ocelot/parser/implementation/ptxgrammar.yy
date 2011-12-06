@@ -905,6 +905,11 @@ optionalPrototypeName : ',' '(' callArgumentList ')' ',' identifier
 	state.callPrototypeName( $<text>6 );
 };
 
+optionalPrototypeName : ',' '(' ')' ',' identifier
+{
+        state.callPrototypeName( $<text>5 );
+};
+
 optionalPrototypeName : ',' identifier
 {
 	state.callPrototypeName( $<text>2 );

@@ -678,7 +678,7 @@ returnType : parameter dataTypeId optionalIdentifier
 
 returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
-returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
+returnTypeList : '(' returnTypeListBody ')' | '(' ')' | /* empty string */;
 
 argumentType : parameter dataTypeId optionalIdentifier
 {

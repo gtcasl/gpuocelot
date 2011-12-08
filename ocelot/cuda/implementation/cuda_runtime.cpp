@@ -620,6 +620,30 @@ cudaError_t cudaGraphicsSubResourceGetMappedArray(
 *                                                                              *
 *******************************************************************************/
 
+cudaError_t cudaDeviceReset(void) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceReset();
+}
+
+cudaError_t cudaDeviceSynchronize(void) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSynchronize();
+}
+
+cudaError_t cudaDeviceSetLimit(enum cudaLimit limit, size_t value) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSetLimit(limit, value);
+}
+
+cudaError_t cudaDeviceGetLimit(size_t *pValue, enum cudaLimit limit) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceGetLimit(pValue, limit);
+}
+
+cudaError_t cudaDeviceGetCacheConfig(enum cudaFuncCache *c) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceGetCacheConfig(c);
+}
+
+cudaError_t cudaDeviceSetCacheConfig(enum cudaFuncCache c) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSetCacheConfig(c);
+}
+
 cudaError_t  cudaThreadExit(void) {
 	return cuda::CudaRuntimeInterface::get()->cudaThreadExit();
 }

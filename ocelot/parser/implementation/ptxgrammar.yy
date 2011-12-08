@@ -907,7 +907,7 @@ optionalPrototypeName : ',' '(' callArgumentList ')' ',' identifier
 
 optionalPrototypeName : ',' '(' ')' ',' identifier
 {
-        state.callPrototypeName( $<text>5 );
+	state.callPrototypeName( $<text>5 );
 };
 
 optionalPrototypeName : ',' identifier

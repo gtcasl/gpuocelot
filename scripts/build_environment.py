@@ -361,16 +361,18 @@ def defineConfigFlags(env):
 	library_path = os.path.join(env['INSTALL_PATH'], "lib")
 	bin_path     = os.path.join(env['INSTALL_PATH'], "bin")
 
-	configFlags = env['CXXFLAGS'] + '-DOCELOT_CXXFLAGS="\\"' \
-		+ env['CXXFLAGS'] + '\\""' \
-		+ ' -DPACKAGE="\\"ocelot\\""' \
-		+ ' -DVERSION="\\"' + env['VERSION'] + '\\""' \
-		+ ' -DOCELOT_PREFIX_PATH="\\"' + fixPath(env['INSTALL_PATH']) + '\\""' \
-		+ ' -DOCELOT_LDFLAGS="\\"' + fixPath(env['OCELOT_LDFLAGS']) + ' -L' \
-			+ fixPath(library_path) + '\\""' \
-		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ fixPath(include_path) + '\\""' \
-		+ ' -DOCELOT_LIB_PATH="\\"' + fixPath(library_path) + '\\""' \
-		+ ' -DOCELOT_BIN_PATH="\\"' + fixPath(bin_path) + '\\""'
+	configFlags = env['CXXFLAGS'] + " ".join( 
+		["%s\"\\\"%s\\\"\"" % x for x in (
+			('-DOCELOT_CXXFLAGS=', env['CXXFLAGS']),
+			('-DPACKAGE=', 'ocelot'),
+			('-DVERSION=', env['VERSION']),
+			('-DOCELOT_PREFIX_PATH=', fixPath(env['INSTALL_PATH'])),
+			('-DOCELOT_LDFLAGS=', fixPath(env['OCELOT_LDFLAGS'])),
+			('-L', fixPath(library_path)),
+			('-DOCELOT_INCLUDE_PATH=', fixPath(include_path)),
+			('-DOCELOT_LIB_PATH=', fixPath(library_path)),
+			('-DOCELOT_BIN_PATH=', fixPath(bin_path))
+		)])
 
 	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
 
@@ -434,7 +436,7 @@ def Environment():
 	
 	if 'OCELOT_INSTALL_PATH' in os.environ:
 		default_install_path = os.environ['OCELOT_INSTALL_PATH']
-	
+		
 	vars.Add(PathVariable('install_path', 'The ocelot install path',
 		default_install_path))
 

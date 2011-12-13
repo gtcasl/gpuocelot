@@ -22,59 +22,255 @@ INFO       /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestI
 INFO       /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence
-INFO     Test completed in 0.056412935257 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching 
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions 
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall 
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions
+INFO     Test completed in 0.0475549697876 seconds
 INFO      It produced the following output:
-TestCudaSequence: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
-(0.011117) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 5 entries.
+Pass/Fail : Pass
+
+
+Name : TestLLVMInstructions
+
+Description: A test for the assembly code generation and automatic 
+             verfication of individual LLVM instructions. Test Points: 1) For each 
+             instruction, generate several assembly strings using the 
+             instruction's toString method, make sure that these pass the valid() 
+             check, compare to references from the LLVM manual.
+
+
+Test Seed : 1323796509
+Test time : 0.000879526
+
+Status :  Checked instruction "<result> = add i32 4, %var"
+Add Instruction Passed
+ Checked instruction "%ptr = alloca i32"
+ Checked instruction "%ptr = alloca i32, i32 4"
+ Checked instruction "%ptr = alloca i32, i32 4, align 1024"
+ Checked instruction "%ptr = alloca i32, align 1024"
+Alloca Instruction Passed
+ Checked instruction "<result> = and i32 4, %var"
+ Checked instruction "<result> = and i32 15, 40"
+ Checked instruction "<result> = and i32 4, 8"
+And Instruction Passed
+ Checked instruction "<result> = ashr i32 4, 1"
+ Checked instruction "<result> = ashr i8 -2, 1"
+ Checked instruction "<result> = ashr < 2 x i32 > < i32 -2, i32 4 >, < i32 1, i32 3 >"
+Ashr Instruction Passed
+ Checked instruction "%X = bitcast i8 -1 to i8"
+ Checked instruction "%Z = bitcast < 2 x i32 > %V to i64"
+Bitcast Instruction Passed
+ Checked instruction "br i1 %cond, label %IfEqual, label %IfUnequal"
+Br Instruction Passed
+ Checked instruction "%retval = call i32 @test(i32 %argc)"
+ Checked instruction "call i32 (i8*, ...)* @printf(i8* %msg, i32 12, i8 42)"
+ Checked instruction "%X = tail call i32 @foo()"
+ Checked instruction "%Y = tail call fastcc i32 @foo()"
+ Checked instruction "call void @foo(i8 97 signext)"
+ Checked instruction "%r = call %struct.A @foo()"
+ Checked instruction "call void @foo() noreturn"
+ Checked instruction "%ZZ = call zeroext i32 @bar()"
+Call Instruction Passed
+ Checked instruction "%result = extractelement < 4 x i32 > %vec, i32 0"
+Extractelement Instruction Passed
+ Checked instruction "%result = extractvalue { i32, float } %agg, 0"
+Extractvalue Instruction Passed
+ Checked instruction "<result> = fadd float 0x4010000000000000, %var"
+Fadd Instruction Passed
+ Checked instruction "<result> = fcmp oeq float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp one float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp olt float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp ueq float 0x3ff0000000000000, 0x4000000000000000"
+Fcmp Instruction Passed
+ Checked instruction "<result> = fdiv float 0x4010000000000000, %var"
+Fdiv Instruction Passed
+ Checked instruction "<result> = fmul float 0x4010000000000000, %var"
+Fmul Instruction Passed
+ Checked instruction "%X = fpext float 0x400921cac0000000 to double"
+ Checked instruction "%Y = fpext float 0x3ff0000000000000 to float"
+Fpext Instruction Passed
+ Checked instruction "%X = fptosi double 0xc05ec00000000000 to i32"
+Fptosi Instruction Passed
+ Checked instruction "%X = fptoui double 0x405ec00000000000 to i32"
+Fptoui Instruction Passed
+ Checked instruction "%X = fptrunc double 0x405ec00000000000 to float"
+Fptrunc Instruction Passed
+ Checked instruction "free [ 4 x i8 ]* %array"
+Free Instruction Passed
+ Checked instruction "<result> = frem float 0x4010000000000000, %var"
+Frem Instruction Passed
+ Checked instruction "<result> = fsub float 0x0, %val"
+Fsub Instruction Passed
+ Checked instruction "%vptr = getelementptr { i32, < 2 x i8 > }* %svptr, i32 0, i32 1, i32 1"
+ Checked instruction "%eptr = getelementptr [ 12 x i8 ]* %aptr, i32 0, i32 1"
+Getelementptr Instruction Passed
+ Checked instruction "<result> = icmp ne float* %X, %X"
+Icmp Instruction Passed
+ Checked instruction "%result = insertelement < 4 x i32 > %vec, i32 1, i32 0"
+Insertelement Instruction Passed
+ Checked instruction "%result = insertvalue { i32, float } %agg, i32 1, 0"
+Insertvalue Instruction Passed
+ Checked instruction "%Y = inttoptr i64 0 to i32*"
+Inttoptr Instruction Passed
+ Checked instruction "%retval = invoke i32 @Test(i32 15) to label %Continue unwind label %TestCleanup"
+Invoke Instruction Passed
+ Checked instruction "%val = load i32* %ptr"
+Load Instruction Passed
+ Checked instruction "<result> = lshr i8 -2, 1"
+Lshr Instruction Passed
+ Checked instruction "%array2 = malloc [ 12 x i8 ], i32 %size"
+Malloc Instruction Passed
+ Checked instruction "<result> = mul i32 4, %var"
+Mul Instruction Passed
+ Checked instruction "<result> = or i32 15, 40"
+Or Instruction Passed
+ Checked instruction "%indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]"
+Phi Instruction Passed
+ Checked instruction "%Y = ptrtoint i32* %x to i64"
+Prtoint Instruction Passed
+ Checked instruction "ret void"
+Ret Instruction Passed
+ Checked instruction "<result> = sdiv i32 4, %var"
+Sdiv Instruction Passed
+ Checked instruction "%X = select i1 1, i8 17, i8 42"
+Select Instruction Passed
+ Checked instruction "%X = sext i8 -1 to i16"
+Sext Instruction Passed
+ Checked instruction "<result> = shl i32 1, 32"
+Shl Instruction Passed
+ Checked instruction "%result = shufflevector < 4 x i32 > %v1, < 4 x i32 > %v2, < 8 x i32 > < i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7 >"
+ShuffleVector Instruction Passed
+ Checked instruction "%X = sitofp i32 257 to float"
+Sitofp Instruction Passed
+ Checked instruction "<result> = srem i32 4, %var"
+Srem Instruction Passed
+ Checked instruction "store i32 3, i32* %ptr"
+Store Instruction Passed
+ Checked instruction "<result> = sub i32 4, %var"
+Sub Instruction Passed
+ Checked instruction "switch i32 %val, label %otherwise [ i32 0, label %onzero i32 1, label %onone i32 2, label %ontwo ]"
+Switch Instruction Passed
+ Checked instruction "%Y = trunc i32 123 to i1"
+Trunc Instruction Passed
+ Checked instruction "<result> = udiv i32 4, %var"
+Udiv Instruction Passed
+ Checked instruction "%Y = uitofp i8 -1 to double"
+Uitofp Instruction Passed
+ Checked instruction "unreachable"
+Unreachable Instruction Passed
+ Checked instruction "unwind"
+Unwind Instruction Passed
+ Checked instruction "<result> = urem i32 4, %var"
+Urem Instruction Passed
+ Checked instruction "%tmp = va_arg i8** %ap, i32"
+VarArg Instruction Passed
+ Checked instruction "<result> = xor i32 -1, %V"
+Xor Instruction Passed
+ Checked instruction "%X = zext i32 257 to i64"
+Zext Instruction Passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall
+INFO     Test completed in 0.0540149211884 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching
+INFO     Test completed in 0.0576260089874 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1323796509
+Test time : 0.00360894
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.0569920539856 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions
+INFO     Test completed in 0.0529410839081 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1323796509
+Test time : 0.000608206
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0840020179749 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence
+INFO     Test completed in 0.0495150089264 seconds
 INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0700280666351 seconds
+INFO     Test completed in 0.0494718551636 seconds
 INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
-(0.021825) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 6 entries.
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0515661239624 seconds
+INFO     Test completed in 0.0539741516113 seconds
 INFO      It produced the following output:
-TestCudaTextureArray: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
-(0.010449) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0451390743256 seconds
+INFO     Test completed in 0.0438351631165 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels
-INFO     Test completed in 0.0722320079803 seconds
+INFO     Test completed in 0.0560929775238 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -84,8 +280,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1321554729
-Test time : 0.0130394
+Test Seed : 1323796509
+Test time : 0.0126123
 
 Status : Test output:
 looping kernel succeeded
@@ -95,7 +291,7 @@ matrix vector kernel succeeded
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels
-INFO     Test completed in 0.102061986923 seconds
+INFO     Test completed in 0.0951750278473 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -106,8 +302,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1321554729
-Test time : 0.0555444
+Test Seed : 1323796509
+Test time : 0.0492263
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -144,27 +340,61 @@ R = [
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0434010028839 seconds
+INFO     Test completed in 0.0542879104614 seconds
 INFO      It produced the following output:
-TestExternalFunctions: ocelot/cuda/implementation/CudaRuntime.cpp:384: cuda::HostThreadContext& cuda::CudaRuntime::_bind(): Assertion `!device.selected()' failed.
+Hello CUDA 2
+Pass/Fail : Pass
+
+
+Name : TestExternalFunctions
+
+Description: A unit test for calling an external host function from PTX 1) 
+             The first test calls malloc/free from a PTX kernel. 2) The 
+             second test calls printf from a PTX kernel. 3) The last test calls a 
+             user defined function from a PTX kernel. 
+
+
+Test Seed : 1323796509
+Test time : 0.0111458
+
+Status : 
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0461900234222 seconds
+INFO     Test completed in 0.0456199645996 seconds
 INFO      It produced the following output:
-TestCudaGlobals: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
-cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-(0.009451) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
+cudaSetDevice() - 0 - Ocelot PTX Emulator 
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator
+INFO     Test completed in 0.0425720214844 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1323796509
+Test time : 0.00349903
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly
-INFO     Test completed in 4.04012703896 seconds
-INFO      It produced the following output:
-TestPTXAssembly: ocelot/executive/implementation/EmulatorDevice.cpp:888: virtual void executive::EmulatorDevice::select(): Assertion `!selected()' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer
-INFO     Test completed in 10.4977910519 seconds
+INFO     Test completed in 10.1924638748 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -176,8 +406,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1321554729
-Test time : 10.4451
+Test Seed : 1323796509
+Test time : 10.1436
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Scan): Passed
@@ -322,229 +552,481 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Scan): Pas
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator
-INFO     Test completed in 0.0499250888824 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc
+INFO     Test completed in 0.0998439788818 seconds
+INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly
+INFO     Test completed in 10.2309269905 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestEmulator
+Name : TestPTXAssembly
 
-Description: 
-
-
-Test Seed : 1321554739
-Test time : 0.00348973
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
 
 
+Test Seed : 1323796509
+Test time : 10.1864
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0479679107666 seconds
-INFO      It produced the following output:
-TestDeviceSwitching: ocelot/executive/implementation/EmulatorDevice.cpp:888: virtual void executive::EmulatorDevice::select(): Assertion `!selected()' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0642509460449 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLLVMInstructions
-
-Description: A test for the assembly code generation and automatic 
-             verfication of individual LLVM instructions. Test Points: 1) For each 
-             instruction, generate several assembly strings using the 
-             instruction's toString method, make sure that these pass the valid() 
-             check, compare to references from the LLVM manual.
-
-
-Test Seed : 1321554739
-Test time : 0.00108266
-
-Status :  Checked instruction "<result> = add i32 4, %var"
-Add Instruction Passed
- Checked instruction "%ptr = alloca i32"
- Checked instruction "%ptr = alloca i32, i32 4"
- Checked instruction "%ptr = alloca i32, i32 4, align 1024"
- Checked instruction "%ptr = alloca i32, align 1024"
-Alloca Instruction Passed
- Checked instruction "<result> = and i32 4, %var"
- Checked instruction "<result> = and i32 15, 40"
- Checked instruction "<result> = and i32 4, 8"
-And Instruction Passed
- Checked instruction "<result> = ashr i32 4, 1"
- Checked instruction "<result> = ashr i8 -2, 1"
- Checked instruction "<result> = ashr < 2 x i32 > < i32 -2, i32 4 >, < i32 1, i32 3 >"
-Ashr Instruction Passed
- Checked instruction "%X = bitcast i8 -1 to i8"
- Checked instruction "%Z = bitcast < 2 x i32 > %V to i64"
-Bitcast Instruction Passed
- Checked instruction "br i1 %cond, label %IfEqual, label %IfUnequal"
-Br Instruction Passed
- Checked instruction "%retval = call i32 @test(i32 %argc)"
- Checked instruction "call i32 (i8*, ...)* @printf(i8* %msg, i32 12, i8 42)"
- Checked instruction "%X = tail call i32 @foo()"
- Checked instruction "%Y = tail call fastcc i32 @foo()"
- Checked instruction "call void @foo(i8 97 signext)"
- Checked instruction "%r = call %struct.A @foo()"
- Checked instruction "call void @foo() noreturn"
- Checked instruction "%ZZ = call zeroext i32 @bar()"
-Call Instruction Passed
- Checked instruction "%result = extractelement < 4 x i32 > %vec, i32 0"
-Extractelement Instruction Passed
- Checked instruction "%result = extractvalue { i32, float } %agg, 0"
-Extractvalue Instruction Passed
- Checked instruction "<result> = fadd float 0x4010000000000000, %var"
-Fadd Instruction Passed
- Checked instruction "<result> = fcmp oeq float 0x4010000000000000, 0x4014000000000000"
- Checked instruction "<result> = fcmp one float 0x4010000000000000, 0x4014000000000000"
- Checked instruction "<result> = fcmp olt float 0x4010000000000000, 0x4014000000000000"
- Checked instruction "<result> = fcmp ueq float 0x3ff0000000000000, 0x4000000000000000"
-Fcmp Instruction Passed
- Checked instruction "<result> = fdiv float 0x4010000000000000, %var"
-Fdiv Instruction Passed
- Checked instruction "<result> = fmul float 0x4010000000000000, %var"
-Fmul Instruction Passed
- Checked instruction "%X = fpext float 0x400921cac0000000 to double"
- Checked instruction "%Y = fpext float 0x3ff0000000000000 to float"
-Fpext Instruction Passed
- Checked instruction "%X = fptosi double 0xc05ec00000000000 to i32"
-Fptosi Instruction Passed
- Checked instruction "%X = fptoui double 0x405ec00000000000 to i32"
-Fptoui Instruction Passed
- Checked instruction "%X = fptrunc double 0x405ec00000000000 to float"
-Fptrunc Instruction Passed
- Checked instruction "free [ 4 x i8 ]* %array"
-Free Instruction Passed
- Checked instruction "<result> = frem float 0x4010000000000000, %var"
-Frem Instruction Passed
- Checked instruction "<result> = fsub float 0x0, %val"
-Fsub Instruction Passed
- Checked instruction "%vptr = getelementptr { i32, < 2 x i8 > }* %svptr, i32 0, i32 1, i32 1"
- Checked instruction "%eptr = getelementptr [ 12 x i8 ]* %aptr, i32 0, i32 1"
-Getelementptr Instruction Passed
- Checked instruction "<result> = icmp ne float* %X, %X"
-Icmp Instruction Passed
- Checked instruction "%result = insertelement < 4 x i32 > %vec, i32 1, i32 0"
-Insertelement Instruction Passed
- Checked instruction "%result = insertvalue { i32, float } %agg, i32 1, 0"
-Insertvalue Instruction Passed
- Checked instruction "%Y = inttoptr i64 0 to i32*"
-Inttoptr Instruction Passed
- Checked instruction "%retval = invoke i32 @Test(i32 15) to label %Continue unwind label %TestCleanup"
-Invoke Instruction Passed
- Checked instruction "%val = load i32* %ptr"
-Load Instruction Passed
- Checked instruction "<result> = lshr i8 -2, 1"
-Lshr Instruction Passed
- Checked instruction "%array2 = malloc [ 12 x i8 ], i32 %size"
-Malloc Instruction Passed
- Checked instruction "<result> = mul i32 4, %var"
-Mul Instruction Passed
- Checked instruction "<result> = or i32 15, 40"
-Or Instruction Passed
- Checked instruction "%indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]"
-Phi Instruction Passed
- Checked instruction "%Y = ptrtoint i32* %x to i64"
-Prtoint Instruction Passed
- Checked instruction "ret void"
-Ret Instruction Passed
- Checked instruction "<result> = sdiv i32 4, %var"
-Sdiv Instruction Passed
- Checked instruction "%X = select i1 1, i8 17, i8 42"
-Select Instruction Passed
- Checked instruction "%X = sext i8 -1 to i16"
-Sext Instruction Passed
- Checked instruction "<result> = shl i32 1, 32"
-Shl Instruction Passed
- Checked instruction "%result = shufflevector < 4 x i32 > %v1, < 4 x i32 > %v2, < 8 x i32 > < i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7 >"
-ShuffleVector Instruction Passed
- Checked instruction "%X = sitofp i32 257 to float"
-Sitofp Instruction Passed
- Checked instruction "<result> = srem i32 4, %var"
-Srem Instruction Passed
- Checked instruction "store i32 3, i32* %ptr"
-Store Instruction Passed
- Checked instruction "<result> = sub i32 4, %var"
-Sub Instruction Passed
- Checked instruction "switch i32 %val, label %otherwise [ i32 0, label %onzero i32 1, label %onone i32 2, label %ontwo ]"
-Switch Instruction Passed
- Checked instruction "%Y = trunc i32 123 to i1"
-Trunc Instruction Passed
- Checked instruction "<result> = udiv i32 4, %var"
-Udiv Instruction Passed
- Checked instruction "%Y = uitofp i8 -1 to double"
-Uitofp Instruction Passed
- Checked instruction "unreachable"
-Unreachable Instruction Passed
- Checked instruction "unwind"
-Unwind Instruction Passed
- Checked instruction "<result> = urem i32 4, %var"
-Urem Instruction Passed
- Checked instruction "%tmp = va_arg i8** %ap, i32"
-VarArg Instruction Passed
- Checked instruction "<result> = xor i32 -1, %V"
-Xor Instruction Passed
- Checked instruction "%X = zext i32 257 to i64"
-Zext Instruction Passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall
-INFO     Test completed in 0.0544290542603 seconds
-INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
-(0.017110) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 3 entries.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0654499530792 seconds
-INFO      It produced the following output:
-TestCudaTexture2D: ocelot/executive/implementation/LLVMCooperativeThreadArray.cpp:495: bool executive::LLVMCooperativeThreadArray::_finishContext(unsigned int): Assertion `nextFunction < _queuedThreads.size()' failed.
-(0.010699) LLVMCooperativeThreadArray.cpp:495:  Assertion message: Next function 4294967295 is out of range of function table with 2 entries.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions
-INFO     Test completed in 0.0606029033661 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1321554740
-Test time : 0.000612259
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
+Status : Ran 'TestVectorElements-u32' for 26 iterations.
+Ran 'TestAdd-u16' for 31 iterations.
+Ran 'TestAdd-s16' for 31 iterations.
+Ran 'TestAdd-u32' for 31 iterations.
+Ran 'TestAdd-s32' for 31 iterations.
+Ran 'TestAdd-s32-sat' for 31 iterations.
+Ran 'TestAdd-u64' for 31 iterations.
+Ran 'TestAdd-s64' for 31 iterations.
+Ran 'TestSub-u16' for 31 iterations.
+Ran 'TestSub-s16' for 31 iterations.
+Ran 'TestSub-u32' for 31 iterations.
+Ran 'TestSub-s32' for 31 iterations.
+Ran 'TestSub-s32-sat' for 31 iterations.
+Ran 'TestSub-u64' for 31 iterations.
+Ran 'TestSub-s64' for 31 iterations.
+Ran 'TestSub-Carry-s32' for 28 iterations.
+Ran 'TestSub-Carry-u32' for 28 iterations.
+Ran 'TestAdd-Carry-s32' for 29 iterations.
+Ran 'TestAdd-Carry-u32' for 29 iterations.
+Ran 'TestMul-Lo-u16' for 31 iterations.
+Ran 'TestMul-Hi-u16' for 31 iterations.
+Ran 'TestMul-Wide-u16' for 31 iterations.
+Ran 'TestMul-Lo-s16' for 31 iterations.
+Ran 'TestMul-Hi-s16' for 31 iterations.
+Ran 'TestMul-Wide-s16' for 31 iterations.
+Ran 'TestMul-Lo-u32' for 31 iterations.
+Ran 'TestMul-Hi-u32' for 31 iterations.
+Ran 'TestMul-Wide-u32' for 30 iterations.
+Ran 'TestMul-Lo-s32' for 31 iterations.
+Ran 'TestMul-Hi-s32' for 31 iterations.
+Ran 'TestMul-Wide-s32' for 31 iterations.
+Ran 'TestMul-Lo-u64' for 31 iterations.
+Ran 'TestMul-Hi-u64' for 31 iterations.
+Ran 'TestMul-Lo-s64' for 31 iterations.
+Ran 'TestMul-Hi-s64' for 31 iterations.
+Ran 'TestMad-Lo-u16' for 29 iterations.
+Ran 'TestMad-Hi-u16' for 29 iterations.
+Ran 'TestMad-Wide-u16' for 30 iterations.
+Ran 'TestMad-Lo-s16' for 30 iterations.
+Ran 'TestMad-Hi-s16' for 29 iterations.
+Ran 'TestMad-Wide-s16' for 30 iterations.
+Ran 'TestMad-Lo-u32' for 30 iterations.
+Ran 'TestMad-Hi-u32' for 30 iterations.
+Ran 'TestMad-Wide-u32' for 30 iterations.
+Ran 'TestMad-Lo-s32' for 30 iterations.
+Ran 'TestMad-Hi-s32' for 30 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 30 iterations.
+Ran 'TestMad-Wide-s32' for 29 iterations.
+Ran 'TestMad-Lo-u64' for 30 iterations.
+Ran 'TestMad-Hi-u64' for 30 iterations.
+Ran 'TestMad-Lo-s64' for 30 iterations.
+Ran 'TestMad-Hi-s64' for 30 iterations.
+Ran 'TestSad-u16' for 30 iterations.
+Ran 'TestSad-s16' for 30 iterations.
+Ran 'TestSad-u32' for 30 iterations.
+Ran 'TestSad-s32' for 30 iterations.
+Ran 'TestSad-u64' for 30 iterations.
+Ran 'TestSad-s64' for 30 iterations.
+Ran 'TestDiv-u16' for 31 iterations.
+Ran 'TestDiv-s16' for 31 iterations.
+Ran 'TestDiv-u32' for 31 iterations.
+Ran 'TestDiv-s32' for 31 iterations.
+Ran 'TestDiv-u64' for 31 iterations.
+Ran 'TestDiv-s64' for 31 iterations.
+Ran 'TestRem-u16' for 31 iterations.
+Ran 'TestRem-s16' for 31 iterations.
+Ran 'TestRem-u32' for 31 iterations.
+Ran 'TestRem-s32' for 31 iterations.
+Ran 'TestRem-u64' for 31 iterations.
+Ran 'TestRem-s64' for 31 iterations.
+Ran 'TestAbs-s16' for 32 iterations.
+Ran 'TestAbs-s32' for 32 iterations.
+Ran 'TestAbs-s64' for 32 iterations.
+Ran 'TestNeg-s16' for 32 iterations.
+Ran 'TestNeg-s32' for 32 iterations.
+Ran 'TestNeg-s64' for 32 iterations.
+Ran 'TestMax-u16' for 31 iterations.
+Ran 'TestMax-u32' for 31 iterations.
+Ran 'TestMax-u64' for 31 iterations.
+Ran 'TestMax-s16' for 31 iterations.
+Ran 'TestMax-s32' for 31 iterations.
+Ran 'TestMax-s64' for 31 iterations.
+Ran 'TestMin-u16' for 31 iterations.
+Ran 'TestMin-u32' for 31 iterations.
+Ran 'TestMin-u64' for 31 iterations.
+Ran 'TestMin-s16' for 31 iterations.
+Ran 'TestMin-s32' for 31 iterations.
+Ran 'TestMin-s64' for 31 iterations.
+Ran 'TestPopc-b32' for 32 iterations.
+Ran 'TestPopc-b64' for 32 iterations.
+Ran 'TestClz-b32' for 32 iterations.
+Ran 'TestClz-b64' for 32 iterations.
+Ran 'TestBfind-u32' for 32 iterations.
+Ran 'TestBfind-u64' for 32 iterations.
+Ran 'TestBfind-s32' for 32 iterations.
+Ran 'TestBfind-s64' for 32 iterations.
+Ran 'TestBfind-shiftamount-u32' for 32 iterations.
+Ran 'TestBfind-shiftamount-u64' for 32 iterations.
+Ran 'TestBfind-shiftamount-s32' for 32 iterations.
+Ran 'TestBfind-shiftamount-s64' for 32 iterations.
+Ran 'TestBrev-b32' for 32 iterations.
+Ran 'TestBrev-b64' for 32 iterations.
+Ran 'TestBfi-b32' for 27 iterations.
+Ran 'TestBfi-b64' for 27 iterations.
+Ran 'TestPrmt-b32' for 29 iterations.
+Ran 'TestPrmt-f4e-b32' for 30 iterations.
+Ran 'TestPrmt-b4e-b32' for 30 iterations.
+Ran 'TestPrmt-rc8-b32' for 30 iterations.
+Ran 'TestPrmt-ecl-b32' for 30 iterations.
+Ran 'TestPrmt-ecr-b32' for 30 iterations.
+Ran 'TestPrmt-rc16-b32' for 30 iterations.
+Ran 'TestCall-Uni' for 21 iterations.
+Ran 'TestCall-Nondivergent' for 21 iterations.
+Ran 'TestCall-Divergent' for 19 iterations.
+Ran 'TestCall-Recursive' for 19 iterations.
+Ran 'TestCall-Indirect' for 11 iterations.
+Ran 'TestFunctionPointerArray' for 11 iterations.
+Ran 'TestTestP-f32-Finite' for 29 iterations.
+Ran 'TestTestP-f32-Infinite' for 29 iterations.
+Ran 'TestTestP-f32-Number' for 29 iterations.
+Ran 'TestTestP-f32-NotANumber' for 29 iterations.
+Ran 'TestTestP-f32-Normal' for 29 iterations.
+Ran 'TestTestP-f32-SubNormal' for 29 iterations.
+Ran 'TestTestP-f64-Finite' for 29 iterations.
+Ran 'TestTestP-f64-Infinite' for 29 iterations.
+Ran 'TestTestP-f64-Number' for 29 iterations.
+Ran 'TestTestP-f64-NotANumber' for 29 iterations.
+Ran 'TestTestP-f64-Normal' for 29 iterations.
+Ran 'TestTestP-f64-SubNormal' for 29 iterations.
+Ran 'TestCopysign-f32' for 29 iterations.
+Ran 'TestCopysign-f64' for 29 iterations.
+Ran 'TestAdd-f32' for 29 iterations.
+Ran 'TestAdd-f32-sat' for 29 iterations.
+Ran 'TestAdd-f32-ftz' for 29 iterations.
+Ran 'TestAdd-f32-ftz-sat' for 29 iterations.
+Ran 'TestAdd-f64' for 29 iterations.
+Ran 'TestSub-f32' for 29 iterations.
+Ran 'TestSub-f32-sat' for 29 iterations.
+Ran 'TestSub-f32-ftz' for 29 iterations.
+Ran 'TestSub-f32-ftz-sat' for 29 iterations.
+Ran 'TestSub-f64' for 29 iterations.
+Ran 'TestMul-f32' for 29 iterations.
+Ran 'TestMul-f32-sat' for 29 iterations.
+Ran 'TestMul-f32-ftz' for 29 iterations.
+Ran 'TestMul-f32-ftz-sat' for 29 iterations.
+Ran 'TestMul-f64' for 29 iterations.
+Ran 'TestMad-f32' for 28 iterations.
+Ran 'TestMad-f32-sat' for 28 iterations.
+Ran 'TestMad-f32-ftz' for 28 iterations.
+Ran 'TestMad-f32-ftz-sat' for 28 iterations.
+Ran 'TestMad-f64' for 28 iterations.
+Ran 'TestFma-f32' for 28 iterations.
+Ran 'TestFma-f32-sat' for 28 iterations.
+Ran 'TestFma-f32-ftz' for 28 iterations.
+Ran 'TestFma-f32-ftz-sat' for 28 iterations.
+Ran 'TestFma-f64' for 28 iterations.
+Ran 'TestDiv-f32' for 29 iterations.
+Ran 'TestDiv-f32-ftz' for 29 iterations.
+Ran 'TestDiv-f32-approx' for 29 iterations.
+Ran 'TestDiv-f32-full' for 29 iterations.
+Ran 'TestDiv-f32-approx-ftz' for 29 iterations.
+Ran 'TestDiv-f32-full-ftz' for 29 iterations.
+Ran 'TestDiv-f64' for 29 iterations.
+Ran 'TestAbs-f32' for 30 iterations.
+Ran 'TestAbs-f32-ftz' for 30 iterations.
+Ran 'TestAbs-f64' for 30 iterations.
+Ran 'TestNeg-f32' for 30 iterations.
+Ran 'TestNeg-f32-ftz' for 30 iterations.
+Ran 'TestNeg-f64' for 30 iterations.
+Ran 'TestMin-f32' for 29 iterations.
+Ran 'TestMin-f32-ftz' for 29 iterations.
+Ran 'TestMin-f64' for 29 iterations.
+Ran 'TestMax-f32' for 29 iterations.
+Ran 'TestMax-f32-ftz' for 29 iterations.
+Ran 'TestMax-f64' for 29 iterations.
+Ran 'TestRcp-f32' for 30 iterations.
+Ran 'TestRcp-f32-approx' for 30 iterations.
+Ran 'TestRcp-f32-ftz' for 30 iterations.
+Ran 'TestRcp-f32-approx-ftz' for 30 iterations.
+Ran 'TestRcp-f64' for 30 iterations.
+Ran 'TestRcp-f64-approx-ftz' for 30 iterations.
+Ran 'TestSqrt-f32' for 30 iterations.
+Ran 'TestSqrt-f32-approx' for 30 iterations.
+Ran 'TestSqrt-f32-ftz' for 30 iterations.
+Ran 'TestSqrt-f32-approx-ftz' for 30 iterations.
+Ran 'TestSqrt-f64' for 30 iterations.
+Ran 'TestRsqrt-f32' for 30 iterations.
+Ran 'TestRsqrt-f32-ftz' for 30 iterations.
+Ran 'TestRsqrt-f64' for 30 iterations.
+Ran 'TestCos-f32' for 28 iterations.
+Ran 'TestCos-f32-ftz' for 28 iterations.
+Ran 'TestSin-f32' for 28 iterations.
+Ran 'TestSin-f32-ftz' for 28 iterations.
+Ran 'TestEx2-f32' for 30 iterations.
+Ran 'TestEx2-f32-ftz' for 30 iterations.
+Ran 'TestLg2-f32' for 30 iterations.
+Ran 'TestLg2-f32-ftz' for 30 iterations.
+Ran 'TestSet-lt-u32-u16' for 26 iterations.
+Ran 'TestSet-lt-s32-u16' for 25 iterations.
+Ran 'TestSet-lt-f32-u16' for 25 iterations.
+Ran 'TestSet-lt-s32-u32' for 26 iterations.
+Ran 'TestSet-lt-s32-u64' for 25 iterations.
+Ran 'TestSet-lt-s32-s16' for 26 iterations.
+Ran 'TestSet-lt-s32-s32' for 25 iterations.
+Ran 'TestSet-lt-s32-s64' for 25 iterations.
+Ran 'TestSet-lt-s32-f32' for 25 iterations.
+Ran 'TestSet-lt-s32-f64' for 25 iterations.
+Ran 'TestSet-lt-ftz-s32-f32' for 26 iterations.
+Ran 'TestSet-Eq-s32-s32' for 26 iterations.
+Ran 'TestSet-Ne-s32-s32' for 26 iterations.
+Ran 'TestSet-Le-s32-s32' for 26 iterations.
+Ran 'TestSet-Gt-s32-s32' for 26 iterations.
+Ran 'TestSet-Ge-s32-s32' for 26 iterations.
+Ran 'TestSet-Lo-s32-u32' for 26 iterations.
+Ran 'TestSet-Ls-s32-u32' for 26 iterations.
+Ran 'TestSet-Hi-s32-u32' for 26 iterations.
+Ran 'TestSet-Hs-s32-u32' for 26 iterations.
+Ran 'TestSet-Eq-s32-f32' for 26 iterations.
+Ran 'TestSet-Ne-s32-f32' for 26 iterations.
+Ran 'TestSet-Lt-s32-f32' for 26 iterations.
+Ran 'TestSet-Le-s32-f32' for 26 iterations.
+Ran 'TestSet-Gt-s32-f32' for 26 iterations.
+Ran 'TestSet-Ge-s32-f32' for 26 iterations.
+Ran 'TestSet-Lo-s32-u32' for 25 iterations.
+Ran 'TestSet-Ls-s32-u32' for 25 iterations.
+Ran 'TestSet-Hi-s32-u32' for 26 iterations.
+Ran 'TestSet-Hs-s32-u32' for 25 iterations.
+Ran 'TestSet-Equ-s32-f32' for 25 iterations.
+Ran 'TestSet-Neu-s32-f32' for 25 iterations.
+Ran 'TestSet-Ltu-s32-f32' for 26 iterations.
+Ran 'TestSet-Leu-s32-f32' for 26 iterations.
+Ran 'TestSet-Gtu-s32-f32' for 25 iterations.
+Ran 'TestSet-Geu-s32-f32' for 25 iterations.
+Ran 'TestSet-Num-s32-f32' for 26 iterations.
+Ran 'TestSet-Nan-s32-f32' for 26 iterations.
+Ran 'TestSet-Lt-s32-s32-And' for 25 iterations.
+Ran 'TestSet-Lt-s32-s32-Or' for 25 iterations.
+Ran 'TestSet-Lt-s32-s32-Xor' for 25 iterations.
+Ran 'TestSet-Lt-s32-s32-And-Inv' for 25 iterations.
+Ran 'TestSetP-lt-u16' for 23 iterations.
+Ran 'TestSetP-lt-u32' for 23 iterations.
+Ran 'TestSetP-lt-u32-pq' for 21 iterations.
+Ran 'TestSetP-lt-u64' for 23 iterations.
+Ran 'TestSetP-lt-s16' for 23 iterations.
+Ran 'TestSetP-lt-s32' for 23 iterations.
+Ran 'TestSetP-lt-s64' for 23 iterations.
+Ran 'TestSetP-lt-f32' for 23 iterations.
+Ran 'TestSetP-lt-f64' for 23 iterations.
+Ran 'TestSetP-lt-u32-pq-and' for 21 iterations.
+Ran 'TestSetP-lt-u32-pq-or' for 21 iterations.
+Ran 'TestSetP-lt-u32-pq-xor' for 21 iterations.
+Ran 'TestSetP-lt-f32-pq-and-ftz' for 21 iterations.
+Ran 'TestSelp-u16' for 26 iterations.
+Ran 'TestSelp-u32' for 26 iterations.
+Ran 'TestSelp-u64' for 26 iterations.
+Ran 'TestSelp-s16' for 26 iterations.
+Ran 'TestSelp-s32' for 26 iterations.
+Ran 'TestSelp-s64' for 25 iterations.
+Ran 'TestSelp-f32' for 25 iterations.
+Ran 'TestSelp-f64' for 25 iterations.
+Ran 'TestSlct-u16-s32' for 28 iterations.
+Ran 'TestSlct-u32-s32' for 28 iterations.
+Ran 'TestSlct-u64-s32' for 28 iterations.
+Ran 'TestSlct-s16-s32' for 28 iterations.
+Ran 'TestSlct-s32-s32' for 28 iterations.
+Ran 'TestSlct-s64-s32' for 28 iterations.
+Ran 'TestSlct-f32-s32' for 28 iterations.
+Ran 'TestSlct-f64-s32' for 28 iterations.
+Ran 'TestSlct-u16-f32' for 28 iterations.
+Ran 'TestSlct-u32-f32' for 28 iterations.
+Ran 'TestSlct-u64-f32' for 28 iterations.
+Ran 'TestSlct-s16-f32' for 28 iterations.
+Ran 'TestSlct-s32-f32' for 28 iterations.
+Ran 'TestSlct-s64-f32' for 28 iterations.
+Ran 'TestSlct-f32-f32' for 28 iterations.
+Ran 'TestSlct-f64-f32' for 28 iterations.
+Ran 'TestSlct-f32-f32-ftz' for 28 iterations.
+Ran 'TestAnd-pred' for 24 iterations.
+Ran 'TestAnd-b16' for 29 iterations.
+Ran 'TestAnd-b32' for 29 iterations.
+Ran 'TestAnd-b64' for 29 iterations.
+Ran 'TestOr-pred' for 24 iterations.
+Ran 'TestOr-b16' for 29 iterations.
+Ran 'TestOr-b32' for 29 iterations.
+Ran 'TestOr-b64' for 29 iterations.
+Ran 'TestXor-pred' for 24 iterations.
+Ran 'TestXor-b16' for 29 iterations.
+Ran 'TestXor-b32' for 29 iterations.
+Ran 'TestXor-b64' for 29 iterations.
+Ran 'TestNot-pred' for 26 iterations.
+Ran 'TestNot-b16' for 30 iterations.
+Ran 'TestNot-b32' for 30 iterations.
+Ran 'TestNot-b64' for 30 iterations.
+Ran 'TestCNot-b16' for 30 iterations.
+Ran 'TestCNot-b32' for 30 iterations.
+Ran 'TestCNot-b64' for 30 iterations.
+Ran 'TestShl-b16' for 28 iterations.
+Ran 'TestShl-b32' for 28 iterations.
+Ran 'TestShl-b64' for 29 iterations.
+Ran 'TestShr-u16' for 28 iterations.
+Ran 'TestShr-u32' for 28 iterations.
+Ran 'TestShr-u64' for 28 iterations.
+Ran 'TestShr-s16' for 28 iterations.
+Ran 'TestShr-s32' for 28 iterations.
+Ran 'TestShr-s64' for 28 iterations.
+Ran 'TestMov-pred' for 26 iterations.
+Ran 'TestMov-u16' for 30 iterations.
+Ran 'TestMov-u32' for 30 iterations.
+Ran 'TestMov-u64' for 30 iterations.
+Ran 'TestMov-s16' for 30 iterations.
+Ran 'TestMov-s32' for 30 iterations.
+Ran 'TestMov-s64' for 30 iterations.
+Ran 'TestMov-f32' for 30 iterations.
+Ran 'TestMov-f64' for 30 iterations.
+Ran 'TestMovLabel-global-v1' for 28 iterations.
+Ran 'TestMovLabel-global-v1-index' for 27 iterations.
+Ran 'TestMovLabel-global-v2' for 26 iterations.
+Ran 'TestMovLabel-global-v4' for 25 iterations.
+Ran 'TestMovLabel-local-v1' for 28 iterations.
+Ran 'TestMovLabel-local-v1-index' for 27 iterations.
+Ran 'TestMovLabel-local-v2' for 26 iterations.
+Ran 'TestMovLabel-local-v4' for 25 iterations.
+Ran 'TestMovLabel-shared-v1' for 28 iterations.
+Ran 'TestMovLabel-shared-v1-index' for 27 iterations.
+Ran 'TestMovLabel-shared-v4' for 25 iterations.
+Ran 'TestCvt-u8-u8' for 30 iterations.
+Ran 'TestCvt-u8-u16' for 30 iterations.
+Ran 'TestCvt-u8-u32' for 30 iterations.
+Ran 'TestCvt-u8-u64' for 30 iterations.
+Ran 'TestCvt-u8-s8' for 30 iterations.
+Ran 'TestCvt-u8-s16' for 30 iterations.
+Ran 'TestCvt-u8-s32' for 30 iterations.
+Ran 'TestCvt-u8-s64' for 30 iterations.
+Ran 'TestCvt-u8-f32' for 28 iterations.
+Ran 'TestCvt-u8-f64' for 28 iterations.
+Ran 'TestCvt-u16-u8' for 30 iterations.
+Ran 'TestCvt-u16-u16' for 30 iterations.
+Ran 'TestCvt-u16-u32' for 30 iterations.
+Ran 'TestCvt-u16-u64' for 30 iterations.
+Ran 'TestCvt-u16-s8' for 30 iterations.
+Ran 'TestCvt-u16-s16' for 30 iterations.
+Ran 'TestCvt-u16-s32' for 30 iterations.
+Ran 'TestCvt-u16-s64' for 30 iterations.
+Ran 'TestCvt-u16-f32' for 28 iterations.
+Ran 'TestCvt-u16-f64' for 28 iterations.
+Ran 'TestCvt-u32-u8' for 30 iterations.
+Ran 'TestCvt-u32-u16' for 30 iterations.
+Ran 'TestCvt-u32-u32' for 30 iterations.
+Ran 'TestCvt-u32-u64' for 30 iterations.
+Ran 'TestCvt-u32-s8' for 30 iterations.
+Ran 'TestCvt-u32-s16' for 30 iterations.
+Ran 'TestCvt-u32-s32' for 30 iterations.
+Ran 'TestCvt-u32-s64' for 30 iterations.
+Ran 'TestCvt-u32-f32' for 28 iterations.
+Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 28 iterations.
+Ran 'TestCvt-u32-f32-rmi' for 28 iterations.
+Ran 'TestCvt-u32-f64' for 28 iterations.
+Ran 'TestCvt-u64-u8' for 30 iterations.
+Ran 'TestCvt-u64-u16' for 30 iterations.
+Ran 'TestCvt-u64-u32' for 30 iterations.
+Ran 'TestCvt-u64-u64' for 30 iterations.
+Ran 'TestCvt-u64-s8' for 30 iterations.
+Ran 'TestCvt-u64-s16' for 30 iterations.
+Ran 'TestCvt-u64-s32' for 30 iterations.
+Ran 'TestCvt-u64-s64' for 30 iterations.
+Ran 'TestCvt-u64-f32' for 28 iterations.
+Ran 'TestCvt-u64-f64' for 28 iterations.
+Ran 'TestCvt-s8-u8' for 30 iterations.
+Ran 'TestCvt-s8-u16' for 30 iterations.
+Ran 'TestCvt-s8-u32' for 30 iterations.
+Ran 'TestCvt-s8-u64' for 30 iterations.
+Ran 'TestCvt-s8-s8' for 30 iterations.
+Ran 'TestCvt-s8-s16' for 30 iterations.
+Ran 'TestCvt-s8-s32' for 30 iterations.
+Ran 'TestCvt-s8-s64' for 30 iterations.
+Ran 'TestCvt-s8-f32' for 28 iterations.
+Ran 'TestCvt-s8-f64' for 28 iterations.
+Ran 'TestCvt-s16-u8' for 30 iterations.
+Ran 'TestCvt-s16-u16' for 30 iterations.
+Ran 'TestCvt-s16-u32' for 30 iterations.
+Ran 'TestCvt-s16-u64' for 30 iterations.
+Ran 'TestCvt-s16-s8' for 30 iterations.
+Ran 'TestCvt-s16-s16' for 30 iterations.
+Ran 'TestCvt-s16-s32' for 30 iterations.
+Ran 'TestCvt-s16-s64' for 30 iterations.
+Ran 'TestCvt-s16-f32' for 28 iterations.
+Ran 'TestCvt-s16-f64' for 28 iterations.
+Ran 'TestCvt-s32-u8' for 30 iterations.
+Ran 'TestCvt-s32-u16' for 30 iterations.
+Ran 'TestCvt-s32-u32' for 30 iterations.
+Ran 'TestCvt-s32-u64' for 30 iterations.
+Ran 'TestCvt-s32-s8' for 30 iterations.
+Ran 'TestCvt-s32-s16' for 30 iterations.
+Ran 'TestCvt-s32-s32' for 30 iterations.
+Ran 'TestCvt-s32-s64' for 30 iterations.
+Ran 'TestCvt-s32-f32' for 28 iterations.
+Ran 'TestCvt-s32-f64' for 28 iterations.
+Ran 'TestCvt-s64-u8' for 30 iterations.
+Ran 'TestCvt-s64-u16' for 30 iterations.
+Ran 'TestCvt-s64-u32' for 30 iterations.
+Ran 'TestCvt-s64-u64' for 30 iterations.
+Ran 'TestCvt-s64-s8' for 30 iterations.
+Ran 'TestCvt-s64-s16' for 30 iterations.
+Ran 'TestCvt-s64-s32' for 30 iterations.
+Ran 'TestCvt-s64-s64' for 30 iterations.
+Ran 'TestCvt-s64-f32' for 28 iterations.
+Ran 'TestCvt-s64-f64' for 28 iterations.
+Ran 'TestCvt-f32-u8' for 30 iterations.
+Ran 'TestCvt-f32-u16' for 30 iterations.
+Ran 'TestCvt-f32-u32' for 30 iterations.
+Ran 'TestCvt-f32-u64' for 30 iterations.
+Ran 'TestCvt-f32-s8' for 30 iterations.
+Ran 'TestCvt-f32-s16' for 30 iterations.
+Ran 'TestCvt-f32-s32' for 30 iterations.
+Ran 'TestCvt-f32-s64' for 30 iterations.
+Ran 'TestCvt-f32-f32' for 30 iterations.
+Ran 'TestCvt-f32-f32-rz' for 30 iterations.
+Ran 'TestCvt-f32-f64' for 30 iterations.
+Ran 'TestCvt-f64-u8' for 30 iterations.
+Ran 'TestCvt-f64-u16' for 30 iterations.
+Ran 'TestCvt-f64-u32' for 30 iterations.
+Ran 'TestCvt-f64-u64' for 30 iterations.
+Ran 'TestCvt-f64-s8' for 30 iterations.
+Ran 'TestCvt-f64-s16' for 30 iterations.
+Ran 'TestCvt-f64-s32' for 30 iterations.
+Ran 'TestCvt-f64-s64' for 30 iterations.
+Ran 'TestCvt-f64-f32' for 30 iterations.
+Ran 'TestCvt-f64-f64' for 30 iterations.
+Ran 'TestLocalMemory-u8' for 29 iterations.
+Ran 'TestLocalMemory-u8-global' for 29 iterations.
+Ran 'TestLocalMemory-u8-scoped' for 23 iterations.
+Ran 'TestLocalMemory-u8-global-scoped' for 22 iterations.
+Ran 'TestCvta-local-u64' for 26 iterations.
+Ran 'TestCvta-global-u64' for 26 iterations.
+Ran 'TestCvta-shared-u64' for 26 iterations.
 
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser
-INFO     Test completed in 35.228564024 seconds
+INFO     Test completed in 35.2864410877 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -557,8 +1039,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1321554729
-Test time : 35.1811
+Test Seed : 1323796509
+Test time : 35.2379
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Parse): Passed
@@ -704,7 +1186,7 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Parse): Pa
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph
-INFO     Test completed in 45.7022960186 seconds
+INFO     Test completed in 45.1526639462 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -719,8 +1201,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1321554733
-Test time : 45.6496
+Test Seed : 1323796519
+Test time : 45.1056
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
@@ -6369,7 +6851,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 62.3648910522 seconds
+INFO     Test completed in 62.7737269402 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -6382,8 +6864,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1321554729
-Test time : 62.309
+Test Seed : 1323796509
+Test time : 62.722
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Translate): Passed
@@ -6530,26 +7012,24 @@ For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Translate)
 
 INFO     
 Passing tests:
- (0.050s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator : Passed
- (0.045s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions : Passed
- (10.498s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer : Passed
- (45.702s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph : Passed
- (0.084s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc : Passed
- (35.229s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser : Passed
- (0.102s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels : Passed
- (62.365s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator : Passed
- (0.064s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions : Passed
- (0.072s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels : Passed
-
-Failing tests:
- (0.046s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals : Did not complete.
- (4.040s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly : Did not complete.
- (0.065s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D : Did not complete.
- (0.056s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence : Did not complete.
- (0.052s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray : Did not complete.
- (0.054s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall : Did not complete.
- (0.070s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching : Did not complete.
- (0.043s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions : Did not complete.
+ (45.153s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDataflowGraph : Passed
+ (0.054s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestFunctionCall : Passed
+ (0.043s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestEmulator : Passed
+ (35.286s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestParser : Passed
+ (0.044s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCalVectorScale : Passed
+ (0.100s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaMalloc : Passed
+ (0.057s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTexture2D : Passed
+ (0.050s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaSequence : Passed
+ (10.192s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLexer : Passed
+ (10.231s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXAssembly : Passed
+ (0.054s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaTextureArray : Passed
+ (0.046s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestCudaGlobals : Passed
+ (0.049s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestIndirectFunctionCall : Passed
+ (0.053s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestInstructions : Passed
+ (0.054s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestExternalFunctions : Passed
+ (0.058s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestDeviceSwitching : Passed
+ (0.048s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMInstructions : Passed
+ (0.056s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestKernels : Passed
+ (0.095s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestLLVMKernels : Passed
+ (62.774s) : /home/andrew/repositories/gpuocelot/trunk/ocelot/.release_build/TestPTXToLLVMTranslator : Passed
 

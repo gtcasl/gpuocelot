@@ -11,6 +11,7 @@ import inspect
 import platform
 import re
 import subprocess
+
 from SCons import SConf
 
 
@@ -132,11 +133,23 @@ testApplications = [
 #
 # Construct build rules for all tests
 #
+tests = []
 for testApplication in testApplications:
 	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
-	env.Program(testApplication[0], 
+	testApp = env.Program(testApplication[0], 
 		[MapSource(env, 
 			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
 		LIBS=['-locelot', libsdk])
+	tests.append(testApp)
+
+
+if 'test' in BUILD_TARGETS:
+	def runAllTests(env, target, source):
+		cmd = "python hydrazine/python/RunRegression.py -t regression/tests.txt -v -l regression/regression.log"
+		print cmd
+		subprocess.call(cmd, shell=True)
+	
+	testCommand = Command('test', tests, runAllTests)
+
 
 

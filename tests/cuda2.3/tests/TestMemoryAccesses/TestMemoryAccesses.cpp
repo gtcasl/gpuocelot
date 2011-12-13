@@ -7,7 +7,7 @@
 #ifndef TEST_MEMORY_ACCESSES_CPP_INCLUDED
 #define TEST_MEMORY_ACCESSES_CPP_INCLUDED
 
-#include <tests/memory/TestMemoryAccesses.h>
+#include <tests/TestMemoryAccesses/TestMemoryAccesses.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <cuda_runtime_api.h>
 #include <ocelot/api/interface/ocelot.h>

@@ -10,7 +10,7 @@
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
 OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la 
-CUDA_CFLAGS = -I $(srcdir)/sdk -std=c++0x
+CUDA_CFLAGS = -I $(srcdir)/sdk -std=c++0x -lGLU
 SDK_CFLAGS = -I $(srcdir)/sdk
 ################################################################################
 

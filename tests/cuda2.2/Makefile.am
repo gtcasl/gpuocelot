@@ -10,10 +10,10 @@
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
 OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la
-CUFFT_LIBS = -lcufft
-CUBLAS_LIBS = -lcublas
+CUFFT_LIBS = -lcufft -lGLU
+CUBLAS_LIBS = -lcublas -lGLU
 CUDA_CFLAGS = -I $(srcdir)/sdk
-SDK_CFLAGS = -I $(srcdir)/sdk
+SDK_CFLAGS = -I $(srcdir)/sdk -lGLU
 ################################################################################
 
 ################################################################################
@@ -448,7 +448,7 @@ SimpleCUBLAS_LDADD = $(CUBLAS_LIBS) $(OCELOT_LIBS)
 ## SimpleCUFFT
 SimpleCUFFT_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SimpleCUFFT_SOURCES = tests/simpleCUFFT/simpleCUFFT.cu.cpp
-SimpleCUFFT_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
+SimpleCUFFT_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS) 
 ################################################################################
 
 ################################################################################

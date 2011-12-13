@@ -6,6 +6,7 @@
 # \brief SConstruct for CUDA 2.3 examples to be used as a model for other tools
 
 import os
+import sys
 
 import inspect
 import platform
@@ -15,68 +16,14 @@ import subprocess
 from SCons import SConf
 
 
-def getCudaPaths():
-	"""Determines CUDA {bin,lib,include} paths
-	
-	returns (bin_path,lib_path,inc_path)
-	"""
+sys.path.append('../scripts')
+import build
 
-	# determine defaults
-	if os.name == 'nt':
-		bin_path = 'C:/CUDA/bin'
-		lib_path = 'C:/CUDA/lib'
-		inc_path = 'C:/CUDA/include'
-	elif os.name == 'posix':
-		bin_path = '/usr/local/cuda/bin'
-		lib_path = '/usr/local/cuda/lib'
-		inc_path = '/usr/local/cuda/include'
-	else:
-		raise ValueError, 'Error: unknown OS.  Where is nvcc installed?'
-	 
-	if platform.machine()[-2:] == '64':
-		lib_path += '64'
-
-	# override with environement variables
-	if 'CUDA_BIN_PATH' in os.environ:
-		bin_path = os.path.abspath(os.environ['CUDA_BIN_PATH'])
-	if 'CUDA_LIB_PATH' in os.environ:
-		lib_path = os.path.abspath(os.environ['CUDA_LIB_PATH'])
-	if 'CUDA_INC_PATH' in os.environ:
-		inc_path = os.path.abspath(os.environ['CUDA_INC_PATH'])
-
-	return (bin_path,lib_path,inc_path)
-	
-def InitializeEnvironment():
-	env = Environment()
-
-	# get CUDA paths
-	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
-	
-	print "cuda_inc_path = ", cuda_inc_path
-	
-	env.Append(CPPFLAGS=['-Wall', '-O2', '-I.', '-I./sdk', '-I' + cuda_inc_path, '-std=c++0x'])
-	
-	# CUDA builder
-	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
-	env.Append(BUILDERS = {'Cuda': Builder(
-		action= nvccPath + 'nvcc -I' + cuda_inc_path + ' -I./sdk -arch=sm_20 $SOURCE -c -o $TARGET',
-		suffix = '.o',
-		src_suffix = '.cu'
-	)})
-	return env
-
-# 
-# Applies build rules to CUDA sources
-#
-def MapSource(env, source):
-	if source[-3:] == ".cu":
-		return env.Cuda(source)
-	return source
 
 #
 # libsdk
 #
-env = InitializeEnvironment()
+env = build.InitializeEnvironment(Environment(), Builder)
 
 sources = [
 	'sdk/stopwatch_linux.cpp',
@@ -137,7 +84,7 @@ tests = []
 for testApplication in testApplications:
 	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
 	testApp = env.Program(testApplication[0], 
-		[MapSource(env, 
+		[build.MapSource(env, 
 			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
 		LIBS=['-locelot', libsdk])
 	tests.append(testApp)

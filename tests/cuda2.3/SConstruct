@@ -75,8 +75,6 @@ def MapSource(env, source):
 #
 # libsdk
 #
-
-
 env = InitializeEnvironment()
 
 sources = [
@@ -88,11 +86,6 @@ sources = [
 ]
 
 libsdk = env.StaticLibrary('libsdk.a', sources)
-
-#
-#
-#
-
 
 # Declare test applications here.
 #

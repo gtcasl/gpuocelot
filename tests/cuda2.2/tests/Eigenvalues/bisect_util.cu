@@ -39,8 +39,8 @@
 #define _BISECT_UTIL_H_
 
 // includes, project
-#include <config.h>
-#include <util.h>
+#include <tests/Eigenvalues/config.h>
+#include <tests/Eigenvalues/util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Compute the next lower power of two of n

@@ -100,7 +100,7 @@ extern "C" void convolutionColumnCPU(
 ////////////////////////////////////////////////////////////////////////////////
 //Global macro, controlling innermost convolution loop unrolling
 #define UNROLL_INNER
-#include <convolutionSeparable_kernel.cu>
+#include <tests/ConvolutionSeparable/convolutionSeparable_kernel.cu>
 
 
 

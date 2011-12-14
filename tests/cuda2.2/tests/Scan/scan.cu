@@ -42,9 +42,9 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <scan_naive_kernel.cu>
-#include <scan_workefficient_kernel.cu>
-#include <scan_best_kernel.cu>
+#include <tests/Scan/scan_naive_kernel.cu>
+#include <tests/Scan/scan_workefficient_kernel.cu>
+#include <tests/Scan/scan_best_kernel.cu>
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward

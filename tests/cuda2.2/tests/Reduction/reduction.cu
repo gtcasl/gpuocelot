@@ -66,7 +66,7 @@
 // includes, project
 #include <cutil_inline.h>
 
-#include <reduction.h>
+#include <tests/Reduction/reduction.h>
 
 enum ReduceType
 {

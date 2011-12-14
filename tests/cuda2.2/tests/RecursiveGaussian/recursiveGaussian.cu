@@ -57,7 +57,7 @@
 #include <cutil_inline.h>
 #include <cutil_math.h>
 
-#include <recursiveGaussian_kernel.cu>
+#include <tests/RecursiveGaussian/recursiveGaussian_kernel.cu>
 
 #define USE_SIMPLE_FILTER 0
 

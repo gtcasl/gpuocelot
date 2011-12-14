@@ -39,7 +39,7 @@
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
-#include <bicubicTexture_kernel.cuh>
+#include <tests/BicubicTexture/bicubicTexture_kernel.cuh>
 
 cudaArray *d_imageArray = 0;
 

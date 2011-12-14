@@ -38,320 +38,220 @@ INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUBLAS
+ERROR    Could not find test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUBLAS
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUFFT
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleGL
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture
+ERROR    Could not find test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture3D
+ERROR    Could not find test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture3D
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobelFilter
+ERROR    Could not find test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobelFilter
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Template
+ERROR    Could not find test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Template
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew
 INFO       /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU 
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BoxFilter 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BoxFilter
+INFO     Test completed in 0.0757939815521 seconds
+INFO      It produced the following output:
+BoxFilter: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013245) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU
+INFO     Test completed in 0.0781240463257 seconds
+INFO      It produced the following output:
+SimpleMultiGPU: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013968) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram64 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Clock 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ImageDenoising 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Clock
-INFO     Test completed in 0.416640043259 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram64
+INFO     Test completed in 0.0745069980621 seconds
 INFO      It produced the following output:
-Test PASSED
-time = 1895930649
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionFFT2D 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics
-INFO     Test completed in 0.449691057205 seconds
-INFO      It produced the following output:
-Using Device 0: "GeForce GTX 470"
-Processing time: 11.412000 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Mandelbrot 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ImageDenoising
-INFO     Test completed in 0.614899158478 seconds
-INFO      It produced the following output:
-[CUDA ImageDenoising] (automated testing w/ readback)
-Allocating host and CUDA memory and loading image file...
-Loading data/portrait_noise.bmp...
-BMP width: 40
-BMP height: 40
-BMP file loaded successfully!
-Data init done.
-AutoTest: CUDA ImageDenoising <Passthrough>
-> Saving PPM: <image_passthru.ppm>
-   src_file <image_passthru.ppm>
-   ref_file <data/ref_passthru.ppm>
-> Compare (a)rendered:  <image_passthru.ppm>
->         (b)reference: <data/ref_passthru.ppm>
-PPMvsPPM: comparing images size (40,40) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA ImageDenoising <KNN method>
-> Saving PPM: <image_knn.ppm>
-   src_file <image_knn.ppm>
-   ref_file <data/ref_knn.ppm>
-> Compare (a)rendered:  <image_knn.ppm>
->         (b)reference: <data/ref_knn.ppm>
-PPMvsPPM: comparing images size (40,40) epsilon(5), threshold(15%)
-0.25(%) of bytes mismatched (count=16)
-  PASSED!
-AutoTest: CUDA ImageDenoising <NLM method>
-> Saving PPM: <image_nlm.ppm>
-   src_file <image_nlm.ppm>
-   ref_file <data/ref_nlm.ppm>
-> Compare (a)rendered:  <image_nlm.ppm>
->         (b)reference: <data/ref_nlm.ppm>
-PPMvsPPM: comparing images size (40,40) epsilon(5), threshold(15%)
-0.34(%) of bytes mismatched (count=22)
-  PASSED!
-AutoTest: CUDA ImageDenoising <Quick NLM(NLM2) method>
-> Saving PPM: <image_nlm2.ppm>
-   src_file <image_nlm2.ppm>
-   ref_file <data/ref_nlm2.ppm>
-> Compare (a)rendered:  <image_nlm2.ppm>
->         (b)reference: <data/ref_nlm2.ppm>
-PPMvsPPM: comparing images size (40,40) epsilon(5), threshold(15%)
-  PASSED!
-TEST PASSED!
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionFFT2D
-INFO     Test completed in 0.389925003052 seconds
-INFO      It produced the following output:
-lt-ConvolutionFFT2D: ocelot/cuda/implementation/CudaRuntime.cpp:745: virtual cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `false' failed.
-Input data size           : 200 x 200
-Convolution kernel size   : 7 x 7
-Padded image size         : 206 x 206
-Aligned padded image size : 256 x 256
-Allocating memory...
-Generating random input data...
-Creating FFT plan for 256 x 256...
-(0.292301) CudaRuntime.cpp:745:  Assertion message: cudaGetExportTable is actually a backdoor to the NVIDIA driver.  Ocelot cannot support this because it requires the NVIDIA driver to be installed.  If you want to run an application that depends on this hack, please complain to NVIDIA.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionSeparable 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray
-INFO     Test completed in 0.327461004257 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Running parallel prefix sum (prescan) of 10000 elements
-This version is work efficient (O(n) adds)
-and has very few shared memory bank conflicts
-
+Histogram64: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013965) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUFFT 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionSeparable
-INFO     Test completed in 0.299757957458 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Clock
+INFO     Test completed in 0.0976920127869 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-256 x 256
-Initializing data...
-Warm up...
-GPU convolution...
+Clock: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.021808) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ImageDenoising 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUFFT
+INFO     Test completed in 0.0741820335388 seconds
+INFO      It produced the following output:
+SimpleCUFFT: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013509) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionFFT2D 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ImageDenoising
+INFO     Test completed in 0.11608505249 seconds
+INFO      It produced the following output:
+ImageDenoising: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013586) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Mandelbrot 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionFFT2D
+INFO     Test completed in 0.0674970149994 seconds
+INFO      It produced the following output:
+ConvolutionFFT2D: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013232) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionSeparable 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionSeparable
+INFO     Test completed in 0.0729660987854 seconds
+INFO      It produced the following output:
+ConvolutionSeparable: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.014471) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MatrixMul 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUFFT
-INFO     Test completed in 0.226054191589 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Mandelbrot
+INFO     Test completed in 0.0867199897766 seconds
 INFO      It produced the following output:
-lt-SimpleCUFFT: ocelot/cuda/implementation/CudaRuntime.cpp:745: virtual cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `false' failed.
-(0.132821) CudaRuntime.cpp:745:  Assertion message: cudaGetExportTable is actually a backdoor to the NVIDIA driver.  Ocelot cannot support this because it requires the NVIDIA driver to be installed.  If you want to run an application that depends on this hack, please complain to NVIDIA.
+Mandelbrot: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013462) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MatrixMul
+INFO     Test completed in 0.0735418796539 seconds
+INFO      It produced the following output:
+MatrixMul: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.014687) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionTexture 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction
-INFO     Test completed in 1.2054131031 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics
+INFO     Test completed in 0.113410949707 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-[ threadFenceReduction ]
-Using Device 0: "GeForce GTX 470"
-1048576 elements
-128 threads (max)
-64 blocks
+SimpleVoteIntrinsics: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.027907) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MatrixMul
-INFO     Test completed in 0.39134311676 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionTexture
+INFO     Test completed in 0.0690989494324 seconds
 INFO      It produced the following output:
-Processing time: 47.562000 (ms) 
-Test PASSED 
-
-Press ENTER to exit...
+ConvolutionTexture: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.014495) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MersenneTwister 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Mandelbrot
-INFO     Test completed in 1.13377404213 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MersenneTwister
+INFO     Test completed in 0.0716869831085 seconds
 INFO      It produced the following output:
-CUDA Mandelbrot & Julia Set 
-AutoTest: <CUDA Mandelbrot & Julia Set>
-Compute capability 2.0
-Data initialization done.
-> Saving PPM: <mandelbrot.ppm>
-   src_file <mandelbrot.ppm>
-   ref_file <data/Mandelbrot_fp64.ppm>
-> Compare (a)rendered:  <mandelbrot.ppm>
->         (b)reference: <data/Mandelbrot_fp64.ppm>
-PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
-0.76(%) of bytes mismatched (count=14571)
-  PASSED!
-> Saving PPM: <julia.ppm>
-   src_file <julia.ppm>
-   ref_file <data/referenceJulia_fp64.ppm>
-> Compare (a)rendered:  <julia.ppm>
->         (b)reference: <data/referenceJulia_fp64.ppm>
-PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
-4.90(%) of bytes mismatched (count=94082)
-  PASSED!
-TEST PASSED
+MersenneTwister: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.014216) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
-Press ENTER to exit...
-
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew
-INFO     Test completed in 0.381432056427 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Reduction 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray
+INFO     Test completed in 0.102588176727 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-CUDA device has 14 Multi-Processors
-
-Matrix size: 128x128, tile size: 32x32, block size: 32x8
-
-Kernel			Loop over kernel	Loop within kernel
-------			----------------	------------------
+ScanLargeArray: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013320) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/CppIntegration 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionTexture
-INFO     Test completed in 0.632148981094 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Reduction
+INFO     Test completed in 0.0892651081085 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Initializing data...
-convolutionRowGPU()
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MonteCarlo 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MersenneTwister
-INFO     Test completed in 0.342542886734 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Initializing data for 24000000 samples...
-Loading CPU and GPU twisters configurations...
-Generating random numbers on GPU...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dct8x8 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/CppIntegration
-INFO     Test completed in 0.363018989563 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Nbody 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture
-INFO     Test completed in 0.563282012939 seconds
-INFO      It produced the following output:
-Loaded 'lena_bw.pgm', 512 x 512 pixels
-Processing time: 0.221000 (ms)
-1186.17 Mpixels/sec
-Wrote 'data/lena_bw_out.pgm'
-Comparing files
-	output:    <data/lena_bw_out.pgm>
-	reference: <data/ref_rotated.pgm>
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dct8x8
-INFO     Test completed in 0.650212049484 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-CUDA sample DCT/IDCT implementation
-===================================
-Loading test image: barbara.bmp... [512 x 512]... Success
-Running Gold 1 (CPU) version... Success
-Running Gold 2 (CPU) version... Success
-Running CUDA 1 (GPU) version... 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG
-INFO     Test completed in 0.470124006271 seconds
-INFO      It produced the following output:
-Allocating CPU memory...
-Allocating GPU memory...
-Initializing direction numbers...
-Copying direction numbers to device...
-Executing QRNG on GPU...
-Gsamples/s: 0.542182
-Reading results from GPU...
-
-Executing QRNG on CPU...
-Gsamples/s: 0.157891
-Checking results...
-L1-Error: 0
-
-TEST PASSED
-
-Shutting down...
-
-Press ENTER to exit...
+Reduction: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.024543) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleGL 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams
-INFO     Test completed in 0.267014980316 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/CppIntegration
+INFO     Test completed in 0.131199836731 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-running on: GeForce GTX 470
+Test PASSED
+Hello World.
+Hello World.    
 
-memcopy:	12.53
+Press ENTER to exit...
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MonteCarlo 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleGL
+INFO     Test completed in 0.0688078403473 seconds
+INFO      It produced the following output:
+SimpleGL: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.014047) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dct8x8 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MonteCarlo
+INFO     Test completed in 0.0832078456879 seconds
+INFO      It produced the following output:
+MonteCarlo: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013167) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dct8x8
+INFO     Test completed in 0.0746610164642 seconds
+INFO      It produced the following output:
+Dct8x8: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013100) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Nbody 
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates
+INFO     Test completed in 0.0680539608002 seconds
+INFO      It produced the following output:
+SimpleTemplates: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013067) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Nbody
+INFO     Test completed in 0.0963990688324 seconds
+INFO      It produced the following output:
+Nbody: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.026032) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/OceanFFT 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Nbody
-INFO     Test completed in 0.957469940186 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams
+INFO     Test completed in 0.076819896698 seconds
 INFO      It produced the following output:
-Run "nbody -benchmark [-n=<numBodies>]" to measure perfomance.
-
-Test PASSED
+SimpleStreams: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013086) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DeviceQuery 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/OceanFFT
+INFO     Test completed in 0.101234912872 seconds
+INFO      It produced the following output:
+OceanFFT: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.014085) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AlignedTypes 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DeviceQuery
-INFO     Test completed in 0.205779075623 seconds
+INFO     Test completed in 0.0868799686432 seconds
 INFO      It produced the following output:
 CUDA Device Query (Runtime API) version (CUDART static linking)
 There is 1 device supporting CUDA
 
-Device 0: "GeForce GTX 470"
+Device 0: "Ocelot PTX Emulator"
   CUDA Capability Major revision number:         2
-  CUDA Capability Minor revision number:         0
-  Total amount of global memory:                 1341718528 bytes
-  Number of multiprocessors:                     14
-  Number of cores:                               112
-  Total amount of constant memory:               65536 bytes
-  Total amount of shared memory per block:       49152 bytes
-  Total number of registers available per block: 32768
-  Warp size:                                     32
+  CUDA Capability Minor revision number:         3
+  Total amount of global memory:                 163135488 bytes
+  Number of multiprocessors:                     1
+  Number of cores:                               8
+  Total amount of constant memory:               163135488 bytes
+  Total amount of shared memory per block:       163135488 bytes
+  Total number of registers available per block: 163135488
+  Warp size:                                     1024
   Maximum number of threads per block:           1024
-  Maximum sizes of each dimension of a block:    1024 x 1024 x 64
-  Maximum sizes of each dimension of a grid:     65535 x 65535 x 65535
-  Maximum memory pitch:                          2147483647 bytes
-  Texture alignment:                             512 bytes
-  Clock rate:                                    1.22 GHz
-  Concurrent copy and execution:                 Yes
+  Maximum sizes of each dimension of a block:    1024 x 1024 x 1024
+  Maximum sizes of each dimension of a grid:     65536 x 65536 x 65536
+  Maximum memory pitch:                          1 bytes
+  Texture alignment:                             1 bytes
+  Clock rate:                                    0.00 GHz
+  Concurrent copy and execution:                 No
   Run time limit on kernels:                     No
-  Integrated:                                    No
+  Integrated:                                    Yes
   Support host page-locked memory mapping:       Yes
   Compute mode:                                  Default (multiple host threads can use this device simultaneously)
 
@@ -359,680 +259,251 @@ Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AlignedTypes 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/OceanFFT
-INFO     Test completed in 0.430369853973 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AlignedTypes
+INFO     Test completed in 0.0781140327454 seconds
 INFO      It produced the following output:
-lt-OceanFFT: ocelot/cuda/implementation/CudaRuntime.cpp:745: virtual cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `false' failed.
-[CUDA FFT Ocean Simulation]
-Compute capability 2.0
-(0.319185) CudaRuntime.cpp:745:  Assertion message: cudaGetExportTable is actually a backdoor to the NVIDIA driver.  Ocelot cannot support this because it requires the NVIDIA driver to be installed.  If you want to run an application that depends on this hack, please complain to NVIDIA.
+AlignedTypes: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013198) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AsyncAPI 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleGL
-INFO     Test completed in 0.771282911301 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics
+INFO     Test completed in 0.0910739898682 seconds
 INFO      It produced the following output:
-> (Frame 3) Readback BackBuffer
-> Saving PPM: <simpleGL.ppm>
-   src_file <simpleGL.ppm>
-   ref_file <data/ref_simpleGL.ppm>
-> Compare (a)rendered:  <simpleGL.ppm>
->         (b)reference: <data/ref_simpleGL.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(10), threshold(15%)
-1.10(%) of bytes mismatched (count=11543)
-  PASSED!
-TEST PASSED
+SimpleAtomicIntrinsics: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.020451) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DwtHaar1D 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AlignedTypes
-INFO     Test completed in 0.510569095612 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-CUDA device has 14 Multi-Processors
- Memory Size = 4000000
-Allocating memory...
-Generating host input data array...
-Uploading input data to GPU memory...
-Testing misaligned types...
-uint8...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AsyncAPI
-INFO     Test completed in 0.528142929077 seconds
+INFO     Test completed in 0.0689001083374 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
+AsyncAPI: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013775) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/PostProcessGL 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DwtHaar1D
-INFO     Test completed in 0.514944076538 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/PostProcessGL
+INFO     Test completed in 0.065945148468 seconds
 INFO      It produced the following output:
-Reading signal from data/signal.dat
-Reading reference result from data/regression.gold.dat
-Test PASSED
-
-Press ENTER to exit...
+PostProcessGL: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013308) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dxtc 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy
-INFO     Test completed in 0.44939994812 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DwtHaar1D
+INFO     Test completed in 0.106760978699 seconds
 INFO      It produced the following output:
-Adding vectors using mapped CPU memory...
-Checking the results...
-Releasing CPU memory...
-Test PASSED
-
-Press ENTER to exit...
+DwtHaar1D: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013470) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/QuasirandomGenerator 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/PostProcessGL
-INFO     Test completed in 0.527427911758 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dxtc
+INFO     Test completed in 0.0694699287415 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture3D 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MonteCarlo
-INFO     Test completed in 2.52651906013 seconds
-INFO      It produced the following output:
-Generating input data...
-Allocating memory...
-Generating normally distributed samples...
-Running GPU Monte Carlo...
-Options         : 256
-Simulation paths: 65536
-Time (ms.)      : 1.886000
-GPU options per sec.: 135737.006867
-GPU Monte Carlo vs. Black-Scholes statistics
-L1 norm        : 1.044070E-05
-Average reserve: 220.399161
-TEST PASSED
-CPU Monte Carlo vs. Black-Scholes statistics...
-L1 norm: 1.042871E-05
-Average reserve: 220.894407
-CPU vs. GPU Monte Carlo statistics...
-L1 norm: 3.849345E-08
-Shutting down...
-
-Press ENTER to exit...
+Dxtc: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013058) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BandwidthTest 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dxtc
-INFO     Test completed in 0.704811096191 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/QuasirandomGenerator
+INFO     Test completed in 0.0878760814667 seconds
 INFO      It produced the following output:
-Time 361.179993 msec
-Error at (0, 0):	13.583333 rms
-Error at (1, 0):	15.333333 rms
-Error at (2, 0):	16.916666 rms
-Error at (3, 0):	17.500000 rms
-Error at (4, 0):	17.250000 rms
-Error at (5, 0):	12.000000 rms
-Error at (6, 0):	35.500000 rms
-Error at (7, 0):	18.750000 rms
-Error at (0, 1):	5.520833 rms
-Error at (1, 1):	35.583332 rms
-Error at (2, 1):	15.562500 rms
-Error at (3, 1):	9.187500 rms
-Error at (4, 1):	21.166666 rms
-Error at (5, 1):	24.062500 rms
-Error at (6, 1):	16.854166 rms
-Error at (7, 1):	17.875000 rms
-Error at (0, 2):	6.500000 rms
-Error at (1, 2):	21.895834 rms
-Error at (2, 2):	27.416666 rms
-Error at (3, 2):	10.770833 rms
-Error at (4, 2):	18.104166 rms
-Error at (5, 2):	17.666666 rms
-Error at (6, 2):	9.312500 rms
-Error at (7, 2):	14.541667 rms
-Error at (0, 3):	15.229167 rms
-Error at (1, 3):	22.437500 rms
-Error at (2, 3):	23.562500 rms
-Error at (3, 3):	16.333334 rms
-Error at (4, 3):	17.375000 rms
-Error at (5, 3):	11.875000 rms
-Error at (6, 3):	9.104167 rms
-Error at (7, 3):	17.729166 rms
-Error at (0, 4):	18.958334 rms
-Error at (1, 4):	5.937500 rms
-Error at (2, 4):	19.312500 rms
-Error at (3, 4):	11.104167 rms
-Error at (4, 4):	18.229166 rms
-Error at (5, 4):	16.979166 rms
-Error at (6, 4):	15.479167 rms
-Error at (7, 4):	11.229167 rms
-Error at (0, 5):	8.604167 rms
-Error at (1, 5):	21.708334 rms
-Error at (2, 5):	31.708334 rms
-Error at (3, 5):	24.229166 rms
-Error at (4, 5):	24.041666 rms
-Error at (5, 5):	21.229166 rms
-Error at (6, 5):	5.645833 rms
-Error at (7, 5):	19.937500 rms
-Error at (0, 6):	16.458334 rms
-Error at (1, 6):	23.083334 rms
-Error at (2, 6):	36.750000 rms
-Error at (3, 6):	38.916668 rms
-Error at (4, 6):	19.583334 rms
-Error at (5, 6):	17.645834 rms
-Error at (6, 6):	22.291666 rms
-Error at (7, 6):	11.312500 rms
-Error at (0, 7):	17.354166 rms
-Error at (1, 7):	19.479166 rms
-Error at (2, 7):	14.187500 rms
-Error at (3, 7):	31.979166 rms
-Error at (4, 7):	24.270834 rms
-Error at (5, 7):	35.583332 rms
-Error at (6, 7):	13.020833 rms
-Error at (7, 7):	22.291666 rms
-RMS(reference, result) = 18.610025
-Test FAILED
+QuasirandomGenerator: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.020758) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Reduction 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture3D
-INFO     Test completed in 0.412548065186 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BandwidthTest
+INFO     Test completed in 0.0791349411011 seconds
 INFO      It produced the following output:
-[simpleTexture3D] (Automated Testing)
-Read 'data/Bucky.raw', 32768 bytes
-CheckRender::dumpBin: <simpleTexture3D.bin>
-> compareBin2Bin <unsigned int> nelements=1048576, epsilon=0.00, threshold=0.15
-   src_file <simpleTexture3D.bin>
-   ref_file <data/ref_texture3D.bin>
-23.55(%) of bytes mismatched (count=246899)
-  FAILED! 1 errors...
-TEST FAILED!
+BandwidthTest: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.017016) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics
-INFO     Test completed in 0.239941120148 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy
+INFO     Test completed in 0.104531049728 seconds
 INFO      It produced the following output:
-[VOTE Kernel Test 1/3]
-	Running <<Vote.Any>> kernel1 ...
-
-[VOTE Kernel Test 2/3]
-	Running <<Vote.All>> kernel2 ...
-
-[VOTE Kernel Test 3/3]
-	Running <<Vote.Any>> kernel3 ...
-	PASSED!
-
-TEST PASSED
-	Shutting down...
-
-Press ENTER to exit...
+SimpleZeroCopy: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013095) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/RecursiveGaussian 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Reduction
-INFO     Test completed in 0.5614361763 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction
+INFO     Test completed in 0.0814909934998 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Reducing array of type int.
-Using Device 0: "GeForce GTX 470"
-1048576 elements
-128 threads (max)
-64 blocks
+ThreadFenceReduction: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.018961) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Eigenvalues 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/QuasirandomGenerator
-INFO     Test completed in 1.15010595322 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Eigenvalues
+INFO     Test completed in 0.0697009563446 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Allocating GPU memory...
-Allocating CPU memory...
-Initializing QRNG tables...
-Testing QRNG...
-Gsamples/s: 1.514554
-Reading GPU results...
-Comparing to the CPU results...
-L1 norm: 7.275964E-12
-Testing inverseCNDgpu()...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/RecursiveGaussian
-INFO     Test completed in 0.675933122635 seconds
-INFO      It produced the following output:
-[CUDA Recursive Gaussian] (Automated Testing)
-Loaded 'data/lena.ppm', 512 x 512 pixels
-> Saving PPM: <lena_10.ppm>
-   src_file <lena_10.ppm>
-   ref_file <data/ref_10.ppm>
-> Compare (a)rendered:  <lena_10.ppm>
->         (b)reference: <data/ref_10.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
-32.37(%) of bytes mismatched (count=339435)
-  PASSED!
-> Saving PPM: <lena_14.ppm>
-   src_file <lena_14.ppm>
-   ref_file <data/ref_14.ppm>
-> Compare (a)rendered:  <lena_14.ppm>
->         (b)reference: <data/ref_14.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
-37.41(%) of bytes mismatched (count=392290)
-  PASSED!
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
+Eigenvalues: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013702) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BicubicTexture 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BandwidthTest
-INFO     Test completed in 1.31191897392 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/RecursiveGaussian
+INFO     Test completed in 0.0993580818176 seconds
 INFO      It produced the following output:
-Running on......
-      device 0:GeForce GTX 470
-Quick Mode
-Host to Device Bandwidth for Pageable memory
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		1701.3
-
-Quick Mode
-Device to Host Bandwidth for Pageable memory
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		1207.4
-
-Quick Mode
-Device to Device Bandwidth
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		112420.8
-
-&&&& Test PASSED
-
-Press ENTER to exit...
+RecursiveGaussian: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013093) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FluidsGL 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BicubicTexture
+INFO     Test completed in 0.0693521499634 seconds
+INFO      It produced the following output:
+BicubicTexture: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.012993) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender 
 INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FluidsGL
-INFO     Test completed in 0.437085151672 seconds
+INFO     Test completed in 0.0895299911499 seconds
 INFO      It produced the following output:
-lt-FluidsGL: ocelot/cuda/implementation/CudaRuntime.cpp:745: virtual cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `false' failed.
-(0.291874) CudaRuntime.cpp:745:  Assertion message: cudaGetExportTable is actually a backdoor to the NVIDIA driver.  Ocelot cannot support this because it requires the NVIDIA driver to be installed.  If you want to run an application that depends on this hack, please complain to NVIDIA.
+FluidsGL: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013575) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUBLAS 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Eigenvalues
-INFO     Test completed in 0.934517145157 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender
+INFO     Test completed in 0.0688989162445 seconds
 INFO      It produced the following output:
-Matrix size: 2048 x 2048
-Precision: 0.000010
-Iterations to be timed: 1
-Result filename: 'eigenvalues.dat'
-Gerschgorin interval: -2.894310 / 2.923303
-Average time step 1: 504.024994 ms
-Average time step 2, one intervals: 14.465000 ms
-Average time step 2, mult intervals: 0.037000 ms
-Average time TOTAL: 518.702026 ms
-
-TEST PASSED.
-
-Press ENTER to exit...
+VolumeRender: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013314) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BinomialOptions 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BicubicTexture
-INFO     Test completed in 0.551787137985 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose
+INFO     Test completed in 0.0970411300659 seconds
 INFO      It produced the following output:
-[CUDA BicubicTexture] (automated testing w/ readback)
-Loaded 'lena_bw.pgm', 512 x 512 pixels
-AutoTest: CUDA BicubicTexture <Nearest>
-> Saving PPM: <01_nearest.ppm>
-   src_file <01_nearest.ppm>
-   ref_file <data/01_nearest.ppm>
-> Compare (a)rendered:  <01_nearest.ppm>
->         (b)reference: <data/01_nearest.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA BicubicTexture <Bilinear>
-> Saving PPM: <02_bilinear.ppm>
-   src_file <02_bilinear.ppm>
-   ref_file <data/02_bilinear.ppm>
-> Compare (a)rendered:  <02_bilinear.ppm>
->         (b)reference: <data/02_bilinear.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA BicubicTexture <Bicubic>
-> Saving PPM: <03_bicubic.ppm>
-   src_file <03_bicubic.ppm>
-   ref_file <data/03_bicubic.ppm>
-> Compare (a)rendered:  <03_bicubic.ppm>
->         (b)reference: <data/03_bicubic.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-0.77(%) of bytes mismatched (count=8052)
-  PASSED!
-AutoTest: CUDA BicubicTexture <Fast Bicubic>
-> Saving PPM: <04_fastbicubic.ppm>
-   src_file <04_fastbicubic.ppm>
-   ref_file <data/04_fastbicubic.ppm>
-> Compare (a)rendered:  <04_fastbicubic.ppm>
->         (b)reference: <data/04_fastbicubic.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-4.02(%) of bytes mismatched (count=42126)
-  PASSED!
-TEST PASSED!
-
-Press ENTER to exit...
+Transpose: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.019646) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FastWalshTransform 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender
-INFO     Test completed in 0.967405080795 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BinomialOptions
+INFO     Test completed in 0.067125082016 seconds
 INFO      It produced the following output:
-Read 'data/Bucky.raw', 32768 bytes
-Press '=' and '-' to change density
-      ']' and '[' to change brightness
-      ';' and ''' to modify transfer function offset
-      '.' and ',' to modify transfer function scale
-> (Frame 1) Readback BackBuffer
-> Saving PPM: <volume.ppm>
-   src_file <volume.ppm>
-   ref_file <data/ref_volume.ppm>
-> Compare (a)rendered:  <volume.ppm>
->         (b)reference: <data/ref_volume.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(20%)
-16.52(%) of bytes mismatched (count=173194)
-  PASSED!
-TEST PASSED
+BinomialOptions: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013746) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Bitonic 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUBLAS
-INFO     Test completed in 0.155671834946 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Bitonic
+INFO     Test completed in 0.0674438476562 seconds
 INFO      It produced the following output:
-lt-SimpleCUBLAS: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
-(0.060678) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+Bitonic: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013166) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobelFilter 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FastWalshTransform
-INFO     Test completed in 0.398339986801 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew
+INFO     Test completed in 0.0665400028229 seconds
 INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
+TransposeNew: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.012872) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScalarProd 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScalarProd
+INFO     Test completed in 0.0735058784485 seconds
+INFO      It produced the following output:
+ScalarProd: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.012968) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG
+INFO     Test completed in 0.0708899497986 seconds
+INFO      It produced the following output:
+SobolQRNG: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013138) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan
+INFO     Test completed in 0.0754001140594 seconds
+INFO      It produced the following output:
+Scan: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.012865) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram256 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram256
+INFO     Test completed in 0.0732998847961 seconds
+INFO      It produced the following output:
+Histogram256: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013828) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BlackScholes 
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BlackScholes
+INFO     Test completed in 0.0675570964813 seconds
+INFO      It produced the following output:
+BlackScholes: ocelot/cuda/implementation/FatBinaryContext.cpp:79: cuda::FatBinaryContext::FatBinaryContext(const void*): Assertion `entry->type & FATBIN_2_PTX' failed.
+(0.013719) FatBinaryContext.cpp:79:   Assertion message: Binary contains no PTX.
+
+INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FastWalshTransform
+INFO     Test completed in 1.17025709152 seconds
+INFO      It produced the following output:
 Initializing data...
 ...allocating CPU memory
 ...allocating GPU memory
 ...generating data
 Data length: 32768; kernel length: 128
 Running GPU dyadic convolution using Fast Walsh Transform...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScalarProd 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BinomialOptions
-INFO     Test completed in 0.610284090042 seconds
-INFO      It produced the following output:
-Using device 0: GeForce GTX 470
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Using single precision...
-Generating input data...
-Running GPU binomial tree...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Bitonic
-INFO     Test completed in 0.566322088242 seconds
-INFO      It produced the following output:
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobelFilter
-INFO     Test completed in 0.761996030807 seconds
-INFO      It produced the following output:
-[CUDA Sobel Edge-Detection] (automated testing w/ readback)
-Reading image: lena.pgm
-AutoTest: CUDA Sobel Edge-Detection <Original Filter>
-> Saving PGM: <lena_orig.pgm>
-   src_file <lena_orig.pgm>
-   ref_file <data/ref_orig.pgm>
-PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
-  PASSED!
-AutoTest: CUDA Sobel Edge-Detection <Sobel Shared>
-> Saving PGM: <lena_shared.pgm>
-   src_file <lena_shared.pgm>
-   ref_file <data/ref_shared.pgm>
-PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
-  PASSED!
-AutoTest: CUDA Sobel Edge-Detection <Sobel Shared+Texture>
-> Saving PGM: <lena_shared_tex.pgm>
-   src_file <lena_shared_tex.pgm>
-   ref_file <data/ref_shared_tex.pgm>
-PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
-  PASSED!
-TEST PASSED!
-
-Press ENTER to exit...
-
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScalarProd
-INFO     Test completed in 0.466425180435 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Initializing data...
-...allocating CPU memory.
-...allocating GPU memory.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing GPU kernel...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram256 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose
-INFO     Test completed in 0.365468978882 seconds
-INFO      It produced the following output:
-Transposing a 32 by 128 matrix of floats...
-Naive transpose average time:     0.049 ms
-Optimized transpose average time: 0.037 ms
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BlackScholes 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan
-INFO     Test completed in 0.4774081707 seconds
-INFO      It produced the following output:
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-Running parallel prefix sum (scan) of 512 elements
-Comparing 3 versions:
-
-1. scan_naive -- not work efficient (O(n log n) adds).
-
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates
-INFO     Test completed in 0.717142105103 seconds
-INFO      It produced the following output:
-Processing time: 54.018002 (ms)
-Test PASSED
-Processing time: 124.724998 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Template 
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram256
-INFO     Test completed in 0.591328859329 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running CPU histogram...
-histogramCPU() time : 0.108000 msec // 883.031752 MB/sec
-Running GPU histogram using SM10...
-histogram256_SM10() time : 45.219002 msec // 2.109012 MB/sec
-TEST PASSED
-Running GPU histogram using SM11...
-histogram256_SM11() time : 32.794998 msec // 2.907987 MB/sec
-TEST PASSED
-Running GPU histogram using SM12...
-histogram256_SM12() time : 27.753000 msec // 3.436293 MB/sec
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram64 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Template
-INFO     Test completed in 0.26368188858 seconds
-INFO      It produced the following output:
-Processing time: 45.344002 (ms)
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BoxFilter 
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram64
-INFO     Test completed in 0.318176031113 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running GPU histogram (1 iterations)...
-histogram64GPU() time (average) : 44.148998 msec //22.650571 MB/sec
+GPU time: 1041.730957 ms; GOP/s: 0.000708
 Reading back GPU results...
+Running straightforward CPU dyadic convolution...
 Comparing the results...
-...histogramCPU()
-histogram64CPU() time : 2.004000 msec //475.885400 MB/sec
-Total sum of histogram elements: 1000000
-Sum of absolute differences: 0
+L2 norm: 8.528954E-08
 TEST PASSED
 Shutting down...
-
-Press ENTER to exit...
-
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BoxFilter
-INFO     Test completed in 0.47937297821 seconds
-INFO      It produced the following output:
-[CUDA Iterative Box Filter] (automated testing w/ readback)
-Loaded 'data/lena.ppm', 512 x 512 pixels
-AutoTest: CUDA Iterative Box Filter (radius=10)> Saving PPM: <lena_10.ppm>
-   src_file <lena_10.ppm>
-   ref_file <data/ref_10.ppm>
-> Compare (a)rendered:  <lena_10.ppm>
->         (b)reference: <data/ref_10.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA Iterative Box Filter (radius=14)> Saving PPM: <lena_14.ppm>
-   src_file <lena_14.ppm>
-   ref_file <data/ref_14.ppm>
-> Compare (a)rendered:  <lena_14.ppm>
->         (b)reference: <data/ref_14.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-AutoTest: CUDA Iterative Box Filter (radius=18)> Saving PPM: <lena_18.ppm>
-   src_file <lena_18.ppm>
-   ref_file <data/ref_18.ppm>
-> Compare (a)rendered:  <lena_18.ppm>
->         (b)reference: <data/ref_18.ppm>
-PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(15%)
-  PASSED!
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Cuda Driver Error - driver::cuCtxPushCurrent(_context)CUDA DRIVER - invalid context
-AutoTest: CUDA Iterative Box Filter (radius=22)
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU
-INFO     Test completed in 1.55679607391 seconds
-INFO      It produced the following output:
-CUDA-capable device count: 1
-main(): generating input data...
-main(): waiting for GPU results...
-GPU Processing time: 101.475998 (ms) 
-Checking the results...
-CPU Processing time: 38.521999 (ms) 
-GPU sum: 16777296.000000; CPU sum: 16777294.395033
-Relative difference: 9.566307E-08 
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Test /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BlackScholes
-INFO     Test completed in 2.03859806061 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory for options.
-...allocating GPU memory for options.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing Black-Scholes GPU kernel (1 iterations)...
-Options count             : 8000000     
-BlackScholesGPU() time    : 49.641998 msec
-Effective memory bandwidth: 1.611539 GB/s
-Gigaoptions per second    : 0.161154     
-Reading back GPU results...
-Checking the results...
-...running CPU calculations.
-Comparing the results...
-L1 norm: 1.691779E-07
-Max absolute error: 1.239777E-05
-TEST PASSED
-Shutting down...
-...releasing GPU memory.
-...releasing CPU memory.
-Shutdown done.
 
 Press ENTER to exit...
 
 INFO     
 Passing tests:
- (1.134s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Mandelbrot : Passed
- (0.771s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleGL : Passed
- (1.557s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU : Passed
- (0.450s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics : Passed
- (1.312s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BandwidthTest : Passed
- (0.417s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Clock : Passed
- (0.563s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture : Passed
- (0.957s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Nbody : Passed
- (0.935s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Eigenvalues : Passed
- (2.527s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MonteCarlo : Passed
- (0.967s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender : Passed
- (0.240s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics : Passed
- (0.566s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Bitonic : Passed
- (0.365s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose : Passed
- (0.206s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DeviceQuery : Passed
- (2.039s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BlackScholes : Passed
- (0.717s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates : Passed
- (0.552s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BicubicTexture : Passed
- (0.391s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MatrixMul : Passed
- (0.318s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram64 : Passed
- (0.470s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG : Passed
- (0.515s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DwtHaar1D : Passed
- (0.591s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram256 : Passed
- (0.264s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Template : Passed
- (0.615s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ImageDenoising : Passed
- (0.449s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy : Passed
- (0.762s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobelFilter : Passed
+ (0.087s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DeviceQuery : Passed
+ (1.170s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FastWalshTransform : Passed
+ (0.131s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/CppIntegration : Passed
 
 Failing tests:
- (0.561s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Reduction : Did not complete.
- (0.511s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AlignedTypes : Did not complete.
- (0.610s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BinomialOptions : Did not complete.
- (0.343s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MersenneTwister : Did not complete.
- (0.466s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScalarProd : Did not complete.
- (0.705s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dxtc : Failed
- (0.528s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AsyncAPI : Did not complete.
- (0.390s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionFFT2D : Did not complete.
- (0.632s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionTexture : Did not complete.
- (0.527s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/PostProcessGL : Did not complete.
- (1.150s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/QuasirandomGenerator : Did not complete.
- (0.363s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/CppIntegration : Did not complete.
- (0.327s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray : Did not complete.
- (0.437s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FluidsGL : Did not complete.
- (0.479s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BoxFilter : Did not complete.
- (0.381s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew : Did not complete.
- (0.398s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FastWalshTransform : Did not complete.
- (0.676s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/RecursiveGaussian : Did not complete.
- (0.300s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionSeparable : Did not complete.
- (1.205s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction : Did not complete.
- (0.267s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams : Did not complete.
- (0.477s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan : Did not complete.
- (0.430s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/OceanFFT : Did not complete.
- (0.226s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUFFT : Did not complete.
- (0.413s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture3D : Failed
- (0.650s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dct8x8 : Did not complete.
- (0.156s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUBLAS : Did not complete.
+ (0.087s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Mandelbrot : Did not complete.
+ (0.070s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Eigenvalues : Did not complete.
+ (0.078s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleMultiGPU : Did not complete.
+ (0.089s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Reduction : Did not complete.
+ (0.078s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AlignedTypes : Did not complete.
+ (0.067s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BinomialOptions : Did not complete.
+ (0.091s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleAtomicIntrinsics : Did not complete.
+ (0.072s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MersenneTwister : Did not complete.
+ (0.074s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScalarProd : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dxtc : Did not complete.
+ (0.067s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionFFT2D : Did not complete.
+ (0.079s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BandwidthTest : Did not complete.
+ (0.098s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Clock : Did not complete.
+ (0.075s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram64 : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionTexture : Did not complete.
+ (0.099s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/RecursiveGaussian : Did not complete.
+ (0.066s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/PostProcessGL : Did not complete.
+ (0.088s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/QuasirandomGenerator : Did not complete.
+ (0.083s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MonteCarlo : Did not complete.
+ (0.097s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Transpose : Did not complete.
+ (0.103s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ScanLargeArray : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleGL : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/VolumeRender : Did not complete.
+ (0.113s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleVoteIntrinsics : Did not complete.
+ (0.067s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Bitonic : Did not complete.
+ (0.090s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/FluidsGL : Did not complete.
+ (0.076s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BoxFilter : Did not complete.
+ (0.067s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/TransposeNew : Did not complete.
+ (0.077s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleStreams : Did not complete.
+ (0.073s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ConvolutionSeparable : Did not complete.
+ (0.068s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BlackScholes : Did not complete.
+ (0.081s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ThreadFenceReduction : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/AsyncAPI : Did not complete.
+ (0.068s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTemplates : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/BicubicTexture : Did not complete.
+ (0.075s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Scan : Did not complete.
+ (0.074s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/MatrixMul : Did not complete.
+ (0.096s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Nbody : Did not complete.
+ (0.101s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/OceanFFT : Did not complete.
+ (0.071s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobolQRNG : Did not complete.
+ (0.107s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/DwtHaar1D : Did not complete.
+ (0.073s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Histogram256 : Did not complete.
+ (0.074s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUFFT : Did not complete.
+ (0.075s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Dct8x8 : Did not complete.
+ (0.116s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/ImageDenoising : Did not complete.
+ (0.105s) : /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleZeroCopy : Did not complete.
+
+Non-Existent tests:
+ /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SobelFilter
+ /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture3D
+ /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleTexture
+ /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/Template
+ /home/andrew/repositories/gpuocelot/trunk/tests/cuda2.2/SimpleCUBLAS
 

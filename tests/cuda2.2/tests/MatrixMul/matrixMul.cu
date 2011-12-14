@@ -55,7 +55,7 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <matrixMul_kernel.cu>
+#include <tests/MatrixMul/matrixMul_kernel.cu>
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward

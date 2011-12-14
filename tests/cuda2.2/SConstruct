@@ -49,7 +49,7 @@ testApplications = [
 	('AlignedTypes', ['alignedTypes.cu',]),
 	('AsyncAPI', ['asyncAPI.cu',]),
 	('BandwidthTest', ['bandwidthTest.cu',]),
-	('BicubicTexture', ['bicubicTexture.cu',]),
+	('BicubicTexture', ['bicubicTexture.cu','bicubicTexture-host.cpp']),
 	('BinomialOptions', 
 		['binomialOptions.cpp', 'binomialOptions_gold.cpp', 'binomialOptions_SM13.cu', 'binomialOptions_SM10.cu']),
 	('Bitonic', ['bitonic.cu',]),
@@ -77,13 +77,13 @@ testApplications = [
 	('MersenneTwister', ['MersenneTwister.cu', 'MersenneTwister_gold.cpp', 'genmtrand.c']),
 	('MonteCarlo', ['MonteCarlo_SM13.cu', 'MonteCarlo_SM10.cu', 'MonteCarlo_gold.cpp', 'MonteCarlo.cpp']),
 	('Nbody', 
-		['nbody.cpp', 'bodysystemcuda.cu', 'bodysystemcpu.cpp', 'bodysystemcuda.cpp', 'nbody_gold.cpp', 'render_particles.cpp']),
+		['nbody.cpp', 'bodysystemcuda.cu', 'bodysystemcpu.cpp', 'bodysystemcuda-host.cpp', 'nbody_gold.cpp', 'render_particles.cpp']),
 	('OceanFFT', ['oceanFFT_kernel.cu', 'oceanFFT.cpp']),
-	('Particles', ['particleSystem.cu', 'particles.cpp', 'particleSystem.cpp', 'render_particles.cpp', 'shaders.cpp']),
+	('Particles', ['particleSystem.cu', 'particles.cpp', 'particleSystem-host.cpp', 'render_particles.cpp', 'shaders.cpp']),
 	('PostProcessGL', ['postProcessGL.cu', 'main.cpp']),
 	('QuasirandomGenerator', 
 		['quasirandomGenerator_SM13.cu', 'quasirandomGenerator_SM10.cu', 'quasirandomGenerator_gold.cpp', 'quasirandomGenerator.cpp' ]),
-	('RecursiveGaussian', ['recursiveGaussian.cu', 'recursiveGaussian.cpp']),
+	('RecursiveGaussian', ['recursiveGaussian.cu', 'recursiveGaussian-host.cpp']),
 	('Reduction', ['reduction_kernel_sm13.cu', 'reduction_kernel_sm10.cu', 'reduction.cu']),
 	('ScalarProd', ['scalarProd.cu', 'scalarProd_gold.cpp']),
 	('Scan', ['scan.cu', 'scan_gold.cpp']),
@@ -111,13 +111,23 @@ testApplications = [
 #
 # Construct build rules for all tests
 #
+(bin_path,lib_path,inc_path) = build.getCudaPaths()
+
+env.Append(LIBPATH=[lib_path, '/usr/local/lib'])
+
 tests = []
 for testApplication in testApplications:
 	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
+	additionalLibs = []
+	if "FFT" in testApplication[0]:
+		additionalLibs.append('-lcufft')
+	if "BLAS" in testApplication[0]:
+		additionalLibs.append('-lcublas')
+	
 	testApp = env.Program(testApplication[0], 
 		[build.MapSource(env, 
 			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
-		LIBS=['-locelot', libsdk])
+		LIBS=additionalLibs + ['-lglut', '-lGLU', '-lcufft', '-locelot', libsdk])
 	tests.append(testApp)
 
 

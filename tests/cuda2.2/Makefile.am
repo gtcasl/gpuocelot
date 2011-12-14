@@ -79,7 +79,7 @@ BandwidthTest_LDFLAGS = -static
 ## BicubicTexture
 BicubicTexture_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 BicubicTexture_SOURCES = tests/BicubicTexture/bicubicTexture.cu.cpp \
-	tests/BicubicTexture/bicubicTexture.cpp
+	tests/BicubicTexture/bicubicTexture-host.cpp
 BicubicTexture_LDADD = $(OCELOT_LIBS)
 BicubicTexture_LDFLAGS = -static
 ################################################################################
@@ -333,7 +333,7 @@ MonteCarlo_LDFLAGS = -static
 Nbody_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 Nbody_SOURCES = tests/Nbody/bodysystemcuda.cu.cpp tests/Nbody/nbody.cpp \
 	tests/Nbody/bodysystemcpu.cpp \
-	tests/Nbody/bodysystemcuda.cpp \
+	tests/Nbody/bodysystemcuda-host.cpp \
 	tests/Nbody/nbody_gold.cpp \
 	tests/Nbody/render_particles.cpp
 Nbody_LDADD = $(OCELOT_LIBS)
@@ -353,7 +353,7 @@ OceanFFT_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
 Particles_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 Particles_SOURCES = tests/Particles/particleSystem.cu.cpp \
 	tests/Particles/particles.cpp \
-	tests/Particles/particleSystem.cpp \
+	tests/Particles/particleSystem-host.cpp \
 	tests/Particles/render_particles.cpp \
 	tests/Particles/shaders.cpp
 Particles_LDADD = $(OCELOT_LIBS)
@@ -385,7 +385,7 @@ QuasirandomGenerator_LDFLAGS = -static
 ## RecursiveGaussian
 RecursiveGaussian_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 RecursiveGaussian_SOURCES = tests/RecursiveGaussian/recursiveGaussian.cu.cpp \
-	tests/RecursiveGaussian/recursiveGaussian.cpp
+	tests/RecursiveGaussian/recursiveGaussian-host.cpp
 RecursiveGaussian_LDADD = $(OCELOT_LIBS)
 RecursiveGaussian_LDFLAGS = -static
 ################################################################################

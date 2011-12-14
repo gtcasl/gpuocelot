@@ -2579,6 +2579,13 @@ struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x,
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
 	HostThreadContext& thread = _getCurrentThread();
+	cudaError_t lastError = thread.lastError;
+	thread.lastError = cudaSuccess;
+	return lastError;
+}
+
+cudaError_t cuda::CudaRuntime::cudaPeekAtLastError(void) {
+	HostThreadContext& thread = _getCurrentThread();
 	return thread.lastError;
 }
 

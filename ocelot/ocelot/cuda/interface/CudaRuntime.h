@@ -497,6 +497,7 @@ namespace cuda {
 
 	public:
 		virtual cudaError_t cudaGetLastError(void);
+		virtual cudaError_t cudaPeekAtLastError(void);
 
 	public:
 		//

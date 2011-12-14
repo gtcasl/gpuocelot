@@ -369,6 +369,10 @@ cudaError_t  cudaGetLastError(void) {
 	return cuda::CudaRuntimeInterface::get()->cudaGetLastError();
 }
 
+cudaError_t cudaPeekAtLastError() {
+	return cuda::CudaRuntimeInterface::get()->cudaPeekAtLastError();
+}
+
 #define _CASE(x) case x: return #x;
 
 const char*  cudaGetErrorString(cudaError_t error) {
@@ -469,6 +473,9 @@ cudaError_t  cudaStreamQuery(cudaStream_t stream) {
 	return cuda::CudaRuntimeInterface::get()->cudaStreamQuery(stream);
 }
 
+cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaStreamWaitEvent(stream, event, flags);
+}
 
 /*******************************************************************************
 *                                                                              *

@@ -258,6 +258,10 @@ cudaError_t  cudaMemset(void *devPtr, int value, size_t count) {
 	return cuda::CudaRuntimeInterface::get()->cudaMemset(devPtr, value, count);
 }
 
+cudaError_t cudaMemsetAsync(void *devPtr, int value, size_t count, cudaStream_t stream) {
+	return cudaMemset(devPtr, value, count);
+}
+
 cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height) {
 	return cuda::CudaRuntimeInterface::get()->cudaMemset2D(devPtr, pitch, value, width, height);
 }

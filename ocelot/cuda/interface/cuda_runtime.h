@@ -365,6 +365,7 @@ extern cudaError_t cudaMalloc3DArray(struct cudaArray** arrayPtr,
 	const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 extern cudaError_t cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, 
 	int value, struct cudaExtent extent);
+extern cudaError_t cudaMemsetAsync(void *devPtr, int value, size_t count, cudaStream_t stream = 0);
 extern cudaError_t cudaMemcpy3D(const struct cudaMemcpy3DParms *p);
 extern cudaError_t cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, 
 	cudaStream_t stream);
@@ -528,6 +529,7 @@ extern struct cudaChannelFormatDesc cudaCreateChannelDesc(int x, int y, int z,
 *******************************************************************************/
 
 extern cudaError_t cudaGetLastError(void);
+extern cudaError_t cudaPeekAtLastError();
 extern const char* cudaGetErrorString(cudaError_t error);
 
 /*******************************************************************************
@@ -545,6 +547,7 @@ extern cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr,
 	const char *func);
 extern cudaError_t cudaFuncSetCacheConfig(const char *func, 
 	enum cudaFuncCache cacheConfig);
+extern cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags);
 
 /*******************************************************************************
 *                                                                              *

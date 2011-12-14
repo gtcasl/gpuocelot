@@ -55,7 +55,6 @@ def getCudaPaths():
 		lib_path += '64'
 
 	# override with environement variables
-	bin_path = '/usr/local/cuda3.2/cuda/bin'
 	if 'CUDA_BIN_PATH' in os.environ:
 		bin_path = os.path.abspath(os.environ['CUDA_BIN_PATH'])
 	if 'CUDA_LIB_PATH' in os.environ:
@@ -394,8 +393,6 @@ def importEnvironment():
 	
 	if 'LD_LIBRARY_PATH' in os.environ:
 		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
-		
-	print "importEnvironment.environ = ", os.environ
 
 	return env
 

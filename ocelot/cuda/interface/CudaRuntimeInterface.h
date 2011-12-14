@@ -260,6 +260,7 @@ namespace cuda {
 		*/
 
 		virtual cudaError_t cudaGetLastError(void);
+		virtual cudaError_t cudaPeekAtLastError(void);
 
 		/*
 			Kernel launch
@@ -284,6 +285,7 @@ namespace cuda {
 		virtual cudaError_t cudaStreamDestroy(cudaStream_t stream);
 		virtual cudaError_t cudaStreamSynchronize(cudaStream_t stream);
 		virtual cudaError_t cudaStreamQuery(cudaStream_t stream);
+		virtual cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags);
 
 		/*
 			Event creation

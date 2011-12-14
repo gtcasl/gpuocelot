@@ -54,7 +54,7 @@ libsdk_la_SOURCES = sdk/bank_checker.cpp \
 ################################################################################
 ## AlignedTypes
 AlignedTypes_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-AlignedTypes_SOURCES = tests/alignedTypes/alignedTypes.cu.cpp
+AlignedTypes_SOURCES = tests/AlignedTypes/alignedTypes.cu.cpp
 AlignedTypes_LDADD = $(OCELOT_LIBS)
 AlignedTypes_LDFLAGS = -static
 ################################################################################
@@ -62,7 +62,7 @@ AlignedTypes_LDFLAGS = -static
 ################################################################################
 ## AsyncAPI
 AsyncAPI_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-AsyncAPI_SOURCES = tests/asyncAPI/asyncAPI.cu.cpp
+AsyncAPI_SOURCES = tests/AsyncAPI/asyncAPI.cu.cpp
 AsyncAPI_LDADD = $(OCELOT_LIBS)
 AsyncAPI_LDFLAGS = -static
 ################################################################################
@@ -70,7 +70,7 @@ AsyncAPI_LDFLAGS = -static
 ################################################################################
 ## BandwidthTest
 BandwidthTest_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-BandwidthTest_SOURCES = tests/bandwidthTest/bandwidthTest.cu.cpp
+BandwidthTest_SOURCES = tests/BandwidthTest/bandwidthTest.cu.cpp
 BandwidthTest_LDADD = $(OCELOT_LIBS)
 BandwidthTest_LDFLAGS = -static
 ################################################################################
@@ -78,8 +78,8 @@ BandwidthTest_LDFLAGS = -static
 ################################################################################
 ## BicubicTexture
 BicubicTexture_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-BicubicTexture_SOURCES = tests/bicubicTexture/bicubicTexture.cu.cpp \
-	tests/bicubicTexture/bicubicTexture.cpp
+BicubicTexture_SOURCES = tests/BicubicTexture/bicubicTexture.cu.cpp \
+	tests/BicubicTexture/bicubicTexture.cpp
 BicubicTexture_LDADD = $(OCELOT_LIBS)
 BicubicTexture_LDFLAGS = -static
 ################################################################################
@@ -87,10 +87,10 @@ BicubicTexture_LDFLAGS = -static
 ################################################################################
 ## BinomialOptions
 BinomialOptions_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-BinomialOptions_SOURCES = tests/binomialOptions/binomialOptions_SM10.cu.cpp \
-	tests/binomialOptions/binomialOptions_SM13.cu.cpp \
-	tests/binomialOptions/binomialOptions.cpp \
-	tests/binomialOptions/binomialOptions_gold.cpp
+BinomialOptions_SOURCES = tests/BinomialOptions/binomialOptions_SM10.cu.cpp \
+	tests/BinomialOptions/binomialOptions_SM13.cu.cpp \
+	tests/BinomialOptions/binomialOptions.cpp \
+	tests/BinomialOptions/binomialOptions_gold.cpp
 BinomialOptions_LDADD = $(OCELOT_LIBS)
 BinomialOptions_LDFLAGS = -static
 ################################################################################
@@ -98,7 +98,7 @@ BinomialOptions_LDFLAGS = -static
 ################################################################################
 ## Bitonic
 Bitonic_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Bitonic_SOURCES = tests/bitonic/bitonic.cu.cpp
+Bitonic_SOURCES = tests/Bitonic/bitonic.cu.cpp
 Bitonic_LDADD = $(OCELOT_LIBS)
 Bitonic_LDFLAGS = -static
 ################################################################################
@@ -115,9 +115,9 @@ BlackScholes_LDFLAGS = -static
 ################################################################################
 ## BoxFilter
 BoxFilter_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-BoxFilter_SOURCES = tests/boxFilter/boxFilter_kernel.cu.cpp \
-	tests/boxFilter/boxFilter_gold.cpp \
-	tests/boxFilter/boxFilter.cpp
+BoxFilter_SOURCES = tests/BoxFilter/boxFilter_kernel.cu.cpp \
+	tests/BoxFilter/boxFilter_gold.cpp \
+	tests/BoxFilter/boxFilter.cpp
 BoxFilter_LDADD = $(OCELOT_LIBS)
 BoxFilter_LDFLAGS = -static
 ################################################################################
@@ -125,7 +125,7 @@ BoxFilter_LDFLAGS = -static
 ################################################################################
 ## Clock
 Clock_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Clock_SOURCES = tests/clock/clock.cu.cpp
+Clock_SOURCES = tests/Clock/clock.cu.cpp
 Clock_LDADD = $(OCELOT_LIBS)
 Clock_LDFLAGS = -static
 ################################################################################
@@ -133,8 +133,8 @@ Clock_LDFLAGS = -static
 ################################################################################
 ## ConvolutionFFT2D
 ConvolutionFFT2D_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-ConvolutionFFT2D_SOURCES = tests/convolutionFFT2D/convolutionFFT2D.cu.cpp \
-	tests/convolutionFFT2D/convolutionFFT2D_gold.cpp
+ConvolutionFFT2D_SOURCES = tests/ConvolutionFFT2D/convolutionFFT2D.cu.cpp \
+	tests/ConvolutionFFT2D/convolutionFFT2D_gold.cpp
 ConvolutionFFT2D_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
 ################################################################################
 
@@ -142,8 +142,8 @@ ConvolutionFFT2D_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
 ## ConvolutionSeparable
 ConvolutionSeparable_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 ConvolutionSeparable_SOURCES = \
-	tests/convolutionSeparable/convolutionSeparable.cu.cpp \
-	tests/convolutionSeparable/convolutionSeparable_gold.cpp
+	tests/ConvolutionSeparable/convolutionSeparable.cu.cpp \
+	tests/ConvolutionSeparable/convolutionSeparable_gold.cpp
 ConvolutionSeparable_LDADD = $(OCELOT_LIBS)
 ConvolutionSeparable_LDFLAGS = -static
 ################################################################################
@@ -152,8 +152,8 @@ ConvolutionSeparable_LDFLAGS = -static
 ## ConvolutionTexture
 ConvolutionTexture_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 ConvolutionTexture_SOURCES = \
-	tests/convolutionTexture/convolutionTexture.cu.cpp \
-	tests/convolutionTexture/convolutionTexture_gold.cpp
+	tests/ConvolutionTexture/convolutionTexture.cu.cpp \
+	tests/ConvolutionTexture/convolutionTexture_gold.cpp
 ConvolutionTexture_LDADD = $(OCELOT_LIBS)
 ConvolutionTexture_LDFLAGS = -static
 ################################################################################
@@ -162,9 +162,9 @@ ConvolutionTexture_LDFLAGS = -static
 ## CppIntegration
 CppIntegration_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 CppIntegration_SOURCES = \
-	tests/cppIntegration/cppIntegration.cu.cpp \
-	tests/cppIntegration/cppIntegration_gold.cpp \
-	tests/cppIntegration/main.cpp
+	tests/CppIntegration/cppIntegration.cu.cpp \
+	tests/CppIntegration/cppIntegration_gold.cpp \
+	tests/CppIntegration/main.cpp
 CppIntegration_LDADD = $(OCELOT_LIBS)
 CppIntegration_LDFLAGS = -static
 ################################################################################
@@ -172,9 +172,9 @@ CppIntegration_LDFLAGS = -static
 ################################################################################
 ## Dct8x8
 Dct8x8_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Dct8x8_SOURCES = tests/dct8x8/dct8x8.cu.cpp \
-	tests/dct8x8/DCT8x8_Gold.cpp \
-	tests/dct8x8/BmpUtil.cpp
+Dct8x8_SOURCES = tests/Dct8x8/dct8x8.cu.cpp \
+	tests/Dct8x8/DCT8x8_Gold.cpp \
+	tests/Dct8x8/BmpUtil.cpp
 Dct8x8_LDADD = $(OCELOT_LIBS)
 Dct8x8_LDFLAGS = -static
 ################################################################################
@@ -182,7 +182,7 @@ Dct8x8_LDFLAGS = -static
 ################################################################################
 ## DeviceQuery
 DeviceQuery_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-DeviceQuery_SOURCES = tests/deviceQuery/deviceQuery.cpp
+DeviceQuery_SOURCES = tests/DeviceQuery/deviceQuery.cpp
 DeviceQuery_LDADD = $(OCELOT_LIBS)
 DeviceQuery_LDFLAGS = -static
 ################################################################################
@@ -190,7 +190,7 @@ DeviceQuery_LDFLAGS = -static
 ################################################################################
 ## DwtHaar1D
 DwtHaar1D_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-DwtHaar1D_SOURCES = tests/dwtHaar1D/dwtHaar1D.cu.cpp
+DwtHaar1D_SOURCES = tests/DwtHaar1D/dwtHaar1D.cu.cpp
 DwtHaar1D_LDADD = $(OCELOT_LIBS)
 DwtHaar1D_LDFLAGS = -static
 ################################################################################
@@ -198,7 +198,7 @@ DwtHaar1D_LDFLAGS = -static
 ################################################################################
 ## Dxtc
 Dxtc_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Dxtc_SOURCES = tests/dxtc/dxtc.cu.cpp tests/dxtc/tests.cu.cpp
+Dxtc_SOURCES = tests/Dxtc/dxtc.cu.cpp tests/Dxtc/tests.cu.cpp
 Dxtc_LDADD = $(OCELOT_LIBS)
 Dxtc_LDFLAGS = -static
 ################################################################################
@@ -206,11 +206,11 @@ Dxtc_LDFLAGS = -static
 ################################################################################
 ## Eigenvalues
 Eigenvalues_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Eigenvalues_SOURCES = tests/eigenvalues/main.cu.cpp \
-	tests/eigenvalues/matlab.cpp \
-	tests/eigenvalues/gerschgorin.cpp \
-	tests/eigenvalues/bisect_large.cu.cpp \
-	tests/eigenvalues/bisect_small.cu.cpp
+Eigenvalues_SOURCES = tests/Eigenvalues/main.cu.cpp \
+	tests/Eigenvalues/matlab.cpp \
+	tests/Eigenvalues/gerschgorin.cpp \
+	tests/Eigenvalues/bisect_large.cu.cpp \
+	tests/Eigenvalues/bisect_small.cu.cpp
 Eigenvalues_LDADD = $(OCELOT_LIBS)
 Eigenvalues_LDFLAGS = -static
 ################################################################################
@@ -218,7 +218,7 @@ Eigenvalues_LDFLAGS = -static
 ################################################################################
 ## FluidsGL
 FluidsGL_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-FluidsGL_SOURCES = tests/fluidsGL/fluidsGL.cu.cpp
+FluidsGL_SOURCES = tests/FluidsGL/fluidsGL.cu.cpp
 FluidsGL_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
 ################################################################################
 
@@ -226,8 +226,8 @@ FluidsGL_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
 ## FastWalshTransform
 FastWalshTransform_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 FastWalshTransform_SOURCES = \
-	tests/fastWalshTransform/fastWalshTransform.cu.cpp \
-	tests/fastWalshTransform/fastWalshTransform_gold.cpp
+	tests/FastWalshTransform/fastWalshTransform.cu.cpp \
+	tests/FastWalshTransform/fastWalshTransform_gold.cpp
 FastWalshTransform_LDADD = $(OCELOT_LIBS)
 FastWalshTransform_LDFLAGS = -static
 ################################################################################
@@ -235,11 +235,11 @@ FastWalshTransform_LDFLAGS = -static
 ################################################################################
 ## Histogram256
 Histogram256_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Histogram256_SOURCES = tests/histogram256/histogram256_SM10.cu.cpp \
-	tests/histogram256/histogram256_SM11.cu.cpp \
-	tests/histogram256/histogram256_SM12.cu.cpp \
-	tests/histogram256/histogram256_gold.cpp \
-	tests/histogram256/histogram256.cpp
+Histogram256_SOURCES = tests/Histogram256/histogram256_SM10.cu.cpp \
+	tests/Histogram256/histogram256_SM11.cu.cpp \
+	tests/Histogram256/histogram256_SM12.cu.cpp \
+	tests/Histogram256/histogram256_gold.cpp \
+	tests/Histogram256/histogram256.cpp
 Histogram256_LDADD = $(OCELOT_LIBS)
 Histogram256_LDFLAGS = -static
 ################################################################################
@@ -247,8 +247,8 @@ Histogram256_LDFLAGS = -static
 ################################################################################
 ## Histogram64
 Histogram64_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Histogram64_SOURCES = tests/histogram64/histogram64.cu.cpp \
-	tests/histogram64/histogram64_gold.cpp
+Histogram64_SOURCES = tests/Histogram64/histogram64.cu.cpp \
+	tests/Histogram64/histogram64_gold.cpp
 Histogram64_LDADD = $(OCELOT_LIBS)
 Histogram64_LDFLAGS = -static
 ################################################################################
@@ -256,9 +256,9 @@ Histogram64_LDFLAGS = -static
 ################################################################################
 ## ImageDenoising
 ImageDenoising_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-ImageDenoising_SOURCES = tests/imageDenoising/imageDenoising.cu.cpp \
-	tests/imageDenoising/bmploader.cpp \
-	tests/imageDenoising/imageDenoisingGL.cpp
+ImageDenoising_SOURCES = tests/ImageDenoising/imageDenoising.cu.cpp \
+	tests/ImageDenoising/bmploader.cpp \
+	tests/ImageDenoising/imageDenoisingGL.cpp
 ImageDenoising_LDADD = $(OCELOT_LIBS)
 ImageDenoising_LDFLAGS = -static
 ################################################################################
@@ -289,8 +289,8 @@ UnstructuredMandelbrot_LDFLAGS = -static
 ################################################################################
 ## MatrixMul
 MatrixMul_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-MatrixMul_SOURCES = tests/matrixMul/matrixMul.cu.cpp \
-	tests/matrixMul/matrixMul_gold.cpp
+MatrixMul_SOURCES = tests/MatrixMul/matrixMul.cu.cpp \
+	tests/MatrixMul/matrixMul_gold.cpp
 MatrixMul_LDADD = $(OCELOT_LIBS)
 MatrixMul_LDFLAGS = -static
 ################################################################################
@@ -331,11 +331,11 @@ MonteCarlo_LDFLAGS = -static
 ################################################################################
 ## Nbody
 Nbody_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Nbody_SOURCES = tests/nbody/bodysystemcuda.cu.cpp tests/nbody/nbody.cpp \
-	tests/nbody/bodysystemcpu.cpp \
-	tests/nbody/bodysystemcuda.cpp \
-	tests/nbody/nbody_gold.cpp \
-	tests/nbody/render_particles.cpp
+Nbody_SOURCES = tests/Nbody/bodysystemcuda.cu.cpp tests/Nbody/nbody.cpp \
+	tests/Nbody/bodysystemcpu.cpp \
+	tests/Nbody/bodysystemcuda.cpp \
+	tests/Nbody/nbody_gold.cpp \
+	tests/Nbody/render_particles.cpp
 Nbody_LDADD = $(OCELOT_LIBS)
 Nbody_LDFLAGS = -static
 ################################################################################
@@ -343,19 +343,19 @@ Nbody_LDFLAGS = -static
 ################################################################################
 ## OceanFFT
 OceanFFT_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-OceanFFT_SOURCES = tests/oceanFFT/oceanFFT_kernel.cu.cpp \
-	tests/oceanFFT/oceanFFT.cpp
+OceanFFT_SOURCES = tests/OceanFFT/oceanFFT_kernel.cu.cpp \
+	tests/OceanFFT/oceanFFT.cpp
 OceanFFT_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS)
 ################################################################################
 
 ################################################################################
 ## Particles
 Particles_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Particles_SOURCES = tests/particles/particleSystem.cu.cpp \
-	tests/particles/particles.cpp \
-	tests/particles/particleSystem.cpp \
-	tests/particles/render_particles.cpp \
-	tests/particles/shaders.cpp
+Particles_SOURCES = tests/Particles/particleSystem.cu.cpp \
+	tests/Particles/particles.cpp \
+	tests/Particles/particleSystem.cpp \
+	tests/Particles/render_particles.cpp \
+	tests/Particles/shaders.cpp
 Particles_LDADD = $(OCELOT_LIBS)
 Particles_LDFLAGS = -static
 ################################################################################
@@ -363,8 +363,8 @@ Particles_LDFLAGS = -static
 ################################################################################
 ## PostProcessGL
 PostProcessGL_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-PostProcessGL_SOURCES = tests/postProcessGL/postProcessGL.cu.cpp \
-	tests/postProcessGL/main.cpp
+PostProcessGL_SOURCES = tests/PostProcessGL/postProcessGL.cu.cpp \
+	tests/PostProcessGL/main.cpp
 PostProcessGL_LDADD = $(OCELOT_LIBS)
 PostProcessGL_LDFLAGS = -static
 ################################################################################
@@ -373,10 +373,10 @@ PostProcessGL_LDFLAGS = -static
 ## QuasirandomGenerator
 QuasirandomGenerator_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 QuasirandomGenerator_SOURCES = \
-	tests/quasirandomGenerator/quasirandomGenerator_SM13.cu.cpp \
-	tests/quasirandomGenerator/quasirandomGenerator_SM10.cu.cpp \
-	tests/quasirandomGenerator/quasirandomGenerator_gold.cpp \
-	tests/quasirandomGenerator/quasirandomGenerator.cpp
+	tests/QuasirandomGenerator/quasirandomGenerator_SM13.cu.cpp \
+	tests/QuasirandomGenerator/quasirandomGenerator_SM10.cu.cpp \
+	tests/QuasirandomGenerator/quasirandomGenerator_gold.cpp \
+	tests/QuasirandomGenerator/quasirandomGenerator.cpp
 QuasirandomGenerator_LDADD = $(OCELOT_LIBS)
 QuasirandomGenerator_LDFLAGS = -static
 ################################################################################
@@ -384,8 +384,8 @@ QuasirandomGenerator_LDFLAGS = -static
 ################################################################################
 ## RecursiveGaussian
 RecursiveGaussian_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-RecursiveGaussian_SOURCES = tests/recursiveGaussian/recursiveGaussian.cu.cpp \
-	tests/recursiveGaussian/recursiveGaussian.cpp
+RecursiveGaussian_SOURCES = tests/RecursiveGaussian/recursiveGaussian.cu.cpp \
+	tests/RecursiveGaussian/recursiveGaussian.cpp
 RecursiveGaussian_LDADD = $(OCELOT_LIBS)
 RecursiveGaussian_LDFLAGS = -static
 ################################################################################
@@ -393,9 +393,9 @@ RecursiveGaussian_LDFLAGS = -static
 ################################################################################
 ## Reduction
 Reduction_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Reduction_SOURCES = tests/reduction/reduction_kernel_sm13.cu.cpp \
-	tests/reduction/reduction_kernel_sm10.cu.cpp \
-	tests/reduction/reduction.cu.cpp
+Reduction_SOURCES = tests/Reduction/reduction_kernel_sm13.cu.cpp \
+	tests/Reduction/reduction_kernel_sm10.cu.cpp \
+	tests/Reduction/reduction.cu.cpp
 Reduction_LDADD = $(OCELOT_LIBS)
 Reduction_LDFLAGS = -static
 ################################################################################
@@ -403,8 +403,8 @@ Reduction_LDFLAGS = -static
 ################################################################################
 ## ScalarProd
 ScalarProd_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-ScalarProd_SOURCES = tests/scalarProd/scalarProd.cu.cpp \
-	tests/scalarProd/scalarProd_gold.cpp
+ScalarProd_SOURCES = tests/ScalarProd/scalarProd.cu.cpp \
+	tests/ScalarProd/scalarProd_gold.cpp
 ScalarProd_LDADD = $(OCELOT_LIBS)
 ScalarProd_LDFLAGS = -static
 ################################################################################
@@ -412,8 +412,8 @@ ScalarProd_LDFLAGS = -static
 ################################################################################
 ## Scan
 Scan_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Scan_SOURCES = tests/scan/scan.cu.cpp \
-	tests/scan/scan_gold.cpp
+Scan_SOURCES = tests/Scan/scan.cu.cpp \
+	tests/Scan/scan_gold.cpp
 Scan_LDADD = $(OCELOT_LIBS)
 Scan_LDFLAGS = -static
 ################################################################################
@@ -421,8 +421,8 @@ Scan_LDFLAGS = -static
 ################################################################################
 ## ScanLargeArray
 ScanLargeArray_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS) -D__DEVICE_EMULATION__
-ScanLargeArray_SOURCES = tests/scanLargeArray/scanLargeArray.cu.cpp \
-	tests/scanLargeArray/scan_gold.cpp
+ScanLargeArray_SOURCES = tests/ScanLargeArray/scanLargeArray.cu.cpp \
+	tests/ScanLargeArray/scan_gold.cpp
 ScanLargeArray_LDADD = $(OCELOT_LIBS)
 ScanLargeArray_LDFLAGS = -static
 ################################################################################
@@ -431,8 +431,8 @@ ScanLargeArray_LDFLAGS = -static
 ## SimpleAtomicIntrinsics
 SimpleAtomicIntrinsics_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SimpleAtomicIntrinsics_SOURCES = \
-	tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu.cpp \
-	tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_gold.cpp
+	tests/SimpleAtomicIntrinsics/simpleAtomicIntrinsics.cu.cpp \
+	tests/SimpleAtomicIntrinsics/simpleAtomicIntrinsics_gold.cpp
 SimpleAtomicIntrinsics_LDADD = $(OCELOT_LIBS)
 SimpleAtomicIntrinsics_LDFLAGS = -static
 ################################################################################
@@ -440,22 +440,22 @@ SimpleAtomicIntrinsics_LDFLAGS = -static
 ################################################################################
 ## SimpleCUBLAS
 SimpleCUBLAS_CFLAGS = -Wall $(CUDA_CFLAGS)
-SimpleCUBLAS_SOURCES = tests/simpleCUBLAS/simpleCUBLAS.c
+SimpleCUBLAS_SOURCES = tests/SimpleCUBLAS/simpleCUBLAS.c
 SimpleCUBLAS_LDADD = $(CUBLAS_LIBS) $(OCELOT_LIBS)
 ################################################################################
 
 ################################################################################
 ## SimpleCUFFT
 SimpleCUFFT_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleCUFFT_SOURCES = tests/simpleCUFFT/simpleCUFFT.cu.cpp
+SimpleCUFFT_SOURCES = tests/SimpleCUFFT/simpleCUFFT.cu.cpp
 SimpleCUFFT_LDADD = $(CUFFT_LIBS) $(OCELOT_LIBS) 
 ################################################################################
 
 ################################################################################
 ## SimpleGL
 SimpleGL_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleGL_SOURCES = tests/simpleGL/simpleGL_kernel.cu.cpp \
-	tests/simpleGL/simpleGL.cpp
+SimpleGL_SOURCES = tests/SimpleGL/simpleGL_kernel.cu.cpp \
+	tests/SimpleGL/simpleGL.cpp
 SimpleGL_LDADD = $(OCELOT_LIBS)
 SimpleGL_LDFLAGS = -static
 ################################################################################
@@ -463,8 +463,8 @@ SimpleGL_LDFLAGS = -static
 ################################################################################
 ## SimpleMultiGPU
 SimpleMultiGPU_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleMultiGPU_SOURCES = tests/simpleMultiGPU/simpleMultiGPU_kernel.cu.cpp \
-	tests/simpleMultiGPU/simpleMultiGPU.cpp
+SimpleMultiGPU_SOURCES = tests/SimpleMultiGPU/simpleMultiGPU_kernel.cu.cpp \
+	tests/SimpleMultiGPU/simpleMultiGPU.cpp
 SimpleMultiGPU_LDADD = $(OCELOT_LIBS)
 SimpleMultiGPU_LDFLAGS = -static
 ################################################################################
@@ -472,7 +472,7 @@ SimpleMultiGPU_LDFLAGS = -static
 ################################################################################
 ## SimpleStreams
 SimpleStreams_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleStreams_SOURCES = tests/simpleStreams/simpleStreams.cu.cpp
+SimpleStreams_SOURCES = tests/SimpleStreams/simpleStreams.cu.cpp
 SimpleStreams_LDADD = $(OCELOT_LIBS)
 SimpleStreams_LDFLAGS = -static
 ################################################################################
@@ -480,7 +480,7 @@ SimpleStreams_LDFLAGS = -static
 ################################################################################
 ## SimpleTemplates
 SimpleTemplates_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleTemplates_SOURCES = tests/simpleTemplates/simpleTemplates.cu.cpp
+SimpleTemplates_SOURCES = tests/SimpleTemplates/simpleTemplates.cu.cpp
 SimpleTemplates_LDADD = $(OCELOT_LIBS)
 SimpleTemplates_LDFLAGS = -static
 ################################################################################
@@ -488,7 +488,7 @@ SimpleTemplates_LDFLAGS = -static
 ################################################################################
 ## SimpleTexture
 SimpleTexture_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleTexture_SOURCES = tests/simpleTexture/simpleTexture.cu.cpp
+SimpleTexture_SOURCES = tests/SimpleTexture/simpleTexture.cu.cpp
 SimpleTexture_LDADD = $(OCELOT_LIBS)
 SimpleTexture_LDFLAGS = -static
 ###############################################################################
@@ -496,8 +496,8 @@ SimpleTexture_LDFLAGS = -static
 ################################################################################
 ## SimpleTexture3D
 SimpleTexture3D_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SimpleTexture3D_SOURCES = tests/simpleTexture3D/simpleTexture3D_kernel.cu.cpp \
-	tests/simpleTexture3D/simpleTexture3D.cpp
+SimpleTexture3D_SOURCES = tests/SimpleTexture3D/simpleTexture3D_kernel.cu.cpp \
+	tests/SimpleTexture3D/simpleTexture3D.cpp
 SimpleTexture3D_LDADD = $(OCELOT_LIBS)
 SimpleTexture3D_LDFLAGS = -static
 ################################################################################
@@ -506,7 +506,7 @@ SimpleTexture3D_LDFLAGS = -static
 ## SimpleVoteIntrinsics
 SimpleVoteIntrinsics_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SimpleVoteIntrinsics_SOURCES = \
-	tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu.cpp
+	tests/SimpleVoteIntrinsics/simpleVoteIntrinsics.cu.cpp
 SimpleVoteIntrinsics_LDADD = $(OCELOT_LIBS)
 SimpleVoteIntrinsics_LDFLAGS = -static
 ################################################################################
@@ -515,7 +515,7 @@ SimpleVoteIntrinsics_LDFLAGS = -static
 ## SimpleZeroCopy
 SimpleZeroCopy_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SimpleZeroCopy_SOURCES = \
-	tests/simpleZeroCopy/simpleZeroCopy.cu.cpp
+	tests/SimpleZeroCopy/simpleZeroCopy.cu.cpp
 SimpleZeroCopy_LDADD = $(OCELOT_LIBS)
 SimpleZeroCopy_LDFLAGS = -static
 ################################################################################
@@ -543,8 +543,8 @@ SobolQRNG_LDFLAGS = -static
 ################################################################################
 ## Template
 Template_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Template_SOURCES = tests/template/template.cu.cpp \
-	tests/template/template_gold.cpp
+Template_SOURCES = tests/Template/template.cu.cpp \
+	tests/Template/template_gold.cpp
 Template_LDADD = $(OCELOT_LIBS)
 Template_LDFLAGS = -static
 ################################################################################
@@ -553,7 +553,7 @@ Template_LDFLAGS = -static
 ## ThreadFenceReduction
 ThreadFenceReduction_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 ThreadFenceReduction_SOURCES = \
-	tests/threadFenceReduction/threadFenceReduction.cu.cpp
+	tests/ThreadFenceReduction/threadFenceReduction.cu.cpp
 ThreadFenceReduction_LDADD = $(OCELOT_LIBS)
 ThreadFenceReduction_LDFLAGS = -static
 ################################################################################
@@ -561,8 +561,8 @@ ThreadFenceReduction_LDFLAGS = -static
 ################################################################################
 ## Transpose
 Transpose_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Transpose_SOURCES = tests/transpose/transpose.cu.cpp \
-	tests/transpose/transpose_gold.cpp
+Transpose_SOURCES = tests/Transpose/transpose.cu.cpp \
+	tests/Transpose/transpose_gold.cpp
 Transpose_LDADD = $(OCELOT_LIBS)
 Transpose_LDFLAGS = -static
 ################################################################################
@@ -570,7 +570,7 @@ Transpose_LDFLAGS = -static
 ################################################################################
 ## TransposeNew
 TransposeNew_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-TransposeNew_SOURCES = tests/transposeNew/transposeNew.cu.cpp
+TransposeNew_SOURCES = tests/TransposeNew/transposeNew.cu.cpp
 TransposeNew_LDADD = $(OCELOT_LIBS)
 TransposeNew_LDFLAGS = -static
 ################################################################################
@@ -578,8 +578,8 @@ TransposeNew_LDFLAGS = -static
 ################################################################################
 ## VolumeRender
 VolumeRender_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-VolumeRender_SOURCES = tests/volumeRender/volumeRender_kernel.cu.cpp \
-	tests/volumeRender/volumeRender.cpp
+VolumeRender_SOURCES = tests/VolumeRender/volumeRender_kernel.cu.cpp \
+	tests/VolumeRender/volumeRender.cpp
 VolumeRender_LDADD = $(OCELOT_LIBS)
 VolumeRender_LDFLAGS = -static
 ################################################################################
@@ -632,61 +632,61 @@ nobase_include_HEADERS = sdk/stopwatch_base.h \
 	sdk/math_constants.h \
 	sdk/cutil_inline.h \
 	sdk/vector_functions.h \
-	tests/simpleMultiGPU/simpleMultiGPU.h \
-	tests/eigenvalues/gerschgorin.h \
-	tests/eigenvalues/util.h \
-	tests/eigenvalues/matlab.h \
-	tests/eigenvalues/structs.h \
-	tests/eigenvalues/config.h \
+	tests/SimpleMultiGPU/simpleMultiGPU.h \
+	tests/Eigenvalues/gerschgorin.h \
+	tests/Eigenvalues/util.h \
+	tests/Eigenvalues/matlab.h \
+	tests/Eigenvalues/structs.h \
+	tests/Eigenvalues/config.h \
 	tests/MonteCarloMultiGPU/MonteCarlo_common.h \
 	tests/MonteCarloMultiGPU/realtype.h \
-	tests/matrixMul/matrixMul.h \
-	tests/histogram256/histogram256_common.h \
-	tests/threadFenceReduction/threadFenceReduction.h \
+	tests/MatrixMul/matrixMul.h \
+	tests/Histogram256/histogram256_common.h \
+	tests/ThreadFenceReduction/threadFenceReduction.h \
 	tests/SobolQRNG/sobol_gpu.h \
 	tests/SobolQRNG/sobol_gold.h \
 	tests/SobolQRNG/sobol.h \
 	tests/SobolQRNG/sobol_primitives.h \
-	tests/binomialOptions/binomialOptions_common.h \
-	tests/binomialOptions/realtype.h \
+	tests/BinomialOptions/binomialOptions_common.h \
+	tests/BinomialOptions/realtype.h \
 	tests/MonteCarlo/MonteCarlo_common.h \
 	tests/MonteCarlo/realtype.h \
-	tests/reduction/reduction.h \
-	tests/imageDenoising/imageDenoising.h \
-	tests/dct8x8/DCT8x8_Gold.h \
-	tests/dct8x8/Common.h \
-	tests/dct8x8/BmpUtil.h \
-	tests/dxtc/dds.h \
-	tests/dxtc/permutations.h \
-	tests/dxtc/CudaMath.h \
+	tests/Reduction/reduction.h \
+	tests/ImageDenoising/imageDenoising.h \
+	tests/Dct8x8/DCT8x8_Gold.h \
+	tests/Dct8x8/Common.h \
+	tests/Dct8x8/BmpUtil.h \
+	tests/Dxtc/dds.h \
+	tests/Dxtc/permutations.h \
+	tests/Dxtc/CudaMath.h \
 	tests/SobelFilter/SobelFilter_kernels.h \
-	tests/nbody/bodysystemcpu.h \
-	tests/nbody/render_particles.h \
-	tests/nbody/bodysystemcuda.h \
-	tests/nbody/bodysystem.h \
+	tests/Nbody/bodysystemcpu.h \
+	tests/Nbody/render_particles.h \
+	tests/Nbody/bodysystemcuda.h \
+	tests/Nbody/bodysystem.h \
 	tests/Mandelbrot/Mandelbrot_gold.h \
 	tests/Mandelbrot/Mandelbrot_kernel.h \
-	tests/fluidsGL/fluidsGL_kernels.h \
+	tests/FluidsGL/fluidsGL_kernels.h \
 	tests/MersenneTwister/MersenneTwister.h \
 	tests/MersenneTwister/dci.h \
-	tests/quasirandomGenerator/quasirandomGenerator_common.h \
-	tests/quasirandomGenerator/realtype.h \
-	tests/eigenvalues/bisect_small.cuh \
-	tests/eigenvalues/bisect_large.cuh \
+	tests/QuasirandomGenerator/quasirandomGenerator_common.h \
+	tests/QuasirandomGenerator/realtype.h \
+	tests/Eigenvalues/bisect_small.cuh \
+	tests/Eigenvalues/bisect_large.cuh \
 	tests/MonteCarloMultiGPU/quasirandomGenerator_kernel.cuh \
 	tests/MonteCarloMultiGPU/MonteCarlo_reduction.cuh \
 	tests/MonteCarloMultiGPU/MonteCarlo_kernel.cuh \
-	tests/histogram256/histogram256_kernel.cuh \
-	tests/simpleTemplates/sharedmem.cuh \
-	tests/binomialOptions/binomialOptions_kernel.cuh \
+	tests/Histogram256/histogram256_kernel.cuh \
+	tests/SimpleTemplates/sharedmem.cuh \
+	tests/BinomialOptions/binomialOptions_kernel.cuh \
 	tests/MonteCarlo/quasirandomGenerator_kernel.cuh \
 	tests/MonteCarlo/MonteCarlo_reduction.cuh \
 	tests/MonteCarlo/MonteCarlo_kernel.cuh \
-	tests/reduction/sharedmem.cuh \
-	tests/histogram64/histogram64_kernel.cuh \
+	tests/Reduction/sharedmem.cuh \
+	tests/Histogram64/histogram64_kernel.cuh \
 	tests/BlackScholes/BlackScholes_kernel.cuh \
-	tests/quasirandomGenerator/quasirandomGenerator_kernel.cuh \
-	tests/bicubicTexture/bicubicTexture_kernel.cuh
+	tests/QuasirandomGenerator/quasirandomGenerator_kernel.cuh \
+	tests/BicubicTexture/bicubicTexture_kernel.cuh
 
 
 ################################################################################

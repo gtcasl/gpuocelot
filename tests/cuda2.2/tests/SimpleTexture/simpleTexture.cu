@@ -45,7 +45,7 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <simpleTexture_kernel.cu>
+#include <tests/SimpleTexture/simpleTexture_kernel.cu>
 
 char *image_filename = "lena_bw.pgm";
 char *ref_filename   = "ref_rotated.pgm";

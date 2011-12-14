@@ -96,7 +96,7 @@ testApplications = [
 	('SimpleStreams', ['simpleStreams.cu',]),
 	('SimpleTemplates', ['simpleTemplates.cu',]),
 	('SimpleTexture', ['simpleTexture.cu',]),
-	('SimpleTexture3D', ['simpleTexture3D_kernel.cu',]),
+	('SimpleTexture3D', ['simpleTexture3D_kernel.cu', 'simpleTexture3D-host.cpp']),
 	('SimpleVoteIntrinsics', ['simpleVoteIntrinsics.cu',]),
 	('SimpleZeroCopy', ['simpleZeroCopy.cu',]),
 	('SobelFilter', ['SobelFilter_kernels.cu', 'SobelFilter.cpp']),

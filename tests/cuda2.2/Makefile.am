@@ -497,7 +497,7 @@ SimpleTexture_LDFLAGS = -static
 ## SimpleTexture3D
 SimpleTexture3D_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 SimpleTexture3D_SOURCES = tests/SimpleTexture3D/simpleTexture3D_kernel.cu.cpp \
-	tests/SimpleTexture3D/simpleTexture3D.cpp
+	tests/SimpleTexture3D/simpleTexture3D-host.cpp
 SimpleTexture3D_LDADD = $(OCELOT_LIBS)
 SimpleTexture3D_LDFLAGS = -static
 ################################################################################

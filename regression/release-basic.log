@@ -1,50 +1,26 @@
-INFO     Reading in test file /home/naila/projects/gpuocelot/branch/lynx/regression/basic.level
+INFO     Reading in test file /home/sli66/gpuocelot/branches/lynx/regression/basic.level
 INFO      Found the following tests:
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator
-INFO       /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestLexer
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestParser
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestEmulator
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestInstructions
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestKernels
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestDataflowGraph
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMInstructions
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestPTXToLLVMTranslator
+INFO       /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMKernels
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer -i ../tests/ptx 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph
-INFO     Test completed in 0.0459420681 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDataflowGraph
-
-Description: A test for the DataflowGraph class. Test Points: 1) 
-             Generic: load PTX files, convert them into dataflow graphs, verify that 
-             all live ranges spanning blocks are consistent. 2) SSA: convert to 
-             ssa form, verify that no register is declared more than once. 3) 
-             reverse SSA: convert to ssa then out of ssa, verify that all live 
-             ranges spanning blocks are consistent.
-
-
-Test Seed : 1315764747
-Test time : 2.0504e-05
-
-Status : Testing Generic Dataflow
- Test Passed
-Testing SSA Dataflow
- Test Passed
-Testing SSA then back Dataflow
- Test Passed
-
-
-
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0477929115295 seconds
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestKernels 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestLexer -i ../tests/ptx 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestInstructions 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMInstructions 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestParser -i ../tests/ptx 
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMKernels 
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0611958503723 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -57,177 +33,18 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1315764747
-Test time : 9.77516e-06
+Test Seed : 1319056961
+Test time : 1.12057e-05
 
 Status : 
 
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser -i ../tests/ptx 
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer
-INFO     Test completed in 0.0578100681305 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
+exception:
+operator bool() expects Visitor to wrap True or False
 
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1315764747
-Test time : 1.54972e-05
-
-Status : 
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser
-INFO     Test completed in 0.062075138092 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1315764747
-Test time : 1.57356e-05
-
-Status : 
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels
-INFO     Test completed in 0.0745010375977 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1315764747
-Test time : 0.0141308
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
-
-INFO     Running test program /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions 
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions
-INFO     Test completed in 0.0723478794098 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1315764747
-Test time : 0.000901937
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-
-
-
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels
-INFO     Test completed in 0.152395963669 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLLVMKernels
-
-Description: A unit test for the LLVM executive runtime. Test Points: 1) 
-             Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
-
-
-Test Seed : 1315764747
-Test time : 0.0796239
-
-Status : A = [
- 1 0 0 0 0 0 0 0 ;
- 0.5 1 0 0 0 0 0 0 ;
- 0.333333 0.5 1 0 0 0 0 0 ;
- 0.25 0.333333 0.5 1 0 0 0 0 ;
- 0.2 0.25 0.333333 0.5 1 0 0 0 ;
- 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
- 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
- 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
-];
-V = [
- 1 ;
- 2 ;
- 3 ;
- 4 ;
- 5 ;
- 6 ;
- 7 ;
- 8 ;
-];
-R = [
- 1 ;
- 2.5 ;
- 4.33333 ;
- 6.41667 ;
- 8.7 ;
- 11.15 ;
- 13.7429 ;
- 16.4607 ;
-];
-
-
-
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator
-INFO     Test completed in 0.0505230426788 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1315764747
-Test time : 0.00277019
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Test /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0544240474701 seconds
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMInstructions
+INFO     Test completed in 0.0619070529938 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -241,8 +58,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1315764747
-Test time : 0.00063777
+Test Seed : 1319056961
+Test time : 0.00132656
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -372,16 +189,235 @@ Xor Instruction Passed
 Zext Instruction Passed
 
 
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+
+INFO     Running test program /home/sli66/gpuocelot/branches/lynx/.release_build/TestEmulator 
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestParser
+INFO     Test completed in 0.0690610408783 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1319056961
+Test time : 1.33514e-05
+
+Status : 
+
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestLexer
+INFO     Test completed in 0.0737640857697 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1319056961
+Test time : 1.38283e-05
+
+Status : 
+
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestDataflowGraph
+INFO     Test completed in 0.0745630264282 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDataflowGraph
+
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
+
+
+Test Seed : 1319056961
+Test time : 1.7643e-05
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestInstructions
+INFO     Test completed in 0.084242105484 seconds
+INFO      It produced the following output:
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1319056961
+Test time : 0.00401592
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+
+
+
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestKernels
+INFO     Test completed in 0.0985040664673 seconds
+INFO      It produced the following output:
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1319056961
+Test time : 0.0276313
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestEmulator
+INFO     Test completed in 0.0600988864899 seconds
+INFO      It produced the following output:
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1319056961
+Test time : 0.00662279
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Test /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMKernels
+INFO     Test completed in 0.155946016312 seconds
+INFO      It produced the following output:
+==Ocelot== WARNING: Could not parse config file 'configure.ocelot', loading defaults.
+
+exception:
+operator bool() expects Visitor to wrap True or False
+Pass/Fail : Pass
+
+
+Name : TestLLVMKernels
+
+Description: A unit test for the LLVM executive runtime. Test Points: 1) 
+             Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
+
+
+Test Seed : 1319056961
+Test time : 0.0855725
+
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
+
+
 
 INFO     
 Passing tests:
- (0.048s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestPTXToLLVMTranslator : Passed
- (0.046s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestDataflowGraph : Passed
- (0.062s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestParser : Passed
- (0.075s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestKernels : Passed
- (0.051s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestEmulator : Passed
- (0.054s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMInstructions : Passed
- (0.152s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLLVMKernels : Passed
- (0.072s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestInstructions : Passed
- (0.058s) : /home/naila/projects/gpuocelot/branch/lynx/.release_build/TestLexer : Passed
+ (0.099s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestKernels : Passed
+ (0.069s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestParser : Passed
+ (0.062s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMInstructions : Passed
+ (0.060s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestEmulator : Passed
+ (0.074s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestLexer : Passed
+ (0.075s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestDataflowGraph : Passed
+ (0.156s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestLLVMKernels : Passed
+ (0.084s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestInstructions : Passed
+ (0.061s) : /home/sli66/gpuocelot/branches/lynx/.release_build/TestPTXToLLVMTranslator : Passed
 

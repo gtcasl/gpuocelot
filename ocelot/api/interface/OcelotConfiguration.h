@@ -208,6 +208,18 @@ namespace api {
                     InstrumentationType type;		
 			};
 			
+			class BoundsCheckInstrumentor
+			{
+			public:
+					BoundsCheckInstrumentor();
+
+			public:
+		            
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;	
+			};
 		public:
 			Instrumentation();
 
@@ -221,9 +233,11 @@ namespace api {
 			//! \brief Warp reduction instrumentor
 			WarpReductionInstrumentor warpReductionInstrumentor;
 			
-			//! \brief Warp reduction instrumentor
+			//! \brief Alignment check instrumentor
 			AlignmentCheckInstrumentor alignmentCheckInstrumentor;
 			
+			//! \brief Boundary check instrumentor
+			BoundsCheckInstrumentor boundsCheckInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

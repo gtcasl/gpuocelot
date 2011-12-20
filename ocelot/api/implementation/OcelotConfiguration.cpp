@@ -93,6 +93,12 @@ api::OcelotConfiguration::Instrumentation::AlignmentCheckInstrumentor::Alignment
 
 }
 
+api::OcelotConfiguration::Instrumentation::BoundsCheckInstrumentor::BoundsCheckInstrumentor():
+        enabled(false)
+{
+
+}
+
 api::OcelotConfiguration::Instrumentation::Instrumentation()
 {
 
@@ -195,6 +201,12 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
             instrument.alignmentCheckInstrumentor.enabled = alignmentCheckConfig.parse<bool>("enabled", true);
             instrument.alignmentCheckInstrumentor.logfile = alignmentCheckConfig.parse<std::string>("logfile", "");
             instrument.alignmentCheckInstrumentor.type = api::OcelotConfiguration::Instrumentation::AlignmentCheckInstrumentor::alignmentCheck;
+    }
+    
+    hydrazine::json::Visitor boundsCheckConfig = config["boundsCheck"];
+    if (!boundsCheckConfig.is_null()) {
+            instrument.boundsCheckInstrumentor.enabled = boundsCheckConfig.parse<bool>("enabled", true);
+            instrument.boundsCheckInstrumentor.logfile = boundsCheckConfig.parse<std::string>("logfile", "");
     }
 }
 

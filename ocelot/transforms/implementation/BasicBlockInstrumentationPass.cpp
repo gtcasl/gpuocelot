@@ -35,7 +35,7 @@ namespace transforms
 	
     size_t BasicBlockInstrumentationPass::calculateThreadId(analysis::DataflowGraph::iterator block, size_t location) {
 
-        /* The entry block adds the insrumented ptx. In order to maintain a counter-per-thread for
+        /* The entry block adds the instrumented ptx. In order to maintain a counter-per-thread for
             each basic block, I need to calculate the thread counter offset. I do this using the following:
             
             counter = (ctaid.x + ctaid.y * nctaid.x) * ntid.x * ntid.y * ntid.z + tid

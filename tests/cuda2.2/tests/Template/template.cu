@@ -48,7 +48,7 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <template_kernel.cuh>
+#include <tests/Template/template_kernel.cuh>
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward

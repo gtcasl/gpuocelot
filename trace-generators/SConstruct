@@ -1,0 +1,54 @@
+#
+# SConstruct file for building tarce generators
+#
+
+import subprocess
+
+#
+#
+#
+def getOcelotPaths():
+	"""returns (ocelotIncludePath, ocelotLibPath, ocelotBinPath)"""
+	results = []
+	for arg in ('-i', '-L', '-b'):
+		ocelotConfig = subprocess.Popen(['OcelotConfig', arg], stdout = subprocess.PIPE)
+		results.append(ocelotConfig.stdout.readline()[:-2])
+	return results
+
+
+ocelotIncludePath, ocelotLibPath, ocelotBinPath = getOcelotPaths()
+
+#
+#
+#
+
+env = Environment()
+env.Append(CPPPATH = [ocelotIncludePath, '.'])
+env.Append(CXXFLAGS = ['-std=c++0x'])
+
+sources = (
+	"traces/implementation/BranchTraceGenerator.cpp",
+	"traces/implementation/ParallelismTraceGenerator.cpp",
+	"traces/implementation/SharedComputationGenerator.cpp",
+	"traces/implementation/MemoryTraceGenerator.cpp",
+	"traces/implementation/CacheSimulator.cpp",
+	"traces/implementation/InstructionTraceGenerator.cpp",
+	"traces/implementation/WarpSynchronousGenerator.cpp",
+	"traces/implementation/PerformanceBoundGenerator.cpp",
+	"traces/implementation/ConvergenceGenerator.cpp",
+	"traces/implementation/TraceConfiguration.cpp",
+	"traces/implementation/LoadBalanceGenerator.cpp",
+	"traces/implementation/KernelEntry.cpp",
+	"traces/implementation/ControlFlowVisualizer.cpp",
+	"traces/implementation/BasicBlockCountGenerator.cpp",
+	"traces/implementation/X86TraceGenerator.cpp"
+)
+
+libocelotTrace = env.StaticLibrary('ocelotTrace', sources)
+
+if 'install' in COMMAND_LINE_TARGETS:
+	print 'Installing libOcelotTrace'
+	
+	env.Install(ocelotLibPath, libocelotTrace)
+	env.Alias('install', ocelotLibPath)
+

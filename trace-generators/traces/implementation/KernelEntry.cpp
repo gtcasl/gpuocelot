@@ -10,6 +10,11 @@
 #ifndef KERNEL_ENTRY_CPP_INCLUDED
 #define KERNEL_ENTRY_CPP_INCLUDED
 
+
+#if (__GNUC__ == 4 && __GNUC_MINOR__ == 5)
+#undef __GXX_EXPERIMENTAL_CXX0X__
+#endif
+
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <traces/interface/KernelEntry.h>

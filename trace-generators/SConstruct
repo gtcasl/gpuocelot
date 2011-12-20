@@ -41,7 +41,8 @@ sources = (
 	"traces/implementation/KernelEntry.cpp",
 	"traces/implementation/ControlFlowVisualizer.cpp",
 	"traces/implementation/BasicBlockCountGenerator.cpp",
-	"traces/implementation/X86TraceGenerator.cpp"
+	"traces/implementation/X86TraceGenerator.cpp",
+	"traces/implementation/TemporalSIMTGenerator.cpp"
 )
 
 libocelotTrace = env.StaticLibrary('ocelotTrace', sources)

@@ -20,6 +20,7 @@
 #include <traces/interface/ControlFlowVisualizer.h>
 #include <traces/interface/BasicBlockCountGenerator.h>
 #include <traces/interface/X86TraceGenerator.h>
+#include <traces/interface/TemporalSIMTGenerator.h>
 
 namespace trace
 {
@@ -124,6 +125,20 @@ namespace trace
 			bool instructionMemory;
 			
 		};
+		
+		class TemporalSIMT {
+		public:
+			bool enabled;
+		
+			//! number of threads in a SIMT warp
+			int warpSize;
+		
+			//! number of functional unit lanes per SIMD cluster (decoder+controller+simdWidthxALUs)
+			int simdWidth;
+		
+			//! number of warps that can simultaneously issue instructions (total ALUs = simdIssueCount * simdWidth)
+			int simdIssueCount;
+		};
 
 	public:
 		static TraceConfiguration Singleton;
@@ -171,6 +186,8 @@ namespace trace
 		ControlFlow controlFlowVisualizer;
 		
 		bool basicBlockCount;
+		
+		TemporalSIMT temporalSIMT;
 	
 	public:
 		TraceConfiguration();
@@ -189,6 +206,7 @@ namespace trace
 		trace::ControlFlowVisualizer _controlFlowVisualizer;
 		trace::BasicBlockCountGenerator _basicBlockCountGenerator;
 		trace::X86TraceGenerator _x86TraceGenerator;
+		trace::TemporalSIMTGenerator _temporalSIMTGenerator;
 	};
 }
 

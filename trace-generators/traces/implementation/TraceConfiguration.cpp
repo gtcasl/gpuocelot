@@ -189,6 +189,14 @@ TraceConfiguration::TraceConfiguration()
 				controlFlowVisualizer.allInstructions =
 					cfgConfig.parse<bool>("allInstructions", false);
 			}
+			
+			hydrazine::json::Visitor temporalSimtConfig = traceConfig["temporalSIMT"];
+			if (!traceConfig.is_null()) {
+				temporalSIMT.enabled = traceConfig.parse<bool>("enabled", false);
+				temporalSIMT.warpSize = traceConfig.parse<int>("warpSize", 32);
+				temporalSIMT.simdWidth = traceConfig.parse<int>("simdWidth", 16);
+				temporalSIMT.simdIssueCount = traceConfig.parse<int>("simdIssueCount", 2);
+			}
 		}
 	}
 	catch(const hydrazine::Exception& exp) 
@@ -288,6 +296,14 @@ TraceConfiguration::TraceConfiguration()
 		_controlFlowVisualizer.allInstructions =
 			controlFlowVisualizer.allInstructions;
 		ocelot::addTraceGenerator(_controlFlowVisualizer, true);
+	}
+	
+	if (temporalSIMT.enabled) {
+		_temporalSIMTGenerator.warpSize = temporalSIMT.warpSize;
+		_temporalSIMTGenerator.simdWidth = temporalSIMT.simdWidth;
+		_temporalSIMTGenerator.simdIssueCount = temporalSIMT.simdIssueCount;
+		
+		ocelot::addTraceGenerator(_temporalSIMTGenerator);
 	}
 	
 	if (basicBlockCount)

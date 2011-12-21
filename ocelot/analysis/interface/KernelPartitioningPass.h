@@ -8,6 +8,11 @@
 #ifndef OCELOT_ANALYSIS_KERNELPARTITIONINGPASS_H_INCLUDED
 #define OCELOT_ANALYSIS_KERNELPARTITIONINGPASS_H_INCLUDED
 
+// C++ includes
+#include <set>
+#include <map>
+
+// Ocelot includes
 #include <ocelot/ir/interface/PTXKernel.h>
 
 namespace analysis {
@@ -16,7 +21,9 @@ namespace analysis {
 	public:
 		typedef unsigned int SubkernelId;
 		
-		enum ThreadExitCode {
+		typedef analysis::DataflowGraph::RegisterSet RegisterSet;
+		
+		enum ThreadExitType {
 			Thread_entry = 0,
 			Thread_fallthrough = 1,
 			Thread_branch = 2,
@@ -26,17 +33,17 @@ namespace analysis {
 			Thread_exit = 6,
 			Thread_exit_other = 7,
 			Thread_subkernel,
-			ThreadExitCode_invalid
+			ThreadExitType_invalid
 		};
-		static std::string toString(const ThreadExitCode &code);
+		static std::string toString(const ThreadExitType &code);
 		
 		class ExternalEdge {
 		public:
-			ExternalEdge(): source(0), destination(0) { }
+			ExternalEdge(): sourceId(0), destinationId(0) { }
 			ExternalEdge(const ir::BasicBlock::Edge &edge, 
 				ir::BasicBlock::Pointer _handler,
 				SubkernelId _src = 0, SubkernelId _dst = 0): 
-				sourceEdge(edge), source(_src), destination(_dst) { }
+				sourceEdge(edge), sourceId(_src), destinationId(_dst) { }
 		
 		public:
 			//! \brief edge in original kernel
@@ -64,7 +71,7 @@ namespace analysis {
 		protected:
 			void _createExternalHandlers();
 			void _createDivergenceHandlers();
-			void _createExit(ir::BasicBlock::Poiner block, ExitType type, SubkernelId target);
+			void _createExit(ir::BasicBlock::Pointer block, ThreadExitType type, SubkernelId target);
 			
 		public:
 			SubkernelId id;
@@ -86,7 +93,7 @@ namespace analysis {
 		//!
 		class KernelGraph {
 		public:
-			KernelGraph(ir::PTXKernel *_kernel);
+			KernelGraph(ir::PTXKernel *_kernel, SubkernelId baseId = 0);
 			~KernelGraph();
 		
 		protected:

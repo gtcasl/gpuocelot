@@ -111,7 +111,7 @@ void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source) 
 	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
 	
 	std::vector< ir::BasicBlock::Edge > internalEdges;
-	std::map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
+	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
 	
 	for (BasicBlockSet::iterator bb_it = sourceBlocks.begin();
 		bb_it != sourceBlocks.end(); ++bb_it) {

@@ -10,6 +10,7 @@
 
 // C++ includes
 #include <set>
+#include <unordered_set>
 #include <map>
 
 // Ocelot includes
@@ -59,7 +60,7 @@ namespace analysis {
 			ir::BasicBlock::Pointer frontierBlock;
 		};
 		typedef std::vector<ExternalEdge> ExternalEdgeVector;
-		typedef std::set< ir::BasicBlock::Pointer > BasicBlockSet;
+		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
 		
 		//!
 		class Subkernel {

@@ -41,11 +41,12 @@ static unsigned int pad(unsigned int& size, unsigned int alignment)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::DynamicMulticoreKernel::DynamicMulticoreKernel(executive::Device* d) {
-
+	assert(0 && "invalid control path");
 }
 
 executive::DynamicMulticoreKernel::DynamicMulticoreKernel(const ir::IRKernel& _kernel,
-	executive::Device* _device) {
+	executive::DynamicMulticoreDevice* _d): 
+_kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory(0) {
 
 	report("DynamicMulticoreKernel(kernel, device)");
 
@@ -57,9 +58,15 @@ executive::DynamicMulticoreKernel::DynamicMulticoreKernel(const ir::IRKernel& _k
 	_gridDim.z = 1;
 	
 	_ptxKernel = static_cast<const ir::PTXKernel *>(&_kernel);
+		
 	name = _kernel.name;
 	arguments = _kernel.arguments;
 	module = _kernel.module;
+	
+	report(" partitioning PTX kernel");
+	
+	analysis::KernelPartitioningPass partitioningPass;
+	_kernelGraph = partitioningPass.runOnFunction(* const_cast<ir::PTXKernel *>(_ptxKernel));
 	
 	mapArgumentOffsets();
 }
@@ -67,6 +74,10 @@ executive::DynamicMulticoreKernel::DynamicMulticoreKernel(const ir::IRKernel& _k
 executive::DynamicMulticoreKernel::~DynamicMulticoreKernel() {
 	delete[] _argumentMemory;
 	delete[] _constantMemory;
+	
+	if (_kernelGraph) {
+		delete _kernelGraph;
+	}
 }
 
 /*!	\brief Launch a kernel on a 2D grid */

@@ -15,6 +15,7 @@
 
 // Ocelot includes
 #include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace analysis {
 
@@ -44,7 +45,7 @@ namespace analysis {
 			ExternalEdge(const ir::BasicBlock::Edge &edge, 
 				ir::BasicBlock::Pointer _handler,
 				SubkernelId _src = 0, SubkernelId _dst = 0): 
-				sourceEdge(edge), sourceId(_src), destinationId(_dst) { }
+				sourceEdge(edge), sourceId(_src), destinationId(_dst), handler(_handler) { }
 		
 		public:
 			//! \brief edge in original kernel
@@ -61,16 +62,24 @@ namespace analysis {
 		};
 		typedef std::vector<ExternalEdge> ExternalEdgeVector;
 		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
+		typedef std::map< analysis::DataflowGraph::RegisterId, size_t> RegisterOffsetMap;
 		
 		//!
 		class Subkernel {
 		public:
 			Subkernel(SubkernelId _id);
 			
-			void create(ir::PTXKernel *source);
+			void create(ir::PTXKernel *source,
+				const RegisterOffsetMap &registerOffsets);
 			
 		protected:
-			void _createExternalHandlers();
+			void _create(ir::PTXKernel *source);
+			
+			void _createExternalHandlers(
+				analysis::DataflowGraph *sourceDfg, 
+				analysis::DataflowGraph *subkernelDfg,
+				const RegisterOffsetMap &registerOffsets);
+				
 			void _createDivergenceHandlers();
 			void _createExit(ir::BasicBlock::Pointer block, ThreadExitType type, SubkernelId target);
 			
@@ -99,11 +108,14 @@ namespace analysis {
 		
 		protected:
 		
-			void _partition();
+			void _partition(SubkernelId baseId);
 			void _createEntries();
 			void _createExits();
 			void _createSchedulers();
 			void _createDivergenceHandlers();
+			
+			void _partitionMaximumSize(SubkernelId baseId);
+			void _partitionMinimumSize(SubkernelId baseId);
 			
 		public:
 			//! source kernel
@@ -111,6 +123,9 @@ namespace analysis {
 			
 			//! partitioning of subkernels
 			SubkernelMap subkernels;
+			
+			//! \brief maps registers to offset
+			RegisterOffsetMap registerOffsets;
 		};
 	
 	public:

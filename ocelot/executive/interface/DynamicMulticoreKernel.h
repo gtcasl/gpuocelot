@@ -13,14 +13,17 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/analysis/interface/KernelPartitioningPass.h>
 
 namespace executive {
+
+	class DynamicMulticoreDevice;
 
 	class DynamicMulticoreKernel: public ExecutableKernel {
 	public:
 	
 	public:
-		DynamicMulticoreKernel(const ir::IRKernel& k, executive::Device* d = 0);
+		DynamicMulticoreKernel(const ir::IRKernel& k, executive::DynamicMulticoreDevice* d = 0);
 		DynamicMulticoreKernel(executive::Device* d = 0);
 		virtual ~DynamicMulticoreKernel();
 	
@@ -60,8 +63,10 @@ namespace executive {
 		void _allocateMemory();
 	
 	private:
+		analysis::KernelPartitioningPass::KernelGraph *_kernelGraph;
+	
 		const ir::PTXKernel* _ptxKernel;
-		const Device *_device;
+		const DynamicMulticoreDevice *_device;
 		char *_argumentMemory;
 		char *_constantMemory;
 	};

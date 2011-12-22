@@ -99,7 +99,7 @@ testApplications = [
 	('SimpleTexture3D', ['simpleTexture3D_kernel.cu', 'simpleTexture3D-host.cpp']),
 	('SimpleVoteIntrinsics', ['simpleVoteIntrinsics.cu',]),
 	('SimpleZeroCopy', ['simpleZeroCopy.cu',]),
-	('SobelFilter', ['SobelFilter_kernels.cu', 'SobelFilter.cpp']),
+#	('SobelFilter', ['SobelFilter_kernels.cu', 'SobelFilter.cpp']),
 	('SobolQRNG', ['sobol.cpp', 'sobol_gold.cpp', 'sobol_gpu.cu', 'sobol_primitives.cpp']),
 	('Template', ['template.cu', 'template_gold.cpp']),
 	('ThreadFenceReduction', ['threadFenceReduction.cu',]),
@@ -107,6 +107,12 @@ testApplications = [
 	('TransposeNew', ['transposeNew.cu',]),
 	('VolumeRender', ['volumeRender_kernel.cu', 'volumeRender.cpp']),
 ]
+
+#
+# Identify applications requiring CUFFT or CUBLAS that lack "FFT" or "BLAS" in their names 
+#
+specificallyRequiresCufft = ('FluidsGL',)
+specificallyRequiresCublas = ()
 
 #
 # Construct build rules for all tests
@@ -119,15 +125,15 @@ tests = []
 for testApplication in testApplications:
 	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
 	additionalLibs = []
-	if "FFT" in testApplication[0]:
+	if "FFT" in testApplication[0] or testApplication[0] in specificallyRequiresCufft:
 		additionalLibs.append('-lcufft')
-	if "BLAS" in testApplication[0]:
+	if "BLAS" in testApplication[0] or testApplication[0] in specificallyRequiresCublas:
 		additionalLibs.append('-lcublas')
 	
 	testApp = env.Program(testApplication[0], 
 		[build.MapSource(env, 
 			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
-		LIBS=additionalLibs + ['-lglut', '-lGLU', '-lcufft', '-locelot', libsdk])
+		LIBS=additionalLibs + ['-lglut', '-lGLU', '-locelot', libsdk])
 	tests.append(testApp)
 
 

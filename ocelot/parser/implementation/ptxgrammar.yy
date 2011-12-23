@@ -678,7 +678,7 @@ returnType : parameter dataTypeId optionalIdentifier
 
 returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
-returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
+returnTypeList : '(' returnTypeListBody ')' | '(' ')' | /* empty string */;
 
 argumentType : parameter dataTypeId optionalIdentifier
 {
@@ -903,6 +903,11 @@ callArgumentList : callArgumentList ',' callOperand;
 optionalPrototypeName : ',' '(' callArgumentList ')' ',' identifier
 {
 	state.callPrototypeName( $<text>6 );
+};
+
+optionalPrototypeName : ',' '(' ')' ',' identifier
+{
+	state.callPrototypeName( $<text>5 );
 };
 
 optionalPrototypeName : ',' identifier

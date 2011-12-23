@@ -36,7 +36,7 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 {
 
     // Open a message queue for writing (sending data)
-    messageQueue = mq_open (MSG_QUEUE, O_RDWR);
+    messageQueue = mq_open (MSG_QUEUE, O_RDWR | O_NONBLOCK);
     if(messageQueue < 0)
     {
         report( "Failed to open message queue for writing" );       

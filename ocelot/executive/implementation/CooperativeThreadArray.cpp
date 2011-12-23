@@ -792,11 +792,15 @@ ir::PTXF32 executive::CooperativeThreadArray::getRegAsF32(int threadID,
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-			<< " reg " << reg << " <= " << r);
+			<< " reg " << reg << " <= " << r
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU32>(r))
+			<< std::dec << ")");
 	}
 	#else
 	reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-		<< " reg " << reg << " <= " << r);
+		<< " reg " << reg << " <= " << r
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU64>(r))
+			<< std::dec << ")");
 	#endif
 	return r;
 }
@@ -814,11 +818,15 @@ ir::PTXF64 executive::CooperativeThreadArray::getRegAsF64(int threadID,
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-			<< " reg " << reg << " <= " << r);
+			<< " reg " << reg << " <= " << r
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU64>(r))
+			<< std::dec << ")");
 	}
 	#else
 	reportE(REPORT_REGISTER_READS, "   thread " << threadID 
-		<< " reg " << reg << " <= " << r);
+		<< " reg " << reg << " <= " << r
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU64>(r))
+			<< std::dec << ")");
 	#endif
 	return r;
 }
@@ -1123,11 +1131,15 @@ void  executive::CooperativeThreadArray::setRegAsF32(int threadID,
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-			<< " reg " << reg << " value " << " => " << value );
+			<< " reg " << reg << " value " << " => " << value
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU32>(value))
+			<< std::dec << ")");
 	}
 	#else
 	reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-		<< " reg " << reg << " value " << " => " << value );
+		<< " reg " << reg << " value " << " => " << value
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU32>(value))
+			<< std::dec << ")");
 	#endif
 	*r = value;
 }
@@ -1145,11 +1157,15 @@ void  executive::CooperativeThreadArray::setRegAsF64(int threadID,
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-			<< " reg " << reg << " value " << " => " << value );
+			<< " reg " << reg << " value " << " => " << value
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU64>(value))
+			<< std::dec << ")");
 	}
 	#else
 	reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
-		<< " reg " << reg << " value " << " => " << value );
+		<< " reg " << reg << " value " << " => " << value
+			<< " (0x" << std::hex << (hydrazine::bit_cast<ir::PTXU64>(value))
+			<< std::dec << ")");
 	#endif
 	*r = value;
 }
@@ -6377,7 +6393,7 @@ void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context,
 			if (!context.predicated(threadID, instr)) continue;
 			
 			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a));
-			d = ftz(instr.modifier, 1.0f/(PTXF32)sqrt(a));
+			d = ftz(instr.modifier, 1.0f/(PTXF32)std::sqrt(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	

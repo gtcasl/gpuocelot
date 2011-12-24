@@ -188,11 +188,11 @@ dill_free_stream(dill_stream s)
     free(s->p->c_param_structs);
     free_code_blocks(s);
     if (s->p->mach_info) {
-      if ((s->p->mach_info != s->p->virtual.mach_info) && 
+      if ((s->p->mach_info != s->p->_virtual.mach_info) && 
 	  (s->p->mach_info != s->p->native.mach_info)) free(s->p->mach_info);
     }
     if (s->p->vregs) free(s->p->vregs);
-    if (s->p->virtual.mach_info) free(s->p->virtual.mach_info);
+    if (s->p->_virtual.mach_info) free(s->p->_virtual.mach_info);
     if (s->p->native.mach_info) free(s->p->native.mach_info);
     free(s->p);
     s->p = NULL;
@@ -255,12 +255,12 @@ dill_cross_init(char *arch)
     s->p->native.code_base = NULL;
     s->p->native.cur_ip = s->p->cur_ip;
     s->p->native.code_limit = s->p->code_limit;
-    s->p->virtual.mach_jump = NULL;
-    s->p->virtual.mach_reset = NULL;
-    s->p->virtual.mach_info = NULL;
-    s->p->virtual.code_base = NULL;
-    s->p->virtual.cur_ip = NULL;
-    s->p->virtual.code_limit = NULL;
+    s->p->_virtual.mach_jump = NULL;
+    s->p->_virtual.mach_reset = NULL;
+    s->p->_virtual.mach_info = NULL;
+    s->p->_virtual.code_base = NULL;
+    s->p->_virtual.cur_ip = NULL;
+    s->p->_virtual.code_limit = NULL;
     s->p->unavail_called = 0;
     return s;
 }
@@ -283,12 +283,12 @@ dill_create_stream()
     s->p->mach_reset = dill_virtual_init;
     s->p->mach_info = NULL;
 
-    s->p->virtual.mach_jump = s->j;
-    s->p->virtual.mach_reset = s->p->mach_reset;
-    s->p->virtual.mach_info = s->p->mach_info;
-    s->p->virtual.code_base = s->p->code_base;
-    s->p->virtual.cur_ip = s->p->cur_ip;
-    s->p->virtual.code_limit = s->p->code_limit;
+    s->p->_virtual.mach_jump = s->j;
+    s->p->_virtual.mach_reset = s->p->mach_reset;
+    s->p->_virtual.mach_info = s->p->mach_info;
+    s->p->_virtual.code_base = s->p->code_base;
+    s->p->_virtual.cur_ip = s->p->cur_ip;
+    s->p->_virtual.code_limit = s->p->code_limit;
     return s;
 }
     
@@ -743,8 +743,8 @@ free_code_blocks(dill_stream s)
 	int size = (long)s->p->code_limit - (long)s->p->code_base + END_OF_CODE_BUFFER;
         if (munmap(s->p->code_base, size) == -1) perror("unmap 1");
     }
-    if (s->p->virtual.code_base && (s->p->virtual.code_base != s->p->code_base) ) {
-	int vsize = (long)s->p->virtual.code_limit - (long)s->p->virtual.code_base + END_OF_CODE_BUFFER;
+    if (s->p->_virtual.code_base && (s->p->_virtual.code_base != s->p->code_base) ) {
+	int vsize = (long)s->p->_virtual.code_limit - (long)s->p->_virtual.code_base + END_OF_CODE_BUFFER;
         if (munmap(s->p->code_base, vsize) == -1) perror("unmap v");
     }
     if (s->p->native.code_base && (s->p->native.code_base != s->p->code_base) ) {
@@ -753,8 +753,8 @@ free_code_blocks(dill_stream s)
     }
 #else
     if (s->p->code_base) free(s->p->code_base);
-    if (s->p->virtual.code_base && (s->p->virtual.code_base != s->p->code_base) ) 
-      free(s->p->virtual.code_base);
+    if (s->p->_virtual.code_base && (s->p->_virtual.code_base != s->p->code_base) ) 
+      free(s->p->_virtual.code_base);
     if (s->p->native.code_base && (s->p->native.code_base != s->p->code_base) ) 
       free(s->p->native.code_base);
 #endif
@@ -1454,20 +1454,20 @@ dill_dump(dill_stream s)
     int native_missing = 0;
 
 
-    if ((base != s->p->virtual.code_base) &&
-	(s->p->virtual.code_base != NULL) && (s->p->virtual.mach_jump != NULL)){
+    if ((base != s->p->_virtual.code_base) &&
+	(s->p->_virtual.code_base != NULL) && (s->p->_virtual.mach_jump != NULL)){
 	/* Section to dump virtual code base *after* dcg completion */
 	/* only do this if we're not currently in the middle of virtual generation */
-	void *code_limit =  s->p->virtual.cur_ip;
-	base = s->p->virtual.code_base;
-	s->p->virtual.mach_jump->init_disassembly(s, &info);
+	void *code_limit =  s->p->_virtual.cur_ip;
+	base = s->p->_virtual.code_base;
+	s->p->_virtual.mach_jump->init_disassembly(s, &info);
 	void *p;
 	int l;
 	int insn_count = 0;
 	printf("\nDILL virtual instruction stream\n\n");
 	for (p =base; p < code_limit;) {
 	    printf("%lx  - %x - ", (unsigned long)p, (unsigned)*(int*)p);
-	    l = s->p->virtual.mach_jump->print_insn(s, &info, (void *)p);
+	    l = s->p->_virtual.mach_jump->print_insn(s, &info, (void *)p);
 	    printf("\n");
 	    if (l == -1) return;
 	    p = (char*)p + l;
@@ -1486,7 +1486,7 @@ dill_dump(dill_stream s)
 	printf("No code to dump\n");
 	return;
     }
-    if ((s->j != s->p->virtual.mach_jump) && native_missing) {
+    if ((s->j != s->p->_virtual.mach_jump) && native_missing) {
 	printf("No native disassembler available\n");
 	return;
     }
@@ -1496,7 +1496,7 @@ dill_dump(dill_stream s)
 	void *p;
 	int l;
 	int insn_count = 0;
-	if ((s->j != s->p->virtual.mach_jump) && (s->p->fp != NULL) )
+	if ((s->j != s->p->_virtual.mach_jump) && (s->p->fp != NULL) )
 	    base = s->p->fp;
 	for (p =base; (char*) p < s->p->cur_ip;) {
 	    int i;

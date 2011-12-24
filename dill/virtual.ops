@@ -106,14 +106,14 @@ print COUT "\t  ${mach}_jump_table->target_float_format = s->p->native.mach_jump
 print COUT "\t}\n";
 print COUT "# line ". (__LINE__ + 2) . " \"virtual.ops\"\n";
 print COUT<<EOF;
-	if (s->p->virtual.mach_info == NULL) {
-	    s->p->virtual.mach_info = malloc(sizeof(struct mach_info));
+	if (s->p->_virtual.mach_info == NULL) {
+	    s->p->_virtual.mach_info = malloc(sizeof(struct mach_info));
 	}
-	s->p->mach_info = s->p->virtual.mach_info;
-	s->p->mach_reset = s->p->virtual.mach_reset;
-	s->p->code_base = s->p->virtual.code_base;
+	s->p->mach_info = s->p->_virtual.mach_info;
+	s->p->mach_reset = s->p->_virtual.mach_reset;
+	s->p->code_base = s->p->_virtual.code_base;
 	s->p->cur_ip = s->p->code_base;
-	s->p->code_limit = s->p->virtual.code_limit;
+	s->p->code_limit = s->p->_virtual.code_limit;
 	s->p->vreg_count = 0;
 	s->dill_local_pointer = dill_getreg(s, DILL_P);
 	s->dill_param_reg_pointer = s->dill_local_pointer;

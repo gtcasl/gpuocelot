@@ -112,7 +112,7 @@ struct dill_private_ctx {
     mach_reset_func mach_reset;
     mach_reset_func native_mach_reset;
     saved_insn_info native;
-    saved_insn_info virtual;
+    saved_insn_info _virtual;
     void *mach_info;
     int machine_strr_tmp_reg;
     reg_set var_i;

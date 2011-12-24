@@ -533,7 +533,7 @@ dump_bb(dill_stream c, struct basic_block *bb, int i)
     printf("\n");
     for (j = bb->start; j <= bb->end; j++) {
 	printf(" %d - ", j);
-	virtual_print_insn(c, NULL, ((char *)c->p->virtual.code_base) + 
+	virtual_print_insn(c, NULL, ((char *)c->p->_virtual.code_base) + 
 			   j * sizeof(virtual_insn));
 	printf("\n");
     }
@@ -4412,12 +4412,12 @@ virtual_do_end(dill_stream s, int package)
 	dump_bbs(s);
 	s->dill_debug = 1;
     }
-    s->p->virtual.mach_jump = s->j;
-    s->p->virtual.mach_reset = s->p->mach_reset;
-    s->p->virtual.mach_info = s->p->mach_info;
-    s->p->virtual.code_base = s->p->code_base;
-    s->p->virtual.cur_ip = s->p->cur_ip;
-    s->p->virtual.code_limit = s->p->code_limit;
+    s->p->_virtual.mach_jump = s->j;
+    s->p->_virtual.mach_reset = s->p->mach_reset;
+    s->p->_virtual.mach_info = s->p->mach_info;
+    s->p->_virtual.code_base = s->p->code_base;
+    s->p->_virtual.cur_ip = s->p->cur_ip;
+    s->p->_virtual.code_limit = s->p->code_limit;
 
     if (do_emulation) {
 #ifdef BUILD_EMULATOR

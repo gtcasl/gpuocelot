@@ -131,7 +131,7 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-pdf-recursive install-ps-recursive install-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
-am__include_HEADERS_DIST = dill.h
+am__include_HEADERS_DIST = dill.h dill_internal.h
 HEADERS = $(include_HEADERS) $(noinst_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
@@ -312,9 +312,9 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = no-dependencies foreign
 ACLOCAL_AMFLAGS = -I config
 SUBDIRS = . tests vtests
-BUILT_SOURCES = dill.h
+BUILT_SOURCES = dill.h dill_internal.h
 @BUILD_LIBRARY_TRUE@lib_LTLIBRARIES = libdill.la
-@BUILD_LIBRARY_TRUE@include_HEADERS = dill.h
+@BUILD_LIBRARY_TRUE@include_HEADERS = dill.h dill_internal.h
 noinst_HEADERS = config.h dill_internal.h
 @MULTI_TARGET_FALSE@@NATIVE_CG_FALSE@libdill_la_SOURCES = dill_util.c dill_pkg.c dill_cplus.c dill_virtual.c virtual.c dill.c vm.c version.c
 @MULTI_TARGET_FALSE@@NATIVE_CG_TRUE@libdill_la_SOURCES = dill_util.c dill_pkg.c dill_cplus.c dill_virtual.c virtual.c dill.c vm.c dill_${ARCH_FILE}.c ${ARCH_FILE}.c ${ARCH_FILE}_rt.c version.c
@@ -448,7 +448,7 @@ install-includeHEADERS: $(include_HEADERS)
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo "$(INSTALL_HEADER) $$files '$(DESTDIR)$(includedir)'"; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(includedir)'"; \
 	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(includedir)" || exit $$?; \
 	done
 

@@ -5,10 +5,10 @@ ACLOCAL_AMFLAGS = -I config
 
 SUBDIRS = . tests vtests
 
-BUILT_SOURCES = dill.h
+BUILT_SOURCES = dill.h dill_internal.h
 if BUILD_LIBRARY
 lib_LTLIBRARIES = libdill.la
-include_HEADERS = dill.h
+include_HEADERS = dill.h dill_internal.h
 endif BUILD_LIBRARY
 
 all-local:

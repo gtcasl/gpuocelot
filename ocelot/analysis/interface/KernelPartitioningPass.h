@@ -63,6 +63,7 @@ namespace analysis {
 		typedef std::vector<ExternalEdge> ExternalEdgeVector;
 		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
 		typedef std::map< analysis::DataflowGraph::RegisterId, size_t> RegisterOffsetMap;
+		typedef std::unordered_map< ir::BasicBlock::Pointer, ExternalEdgeVector > ExternalEdgeMap;
 		
 		//!
 		class Subkernel {
@@ -70,6 +71,7 @@ namespace analysis {
 			Subkernel(SubkernelId _id);
 			
 			void create(ir::PTXKernel *source,
+				analysis::DataflowGraph *sourceDfg,
 				const RegisterOffsetMap &registerOffsets);
 			
 		protected:
@@ -79,9 +81,13 @@ namespace analysis {
 				analysis::DataflowGraph *sourceDfg, 
 				analysis::DataflowGraph *subkernelDfg,
 				const RegisterOffsetMap &registerOffsets);
+			
+			void _updateHandlerControlFlow( ExternalEdgeMap &edges );
 				
 			void _createDivergenceHandlers();
-			void _createExit(ir::BasicBlock::Pointer block, ThreadExitType type, SubkernelId target);
+			void _createScheduler();
+			void _createExit(analysis::DataflowGraph::iterator block, analysis::DataflowGraph *subkernelDfg, 
+				ThreadExitType type, SubkernelId target);
 			
 		public:
 			SubkernelId id;
@@ -109,13 +115,23 @@ namespace analysis {
 		protected:
 		
 			void _partition(SubkernelId baseId);
+			void _createSpillRegion(size_t spillSize);
 			void _createEntries();
 			void _createExits();
-			void _createSchedulers();
 			void _createDivergenceHandlers();
+			size_t _computeRegisterOffsets();
 			
 			void _partitionMaximumSize(SubkernelId baseId);
 			void _partitionMinimumSize(SubkernelId baseId);
+		
+		public:
+		
+			SubkernelId getEntrySubkernel() const;
+			
+		private:
+		
+			//! data flow graph of the source kernel
+			analysis::DataflowGraph *_sourceKernelDfg;
 			
 		public:
 			//! source kernel
@@ -123,6 +139,9 @@ namespace analysis {
 			
 			//! partitioning of subkernels
 			SubkernelMap subkernels;
+			
+			//! \brief identifies the entry subkernel
+			SubkernelId entrySubkernelId;
 			
 			//! \brief maps registers to offset
 			RegisterOffsetMap registerOffsets;

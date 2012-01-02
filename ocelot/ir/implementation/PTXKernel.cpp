@@ -679,7 +679,7 @@ void PTXKernel::write(std::ostream& stream) const
 				}
 				stream << "\t" << label << ":";
 				if (comment != "") {
-					stream << "\t\t" << comment << " ";
+					stream << "\t\t" << (comment[0] != '/' ? "// ": "") << comment << " ";
 				}
 				stream << "\n";
 			}

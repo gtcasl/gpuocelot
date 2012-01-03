@@ -63,12 +63,8 @@ analysis::KernelPartitioningPass::KernelGraph::KernelGraph(
 	
 	_createSpillRegion(spillRegionSize);
 	_partition(baseId);
-	
-		/*
-	_createExits();
-	_createScheduler();
-	_createDivergenceHandlers();
-	*/
+	_linkExternalEdges();
+	_createHandlers();
 }
 
 analysis::KernelPartitioningPass::KernelGraph::~KernelGraph() {
@@ -118,6 +114,49 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionMinimumSize(Subker
 	}
 }
 
+void analysis::KernelPartitioningPass::KernelGraph::_linkExternalEdges() {
+
+	report("Linking external edges");
+	
+	for (SubkernelMap::iterator subkernel_it = subkernels.begin(); subkernel_it != subkernels.end(); 
+		++subkernel_it) {
+		
+		Subkernel &subkernel = subkernel_it->second;
+		for (ExternalEdgeVector::iterator edge_it = subkernel.outEdges.begin(); 
+			edge_it != subkernel.outEdges.end(); ++edge_it) {
+			
+			bool found = false;
+			for (SubkernelMap::iterator checksk_it = subkernels.begin(); 
+				checksk_it != subkernels.end() && !found;
+				++checksk_it) {
+				
+				Subkernel &checksk = checksk_it->second;
+				if (checksk.id != subkernel.id) {
+					for (ExternalEdgeVector::iterator inedge_it = checksk.inEdges.begin(); 
+						inedge_it != checksk.inEdges.end() && !found; ++inedge_it) {
+					
+						ExternalEdge &inEdge = *inedge_it;
+						if (inEdge.sourceEdge.head == edge_it->sourceEdge.head && 
+							inEdge.sourceEdge.tail == edge_it->sourceEdge.tail && 
+							inEdge.sourceEdge.type == edge_it->sourceEdge.type) {
+						
+							edge_it->entryId = inEdge.entryId;
+							found = true;
+							report("  linking " << edge_it->handler->label << " to " << inEdge.handler->label 
+								<< " (entry " << edge_it->entryId << ")");
+						}
+					}	
+				}
+			}
+			if (!found) {
+				report(" failed to link external edge: " << edge_it->sourceEdge.head->label << " -> " 
+					<< edge_it->sourceEdge.tail->label);
+				edge_it->entryId = 0;
+				edge_it->exitStatus = Thread_exit;
+			}
+		}
+	}
+}
 
 /*!
 	\brief constructs a partitioning of the PTX kernel according to some heuristic
@@ -154,47 +193,8 @@ void analysis::KernelPartitioningPass::KernelGraph::_createSpillRegion(size_t sp
 	resumeStatus.type = ir::PTXOperand::u32;
 	resumeStatus.name = "_Zocelot_resume_status";
 	ptxKernel->locals.insert(std::make_pair(resumeStatus.name, ir::Local(resumeStatus)));
-	/*
-	if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {
-		ir::PTXStatement entryCycles(ir::PTXStatement::Local);
-		entryCycles.type = ir::PTXOperand::u64;
-		entryCycles.name = "_Zocelot_entry_cycles";
-		ptxKernel->locals.insert(std::make_pair(entryCycles.name, ir::Local(entryCycles)));	// offset 8
-		
-		ir::PTXStatement entryId(ir::PTXStatement::Local);
-		entryId.type = ir::PTXOperand::u32;
-		entryId.name = "_Zocelot_entry_id";
-		ptxKernel->locals.insert(std::make_pair(entryId.name, ir::Local(entryId)));	// offset 16
-		
-		ir::PTXStatement entryLiveness(ir::PTXStatement::Local);
-		entryLiveness.type = ir::PTXOperand::u32;
-		entryLiveness.name = "_Zocelot_entry_liveness";
-		ptxKernel->locals.insert(std::make_pair(entryLiveness.name, ir::Local(entryLiveness)));	// offset 20
-	
-		ir::PTXStatement exitCycles(ir::PTXStatement::Local);
-		exitCycles.type = ir::PTXOperand::u64;
-		exitCycles.name = "_Zocelot_exit_cycles";
-		ptxKernel->locals.insert(std::make_pair(exitCycles.name, ir::Local(exitCycles)));	// offset 24
-	
-		ir::PTXStatement exitId(ir::PTXStatement::Local);
-		exitId.type = ir::PTXOperand::u32;
-		exitId.name = "_Zocelot_exit_id";
-		ptxKernel->locals.insert(std::make_pair(exitId.name, ir::Local(exitId)));	// offset 32
-		
-		ir::PTXStatement exitLiveness(ir::PTXStatement::Local);
-		exitLiveness.type = ir::PTXOperand::u32;
-		exitLiveness.name = "_Zocelot_exit_liveness";
-		ptxKernel->locals.insert(std::make_pair(exitLiveness.name, ir::Local(exitLiveness)));	// offset 36
-		
-		ir::PTXStatement subkernelCycles(ir::PTXStatement::Local);
-		subkernelCycles.type = ir::PTXOperand::u64;
-		subkernelCycles.name = "_Zocelot_subkernel_cycles";
-		ptxKernel->locals.insert(std::make_pair(subkernelCycles.name, ir::Local(subkernelCycles))); // offset 40
-	}
-	*/
 	
 	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
-		
 	spillRegion.type = ir::PTXOperand::b8;
 	spillRegion.name = "_Zocelot_spill_area";
 	spillRegion.array.stride.push_back((unsigned int)spillSize);
@@ -204,27 +204,15 @@ void analysis::KernelPartitioningPass::KernelGraph::_createSpillRegion(size_t sp
 	report("  Spill region size is " << spillSize);
 }
 
-
-/*!
-	\brief visits each subkernel and adds handlers for in-edges
-*/
-void analysis::KernelPartitioningPass::KernelGraph::_createEntries() {
-	// for 
-}
-
-/*!
-	\brief visits each subkernel and adds handlers for out-edges
-*/
-void analysis::KernelPartitioningPass::KernelGraph::_createExits() {
-
-}
-
-
 /*!
 
 */
-void analysis::KernelPartitioningPass::KernelGraph::_createDivergenceHandlers() {
-
+void analysis::KernelPartitioningPass::KernelGraph::_createHandlers() {
+	for (SubkernelMap::iterator subkernel_it = subkernels.begin(); subkernel_it != subkernels.end();
+		++subkernel_it) {
+		Subkernel &subkernel = subkernel_it->second;
+		subkernel.createHandlers(_sourceKernelDfg, registerOffsets);
+	}
 }
 
 
@@ -245,12 +233,18 @@ void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source,
 
 	report("Subkernel::create(" << source->name << ")");
 	
-	_create(source);
+	_create(source);	
+}
+
+void analysis::KernelPartitioningPass::Subkernel::createHandlers(
+	analysis::DataflowGraph *sourceDfg,
+	const RegisterOffsetMap &registerOffsets) {
 	
 	analysis::DataflowGraph subkernelDfg;
 	subkernelDfg.analyze(*subkernel);
 	
 	_createExternalHandlers(sourceDfg, &subkernelDfg, registerOffsets);
+	_createDivergenceHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	
 	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX
 	subkernel->write(std::cout);
@@ -296,10 +290,13 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 		
 			if (sourceBlocks.find((*edge_it)->tail) == sourceBlocks.end()) {
 				ir::BasicBlock handler;
-				handler.label = (*edge_it)->head->label + "_external_out_handler_" + (*edge_it)->tail->label.substr(4);
+				std::string suffix = ((*edge_it)->tail->label != "" ? "_to_" : "");
+				handler.label = (*edge_it)->head->label + "_external_out_handler" + suffix + 
+					(*edge_it)->tail->label.substr(4);
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
 				outEdges.push_back(ExternalEdge(**edge_it, handlerBlock));
+				
 				report("  adding EXTERNAL OUT-Edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
 			}
@@ -313,11 +310,17 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 		for (ir::BasicBlock::EdgePointerVector::iterator edge_it = (*bb_it)->in_edges.begin();
 			edge_it != (*bb_it)->in_edges.end(); ++edge_it) {
 			if (sourceBlocks.find((*edge_it)->head) == sourceBlocks.end()) {
+			
 				ir::BasicBlock handler;
-				handler.label = (*edge_it)->tail->label + "_external_in_handler_" + 
+				std::string suffix = ((*edge_it)->head->label != "" ? "_from_" : "");
+				handler.label = (*edge_it)->tail->label + "_external_in_handler_" + suffix +
 					(*edge_it)->head->label.substr(4);
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
-				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock));
+				
+				// assign unique entryId 
+				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)inEdges.size());
+				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock, entryId));
+				
 				report("  adding EXTERNAL IN-Edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
 			}
@@ -328,6 +331,7 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	report(" creating internal edges");
 	for (std::vector< ir::BasicBlock::Edge >::iterator edge_it = internalEdges.begin();
 		edge_it != internalEdges.end(); ++edge_it) {
+		
 		ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
 			blockMapping[edge_it->tail], edge_it->type);
 		subkernelCfg->insert_edge(internalEdge);
@@ -337,6 +341,7 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	report(" identifying targets of external IN edges");
 	for (ExternalEdgeVector::iterator edge_it = inEdges.begin();
 		edge_it != inEdges.end(); ++edge_it) {
+		
 		edge_it->frontierBlock = blockMapping[edge_it->sourceEdge.tail];
 		
 		ir::BasicBlock::Edge handlerEdge(edge_it->handler, edge_it->frontierBlock, 
@@ -348,13 +353,11 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	report(" identifying sources of external OUT edges");
 	for (ExternalEdgeVector::iterator edge_it = outEdges.begin();
 		edge_it != outEdges.end(); ++edge_it) {
+		
 		edge_it->frontierBlock = blockMapping[edge_it->sourceEdge.head];
+		
 		ir::BasicBlock::Edge handlerEdge(edge_it->frontierBlock, edge_it->handler, 
 			edge_it->sourceEdge.type);
-		if (edge_it->sourceEdge.type == ir::BasicBlock::Edge::Branch) {
-			// update branch instruction
-			report(" TODO: update branch instruction");
-		}		
 		subkernelCfg->insert_edge(handlerEdge);
 	}
 }
@@ -375,6 +378,44 @@ size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets() 
 	return bytes;
 }
 
+void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
+	analysis::DataflowGraph::RegisterSet &uses) {
+
+	ir::ControlFlowGraph *cfg = subkernel->cfg();
+	std::unordered_set< ir::BasicBlock::Pointer > handlerBlocks;
+	
+	for (ExternalEdgeVector::iterator edge_it = inEdges.begin(); edge_it != inEdges.end(); ++edge_it) {
+		handlerBlocks.insert(edge_it->handler);
+	}
+	for (ExternalEdgeVector::iterator edge_it = outEdges.begin(); edge_it != outEdges.end(); ++edge_it) {
+		handlerBlocks.insert(edge_it->handler);
+	}
+	for (ir::ControlFlowGraph::iterator block_it = cfg->begin(); block_it != cfg->end(); ++block_it) {
+		if (handlerBlocks.find(block_it) != handlerBlocks.end()) {
+			continue;
+		}
+		for (ir::BasicBlock::InstructionList::iterator inst_it = block_it->instructions.begin();
+			inst_it != block_it->instructions.end(); ++inst_it) {
+			ir::PTXInstruction *instr = static_cast<ir::PTXInstruction*>(*inst_it);
+			
+			ir::PTXOperand ir::PTXInstruction::*operands[] = {
+				&ir::PTXInstruction::pg,
+				&ir::PTXInstruction::pq,
+				&ir::PTXInstruction::d,
+				&ir::PTXInstruction::a,
+				&ir::PTXInstruction::b,
+				&ir::PTXInstruction::c
+			};
+			for (int i = 0; i < 6; i++) {
+				ir::PTXOperand &operand = (instr->*operands[i]);
+				if (operand.addressMode == ir::PTXOperand::Register) {
+					uses.insert(operand.reg);
+				}
+			}
+		}
+	}	
+}
+
 /*!
 	create a handler block for each in edge that restores values
 */
@@ -389,6 +430,9 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 	
 	analysis::DataflowGraph::IteratorMap cfgToDfg = sourceDfg->getCFGtoDFGMap();
 	analysis::DataflowGraph::IteratorMap subkernelCfgToDfg = subkernelDfg->getCFGtoDFGMap();
+	
+	analysis::DataflowGraph::RegisterSet usedRegisters;
+	_determineRegisterUses(usedRegisters);
 	
 	report("  visiting external IN-edges");
 	for (ExternalEdgeVector::iterator edge_it = inEdges.begin();
@@ -409,6 +453,10 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 			+ " live-in values";
 		for (RegisterSet::iterator alive_it = aliveValues.begin();
 			alive_it != aliveValues.end(); ++alive_it) {
+			
+			if (usedRegisters.find(*alive_it) == usedRegisters.end()) {
+				continue;
+			}
 			
 			report("      alive-in: " << alive_it->id << " [type: " 
 				<< ir::PTXOperand::toString(alive_it->type) << "]");
@@ -460,7 +508,11 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		
 		for (RegisterSet::iterator alive_it = aliveValues.begin();
 			alive_it != aliveValues.end(); ++alive_it) {
-			
+		
+			if (usedRegisters.find(*alive_it) == usedRegisters.end()) {
+				continue;
+			}
+	
 			report("      alive-out: " << alive_it->id << " [type: " 
 				<< ir::PTXOperand::toString(alive_it->type) << "]");
 			
@@ -481,9 +533,8 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 
 			subkernelDfg->insert(handlerDfgBlock, store);
 		}
-		
-		SubkernelId target = edge_it->destinationId;
-		_createExit(handlerDfgBlock, subkernelDfg, Thread_subkernel, target);
+
+		_createExit(handlerDfgBlock, subkernelDfg, edge_it->exitStatus, edge_it->entryId);
 		
 		frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
 	}
@@ -542,8 +593,12 @@ void analysis::KernelPartitioningPass::Subkernel::_createScheduler() {
 	//	
 }
 
-void analysis::KernelPartitioningPass::Subkernel::_createDivergenceHandlers() {
-
+void analysis::KernelPartitioningPass::Subkernel::_createDivergenceHandlers(
+	analysis::DataflowGraph *sourceDfg,
+	analysis::DataflowGraph *subkernelDfg,
+	const RegisterOffsetMap &registerOffsets) {
+	
+	report("_createDivergenceHandlers()");
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::DataflowGraph::iterator block, 

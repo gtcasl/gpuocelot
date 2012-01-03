@@ -41,24 +41,38 @@ namespace analysis {
 		
 		class ExternalEdge {
 		public:
-			ExternalEdge(): sourceId(0), destinationId(0) { }
+			ExternalEdge(): entryId(0), exitStatus(Thread_subkernel) { }
 			ExternalEdge(const ir::BasicBlock::Edge &edge, 
 				ir::BasicBlock::Pointer _handler,
-				SubkernelId _src = 0, SubkernelId _dst = 0): 
-				sourceEdge(edge), sourceId(_src), destinationId(_dst), handler(_handler) { }
+				SubkernelId _entryId = 0,
+				ThreadExitType _exit = Thread_subkernel): 
+				sourceEdge(edge), handler(_handler), entryId(_entryId), exitStatus(_exit) { }
+			
+			static SubkernelId getSubkernelId(SubkernelId entryId) {
+				return (entryId >> 16);
+			}
+			static SubkernelId getEntryId(SubkernelId entryId) {
+				return (entryId & 0x0ffff);
+			}
+			static SubkernelId getEncodedEntry(SubkernelId subkernelId, SubkernelId entryId) {
+				return ((subkernelId << 16) | (entryId & 0x0ffff));
+			}
 		
 		public:
 			//! \brief edge in original kernel
 			ir::BasicBlock::Edge sourceEdge;
 			
-			//! \brief contains mapping
-			SubkernelId sourceId, destinationId;
-			
 			//! \brief 
 			ir::BasicBlock::Pointer handler;
 			
+			//! \brief identifies the entry point taken by the edge
+			SubkernelId entryId;
+			
 			//! \brief block within the subkernel that is the source or destination for external edge
 			ir::BasicBlock::Pointer frontierBlock;
+			
+			//! \brief indicates disposition of exit edge
+			ThreadExitType exitStatus;
 		};
 		typedef std::vector<ExternalEdge> ExternalEdgeVector;
 		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
@@ -74,6 +88,10 @@ namespace analysis {
 				analysis::DataflowGraph *sourceDfg,
 				const RegisterOffsetMap &registerOffsets);
 			
+			void createHandlers(
+				analysis::DataflowGraph *sourceDfg,
+				const RegisterOffsetMap &registerOffsets);
+			
 		protected:
 			void _create(ir::PTXKernel *source);
 			
@@ -81,10 +99,16 @@ namespace analysis {
 				analysis::DataflowGraph *sourceDfg, 
 				analysis::DataflowGraph *subkernelDfg,
 				const RegisterOffsetMap &registerOffsets);
-			
-			void _updateHandlerControlFlow( ExternalEdgeMap &edges );
 				
-			void _createDivergenceHandlers();
+			void _createDivergenceHandlers(
+				analysis::DataflowGraph *sourceDfg,
+				analysis::DataflowGraph *subkernelDfg,
+				const RegisterOffsetMap &registerOffsets);
+			
+			void _updateHandlerControlFlow(ExternalEdgeMap &edges);
+			
+			void _determineRegisterUses(analysis::DataflowGraph::RegisterSet &uses);
+				
 			void _createScheduler();
 			void _createExit(analysis::DataflowGraph::iterator block, analysis::DataflowGraph *subkernelDfg, 
 				ThreadExitType type, SubkernelId target);
@@ -115,10 +139,11 @@ namespace analysis {
 		protected:
 		
 			void _partition(SubkernelId baseId);
+			void _linkExternalEdges();
+			
 			void _createSpillRegion(size_t spillSize);
-			void _createEntries();
-			void _createExits();
-			void _createDivergenceHandlers();
+			void _createHandlers();
+			
 			size_t _computeRegisterOffsets();
 			
 			void _partitionMaximumSize(SubkernelId baseId);

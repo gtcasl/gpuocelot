@@ -43,6 +43,7 @@ namespace executive {
 			void execute(LLVMContext **contexts) const;
 		
 		protected:
+		
 			//! \brief
 			llvm::Function *llvmFunction;
 			
@@ -55,14 +56,30 @@ namespace executive {
 		
 		//! maps warp size onto a particular translation instance
 		typedef std::map< int, Translation* > WarpTranslationMap;
+		typedef std::map< SubkernelId, Translation *> TranslationMap;
+		
+		class TranslatedSubkernel {
+		public:
+		
+		public:
+
+			//! \brief stores information needed by the translated function and the execution manager
+			void *metadata;
+			
+			//! 
+			WarpTranslationMap translations;
+		};
 		
 		//! maps subkernelId onto a set of translations
-		typedef std::map<SubkernelId, WarpTranslationMap > TranslationMap;
+		typedef std::map<SubkernelId, TranslatedSubkernel > TranslatedSubkernelMap;
 		
 		/*!
 			\brief 
 		*/
 		class TranslatedKernel {			
+		public:
+			TranslatedKernel(DynamicMulticoreKernel *_kernel);
+			
 		public:
 		
 			//! \brief 
@@ -72,10 +89,7 @@ namespace executive {
 			DynamicMulticoreKernel *kernel;
 			
 			//! \brief mapping of translated subkernels
-			TranslationMap translations;
-			
-			//! \brief stores information needed by the translated function and the execution manager
-			void *metadata;
+			TranslatedSubkernelMap subkernels;
 			
 			//! \brief maximum amount of local memory required for translated kernel
 			size_t localMemorySize;
@@ -126,8 +140,11 @@ namespace executive {
 		
 	private:
 	
+		void _translatePTXSubkernel(TranslatedKernel &kernel, SubkernelId subkernelId, 
+			OptimizationLevel optimizationLevel);
 		
-	
+		void _specializeTranslation(TranslatedKernel &kernel, SubkernelId subkernelId, 
+			int warpSize, unsigned int specialization = 0);
 		
 	protected:
 	
@@ -136,9 +153,6 @@ namespace executive {
 	
 		//! \brief stores information
 		ModuleMap modules;
-	
-		//! \brief 
-		TranslationMap translations;
 	
 	};
 

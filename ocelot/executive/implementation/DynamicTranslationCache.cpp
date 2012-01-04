@@ -99,17 +99,43 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *kernel) {
 	report("registerKernel(" << kernel->name << ")");
 	
-	if (registeredKernels.find(kernel) == registeredKernels.end()) {
-		report(" adding new kernel");
-		assert(0 && "unimplemented");
+	ModuleMap::iterator module_it = modules.find(kernel->module()->name);
+	assert(module_it != modules.end());
+	
+	ModuleMetadata &module = module_it->second;
+	TranslatedKernelNameMap::iterator kernel_it = module.kernels.find(kernel->name);
+	if (kernel_it == module.kernels.end()) {
+		TranslatedKernel *translatedKernel = new TranslatedKernel(kernel);
+		translatedKernel->localMemorySize = 0;
+		translatedKernel->sharedMemorySize = 0;
+		kernels[kernel] = translatedKernel;		
 	}
+	else {
+		// do nothing.
+		repoort("  kernel already registered");
+	}	
 }
 
 //! \brief loads a module into the translation cache
 bool executive::DynamicTranslationCache::loadModule(const ir::Module *module, 
 	executive::DynamicMulticoreDevice *device) {
 	
-	return false;
+	report("DynamicTranslationCache::loadModule(" << module->name << ")");
+	
+	ModuleMetadata newModule;
+	newModule.ptxModule = module;
+	newModule.device = device;
+	modules[module->name] = newModule;
+	
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+executive::DynamicTranslationCache::TranslatedKernel::TranslatedKernel(DynamicMulticoreKernel *_kernel):
+	llvmModule(0), kernel(_kernel), metadata(0), localMemorySize(0), sharedMemorySize(0) {
+	
+	llvmModule = new llvm::Module(kernel->name.c_str(), llvm::getGlobalContext());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,10 +183,6 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel) {
 					
 				if(global == kernel.module->globals().end() ||
 					global->second.statement.directive != ir::PTXStatement::Global) {
-					continue;
-				}
-				
-				if() {
 					continue;
 				}
 					
@@ -832,7 +854,7 @@ static std::string getTranslatedName(const std::string &kernelName) {
 /*!
 	\brief 
 */
-static llvm::Function *translatePTXtoLLVM(llvm::Module*& module, ir::PTXKernel& kernel,
+static llvm::Function *translatePTXtoLLVM(llvm::Module* module, ir::PTXKernel& kernel,
 	translator::Translator::OptimizationLevel optimization) {
 	
 	assert(module == 0);
@@ -847,8 +869,6 @@ static llvm::Function *translatePTXtoLLVM(llvm::Module*& module, ir::PTXKernel& 
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
 	llvmKernel->assemble();
 	llvm::SMDiagnostic error;
-
-	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
 
 #if REPORT_LLVM_MASTER
 	report("translated PTX to LLVM");
@@ -1352,6 +1372,63 @@ void DynamicTranslationCache::specializeTranslation(
 
 #endif
 
-void makeWarningsGoAway() {
+void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &translatedKernel, 
+	executive::DynamicTranslationCache::OptimizationLevel optimizationLevel) {
+	
+#ifdef HAVE_LLVM
+	reportE(REPORT_TRANSLATION_OPERATIONS, "Getting metadata for kernel '" 
+		<< translatedKernel.kernel->name << "' subkernel " << subkernelId);
+	
+	KernelGraph::SubkernelMap &subkernels = translatedKernel.kernel->kernelGraph()->subkernels;
+	assert(subkernel_it != translatedKernel.kernel->kernelGraph()->subkernels.end());
+	
+	ir::PTXKernel *subkernelPtx = subkernel_it->second.subkernel;
+	
+	Metadata *metadata = 0;
+	
+	// apply PTX optimizations and transformations needed to support the dynamic translation cache
+	
+	optimizePTX(*subkernelPtx, optimization);
+		
+	try {
+	
+		// compte memory sizes and layouts
+		metadata = generateMetadata(*subkernelPtx, optimization);
+		
+		// translate global memory references
+		setupPTXMemoryReferences(*subkernelPtx, metadata, device);
 
+		// rewrite call functions with hyperblock exits chained to target functions
+		setupCallTargets(*subkernelPtx, *this);
+		
+		// perform PTX to LLVM translation - construct a new LLVM module
+		translatedKernel.scalarTranslation = translatePTXtoLLVM(translatedKernel.llvmModule, 
+			*subkernelPtx, optimization);
+
+		// Converting out of ssa makes the assembly easier to read
+		if(optimization == translator::Translator::ReportOptimization 
+			|| optimization == translator::Translator::DebugOptimization) {
+			
+			subkernelPtx->dfg()->fromSsa();
+		}
+		translatedKernel.metadata = metadata;
+	}
+	catch(...)
+	{
+		delete metadata;
+		metadata = 0;
+		throw;
+	}
+	
+	#else
+	assertM(false, "LLVM support not compiled into ocelot.");
+	#endif
 }
+
+void executive::DynamicTranslationCache::_specializeTranslation(
+	executive::DynamicTranslationCache::TranslatedKernel &kernel, SubkernelId subkernelId, 
+	int warpSize, unsigned int specialization) {
+	
+}
+
+

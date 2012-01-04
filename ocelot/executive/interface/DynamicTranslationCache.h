@@ -57,11 +57,14 @@ namespace executive {
 		//! maps warp size onto a particular translation instance
 		typedef std::map< int, Translation* > WarpTranslationMap;
 		typedef std::map< SubkernelId, Translation *> TranslationMap;
+		typedef std::map< SUbkernelId, WarpTranslationMap> TranslationCacheMap;
 		
 		class TranslatedSubkernel {
 		public:
 		
 		public:
+			//! \brief source LLVM function
+			llvm::Function *llvmFunction;
 
 			//! \brief stores information needed by the translated function and the execution manager
 			void *metadata;
@@ -98,6 +101,7 @@ namespace executive {
 			size_t sharedMemorySize;
 		};
 		typedef std::unordered_map< std::string, TranslatedKernel *> TranslatedKernelNameMap;
+		typedef std::unordered_map< SubkernelId, TranslatedKernel *> SubkernelParentMap;
 
 		/*!
 			\brief stores module-level information such as the decomposition of kernels
@@ -115,8 +119,6 @@ namespace executive {
 			//! \brief registered PTX module
 			const ir::Module *ptxModule;
 			
-			//! \brief target device
-			executive::DynamicMulticoreDevice *device;
 		
 			//! \brief kernel decomposition of hyperblocks 
 			TranslatedKernelNameMap kernels;
@@ -140,20 +142,26 @@ namespace executive {
 		
 	private:
 	
-		void _translatePTXSubkernel(TranslatedKernel &kernel, SubkernelId subkernelId, 
-			OptimizationLevel optimizationLevel);
+		void _translateKernel(TranslatedKernel &kernel);
 		
-		void _specializeTranslation(TranslatedKernel &kernel, SubkernelId subkernelId, 
-			int warpSize, unsigned int specialization = 0);
+		Translation *_specializeTranslation(TranslatedKernel &kernel, SubkernelId subkernelId, 
+			OptimizationLevel optimizationLevel, int warpSize, unsigned int specialization = 0);
 		
 	protected:
 	
 		//! \brief reference to the owning execution manager
 		DynamicExecutionManager *executionManager;
-	
+
+		//! \brief target device
+		executive::DynamicMulticoreDevice *device;
+			
 		//! \brief stores information
 		ModuleMap modules;
+		
+		//! \brief 
+		SubkernelParentMap subkernelsToKernel;
 	
+		TranslationCacheMap translationCache;
 	};
 
 }

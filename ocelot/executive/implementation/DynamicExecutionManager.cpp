@@ -51,6 +51,10 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	
 	report("DynamicExecutionManager::launch()");
 	
+	// make the kernel graph available to the dynamic translation cache if need be
+	
+	// start executing
+	
 	DynamicMulticoreExecutive executive(kernel, sharedMemorySize);
 	
 	for (int blockIdy = 0; blockIdy < kernel.gridDim().y; blockIdy++) {

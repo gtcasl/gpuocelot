@@ -55,6 +55,8 @@ namespace executive {
 		
 		/*! \brief Get a vector of all textures references by the kernel */
 		virtual TextureVector textureReferences() const;
+		
+		analysis::KernelPartitioningPass::KernelGraph *kernelGraph() const;
 	
 	private:
 	

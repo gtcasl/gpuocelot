@@ -14,6 +14,7 @@
 #include <ocelot/executive/interface/DynamicMulticoreDevice.h>
 #include <ocelot/executive/interface/LLVMState.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -63,16 +64,16 @@
 #define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
+#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 1			// emit assembly if verification fails
-#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 
-#define REPORT_TRANSLATIONS 0
+#define REPORT_TRANSLATIONS 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -90,7 +91,8 @@ static translator::Translator::OptimizationLevel getOptimizationLevel() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::DynamicTranslationCache::DynamicTranslationCache() {
+executive::DynamicTranslationCache::DynamicTranslationCache(DynamicExecutionManager *_manager):
+	executionManager(_manager) {
 
 }
 
@@ -157,12 +159,15 @@ bool executive::DynamicTranslationCache::loadModule(const ir::Module *module,
 	
 	report("DynamicTranslationCache::loadModule(" << module->path() << ")");
 	
-	ModuleMetadata newModule;
-	newModule.ptxModule = module;
-	this->device = device;
-	modules[module->path()] = newModule;
+	if (modules.find(module->path()) == modules.end()) {
+		ModuleMetadata newModule;
+		newModule.ptxModule = module;
+		this->device = device;
+		modules[module->path()] = newModule;
+		return true;
+	}
 	
-	return true;
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1029,7 +1034,7 @@ static void cloneAndOptimizeTranslation(
 			
 #if REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
-		translatedKernel.kernelModule->dump();
+		translatedKernel.llvmModule->dump();
 #endif
 
 		assert(0 && "quitting");
@@ -1099,6 +1104,8 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 		// apply PTX optimizations and transformations needed to support the dynamic translation cache
 		//optimizePTX(*subkernelPtx, optimization);
 		
+		report("  translating subkernel " << subkernelPtx->name);
+		
 		try {
 	
 			// compte memory sizes and layouts
@@ -1110,12 +1117,19 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			// rewrite call functions with hyperblock exits chained to target functions
 			setupCallTargets(*subkernelPtx, *this);
 	
-			translator::PTXToLLVMTranslator translator(getOptimizationLevel());
+			report("  Converting from PTX IR to LLVM IR.");
+			translator::PTXToLLVMTranslator translator(getOptimizationLevel(), 0);
 
-			ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(subkernelPtx));
+			transforms::PassManager manager(const_cast<ir::Module*>(subkernelPtx->module));
+
+			manager.addPass(translator);
+			manager.runOnKernel(*subkernelPtx);
+
+			ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
+				translator.translatedKernel());
 
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
-			llvmKernel->assemble();
+			llvmKernel->assemble(false);
 
 			llvm::SMDiagnostic error;
 
@@ -1168,12 +1182,17 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 		assertM(false, "LLVM support not compiled into ocelot.");
 		#endif
 	}
+	report(" _translateKernel('" << translatedKernel.kernel->name << "') complete for " 
+		<< translatedKernel.subkernels.size() << " subkernels");
 }
 
 executive::DynamicTranslationCache::Translation *
 	executive::DynamicTranslationCache::_specializeTranslation(
-		executive::DynamicTranslationCache::TranslatedKernel &translatedKernel, SubkernelId subkernelId, 
-		OptimizationLevel optimizationLevel, int warpSize, unsigned int specialization) {
+		executive::DynamicTranslationCache::TranslatedKernel &translatedKernel, 
+		SubkernelId subkernelId, 
+		OptimizationLevel optimizationLevel, 
+		int warpSize, 
+		unsigned int specialization) {
 	
 	report("_specializeTranslation()");
 	
@@ -1225,6 +1244,7 @@ executive::DynamicTranslationCache::Translation *
 		throw;
 	}
 	#endif
+	report("  _specializeTranslation() complete");
 	return translation;
 }
 

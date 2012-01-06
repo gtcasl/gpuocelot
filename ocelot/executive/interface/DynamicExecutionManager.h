@@ -8,6 +8,7 @@
 #ifndef OCELOT_EXECUTIVE_DYNAMICEXECUTIONMANAGER_H_INCLUDED
 #define OCELOT_EXECUTIVE_DYNAMICEXECUTIONMANAGER_H_INCLUDED
 
+#include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 
 namespace executive {
@@ -25,8 +26,13 @@ namespace executive {
 		void launch(DynamicMulticoreKernel &kernel, size_t sharedMemorySize);
 		
 	protected:
-		
+	
 		static DynamicExecutionManager instance;
+		
+	public:
+		//! owns the translation cache
+		DynamicTranslationCache translationCache;
+		
 	};
 
 }

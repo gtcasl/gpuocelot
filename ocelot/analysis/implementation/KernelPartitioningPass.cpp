@@ -464,6 +464,8 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 			if (alive_it == aliveValues.begin()) {
 				move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area");
 				move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+				move.addressSpace = ir::PTXInstruction::Local;
+				move.a.isGlobalLocal = false;
 				
 				subkernelDfg->insert(handlerDfgBlock, move);
 			}

@@ -5,7 +5,8 @@
 	\brief executes a kernel over one or more CTAs
 */
 
-
+#include <ocelot/executive/interface/DynamicTranslationCache.h>
+#include <ocelot/executive/interface/DynamicExecutionManager.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
 
 // Hydrazine includes
@@ -26,19 +27,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
-	executive::DynamicMulticoreKernel &kernel, size_t _sharedMemorySize) {
+	executive::DynamicMulticoreKernel &_kernel, size_t _sharedMemorySize
+):
+	kernel(&_kernel) 
+{
 	
 	// allocate memory for Cooperative Thread array
-	localMemorySize = kernel.localMemorySize();
+	localMemorySize = _kernel.localMemorySize();
 	localMemory = new char[localMemorySize];
 	
 	sharedMemorySize = _sharedMemorySize;
 	sharedMemory = new char[sharedMemorySize];
 	
-	parameterMemorySize = kernel.parameterMemorySize();
+	parameterMemorySize = _kernel.parameterMemorySize();
 	parameterMemory = new char[parameterMemorySize];
 	
-	report("DynamicMulticoreExecutve('" << kernel.name << "', shared mem size: " << sharedMemorySize);
+	report("DynamicMulticoreExecutve('" << _kernel.name << "', shared mem size: " << sharedMemorySize);
 	report("  localMemorySize: " << localMemorySize);
 	report("  paramMemorySize: " << parameterMemorySize);
 }
@@ -51,6 +55,14 @@ executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
 
 void executive::DynamicMulticoreExecutive::execute(ir::Dim3 block) {
 	report("DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y << ")");
+
+	analysis::KernelPartitioningPass::KernelGraph *kernelGraph = kernel->kernelGraph();
+
+	DynamicTranslationCache::Translation *entryTranslation =
+		DynamicExecutionManager::get().translationCache.getOrInsertTranslation(1, 
+			kernelGraph->getEntrySubkernel());
+	
+	assert(entryTranslation);
 	
 	// initialize thread contexts
 	//

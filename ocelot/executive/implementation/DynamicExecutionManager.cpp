@@ -6,6 +6,7 @@
 */
 
 // Ocelot includes
+#include <ocelot/executive/interface/DynamicMulticoreDevice.h>
 #include <ocelot/executive/interface/DynamicExecutionManager.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
 
@@ -32,7 +33,7 @@ executive::DynamicExecutionManager & executive::DynamicExecutionManager::get() {
 	return instance;
 }
 
-executive::DynamicExecutionManager::DynamicExecutionManager() {
+executive::DynamicExecutionManager::DynamicExecutionManager(): translationCache(this) {
 	report("DynamicExecutionManager()");
 	
 	// spawn worker threads
@@ -51,7 +52,10 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	
 	report("DynamicExecutionManager::launch()");
 	
+	translationCache.loadModule(kernel.module, static_cast<executive::DynamicMulticoreDevice*>(kernel.device));
+	
 	// make the kernel graph available to the dynamic translation cache if need be
+	translationCache.registerKernel(&kernel);
 	
 	// start executing
 	
@@ -65,6 +69,8 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 		}
 	}
 }
+
+// emma was here. :-)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -43,7 +43,7 @@ namespace ir
 		
 		public:
 			/*! \brief Assemble the LLVM kernel from the set of statements */
-			void assemble();
+			void assemble(bool includeDeclarations = true);
 			/*! \brief Is the kernel assembled? */
 			bool assembled() const;
 			/*! \brief Get the assembly code */

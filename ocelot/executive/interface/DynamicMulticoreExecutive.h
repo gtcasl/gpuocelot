@@ -51,6 +51,11 @@ namespace executive {
 	
 	protected:
 		
+			
+	protected:
+	
+		DynamicMulticoreKernel *kernel;
+		
 		char *localMemory;
 		size_t localMemorySize;
 		

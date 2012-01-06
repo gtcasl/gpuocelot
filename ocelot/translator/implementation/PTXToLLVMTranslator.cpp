@@ -77,8 +77,7 @@ ir::Kernel* PTXToLLVMTranslator::translate( const ir::Kernel* k )
 	
 	_llvmKernel = new ir::LLVMKernel( *k );
 
-	analysis::Analysis* analysis = getAnalysis(
-		Analysis::DataflowGraphAnalysis );
+	analysis::Analysis* analysis = getAnalysis(Analysis::DataflowGraphAnalysis );
 	assert( analysis != 0 );
 	
 	_dfg = static_cast< analysis::DataflowGraph* >( analysis );
@@ -3959,11 +3958,14 @@ void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 
 							if( i.a.addressMode == ir::PTXOperand::Address )
 							{
-								assertM( i.addressSpace !=
-									ir::PTXInstruction::Local
-									|| !i.a.isGlobalLocal, "Taking the address "
-									"of a globally local "
-									"value is not supported." );
+							
+							// mov is not defined to have an address space
+							//
+							//	assertM( i.addressSpace !=
+							//		ir::PTXInstruction::Local
+							//		|| !i.a.isGlobalLocal, "Taking the address "
+							//		"of a globally local "
+							//		"value is not supported." );
 								
 								cast.a.i64 = i.a.offset;
 							}

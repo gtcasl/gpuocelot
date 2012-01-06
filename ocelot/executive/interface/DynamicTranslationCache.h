@@ -129,7 +129,7 @@ namespace executive {
 		typedef std::unordered_map< std::string, ModuleMetadata> ModuleMap;
 	
 	public:
-		DynamicTranslationCache();
+		DynamicTranslationCache(DynamicExecutionManager *_executionManager);
 		~DynamicTranslationCache();
 		
 		void registerKernel(DynamicMulticoreKernel *kernel);

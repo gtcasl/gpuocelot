@@ -36,7 +36,7 @@ namespace ir
 		_statements.push_front(statement);
 	}
 	
-	void LLVMKernel::assemble()
+	void LLVMKernel::assemble(bool includeDeclarations)
 	{
 		_code.clear();
 		
@@ -49,7 +49,13 @@ namespace ir
 			statement = llvmStatements().begin(); 
 			statement != llvmStatements().end(); ++statement )
 		{
-			if( statement->type == LLVMStatement::Instruction ) _code += "\t";
+			// filter out declarations
+			if (!includeDeclarations && statement->type == LLVMStatement::FunctionDeclaration) {
+				continue;
+			}
+			if( statement->type == LLVMStatement::Instruction ) {
+				_code += "\t";
+			}
 			_code += statement->toString() + "\n";
 		}
 	}

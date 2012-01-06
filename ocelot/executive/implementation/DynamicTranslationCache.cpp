@@ -6,14 +6,22 @@
 */
 
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
+#include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
+#include <ocelot/executive/interface/DynamicMulticoreDevice.h>
+#include <ocelot/executive/interface/LLVMState.h>
+#include <ocelot/ir/interface/LLVMKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/math.h>
 #include <hydrazine/interface/Casts.h>
+
+#define HAVE_LLVM
 
 // LLVM Includes
 #ifdef HAVE_LLVM
@@ -33,6 +41,8 @@
 #include <llvm/Instructions.h>
 #include <llvm/Support/CFG.h>
 #include <llvm/Support/raw_os_ostream.h>
+#else
+#error "LLVM MUST BE PRESENT"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +76,17 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace llvm {
+
+	class Instruction;
+
+}
+
 std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst);
 
+static translator::Translator::OptimizationLevel getOptimizationLevel() {
+	return (translator::Translator::OptimizationLevel)api::configuration().executive.optimizationLevel;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,16 +100,16 @@ executive::DynamicTranslationCache::~DynamicTranslationCache() {
 
 executive::DynamicTranslationCache::Translation *
 executive::DynamicTranslationCache::getOrInsertTranslation(
-	int warpsize, SubkernelId subkernelId, unsigned int specialization) {
+	int warpSize, SubkernelId subkernelId, unsigned int specialization) {
 	
-	report(" DynamicTranslationCache::getOrInsertTranslation(ws: " << warpsize 
-		<< ", skId: " << subkernel << ", specialization = " << specialization << ")");
+	report(" DynamicTranslationCache::getOrInsertTranslation(ws: " << warpSize 
+		<< ", skId: " << subkernelId << ", specialization = " << specialization << ")");
 		
 	Translation *translation = 0;
 		
 	TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
 	if (translation_it != translationCache.end()) {
-		WarpTranslationMap::iterator warp_it = translation_it->second.find(warpsize);
+		WarpTranslationMap::iterator warp_it = translation_it->second.find(warpSize);
 		if (warp_it != translation_it->second.end()) {
 			translation = warp_it->second;
 			report("  found in translation cache");
@@ -98,8 +117,9 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 	}
 	
 	if (!translation) {	
+
 		translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
-			optimizationLevel, warpSize, specialization);
+			getOptimizationLevel(), warpSize, specialization);
 		
 		report("  inserted in translation cache");
 	}
@@ -111,7 +131,7 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *kernel) {
 	report("DynamicTranslationCache::registerKernel(" << kernel->name << ")");
 	
-	ModuleMap::iterator module_it = modules.find(kernel->module()->name);
+	ModuleMap::iterator module_it = modules.find(kernel->module->path());
 	assert(module_it != modules.end());
 	
 	ModuleMetadata &module = module_it->second;
@@ -120,14 +140,14 @@ void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *
 		TranslatedKernel *translatedKernel = new TranslatedKernel(kernel);
 		translatedKernel->localMemorySize = 0;
 		translatedKernel->sharedMemorySize = 0;
-		kernels[kernel] = translatedKernel;
+		module.kernels[kernel->name] = translatedKernel;
 				
 		_translateKernel(*translatedKernel);
 		report("  registered new kernel");
 	}
 	else {
 		// do nothing.
-		repoort("  kernel already registered");
+		report("  kernel already registered");
 	}	
 }
 
@@ -135,12 +155,12 @@ void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *
 bool executive::DynamicTranslationCache::loadModule(const ir::Module *module, 
 	executive::DynamicMulticoreDevice *device) {
 	
-	report("DynamicTranslationCache::loadModule(" << module->name << ")");
+	report("DynamicTranslationCache::loadModule(" << module->path() << ")");
 	
 	ModuleMetadata newModule;
 	newModule.ptxModule = module;
-	newModule.device = device;
-	modules[module->name] = newModule;
+	this->device = device;
+	modules[module->path()] = newModule;
 	
 	return true;
 }
@@ -214,7 +234,7 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel) {
 	\brief computes layout of kernel arguments
 */
 static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
-	DynamicMulticoreExecutive::Metadata* metadata) {
+	executive::DynamicMulticoreExecutive::Metadata* metadata) {
 	
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Setting up argument memory references.");
@@ -276,7 +296,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 	\brief 
 */
 static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
-	DynamicMulticoreExecutive::Metadata* metadata) {
+	executive::DynamicMulticoreExecutive::Metadata* metadata) {
 	
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Setting up parameter memory references.");
@@ -394,7 +414,7 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 	\brief lays out shared memory
 */
 static void setupSharedMemoryReferences(ir::PTXKernel& kernel, 
-	DynamicMulticoreExecutive::Metadata* metadata) {
+	executive::DynamicMulticoreExecutive::Metadata* metadata) {
 	
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	typedef std::unordered_set<std::string> StringSet;
@@ -527,7 +547,7 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 	\brief 
 */
 static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
-	DynamicMulticoreExecutive::Metadata* metadata)
+	executive::DynamicMulticoreExecutive::Metadata* metadata)
 {
 	reportE(REPORT_TRANSLATION_OPERATIONS,  "  Setting up constant memory references." );
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -591,7 +611,7 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 	\brief
 */
 static void setupTextureMemoryReferences(ir::PTXKernel& kernel, 
-	DynamicMulticoreExecutive::Metadata* metadata, executive::Device* device) {
+	executive::DynamicMulticoreExecutive::Metadata* metadata, executive::Device* device) {
 	
 	typedef std::unordered_map<std::string, unsigned int> TextureMap;
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Setting up texture memory references.");
@@ -636,7 +656,7 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 	\brief 
 */
 static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
-	DynamicMulticoreExecutive::Metadata* metadata) {
+	executive::DynamicMulticoreExecutive::Metadata* metadata) {
 	
 	reportE(REPORT_TRANSLATION_OPERATIONS,  "  Setting up local memory references." );
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -790,7 +810,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 
 */
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
-	DynamicmMulticoreExecutive::Metadata* metadata, executive::Device* device) {
+	executive::DynamicMulticoreExecutive::Metadata* metadata, executive::Device* device) {
 	
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Setting up memory references for kernel variables.");
 	
@@ -807,8 +827,10 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	\brief apply a set of optimizations and transformations to the PTX representation
 		of the whole kernel
 */
-static void optimizePTX(ir::PTXKernel& kernel, translator::Translator::OptimizationLevel optimization) {
+void DynamicTranslationCacheOptimizePTX(ir::PTXKernel& kernel, 
+	translator::Translator::OptimizationLevel optimization) {
 	
+	/*
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Building dataflow graph.");
 	kernel.dfg();
 
@@ -821,13 +843,14 @@ static void optimizePTX(ir::PTXKernel& kernel, translator::Translator::Optimizat
 	convertPredicationToSelect.finalize();
 
 	kernel.dfg()->toSsa();
+	*/
 }
 
 /*!
 	\brief 
 */
 static void setupCallTargets(ir::PTXKernel& kernel,
-	const LLVMDynamicTranslationCache & translationCache) {
+	const executive::DynamicTranslationCache & translationCache) {
 	
 	// replace all call instruction operands with kernel id
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Setting up targets of call instructions.");
@@ -867,23 +890,16 @@ static std::string getTranslatedName(const std::string &kernelName) {
 }
 
 /*!
-	\brief 
-*/
-static llvm::Function *translatePTXtoLLVM(llvm::Module* module, ir::PTXKernel& kernel,
-	translator::Translator::OptimizationLevel optimization) {
-	
-
-}
-
-/*!
 	\brief constructs a metadata instance
 */
-static LLVMDynamicExecutive::Metadata* generateMetadata(
+static executive::DynamicMulticoreExecutive::Metadata* generateMetadata(
 	ir::PTXKernel& kernel, 
 	translator::Translator::OptimizationLevel level,
 	int warpSize = 1)
 {
-	LLVMDynamicExecutive::Metadata *metadata = new LLVMDynamicExecutive::Metadata;
+	executive::DynamicMulticoreExecutive::Metadata *metadata = 
+		new executive::DynamicMulticoreExecutive::Metadata;
+	
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Building metadata.");
 	
 	if(level == translator::Translator::DebugOptimization
@@ -910,12 +926,15 @@ static LLVMDynamicExecutive::Metadata* generateMetadata(
 */
 static void cloneAndOptimizeTranslation(
 	executive::DynamicTranslationCache::TranslatedKernel &translatedKernel,
+	executive::DynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
 	executive::DynamicTranslationCache::Translation *translation,
+	int warpSize,
 	translator::Translator::OptimizationLevel optimization,
-	int warpSize) {
-	
-	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing kernel at level " 
-		<< translator::Translator::toString(optimization));
+	unsigned int specialization) {
+		
+	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing kernel " << translatedSubkernel.subkernelPtx->name 
+		<< " for warpSize " << warpSize << ", optimziation level " << translator::Translator::toString(optimization)
+		<< " and specialization " << specialization);
 
 	unsigned int level = 0;
 	bool space = false;
@@ -939,18 +958,20 @@ static void cloneAndOptimizeTranslation(
 			break;
 	}
 
-
 	std::stringstream ss;
-	ss << translatedKernel.scalarTranslation->getNameStr() << "_opt" << level << "_ws" << warpSize;
+	ss << translatedSubkernel.subkernelPtx->name << "_opt" << level << "_ws" << warpSize;
+	if (specialization) {
+		ss << "_spec" << specialization;
+	}
 
-	translation->llvmFunction = llvm::CloneFunction(translatedKernel.llvmFunction);
+	translation->llvmFunction = llvm::CloneFunction(translatedSubkernel.llvmFunction);
 	translation->llvmFunction->setName(ss.str());
 	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
 	
 	translatedKernel.llvmModule->getFunctionList().push_back(translation->llvmFunction);
 		
 	llvm::FunctionPassManager manager(translatedKernel.llvmModule);
-	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
+	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
 	
 	level = 1;
 
@@ -1026,7 +1047,8 @@ static void cloneAndOptimizeTranslation(
 	report("performed transformations");
 }
 
-static void linkLLVMModule(llvm::Module& module, const ir::PTXKernel& kernel, Device* device) {
+static void linkLLVMModule(llvm::Module& module, const ir::PTXKernel& kernel, 
+	executive::Device* device) {
 
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Linking global variables.");
 	
@@ -1040,14 +1062,14 @@ static void linkLLVMModule(llvm::Module& module, const ir::PTXKernel& kernel, De
 			
 			assertM(value != 0, "Global variable " << global->first 
 				<< " not found in llvm module.");
-			Device::MemoryAllocation* allocation = device->getGlobalAllocation(kernel.module->path(), 
-				global->first);
+			executive::Device::MemoryAllocation* allocation = 
+				device->getGlobalAllocation(kernel.module->path(), global->first);
 			
 			assert(allocation != 0);
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Binding global variable " << global->first 
 				<< " to " << allocation->pointer());
 			
-			LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
+			executive::LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
 		}
 	}
 }
@@ -1060,26 +1082,27 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 	
 #ifdef HAVE_LLVM
 	reportE(REPORT_TRANSLATION_OPERATIONS, "Getting metadata for kernel '" 
-		<< translatedKernel.kernel->name << "' subkernel " << subkernelId);
+		<< translatedKernel.kernel->name << "'");
 	
-	KernelGraph::SubkernelMap &subkernels = translatedKernel.kernel->kernelGraph()->subkernels;
+	typedef analysis::KernelPartitioningPass::SubkernelMap SubkernelMap;
+	SubkernelMap &subkernels = translatedKernel.kernel->kernelGraph()->subkernels;
 
-	for (KernelGraph::SubkernelMap::iterator subkernel_it = subkernels.begin(); 
+	for (SubkernelMap::iterator subkernel_it = subkernels.begin(); 
 		subkernel_it != subkernels.end(); ++subkernel_it) {
 	
 		subkernelsToKernel[subkernel_it->first] = &translatedKernel;
 	
 		ir::PTXKernel *subkernelPtx = subkernel_it->second.subkernel;
 	
-		Metadata *metadata = 0;
+		DynamicMulticoreExecutive::Metadata *metadata = 0;
 	
 		// apply PTX optimizations and transformations needed to support the dynamic translation cache
-		optimizePTX(*subkernelPtx, optimization);
+		//optimizePTX(*subkernelPtx, optimization);
 		
 		try {
 	
 			// compte memory sizes and layouts
-			metadata = generateMetadata(*subkernelPtx, optimization);
+			metadata = generateMetadata(*subkernelPtx, getOptimizationLevel());
 		
 			// translate global memory references
 			setupPTXMemoryReferences(*subkernelPtx, metadata, device);
@@ -1087,9 +1110,9 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			// rewrite call functions with hyperblock exits chained to target functions
 			setupCallTargets(*subkernelPtx, *this);
 	
-			translator::PTXToLLVMTranslator translator(optimization);
+			translator::PTXToLLVMTranslator translator(getOptimizationLevel());
 
-			ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(&kernel));
+			ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(subkernelPtx));
 
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
 			llvmKernel->assemble();
@@ -1102,7 +1125,7 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 		#endif
 
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Parsing LLVM assembly.");
-			llvm::Module *newModule = llvm::ParseAssemblyString(llvmAssembly.str().c_str(), 
+			llvm::Module *newModule = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
 				translatedKernel.llvmModule, error, llvm::getGlobalContext());
 
 			if (newModule == 0) {
@@ -1113,8 +1136,7 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 				llvm::raw_string_ostream message(m);
 				message << "LLVM Parser failed: ";
 
-				error.Print(kernel.name.c_str(), message);
-				kernel.dfg()->fromSsa();
+				error.print(subkernelPtx->name.c_str(), message);
 
 				throw hydrazine::Exception(message.str());
 			}
@@ -1125,16 +1147,14 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			delete llvmKernel;
 			
 			TranslatedSubkernel newSubkernel;
-			newSubkernel.llvmFunction = module->getFunction(getTranslatedName(kernel.name));
+			newSubkernel.llvmFunction = translatedKernel.llvmModule->getFunction(getTranslatedName(
+				subkernelPtx->name));
 			newSubkernel.metadata = metadata;
-			translatedKernel.subkernels[subkernelId] = newSubkernel;
+			newSubkernel.subkernelPtx = subkernelPtx;
+			translatedKernel.subkernels[subkernel_it->first] = newSubkernel;
 		
-			// Converting out of ssa makes the assembly easier to read
-			if(optimization == translator::Translator::ReportOptimization 
-				|| optimization == translator::Translator::DebugOptimization) {
-			
-				subkernelPtx->dfg()->fromSsa();
-			}
+			// might convert back from SSA at some point.
+		
 			translatedKernel.metadata = metadata;
 		}
 		catch(...)
@@ -1160,7 +1180,6 @@ executive::DynamicTranslationCache::Translation *
 	TranslatedSubkernel &subkernel = translatedKernel.subkernels[subkernelId];
 	
 	Translation *translation = new Translation;
-	
 	translation->metadata = subkernel.metadata;
 	
 	#ifdef HAVE_LLVM
@@ -1169,22 +1188,22 @@ executive::DynamicTranslationCache::Translation *
 		report("  cloning and optimizing");
 	
 		// apply optimizations on the resulting LLVM function
-		cloneAndOptimizeTranslation(translatedKernel, translation, optimization, translation->warpSize);
+		cloneAndOptimizeTranslation(translatedKernel, subkernel, 
+			translation, warpSize, getOptimizationLevel(), specialization);
 		
 		// dynamically compile LLVM to host ISA
 		reportE(REPORT_TRANSLATION_OPERATIONS, " Generating native code.");
 	
-	
 		report("  JIT compiling");
 		
-		LLVMState::jit()->addModule(translatedKernel.llvmModule);
-		linkLLVMModule(*translatedKernel.llvmModule, *subkernel.subkernel, device);
+		executive::LLVMState::jit()->addModule(translatedKernel.llvmModule);
+		linkLLVMModule(*translatedKernel.llvmModule, *subkernel.subkernelPtx, device);
 		
 		reportE(REPORT_TRANSLATION_OPERATIONS, "  Invoking LLVM to Native JIT");
 		assertM(translation->llvmFunction != 0, "Could not find function ");
 	
-		translation->function = hydrazine::bit_cast<DynamicTranslationCache::TranslatedFunction>(
-			LLVMState::jit()->getPointerToFunction(translation->llvmFunction));
+		translation->function = hydrazine::bit_cast<DynamicTranslationCache::ExecutableFunction>(
+			executive::LLVMState::jit()->getPointerToFunction(translation->llvmFunction));
 		
 		report("  verifying");
 		
@@ -1198,13 +1217,14 @@ executive::DynamicTranslationCache::Translation *
 		subkernel.translations[warpSize] = translation;
 		
 		// update the translation cache
-		translationCache[subkernelid][warpSize] = translation;
+		translationCache[subkernelId][warpSize] = translation;
 	}
 	catch(...) {
-		LLVMState::jit()->removeModule(translatedKernel.llvmModule);
+		executive::LLVMState::jit()->removeModule(translatedKernel.llvmModule);
 		delete translation;
 		throw;
 	}
+	#endif
 	return translation;
 }
 

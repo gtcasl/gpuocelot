@@ -80,6 +80,11 @@ executive::DynamicMulticoreKernel::~DynamicMulticoreKernel() {
 	}
 }
 
+
+analysis::KernelPartitioningPass::KernelGraph *executive::DynamicMulticoreKernel::kernelGraph() const {
+	return _kernelGraph;
+}
+
 /*!	\brief Launch a kernel on a 2D grid */
 void executive::DynamicMulticoreKernel::launchGrid(int width, int height, int depth) {
 

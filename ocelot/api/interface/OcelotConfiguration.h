@@ -246,6 +246,7 @@ namespace api {
 		Optimizations optimizations;
 	};
 
+	const OcelotConfiguration &configuration();
 }
 
 #endif

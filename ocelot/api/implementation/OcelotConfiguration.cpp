@@ -37,6 +37,11 @@ const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	return *ocelotConfiguration;
 }
 
+
+const api::OcelotConfiguration & api::configuration() {
+	return OcelotConfiguration::get();
+}
+
 void api::OcelotConfiguration::destroy() {
         delete ocelotConfiguration;
         ocelotConfiguration = 0;

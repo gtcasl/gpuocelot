@@ -40,7 +40,7 @@ namespace executive {
 			
 			SubkernelId	nextEntryId;
 			
-			TextureVector textures;
+			executive::ExecutableKernel::TextureVector textures;
 		};
 		
 	public:

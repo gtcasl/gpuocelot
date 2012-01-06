@@ -16,6 +16,8 @@
 #include <ocelot/executive/interface/LLVMContext.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
+#include <ocelot/translator/interface/PTXToLLVMTranslator.h>
+#include <ocelot/executive/interface/LLVMContext.h>
 
 namespace llvm {
 	class Function;
@@ -25,6 +27,7 @@ namespace executive {
 
 	class DynamicMulticoreKernel;
 	class DynamicMulticoreDevice;
+	class DynamicExecutionManager;
 
 	class DynamicTranslationCache {
 	public:
@@ -42,7 +45,7 @@ namespace executive {
 		
 			void execute(LLVMContext **contexts) const;
 		
-		protected:
+		public:
 		
 			//! \brief
 			llvm::Function *llvmFunction;
@@ -57,7 +60,7 @@ namespace executive {
 		//! maps warp size onto a particular translation instance
 		typedef std::map< int, Translation* > WarpTranslationMap;
 		typedef std::map< SubkernelId, Translation *> TranslationMap;
-		typedef std::map< SUbkernelId, WarpTranslationMap> TranslationCacheMap;
+		typedef std::map< SubkernelId, WarpTranslationMap> TranslationCacheMap;
 		
 		class TranslatedSubkernel {
 		public:
@@ -65,6 +68,9 @@ namespace executive {
 		public:
 			//! \brief source LLVM function
 			llvm::Function *llvmFunction;
+			
+			//! \brief pointer to subkernel
+			ir::PTXKernel *subkernelPtx;
 
 			//! \brief stores information needed by the translated function and the execution manager
 			void *metadata;
@@ -91,6 +97,9 @@ namespace executive {
 			//! \brief
 			DynamicMulticoreKernel *kernel;
 			
+			//! \brief metadata
+			void *metadata;
+			
 			//! \brief mapping of translated subkernels
 			TranslatedSubkernelMap subkernels;
 			
@@ -108,12 +117,6 @@ namespace executive {
 				to hyperblocks
 		*/
 		class ModuleMetadata {
-		public:
-			ModuleMetadata();
-			~ModuleMetadata();
-			
-			void clear();
-			
 		public:
 		
 			//! \brief registered PTX module

@@ -12,12 +12,14 @@
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
+#include <ocelot/executive/interface/LLVMContext.h>
 
 namespace executive {
 
 	class DynamicMulticoreExecutive {
 	public:
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
+		typedef analysis::KernelPartitioningPass::ThreadExitType ThreadExitType;
 		
 		/*!
 			\brief per kernel data structure accessible to the translation
@@ -47,10 +49,17 @@ namespace executive {
 		DynamicMulticoreExecutive(executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
 		~DynamicMulticoreExecutive();
 		
-		void execute(ir::Dim3 block);
+		void execute(const ir::Dim3 &block);
 	
 	protected:
 		
+		void _initializeThreadContexts(const ir::Dim3 &blockId);
+		
+		SubkernelId _getResumePoint(const LLVMContext *context, int tid);
+		void _setResumePoint(const LLVMContext *context, int tid, SubkernelId subkernel);
+		ThreadExitType _getResumeStatus(const LLVMContext *context, int tid);
+		void _setResumeStatus(const LLVMContext *context, int tid, ThreadExitType status);
+
 			
 	protected:
 	
@@ -64,6 +73,8 @@ namespace executive {
 		
 		char *parameterMemory;
 		size_t parameterMemorySize;
+		
+		LLVMContext *contexts;
 	};
 
 }

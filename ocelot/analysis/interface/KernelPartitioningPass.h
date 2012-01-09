@@ -34,7 +34,7 @@ namespace analysis {
 			Thread_barrier = 5,
 			Thread_exit = 6,
 			Thread_exit_other = 7,
-			Thread_subkernel,
+			Thread_subkernel = 8,
 			ThreadExitType_invalid
 		};
 		static std::string toString(const ThreadExitType &code);
@@ -135,6 +135,8 @@ namespace analysis {
 		public:
 			KernelGraph(ir::PTXKernel *_kernel, SubkernelId baseId = 0);
 			~KernelGraph();
+		
+			size_t localMemorySize() const;
 		
 		protected:
 		

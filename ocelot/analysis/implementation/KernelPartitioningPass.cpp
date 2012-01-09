@@ -378,6 +378,18 @@ size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets() 
 	return bytes;
 }
 
+size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
+	SubkernelMap::const_iterator subkernel_it = subkernels.find(entrySubkernelId);
+
+	size_t localsSize = 0;
+	for (ir::Kernel::LocalMap::const_iterator local_it = subkernel_it->second.subkernel->locals.begin();
+		local_it != subkernel_it->second.subkernel->locals.end(); ++local_it ) {
+	
+		localsSize += local_it->second.getSize();
+	}
+	return localsSize;
+}
+
 void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
 	analysis::DataflowGraph::RegisterSet &uses) {
 

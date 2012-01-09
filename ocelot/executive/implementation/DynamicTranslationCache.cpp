@@ -67,13 +67,13 @@
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
-#define REPORT_LLVM_VERIFY_FAILURE 1			// emit assembly if verification fails
-#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
+#define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 
-#define REPORT_TRANSLATIONS 1
+#define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -187,6 +187,7 @@ executive::DynamicTranslationCache::Translation::Translation(llvm::Function *_ll
 
 void executive::DynamicTranslationCache::Translation::execute(LLVMContext **contexts) const {
 	assert(function);
+	function(contexts[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -693,12 +694,13 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	}
 	
 	pad(metadata->localSize, sizeof(int));
+	offsets.insert(std::make_pair("_Zocelot_resume_point", metadata->localSize));
+	metadata->localSize += sizeof(int);
+	
+	pad(metadata->localSize, sizeof(int));
 	offsets.insert(std::make_pair("_Zocelot_resume_status", metadata->localSize));
 	metadata->localSize += sizeof(int);
 
-	pad(metadata->localSize, sizeof(int));
-	offsets.insert(std::make_pair("_Zocelot_resume_point", metadata->localSize));
-	metadata->localSize += sizeof(int);
 	
 	/*
 	if (api::OcelotConfiguration::get().executive.yieldOverheadInstrumentation) {

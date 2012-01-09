@@ -58,7 +58,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
+#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
 #define REPORT_SOURCE_PTX_KERNELS 0				// PTX prior to transformations
 #define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 0
@@ -66,14 +66,14 @@
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
-#define REPORT_TRANSLATION_OPERATIONS 1		// translation events
+#define REPORT_TRANSLATION_OPERATIONS 0		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -980,7 +980,8 @@ static void cloneAndOptimizeTranslation(
 	llvm::FunctionPassManager manager(translatedKernel.llvmModule);
 	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
 	
-	level = 1;
+	report("Overriding optimization level");
+	level = 2;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1120,7 +1121,7 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			setupCallTargets(*subkernelPtx, *this);
 	
 			report("  Converting from PTX IR to LLVM IR.");
-			translator::PTXToLLVMTranslator translator(getOptimizationLevel(), 0);
+			translator::PTXToLLVMTranslator translator(getOptimizationLevel(), 0, true);
 
 			transforms::PassManager manager(const_cast<ir::Module*>(subkernelPtx->module));
 
@@ -1233,6 +1234,13 @@ executive::DynamicTranslationCache::Translation *
 		if (llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &errors)) {
 			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
 		}
+		
+#if REPORT_LLVM_MASTER
+		std::string llvmText;
+		llvm::raw_string_ostream llvmStream(llvmText);
+		translation->llvmFunction->print(llvmStream);
+		reportE(REPORT_OPTIMIZED_LLVM_ASSEMBLY, "Specialized and optimized LLVM function:\n" << llvmText);
+#endif
 		
 		report("  updating translation cache data structures");
 		subkernel.translations[warpSize] = translation;

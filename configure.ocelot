@@ -29,7 +29,7 @@
 		devices: [ "dynamic" ],
 		port: 2011,
 		host: "127.0.0.1",
-		optimizationLevel: none,
+		optimizationLevel: memory,
 		workerThreadLimit: 1,
 		reconvergenceMechanism: "tf-stack",
 		warpSize: 4

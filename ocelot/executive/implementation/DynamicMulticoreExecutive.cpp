@@ -5,6 +5,10 @@
 	\brief executes a kernel over one or more CTAs
 */
 
+// C++ includes
+#include <iomanip>
+
+// Ocelot includes
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicExecutionManager.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
@@ -29,33 +33,54 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::DynamicMulticoreExecutive::SubkernelId 
-	executive::DynamicMulticoreExecutive::_getResumePoint(const executive::LLVMContext *context, 
-	int tid) {
+	executive::DynamicMulticoreExecutive::_getResumePoint(const executive::LLVMContext *context) {
 	
 	const char *ptr = context->local;
 	return *(executive::DynamicMulticoreExecutive::SubkernelId *)(ptr + 0);
 }
 
 void executive::DynamicMulticoreExecutive::_setResumePoint(const executive::LLVMContext *context, 
-	int tid, SubkernelId subkernel) {
+	SubkernelId subkernel) {
 
 	char *ptr = context->local;
 	*(executive::DynamicMulticoreExecutive::SubkernelId *)(ptr + 0) = subkernel;
 }
 
 executive::DynamicMulticoreExecutive::ThreadExitType 
-	executive::DynamicMulticoreExecutive::_getResumeStatus(const executive::LLVMContext *context,
-	int tid) {
+	executive::DynamicMulticoreExecutive::_getResumeStatus(const executive::LLVMContext *context) {
 	
 	const char *ptr = context->local;
 	return *(executive::DynamicMulticoreExecutive::ThreadExitType *)(ptr + 4);
 }
 
 void executive::DynamicMulticoreExecutive::_setResumeStatus(const executive::LLVMContext *context, 
-	int tid, executive::DynamicMulticoreExecutive::ThreadExitType status) {
+	executive::DynamicMulticoreExecutive::ThreadExitType status) {
 
 	char *ptr = context->local;
 	*(executive::DynamicMulticoreExecutive::ThreadExitType *)(ptr + 4) = status;
+}
+
+
+void executive::DynamicMulticoreExecutive::_emitThreadLocalMemory(const LLVMContext *context) {
+	for (size_t offset = 0; offset < localMemorySize; offset += 4) {
+		std::cout << "[offset: " << std::setw(3) << std::setfill(' ') << offset << "]: 0x" << std::hex << std::setw(8) << std::setfill('0')
+			<< *(unsigned int *)(&context->local[offset]) << std::dec;
+			
+		switch (offset) {
+		case 0:
+			std::cout << "  [resume point]";
+			break;
+		case 4:
+			std::cout << "  [resume status]";
+			break;
+		case 8:
+			std::cout << "  [spill area]";
+			break;
+		default:
+			break;
+		}
+		std::cout << "\n";
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,6 +120,8 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 	const ir::Dim3 blockDim = kernel->blockDim();
 	SubkernelId startingSubkernel = kernel->kernelGraph()->getEntrySubkernel();
 	
+	std::memset(localMemory, 0, localMemorySize * blockDim.size());
+	
 	for (int i = 0; i < blockDim.size(); i++) {
 		contexts[i].tid = {i % blockDim.x, (i / blockDim.x) % blockDim.y, i / (blockDim.x * blockDim.y)};
 		
@@ -109,8 +136,8 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 		contexts[i].globallyScopedLocal = 0;
 		contexts[i].externalSharedSize = 0;
 		
-		_setResumePoint(&contexts[i], i, startingSubkernel);
-		_setResumeStatus(&contexts[i], i, analysis::KernelPartitioningPass::Thread_entry);
+		_setResumePoint(&contexts[i], startingSubkernel);
+		_setResumeStatus(&contexts[i], analysis::KernelPartitioningPass::Thread_entry);
 	}
 }
 
@@ -134,7 +161,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	int exitingThreads = 0;
 	int iterations = 0;
 	
-	int maxIterations = 10;
+	int maxIterations = 0;
 	
 	do {
 		if (maxIterations && ++iterations >= maxIterations) {
@@ -148,11 +175,10 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		reportE(REPORT_SCHEDULE_OPERATIONS, "--------------");
 		reportE(REPORT_SCHEDULE_OPERATIONS, "  executing thread " << tid);
 			
-		if (_getResumeStatus(&contexts[tid], tid) != analysis::KernelPartitioningPass::Thread_exit) {
-		
+		if (_getResumeStatus(&contexts[tid]) != analysis::KernelPartitioningPass::Thread_exit) {
 		
 			//   execute subkernel
-			SubkernelId encodedSubkernel = _getResumePoint(&contexts[tid], tid);
+			SubkernelId encodedSubkernel = _getResumePoint(&contexts[tid]);
 			SubkernelId subkernelId = analysis::KernelPartitioningPass::ExternalEdge::getSubkernelId(encodedSubkernel);
 			int warpSize = 1;
 			unsigned int specialization = 0;
@@ -171,12 +197,17 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		
 			translation->execute(warp);
 			
+#if REPORT_SCHEDULE_OPERATIONS && REPORT_BASE
+			reportE(REPORT_SCHEDULE_OPERATIONS, "Local memory: ");
+			_emitThreadLocalMemory(warp[0]);
+#endif
+			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  thread 0 exited with code "
-				<< _getResumeStatus(&contexts[tid], tid) << " and resume point: " 
-				<< _getResumePoint(&contexts[tid], tid));
+				<< _getResumeStatus(&contexts[tid]) << " and resume point: " 
+				<< _getResumePoint(&contexts[tid]));
 	
 			//   update contexts
-			if (_getResumeStatus(&contexts[tid], tid) == analysis::KernelPartitioningPass::Thread_barrier) {
+			if (_getResumeStatus(&contexts[tid]) == analysis::KernelPartitioningPass::Thread_barrier) {
 				++tid;
 				executing = false;
 				reportE(REPORT_SCHEDULE_OPERATIONS, " barriers not supported.");
@@ -200,7 +231,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	
 	} while (executing);
 
-  
 	report("completed DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y  
 		<< ") kernel: '" << kernel->name << "'");
 }

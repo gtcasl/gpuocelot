@@ -43,12 +43,12 @@ namespace translator
 {
 
 PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l,
-	const ir::ExternalFunctionSet* s ) 
+	const ir::ExternalFunctionSet* s, bool dm ) 
 	: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l, 
 		Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment,
 		"PTXToLLVMTranslator" ),
 	_llvmKernel( 0 ), _tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
-	_tempBlockCount( 0 ), _usesTextures( false ), _externals( s )
+	_tempBlockCount( 0 ), _usesTextures( false ), _externals( s ), _usingDynamicMulticoreBackend(dm)
 {
 
 }
@@ -2726,7 +2726,9 @@ void PTXToLLVMTranslator::_translateEx2( const ir::PTXInstruction& i )
 
 void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 {
-	_yield( executive::LLVMExecutableKernel::ExitCall );
+	if (!_usingDynamicMulticoreBackend) {
+		_yield( executive::LLVMExecutableKernel::ExitCall );
+	}
 
 	ir::LLVMBr branch;
 	branch.iftrue = "%exit";

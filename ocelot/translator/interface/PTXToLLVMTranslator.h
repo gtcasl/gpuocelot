@@ -35,7 +35,7 @@ class PTXToLLVMTranslator : public Translator
 {
 public:
 	PTXToLLVMTranslator( OptimizationLevel l = NoOptimization,
-		const ir::ExternalFunctionSet* s = 0 );
+		const ir::ExternalFunctionSet* s = 0, bool dm = false);
 	~PTXToLLVMTranslator();
 
 public:
@@ -61,6 +61,7 @@ protected:
 	const ir::PTXKernel*           _ptx;
 	analysis::DataflowGraph*       _dfg;
 	const ir::ExternalFunctionSet* _externals;
+	bool													 _usingDynamicMulticoreBackend;
 
 protected:
 	static ir::LLVMInstruction::DataType _translate( 
@@ -238,6 +239,7 @@ protected:
 	void _addGlobalDeclarations();
 	void _addExternalFunctionDeclarations();
 	void _addKernelSuffix();
+	
 };
 
 }

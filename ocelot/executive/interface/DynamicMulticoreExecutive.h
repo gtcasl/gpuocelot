@@ -55,11 +55,12 @@ namespace executive {
 		
 		void _initializeThreadContexts(const ir::Dim3 &blockId);
 		
-		SubkernelId _getResumePoint(const LLVMContext *context, int tid);
-		void _setResumePoint(const LLVMContext *context, int tid, SubkernelId subkernel);
-		ThreadExitType _getResumeStatus(const LLVMContext *context, int tid);
-		void _setResumeStatus(const LLVMContext *context, int tid, ThreadExitType status);
+		SubkernelId _getResumePoint(const LLVMContext *context);
+		void _setResumePoint(const LLVMContext *context, SubkernelId subkernel);
+		ThreadExitType _getResumeStatus(const LLVMContext *context);
+		void _setResumeStatus(const LLVMContext *context, ThreadExitType status);
 
+		void _emitThreadLocalMemory(const LLVMContext *context);
 			
 	protected:
 	

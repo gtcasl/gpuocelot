@@ -84,6 +84,10 @@ int main(int argc, char *arg[]) {
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
 	
+	size_t ptr = (size_t)A_gpu;
+	
+	printf("sequence() - A_gpu = 0x%x%x\n", 0x0ffffffff & (ptr >> 32), 0x0ffffffff & ptr);
+	
 	sequence<<< grid, block >>>(A_gpu, N);
 	
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);

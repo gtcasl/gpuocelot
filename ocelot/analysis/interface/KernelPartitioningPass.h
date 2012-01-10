@@ -93,10 +93,18 @@ namespace analysis {
 				const RegisterOffsetMap &registerOffsets);
 			
 		protected:
+		
 			void _create(ir::PTXKernel *source);
+			
+			void _partitionBlocksAtBarrier();
 			
 			void _createExternalHandlers(
 				analysis::DataflowGraph *sourceDfg, 
+				analysis::DataflowGraph *subkernelDfg,
+				const RegisterOffsetMap &registerOffsets);
+				
+			void _createBarrierHandlers(
+				analysis::DataflowGraph *sourceDfg,
 				analysis::DataflowGraph *subkernelDfg,
 				const RegisterOffsetMap &registerOffsets);
 				
@@ -110,10 +118,13 @@ namespace analysis {
 			void _determineRegisterUses(analysis::DataflowGraph::RegisterSet &uses);
 				
 			void _createScheduler();
+			
 			void _createExit(analysis::DataflowGraph::iterator block, analysis::DataflowGraph *subkernelDfg, 
 				ThreadExitType type, SubkernelId target);
 			
 		public:
+		
+			//! \brief 
 			SubkernelId id;
 			
 			//! \brief list of blocks in SOURCE subkernel
@@ -127,6 +138,15 @@ namespace analysis {
 			
 			// in edges
 			ExternalEdgeVector inEdges;
+			
+			//! entry points for barriers
+			ExternalEdgeVector barrierEntries;
+			
+			//! divergent entry handlers
+			ExternalEdgeVector divergentEntries;
+			
+			//! divergent exit handlers
+			ExternalEdgeVector divergentExits;
 		};
 		typedef std::map< SubkernelId, Subkernel> SubkernelMap;
 		

@@ -176,7 +176,6 @@ void analysis::KernelPartitioningPass::KernelGraph::_partition(SubkernelId baseI
 	_partitionMinimumSize(baseId);
 }
 
-
 /*!
 	\brief inserts local variable declarations for spill regions, resume points, and resume status
 */
@@ -204,6 +203,7 @@ void analysis::KernelPartitioningPass::KernelGraph::_createSpillRegion(size_t sp
 	report("  Spill region size is " << spillSize);
 }
 
+
 /*!
 
 */
@@ -215,11 +215,38 @@ void analysis::KernelPartitioningPass::KernelGraph::_createHandlers() {
 	}
 }
 
-
 analysis::KernelPartitioningPass::SubkernelId 
 	analysis::KernelPartitioningPass::KernelGraph::getEntrySubkernel() const {
 	
 	return entrySubkernelId;
+}
+
+/*!
+	\brief compute basic mapping
+*/
+size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets() {
+	typedef analysis::DataflowGraph::RegisterId RegisterId;
+	
+	size_t bytes = 0;
+	RegisterId maxRegister = _sourceKernelDfg->maxRegister();
+	for (RegisterId id = 0; id <= maxRegister; id++) {
+		size_t offset = sizeof(int*) * id;
+		registerOffsets[id] = offset;
+		bytes = offset;
+	}
+	return bytes;
+}
+
+size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
+	SubkernelMap::const_iterator subkernel_it = subkernels.find(entrySubkernelId);
+
+	size_t localsSize = 0;
+	for (ir::Kernel::LocalMap::const_iterator local_it = subkernel_it->second.subkernel->locals.begin();
+		local_it != subkernel_it->second.subkernel->locals.end(); ++local_it ) {
+	
+		localsSize += local_it->second.getSize();
+	}
+	return localsSize;
 }
 			
 ////////////////////////////////////////////////////////////////////////////////////////////////////			
@@ -233,7 +260,8 @@ void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source,
 
 	report("Subkernel::create(" << source->name << ")");
 	
-	_create(source);	
+	_create(source);
+	_partitionBlocksAtBarrier();
 }
 
 void analysis::KernelPartitioningPass::Subkernel::createHandlers(
@@ -244,6 +272,7 @@ void analysis::KernelPartitioningPass::Subkernel::createHandlers(
 	subkernelDfg.analyze(*subkernel);
 	
 	_createExternalHandlers(sourceDfg, &subkernelDfg, registerOffsets);
+	_createBarrierHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	_createDivergenceHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	
 	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX
@@ -363,31 +392,52 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 }
 
 /*!
-	\brief compute basic mapping
+	\brief partitions blocks in parent kernel such that bar.sync is last instruction
 */
-size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets() {
-	typedef analysis::DataflowGraph::RegisterId RegisterId;
+void analysis::KernelPartitioningPass::Subkernel::_partitionBlocksAtBarrier() {
+	report("partitioning blocks at barriers");
+	int barrierCount = 0;
 	
-	size_t bytes = 0;
-	RegisterId maxRegister = _sourceKernelDfg->maxRegister();
-	for (RegisterId id = 0; id <= maxRegister; id++) {
-		size_t offset = sizeof(int*) * id;
-		registerOffsets[id] = offset;
-		bytes = offset;
-	}
-	return bytes;
-}
+	for (ir::ControlFlowGraph::iterator bb_it = subkernel->cfg()->begin(); 
+		bb_it != subkernel->cfg()->end(); ++bb_it) {
 
-size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
-	SubkernelMap::const_iterator subkernel_it = subkernels.find(entrySubkernelId);
+		report(" block " << bb_it->label);
 
-	size_t localsSize = 0;
-	for (ir::Kernel::LocalMap::const_iterator local_it = subkernel_it->second.subkernel->locals.begin();
-		local_it != subkernel_it->second.subkernel->locals.end(); ++local_it ) {
-	
-		localsSize += local_it->second.getSize();
+		unsigned int n = 0;
+		for (ir::BasicBlock::InstructionList::iterator inst_it = (bb_it)->instructions.begin();
+			inst_it != (bb_it)->instructions.end(); ++inst_it, n++) {
+
+			const ir::PTXInstruction *inst = static_cast<const ir::PTXInstruction *>(*inst_it);
+			if (inst->opcode == ir::PTXInstruction::Bar) {
+				if (n + 1 < (unsigned int)(bb_it)->instructions.size()) {
+				
+					std::string label = (bb_it)->label + "_bar";
+					ir::ControlFlowGraph::iterator block = subkernel->cfg()->split_block(bb_it, n+1, 
+						ir::BasicBlock::Edge::FallThrough, label);
+
+					ir::BasicBlock handlerBlock(block->label + "_barrier_entry");
+					blockMapping[block] = subkernelCfg->insert_block(handlerBlock);
+					
+					// remove 
+					
+					SubkernelId entryId = ExternalEdge::getEncodedEntry(id, 
+						(SubkernelId)(inEdges.size() + barrierEntries.size()));
+						
+					ExternalEdge externalEdge;
+					externalEdge.handlerBlock = blockMapping[block];
+					externalEdge.frontierBlock = block;
+					externalEdge.exitStatus = Thread_Barrier;
+					externalEdge.entryId = entryId;
+
+					report("  adding barrier entry to block " << block->label);
+					barrierEntries.push_back(externalEdge);
+				}
+				report("barrier in block " << bb_it->label << "(instruction " << n << ")");
+				++barrierCount;
+				break;
+			}
+		}
 	}
-	return localsSize;
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
@@ -562,8 +612,6 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 
 	report("Frontier exit blocks:");
 	
-//	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
-	
 	for (auto block_it = frontierExitBlocks.begin(); block_it != frontierExitBlocks.end(); ++block_it) {	
 	
 		// update control flow instructions
@@ -586,6 +634,10 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 		else if (terminator->opcode == ir::PTXInstruction::Call) {
 			assert(0 && "unhandled");
 		}
+		else if (terminator->opcode == ir::PTXInstruction::Bar) {
+			assert(0 && "unhandled barrier");
+			
+		}
 		else if (terminator->opcode == ir::PTXInstruction::Exit) {
 			ExternalEdge &externalEdge = block_it->second.front();
 			terminator->opcode = ir::PTXInstruction::Bra;
@@ -605,6 +657,17 @@ void analysis::KernelPartitioningPass::Subkernel::_createScheduler() {
 	//
 	// insert a block into the entry of a subkernel
 	//	
+}
+
+
+void analysis::KernelPartitioningPass::Subkernel::_createBarrierHandlers(
+	analysis::DataflowGraph *sourceDfg,
+	analysis::DataflowGraph *subkernelDfg,
+	const RegisterOffsetMap &registerOffsets) {
+	
+	report("_createBarrierHandlers()");
+	
+	
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_createDivergenceHandlers(

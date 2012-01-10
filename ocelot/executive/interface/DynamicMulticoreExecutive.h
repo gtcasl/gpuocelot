@@ -61,6 +61,7 @@ namespace executive {
 		void _setResumeStatus(const LLVMContext *context, ThreadExitType status);
 
 		void _emitThreadLocalMemory(const LLVMContext *context);
+		void _emitParameterMemory(const LLVMContext *context);
 			
 	protected:
 	

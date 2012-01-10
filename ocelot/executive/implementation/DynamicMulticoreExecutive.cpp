@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 
@@ -63,7 +63,8 @@ void executive::DynamicMulticoreExecutive::_setResumeStatus(const executive::LLV
 
 void executive::DynamicMulticoreExecutive::_emitThreadLocalMemory(const LLVMContext *context) {
 	for (size_t offset = 0; offset < localMemorySize; offset += 4) {
-		std::cout << "[offset: " << std::setw(3) << std::setfill(' ') << offset << "]: 0x" << std::hex << std::setw(8) << std::setfill('0')
+		std::cout << "[offset: " << std::setw(3) << std::setfill(' ') << offset << "]: 0x" 
+			<< std::hex << std::setw(8) << std::setfill('0')
 			<< *(unsigned int *)(&context->local[offset]) << std::dec;
 			
 		switch (offset) {
@@ -83,6 +84,15 @@ void executive::DynamicMulticoreExecutive::_emitThreadLocalMemory(const LLVMCont
 	}
 }
 
+void executive::DynamicMulticoreExecutive::_emitParameterMemory(const LLVMContext *context) {
+	for (size_t offset = 0; offset < parameterMemorySize; offset += 4) {
+		std::cout << "[offset: " << std::setw(3) << std::setfill(' ') << offset << "]: 0x" 
+			<< std::hex << std::setw(8) << std::setfill('0')
+			<< *(unsigned int *)(&parameterMemory[offset]) << std::dec;
+		std::cout << "\n";
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
@@ -98,8 +108,10 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	sharedMemorySize = _sharedMemorySize;
 	sharedMemory = new char[sharedMemorySize];
 	
-	parameterMemorySize = _kernel.parameterMemorySize();
+	parameterMemorySize = _kernel.argumentMemorySize();
 	parameterMemory = new char[parameterMemorySize];
+	
+	_kernel.getArgumentBlock((unsigned char *)parameterMemory, parameterMemorySize);
 	
 	contexts = new LLVMContext[kernel->blockDim().size()];
 	
@@ -162,6 +174,11 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	int iterations = 0;
 	
 	int maxIterations = 0;
+	
+#if REPORT_SCHEDULE_OPERATIONS && REPORT_BASE
+	reportE(REPORT_SCHEDULE_OPERATIONS, "Parameter memory: ");
+	_emitParameterMemory(&contexts[0]);
+#endif
 	
 	do {
 		if (maxIterations && ++iterations >= maxIterations) {

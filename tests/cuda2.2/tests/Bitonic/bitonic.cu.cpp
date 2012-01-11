@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000053d5_00000000-1_bitonic.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000063fd_00000000-1_bitonic.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000053d5_00000000-1_bitonic.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000063fd_00000000-1_bitonic.cudafe1.cpp"
 # 1 "tests/Bitonic/bitonic.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15790,9 +15790,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 99 "tests/Bitonic/bitonic.cu"
 }
-# 1 "tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c"
-# 1 "tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c"
+# 1 "tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16304,8 +16304,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000053d5_00000000-3_bitonic.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000063fd_00000000-3_bitonic.fatbin.c" 1 3
 
 
 asm(
@@ -16369,7 +16369,7 @@ asm(
 ".quad 0x0000000000000000,0x7473657400000000,0x696e6f7469422f73,0x696e6f7469622f63\n"
 ".quad 0x0000000075632e63,0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f\n"
 ".quad 0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a\n"
-".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f35643335\n"
+".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f64663336\n"
 ".quad 0x5f372d3030303030,0x2e63696e6f746962,0x0a22692e33707063,0x203209656c69662e\n"
 ".quad 0x422f737473657422,0x622f63696e6f7469,0x6b5f63696e6f7469,0x75632e6c656e7265\n"
 ".quad 0x72657478652e0a22,0x65726168732e206e,0x6e67696c612e2064,0x732038622e203420\n"
@@ -16433,9 +16433,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c" 2 3
 static void __device_stub__Z11bitonicSortPi(int *);
-static void __sti____cudaRegisterAll_42_tmpxft_000053d5_00000000_4_bitonic_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_42_tmpxft_000063fd_00000000_4_bitonic_cpp1_ii_main(void) __attribute__((__constructor__));
 static void __device_stub__Z11bitonicSortPi(int *__par0){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))bitonicSort)); (void)cudaLaunch(((char *)((void ( *)(int *))bitonicSort))); };}
 # 53 "tests/Bitonic/bitonic_kernel.cu"
 static void bitonicSort( int *__cuda_0)
@@ -16443,7 +16443,7 @@ static void bitonicSort( int *__cuda_0)
 {__device_stub__Z11bitonicSortPi( __cuda_0);
 # 96 "tests/Bitonic/bitonic_kernel.cu"
 }
-# 1 "/tmp/tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_42_tmpxft_000053d5_00000000_4_bitonic_cpp1_ii_main(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))bitonicSort), (char*)"_Z11bitonicSortPi", "_Z11bitonicSortPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c" 2
-# 1 "tmpxft_000053d5_00000000-1_bitonic.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_42_tmpxft_000063fd_00000000_4_bitonic_cpp1_ii_main(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))bitonicSort), (char*)"_Z11bitonicSortPi", "_Z11bitonicSortPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c" 2
+# 1 "tmpxft_000063fd_00000000-1_bitonic.cudafe1.stub.c"

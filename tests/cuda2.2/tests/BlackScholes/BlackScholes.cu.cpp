@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005403_00000000-1_BlackScholes.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005403_00000000-1_BlackScholes.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.cpp"
 # 1 "tests/BlackScholes/BlackScholes.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15996,9 +15996,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 268 "tests/BlackScholes/BlackScholes.cu"
 }
-# 1 "tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c"
-# 1 "tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c"
+# 1 "tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16510,8 +16510,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005403_00000000-3_BlackScholes.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000642b_00000000-3_BlackScholes.fatbin.c" 1 3
 
 
 asm(
@@ -16674,7 +16674,7 @@ asm(
 ".quad 0x536b63616c422f73,0x422f73656c6f6863,0x6f6863536b63616c,0x000075632e73656c\n"
 ".quad 0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174\n"
 ".quad 0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966\n"
-".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f33303435,0x5f372d3030303030\n"
+".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f62323436,0x5f372d3030303030\n"
 ".quad 0x6863536b63616c42,0x7070632e73656c6f,0x69662e0a22692e33,0x657422203209656c\n"
 ".quad 0x63616c422f737473,0x73656c6f6863536b,0x63536b63616c422f,0x656b5f73656c6f68\n"
 ".quad 0x6875632e6c656e72,0x09656c69662e0a22,0x2f7273752f222033,0x75632f6c61636f6c\n"
@@ -16828,9 +16828,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c" 2 3
 extern void __device_stub__Z15BlackScholesGPUPfS_S_S_S_ffi(float *, float *, float *, float *, float *, float, float, int);
-static void __sti____cudaRegisterAll_47_tmpxft_00005403_00000000_4_BlackScholes_cpp1_ii_cec09074(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_47_tmpxft_0000642b_00000000_4_BlackScholes_cpp1_ii_cec09074(void) __attribute__((__constructor__));
 void __device_stub__Z15BlackScholesGPUPfS_S_S_S_ffi(float *__par0, float *__par1, float *__par2, float *__par3, float *__par4, float __par5, float __par6, int __par7){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)40UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)44UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)48UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, float *, float *, float, float, int))BlackScholesGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, float *, float *, float, float, int))BlackScholesGPU))); };}
 # 95 "tests/BlackScholes/BlackScholes_kernel.cuh"
 void BlackScholesGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,float *__cuda_3,float *__cuda_4,float __cuda_5,float __cuda_6,int __cuda_7)
@@ -16838,7 +16838,7 @@ void BlackScholesGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,float *__c
 {__device_stub__Z15BlackScholesGPUPfS_S_S_S_ffi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 122 "tests/BlackScholes/BlackScholes_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_47_tmpxft_00005403_00000000_4_BlackScholes_cpp1_ii_cec09074(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, float *, float *, float, float, int))BlackScholesGPU), (char*)"_Z15BlackScholesGPUPfS_S_S_S_ffi", "_Z15BlackScholesGPUPfS_S_S_S_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c" 2
-# 1 "tmpxft_00005403_00000000-1_BlackScholes.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_47_tmpxft_0000642b_00000000_4_BlackScholes_cpp1_ii_cec09074(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, float *, float *, float, float, int))BlackScholesGPU), (char*)"_Z15BlackScholesGPUPfS_S_S_S_ffi", "_Z15BlackScholesGPUPfS_S_S_S_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c" 2
+# 1 "tmpxft_0000642b_00000000-1_BlackScholes.cudafe1.stub.c"

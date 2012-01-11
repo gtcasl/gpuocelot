@@ -52,7 +52,6 @@ def InitializeEnvironment(env, builder, paths = ['-I./sdk',]):
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	for shaderModel in ('10', '11', '12', '13', '20'):
 		options = "-arch=sm_20 $SPECIAL_OPTION"
-		print "nvcc", options
 		env.Append(BUILDERS = {'Cuda' + ('SM' + shaderModel if shaderModel != '20' else ''): builder(
 			action = nvccPath + 'nvcc -I. -I' + cuda_inc_path + ' -I./sdk -I./shared  ' + options + ' $SOURCE -cuda -o $TARGET',
 			suffix = '.cu.cpp',

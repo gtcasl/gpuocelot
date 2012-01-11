@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.cpp"
 # 1 "tests/BoxFilter/boxFilter_kernel.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16938,9 +16938,9 @@ __cudaSafeCall(cudaBindTextureToArray(rgbaTex, d_tempArray), "tests/BoxFilter/bo
 }
 # 369 "tests/BoxFilter/boxFilter_kernel.cu"
 }
-# 1 "tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
-# 1 "tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -17452,8 +17452,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005431_00000000-3_boxFilter_kernel.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000645d_00000000-3_boxFilter_kernel.fatbin.c" 1 3
 
 
 asm(
@@ -18248,7 +18248,7 @@ asm(
 ".quad 0x6c6946786f422f73,0x46786f622f726574,0x656b5f7265746c69,0x0075632e6c656e72\n"
 ".quad 0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174\n"
 ".quad 0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966\n"
-".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f31333435,0x5f372d3030303030\n"
+".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f64353436,0x5f372d3030303030\n"
 ".quad 0x65746c6946786f62,0x6c656e72656b5f72,0x22692e337070632e,0x3209656c69662e0a\n"
 ".quad 0x2f73747365742220,0x65746c6946786f42,0x6c6946786f622f72,0x6e72656b5f726574\n"
 ".quad 0x2e0a2275632e6c65,0x22203309656c6966,0x636f6c2f7273752f,0x34616475632f6c61\n"
@@ -19696,14 +19696,14 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c" 2 3
 extern void __device_stub__Z20d_boxfilter_x_globalPfS_iii(float *, float *, int, int, int);
 extern void __device_stub__Z20d_boxfilter_y_globalPfS_iii(float *, float *, int, int, int);
 extern void __device_stub__Z17d_boxfilter_x_texPfiii(float *, int, int, int);
 extern void __device_stub__Z17d_boxfilter_y_texPfiii(float *, int, int, int);
 extern void __device_stub__Z18d_boxfilter_rgba_xPjiii(uint *, int, int, int);
 extern void __device_stub__Z18d_boxfilter_rgba_yPjS_iii(uint *, uint *, int, int, int);
-static void __sti____cudaRegisterAll_51_tmpxft_00005431_00000000_4_boxFilter_kernel_cpp1_ii_tex(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_51_tmpxft_0000645d_00000000_4_boxFilter_kernel_cpp1_ii_tex(void) __attribute__((__constructor__));
 void __device_stub__Z20d_boxfilter_x_globalPfS_iii(float *__par0, float *__par1, int __par2, int __par3, int __par4){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int, int))d_boxfilter_x_global)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int, int))d_boxfilter_x_global))); };}
 # 152 "tests/BoxFilter/boxFilter_kernel.cu"
 void d_boxfilter_x_global( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4)
@@ -19712,7 +19712,7 @@ void d_boxfilter_x_global( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cu
 
 
 }
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
 void __device_stub__Z20d_boxfilter_y_globalPfS_iii( float *__par0, float *__par1, int __par2, int __par3, int __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int, int))d_boxfilter_y_global)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int, int))d_boxfilter_y_global))); }; }
 # 159 "tests/BoxFilter/boxFilter_kernel.cu"
 void d_boxfilter_y_global( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4)
@@ -19721,7 +19721,7 @@ void d_boxfilter_y_global( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cu
 
 
 }
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
 void __device_stub__Z17d_boxfilter_x_texPfiii( float *__par0, int __par1, int __par2, int __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, int))d_boxfilter_x_tex)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, int))d_boxfilter_x_tex))); }; }
 # 168 "tests/BoxFilter/boxFilter_kernel.cu"
 void d_boxfilter_x_tex( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
@@ -19729,7 +19729,7 @@ void d_boxfilter_x_tex( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z17d_boxfilter_x_texPfiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 184 "tests/BoxFilter/boxFilter_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
 void __device_stub__Z17d_boxfilter_y_texPfiii( float *__par0, int __par1, int __par2, int __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, int))d_boxfilter_y_tex)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, int))d_boxfilter_y_tex))); }; }
 # 187 "tests/BoxFilter/boxFilter_kernel.cu"
 void d_boxfilter_y_tex( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
@@ -19737,7 +19737,7 @@ void d_boxfilter_y_tex( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z17d_boxfilter_y_texPfiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 203 "tests/BoxFilter/boxFilter_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
 void __device_stub__Z18d_boxfilter_rgba_xPjiii( uint *__par0, int __par1, int __par2, int __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, int, int, int))d_boxfilter_rgba_x)); (void)cudaLaunch(((char *)((void ( *)(uint *, int, int, int))d_boxfilter_rgba_x))); }; }
 # 230 "tests/BoxFilter/boxFilter_kernel.cu"
 void d_boxfilter_rgba_x( uint *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
@@ -19745,7 +19745,7 @@ void d_boxfilter_rgba_x( uint *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z18d_boxfilter_rgba_xPjiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 249 "tests/BoxFilter/boxFilter_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
 void __device_stub__Z18d_boxfilter_rgba_yPjS_iii( uint *__par0, uint *__par1, int __par2, int __par3, int __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, int, int, int))d_boxfilter_rgba_y)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, int, int, int))d_boxfilter_rgba_y))); }; }
 # 253 "tests/BoxFilter/boxFilter_kernel.cu"
 void d_boxfilter_rgba_y( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4)
@@ -19753,7 +19753,7 @@ void d_boxfilter_rgba_y( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cuda_3
 {__device_stub__Z18d_boxfilter_rgba_yPjS_iii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 288 "tests/BoxFilter/boxFilter_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_51_tmpxft_00005431_00000000_4_boxFilter_kernel_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int, int))d_boxfilter_rgba_y), (char*)"_Z18d_boxfilter_rgba_yPjS_iii", "_Z18d_boxfilter_rgba_yPjS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, int, int, int))d_boxfilter_rgba_x), (char*)"_Z18d_boxfilter_rgba_xPjiii", "_Z18d_boxfilter_rgba_xPjiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))d_boxfilter_y_tex), (char*)"_Z17d_boxfilter_y_texPfiii", "_Z17d_boxfilter_y_texPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))d_boxfilter_x_tex), (char*)"_Z17d_boxfilter_x_texPfiii", "_Z17d_boxfilter_x_texPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int))d_boxfilter_y_global), (char*)"_Z20d_boxfilter_y_globalPfS_iii", "_Z20d_boxfilter_y_globalPfS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int))d_boxfilter_x_global), (char*)"_Z20d_boxfilter_x_globalPfS_iii", "_Z20d_boxfilter_x_globalPfS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&rgbaTex, (const void**)"rgbaTex", "rgbaTex", 2, 1, 0); }
-# 2 "tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c" 2
-# 1 "tmpxft_00005431_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_51_tmpxft_0000645d_00000000_4_boxFilter_kernel_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int, int))d_boxfilter_rgba_y), (char*)"_Z18d_boxfilter_rgba_yPjS_iii", "_Z18d_boxfilter_rgba_yPjS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, int, int, int))d_boxfilter_rgba_x), (char*)"_Z18d_boxfilter_rgba_xPjiii", "_Z18d_boxfilter_rgba_xPjiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))d_boxfilter_y_tex), (char*)"_Z17d_boxfilter_y_texPfiii", "_Z17d_boxfilter_y_texPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))d_boxfilter_x_tex), (char*)"_Z17d_boxfilter_x_texPfiii", "_Z17d_boxfilter_x_texPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int))d_boxfilter_y_global), (char*)"_Z20d_boxfilter_y_globalPfS_iii", "_Z20d_boxfilter_y_globalPfS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int))d_boxfilter_x_global), (char*)"_Z20d_boxfilter_x_globalPfS_iii", "_Z20d_boxfilter_x_globalPfS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&rgbaTex, (const void**)"rgbaTex", "rgbaTex", 2, 1, 0); }
+# 2 "tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c" 2
+# 1 "tmpxft_0000645d_00000000-1_boxFilter_kernel.cudafe1.stub.c"

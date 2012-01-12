@@ -37,6 +37,8 @@ namespace llvm {
 	class BinaryOperator;
 	class CallInst;
 	class PHINode;
+	class BasicBlock;
+	class Instruction;
 }
 
 namespace analysis
@@ -44,14 +46,108 @@ namespace analysis
 
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
+		typedef std::vector< llvm::Instruction *> InstructionVector;
+		typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
 
+		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
+		class ThreadLocalArgument {
+		public:
+			typedef std::vector< llvm::Instruction *> ThreadLocalArgumentVector;
+		public:
+		
+			llvm::Instruction *ptrThreadDescriptorArray;
+			
+			ThreadLocalArgumentVector contextObject;
+		
+			ThreadLocalArgumentVector threadId_x;
+			ThreadLocalArgumentVector threadId_y;
+			ThreadLocalArgumentVector threadId_z;
+			
+			ThreadLocalArgumentVector blockDim_x;
+			ThreadLocalArgumentVector blockDim_y;
+			ThreadLocalArgumentVector blockDim_z;
+			
+			ThreadLocalArgumentVector blockId_x;
+			ThreadLocalArgumentVector blockId_y;
+			ThreadLocalArgumentVector blockId_z;
+			
+			ThreadLocalArgumentVector gridDim_x;
+			ThreadLocalArgumentVector gridDim_y;
+			ThreadLocalArgumentVector gridDim_z;
+			
+			ThreadLocalArgumentVector localPointer;
+			ThreadLocalArgumentVector sharedPointer;
+			ThreadLocalArgumentVector constantPointer;
+			ThreadLocalArgumentVector parameterPointer;
+			ThreadLocalArgumentVector argumentPointer;
+			ThreadLocalArgumentVector metadataPointer;
+		};
+
+		/*!
+			\brief contains replicated and/or vectorized instructions
+		*/
+		class VectorizedInstruction {
+		public:
+			VectorizedInstruction(): vector(0) { }
+
+			bool isVectorizable() const;
+			
+			void vectorize(llvm::Instruction *scalarInst, llvm::Instruction *before);
+		
+		private:
+			
+
+		public:
+
+			//! \brief replicated form of instruction
+			InstructionVector replicated;
+
+			//! \brief vectorized form of instruction
+			llvm::Instruction *vector;
+		};
+		typedef std::map< llvm::Instruction *, VectorizedInstruction > VectorizedInstructionMap;
+		
+		/*!
+			\brief per-function data structures related to the transformation
+		*/
+		class Translation {
+		public:
+			Translation(llvm::Function *f, LLVMUniformVectorization *pass);
+			~Translation();
+			
+			/*!
+				\brief entry point to pass
+			*/
+			void runOnFunction();
+
+		protected:
+		
+			/*! \brief given an instruction from the scalar set, get a set of scalar values that are 
+				either replicated scalar instructions from the vectorized set or extracted vector elements */
+			InstructionVector getInstructionAsReplicated(llvm::Value *inst, llvm::Instruction *before=0);
+
+			/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
+				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
+			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
+			
+		protected:
+		
+			//! \brief references function being transformed
+			llvm::Function *function;
+			
+			//! \brief maps
+			VectorizedInstructionMap vectorizedInstructionMap;
+		
+		};
+	
 	public:
+	
 		/*!
 			\brief vectorizes kernels assuming all control flow is uniform across warps
 
 			\param warpSize number of logical threads per warp
 		*/
-		LLVMUniformVectorization();
+		LLVMUniformVectorization(KernelGraph *_kernelGraph, int warpSize = 1);
 		~LLVMUniformVectorization();
 
 	public:
@@ -76,6 +172,9 @@ namespace analysis
 	public:
 		//! pointer to module 
 		const llvm::Module *M;
+		
+		//! references the KernelGraph being translated
+		KernelGraph *kernelGraph;
 
 		//! \brief number of consecutive threads to pack into a single hardware thread
 		int warpSize;

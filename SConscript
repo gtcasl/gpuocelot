@@ -77,6 +77,10 @@ directories = ['ocelot/ir/implementation',
 	'hydrazine/interface' ]
 extensions = ['*.cpp']
 
+excludedSourceFiles = [
+	'ocelot/analysis/implementation/LLVMUniformVectorization.cpp',
+]
+
 for dir in directories:
 	for ext in extensions:
 		regexp = os.path.join(dir, ext)

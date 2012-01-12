@@ -398,8 +398,10 @@ void analysis::KernelPartitioningPass::Subkernel::_partitionBlocksAtBarrier() {
 	report("partitioning blocks at barriers");
 	int barrierCount = 0;
 	
-	for (ir::ControlFlowGraph::iterator bb_it = subkernel->cfg()->begin(); 
-		bb_it != subkernel->cfg()->end(); ++bb_it) {
+	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
+	
+	for (ir::ControlFlowGraph::iterator bb_it = subkernelCfg->begin(); 
+		bb_it != subkernelCfg->end(); ++bb_it) {
 
 		report(" block " << bb_it->label);
 
@@ -412,25 +414,42 @@ void analysis::KernelPartitioningPass::Subkernel::_partitionBlocksAtBarrier() {
 				if (n + 1 < (unsigned int)(bb_it)->instructions.size()) {
 				
 					std::string label = (bb_it)->label + "_bar";
-					ir::ControlFlowGraph::iterator block = subkernel->cfg()->split_block(bb_it, n+1, 
+					ir::ControlFlowGraph::iterator block = subkernelCfg->split_block(bb_it, n+1, 
 						ir::BasicBlock::Edge::FallThrough, label);
+					
+					ir::ControlFlowGraph::edge_iterator splitEdge = block->in_edges.front();
+					ir::ControlFlowGraph::iterator beforeBarrierBlock = splitEdge->head;
+					
+					// remove the split edge, add a new one between the barrier block and the exit
+					subkernelCfg->remove_edge(splitEdge);
+					subkernelCfg->insert_edge(ir::BasicBlock::Edge(beforeBarrierBlock, 
+						subkernelCfg->get_exit_block(), ir::BasicBlock::Edge::Dummy));
 
+					// create a handler block and transform the source code
 					ir::BasicBlock handlerBlock(block->label + "_barrier_entry");
-					blockMapping[block] = subkernelCfg->insert_block(handlerBlock);
+					ir::ControlFlowGraph::iterator entryHandlerBlock = subkernelCfg->insert_block(handlerBlock);
+					ir::ControlFlowGraph::edge_iterator entryEdge = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
+						entryHandlerBlock, block, ir::BasicBlock::Edge::Branch));
+					ir::ControlFlowGraph::edge_iterator dummyEntry = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
+						subkernelCfg->get_entry_block(), entryHandlerBlock, ir::BasicBlock::Edge::Dummy));
 					
-					// remove 
-					
+					// construct a subkernel entry
 					SubkernelId entryId = ExternalEdge::getEncodedEntry(id, 
 						(SubkernelId)(inEdges.size() + barrierEntries.size()));
 						
-					ExternalEdge externalEdge;
-					externalEdge.handlerBlock = blockMapping[block];
-					externalEdge.frontierBlock = block;
-					externalEdge.exitStatus = Thread_Barrier;
-					externalEdge.entryId = entryId;
+					ExternalEdge externalEntryEdge;
+					externalEntryEdge.handler = entryHandlerBlock;
+					externalEntryEdge.frontierBlock = block;
+					externalEntryEdge.exitStatus = Thread_barrier;
+					externalEntryEdge.entryId = entryId;
+					barrierEntries.push_back(externalEntryEdge);
 
-					report("  adding barrier entry to block " << block->label);
-					barrierEntries.push_back(externalEdge);
+					ExternalEdge externalExitEdge;
+					externalExitEdge.handler = beforeBarrierBlock;
+					externalExitEdge.frontierBlock = beforeBarrierBlock;
+					externalExitEdge.exitStatus = Thread_barrier;
+					externalEntryEdge.entryId = entryId;
+					barrierExits.push_back(externalExitEdge);
 				}
 				report("barrier in block " << bb_it->label << "(instruction " << n << ")");
 				++barrierCount;

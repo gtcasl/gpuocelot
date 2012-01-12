@@ -142,6 +142,9 @@ namespace analysis {
 			//! entry points for barriers
 			ExternalEdgeVector barrierEntries;
 			
+			//! exit points for barriers
+			ExternalEdgeVector barrierExits;
+			
 			//! divergent entry handlers
 			ExternalEdgeVector divergentEntries;
 			

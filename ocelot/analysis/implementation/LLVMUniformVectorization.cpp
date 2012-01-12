@@ -38,7 +38,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +57,14 @@ std::ostream &operator<<(std::ostream &out, llvm::Value &value) {
 	return out;
 }
 
+std::ostream &operator<<(std::ostream &out, llvm::Value *value) {
+	std::string str;
+	llvm::raw_string_ostream os(str);
+	value->print(os);
+	out << str;
+	return out;
+}
+
 std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst) {
 	std::string str;
 	llvm::raw_string_ostream os(str);
@@ -68,10 +76,10 @@ std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //! 
-analysis::LLVMUniformVectorization::LLVMUniformVectorization():
-	llvm::FunctionPass(ID) 
+analysis::LLVMUniformVectorization::LLVMUniformVectorization(KernelGraph *_kernelGraph, int _ws):
+	llvm::FunctionPass(ID), kernelGraph(_kernelGraph), warpSize(_ws)
 {
-
+	report("LLVMUniformVectorization() on kernel " << kernelGraph->ptxKernel->name);
 }
 
 //! 
@@ -97,6 +105,48 @@ const char *analysis::LLVMUniformVectorization::getPassName() const {
 //! \brief gets the kind of tye pass
 llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 	return llvm::PT_Function;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+analysis::LLVMUniformVectorization::Translation::Translation(
+	llvm::Function *f, 
+	LLVMUniformVectorization *pass) {
+
+}
+
+analysis::LLVMUniformVectorization::Translation::~Translation() {
+
+}
+
+/*!
+	\brief entry point to pass
+*/
+void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! \brief given an instruction from the scalar set, get a set of scalar values that are 
+	either replicated scalar instructions from the vectorized set or extracted vector elements */
+analysis::LLVMUniformVectorization::InstructionVector 
+	analysis::LLVMUniformVectorization::Translation::getInstructionAsReplicated(
+		llvm::Value *inst, llvm::Instruction *before) {
+	
+	report("  getting instruction " << inst << " as replicated - inserting before " << before);
+	assert(0 && "not yet implemented");
+}
+
+/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
+	is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
+llvm::Instruction *
+	analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
+		llvm::Value *inst, llvm::Instruction *before) {
+		
+	report("  getting instruction " << inst << " as vectorized - inserting before " << before);
+	assert(0 && "not yet implemented");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

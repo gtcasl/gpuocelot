@@ -386,17 +386,11 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	for (std::vector< ir::BasicBlock::Edge >::iterator edge_it = internalEdges.begin();
 		edge_it != internalEdges.end(); ++edge_it) {
 		
-		
 		ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
 			blockMapping[edge_it->tail], edge_it->type);
 			
 		report("  adding internal edge: " << internalEdge.head->label << " -> " << internalEdge.tail -> label);
 		subkernelCfg->insert_edge(internalEdge);
-	}
-	
-	if (!inEdges.size()) {
-		report(" NO external in edges. Create a dummy edge from the entry node to the correct block");
-		
 	}
 	
 	// identify frontier blocks along in eges
@@ -645,39 +639,10 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		report("    IN-edge: " << edge_it->handler->label << " -> " << edge_it->frontierBlock->label 
 			<< " (" << aliveValues.size() << " live values");
 		
-		ir::PTXInstruction move(ir::PTXInstruction::Mov);
-		
 		edge_it->handler->comment = boost::lexical_cast<std::string>(aliveValues.size()) 
 			+ " live-in values";
-		for (RegisterSet::iterator alive_it = aliveValues.begin();
-			alive_it != aliveValues.end(); ++alive_it) {
-			
-			if (usedRegisters.find(*alive_it) == usedRegisters.end()) {
-				continue;
-			}
-			
-			report("      alive-in: " << alive_it->id << " [type: " 
-				<< ir::PTXOperand::toString(alive_it->type) << "]");
-			
-			if (alive_it == aliveValues.begin()) {
-				move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area");
-				move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
-				move.addressSpace = ir::PTXInstruction::Local;
-				move.a.isGlobalLocal = false;
-				
-				subkernelDfg->insert(handlerDfgBlock, move);
-			}
 
-			// create restore
-			ir::PTXInstruction load(ir::PTXInstruction::Ld);
-			load.type = alive_it->type;
-			load.addressSpace = ir::PTXInstruction::Local;
-			load.a = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 
-				registerOffsets.find(alive_it->id)->second);
-			load.d = ir::PTXOperand(ir::PTXOperand::Register, alive_it->type, alive_it->id);
-
-			subkernelDfg->insert(handlerDfgBlock, load);
-		}
+		_spillLiveValues(subkernelDfg, handlerDfgBlock, usedRegisters, aliveValues, registerOffsets, true);
 		
 		ir::PTXInstruction bra(ir::PTXInstruction::Bra);
 		bra.d = ir::PTXOperand(ir::PTXOperand::Label, edge_it->frontierBlock->label);
@@ -701,48 +666,87 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		report("    OUT-edge: " << edge_it->frontierBlock->label << " -> " << edge_it->handler->label
 			<< " (" << aliveValues.size() << " live values");
 		
-		ir::PTXInstruction move(ir::PTXInstruction::Mov);
-		
 		edge_it->handler->comment = boost::lexical_cast<std::string>(aliveValues.size()) 
 			+ " live-out values";
 		
-		for (RegisterSet::iterator alive_it = aliveValues.begin();
-			alive_it != aliveValues.end(); ++alive_it) {
-		
-			if (usedRegisters.find(*alive_it) == usedRegisters.end()) {
-				continue;
-			}
-	
-			report("      alive-out: " << alive_it->id << " [type: " 
-				<< ir::PTXOperand::toString(alive_it->type) << "]");
-			
-			if (alive_it == aliveValues.begin()) {
-				move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area");
-				move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
-				
-				subkernelDfg->insert(handlerDfgBlock, move);
-			}
-
-			// create restore
-			ir::PTXInstruction store(ir::PTXInstruction::St);
-			store.type = alive_it->type;
-			store.addressSpace = ir::PTXInstruction::Local;
-			store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 
-				registerOffsets.find(alive_it->id)->second);
-			store.a = ir::PTXOperand(ir::PTXOperand::Register, alive_it->type, alive_it->id);
-
-			subkernelDfg->insert(handlerDfgBlock, store);
-		}
+		_spillLiveValues(subkernelDfg, handlerDfgBlock, usedRegisters, aliveValues, registerOffsets, false);
 
 		_createExit(handlerDfgBlock, subkernelDfg, edge_it->exitStatus, edge_it->entryId);
 		
-		report("Adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
+		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
 		frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
+	}
+	
+	report("Barrier exits");
+	
+	for (ExternalEdgeVector::iterator edge_it = barrierExits.begin();
+		edge_it != barrierExits.end(); ++edge_it) {
+	
+		report("  barrier exit: " << edge_it->frontierBlock->label);
+
+		assert(subkernelCfgToDfg.find(edge_it->frontierBlock) != subkernelCfgToDfg.end());
+		auto frontierDfgBlock = subkernelCfgToDfg[edge_it->frontierBlock];
+		
+		RegisterSet aliveValues = frontierDfgBlock->aliveOut();
+		report("    " << aliveValues.size() << " live values at barrier");
+
+		// restore live values
+				/*		
+		RegisterSet aliveValues = cfgToDfg[edge_it->sourceBlock]->aliveOut();
+		*/
 	}
 
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
 }
 
+void analysis::KernelPartitioningPass::Subkernel::_spillLiveValues(
+	analysis::DataflowGraph *subkernelDfg, 
+	analysis::DataflowGraph::iterator handlerDfgBlock, 
+	const analysis::DataflowGraph::RegisterSet &usedRegisters,
+	const RegisterSet &aliveValues,
+	const RegisterOffsetMap &registerOffsets,
+	bool loadLive) {
+	
+	ir::PTXInstruction move(ir::PTXInstruction::Mov);
+	
+	for (RegisterSet::const_iterator alive_it = aliveValues.begin();
+		alive_it != aliveValues.end(); ++alive_it) {
+	
+		if (usedRegisters.find(*alive_it) == usedRegisters.end()) {
+			continue;
+		}
+
+		report("      alive-out: " << alive_it->id << " [type: " 
+			<< ir::PTXOperand::toString(alive_it->type) << "]");
+		
+		if (alive_it == aliveValues.begin()) {
+			move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area");
+			move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+			
+			subkernelDfg->insert(handlerDfgBlock, move);
+		}
+
+		ir::PTXInstruction restore(ir::PTXInstruction::St);
+		
+		if (loadLive) {
+			restore.opcode = ir::PTXInstruction::Ld;
+			restore.type = alive_it->type;
+			restore.addressSpace = ir::PTXInstruction::Local;
+			restore.a = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 
+				registerOffsets.find(alive_it->id)->second);
+			restore.d = ir::PTXOperand(ir::PTXOperand::Register, alive_it->type, alive_it->id);
+		}
+		else {
+			restore.opcode = ir::PTXInstruction::St;
+			restore.type = alive_it->type;
+			restore.addressSpace = ir::PTXInstruction::Local;
+			restore.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 
+				registerOffsets.find(alive_it->id)->second);
+			restore.a = ir::PTXOperand(ir::PTXOperand::Register, alive_it->type, alive_it->id);
+		}
+		subkernelDfg->insert(handlerDfgBlock, restore);
+	}
+}
 
 void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 	ExternalEdgeMap &frontierExitBlocks, analysis::DataflowGraph *subkernelDfg) {

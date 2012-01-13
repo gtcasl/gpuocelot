@@ -118,6 +118,14 @@ namespace analysis {
 				analysis::DataflowGraph *subkernelDfg,
 				const RegisterOffsetMap &registerOffsets);
 			
+			void _spillLiveValues(
+				analysis::DataflowGraph *subkernelDfg, 
+				analysis::DataflowGraph::iterator handlerDfg, 
+				const analysis::DataflowGraph::RegisterSet &usedRegisters,
+				const RegisterSet &aliveValues,
+				const RegisterOffsetMap &registerOffsets,
+				bool restore);
+			
 			void _updateHandlerControlFlow(ExternalEdgeMap &edges, analysis::DataflowGraph *subkernelDfg);
 			
 			void _determineRegisterUses(analysis::DataflowGraph::RegisterSet &uses);

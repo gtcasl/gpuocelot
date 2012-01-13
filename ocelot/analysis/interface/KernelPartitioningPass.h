@@ -33,7 +33,7 @@ namespace analysis {
 			Thread_call = 4,
 			Thread_barrier = 5,
 			Thread_exit = 6,
-			Thread_exit_other = 7,
+			Thread_return = 7,
 			Thread_subkernel = 8,
 			ThreadExitType_invalid
 		};
@@ -112,8 +112,13 @@ namespace analysis {
 				analysis::DataflowGraph *sourceDfg,
 				analysis::DataflowGraph *subkernelDfg,
 				const RegisterOffsetMap &registerOffsets);
+				
+			void _createYieldHandlers(
+				analysis::DataflowGraph *sourceDfg,
+				analysis::DataflowGraph *subkernelDfg,
+				const RegisterOffsetMap &registerOffsets);
 			
-			void _updateHandlerControlFlow(ExternalEdgeMap &edges);
+			void _updateHandlerControlFlow(ExternalEdgeMap &edges, analysis::DataflowGraph *subkernelDfg);
 			
 			void _determineRegisterUses(analysis::DataflowGraph::RegisterSet &uses);
 				

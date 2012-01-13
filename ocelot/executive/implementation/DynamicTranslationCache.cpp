@@ -66,14 +66,14 @@
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 0		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,7 +104,7 @@ executive::DynamicTranslationCache::Translation *
 executive::DynamicTranslationCache::getOrInsertTranslation(
 	int warpSize, SubkernelId subkernelId, unsigned int specialization) {
 	
-	report(" DynamicTranslationCache::getOrInsertTranslation(ws: " << warpSize 
+	reportE(REPORT_SCHEDULE_OPERATIONS, " DynamicTranslationCache::getOrInsertTranslation(ws: " << warpSize 
 		<< ", skId: " << subkernelId << ", specialization = " << specialization << ")");
 		
 	Translation *translation = 0;
@@ -114,7 +114,7 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 		WarpTranslationMap::iterator warp_it = translation_it->second.find(warpSize);
 		if (warp_it != translation_it->second.end()) {
 			translation = warp_it->second;
-			report("  found in translation cache");
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  found in translation cache");
 		}
 	}
 	
@@ -123,7 +123,7 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 		translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
 			getOptimizationLevel(), warpSize, specialization);
 		
-		report("  inserted in translation cache");
+		reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
 	}
 	
 	return translation;
@@ -923,6 +923,22 @@ static executive::DynamicMulticoreExecutive::Metadata* generateMetadata(
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
+static void identifyPredecessors(std::ostream &out, llvm::Function *function) {
+	out << "Predecessors of function '" << function->getName().str() << "'  ";
+	out << " [entry block: " << function->front().getName().str() << "]\n";
+	
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		out << " block '" << bb_it->getName().str() << "' with predecessors {";
+		for (llvm::pred_iterator pred_it = llvm::pred_begin(&*bb_it); pred_it != llvm::pred_end(&*bb_it); ++pred_it) {
+			llvm::BasicBlock *pred = *pred_it;
+			out << pred->getName().str() << ", ";
+		}
+		out << "}\n";
+	}
+}
+#endif
+
 /*!
 	\brief given a translated function, apply a selection of LLVM transformation
 		passes before JIT compilation
@@ -1037,7 +1053,17 @@ static void cloneAndOptimizeTranslation(
 			
 #if REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
+		
 		translatedKernel.llvmModule->dump();
+		
+		std::cerr << "\nerror on subkernel: " << translatedSubkernel.llvmFunction->getName().str() << std::endl;
+		std::cerr << " specialization: " << translation->llvmFunction->getName().str() << std::endl;
+		
+		for (llvm::Module::iterator mod_it = translation->llvmFunction->getParent()->begin(); 
+			mod_it != translation->llvmFunction->getParent()->end(); ++mod_it) {
+			identifyPredecessors(std::cerr, &*mod_it);
+		}
+		
 #endif
 
 		assert(0 && "quitting");

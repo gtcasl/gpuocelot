@@ -2440,6 +2440,9 @@ std::string ir::PTXInstruction::toString() const {
 		case Reconverge: {
 			return "reconverge";
 		}
+		case Nop: {
+			return "";
+		}
 		default: break;
 	}
 	assertM(false, "Instruction opcode " << toString(opcode) 

@@ -78,6 +78,8 @@ namespace analysis {
 		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
 		typedef std::map< analysis::DataflowGraph::RegisterId, size_t> RegisterOffsetMap;
 		typedef std::unordered_map< ir::BasicBlock::Pointer, ExternalEdgeVector > ExternalEdgeMap;
+		typedef std::vector< ir::BasicBlock::Edge > EdgeVector;
+		typedef std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> BasicBlockMap;
 		
 		//!
 		class Subkernel {
@@ -97,6 +99,10 @@ namespace analysis {
 			void _create(ir::PTXKernel *source);
 			
 			void _partitionBlocksAtBarrier();
+			
+			void _analyzeBarriers(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
+			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
+			void _analyzeDivergentControlFlow(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
 			
 			void _createExternalHandlers(
 				analysis::DataflowGraph *sourceDfg, 
@@ -208,6 +214,12 @@ namespace analysis {
 			
 			//! \brief maps registers to offset
 			RegisterOffsetMap registerOffsets;
+		};
+		
+		class BarrierPartitioning {
+		public:
+			
+			void runOnKernel(ir::PTXKernel &ptxKernel);
 		};
 	
 	public:

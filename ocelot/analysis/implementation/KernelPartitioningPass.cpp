@@ -45,7 +45,51 @@ analysis::KernelPartitioningPass::KernelGraph *
  analysis::KernelPartitioningPass::runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId) {
 	report("KernelPartitioningPass::runOnFunction(" << ptxKernel.name << ")");
 	
+	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
+	barrierPass.runOnKernel(ptxKernel);
+	
 	return new KernelGraph(&ptxKernel, baseId);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void analysis::KernelPartitioningPass::BarrierPartitioning::runOnKernel(ir::PTXKernel &ptxKernel) {
+	report("partitioning blocks at barriers");
+
+	ir::ControlFlowGraph *kernelCfg = ptxKernel.cfg();
+	int barrierCount = 0;
+
+	for (ir::ControlFlowGraph::iterator bb_it = kernelCfg->begin(); 
+		bb_it != kernelCfg->end(); ++bb_it) {
+
+		unsigned int n = 0;
+		for (ir::BasicBlock::InstructionList::iterator inst_it = (bb_it)->instructions.begin();
+			inst_it != (bb_it)->instructions.end(); ++inst_it, n++) {
+			ir::PTXInstruction *inst = static_cast<ir::PTXInstruction *>(*inst_it);
+			
+			if (inst->opcode == ir::PTXInstruction::Ret) {
+				inst->opcode = ir::PTXInstruction::Exit;
+			}
+			
+			if (inst->opcode == ir::PTXInstruction::Bar) {
+				report("  barrier in block " << bb_it->label << "(instruction " << n << ")");
+				if (n + 1 < (unsigned int)(bb_it)->instructions.size()) {
+				
+					std::string label = (bb_it)->label + "_bar";
+					ir::ControlFlowGraph::iterator block = kernelCfg->split_block(bb_it, n+1, 
+						ir::BasicBlock::Edge::FallThrough, label);
+					++barrierCount;
+					break;
+				}
+			}
+			else {
+				// found a barrier that is the last instruction in a basic block - this could potentially
+				// be along the subkernel frontier, so make sure this gets handled correctly.
+			}
+		}
+	}
+	report("  encountered " << barrierCount << " barriers");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,10 +351,82 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 		subkernel->locals.insert(std::make_pair(local_it->first, local_it->second));
 	}
 	
-	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
-	
 	std::vector< ir::BasicBlock::Edge > internalEdges;
 	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
+	
+	_analyzeExternalEdges(source, internalEdges, blockMapping);
+	_analyzeBarriers(source, internalEdges, blockMapping);
+	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
+}
+
+//! creates barrier entries and exits
+void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
+	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
+	
+	report(" _analyzeBarriers()");
+	
+	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
+	
+	
+	for (ir::ControlFlowGraph::iterator bb_it = subkernelCfg->begin(); 
+		bb_it != subkernelCfg->end(); ++bb_it) {
+		
+		for (ir::BasicBlock::InstructionList::iterator inst_it = bb_it->instructions.begin();
+			inst_it != bb_it->instructions.end(); ++inst_it) {
+		
+			const ir::PTXInstruction *inst = static_cast<const ir::PTXInstruction *>(*inst_it);
+			
+			if (inst->opcode == ir::PTXInstruction::Bar) {
+				report("  barrier in block " << bb_it->label);
+				
+				ir::ControlFlowGraph::iterator blockBeforeBarrier = bb_it;
+				ir::ControlFlowGraph::edge_iterator barrierEdge = bb_it->out_edges.front();
+				ir::ControlFlowGraph::iterator blockAfterBarrier = barrierEdge->tail;
+				
+				// remove the split edge, add a new one between the barrier block and the exit
+				subkernelCfg->remove_edge(barrierEdge);
+				subkernelCfg->insert_edge(ir::BasicBlock::Edge(blockBeforeBarrier, 
+					subkernelCfg->get_exit_block(), ir::BasicBlock::Edge::Dummy));
+
+				// create a handler block and transform the source code
+				ir::BasicBlock handlerBlock(blockAfterBarrier->label + "_barrier_entry");
+				ir::ControlFlowGraph::iterator entryHandlerBlock = subkernelCfg->insert_block(handlerBlock);
+				
+				ir::ControlFlowGraph::edge_iterator entryEdge = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
+					entryHandlerBlock, blockAfterBarrier, ir::BasicBlock::Edge::Branch));
+					
+				ir::ControlFlowGraph::edge_iterator dummyEntry = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
+					subkernelCfg->get_entry_block(), entryHandlerBlock, ir::BasicBlock::Edge::Dummy));
+									
+				// construct a subkernel entry
+				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, 
+					(SubkernelId)(inEdges.size() + barrierEntries.size()));
+					
+				ExternalEdge externalEntryEdge;
+				externalEntryEdge.handler = entryHandlerBlock;
+				externalEntryEdge.frontierBlock = blockAfterBarrier;
+				externalEntryEdge.exitStatus = Thread_barrier;
+				externalEntryEdge.entryId = entryId;
+				barrierEntries.push_back(externalEntryEdge);
+
+				ExternalEdge externalExitEdge;
+				externalExitEdge.handler = blockBeforeBarrier;
+				externalExitEdge.frontierBlock = blockBeforeBarrier;
+				externalExitEdge.exitStatus = Thread_barrier;
+				externalEntryEdge.entryId = entryId;
+				barrierExits.push_back(externalExitEdge);
+			}
+		}
+	}
+}
+
+//! creates external edges for subkernel entries and exits
+void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
+	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
+	
+	report(" _analyzeExternalEdges()");
+	
+	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
 	
 	for (BasicBlockSet::iterator bb_it = sourceBlocks.begin();
 		bb_it != sourceBlocks.end(); ++bb_it) {
@@ -322,8 +438,6 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 		
 		blockMapping[*bb_it] = subkernelCfg->insert_block(newBlock);
 	}
-	
-	_partitionBlocksAtBarrier();
 	
 	for (BasicBlockSet::iterator bb_it = sourceBlocks.begin();
 		bb_it != sourceBlocks.end(); ++bb_it) {
@@ -386,6 +500,15 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	for (std::vector< ir::BasicBlock::Edge >::iterator edge_it = internalEdges.begin();
 		edge_it != internalEdges.end(); ++edge_it) {
 		
+		report(" looking in block mapping: " << edge_it->head->label << " -> " << edge_it->tail->label);
+		
+		if (blockMapping.find(edge_it->head) == blockMapping.end()) {
+			assert(0 && "Failed to find predecessor block in mapping");
+		}
+		if (blockMapping.find(edge_it->tail) == blockMapping.end()) {
+			assert(0 && "Failed to find successor block in mapping");
+		}
+		
 		ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
 			blockMapping[edge_it->tail], edge_it->type);
 			
@@ -417,6 +540,13 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 		subkernelCfg->insert_edge(handlerEdge);
 	}
 }
+
+//! \brief identifies divergent control flow and constructs unreachable handlers for entries and exits
+void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
+	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
+	report(" _analyzeDivergentControlFlow()");
+}
+
 
 /*!
 	\brief partitions blocks in parent kernel such that bar.sync is last instruction

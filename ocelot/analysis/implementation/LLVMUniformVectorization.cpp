@@ -112,8 +112,11 @@ llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 
 analysis::LLVMUniformVectorization::Translation::Translation(
 	llvm::Function *f, 
-	LLVMUniformVectorization *pass) {
-
+	LLVMUniformVectorization *_pass
+):
+	function(f),
+	pass(_pass)
+{
 }
 
 analysis::LLVMUniformVectorization::Translation::~Translation() {
@@ -147,6 +150,27 @@ llvm::Instruction *
 		
 	report("  getting instruction " << inst << " as vectorized - inserting before " << before);
 	assert(0 && "not yet implemented");
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+void analysis::LLVMUniformVectorization::Translation::_computeLLVMToOcelotBlockMap(
+	LLVMtoOcelotBlockMap &llvmBlockMap, 
+	Subkernel &subkernel) {
+
+	std::map< std::string, ir::BasicBlock::Pointer > blockLabelMap;
+	for (ir::ControlFlowGraph::iterator bb_it =	subkernel.subkernel->cfg()->begin();
+		bb_it != subkernel.subkernel->cfg()->end(); ++bb_it) {
+		
+		blockLabelMap[bb_it->label] = bb_it;
+	}
+	
+	for (llvm::Function::iterator llvmbb_it = function->begin(); 
+		llvmbb_it != function->end(); ++llvmbb_it) {
+		
+		llvmBlockMap[&*llvmbb_it] = blockLabelMap[llvmbb_it->getName().str()];
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

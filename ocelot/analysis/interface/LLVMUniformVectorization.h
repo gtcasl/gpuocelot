@@ -47,7 +47,9 @@ namespace analysis
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
 		typedef std::vector< llvm::Instruction *> InstructionVector;
+		typedef analysis::KernelPartitioningPass::Subkernel Subkernel;
 		typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
+		typedef std::map< llvm::BasicBlock *, ir::BasicBlock::Pointer > LLVMtoOcelotBlockMap;
 
 		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
 		class ThreadLocalArgument {
@@ -130,10 +132,17 @@ namespace analysis
 				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
 			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
 			
+			void _computeLLVMToOcelotBlockMap(LLVMtoOcelotBlockMap &llvmBlockMap, Subkernel &subkernel);
+			
 		protected:
 		
 			//! \brief references function being transformed
 			llvm::Function *function;
+			
+			LLVMUniformVectorization *pass;
+			
+			//! \brief maps LLVM blocks to identically named Ocelot blocks from the source kernel
+			LLVMtoOcelotBlockMap llvmToOcelotBlockMap;
 			
 			//! \brief maps
 			VectorizedInstructionMap vectorizedInstructionMap;

@@ -24,6 +24,16 @@ std::string ir::PTXOperand::toString( VectorIndex index ) {
 	return "";
 }
 
+
+std::string ir::PTXOperand::toString(Vec index) {
+	switch (index) {
+		case v1: return "v1"; break;
+		case v2: return "v2"; break;
+		case v4: return "v4"; break;
+	}
+	return "";
+}
+
 std::string ir::PTXOperand::toString( DataType type ) {
 	switch( type ) {
 		case s8:   return "s8";   break;
@@ -782,13 +792,24 @@ std::string ir::PTXOperand::toString() const {
 		}
 	}
 	
-	if( !identifier.empty() ) {
-		return identifier;
+	if (addressMode == Register && array.size()) {
+		std::stringstream stream;
+		stream << "{";
+		for (size_t n = 0; n < array.size(); n++) {
+			stream << (n ? ", " : "") << array[n].toString();
+		}
+		stream << "}";
+		return stream.str();
 	}
 	else {
-		std::stringstream stream;
-		stream << "%r" << reg;
-		return stream.str();
+		if( !identifier.empty() ) {
+			return identifier;
+		}
+		else {
+			std::stringstream stream;
+			stream << "%r" << reg;
+			return stream.str();
+		}
 	}
 }
 

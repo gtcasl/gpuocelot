@@ -155,6 +155,7 @@ namespace ir {
 
 	public:
 		static std::string toString(VectorIndex);
+		static std::string toString(Vec);
 		static std::string toString(DataType);
 		static std::string toString(SpecialRegister);
 		static std::string toString(AddressMode);

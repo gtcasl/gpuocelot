@@ -2408,7 +2408,7 @@ std::string ir::PTXInstruction::toString() const {
 				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString();
 		}
-		case Tex: {
+		case Tex: {			
 			return guard() + "tex." + toString( geometry ) + ".v4." 
 				+ PTXOperand::toString( d.type ) + "." 
 				+ PTXOperand::toString( type ) + " " + d.toString() + ", [" 

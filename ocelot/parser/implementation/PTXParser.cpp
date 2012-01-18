@@ -1450,6 +1450,8 @@ namespace parser
 	void PTXParser::State::arrayOperand( YYLTYPE& location )
 	{
 		assert( !identifiers.empty() );
+		
+		report("  Rule: arrayOperand()");
 
 		OperandMap::iterator mode = operands.find( identifiers.front() );
 	
@@ -1477,6 +1479,8 @@ namespace parser
 			operand.vec = ir::PTXOperand::v1;
 		
 			operand.array.push_back( mode->second.operand );
+			
+			report("    pushing operand " << mode->second.operand.toString());
 		}
 		else if( identifiers.size() >= 2 )
 		{

@@ -41,6 +41,8 @@ namespace analysis
             /*! \brief symbol to global memory allocation map in device memory */
             std::string allocMapSymbol;
             unsigned int entries;
+            /*! \brief map of allocations (base address and last valid address+1) */
+            std::vector< size_t > globalAllocationMap;
             
         public:
             /*! \brief The default constructor */

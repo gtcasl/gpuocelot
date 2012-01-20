@@ -40,8 +40,6 @@ namespace analysis
         //get memory allocations, populate dense allocation map with it 
         executive::Device::MemoryAllocationVector memVector = device.getAllAllocations();
         
-        //create map of allocations (base address and last valid address+1)
-        std::vector< size_t > globalAllocationMap;
         globalAllocationMap.resize( memVector.size()+1 );
 
         std::vector< size_t >::iterator it = globalAllocationMap.begin();
@@ -57,29 +55,13 @@ namespace analysis
         
         globalAllocationMap.push_back( 0 );
         //*/
-        //copy allocationMap to global memory
-        allocMap = NULL;
-        if(cudaMalloc((void **) &allocMap, globalAllocationMap.size() * sizeof(size_t)) != cudaSuccess)
-        {
-            throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
-        }
-        if( !globalAllocationMap.empty() ) 
-        {
-            cudaMemcpy(allocMap, &*globalAllocationMap.begin(), entries * threads * sizeof( size_t ), cudaMemcpyHostToDevice);
-            cudaFree(counter);
-        }
-        if(cudaMemcpyToSymbol(allocMapSymbol.c_str(), &allocMap, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) 
-        {
-            throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
-        }
         
     }
 
     void BoundsCheckInstrumentor::initialize() 
     {
-        
+        //allocate global mem for reporting info
         counter = 0;
-        
 
         if(cudaMalloc((void **) &counter, entries * threads * sizeof(size_t)) != cudaSuccess)
         {
@@ -92,6 +74,28 @@ namespace analysis
         
         if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) 
         {
+            throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
+        }
+        
+        
+        //copy allocationMap to global memory
+        allocMap = NULL;
+        if(cudaMalloc((void **) &allocMap, entries * threads * sizeof(size_t)) != cudaSuccess)
+        {
+            throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
+        }
+        if(cudaMemset( allocMap, 0, entries * threads  * sizeof( size_t )) != cudaSuccess)
+        {
+            throw hydrazine::Exception( "cudaMemset failed!" );
+        }
+        if( !globalAllocationMap.empty() ) 
+        {
+            cudaMemcpy(allocMap, &globalAllocationMap[0], globalAllocationMap.size() * sizeof( size_t ), cudaMemcpyHostToDevice);
+        }
+        int error = cudaMemcpyToSymbol(allocMapSymbol.c_str(), &allocMap, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
+        if(error != cudaSuccess) 
+        {
+            std::cout << "error code: " << error << "\n";
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
         }
     }

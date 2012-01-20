@@ -16,6 +16,7 @@
 #include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
 #include <ocelot/analysis/interface/WarpReductionInstrumentor.h>
 #include <ocelot/analysis/interface/AlignmentCheckInstrumentor.h>
+#include <ocelot/analysis/interface/BoundsCheckInstrumentor.h>
 
 #include <ocelot/transforms/interface/StructuralTransform.h>
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
@@ -42,6 +43,7 @@ namespace ocelot
 		analysis::BasicBlockInstrumentor _basicBlockInstrumentor;
 		analysis::WarpReductionInstrumentor _warpReductionInstrumentor;
 		analysis::AlignmentCheckInstrumentor _alignmentCheckInstrumentor;
+		analysis::BoundsCheckInstrumentor _boundsCheckInstrumentor;
 		
 		bool _initialized;
 		

@@ -1,19 +1,27 @@
 {
 	ocelot: "ocelot",
     instrument: {
+    	basicBlockExecutionCount: {
+		    enabled: false,
+		    logfile: "bbCount_log4"
+		},
         alignmentCheck: {
-        	enabled: true,
+        	enabled: false,
         	logfile: "alignment_log"
         },
         memoryEfficiency: {
             enabled: false,
             logfile: "memoryEfficiency_log"
+        },
+        boundsCheck: {
+	    enabled: true,
+            logfile: "bounds_log"
         }
     },
 	trace: { 
 		database: "traces-ipdom/database.trace",
 		memoryChecker: {
-			enabled: true,
+			enabled: false,
 			checkInitialization: false
 		},
 		raceDetector: {

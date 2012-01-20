@@ -164,6 +164,12 @@ namespace ocelot
             _alignmentCheckInstrumentor.output = c.instrument.alignmentCheckInstrumentor.logfile;
             ocelot::addInstrumentor(_alignmentCheckInstrumentor);
         }
+        if(c.instrument.boundsCheckInstrumentor.enabled)
+        {   
+            report("Creating alignment check instrumentor");
+            _boundsCheckInstrumentor.output = c.instrument.boundsCheckInstrumentor.logfile;
+            ocelot::addInstrumentor(_boundsCheckInstrumentor);
+        }
         if(c.instrument.warpReductionInstrumentor.enabled)
         {   
             report("Creating warp reduction instrumentor");

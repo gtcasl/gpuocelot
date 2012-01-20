@@ -39,7 +39,7 @@ namespace analysis
         for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
 	        kernel != module.kernels().end(); ++kernel) {
 	        kernelDataMap[kernel->first] = kernel->second->cfg()->size() - 2;
-        
+            std::cout << std::endl << "kernel:" << kernel->first << " size of cfg!:" << kernel->second->cfg()->size() - 2 << std::endl;
             for( ir::ControlFlowGraph::const_iterator block = kernel->second->cfg()->begin(); 
 			block != kernel->second->cfg()->end(); ++block ) {
                 if(block->label == "entry" || block->label == "exit")
@@ -53,6 +53,10 @@ namespace analysis
     void BasicBlockInstrumentor::initialize() {
         
         counter = 0;
+//std::cout 
+//    << kernelName << " entries:" << entries << " kernel:" << kernelDataMap[kernelName] << " blocks:" << threadBlocks << " threads:" << threads
+//    << std::endl << " total:" 
+//    << entries  * threadBlocks * threads * sizeof(size_t) << std::endl;
 
         if(cudaMalloc((void **) &counter, (entries * kernelDataMap[kernelName] * threadBlocks * threads) * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
@@ -64,6 +68,7 @@ namespace analysis
         if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
         }
+        
     }
 
     void BasicBlockInstrumentor::createPasses() {
@@ -96,7 +101,7 @@ namespace analysis
         size_t *info = new size_t[(entries * kernelDataMap[kernelName] * threadBlocks * threads)];
         if(counter) {
             cudaMemcpy(info, counter, (entries * kernelDataMap[kernelName] * threadBlocks * threads) * sizeof( size_t ), cudaMemcpyDeviceToHost);
-            cudaFree(counter);
+            //cudaFree(counter);
         }
 
         _kernelProfile.basicBlockExecutionCountMap.clear();
@@ -130,9 +135,16 @@ namespace analysis
                 
                 _kernelProfile.instructionCount = 0;
                 
+                int blockCount = 0;
                 for(j = 0; j < kernelDataMap[kernelName] * threads * threadBlocks; j++) {
                    
                     _kernelProfile.instructionCount += info[j];
+                    blockCount += info[j];;
+                    if ( j % threads * threadBlocks == threads*threadBlocks-1)
+                    {
+                        *out << "Block " << j / (threads * threadBlocks) << ": " <<blockCount << "\n";
+                        blockCount = 0; 
+                    }
                     
                 }
 

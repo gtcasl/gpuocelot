@@ -151,6 +151,9 @@ namespace api {
 			//! \brief filter enabling remote GPU devices if present
 			bool enableRemote;
 			
+			//! \brief if true, enables asynchronous kernel launches
+			bool asynchronousKernelLaunch;
+			
 			//! \brief The port to connect to an ocelot server for remoting
 			int port;
 

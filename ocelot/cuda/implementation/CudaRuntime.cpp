@@ -2681,9 +2681,15 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			_nextTraceGenerators.begin(), 
 			_nextTraceGenerators.end());
 
-		_getWorkerThread().launch(moduleName, kernelName, convert(launch.gridDim), 
-			convert(launch.blockDim), launch.sharedMemory, 
-			thread.parameterBlock, paramSize, traceGens, &_externals);
+		if (!api::OcelotConfiguration::get().executive.asynchronousKernelLaunch) {
+			_getWorkerThread().launch(moduleName, kernelName, convert(launch.gridDim), 
+				convert(launch.blockDim), launch.sharedMemory, 
+				thread.parameterBlock, paramSize, traceGens, &_externals);
+		}
+		else {
+			_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), convert(launch.blockDim), 
+				launch.sharedMemory, thread.parameterBlock, paramSize, traceGens, &_externals);
+		}
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
@@ -2713,6 +2719,8 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		throw;
 	}
 	_release();
+	
+	_wait();
 	
 	return result;
 }
@@ -2865,7 +2873,9 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	
 	try {
 		if (_getDevice().queryEvent(event)) {
-			if(!_getWorkerThread().areAnyKernelsRunning())
+		
+			if(!api::OcelotConfiguration::get().executive.asynchronousKernelLaunch ||
+				!_getWorkerThread().areAnyKernelsRunning())
 			{
 				result = cudaSuccess;
 			}

@@ -50,40 +50,43 @@ namespace analysis
 		typedef analysis::KernelPartitioningPass::Subkernel Subkernel;
 		typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
 		typedef std::map< llvm::BasicBlock *, ir::BasicBlock::Pointer > LLVMtoOcelotBlockMap;
+		typedef std::map< ir::BasicBlock::Pointer, llvm::BasicBlock * > OcelotToLLVMBlockMap;
+		typedef std::map< SubkernelId, llvm::BasicBlock *> EntryMap;
 
 		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
 		class ThreadLocalArgument {
 		public:
-			typedef std::vector< llvm::Instruction *> ThreadLocalArgumentVector;
-		public:
 		
 			llvm::Instruction *ptrThreadDescriptorArray;
 			
-			ThreadLocalArgumentVector contextObject;
+			llvm::Instruction * contextObject;
 		
-			ThreadLocalArgumentVector threadId_x;
-			ThreadLocalArgumentVector threadId_y;
-			ThreadLocalArgumentVector threadId_z;
+			llvm::Instruction * threadId_x;
+			llvm::Instruction * threadId_y;
+			llvm::Instruction * threadId_z;
 			
-			ThreadLocalArgumentVector blockDim_x;
-			ThreadLocalArgumentVector blockDim_y;
-			ThreadLocalArgumentVector blockDim_z;
+			llvm::Instruction * blockDim_x;
+			llvm::Instruction * blockDim_y;
+			llvm::Instruction * blockDim_z;
 			
-			ThreadLocalArgumentVector blockId_x;
-			ThreadLocalArgumentVector blockId_y;
-			ThreadLocalArgumentVector blockId_z;
+			llvm::Instruction * blockId_x;
+			llvm::Instruction * blockId_y;
+			llvm::Instruction * blockId_z;
 			
-			ThreadLocalArgumentVector gridDim_x;
-			ThreadLocalArgumentVector gridDim_y;
-			ThreadLocalArgumentVector gridDim_z;
+			llvm::Instruction * gridDim_x;
+			llvm::Instruction * gridDim_y;
+			llvm::Instruction * gridDim_z;
 			
-			ThreadLocalArgumentVector localPointer;
-			ThreadLocalArgumentVector sharedPointer;
-			ThreadLocalArgumentVector constantPointer;
-			ThreadLocalArgumentVector parameterPointer;
-			ThreadLocalArgumentVector argumentPointer;
-			ThreadLocalArgumentVector metadataPointer;
+			llvm::Instruction * localPointer;
+			llvm::Instruction * sharedPointer;
+			llvm::Instruction * constantPointer;
+			llvm::Instruction * parameterPointer;
+			llvm::Instruction * argumentPointer;
+			llvm::Instruction * globallyScopedLocal;
+			llvm::Instruction * externalSharedSize;
+			llvm::Instruction * metadataPointer;
 		};
+		typedef std::vector< ThreadLocalArgument > ThreadLocalArgumentVector;
 
 		/*!
 			\brief contains replicated and/or vectorized instructions
@@ -109,12 +112,25 @@ namespace analysis
 		};
 		typedef std::map< llvm::Instruction *, VectorizedInstruction > VectorizedInstructionMap;
 		
+		//! \brief scheduler block
+		class SchedulerBlock {
+		public:
+			//! \brief data structure maps entry Ids to entry blocks
+			EntryMap entries;
+			
+			//! \brief actual bloock
+			llvm::BasicBlock *block;
+			
+			//! \brief
+			ThreadLocalArgumentVector threadLocalArguments;
+		};
+		
 		/*!
 			\brief per-function data structures related to the transformation
 		*/
 		class Translation {
 		public:
-			Translation(llvm::Function *f, LLVMUniformVectorization *pass);
+			Translation(llvm::Function *f, Subkernel *subkernel, LLVMUniformVectorization *pass);
 			~Translation();
 			
 			/*!
@@ -132,21 +148,57 @@ namespace analysis
 				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
 			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
 			
-			void _computeLLVMToOcelotBlockMap(LLVMtoOcelotBlockMap &llvmBlockMap, Subkernel &subkernel);
+		protected:
+		
+			void _computeLLVMToOcelotBlockMap();
+			
+			void _scalarPreprocess();
+			
+			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, llvm::BasicBlock *block);
+			
+			void _initializeSchedulerEntryBlock();
+			
+			void _completeSchedulerEntryBlock();
+			
+			void _enumerateEntries();
+			
+		protected:
+		
+			void _transformWarpSynchronous();
+			
+			void _replicateInstructions();
+			
+			void _resolveDependencies();
+			
+			void _vectorizeReplicated();
+			
+			void _finalizeTranslation();
+		
+		protected:
+			
+			llvm::LLVMContext & context();
 			
 		protected:
 		
 			//! \brief references function being transformed
 			llvm::Function *function;
 			
+			//! \brief corresponding subkernel
+			Subkernel *subkernel;
+			
 			LLVMUniformVectorization *pass;
 			
 			//! \brief maps LLVM blocks to identically named Ocelot blocks from the source kernel
 			LLVMtoOcelotBlockMap llvmToOcelotBlockMap;
 			
+			//! \brief maps Ocelot blocks to LLVM blocks (inverse of llvmToOcelotBlockmap)
+			OcelotToLLVMBlockMap ocelotToLlvmBlockMap;
+			
 			//! \brief maps
 			VectorizedInstructionMap vectorizedInstructionMap;
-		
+				
+			//! \brief
+			SchedulerBlock schedulerEntryBlock;
 		};
 	
 	public:
@@ -178,6 +230,8 @@ namespace analysis
 		llvm::ConstantInt *getConstInt32(int n) const;
 		llvm::ConstantInt *getConstInt16(short n) const;
 
+		llvm::LLVMContext & context();
+		
 	public:
 		//! pointer to module 
 		const llvm::Module *M;

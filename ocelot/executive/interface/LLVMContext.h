@@ -27,25 +27,25 @@ public:
 	};
 
 public:
-	Dimension tid;    //! Thread ids
-	Dimension ntid;   //! CTA dimensions
-	Dimension ctaid;  //! CTA ids
-	Dimension nctaid; //! Kernel dimensions
+	Dimension tid;    //! [0] Thread ids
+	Dimension ntid;   //! [1] CTA dimensions
+	Dimension ctaid;  //! [2] CTA ids
+	Dimension nctaid; //! [3] Kernel dimensions
 
 public:
-	char* local;               //! Pointer to local memory
-	char* shared;              //! Pointer to shared memory
-	char* constant;            //! Pointer to constant memory
-	char* parameter;           //! Pointer to parameter memory
-	char* argument;            //! Pointer to argument memory
-	char* globallyScopedLocal; //! Pointer to globally scoped local memory
+	char* local;               //! [4] Pointer to local memory
+	char* shared;              //! [5] Pointer to shared memory
+	char* constant;            //! [6] Pointer to constant memory
+	char* parameter;           //! [7] Pointer to parameter memory
+	char* argument;            //! [8] Pointer to argument memory
+	char* globallyScopedLocal; //! [9] Pointer to globally scoped local memory
 	
 public:
-	unsigned int externalSharedSize; //! External shared size
+	unsigned int externalSharedSize; //! [10] External shared size
 
 public:
 	/*! \brief Generic pointer back to other state */
-	char* metadata;
+	char* metadata;	// [11] 
 };
 
 }

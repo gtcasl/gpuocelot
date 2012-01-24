@@ -47,10 +47,11 @@ namespace analysis
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
 		typedef std::vector< llvm::Instruction *> InstructionVector;
+		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::Subkernel Subkernel;
 		typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
 		typedef std::map< llvm::BasicBlock *, ir::BasicBlock::Pointer > LLVMtoOcelotBlockMap;
-		typedef std::map< ir::BasicBlock::Pointer, llvm::BasicBlock * > OcelotToLLVMBlockMap;
+		typedef std::unordered_map< ir::BasicBlock::Pointer, llvm::BasicBlock * > OcelotToLLVMBlockMap;
 		typedef std::map< SubkernelId, llvm::BasicBlock *> EntryMap;
 
 		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
@@ -59,7 +60,7 @@ namespace analysis
 		
 			llvm::Instruction *ptrThreadDescriptorArray;
 			
-			llvm::Instruction * contextObject;
+			llvm::Value * context;
 		
 			llvm::Instruction * threadId_x;
 			llvm::Instruction * threadId_y;
@@ -121,6 +122,9 @@ namespace analysis
 			//! \brief actual bloock
 			llvm::BasicBlock *block;
 			
+			//! \brief actual default entry
+			llvm::BasicBlock *defaultEntry;
+			
 			//! \brief
 			ThreadLocalArgumentVector threadLocalArguments;
 		};
@@ -132,11 +136,6 @@ namespace analysis
 		public:
 			Translation(llvm::Function *f, Subkernel *subkernel, LLVMUniformVectorization *pass);
 			~Translation();
-			
-			/*!
-				\brief entry point to pass
-			*/
-			void runOnFunction();
 
 		protected:
 		
@@ -147,7 +146,13 @@ namespace analysis
 			/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
 				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
 			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
-			
+		
+		protected:	
+			llvm::LLVMContext & context() const;
+			llvm::IntegerType *getTyInt(int n) const;
+			llvm::ConstantInt *getConstInt32(int n) const;
+			llvm::ConstantInt *getConstInt16(short n) const;
+		
 		protected:
 		
 			void _computeLLVMToOcelotBlockMap();
@@ -176,7 +181,6 @@ namespace analysis
 		
 		protected:
 			
-			llvm::LLVMContext & context();
 			
 		protected:
 		
@@ -208,7 +212,7 @@ namespace analysis
 
 			\param warpSize number of logical threads per warp
 		*/
-		LLVMUniformVectorization(KernelGraph *_kernelGraph, int warpSize = 1);
+		LLVMUniformVectorization(KernelGraph *_kernelGraph, SubkernelId subkernelId, int warpSize = 1);
 		~LLVMUniformVectorization();
 
 	public:
@@ -230,7 +234,7 @@ namespace analysis
 		llvm::ConstantInt *getConstInt32(int n) const;
 		llvm::ConstantInt *getConstInt16(short n) const;
 
-		llvm::LLVMContext & context();
+		llvm::LLVMContext & context() const;
 		
 	public:
 		//! pointer to module 
@@ -238,6 +242,9 @@ namespace analysis
 		
 		//! references the KernelGraph being translated
 		KernelGraph *kernelGraph;
+		
+		//! 
+		SubkernelId subkernelId;
 
 		//! \brief number of consecutive threads to pack into a single hardware thread
 		int warpSize;

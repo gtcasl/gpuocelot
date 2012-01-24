@@ -12,6 +12,9 @@
 #include <list>
 #include <set>
 
+// boost includes
+#include <boost/lexical_cast.hpp>
+
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/analysis/interface/LLVMUniformVectorization.h>
@@ -28,6 +31,17 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/math.h>
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; \
+	throw hydrazine::Exception(ss.str()); }
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,6 +79,19 @@ std::ostream &operator<<(std::ostream &out, llvm::Value *value) {
 	return out;
 }
 
+std::string String(llvm::Value *value) {
+	std::string str;
+	llvm::raw_string_ostream os(str);
+	value->print(os);
+	return str;
+}
+std::string String(llvm::Type *value) {
+	std::string str;
+	llvm::raw_string_ostream os(str);
+	value->print(os);
+	return str;
+}
+
 std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst) {
 	std::string str;
 	llvm::raw_string_ostream os(str);
@@ -76,8 +103,11 @@ std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst) {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //! 
-analysis::LLVMUniformVectorization::LLVMUniformVectorization(KernelGraph *_kernelGraph, int _ws):
-	llvm::FunctionPass(ID), kernelGraph(_kernelGraph), warpSize(_ws)
+analysis::LLVMUniformVectorization::LLVMUniformVectorization(
+	KernelGraph *_kernelGraph, 
+	SubkernelId _subkernelId, 
+	int _ws):
+	llvm::FunctionPass(ID), kernelGraph(_kernelGraph), subkernelId(_subkernelId), warpSize(_ws)
 {
 	report("LLVMUniformVectorization() on kernel " << kernelGraph->ptxKernel->name);
 }
@@ -88,13 +118,15 @@ analysis::LLVMUniformVectorization::~LLVMUniformVectorization() {
 }
 
 
-bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &M) {
+bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_m) {
+	M = &_m;
 	return false;
 }
 
 //! \brief entry point for pass
 bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
-	return false;
+	Translation translation(&F, &kernelGraph->subkernels[subkernelId], this);
+	return true;
 }
 
 //! \brief gets the name of the pass
@@ -108,8 +140,20 @@ llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 }
 
 
-llvm::LLVMContext & analysis::LLVMUniformVectorization::context() {
-	return M->getContext();
+llvm::LLVMContext & analysis::LLVMUniformVectorization::Translation::context() const {
+	return function->getContext();
+}
+
+llvm::IntegerType *analysis::LLVMUniformVectorization::Translation::getTyInt(int n) const {
+	return llvm::IntegerType::get(context(), n);
+}
+
+llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt32(int n) const {
+	return llvm::ConstantInt::get(llvm::Type::getInt32Ty(context()), n);
+}
+
+llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt16(short n) const {
+	return llvm::ConstantInt::get(llvm::Type::getInt16Ty(context()), n);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,27 +168,19 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	subkernel(_subkernel),
 	pass(_pass)
 {
-
+	report("Translation(" << f->getName().str() << ") on subkernel with warp size " << pass->warpSize);
 	_scalarPreprocess();
 	_transformWarpSynchronous();
+	
+	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
+	report(" LLVM function:\n" << String(function));
 }
 
 analysis::LLVMUniformVectorization::Translation::~Translation() {
 
 }
 
-/*!
-	\brief entry point to pass
-*/
-void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
-
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
-llvm::LLVMContext & analysis::LLVMUniformVectorization::Translation::context() {
-	return pass->>getContext();
-}
 
 /*! \brief given an instruction from the scalar set, get a set of scalar values that are 
 	either replicated scalar instructions from the vectorized set or extracted vector elements */
@@ -170,20 +206,13 @@ llvm::Instruction *
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
-
+	report("Scalar Preprocessing step");
+	
 	// identify mapping from LLVM blocks to GPU Ocelot blocks
 	_computeLLVMToOcelotBlockMap();
 
 	// identify possible entry points
 	_enumerateEntries();
-
-	// create scheduler
-	schedulerEntryBlock.block = llvm::BasicBlock::Create(context(), "SchedulerEntry", function, 
-		&*function->begin());
-	
-	ThreadLocalArgument localArgs;
-	_loadThreadLocal(localArgs, 0, schedulerEntryBlock.block);
-	schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
 
 	// construct scheduler entry and load thread-local values
 	_initializeSchedulerEntryBlock();
@@ -199,42 +228,66 @@ void analysis::LLVMUniformVectorization::Translation::_computeLLVMToOcelotBlockM
 	for (ir::ControlFlowGraph::iterator bb_it =	subkernel->subkernel->cfg()->begin();
 		bb_it != subkernel->subkernel->cfg()->end(); ++bb_it) {
 		
+		report("   adding mapping " << bb_it->label);
 		blockLabelMap[bb_it->label] = bb_it;
 	}
 	
 	for (llvm::Function::iterator llvmbb_it = function->begin(); 
 		llvmbb_it != function->end(); ++llvmbb_it) {
 		
-		llvm::BasicBlock *llvmBlock = &*llvm_it;
-		ir::BasicBlock::Pointer ocelotBlock = blockLabelMap[llvmbb_it->getName().str()];
+		llvm::BasicBlock *llvmBlock = &*llvmbb_it;
 		
-		llvmToOcelotBlockMap[llvmBlock] = ocelotBlock;
-		ocelotToLlvmBlockMap[ocelotBlock] = llvmBlock;
+		std::string label = llvmbb_it->getName().str();
+		std::map< std::string, ir::BasicBlock::Pointer >::iterator entry_it = blockLabelMap.find(label);
+		if (entry_it != blockLabelMap.end()) {
+		
+			ir::BasicBlock::Pointer ocelotBlock = entry_it->second;
+		
+			llvmToOcelotBlockMap[llvmBlock] = ocelotBlock;
+			ocelotToLlvmBlockMap[ocelotBlock] = llvmBlock;
+		}
+		else {
+			report("  failed to find label '" << label << "' in Ocelot block mapping");
+//			assert(0 && "failed to find block in mapping");
+		}
 	}
 }
 
 void analysis::LLVMUniformVectorization::Translation::_enumerateEntries() {
 	typedef analysis::KernelPartitioningPass::ExternalEdgeVector ExternalEdgeVector;
+	typedef analysis::KernelPartitioningPass::ExternalEdge ExternalEdge;
 	
 	ExternalEdgeVector Subkernel::*entryLists[] = {
 		&Subkernel::inEdges,
 		&Subkernel::barrierEntries,
-		&Subkernel::divergentEntries;
+		&Subkernel::divergentEntries,
 	};
 	
 	for (int i = 0; i < 3; i++) {
 		for (ExternalEdgeVector::iterator edge_it = (subkernel->*(entryLists[i])).begin();
 			edge_it != (subkernel->*(entryLists[i])).end(); ++edge_it) {
-			ExternalEdgeVector &edge = *edge_it;
+			ExternalEdge &edge = *edge_it;
 			
-			schedulerEntryBlock.entries[edge->entryId] = 
+			schedulerEntryBlock.entries[edge.entryId] = ocelotToLlvmBlockMap[edge.handler];
 		}
 	}
 }
 
 //! \brief replaces uses of thread-local arguments with explicit references
 void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryBlock() {
-
+	report(" Initializing scheduler entry block");
+	
+	// create scheduler
+	report(" creating scheduler block");
+	schedulerEntryBlock.defaultEntry = &function->getEntryBlock();
+	schedulerEntryBlock.block = llvm::BasicBlock::Create(context(), "SchedulerEntry", function, 
+		schedulerEntryBlock.defaultEntry);
+	
+	report("   extracting thread-local arguments");
+	ThreadLocalArgument localArgs;
+	_loadThreadLocal(localArgs, 0, schedulerEntryBlock.block);
+	schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
+	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		if (&*bb_it == schedulerEntryBlock.block) {
 			continue;
@@ -278,26 +331,29 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 			llvm::Instruction *selected = 0;
 			int indices[4];
 			int indexCount = 0;
-			for (llvm::op_iterator op_it = gemp->idx_begin(); 
+			for (llvm::User::op_iterator op_it = gemp->idx_begin(); 
 				op_it != gemp->idx_end(); ++op_it, ++indexCount) {
 				llvm::ConstantInt *constInt = llvm::dyn_cast<llvm::ConstantInt>(*op_it);
 				assert(constInt && "failed to cast index to constant int");
-				indices[indexCount] = constInt->get();
+				indices[indexCount] = constInt->getZExtValue();
 			}
 			if (indices[1] <= 3) {
 				assert(indices[2] >= 0 && indices[2] < 3);
-				selected = dim3Instances[indices[1] * 3 + indices[2]];
+				selected = *dim3Instances[indices[1] * 3 + indices[2]];
 			}
 			else {
-				selected = ptrInstances[indices[1] - 4];
+				selected = *ptrInstances[indices[1] - 4];
 			}
 			assert(selected && "failed to identify thread-local argument");
 			
-			for (llvm::use_iterator use_it = gemp->use_begin(); use_it != gemp->use_end(); ++use_it) {
-				assert(llvm::dyn_cast<llvm::LoadInst>(&*use_it) && "user of GEMP must be LoadInst");
+			for (llvm::Value::use_iterator use_it = gemp->use_begin(); use_it != gemp->use_end(); ++use_it) {
+				llvm::User *user = *use_it;
 				
-				use_it->replaceAllUsesWith(selected);
-				use_it->eraseFromParent();
+				llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(user);
+				assert(loadInst && "user of GEMP must be LoadInst");
+				
+				loadInst->replaceAllUsesWith(selected);
+				loadInst->eraseFromParent();
 			}
 			gemp->eraseFromParent();
 		}
@@ -307,14 +363,26 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	ThreadLocalArgument &local, int threadId, llvm::BasicBlock *block) {
 	
-	llvm::Value *contextArrayBasePointer = &*function->getArgumentList().front();
-	std::string threadSuffix = std::string(".t") + boost::lexical_cast<std::string, int>(threadId);
+	report("  Loading thread-local arguments for thread " << threadId 
+		<< ". Inserting into block " << block->getName().str());
 	
-	std::vector< llvm::Value *> idx;
-	idx.push_back(pass->getConstInt32(threadId));
-	llvm::GetElementPtrInst *contextGemp = llvm::GetElementPtrInst::Create(contextArrayBasePointer,
-		llvm::ArrayRef(idx), "contextPtrGemp", block);
-	local.context = new llvm::LoadInst(contextGemp, "contextPtr" + threadSuffix, block);
+	llvm::Value *contextArrayBasePointer = &function->getArgumentList().front();
+	std::string threadSuffix = std::string(".t") + boost::lexical_cast<std::string, int>(threadId);
+		
+	if (false) {
+		std::vector< llvm::Value *> idx;
+		idx.push_back(getConstInt32(threadId));
+	
+		llvm::GetElementPtrInst *contextGemp = llvm::GetElementPtrInst::Create(contextArrayBasePointer,
+			llvm::ArrayRef<llvm::Value*>(idx), "contextPtrGemp", block);
+	
+		local.context = new llvm::LoadInst(contextGemp, "contextPtr" + threadSuffix, block);
+	}
+	else {
+		local.context = contextArrayBasePointer;
+	}
+	
+	report("   structure members");
 	
 	// load dimensions
 	llvm::Instruction **dim3Instances[] = {
@@ -325,20 +393,23 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	};
 	const char *dim3names[] = { "threadId", "blockDim", "blockId", "gridDim" };
 	const char *dim3suffix[] = {"x", "y", "z"};
+	
 	for (int idx = 0; idx < 4; idx++) {
 		for (int j = 0; j < 3; j++) {
 			std::vector< llvm::Value *> ind;
-			ind.push_back(pass->getConstInt32(0));
-			ind.push_back(pass->getConstInt32(idx));
-			ind.push_back(pass->getConstInt32(j));
+			ind.push_back(getConstInt32(0));
+			ind.push_back(getConstInt32(idx));
+			ind.push_back(getConstInt32(j));
 			
-			llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst(local.context, 
-				llvm::ArrayRef(ind), "", block);
+			llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
+				llvm::ArrayRef<llvm::Value*>(ind), "", block);
 			
-			*(dim3Instances[idx * 3 + j]) = new llvm::LoadInst(ptr, 
-				dim3names[idx] + "." + dim3suffix[j] + threadSuffix, block);
+			std::string name = std::string(dim3names[idx]) + "." + dim3suffix[j] + threadSuffix;
+			*(dim3Instances[idx * 3 + j]) = new llvm::LoadInst(ptr, name, block);
 		}
 	}
+	
+	report("   scalar members");
 	
 	// scalars
 	llvm::Instruction **ptrInstances[] = {
@@ -347,38 +418,33 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 		&local.constantPointer,
 		&local.parameterPointer,
 		&local.argumentPointer,
-		&local.globallyScopedLocal,
-		&local.externalSharedSize,
 		&local.metadataPointer,
 	};
 	const char *ptrNames[] = {
-		"local", "shared", "const", "param", "argument", "globalLocal", "externSharedSize", "metadata", 
+		"local", "shared", "const", "param", "argument", "metadata", 
 	};
-	for (int idx = 0; idx < 8; idx++) {
+	for (int idx = 0; idx < 6; idx++) {
 	
 		std::vector< llvm::Value *> ind;
-		ind.push_back(pass->getConstInt32(0));
-		ind.push_back(pass->getConstInt32(idx + 4));
-		ind.push_back(pass->getConstInt32(j));
+		ind.push_back(getConstInt32(0));
+		ind.push_back(getConstInt32(idx + 4));
 		
-		llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst(local.context, 
-			llvm::ArrayRef(ind), std::string(ptrNames[idx]) + "Ptr" + threadSuffix, block);
+		llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
+			llvm::ArrayRef<llvm::Value*>(ind), std::string(ptrNames[idx]) + "Ptr" + threadSuffix, block);
 		
 		*(ptrInstances[idx]) = new llvm::LoadInst(ptr, ptrNames[idx] + threadSuffix, block);
 	}
 }
 
 void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlock( ) {
-	
-	llvm::BasicBlock *defaultEntry = &*(function->begin());
-	
-	llvm::BitCastInst *bitcastPtr = new llvm::BitCastInst(,
+		
+	llvm::BitCastInst *bitcastPtr = new llvm::BitCastInst(
 		schedulerEntryBlock.threadLocalArguments[0].localPointer, 
 		llvm::PointerType::get(llvm::IntegerType::get(context(), 32), 0), 
-		"bitcast", block);
-	llvm::LoadInst *resumePoint = new llvm::LoadInst(bitcastPtr, "resumePoint", block);
+		"bitcast", schedulerEntryBlock.block);
+	llvm::LoadInst *resumePoint = new llvm::LoadInst(bitcastPtr, "resumePoint", schedulerEntryBlock.block);
 	
-	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(resumePoint, defaultEntry, 
+	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(resumePoint, schedulerEntryBlock.defaultEntry, 
 		schedulerEntryBlock.entries.size(), schedulerEntryBlock.block);
 	
 	unsigned int idx = 0;
@@ -386,7 +452,7 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 		entry_it != schedulerEntryBlock.entries.end(); ++entry_it, ++idx) {
 		
 		switchInst->setSuccessor(idx, entry_it->second);
-		switchInst->setSuccessorValue(idx, pass->getConstInt32(entry_it->first));
+		switchInst->setSuccessorValue(idx, getConstInt32(entry_it->first));
 	}
 }
 

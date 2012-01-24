@@ -304,6 +304,9 @@ analysis::KernelPartitioningPass::Subkernel::Subkernel(SubkernelId _id): id(_id)
 
 }
 
+analysis::KernelPartitioningPass::Subkernel::Subkernel() {
+}
+
 void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source,
 	analysis::DataflowGraph *sourceDfg,
 	const RegisterOffsetMap &registerOffsets) {

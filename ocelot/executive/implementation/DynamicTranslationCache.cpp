@@ -8,6 +8,7 @@
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
+#include <ocelot/analysis/interface/LLVMUniformVectorization.h>
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
@@ -64,7 +65,7 @@
 #define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
+#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
@@ -950,6 +951,7 @@ static void identifyPredecessors(std::ostream &out, llvm::Function *function) {
 static void cloneAndOptimizeTranslation(
 	executive::DynamicTranslationCache::TranslatedKernel &translatedKernel,
 	executive::DynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
+	executive::DynamicTranslationCache::SubkernelId subkernelId,
 	executive::DynamicTranslationCache::Translation *translation,
 	int warpSize,
 	translator::Translator::OptimizationLevel optimization,
@@ -995,6 +997,10 @@ static void cloneAndOptimizeTranslation(
 		
 	llvm::FunctionPassManager manager(translatedKernel.llvmModule);
 	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
+	
+	analysis::LLVMUniformVectorization *vectorizationPass = new
+		analysis::LLVMUniformVectorization(translatedKernel.kernel->kernelGraph(), subkernelId, warpSize);
+	manager.add(vectorizationPass);
 	
 	report("Overriding optimization level");
 	level = 2;
@@ -1236,7 +1242,7 @@ executive::DynamicTranslationCache::Translation *
 		report("  cloning and optimizing");
 	
 		// apply optimizations on the resulting LLVM function
-		cloneAndOptimizeTranslation(translatedKernel, subkernel, 
+		cloneAndOptimizeTranslation(translatedKernel, subkernel, subkernelId,
 			translation, warpSize, getOptimizationLevel(), specialization);
 		
 		// dynamically compile LLVM to host ISA

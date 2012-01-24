@@ -85,6 +85,7 @@ namespace analysis {
 		class Subkernel {
 		public:
 			Subkernel(SubkernelId _id);
+			Subkernel();
 			
 			void create(ir::PTXKernel *source,
 				analysis::DataflowGraph *sourceDfg,

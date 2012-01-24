@@ -1,0 +1,32 @@
+#The name of the project
+PROJECT(N_Body_Simulation_CUDA)
+
+#The CMake Minimum version that is required. The FindCUDA script
+#is distributed since version 2.8
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+#Searching CUDA
+FIND_PACKAGE(CUDA)
+
+MESSAGE( STATUS "N_body - project is being generated" )
+
+SET( NBODY_SRC
+    bodysystemcpu.cpp
+    bodysystemcuda.cpp
+    bodysystemcuda.cu
+    nbody.cpp
+    nbody_gold.cpp
+    nbody_kernel.cu
+    render_particles.cpp
+)
+
+MESSAGE( "NBODY_SRC = " ${NBODY_SRC} )
+
+#Link with libcutil (expected to be in ${CUDA_SDK_ROOT_DIR}/C/lib)
+LINK_LIBRARIES("-L/${CUDA_SDK_ROOT_DIR}/C/lib -lcutil")
+
+#Include FindCUDA script
+INCLUDE(FindCUDA)
+
+CUDA_ADD_EXECUTABLE( nbody ${NBODY_SRC} )
+

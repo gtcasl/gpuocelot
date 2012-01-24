@@ -1,0 +1,169 @@
+# \file SConstruct
+#
+# \author Andrew Kerr <arkerr@gatech.edu>
+# \date December 13, 2011
+#
+# \brief SConstruct for CUDA 2.2 examples to be used as a model for other tools
+#
+
+import os
+import sys
+
+import inspect
+import platform
+import re
+import subprocess
+
+from SCons import SConf
+
+
+sys.path.append('../scripts')
+import build
+
+
+#
+# libsdk
+#
+env = build.InitializeEnvironment(Environment(), Builder)
+
+sources = [	
+	'sdk/bank_checker.cpp',
+	'sdk/multithreading.cpp',
+	'sdk/paramgl.cpp',
+	'sdk/rendercheck_gl.cpp',
+	'sdk/stopwatch_linux.cpp',
+	'sdk/cmd_arg_reader.cpp',
+	'sdk/cutil.cpp',
+	'sdk/param.cpp',
+	'sdk/stopwatch.cpp',
+	'sdk/shrUtils.cpp'
+]
+
+libsdk = env.StaticLibrary('libsdk.a', sources)
+
+# Declare test applications here.
+#
+# (appname, [sources])   -- assumes sources in "tests/{appname}/"
+# (appname, [sources], path)   -- assumes sources in "tests/{path}/"
+#
+testApplications = [
+	('AlignedTypes', ['alignedTypes.cu',], 'alignedTypes'),
+	('AsyncAPI', ['asyncAPI.cu',], 'asyncAPI'),
+	('BandwidthTest', ['bandwidthTest.cu',], 'bandwidthTest'),
+	('BicubicTexture', ['bicubicTexture.cu','bicubicTexture.cpp',], 'bicubicTexture'),
+	('BilateralFilter', ['filter_kernel.cu','bilateralFilter.cpp','bilateralFilter_gold.cpp','bmploader.cpp',], 'bilateralFilter'),
+	('BinomialOptions', ['binomialOptions_SM13.cu','binomialOptions_SM10.cu','binomialOptions_gold.cpp','binomialOptions.cpp',], 'binomialOptions'),
+	('BlackScholes', ['BlackScholes.cu','BlackScholes_gold.cpp',], 'BlackScholes'),
+	('BoxFilter', ['boxFilter_kernel.cu','boxFilter.cpp','boxFilter_gold.cpp',], 'boxFilter'),
+	('Clock', ['clock_kernel.cu','clock.cu',], 'clock'),
+	('ConcurrentKernels', ['concurrentKernels.cu',], 'concurrentKernels'),
+	('ConvolutionFFT2D', ['convolutionFFT2D.cu','main.cpp','convolutionFFT2D_gold.cpp',], 'convolutionFFT2D'),
+	('ConvolutionSeparable', ['convolutionSeparable.cu','convolutionSeparable_gold.cpp','main.cpp',], 'convolutionSeparable'),
+	('ConvolutionTexture', ['convolutionTexture.cu','main.cpp','convolutionTexture_gold.cpp',], 'convolutionTexture'),
+	('CppIntegration', ['cppIntegration_kernel.cu','cppIntegration.cu','main.cpp','cppIntegration_gold.cpp',], 'cppIntegration'),
+	('Dct8x8', ['dct8x8_kernel_quantization.cu','dct8x8_kernel2.cu','dct8x8_kernel1.cu','dct8x8.cu','dct8x8_kernel_short.cu','DCT8x8_Gold.cpp','BmpUtil.cpp',], 'dct8x8'),
+	('DeviceQuery', ['deviceQuery.cpp',], 'deviceQuery'),
+	('DeviceQueryDrv', ['deviceQueryDrv.cpp',], 'deviceQueryDrv'),
+	('DwtHaar1D', ['dwtHaar1D.cu','dwtHaar1D_kernel.cu',], 'dwtHaar1D'),
+	('Dxtc', ['dxtc.cu',], 'dxtc'),
+	('Eigenvalues', ['bisect_util.cu','bisect_kernel_large_onei.cu','main.cu','bisect_kernel_large_multi.cu','bisect_kernel_small.cu','bisect_large.cu','bisect_kernel_large.cu','bisect_small.cu','gerschgorin.cpp','matlab.cpp',], 'eigenvalues'),
+	('FDTD3d', ['FDTD3dGPU.cu','FDTD3dReference.cpp','FDTD3d.cpp',], 'FDTD3d'),
+	('FastWalshTransform', ['fastWalshTransform_kernel.cu','fastWalshTransform.cu','fastWalshTransform_gold.cpp',], 'fastWalshTransform'),
+	('FluidsGL', ['fluidsGL_kernels.cu','fluidsGL.cpp',], 'fluidsGL'),
+	('FunctionPointers', ['FunctionPointers_kernels.cu','FunctionPointers.cpp',], 'FunctionPointers'),
+	('HSOpticalFlow', ['solverKernel.cu','downscaleKernel.cu','warpingKernel.cu','addKernel.cu','derivativesKernel.cu','flowCUDA.cu','upscaleKernel.cu','flowGold.cpp','main.cpp',], 'HSOpticalFlow'),
+	('Histogram', ['histogram256.cu','histogram64.cu','main.cpp','histogram_gold.cpp',], 'histogram'),
+	('ImageDenoising', ['imageDenoising_nlm_kernel.cu','imageDenoising_copy_kernel.cu','imageDenoising_knn_kernel.cu','imageDenoising_nlm2_kernel.cu','imageDenoising.cu','imageDenoisingGL.cpp','bmploader.cpp',], 'imageDenoising'),
+	('InlinePTX', ['inlinePTX.cu',], 'inlinePTX'),
+	('Interval', ['interval.cu',], 'Interval'),
+	('LineOfSight', ['lineOfSight.cu',], 'lineOfSight'),
+	('Mandelbrot', ['Mandelbrot_sm13.cu','Mandelbrot_kernel.cu','Mandelbrot_sm11.cu','Mandelbrot_gold.cpp','Mandelbrot.cpp',], 'Mandelbrot'),
+	('MarchingCubes', ['marchingCubes_kernel.cu','marchingCubes.cpp',], 'marchingCubes'),
+	('MatrixMul', ['matrixMul_kernel.cu','matrixMul.cu','matrixMul_gold.cpp',], 'matrixMul'),
+	('MatrixMulDrv', ['matrixMul_kernel.cu','matrixMul_gold.cpp','matrixMulDrv.cpp',], 'matrixMulDrv'),
+	('MatrixMulDynlinkJIT', ['matrixMulDynlinkJIT.cpp','matrixMul_gold.cpp',], 'matrixMulDynlinkJIT'),
+	('MergeSort', ['mergeSort.cu','bitonic.cu','mergeSort_validate.cpp','main.cpp','mergeSort_host.cpp',], 'mergeSort'),
+	('MersenneTwister', ['MersenneTwister_kernel.cu','MersenneTwister.cu','MersenneTwister_gold.cpp',], 'MersenneTwister'),
+	('MonteCarlo', ['MonteCarlo_SM13.cu','MonteCarlo_SM10.cu','MonteCarlo_gold.cpp','MonteCarlo.cpp',], 'MonteCarlo'),
+	('MonteCarloMultiGPU', ['MonteCarlo_SM13.cu','MonteCarlo_SM10.cu','MonteCarlo_gold.cpp','MonteCarloMultiGPU.cpp',], 'MonteCarloMultiGPU'),
+	('Nbody', ['bodysystemcuda.cu','nbody_kernel.cu','nbody_gold.cpp','bodysystemcpu.cpp','bodysystemcuda.cpp','nbody.cpp','render_particles.cpp',], 'nbody'),
+	('Newdelete', ['newdelete.cu',], 'newdelete'),
+	('OceanFFT', ['oceanFFT_kernel.cu','oceanFFT.cpp',], 'oceanFFT'),
+	('Particles', ['particles_kernel.cu','particleSystem.cu','particles.cpp','shaders.cpp','particleSystem.cpp','render_particles.cpp',], 'particles'),
+	('PostProcessGL', ['postProcessGL.cu','main.cpp',], 'postProcessGL'),
+	('Ptxjit', ['ptxjit.cpp',], 'ptxjit'),
+	('QuasirandomGenerator', ['quasirandomGenerator_SM13.cu','quasirandomGenerator_SM10.cu','quasirandomGenerator.cpp','quasirandomGenerator_gold.cpp',], 'quasirandomGenerator'),
+	('RadixSortThrust', ['radixSortThrust.cu',], 'radixSortThrust'),
+	('RecursiveGaussian', ['recursiveGaussian_kernel.cu','recursiveGaussian.cu','recursiveGaussian.cpp',], 'recursiveGaussian'),
+	('Reduction', ['reduction_kernel.cu','reduction.cpp',], 'reduction'),
+	('ScalarProd', ['scalarProd_kernel.cu','scalarProd.cu','scalarProd_gold.cpp',], 'scalarProd'),
+	('Scan', ['scan.cu','main.cpp','scan_gold.cpp',], 'scan'),
+	('SimpleAssert', ['simpleAssert.cu',], 'simpleAssert'),
+	('SimpleAtomicIntrinsics', ['simpleAtomicIntrinsics.cu','simpleAtomicIntrinsics_kernel.cu','simpleAtomicIntrinsics_gold.cpp',], 'simpleAtomicIntrinsics'),
+	('SimpleCubemapTexture', ['simpleCubemapTexture.cu',], 'simpleCubemapTexture'),
+	('SimpleGL', ['simpleGL_kernel.cu','simpleGL.cpp',], 'simpleGL'),
+	('SimpleLayeredTexture', ['simpleLayeredTexture.cu',], 'simpleLayeredTexture'),
+	('SimpleMPI', ['simpleMPI.cu','simpleMPI.cpp',], 'simpleMPI'),
+	('SimpleMultiCopy', ['simpleMultiCopy.cu',], 'simpleMultiCopy'),
+	('SimpleMultiGPU', ['simpleMultiGPU_kernel.cu','simpleMultiGPU.cpp',], 'simpleMultiGPU'),
+	('SimpleP2P', ['simpleP2P.cu',], 'simpleP2P'),
+	('SimplePitchLinearTexture', ['simplePitchLinearTexture.cu',], 'simplePitchLinearTexture'),
+	('SimplePrintf', ['simplePrintf.cu','cuPrintf.cu',], 'simplePrintf'),
+	('SimpleStreams', ['simpleStreams.cu',], 'simpleStreams'),
+	('SimpleSurfaceWrite', ['simpleSurfaceWrite_kernel.cu','simpleSurfaceWrite.cu',], 'simpleSurfaceWrite'),
+	('SimpleTemplates', ['simpleTemplates_kernel.cu','simpleTemplates.cu',], 'simpleTemplates'),
+	('SimpleTexture', ['simpleTexture_kernel.cu','simpleTexture.cu',], 'simpleTexture'),
+	('SimpleTexture3D', ['simpleTexture3D_kernel.cu','simpleTexture3D.cpp',], 'simpleTexture3D'),
+	('SimpleTextureDrv', ['simpleTexture_kernel.cu','simpleTextureDrv.cpp',], 'simpleTextureDrv'),
+	('SimpleVoteIntrinsics', ['simpleVote_kernel.cu','simpleVoteIntrinsics.cu',], 'simpleVoteIntrinsics'),
+	('SimpleZeroCopy', ['simpleZeroCopy.cu',], 'simpleZeroCopy'),
+	('SmokeParticles', ['ParticleSystem.cu','particles_kernel.cu','SmokeShaders.cpp','ParticleSystem.cpp','GLSLProgram.cpp','SmokeRenderer.cpp','framebufferObject.cpp','renderbuffer.cpp','particleDemo.cpp',], 'smokeParticles'),
+	('SobelFilter', ['SobelFilter_kernels.cu','SobelFilter.cpp',], 'SobelFilter'),
+	('SobolQRNG', ['sobol_gpu.cu','sobol.cpp','sobol_gold.cpp','sobol_primitives.cpp',], 'SobolQRNG'),
+	('SortingNetworks', ['oddEvenMergeSort.cu','bitonicSort.cu','sortingNetworks_validate.cpp','main.cpp',], 'sortingNetworks'),
+	('Template', ['template_kernel.cu','template.cu','template_gold.cpp',], 'template'),
+	('ThreadFenceReduction', ['threadFenceReduction_kernel.cu','threadFenceReduction.cu',], 'threadFenceReduction'),
+	('ThreadMigration', ['threadMigration.cu','threadMigration.cpp',], 'threadMigration'),
+	('Transpose', ['transpose.cu',], 'transpose'),
+	('VectorAdd', ['vectorAdd.cu',], 'vectorAdd'),
+	('VectorAddDrv', ['vectorAdd_kernel.cu','vectorAddDrv.cpp',], 'vectorAddDrv'),
+	('VolumeFiltering', ['volumeFilter_kernel.cu','volumeRender_kernel.cu','volumeFiltering.cpp','volume.cpp',], 'volumeFiltering'),
+	('VolumeRender', ['volumeRender_kernel.cu','volumeRender.cpp',], 'volumeRender'),
+]
+
+#
+# Identify applications requiring CUFFT or CUBLAS that lack "FFT" or "BLAS" in their names 
+#
+specificallyRequiresCufft = ('FluidsGL',)
+specificallyRequiresCublas = ()
+
+#
+# Construct build rules for all tests
+#
+(bin_path,lib_path,inc_path) = build.getCudaPaths()
+
+env.Append(LIBPATH=[lib_path, '/usr/local/lib'])
+
+tests = []
+for testApplication in testApplications:
+	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
+	additionalLibs = []
+	if "FFT" in testApplication[0] or testApplication[0] in specificallyRequiresCufft:
+		additionalLibs.append('-lcufft')
+	if "BLAS" in testApplication[0] or testApplication[0] in specificallyRequiresCublas:
+		additionalLibs.append('-lcublas')
+	
+	testApp = env.Program(testApplication[0], 
+		[build.MapSource(env, 
+			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
+		LIBS=additionalLibs + ['-lglut', '-lGLU', '-lcudart', libsdk])
+	tests.append(testApp)
+
+
+if 'test' in BUILD_TARGETS:
+	def runAllTests(env, target, source):
+		cmd = "python hydrazine/python/RunRegression.py -t regression/tests.txt -v -l regression/regression.log"
+		subprocess.call(cmd, shell=True)
+	
+	testCommand = Command('test', tests, runAllTests)
+

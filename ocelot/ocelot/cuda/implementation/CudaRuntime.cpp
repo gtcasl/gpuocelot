@@ -2798,19 +2798,38 @@ cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *entry,
 	enum cudaFuncCache cacheConfig)
 {
 	cudaError_t result = cudaSuccess;
-	
-	_lock();
-	
-	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
-	assert(kernel != _kernels.end());
-	
-	executive::ExecutableKernel *executableKernel =
-		_getDevice().getKernel(kernel->second.module, kernel->second.kernel);
-	executableKernel->setCacheConfiguration(
-		_translateCacheConfiguration(cacheConfig));
+    _wait();
+    _lock();
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorInitializationError);
+	}
 
-	_unlock();
-	
+	RegisteredKernelMap::iterator kernel = _kernels.find((void*)entry);
+	if (kernel != _kernels.end()) {
+		try {
+			_registerModule(kernel->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
+
+	    _bind();
+
+		executive::ExecutableKernel *executableKernel =
+			_getDevice().getKernel(kernel->second.module, kernel->second.kernel);
+		executableKernel->setCacheConfiguration(
+			_translateCacheConfiguration(cacheConfig));
+		
+		result = cudaSuccess;
+
+		_release();
+	}
+	else
+		_unlock();
+
 	return _setLastError(result);
 }
 

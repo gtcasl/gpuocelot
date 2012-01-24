@@ -162,8 +162,8 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 	return 0;
 }
 
-executive::Device::Device( unsigned int flags) : _driverVersion(3000), 
-	_runtimeVersion(3000), _flags(flags) {
+executive::Device::Device( unsigned int flags) : _driverVersion(4000), 
+	_runtimeVersion(4000), _flags(flags) {
 	report("Creating device" << this);
 }
 

@@ -60,7 +60,7 @@ testApplications = [
 	('ConvolutionFFT2D', ['convolutionFFT2D.cu','main.cpp','convolutionFFT2D_gold.cpp',], 'convolutionFFT2D'),
 	('ConvolutionSeparable', ['convolutionSeparable.cu','convolutionSeparable_gold.cpp','main.cpp',], 'convolutionSeparable'),
 	('ConvolutionTexture', ['convolutionTexture.cu','main.cpp','convolutionTexture_gold.cpp',], 'convolutionTexture'),
-	('CppIntegration', ['cppIntegration_kernel.cu','cppIntegration.cu','main.cpp','cppIntegration_gold.cpp',], 'cppIntegration'),
+#	('CppIntegration', ['cppIntegration_kernel.cu','cppIntegration.cu','main.cpp','cppIntegration_gold.cpp',], 'cppIntegration'),
 	('Dct8x8', ['dct8x8_kernel_quantization.cu','dct8x8_kernel2.cu','dct8x8_kernel1.cu','dct8x8.cu','dct8x8_kernel_short.cu','DCT8x8_Gold.cpp','BmpUtil.cpp',], 'dct8x8'),
 	('DeviceQuery', ['deviceQuery.cpp',], 'deviceQuery'),
 	('DeviceQueryDrv', ['deviceQueryDrv.cpp',], 'deviceQueryDrv'),
@@ -152,11 +152,14 @@ for testApplication in testApplications:
 		additionalLibs.append('-lcufft')
 	if "BLAS" in testApplication[0] or testApplication[0] in specificallyRequiresCublas:
 		additionalLibs.append('-lcublas')
-	
-	testApp = env.Program(testApplication[0], 
+		
+	localEnv = env.Clone()
+	appIncludePath = ['-I./tests/' + path,]
+	localEnv.Append(CPPFLAGS=appIncludePath)
+	testApp = localEnv.Program(testApplication[0], 
 		[build.MapSource(env, 
-			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
-		LIBS=additionalLibs + ['-lglut', '-lGLU', '-lcudart', libsdk])
+			"tests/%s/%s" % (path, x), appIncludePath) for x in testApplication[1]], 
+		LIBS=additionalLibs + ['-lglut', '-lGLU', '-lcudart', '-lGLEW', libsdk])
 	tests.append(testApp)
 
 

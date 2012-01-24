@@ -3125,7 +3125,19 @@ cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
 
 ////////////////////////////////////////////////////////////////////////////////
 cudaError_t cuda::CudaRuntime::cudaDeviceReset(void) {
-	return CudaRuntimeInterface::cudaDeviceReset();
+
+    _lock();
+   
+    _devicesLoaded = false;
+    _workers.clear(); 
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		delete *device;
+	}
+    _devices.clear();
+
+    _unlock();
+    return _setLastError(cudaSuccess);
 }
 
 cudaError_t cuda::CudaRuntime::cudaDeviceSynchronize(void) {

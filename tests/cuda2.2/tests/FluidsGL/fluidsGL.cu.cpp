@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.cpp"
 # 1 "tests/FluidsGL/fluidsGL.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -24778,9 +24778,9 @@ cudaThreadExit();
 return 1;
 # 527 "tests/FluidsGL/fluidsGL.cu"
 }
-# 1 "tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
-# 1 "tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -25292,8 +25292,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000066d8_00000000-3_fluidsGL.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000059da_00000000-3_fluidsGL.fatbin.c" 1 3
 
 
 asm(
@@ -25603,7 +25603,7 @@ asm(
 ".quad 0x6469756c662f4c47,0x000075632e4c4773,0x0a0a0a0a00000000,0x69737265762e0a0a\n"
 ".quad 0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264\n"
 ".quad 0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f,0x303030305f746678\n"
-".quad 0x3030305f38643636,0x5f372d3030303030,0x4c47736469756c66,0x22692e337070632e\n"
+".quad 0x3030305f61643935,0x5f372d3030303030,0x4c47736469756c66,0x22692e337070632e\n"
 ".quad 0x3209656c69662e0a,0x2f73747365742220,0x4c47736469756c46,0x47736469756c662f\n"
 ".quad 0x6c656e72656b5f4c,0x2e0a226875632e73,0x22203309656c6966,0x636f6c2f7273752f\n"
 ".quad 0x34616475632f6c61,0x2f616475632f312e,0x5f69632f6d76766e,0x2e6564756c636e69\n"
@@ -26097,13 +26097,13 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c" 2 3
 extern void __device_stub__Z11addForces_kP6float2iiiiffim(cData *, int, int, int, int, float, float, int, size_t);
 extern void __device_stub__Z16advectVelocity_kP6float2PfS1_iiifi(cData *, float *, float *, int, int, int, float, int);
 extern void __device_stub__Z16diffuseProject_kP6float2S0_iiffi(cData *, cData *, int, int, float, float, int);
 extern void __device_stub__Z16updateVelocity_kP6float2PfS1_iiiim(cData *, float *, float *, int, int, int, int, size_t);
 extern void __device_stub__Z17advectParticles_kP6float2S0_iifim(cData *, cData *, int, int, float, int, size_t);
-static void __sti____cudaRegisterAll_43_tmpxft_000066d8_00000000_4_fluidsGL_cpp1_ii_texref(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_000059da_00000000_4_fluidsGL_cpp1_ii_texref(void) __attribute__((__constructor__));
 void __device_stub__Z11addForces_kP6float2iiiiffim(cData *__par0, int __par1, int __par2, int __par3, int __par4, float __par5, float __par6, int __par7, size_t __par8){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)32UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par8, sizeof(__par8), (size_t)40UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k)); (void)cudaLaunch(((char *)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k))); };}
 # 84 "tests/FluidsGL/fluidsGL_kernels.cuh"
 void addForces_k( cData *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,float __cuda_5,float __cuda_6,int __cuda_7,size_t __cuda_8)
@@ -26111,7 +26111,7 @@ void addForces_k( cData *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3,int __c
 {__device_stub__Z11addForces_kP6float2iiiiffim( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8);
 # 96 "tests/FluidsGL/fluidsGL_kernels.cuh"
 }
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
 void __device_stub__Z16advectVelocity_kP6float2PfS1_iiifi( cData *__par0, float *__par1, float *__par2, int __par3, int __par4, int __par5, float __par6, int __par7) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)36UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)40UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k)); (void)cudaLaunch(((char *)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k))); }; }
 # 103 "tests/FluidsGL/fluidsGL_kernels.cuh"
 void advectVelocity_k( cData *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,float __cuda_6,int __cuda_7)
@@ -26119,7 +26119,7 @@ void advectVelocity_k( cData *__cuda_0,float *__cuda_1,float *__cuda_2,int __cud
 {__device_stub__Z16advectVelocity_kP6float2PfS1_iiifi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 129 "tests/FluidsGL/fluidsGL_kernels.cuh"
 }
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
 void __device_stub__Z16diffuseProject_kP6float2S0_iiffi( cData *__par0, cData *__par1, int __par2, int __par3, float __par4, float __par5, int __par6) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k)); (void)cudaLaunch(((char *)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k))); }; }
 # 140 "tests/FluidsGL/fluidsGL_kernels.cuh"
 void diffuseProject_k( cData *__cuda_0,cData *__cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,float __cuda_5,int __cuda_6)
@@ -26127,7 +26127,7 @@ void diffuseProject_k( cData *__cuda_0,cData *__cuda_1,int __cuda_2,int __cuda_3
 {__device_stub__Z16diffuseProject_kP6float2S0_iiffi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);
 # 187 "tests/FluidsGL/fluidsGL_kernels.cuh"
 }
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
 void __device_stub__Z16updateVelocity_kP6float2PfS1_iiiim( cData *__par0, float *__par1, float *__par2, int __par3, int __par4, int __par5, int __par6, size_t __par7) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)36UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)40UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k)); (void)cudaLaunch(((char *)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k))); }; }
 # 193 "tests/FluidsGL/fluidsGL_kernels.cuh"
 void updateVelocity_k( cData *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,int __cuda_6,size_t __cuda_7)
@@ -26135,7 +26135,7 @@ void updateVelocity_k( cData *__cuda_0,float *__cuda_1,float *__cuda_2,int __cud
 {__device_stub__Z16updateVelocity_kP6float2PfS1_iiiim( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 222 "tests/FluidsGL/fluidsGL_kernels.cuh"
 }
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
 void __device_stub__Z17advectParticles_kP6float2S0_iifim( cData *__par0, cData *__par1, int __par2, int __par3, float __par4, int __par5, size_t __par6) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k)); (void)cudaLaunch(((char *)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k))); }; }
 # 228 "tests/FluidsGL/fluidsGL_kernels.cuh"
 void advectParticles_k( cData *__cuda_0,cData *__cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,int __cuda_5,size_t __cuda_6)
@@ -26143,7 +26143,7 @@ void advectParticles_k( cData *__cuda_0,cData *__cuda_1,int __cuda_2,int __cuda_
 {__device_stub__Z17advectParticles_kP6float2S0_iifim( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);
 # 262 "tests/FluidsGL/fluidsGL_kernels.cuh"
 }
-# 1 "/tmp/tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_000066d8_00000000_4_fluidsGL_cpp1_ii_texref(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k), (char*)"_Z17advectParticles_kP6float2S0_iifim", "_Z17advectParticles_kP6float2S0_iifim", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k), (char*)"_Z16updateVelocity_kP6float2PfS1_iiiim", "_Z16updateVelocity_kP6float2PfS1_iiiim", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k), (char*)"_Z16diffuseProject_kP6float2S0_iiffi", "_Z16diffuseProject_kP6float2S0_iiffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k), (char*)"_Z16advectVelocity_kP6float2PfS1_iiifi", "_Z16advectVelocity_kP6float2PfS1_iiifi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k), (char*)"_Z11addForces_kP6float2iiiiffim", "_Z11addForces_kP6float2iiiiffim", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texref, (const void**)"texref", "texref", 2, 0, 0); }
-# 2 "tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c" 2
-# 1 "tmpxft_000066d8_00000000-1_fluidsGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_000059da_00000000_4_fluidsGL_cpp1_ii_texref(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, int, size_t))advectParticles_k), (char*)"_Z17advectParticles_kP6float2S0_iifim", "_Z17advectParticles_kP6float2S0_iifim", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, int, size_t))updateVelocity_k), (char*)"_Z16updateVelocity_kP6float2PfS1_iiiim", "_Z16updateVelocity_kP6float2PfS1_iiiim", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, cData *, int, int, float, float, int))diffuseProject_k), (char*)"_Z16diffuseProject_kP6float2S0_iiffi", "_Z16diffuseProject_kP6float2S0_iiffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, float *, float *, int, int, int, float, int))advectVelocity_k), (char*)"_Z16advectVelocity_kP6float2PfS1_iiifi", "_Z16advectVelocity_kP6float2PfS1_iiifi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(cData *, int, int, int, int, float, float, int, size_t))addForces_k), (char*)"_Z11addForces_kP6float2iiiiffim", "_Z11addForces_kP6float2iiiiffim", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texref, (const void**)"texref", "texref", 2, 0, 0); }
+# 2 "tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c" 2
+# 1 "tmpxft_000059da_00000000-1_fluidsGL.cudafe1.stub.c"

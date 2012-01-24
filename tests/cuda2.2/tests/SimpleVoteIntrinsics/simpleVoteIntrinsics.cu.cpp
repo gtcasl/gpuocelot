@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
 # 1 "tests/SimpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16036,9 +16036,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 302 "tests/SimpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 1 "tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
-# 1 "tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16550,8 +16550,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006d39_00000000-3_simpleVoteIntrinsics.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000605d_00000000-3_simpleVoteIntrinsics.fatbin.c" 1 3
 
 
 asm(
@@ -16661,7 +16661,7 @@ asm(
 ".quad 0x6c706d69732f7363,0x746e4965746f5665,0x2e736369736e6972,0x0000000000007563\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x3933643630303030,0x303030303030305f,0x706d69735f372d30\n"
+".quad 0x5f746678706d742f,0x6435303630303030,0x303030303030305f,0x706d69735f372d30\n"
 ".quad 0x6e4965746f56656c,0x736369736e697274,0x22692e337070632e,0x3209656c69662e0a\n"
 ".quad 0x2f73747365742220,0x6f56656c706d6953,0x6e6972746e496574,0x6d69732f73636973\n"
 ".quad 0x5f65746f56656c70,0x632e6c656e72656b,0x656c69662e0a2275,0x7273752f22203309\n"
@@ -16778,11 +16778,11 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2 3
 extern void __device_stub__Z14VoteAnyKernel1PjS_i(unsigned *, unsigned *, int);
 extern void __device_stub__Z14VoteAllKernel2PjS_i(unsigned *, unsigned *, int);
 extern void __device_stub__Z14VoteAnyKernel3Pbi(bool *, int);
-static void __sti____cudaRegisterAll_55_tmpxft_00006d39_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_55_tmpxft_0000605d_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) __attribute__((__constructor__));
 void __device_stub__Z14VoteAnyKernel1PjS_i(unsigned *__par0, unsigned *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1))); };}
 # 48 "tests/SimpleVoteIntrinsics/simpleVote_kernel.cu"
 void VoteAnyKernel1( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
@@ -16792,7 +16792,7 @@ void VoteAnyKernel1( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
 
 
 }
-# 1 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
 void __device_stub__Z14VoteAllKernel2PjS_i( unsigned *__par0, unsigned *__par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2))); }; }
 # 58 "tests/SimpleVoteIntrinsics/simpleVote_kernel.cu"
 void VoteAllKernel2( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
@@ -16802,7 +16802,7 @@ void VoteAllKernel2( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
 
 
 }
-# 1 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
 void __device_stub__Z14VoteAnyKernel3Pbi( bool *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(bool *, int))VoteAnyKernel3)); (void)cudaLaunch(((char *)((void ( *)(bool *, int))VoteAnyKernel3))); }; }
 # 67 "tests/SimpleVoteIntrinsics/simpleVote_kernel.cu"
 void VoteAnyKernel3( bool *__cuda_0,int __cuda_1)
@@ -16810,7 +16810,7 @@ void VoteAnyKernel3( bool *__cuda_0,int __cuda_1)
 {__device_stub__Z14VoteAnyKernel3Pbi( __cuda_0,__cuda_1);
 # 81 "tests/SimpleVoteIntrinsics/simpleVote_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_55_tmpxft_00006d39_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(bool *, int))VoteAnyKernel3), (char*)"_Z14VoteAnyKernel3Pbi", "_Z14VoteAnyKernel3Pbi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2), (char*)"_Z14VoteAllKernel2PjS_i", "_Z14VoteAllKernel2PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1), (char*)"_Z14VoteAnyKernel1PjS_i", "_Z14VoteAnyKernel1PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
-# 1 "tmpxft_00006d39_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_55_tmpxft_0000605d_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(bool *, int))VoteAnyKernel3), (char*)"_Z14VoteAnyKernel3Pbi", "_Z14VoteAnyKernel3Pbi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2), (char*)"_Z14VoteAllKernel2PjS_i", "_Z14VoteAllKernel2PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1), (char*)"_Z14VoteAnyKernel1PjS_i", "_Z14VoteAnyKernel1PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
+# 1 "tmpxft_0000605d_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"

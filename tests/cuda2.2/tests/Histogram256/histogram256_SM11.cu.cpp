@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.cpp"
 # 1 "tests/Histogram256/histogram256_SM11.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15792,9 +15792,9 @@ extern "C" void histogram256_SM11(unsigned *d_Result, unsigned *d_Data, int data
 histogram256GPU(d_Result, d_Data, dataN);
 # 53 "tests/Histogram256/histogram256_SM11.cu"
 }
-# 1 "tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c"
-# 1 "tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c"
+# 1 "tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16306,8 +16306,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006730_00000000-3_histogram256_SM11.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005a21_00000000-3_histogram256_SM11.fatbin.c" 1 3
 
 
 asm(
@@ -16410,7 +16410,7 @@ asm(
 ".quad 0x682f3635326d6172,0x6d6172676f747369,0x31314d535f363532,0x0a0a0a0a0075632e\n"
 ".quad 0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d\n"
 ".quad 0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f\n"
-".quad 0x303030305f746678,0x3030305f30333736,0x5f372d3030303030,0x6172676f74736968\n"
+".quad 0x303030305f746678,0x3030305f31326135,0x5f372d3030303030,0x6172676f74736968\n"
 ".quad 0x314d535f3635326d,0x692e337070632e31,0x09656c69662e0a22,0x7374736574222032\n"
 ".quad 0x72676f747369482f,0x69682f3635326d61,0x326d6172676f7473,0x656e72656b5f3635\n"
 ".quad 0x2e0a226875632e6c,0x22203309656c6966,0x636f6c2f7273752f,0x34616475632f6c61\n"
@@ -16584,9 +16584,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c" 2 3
 static void __device_stub__Z18histogram256KernelPjS_i(unsigned *, unsigned *, int);
-static void __sti____cudaRegisterAll_52_tmpxft_00006730_00000000_4_histogram256_SM11_cpp1_ii_41dc4e4c(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_52_tmpxft_00005a21_00000000_4_histogram256_SM11_cpp1_ii_41dc4e4c(void) __attribute__((__constructor__));
 static void __device_stub__Z18histogram256KernelPjS_i(unsigned *__par0, unsigned *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, int))histogram256Kernel)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, int))histogram256Kernel))); };}
 # 105 "tests/Histogram256/histogram256_kernel.cuh"
 static void histogram256Kernel( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
@@ -16594,7 +16594,7 @@ static void histogram256Kernel( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda
 {__device_stub__Z18histogram256KernelPjS_i( __cuda_0,__cuda_1,__cuda_2);
 # 164 "tests/Histogram256/histogram256_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_52_tmpxft_00006730_00000000_4_histogram256_SM11_cpp1_ii_41dc4e4c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))histogram256Kernel), (char*)"_Z18histogram256KernelPjS_i", "_Z18histogram256KernelPjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c" 2
-# 1 "tmpxft_00006730_00000000-1_histogram256_SM11.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_52_tmpxft_00005a21_00000000_4_histogram256_SM11_cpp1_ii_41dc4e4c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))histogram256Kernel), (char*)"_Z18histogram256KernelPjS_i", "_Z18histogram256KernelPjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c" 2
+# 1 "tmpxft_00005a21_00000000-1_histogram256_SM11.cudafe1.stub.c"

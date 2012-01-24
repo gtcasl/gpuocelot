@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.cpp"
 # 1 "tests/oceanFFT/oceanFFT_kernel.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -14200,9 +14200,9 @@ dim3 grid2(cuda_iDivUp(width, block.x), cuda_iDivUp(height, block.y), 1);
 cudaConfigureCall(grid2, block) ? ((void)0) : calculateSlopeKernel(hptr, slopeOut, width, height);
 # 114 "tests/oceanFFT/oceanFFT_kernel.cu"
 }
-# 1 "tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
-# 1 "tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
+# 1 "tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -14714,8 +14714,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005c09_00000000-3_oceanFFT_kernel.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00007031_00000000-3_oceanFFT_kernel.fatbin.c" 1 3
 
 
 asm(
@@ -14728,7 +14728,7 @@ asm(
 ".quad 0x5f5446466e616563,0x632e6c656e72656b,0x0000000000000075,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3930633530303030,0x303030303030305f,0x6165636f5f372d30,0x72656b5f5446466e\n"
+".quad 0x3133303730303030,0x303030303030305f,0x6165636f5f372d30,0x72656b5f5446466e\n"
 ".quad 0x337070632e6c656e,0x6c69662e0a22692e,0x7365742220320965,0x6e6165636f2f7374\n"
 ".quad 0x6165636f2f544646,0x72656b5f5446466e,0x0a2275632e6c656e,0x203309656c69662e\n"
 ".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e34,0x69632f6d76766e2f\n"
@@ -16187,10 +16187,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 2 3
 extern void __device_stub__Z22generateSpectrumKernelP6float2S0_jjff(float2 *, float2 *, unsigned, unsigned, float, float);
 extern void __device_stub__Z20calculateSlopeKernelPfP6float2jj(float *, float2 *, unsigned, unsigned);
-static void __sti____cudaRegisterAll_50_tmpxft_00005c09_00000000_4_oceanFFT_kernel_cpp1_ii_48fce8a0(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_50_tmpxft_00007031_00000000_4_oceanFFT_kernel_cpp1_ii_48fce8a0(void) __attribute__((__constructor__));
 void __device_stub__Z22generateSpectrumKernelP6float2S0_jjff(float2 *__par0, float2 *__par1, unsigned __par2, unsigned __par3, float __par4, float __par5){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float2 *, float2 *, unsigned, unsigned, float, float))generateSpectrumKernel)); (void)cudaLaunch(((char *)((void ( *)(float2 *, float2 *, unsigned, unsigned, float, float))generateSpectrumKernel))); };}
 # 49 "tests/oceanFFT/oceanFFT_kernel.cu"
 void generateSpectrumKernel( float2 *__cuda_0,float2 *__cuda_1,unsigned __cuda_2,unsigned __cuda_3,float __cuda_4,float __cuda_5)
@@ -16198,7 +16198,7 @@ void generateSpectrumKernel( float2 *__cuda_0,float2 *__cuda_1,unsigned __cuda_2
 {__device_stub__Z22generateSpectrumKernelP6float2S0_jjff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);
 # 77 "tests/oceanFFT/oceanFFT_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
 void __device_stub__Z20calculateSlopeKernelPfP6float2jj( float *__par0, float2 *__par1, unsigned __par2, unsigned __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float2 *, unsigned, unsigned))calculateSlopeKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float2 *, unsigned, unsigned))calculateSlopeKernel))); }; }
 # 81 "tests/oceanFFT/oceanFFT_kernel.cu"
 void calculateSlopeKernel( float *__cuda_0,float2 *__cuda_1,unsigned __cuda_2,unsigned __cuda_3)
@@ -16206,7 +16206,7 @@ void calculateSlopeKernel( float *__cuda_0,float2 *__cuda_1,unsigned __cuda_2,un
 {__device_stub__Z20calculateSlopeKernelPfP6float2jj( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 95 "tests/oceanFFT/oceanFFT_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_50_tmpxft_00005c09_00000000_4_oceanFFT_kernel_cpp1_ii_48fce8a0(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float2 *, unsigned, unsigned))calculateSlopeKernel), (char*)"_Z20calculateSlopeKernelPfP6float2jj", "_Z20calculateSlopeKernelPfP6float2jj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float2 *, float2 *, unsigned, unsigned, float, float))generateSpectrumKernel), (char*)"_Z22generateSpectrumKernelP6float2S0_jjff", "_Z22generateSpectrumKernelP6float2S0_jjff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 2
-# 1 "tmpxft_00005c09_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_50_tmpxft_00007031_00000000_4_oceanFFT_kernel_cpp1_ii_48fce8a0(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float2 *, unsigned, unsigned))calculateSlopeKernel), (char*)"_Z20calculateSlopeKernelPfP6float2jj", "_Z20calculateSlopeKernelPfP6float2jj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float2 *, float2 *, unsigned, unsigned, float, float))generateSpectrumKernel), (char*)"_Z22generateSpectrumKernelP6float2S0_jjff", "_Z22generateSpectrumKernelP6float2S0_jjff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c" 2
+# 1 "tmpxft_00007031_00000000-1_oceanFFT_kernel.cudafe1.stub.c"

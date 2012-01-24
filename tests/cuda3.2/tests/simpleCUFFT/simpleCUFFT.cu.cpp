@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.cpp"
 # 1 "tests/simpleCUFFT/simpleCUFFT.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16428,9 +16428,9 @@ return c;
 }
 # 243 "tests/simpleCUFFT/simpleCUFFT.cu"
 static void ComplexPointwiseMulAndScale(Complex *a, const Complex *b, int size, float scale) ;
-# 1 "tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c"
-# 1 "tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c"
+# 1 "tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16942,8 +16942,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005dcb_00000000-3_simpleCUFFT.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000720d_00000000-3_simpleCUFFT.fatbin.c" 1 3
 
 
 asm(
@@ -16956,7 +16956,7 @@ asm(
 ".quad 0x656c706d69732f54,0x75632e5446465543,0x0000000000000000,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x6263643530303030,0x303030303030305f,0x706d69735f372d30,0x2e5446465543656c\n"
+".quad 0x6430323730303030,0x303030303030305f,0x706d69735f372d30,0x2e5446465543656c\n"
 ".quad 0x0a22692e33707063,0x203209656c69662e,0x732f737473657422,0x465543656c706d69\n"
 ".quad 0x6c706d69732f5446,0x632e544646554365,0x746e652e0a0a2275,0x4337325a5f207972\n"
 ".quad 0x6f5078656c706d6f,0x4d65736977746e69,0x616353646e416c75,0x616f6c663650656c\n"
@@ -17078,9 +17078,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c" 2 3
 static void __device_stub__Z27ComplexPointwiseMulAndScaleP6float2PKS_if(Complex *, const Complex *, int, float);
-static void __sti____cudaRegisterAll_46_tmpxft_00005dcb_00000000_4_simpleCUFFT_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_46_tmpxft_0000720d_00000000_4_simpleCUFFT_cpp1_ii_main(void) __attribute__((__constructor__));
 static void __device_stub__Z27ComplexPointwiseMulAndScaleP6float2PKS_if(Complex *__par0, const Complex *__par1, int __par2, float __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(Complex *, const Complex *, int, float))ComplexPointwiseMulAndScale)); (void)cudaLaunch(((char *)((void ( *)(Complex *, const Complex *, int, float))ComplexPointwiseMulAndScale))); };}
 # 243 "tests/simpleCUFFT/simpleCUFFT.cu"
 static void ComplexPointwiseMulAndScale( Complex *__cuda_0,const Complex *__cuda_1,int __cuda_2,float __cuda_3)
@@ -17091,7 +17091,7 @@ static void ComplexPointwiseMulAndScale( Complex *__cuda_0,const Complex *__cuda
 
 
 }
-# 1 "/tmp/tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_46_tmpxft_00005dcb_00000000_4_simpleCUFFT_cpp1_ii_main(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(Complex *, const Complex *, int, float))ComplexPointwiseMulAndScale), (char*)"_Z27ComplexPointwiseMulAndScaleP6float2PKS_if", "_Z27ComplexPointwiseMulAndScaleP6float2PKS_if", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c" 2
-# 1 "tmpxft_00005dcb_00000000-1_simpleCUFFT.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_46_tmpxft_0000720d_00000000_4_simpleCUFFT_cpp1_ii_main(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(Complex *, const Complex *, int, float))ComplexPointwiseMulAndScale), (char*)"_Z27ComplexPointwiseMulAndScaleP6float2PKS_if", "_Z27ComplexPointwiseMulAndScaleP6float2PKS_if", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c" 2
+# 1 "tmpxft_0000720d_00000000-1_simpleCUFFT.cudafe1.stub.c"

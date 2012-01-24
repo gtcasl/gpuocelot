@@ -47,7 +47,7 @@ def InitializeEnvironment(env, builder, paths = ['-I./sdk',]):
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
 	
-	env.Append(CPPFLAGS=['-Wall', '-O2', '-I.', '-I' + cuda_inc_path, '-std=c++0x'] + paths)
+	env.Append(CPPFLAGS=['-Wall', '-O2', '-g', '-I.', '-I' + cuda_inc_path, '-std=c++0x'] + paths)
 
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	for shaderModel in ('10', '11', '12', '13', '20'):

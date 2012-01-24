@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.cpp"
 # 1 "tests/Scan/scan.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15926,9 +15926,9 @@ __cutilCheckError(cutDeleteTimer(timer), "tests/Scan/scan.cu", 223);
 cudaThreadExit();
 # 226 "tests/Scan/scan.cu"
 }
-# 1 "tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c"
-# 1 "tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c"
+# 1 "tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16440,8 +16440,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006b4d_00000000-3_scan.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005e3e_00000000-3_scan.fatbin.c" 1 3
 
 
 asm(
@@ -16601,7 +16601,7 @@ asm(
 ".quad 0x732f6e6163532f73,0x000075632e6e6163,0x0a0a0a0a00000000,0x69737265762e0a0a\n"
 ".quad 0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264\n"
 ".quad 0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f,0x303030305f746678\n"
-".quad 0x3030305f64346236,0x5f372d3030303030,0x7070632e6e616373,0x69662e0a22692e33\n"
+".quad 0x3030305f65336535,0x5f372d3030303030,0x7070632e6e616373,0x69662e0a22692e33\n"
 ".quad 0x2f2e22203209656c,0x63532f7374736574,0x5f6e6163732f6e61,0x656b5f657669616e\n"
 ".quad 0x2275632e6c656e72,0x3309656c69662e0a,0x747365742f2e2220,0x732f6e6163532f73\n"
 ".quad 0x6b726f775f6e6163,0x6e65696369666665,0x6c656e72656b5f74,0x69662e0a2275632e\n"
@@ -16903,11 +16903,11 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c" 2 3
 extern void __device_stub__Z10scan_naivePfS_i(float *, float *, int);
 extern void __device_stub__Z18scan_workefficientPfS_i(float *, float *, int);
 extern void __device_stub__Z9scan_bestPfS_i(float *, float *, int);
-static void __sti____cudaRegisterAll_39_tmpxft_00006b4d_00000000_4_scan_cpp1_ii_cd1dc58d(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_39_tmpxft_00005e3e_00000000_4_scan_cpp1_ii_cd1dc58d(void) __attribute__((__constructor__));
 void __device_stub__Z10scan_naivePfS_i(float *__par0, float *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int))scan_naive)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int))scan_naive))); };}
 # 46 "./tests/Scan/scan_naive_kernel.cu"
 void scan_naive( float *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -16915,7 +16915,7 @@ void scan_naive( float *__cuda_0,float *__cuda_1,int __cuda_2)
 {__device_stub__Z10scan_naivePfS_i( __cuda_0,__cuda_1,__cuda_2);
 # 74 "./tests/Scan/scan_naive_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c"
 void __device_stub__Z18scan_workefficientPfS_i( float *__par0, float *__par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int))scan_workefficient)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int))scan_workefficient))); }; }
 # 48 "./tests/Scan/scan_workefficient_kernel.cu"
 void scan_workefficient( float *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -16923,7 +16923,7 @@ void scan_workefficient( float *__cuda_0,float *__cuda_1,int __cuda_2)
 {__device_stub__Z18scan_workefficientPfS_i( __cuda_0,__cuda_1,__cuda_2);
 # 107 "./tests/Scan/scan_workefficient_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c"
 void __device_stub__Z9scan_bestPfS_i( float *__par0, float *__par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int))scan_best)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int))scan_best))); }; }
 # 78 "./tests/Scan/scan_best_kernel.cu"
 void scan_best( float *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -16931,7 +16931,7 @@ void scan_best( float *__cuda_0,float *__cuda_1,int __cuda_2)
 {__device_stub__Z9scan_bestPfS_i( __cuda_0,__cuda_1,__cuda_2);
 # 153 "./tests/Scan/scan_best_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_39_tmpxft_00006b4d_00000000_4_scan_cpp1_ii_cd1dc58d(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))scan_best), (char*)"_Z9scan_bestPfS_i", "_Z9scan_bestPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))scan_workefficient), (char*)"_Z18scan_workefficientPfS_i", "_Z18scan_workefficientPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))scan_naive), (char*)"_Z10scan_naivePfS_i", "_Z10scan_naivePfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c" 2
-# 1 "tmpxft_00006b4d_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_39_tmpxft_00005e3e_00000000_4_scan_cpp1_ii_cd1dc58d(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))scan_best), (char*)"_Z9scan_bestPfS_i", "_Z9scan_bestPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))scan_workefficient), (char*)"_Z18scan_workefficientPfS_i", "_Z18scan_workefficientPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))scan_naive), (char*)"_Z10scan_naivePfS_i", "_Z10scan_naivePfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c" 2
+# 1 "tmpxft_00005e3e_00000000-1_scan.cudafe1.stub.c"

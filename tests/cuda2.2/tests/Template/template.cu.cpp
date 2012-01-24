@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006dcf_00000000-1_template.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000060e4_00000000-1_template.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006dcf_00000000-1_template.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000060e4_00000000-1_template.cudafe1.cpp"
 # 1 "tests/Template/template.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15832,9 +15832,9 @@ __cudaSafeCall(cudaFree(d_odata), "tests/Template/template.cu", 153);
 cudaThreadExit();
 # 156 "tests/Template/template.cu"
 }
-# 1 "tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c"
-# 1 "tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000060e4_00000000-1_template.cudafe1.stub.c"
+# 1 "tmpxft_000060e4_00000000-1_template.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000060e4_00000000-1_template.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16346,8 +16346,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006dcf_00000000-3_template.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000060e4_00000000-1_template.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000060e4_00000000-3_template.fatbin.c" 1 3
 
 
 asm(
@@ -16407,7 +16407,7 @@ asm(
 ".quad 0x6c706d65742f6574,0x000075632e657461,0x0a0a0a0a00000000,0x69737265762e0a0a\n"
 ".quad 0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264\n"
 ".quad 0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f,0x303030305f746678\n"
-".quad 0x3030305f66636436,0x5f372d3030303030,0x6574616c706d6574,0x22692e337070632e\n"
+".quad 0x3030305f34653036,0x5f372d3030303030,0x6574616c706d6574,0x22692e337070632e\n"
 ".quad 0x3209656c69662e0a,0x747365742f2e2220,0x616c706d65542f73,0x6c706d65742f6574\n"
 ".quad 0x6e72656b5f657461,0x0a226875632e6c65,0x206e72657478652e,0x206465726168732e\n"
 ".quad 0x34206e67696c612e,0x6164732038622e20,0x2e0a0a3b5d5b6174,0x5a5f207972746e65\n"
@@ -16455,9 +16455,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000060e4_00000000-1_template.cudafe1.stub.c" 2 3
 extern void __device_stub__Z10testKernelPfS_(float *, float *);
-static void __sti____cudaRegisterAll_43_tmpxft_00006dcf_00000000_4_template_cpp1_ii_bf2a51c6(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_000060e4_00000000_4_template_cpp1_ii_bf2a51c6(void) __attribute__((__constructor__));
 void __device_stub__Z10testKernelPfS_(float *__par0, float *__par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *))testKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float *))testKernel))); };}
 # 54 "./tests/Template/template_kernel.cuh"
 void testKernel( float *__cuda_0,float *__cuda_1)
@@ -16465,7 +16465,7 @@ void testKernel( float *__cuda_0,float *__cuda_1)
 {__device_stub__Z10testKernelPfS_( __cuda_0,__cuda_1);
 # 77 "./tests/Template/template_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_00006dcf_00000000_4_template_cpp1_ii_bf2a51c6(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *))testKernel), (char*)"_Z10testKernelPfS_", "_Z10testKernelPfS_", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c" 2
-# 1 "tmpxft_00006dcf_00000000-1_template.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000060e4_00000000-1_template.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_000060e4_00000000_4_template_cpp1_ii_bf2a51c6(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *))testKernel), (char*)"_Z10testKernelPfS_", "_Z10testKernelPfS_", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_000060e4_00000000-1_template.cudafe1.stub.c" 2
+# 1 "tmpxft_000060e4_00000000-1_template.cudafe1.stub.c"

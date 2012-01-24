@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.cpp"
 # 1 "tests/Transpose/transpose.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15866,9 +15866,9 @@ __cutilCheckError(cutDeleteTimer(timer), "tests/Transpose/transpose.cu", 183);
 cudaThreadExit();
 # 186 "tests/Transpose/transpose.cu"
 }
-# 1 "tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c"
-# 1 "tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c"
+# 1 "tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16380,8 +16380,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006e2f_00000000-3_transpose.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000610a_00000000-3_transpose.fatbin.c" 1 3
 
 
 asm(
@@ -16479,7 +16479,7 @@ asm(
 ".quad 0x70736e6172542f73,0x6e6172742f65736f,0x75632e65736f7073,0x0a0a0a0a00000000\n"
 ".quad 0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d\n"
 ".quad 0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f\n"
-".quad 0x303030305f746678,0x3030305f66326536,0x5f372d3030303030,0x736f70736e617274\n"
+".quad 0x303030305f746678,0x3030305f61303136,0x5f372d3030303030,0x736f70736e617274\n"
 ".quad 0x692e337070632e65,0x09656c69662e0a22,0x7374736574222032,0x6f70736e6172542f\n"
 ".quad 0x736e6172742f6573,0x72656b5f65736f70,0x0a2275632e6c656e,0x7972746e652e0a0a\n"
 ".quad 0x6e617274395a5f20,0x53665065736f7073,0x61702e0a2869695f,0x3436752e206d6172\n"
@@ -16613,10 +16613,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c" 2 3
 extern void __device_stub__Z9transposePfS_ii(float *, float *, int, int);
 extern void __device_stub__Z15transpose_naivePfS_ii(float *, float *, int, int);
-static void __sti____cudaRegisterAll_44_tmpxft_00006e2f_00000000_4_transpose_cpp1_ii_09c21bbd(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_0000610a_00000000_4_transpose_cpp1_ii_09c21bbd(void) __attribute__((__constructor__));
 void __device_stub__Z9transposePfS_ii(float *__par0, float *__par1, int __par2, int __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int))transpose)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int))transpose))); };}
 # 50 "tests/Transpose/transpose_kernel.cu"
 void transpose( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3)
@@ -16624,7 +16624,7 @@ void transpose( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z9transposePfS_ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 73 "tests/Transpose/transpose_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c"
 void __device_stub__Z15transpose_naivePfS_ii( float *__par0, float *__par1, int __par2, int __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int))transpose_naive)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int))transpose_naive))); }; }
 # 78 "tests/Transpose/transpose_kernel.cu"
 void transpose_naive( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3)
@@ -16632,7 +16632,7 @@ void transpose_naive( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z15transpose_naivePfS_ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 89 "tests/Transpose/transpose_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_44_tmpxft_00006e2f_00000000_4_transpose_cpp1_ii_09c21bbd(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int))transpose_naive), (char*)"_Z15transpose_naivePfS_ii", "_Z15transpose_naivePfS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int))transpose), (char*)"_Z9transposePfS_ii", "_Z9transposePfS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c" 2
-# 1 "tmpxft_00006e2f_00000000-1_transpose.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_44_tmpxft_0000610a_00000000_4_transpose_cpp1_ii_09c21bbd(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int))transpose_naive), (char*)"_Z15transpose_naivePfS_ii", "_Z15transpose_naivePfS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int))transpose), (char*)"_Z9transposePfS_ii", "_Z9transposePfS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c" 2
+# 1 "tmpxft_0000610a_00000000-1_transpose.cudafe1.stub.c"

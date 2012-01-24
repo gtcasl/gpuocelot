@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.cpp"
 # 1 "tests/MonteCarlo/MonteCarlo_SM10.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16478,9 +16478,9 @@ extern "C" void inverseCND_SM10(float *d_Output, float *d_Input, unsigned N) {
 inverseCNDgpu(d_Output, d_Input, N);
 # 33 "tests/MonteCarlo/MonteCarlo_SM10.cu"
 }
-# 1 "tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
-# 1 "tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+# 1 "tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16992,8 +16992,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005b9a_00000000-3_MonteCarlo_SM10.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006f96_00000000-3_MonteCarlo_SM10.fatbin.c" 1 3
 
 
 asm(
@@ -18378,7 +18378,7 @@ asm(
 ".quad 0x4365746e6f4d2f73,0x6e6f4d2f6f6c7261,0x5f6f6c7261436574,0x0075632e30314d53\n"
 ".quad 0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174\n"
 ".quad 0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966\n"
-".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f61396235,0x5f372d3030303030\n"
+".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f36396636,0x5f372d3030303030\n"
 ".quad 0x72614365746e6f4d,0x2e30314d535f6f6c,0x0a22692e33707063,0x203209656c69662e\n"
 ".quad 0x4d2f737473657422,0x6c72614365746e6f,0x4365746e6f4d2f6f,0x6465725f6f6c7261\n"
 ".quad 0x632e6e6f69746375,0x6c69662e0a226875,0x7365742220330965,0x65746e6f4d2f7374\n"
@@ -19253,12 +19253,12 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 2 3
 static void __device_stub__Z16MonteCarloKernelP14__TOptionValuePfi(__TOptionValue *, float *, int);
 static void __device_stub__Z27MonteCarloOneBlockPerOptionPfi(float *, int);
 static void __device_stub__Z16MonteCarloReduceP14__TOptionValuei(__TOptionValue *, int);
 static void __device_stub__Z16inverseCNDKernelPfS_j(float *, float *, unsigned);
-static void __sti____cudaRegisterAll_50_tmpxft_00005b9a_00000000_4_MonteCarlo_SM10_cpp1_ii_082aa9c7(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_50_tmpxft_00006f96_00000000_4_MonteCarlo_SM10_cpp1_ii_082aa9c7(void) __attribute__((__constructor__));
 static void __device_stub__Z16MonteCarloKernelP14__TOptionValuePfi(__TOptionValue *__par0, float *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(__TOptionValue *, float *, int))MonteCarloKernel)); (void)cudaLaunch(((char *)((void ( *)(__TOptionValue *, float *, int))MonteCarloKernel))); };}
 # 85 "tests/MonteCarlo/MonteCarlo_kernel.cuh"
 static void MonteCarloKernel( __TOptionValue *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -19266,7 +19266,7 @@ static void MonteCarloKernel( __TOptionValue *__cuda_0,float *__cuda_1,int __cud
 {__device_stub__Z16MonteCarloKernelP14__TOptionValuePfi( __cuda_0,__cuda_1,__cuda_2);
 # 112 "tests/MonteCarlo/MonteCarlo_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
 static void __device_stub__Z27MonteCarloOneBlockPerOptionPfi( float *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int))MonteCarloOneBlockPerOption)); (void)cudaLaunch(((char *)((void ( *)(float *, int))MonteCarloOneBlockPerOption))); }; }
 # 123 "tests/MonteCarlo/MonteCarlo_kernel.cuh"
 static void MonteCarloOneBlockPerOption( float *__cuda_0,int __cuda_1)
@@ -19274,7 +19274,7 @@ static void MonteCarloOneBlockPerOption( float *__cuda_0,int __cuda_1)
 {__device_stub__Z27MonteCarloOneBlockPerOptionPfi( __cuda_0,__cuda_1);
 # 159 "tests/MonteCarlo/MonteCarlo_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
 static void __device_stub__Z16MonteCarloReduceP14__TOptionValuei( __TOptionValue *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(__TOptionValue *, int))MonteCarloReduce)); (void)cudaLaunch(((char *)((void ( *)(__TOptionValue *, int))MonteCarloReduce))); }; }
 # 167 "tests/MonteCarlo/MonteCarlo_kernel.cuh"
 static void MonteCarloReduce( __TOptionValue *__cuda_0,int __cuda_1)
@@ -19282,7 +19282,7 @@ static void MonteCarloReduce( __TOptionValue *__cuda_0,int __cuda_1)
 {__device_stub__Z16MonteCarloReduceP14__TOptionValuei( __cuda_0,__cuda_1);
 # 196 "tests/MonteCarlo/MonteCarlo_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
 static void __device_stub__Z16inverseCNDKernelPfS_j( float *__par0, float *__par1, unsigned __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, unsigned))inverseCNDKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, unsigned))inverseCNDKernel))); }; }
 # 224 "tests/MonteCarlo/quasirandomGenerator_kernel.cuh"
 static void inverseCNDKernel( float *__cuda_0,float *__cuda_1,unsigned __cuda_2)
@@ -19290,7 +19290,7 @@ static void inverseCNDKernel( float *__cuda_0,float *__cuda_1,unsigned __cuda_2)
 {__device_stub__Z16inverseCNDKernelPfS_j( __cuda_0,__cuda_1,__cuda_2);
 # 248 "tests/MonteCarlo/quasirandomGenerator_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_50_tmpxft_00005b9a_00000000_4_MonteCarlo_SM10_cpp1_ii_082aa9c7(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, unsigned))inverseCNDKernel), (char*)"_Z16inverseCNDKernelPfS_j", "_Z16inverseCNDKernelPfS_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(__TOptionValue *, int))MonteCarloReduce), (char*)"_Z16MonteCarloReduceP14__TOptionValuei", "_Z16MonteCarloReduceP14__TOptionValuei", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))MonteCarloOneBlockPerOption), (char*)"_Z27MonteCarloOneBlockPerOptionPfi", "_Z27MonteCarloOneBlockPerOptionPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(__TOptionValue *, float *, int))MonteCarloKernel), (char*)"_Z16MonteCarloKernelP14__TOptionValuePfi", "_Z16MonteCarloKernelP14__TOptionValuePfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_OptionData, (char*)"d_OptionData", "d_OptionData", 0, 32768, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_CallValue, (char*)"d_CallValue", "d_CallValue", 0, 16384, 0, 0); }
-# 2 "tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 2
-# 1 "tmpxft_00005b9a_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_50_tmpxft_00006f96_00000000_4_MonteCarlo_SM10_cpp1_ii_082aa9c7(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, unsigned))inverseCNDKernel), (char*)"_Z16inverseCNDKernelPfS_j", "_Z16inverseCNDKernelPfS_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(__TOptionValue *, int))MonteCarloReduce), (char*)"_Z16MonteCarloReduceP14__TOptionValuei", "_Z16MonteCarloReduceP14__TOptionValuei", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))MonteCarloOneBlockPerOption), (char*)"_Z27MonteCarloOneBlockPerOptionPfi", "_Z27MonteCarloOneBlockPerOptionPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(__TOptionValue *, float *, int))MonteCarloKernel), (char*)"_Z16MonteCarloKernelP14__TOptionValuePfi", "_Z16MonteCarloKernelP14__TOptionValuePfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_OptionData, (char*)"d_OptionData", "d_OptionData", 0, 32768, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_CallValue, (char*)"d_CallValue", "d_CallValue", 0, 16384, 0, 0); }
+# 2 "tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c" 2
+# 1 "tmpxft_00006f96_00000000-1_MonteCarlo_SM10.cudafe1.stub.c"

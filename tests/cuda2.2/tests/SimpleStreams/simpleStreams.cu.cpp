@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.cpp"
 # 1 "tests/SimpleStreams/simpleStreams.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15954,9 +15954,9 @@ __cutilExit(argc, argv);
 return 0;
 # 227 "tests/SimpleStreams/simpleStreams.cu"
 }
-# 1 "tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c"
-# 1 "tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c"
+# 1 "tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16468,8 +16468,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006c7d_00000000-3_simpleStreams.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005f73_00000000-3_simpleStreams.fatbin.c" 1 3
 
 
 asm(
@@ -16533,7 +16533,7 @@ asm(
 ".quad 0x656c706d69532f73,0x2f736d6165727453,0x7453656c706d6973,0x75632e736d616572\n"
 ".quad 0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174\n"
 ".quad 0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966\n"
-".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f64376336,0x5f372d3030303030\n"
+".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f33376635,0x5f372d3030303030\n"
 ".quad 0x7453656c706d6973,0x70632e736d616572,0x662e0a22692e3370,0x7422203209656c69\n"
 ".quad 0x6d69532f73747365,0x6165727453656c70,0x6c706d69732f736d,0x736d616572745365\n"
 ".quad 0x652e0a0a2275632e,0x315a5f207972746e,0x72615f74696e6930,0x695f536950796172\n"
@@ -16582,9 +16582,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c" 2 3
 extern void __device_stub__Z10init_arrayPiS_i(int *, int *, int);
-static void __sti____cudaRegisterAll_48_tmpxft_00006c7d_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_00005f73_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) __attribute__((__constructor__));
 void __device_stub__Z10init_arrayPiS_i(int *__par0, int *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int *, int))init_array)); (void)cudaLaunch(((char *)((void ( *)(int *, int *, int))init_array))); };}
 # 59 "tests/SimpleStreams/simpleStreams.cu"
 void init_array( int *__cuda_0,int *__cuda_1,int __cuda_2)
@@ -16595,7 +16595,7 @@ void init_array( int *__cuda_0,int *__cuda_1,int __cuda_2)
 
 
 }
-# 1 "/tmp/tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_48_tmpxft_00006c7d_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *, int))init_array), (char*)"_Z10init_arrayPiS_i", "_Z10init_arrayPiS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c" 2
-# 1 "tmpxft_00006c7d_00000000-1_simpleStreams.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_48_tmpxft_00005f73_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *, int))init_array), (char*)"_Z10init_arrayPiS_i", "_Z10init_arrayPiS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c" 2
+# 1 "tmpxft_00005f73_00000000-1_simpleStreams.cudafe1.stub.c"

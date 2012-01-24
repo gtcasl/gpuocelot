@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.cpp"
 # 1 "tests/simpleZeroCopy/simpleZeroCopy.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16358,9 +16358,9 @@ printf("%s\n", ((errorNorm / refNorm) < (9.999999975e-07F)) ? ("PASSED") : ("FAI
 __cutilExit(argc, argv); return 0;
 # 149 "tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 1 "tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c"
-# 1 "tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c"
+# 1 "tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16872,8 +16872,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005f11_00000000-3_simpleZeroCopy.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000731c_00000000-3_simpleZeroCopy.fatbin.c" 1 3
 
 
 asm(
@@ -16886,7 +16886,7 @@ asm(
 ".quad 0x6d69732f79706f43,0x436f72655a656c70,0x000075632e79706f,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3131663530303030,0x303030303030305f,0x706d69735f372d30,0x6f436f72655a656c\n"
+".quad 0x6331333730303030,0x303030303030305f,0x706d69735f372d30,0x6f436f72655a656c\n"
 ".quad 0x2e337070632e7970,0x656c69662e0a2269,0x7473657422203209,0x656c706d69732f73\n"
 ".quad 0x79706f436f72655a,0x5a656c706d69732f,0x2e79706f436f7265,0x6e652e0a0a227563\n"
 ".quad 0x32315a5f20797274,0x6441726f74636576,0x5f53665055504764,0x61702e0a28695f53\n"
@@ -16986,9 +16986,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2 3
 extern void __device_stub__Z12vectorAddGPUPfS_S_i(float *, float *, float *, int);
-static void __sti____cudaRegisterAll_49_tmpxft_00005f11_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_0000731c_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) __attribute__((__constructor__));
 void __device_stub__Z12vectorAddGPUPfS_S_i(float *__par0, float *__par1, float *__par2, int __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, int))vectorAddGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, int))vectorAddGPU))); };}
 # 19 "tests/simpleZeroCopy/simpleZeroCopy.cu"
 void vectorAddGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3)
@@ -16998,7 +16998,7 @@ void vectorAddGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3)
 
 
 }
-# 1 "/tmp/tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00005f11_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int))vectorAddGPU), (char*)"_Z12vectorAddGPUPfS_S_i", "_Z12vectorAddGPUPfS_S_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
-# 1 "tmpxft_00005f11_00000000-1_simpleZeroCopy.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_0000731c_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int))vectorAddGPU), (char*)"_Z12vectorAddGPUPfS_S_i", "_Z12vectorAddGPUPfS_S_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
+# 1 "tmpxft_0000731c_00000000-1_simpleZeroCopy.cudafe1.stub.c"

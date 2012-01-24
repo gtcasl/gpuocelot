@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.cpp"
 # 1 "tests/SimpleMultiGPU/simpleMultiGPU_kernel.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -13206,9 +13206,9 @@ extern "C" void launch_reduceKernel(float *d_Result, float *d_Input, int N, int 
 cudaConfigureCall(BLOCK_N, THREAD_N) ? ((void)0) : reduceKernel(d_Result, d_Input, N);
 # 73 "tests/SimpleMultiGPU/simpleMultiGPU_kernel.cu"
 }
-# 1 "tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
-# 1 "tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
+# 1 "tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -13720,8 +13720,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006c4b_00000000-3_simpleMultiGPU_kernel.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005f2c_00000000-3_simpleMultiGPU_kernel.fatbin.c" 1 3
 
 
 asm(
@@ -13784,7 +13784,7 @@ asm(
 ".quad 0x69532f7374736574,0x746c754d656c706d,0x6d69732f55504769,0x69746c754d656c70\n"
 ".quad 0x6e72656b5f555047,0x00000075632e6c65,0x762e0a0a0a0a0a0a,0x33206e6f69737265\n"
 ".quad 0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73\n"
-".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x6234633630303030\n"
+".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x6332663530303030\n"
 ".quad 0x303030303030305f,0x706d69735f372d30,0x4769746c754d656c,0x656e72656b5f5550\n"
 ".quad 0x692e337070632e6c,0x09656c69662e0a22,0x7374736574222032,0x4d656c706d69532f\n"
 ".quad 0x2f55504769746c75,0x754d656c706d6973,0x6b5f55504769746c,0x75632e6c656e7265\n"
@@ -13841,9 +13841,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 2 3
 static void __device_stub__Z12reduceKernelPfS_i(float *, float *, int);
-static void __sti____cudaRegisterAll_56_tmpxft_00006c4b_00000000_4_simpleMultiGPU_kernel_cpp1_ii_f5acc532(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_56_tmpxft_00005f2c_00000000_4_simpleMultiGPU_kernel_cpp1_ii_f5acc532(void) __attribute__((__constructor__));
 static void __device_stub__Z12reduceKernelPfS_i(float *__par0, float *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int))reduceKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int))reduceKernel))); };}
 # 59 "tests/SimpleMultiGPU/simpleMultiGPU_kernel.cu"
 static void reduceKernel( float *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -13851,7 +13851,7 @@ static void reduceKernel( float *__cuda_0,float *__cuda_1,int __cuda_2)
 {__device_stub__Z12reduceKernelPfS_i( __cuda_0,__cuda_1,__cuda_2);
 # 67 "tests/SimpleMultiGPU/simpleMultiGPU_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_56_tmpxft_00006c4b_00000000_4_simpleMultiGPU_kernel_cpp1_ii_f5acc532(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))reduceKernel), (char*)"_Z12reduceKernelPfS_i", "_Z12reduceKernelPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 2
-# 1 "tmpxft_00006c4b_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_56_tmpxft_00005f2c_00000000_4_simpleMultiGPU_kernel_cpp1_ii_f5acc532(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))reduceKernel), (char*)"_Z12reduceKernelPfS_i", "_Z12reduceKernelPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c" 2
+# 1 "tmpxft_00005f2c_00000000-1_simpleMultiGPU_kernel.cudafe1.stub.c"

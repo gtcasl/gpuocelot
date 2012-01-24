@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005644_00000000-1_asyncAPI.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005644_00000000-1_asyncAPI.cudafe1.cpp"
 # 1 "tests/AsyncAPI/asyncAPI.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15846,9 +15846,9 @@ __cutilExit(argc, argv);
 return 0;
 # 142 "tests/AsyncAPI/asyncAPI.cu"
 }
-# 1 "tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c"
-# 1 "tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c"
+# 1 "tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16360,8 +16360,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_0000630d_00000000-3_asyncAPI.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005644_00000000-3_asyncAPI.fatbin.c" 1 3
 
 
 asm(
@@ -16419,7 +16419,7 @@ asm(
 ".quad 0x636e7973612f4950,0x000075632e495041,0x0a0a0a0a00000000,0x69737265762e0a0a\n"
 ".quad 0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264\n"
 ".quad 0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f,0x303030305f746678\n"
-".quad 0x3030305f64303336,0x5f372d3030303030,0x495041636e797361,0x22692e337070632e\n"
+".quad 0x3030305f34343635,0x5f372d3030303030,0x495041636e797361,0x22692e337070632e\n"
 ".quad 0x3209656c69662e0a,0x2f73747365742220,0x495041636e797341,0x5041636e7973612f\n"
 ".quad 0x2e0a0a2275632e49,0x5a5f207972746e65,0x6d6572636e693631,0x6e72656b5f746e65\n"
 ".quad 0x2e0a286969506c65,0x752e206d61726170,0x6936315a5f203436,0x746e656d6572636e\n"
@@ -16455,9 +16455,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c" 2 3
 extern void __device_stub__Z16increment_kernelPii(int *, int);
-static void __sti____cudaRegisterAll_43_tmpxft_0000630d_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_00005644_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) __attribute__((__constructor__));
 void __device_stub__Z16increment_kernelPii(int *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))increment_kernel)); (void)cudaLaunch(((char *)((void ( *)(int *, int))increment_kernel))); };}
 # 48 "tests/AsyncAPI/asyncAPI.cu"
 void increment_kernel( int *__cuda_0,int __cuda_1)
@@ -16466,7 +16466,7 @@ void increment_kernel( int *__cuda_0,int __cuda_1)
 
 
 }
-# 1 "/tmp/tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_0000630d_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))increment_kernel), (char*)"_Z16increment_kernelPii", "_Z16increment_kernelPii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c" 2
-# 1 "tmpxft_0000630d_00000000-1_asyncAPI.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_00005644_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))increment_kernel), (char*)"_Z16increment_kernelPii", "_Z16increment_kernelPii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c" 2
+# 1 "tmpxft_00005644_00000000-1_asyncAPI.cudafe1.stub.c"

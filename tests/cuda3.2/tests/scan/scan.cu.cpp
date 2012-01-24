@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.cpp"
 # 1 "tests/scan/scan.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16402,9 +16402,9 @@ __cutilCheckMsg("uniformUpdate() execution FAILED\n", "tests/scan/scan.cu", 320)
 return 256;
 # 323 "tests/scan/scan.cu"
 }
-# 1 "tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c"
-# 1 "tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c"
+# 1 "tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16916,8 +16916,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005d5f_00000000-3_scan.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000715f_00000000-3_scan.fatbin.c" 1 3
 
 
 asm(
@@ -16929,7 +16929,7 @@ asm(
 ".quad 0x0000000000000000,0x0000000000000000,0x63732f7374736574,0x2e6e6163732f6e61\n"
 ".quad 0x0000000000007563,0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e\n"
 ".quad 0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34\n"
-".quad 0x706d742f22203109,0x5f746678706d742f,0x6635643530303030,0x303030303030305f\n"
+".quad 0x706d742f22203109,0x5f746678706d742f,0x6635313730303030,0x303030303030305f\n"
 ".quad 0x6e6163735f372d30,0x22692e337070632e,0x3209656c69662e0a,0x2f73747365742220\n"
 ".quad 0x6163732f6e616373,0x0a0a0a2275632e6e,0x62697369762e0a0a,0x636e75662e20656c\n"
 ".quad 0x6d617261702e2820,0x7566203233622e20,0x61767465725f636e,0x37315a5f2029306c\n"
@@ -17681,11 +17681,11 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c" 2 3
 extern void __device_stub__Z19scanExclusiveSharedP5uint4S0_j(uint4 *, uint4 *, uint);
 extern void __device_stub__Z20scanExclusiveShared2PjS_S_jj(uint *, uint *, uint *, uint, uint);
 extern void __device_stub__Z13uniformUpdateP5uint4Pj(uint4 *, uint *);
-static void __sti____cudaRegisterAll_39_tmpxft_00005d5f_00000000_4_scan_cpp1_ii_161a1572(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_39_tmpxft_0000715f_00000000_4_scan_cpp1_ii_161a1572(void) __attribute__((__constructor__));
 void __device_stub__Z19scanExclusiveSharedP5uint4S0_j(uint4 *__par0, uint4 *__par1, uint __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint4 *, uint4 *, uint))scanExclusiveShared)); (void)cudaLaunch(((char *)((void ( *)(uint4 *, uint4 *, uint))scanExclusiveShared))); };}
 # 146 "tests/scan/scan.cu"
 void scanExclusiveShared( uint4 *__cuda_0,uint4 *__cuda_1,uint __cuda_2)
@@ -17693,7 +17693,7 @@ void scanExclusiveShared( uint4 *__cuda_0,uint4 *__cuda_1,uint __cuda_2)
 {__device_stub__Z19scanExclusiveSharedP5uint4S0_j( __cuda_0,__cuda_1,__cuda_2);
 # 163 "tests/scan/scan.cu"
 }
-# 1 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c"
 void __device_stub__Z20scanExclusiveShared2PjS_S_jj( uint *__par0, uint *__par1, uint *__par2, uint __par3, uint __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, uint *, uint, uint))scanExclusiveShared2)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, uint *, uint, uint))scanExclusiveShared2))); }; }
 # 166 "tests/scan/scan.cu"
 void scanExclusiveShared2( uint *__cuda_0,uint *__cuda_1,uint *__cuda_2,uint __cuda_3,uint __cuda_4)
@@ -17701,7 +17701,7 @@ void scanExclusiveShared2( uint *__cuda_0,uint *__cuda_1,uint *__cuda_2,uint __c
 {__device_stub__Z20scanExclusiveShared2PjS_S_jj( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 192 "tests/scan/scan.cu"
 }
-# 1 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c"
 void __device_stub__Z13uniformUpdateP5uint4Pj( uint4 *__par0, uint *__par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint4 *, uint *))uniformUpdate)); (void)cudaLaunch(((char *)((void ( *)(uint4 *, uint *))uniformUpdate))); }; }
 # 195 "tests/scan/scan.cu"
 void uniformUpdate( uint4 *__cuda_0,uint *__cuda_1)
@@ -17709,7 +17709,7 @@ void uniformUpdate( uint4 *__cuda_0,uint *__cuda_1)
 {__device_stub__Z13uniformUpdateP5uint4Pj( __cuda_0,__cuda_1);
 # 212 "tests/scan/scan.cu"
 }
-# 1 "/tmp/tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_39_tmpxft_00005d5f_00000000_4_scan_cpp1_ii_161a1572(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, uint *))uniformUpdate), (char*)"_Z13uniformUpdateP5uint4Pj", "_Z13uniformUpdateP5uint4Pj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, uint *, uint, uint))scanExclusiveShared2), (char*)"_Z20scanExclusiveShared2PjS_S_jj", "_Z20scanExclusiveShared2PjS_S_jj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, uint4 *, uint))scanExclusiveShared), (char*)"_Z19scanExclusiveSharedP5uint4S0_j", "_Z19scanExclusiveSharedP5uint4S0_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c" 2
-# 1 "tmpxft_00005d5f_00000000-1_scan.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_39_tmpxft_0000715f_00000000_4_scan_cpp1_ii_161a1572(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, uint *))uniformUpdate), (char*)"_Z13uniformUpdateP5uint4Pj", "_Z13uniformUpdateP5uint4Pj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, uint *, uint, uint))scanExclusiveShared2), (char*)"_Z20scanExclusiveShared2PjS_S_jj", "_Z20scanExclusiveShared2PjS_S_jj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint4 *, uint4 *, uint))scanExclusiveShared), (char*)"_Z19scanExclusiveSharedP5uint4S0_j", "_Z19scanExclusiveSharedP5uint4S0_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c" 2
+# 1 "tmpxft_0000715f_00000000-1_scan.cudafe1.stub.c"

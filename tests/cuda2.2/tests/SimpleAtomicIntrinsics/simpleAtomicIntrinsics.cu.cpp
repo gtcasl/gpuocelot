@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
 # 1 "tests/SimpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15836,9 +15836,9 @@ __cudaSafeCall(cudaFree(d_odata), "tests/SimpleAtomicIntrinsics/simpleAtomicIntr
 cudaThreadExit();
 # 149 "tests/SimpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 }
-# 1 "tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
-# 1 "tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
+# 1 "tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16350,8 +16350,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006bb1_00000000-3_simpleAtomicIntrinsics.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005eb5_00000000-3_simpleAtomicIntrinsics.fatbin.c" 1 3
 
 
 asm(
@@ -16412,7 +16412,7 @@ asm(
 ".quad 0x736369736e697274,0x41656c706d69732f,0x746e4963696d6f74,0x2e736369736e6972\n"
 ".quad 0x0a0a0a0a00007563,0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174\n"
 ".quad 0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966\n"
-".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f31626236,0x5f372d3030303030\n"
+".quad 0x706d742f706d742f,0x303030305f746678,0x3030305f35626535,0x5f372d3030303030\n"
 ".quad 0x7441656c706d6973,0x72746e4963696d6f,0x632e736369736e69,0x2e0a22692e337070\n"
 ".quad 0x22203209656c6966,0x69532f7374736574,0x6d6f7441656c706d,0x6e6972746e496369\n"
 ".quad 0x6d69732f73636973,0x696d6f7441656c70,0x736e6972746e4963,0x6e72656b5f736369\n"
@@ -16479,9 +16479,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2 3
 extern void __device_stub__Z10testKernelPi(int *);
-static void __sti____cudaRegisterAll_57_tmpxft_00006bb1_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_57_tmpxft_00005eb5_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) __attribute__((__constructor__));
 void __device_stub__Z10testKernelPi(int *__par0){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))testKernel)); (void)cudaLaunch(((char *)((void ( *)(int *))testKernel))); };}
 # 47 "tests/SimpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
 void testKernel( int *__cuda_0)
@@ -16489,7 +16489,7 @@ void testKernel( int *__cuda_0)
 {__device_stub__Z10testKernelPi( __cuda_0);
 # 90 "tests/SimpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_57_tmpxft_00006bb1_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testKernel), (char*)"_Z10testKernelPi", "_Z10testKernelPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
-# 1 "tmpxft_00006bb1_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_57_tmpxft_00005eb5_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testKernel), (char*)"_Z10testKernelPi", "_Z10testKernelPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
+# 1 "tmpxft_00005eb5_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"

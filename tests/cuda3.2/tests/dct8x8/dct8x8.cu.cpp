@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.cpp"
 # 1 "tests/dct8x8/dct8x8.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -39635,9 +39635,9 @@ __cutilExit(argc, argv);
 return 0;
 # 647 "tests/dct8x8/dct8x8.cu"
 }
-# 1 "tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
-# 1 "tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -40149,8 +40149,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005914_00000000-3_dct8x8.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006d56_00000000-3_dct8x8.fatbin.c" 1 3
 
 
 asm(
@@ -40162,7 +40162,7 @@ asm(
 ".quad 0x0000000000000000,0x0000000000000000,0x63642f7374736574,0x7463642f38783874\n"
 ".quad 0x000075632e387838,0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e\n"
 ".quad 0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34\n"
-".quad 0x706d742f22203109,0x5f746678706d742f,0x3431393530303030,0x303030303030305f\n"
+".quad 0x706d742f22203109,0x5f746678706d742f,0x3635643630303030,0x303030303030305f\n"
 ".quad 0x387463645f372d30,0x2e337070632e3878,0x656c69662e0a2269,0x7473657422203209\n"
 ".quad 0x3878387463642f73,0x5f3878387463642f,0x2e326c656e72656b,0x6c69662e0a227563\n"
 ".quad 0x7365742220330965,0x78387463642f7374,0x3878387463642f38,0x5f6c656e72656b5f\n"
@@ -42967,7 +42967,7 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c" 2 3
 extern void __device_stub__Z14CUDAkernel1DCTPfiii(float *, int, int, int);
 extern void __device_stub__Z15CUDAkernel1IDCTPfiii(float *, int, int, int);
 extern void __device_stub__Z14CUDAkernel2DCTPfS_i(float *, float *, int);
@@ -42976,7 +42976,7 @@ extern void __device_stub__Z18CUDAkernelShortDCTPsi(short *, int);
 extern void __device_stub__Z19CUDAkernelShortIDCTPsi(short *, int);
 extern void __device_stub__Z27CUDAkernelQuantizationFloatPfi(float *, int);
 extern void __device_stub__Z27CUDAkernelQuantizationShortPsi(short *, int);
-static void __sti____cudaRegisterAll_41_tmpxft_00005914_00000000_4_dct8x8_cpp1_ii_TexSrc(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_41_tmpxft_00006d56_00000000_4_dct8x8_cpp1_ii_TexSrc(void) __attribute__((__constructor__));
 void __device_stub__Z14CUDAkernel1DCTPfiii(float *__par0, int __par1, int __par2, int __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, int))CUDAkernel1DCT)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, int))CUDAkernel1DCT))); };}
 # 61 "tests/dct8x8/dct8x8_kernel1.cu"
 void CUDAkernel1DCT( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
@@ -42984,7 +42984,7 @@ void CUDAkernel1DCT( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z14CUDAkernel1DCTPfiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 115 "tests/dct8x8/dct8x8_kernel1.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z15CUDAkernel1IDCTPfiii( float *__par0, int __par1, int __par2, int __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, int))CUDAkernel1IDCT)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, int))CUDAkernel1IDCT))); }; }
 # 130 "tests/dct8x8/dct8x8_kernel1.cu"
 void CUDAkernel1IDCT( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
@@ -42992,7 +42992,7 @@ void CUDAkernel1IDCT( float *__cuda_0,int __cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z15CUDAkernel1IDCTPfiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 184 "tests/dct8x8/dct8x8_kernel1.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z14CUDAkernel2DCTPfS_i( float *__par0, float *__par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int))CUDAkernel2DCT)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int))CUDAkernel2DCT))); }; }
 # 181 "tests/dct8x8/dct8x8_kernel2.cu"
 void CUDAkernel2DCT( float *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -43000,7 +43000,7 @@ void CUDAkernel2DCT( float *__cuda_0,float *__cuda_1,int __cuda_2)
 {__device_stub__Z14CUDAkernel2DCTPfS_i( __cuda_0,__cuda_1,__cuda_2);
 # 208 "tests/dct8x8/dct8x8_kernel2.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z15CUDAkernel2IDCTPfS_i( float *__par0, float *__par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int))CUDAkernel2IDCT)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int))CUDAkernel2IDCT))); }; }
 # 225 "tests/dct8x8/dct8x8_kernel2.cu"
 void CUDAkernel2IDCT( float *__cuda_0,float *__cuda_1,int __cuda_2)
@@ -43008,7 +43008,7 @@ void CUDAkernel2IDCT( float *__cuda_0,float *__cuda_1,int __cuda_2)
 {__device_stub__Z15CUDAkernel2IDCTPfS_i( __cuda_0,__cuda_1,__cuda_2);
 # 252 "tests/dct8x8/dct8x8_kernel2.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z18CUDAkernelShortDCTPsi( short *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(short *, int))CUDAkernelShortDCT)); (void)cudaLaunch(((char *)((void ( *)(short *, int))CUDAkernelShortDCT))); }; }
 # 441 "tests/dct8x8/dct8x8_kernel_short.cu"
 void CUDAkernelShortDCT( short *__cuda_0,int __cuda_1)
@@ -43016,7 +43016,7 @@ void CUDAkernelShortDCT( short *__cuda_0,int __cuda_1)
 {__device_stub__Z18CUDAkernelShortDCTPsi( __cuda_0,__cuda_1);
 # 469 "tests/dct8x8/dct8x8_kernel_short.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z19CUDAkernelShortIDCTPsi( short *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(short *, int))CUDAkernelShortIDCT)); (void)cudaLaunch(((char *)((void ( *)(short *, int))CUDAkernelShortIDCT))); }; }
 # 486 "tests/dct8x8/dct8x8_kernel_short.cu"
 void CUDAkernelShortIDCT( short *__cuda_0,int __cuda_1)
@@ -43024,7 +43024,7 @@ void CUDAkernelShortIDCT( short *__cuda_0,int __cuda_1)
 {__device_stub__Z19CUDAkernelShortIDCTPsi( __cuda_0,__cuda_1);
 # 515 "tests/dct8x8/dct8x8_kernel_short.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z27CUDAkernelQuantizationFloatPfi( float *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int))CUDAkernelQuantizationFloat)); (void)cudaLaunch(((char *)((void ( *)(float *, int))CUDAkernelQuantizationFloat))); }; }
 # 51 "tests/dct8x8/dct8x8_kernel_quantization.cu"
 void CUDAkernelQuantizationFloat( float *__cuda_0,int __cuda_1)
@@ -43032,7 +43032,7 @@ void CUDAkernelQuantizationFloat( float *__cuda_0,int __cuda_1)
 {__device_stub__Z27CUDAkernelQuantizationFloatPfi( __cuda_0,__cuda_1);
 # 71 "tests/dct8x8/dct8x8_kernel_quantization.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
 void __device_stub__Z27CUDAkernelQuantizationShortPsi( short *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(short *, int))CUDAkernelQuantizationShort)); (void)cudaLaunch(((char *)((void ( *)(short *, int))CUDAkernelQuantizationShort))); }; }
 # 84 "tests/dct8x8/dct8x8_kernel_quantization.cu"
 void CUDAkernelQuantizationShort( short *__cuda_0,int __cuda_1)
@@ -43040,7 +43040,7 @@ void CUDAkernelQuantizationShort( short *__cuda_0,int __cuda_1)
 {__device_stub__Z27CUDAkernelQuantizationShortPsi( __cuda_0,__cuda_1);
 # 117 "tests/dct8x8/dct8x8_kernel_quantization.cu"
 }
-# 1 "/tmp/tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_41_tmpxft_00005914_00000000_4_dct8x8_cpp1_ii_TexSrc(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(short *, int))CUDAkernelQuantizationShort), (char*)"_Z27CUDAkernelQuantizationShortPsi", "_Z27CUDAkernelQuantizationShortPsi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))CUDAkernelQuantizationFloat), (char*)"_Z27CUDAkernelQuantizationFloatPfi", "_Z27CUDAkernelQuantizationFloatPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(short *, int))CUDAkernelShortIDCT), (char*)"_Z19CUDAkernelShortIDCTPsi", "_Z19CUDAkernelShortIDCTPsi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(short *, int))CUDAkernelShortDCT), (char*)"_Z18CUDAkernelShortDCTPsi", "_Z18CUDAkernelShortDCTPsi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))CUDAkernel2IDCT), (char*)"_Z15CUDAkernel2IDCTPfS_i", "_Z15CUDAkernel2IDCTPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))CUDAkernel2DCT), (char*)"_Z14CUDAkernel2DCTPfS_i", "_Z14CUDAkernel2DCTPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))CUDAkernel1IDCT), (char*)"_Z15CUDAkernel1IDCTPfiii", "_Z15CUDAkernel1IDCTPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))CUDAkernel1DCT), (char*)"_Z14CUDAkernel1DCTPfiii", "_Z14CUDAkernel1DCTPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&TexSrc, (const void**)"TexSrc", "TexSrc", 2, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&DCTv8matrix, (char*)"DCTv8matrix", "DCTv8matrix", 0, 256, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&Q, (char*)"Q", "Q", 0, 128, 1, 0); }
-# 2 "tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c" 2
-# 1 "tmpxft_00005914_00000000-1_dct8x8.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_41_tmpxft_00006d56_00000000_4_dct8x8_cpp1_ii_TexSrc(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(short *, int))CUDAkernelQuantizationShort), (char*)"_Z27CUDAkernelQuantizationShortPsi", "_Z27CUDAkernelQuantizationShortPsi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))CUDAkernelQuantizationFloat), (char*)"_Z27CUDAkernelQuantizationFloatPfi", "_Z27CUDAkernelQuantizationFloatPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(short *, int))CUDAkernelShortIDCT), (char*)"_Z19CUDAkernelShortIDCTPsi", "_Z19CUDAkernelShortIDCTPsi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(short *, int))CUDAkernelShortDCT), (char*)"_Z18CUDAkernelShortDCTPsi", "_Z18CUDAkernelShortDCTPsi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))CUDAkernel2IDCT), (char*)"_Z15CUDAkernel2IDCTPfS_i", "_Z15CUDAkernel2IDCTPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int))CUDAkernel2DCT), (char*)"_Z14CUDAkernel2DCTPfS_i", "_Z14CUDAkernel2DCTPfS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))CUDAkernel1IDCT), (char*)"_Z15CUDAkernel1IDCTPfiii", "_Z15CUDAkernel1IDCTPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, int))CUDAkernel1DCT), (char*)"_Z14CUDAkernel1DCTPfiii", "_Z14CUDAkernel1DCTPfiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&TexSrc, (const void**)"TexSrc", "TexSrc", 2, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&DCTv8matrix, (char*)"DCTv8matrix", "DCTv8matrix", 0, 256, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&Q, (char*)"Q", "Q", 0, 128, 1, 0); }
+# 2 "tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c" 2
+# 1 "tmpxft_00006d56_00000000-1_dct8x8.cudafe1.stub.c"

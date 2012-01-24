@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.cpp"
 # 1 "tests/BinomialOptions/binomialOptions_SM10.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15854,9 +15854,9 @@ extern "C" int deviceEmulation() {
 return 1;
 # 55 "tests/BinomialOptions/binomialOptions_SM10.cu"
 }
-# 1 "tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
-# 1 "tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
+# 1 "tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16368,8 +16368,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000063cf_00000000-3_binomialOptions_SM10.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000056e5_00000000-3_binomialOptions_SM10.fatbin.c" 1 3
 
 
 asm(
@@ -17166,7 +17166,7 @@ asm(
 ".quad 0x704f6c61696d6f6e,0x4d535f736e6f6974,0x00000075632e3031,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x6663333630303030,0x303030303030305f,0x6f6e69625f372d30,0x6974704f6c61696d\n"
+".quad 0x3565363530303030,0x303030303030305f,0x6f6e69625f372d30,0x6974704f6c61696d\n"
 ".quad 0x30314d535f736e6f,0x22692e337070632e,0x3209656c69662e0a,0x2f73747365742220\n"
 ".quad 0x6c61696d6f6e6942,0x2f736e6f6974704f,0x6c61696d6f6e6962,0x5f736e6f6974704f\n"
 ".quad 0x632e6c656e72656b,0x6c69662e0a226875,0x73752f2220330965,0x2f6c61636f6c2f72\n"
@@ -17337,9 +17337,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 2 3
 static void __device_stub__Z21binomialOptionsKernelv(void);
-static void __sti____cudaRegisterAll_55_tmpxft_000063cf_00000000_4_binomialOptions_SM10_cpp1_ii_82f37723(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_55_tmpxft_000056e5_00000000_4_binomialOptions_SM10_cpp1_ii_82f37723(void) __attribute__((__constructor__));
 static void __device_stub__Z21binomialOptionsKernelv(void){{ volatile static char *__f; __f = ((char *)((void ( *)(void))binomialOptionsKernel)); (void)cudaLaunch(((char *)((void ( *)(void))binomialOptionsKernel))); };}
 # 94 "tests/BinomialOptions/binomialOptions_kernel.cuh"
 static void binomialOptionsKernel(void)
@@ -17347,7 +17347,7 @@ static void binomialOptionsKernel(void)
 {__device_stub__Z21binomialOptionsKernelv();
 # 147 "tests/BinomialOptions/binomialOptions_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_55_tmpxft_000063cf_00000000_4_binomialOptions_SM10_cpp1_ii_82f37723(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(void))binomialOptionsKernel), (char*)"_Z21binomialOptionsKernelv", "_Z21binomialOptionsKernelv", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_OptionData, (char*)"d_OptionData", "d_OptionData", 0, 20480, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_CallValue, (char*)"d_CallValue", "d_CallValue", 0, 4096, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_CallBuffer, (char*)"d_CallBuffer", "d_CallBuffer", 0, 8454144, 0, 0); }
-# 2 "tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 2
-# 1 "tmpxft_000063cf_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_55_tmpxft_000056e5_00000000_4_binomialOptions_SM10_cpp1_ii_82f37723(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(void))binomialOptionsKernel), (char*)"_Z21binomialOptionsKernelv", "_Z21binomialOptionsKernelv", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_OptionData, (char*)"d_OptionData", "d_OptionData", 0, 20480, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_CallValue, (char*)"d_CallValue", "d_CallValue", 0, 4096, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_CallBuffer, (char*)"d_CallBuffer", "d_CallBuffer", 0, 8454144, 0, 0); }
+# 2 "tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c" 2
+# 1 "tmpxft_000056e5_00000000-1_binomialOptions_SM10.cudafe1.stub.c"

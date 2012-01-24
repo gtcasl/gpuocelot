@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.cpp"
 # 1 "tests/convolutionFFT2D/convolutionFFT2D.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16608,9 +16608,9 @@ cudaConfigureCall(iDivUp(threadCount, BLOCKDIM), BLOCKDIM) ? ((void)0) : spProce
 __cutilCheckMsg("spProcess2D_kernel<<<>>> execution failed\n", "tests/convolutionFFT2D/convolutionFFT2D.cu", 221);
 # 222 "tests/convolutionFFT2D/convolutionFFT2D.cu"
 }
-# 1 "tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
-# 1 "tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -17122,8 +17122,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005863_00000000-3_convolutionFFT2D.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006c6a_00000000-3_convolutionFFT2D.fatbin.c" 1 3
 
 
 asm(
@@ -17136,7 +17136,7 @@ asm(
 ".quad 0x632f44325446466e,0x6974756c6f766e6f,0x2e44325446466e6f,0x0000000000007563\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x3336383530303030,0x303030303030305f,0x766e6f635f372d30\n"
+".quad 0x5f746678706d742f,0x6136633630303030,0x303030303030305f,0x766e6f635f372d30\n"
 ".quad 0x466e6f6974756c6f,0x7070632e44325446,0x69662e0a22692e33,0x657422203209656c\n"
 ".quad 0x766e6f632f737473,0x466e6f6974756c6f,0x6e6f632f44325446,0x6e6f6974756c6f76\n"
 ".quad 0x75632e4432544646,0x656c69662e0a2268,0x7273752f22203309,0x632f6c61636f6c2f\n"
@@ -18189,14 +18189,14 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c" 2 3
 extern void __device_stub__Z16padKernel_kernelPfS_iiiiii(float *, float *, int, int, int, int, int, int);
 extern void __device_stub__Z27padDataClampToBorder_kernelPfS_iiiiiiii(float *, float *, int, int, int, int, int, int, int, int);
 extern void __device_stub__Z27modulateAndNormalize_kernelP6float2S0_if(fComplex *, fComplex *, int, float);
 extern void __device_stub__Z22spPostprocess2D_kernelP6float2S0_jjjjf(fComplex *, fComplex *, uint, uint, uint, uint, float);
 extern void __device_stub__Z21spPreprocess2D_kernelP6float2S0_jjjjf(fComplex *, fComplex *, uint, uint, uint, uint, float);
 extern void __device_stub__Z18spProcess2D_kernelP6float2S0_S0_jjjff(fComplex *, fComplex *, fComplex *, uint, uint, uint, float, float);
-static void __sti____cudaRegisterAll_51_tmpxft_00005863_00000000_4_convolutionFFT2D_cpp1_ii_texFloat(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_51_tmpxft_00006c6a_00000000_4_convolutionFFT2D_cpp1_ii_texFloat(void) __attribute__((__constructor__));
 void __device_stub__Z16padKernel_kernelPfS_iiiiii(float *__par0, float *__par1, int __par2, int __par3, int __par4, int __par5, int __par6, int __par7){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)36UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int, int, int, int, int))padKernel_kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int, int, int, int, int))padKernel_kernel))); };}
 # 31 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 void padKernel_kernel( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,int __cuda_6,int __cuda_7)
@@ -18204,7 +18204,7 @@ void padKernel_kernel( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3
 {__device_stub__Z16padKernel_kernelPfS_iiiiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 49 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 }
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
 void __device_stub__Z27padDataClampToBorder_kernelPfS_iiiiiiii( float *__par0, float *__par1, int __par2, int __par3, int __par4, int __par5, int __par6, int __par7, int __par8, int __par9) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)36UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par8, sizeof(__par8), (size_t)40UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par9, sizeof(__par9), (size_t)44UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int, int, int, int, int, int, int))padDataClampToBorder_kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int, int, int, int, int, int, int))padDataClampToBorder_kernel))); }; }
 # 56 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 void padDataClampToBorder_kernel( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,int __cuda_6,int __cuda_7,int __cuda_8,int __cuda_9)
@@ -18212,7 +18212,7 @@ void padDataClampToBorder_kernel( float *__cuda_0,float *__cuda_1,int __cuda_2,i
 {__device_stub__Z27padDataClampToBorder_kernelPfS_iiiiiiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8,__cuda_9);
 # 85 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 }
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
 void __device_stub__Z27modulateAndNormalize_kernelP6float2S0_if( fComplex *__par0, fComplex *__par1, int __par2, float __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(fComplex *, fComplex *, int, float))modulateAndNormalize_kernel)); (void)cudaLaunch(((char *)((void ( *)(fComplex *, fComplex *, int, float))modulateAndNormalize_kernel))); }; }
 # 98 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 void modulateAndNormalize_kernel( fComplex *__cuda_0,fComplex *__cuda_1,int __cuda_2,float __cuda_3)
@@ -18220,7 +18220,7 @@ void modulateAndNormalize_kernel( fComplex *__cuda_0,fComplex *__cuda_1,int __cu
 {__device_stub__Z27modulateAndNormalize_kernelP6float2S0_if( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 114 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 }
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
 void __device_stub__Z22spPostprocess2D_kernelP6float2S0_jjjjf( fComplex *__par0, fComplex *__par1, uint __par2, uint __par3, uint __par4, uint __par5, float __par6) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPostprocess2D_kernel)); (void)cudaLaunch(((char *)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPostprocess2D_kernel))); }; }
 # 195 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 void spPostprocess2D_kernel( fComplex *__cuda_0,fComplex *__cuda_1,uint __cuda_2,uint __cuda_3,uint __cuda_4,uint __cuda_5,float __cuda_6)
@@ -18228,7 +18228,7 @@ void spPostprocess2D_kernel( fComplex *__cuda_0,fComplex *__cuda_1,uint __cuda_2
 {__device_stub__Z22spPostprocess2D_kernelP6float2S0_jjjjf( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);
 # 250 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 }
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
 void __device_stub__Z21spPreprocess2D_kernelP6float2S0_jjjjf( fComplex *__par0, fComplex *__par1, uint __par2, uint __par3, uint __par4, uint __par5, float __par6) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPreprocess2D_kernel)); (void)cudaLaunch(((char *)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPreprocess2D_kernel))); }; }
 # 252 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 void spPreprocess2D_kernel( fComplex *__cuda_0,fComplex *__cuda_1,uint __cuda_2,uint __cuda_3,uint __cuda_4,uint __cuda_5,float __cuda_6)
@@ -18236,7 +18236,7 @@ void spPreprocess2D_kernel( fComplex *__cuda_0,fComplex *__cuda_1,uint __cuda_2,
 {__device_stub__Z21spPreprocess2D_kernelP6float2S0_jjjjf( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);
 # 311 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 }
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
 void __device_stub__Z18spProcess2D_kernelP6float2S0_S0_jjjff( fComplex *__par0, fComplex *__par1, fComplex *__par2, uint __par3, uint __par4, uint __par5, float __par6, float __par7) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)36UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)40UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(fComplex *, fComplex *, fComplex *, uint, uint, uint, float, float))spProcess2D_kernel)); (void)cudaLaunch(((char *)((void ( *)(fComplex *, fComplex *, fComplex *, uint, uint, uint, float, float))spProcess2D_kernel))); }; }
 # 318 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 void spProcess2D_kernel( fComplex *__cuda_0,fComplex *__cuda_1,fComplex *__cuda_2,uint __cuda_3,uint __cuda_4,uint __cuda_5,float __cuda_6,float __cuda_7)
@@ -18244,7 +18244,7 @@ void spProcess2D_kernel( fComplex *__cuda_0,fComplex *__cuda_1,fComplex *__cuda_
 {__device_stub__Z18spProcess2D_kernelP6float2S0_S0_jjjff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 384 "tests/convolutionFFT2D/convolutionFFT2D.cuh"
 }
-# 1 "/tmp/tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_51_tmpxft_00005863_00000000_4_convolutionFFT2D_cpp1_ii_texFloat(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, fComplex *, uint, uint, uint, float, float))spProcess2D_kernel), (char*)"_Z18spProcess2D_kernelP6float2S0_S0_jjjff", "_Z18spProcess2D_kernelP6float2S0_S0_jjjff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPreprocess2D_kernel), (char*)"_Z21spPreprocess2D_kernelP6float2S0_jjjjf", "_Z21spPreprocess2D_kernelP6float2S0_jjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPostprocess2D_kernel), (char*)"_Z22spPostprocess2D_kernelP6float2S0_jjjjf", "_Z22spPostprocess2D_kernelP6float2S0_jjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, int, float))modulateAndNormalize_kernel), (char*)"_Z27modulateAndNormalize_kernelP6float2S0_if", "_Z27modulateAndNormalize_kernelP6float2S0_if", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int, int, int, int, int, int))padDataClampToBorder_kernel), (char*)"_Z27padDataClampToBorder_kernelPfS_iiiiiiii", "_Z27padDataClampToBorder_kernelPfS_iiiiiiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int, int, int, int))padKernel_kernel), (char*)"_Z16padKernel_kernelPfS_iiiiii", "_Z16padKernel_kernelPfS_iiiiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texFloat, (const void**)"texFloat", "texFloat", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texComplexA, (const void**)"texComplexA", "texComplexA", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texComplexB, (const void**)"texComplexB", "texComplexB", 1, 0, 0); }
-# 2 "tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c" 2
-# 1 "tmpxft_00005863_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_51_tmpxft_00006c6a_00000000_4_convolutionFFT2D_cpp1_ii_texFloat(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, fComplex *, uint, uint, uint, float, float))spProcess2D_kernel), (char*)"_Z18spProcess2D_kernelP6float2S0_S0_jjjff", "_Z18spProcess2D_kernelP6float2S0_S0_jjjff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPreprocess2D_kernel), (char*)"_Z21spPreprocess2D_kernelP6float2S0_jjjjf", "_Z21spPreprocess2D_kernelP6float2S0_jjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, uint, uint, uint, uint, float))spPostprocess2D_kernel), (char*)"_Z22spPostprocess2D_kernelP6float2S0_jjjjf", "_Z22spPostprocess2D_kernelP6float2S0_jjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(fComplex *, fComplex *, int, float))modulateAndNormalize_kernel), (char*)"_Z27modulateAndNormalize_kernelP6float2S0_if", "_Z27modulateAndNormalize_kernelP6float2S0_if", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int, int, int, int, int, int))padDataClampToBorder_kernel), (char*)"_Z27padDataClampToBorder_kernelPfS_iiiiiiii", "_Z27padDataClampToBorder_kernelPfS_iiiiiiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int, int, int, int))padKernel_kernel), (char*)"_Z16padKernel_kernelPfS_iiiiii", "_Z16padKernel_kernelPfS_iiiiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texFloat, (const void**)"texFloat", "texFloat", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texComplexA, (const void**)"texComplexA", "texComplexA", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texComplexB, (const void**)"texComplexB", "texComplexB", 1, 0, 0); }
+# 2 "tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c" 2
+# 1 "tmpxft_00006c6a_00000000-1_convolutionFFT2D.cudafe1.stub.c"

@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.cpp"
 # 1 "tests/SobolQRNG/sobol_gpu.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -13228,9 +13228,9 @@ if ((dimGrid.x) > ((unsigned)(n_vectors / threadsperblock)))
 cudaConfigureCall(dimGrid, dimBlock) ? ((void)0) : sobolGPU_kernel(n_vectors, n_dimensions, d_directions, d_output);
 # 178 "tests/SobolQRNG/sobol_gpu.cu"
 }
-# 1 "tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c"
-# 1 "tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c"
+# 1 "tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -13742,8 +13742,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006d9d_00000000-3_sobol_gpu.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006095_00000000-3_sobol_gpu.fatbin.c" 1 3
 
 
 asm(
@@ -13836,7 +13836,7 @@ asm(
 ".quad 0x0000000000000000,0x6f532f7374736574,0x2f474e52516c6f62,0x70675f6c6f626f73\n"
 ".quad 0x0000000075632e75,0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e\n"
 ".quad 0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34\n"
-".quad 0x706d742f22203109,0x5f746678706d742f,0x6439643630303030,0x303030303030305f\n"
+".quad 0x706d742f22203109,0x5f746678706d742f,0x3539303630303030,0x303030303030305f\n"
 ".quad 0x6f626f735f372d30,0x70632e7570675f6c,0x662e0a22692e3370,0x7422203209656c69\n"
 ".quad 0x626f532f73747365,0x732f474e52516c6f,0x7570675f6c6f626f,0x69662e0a2275632e\n"
 ".quad 0x752f22203309656c,0x6c61636f6c2f7273,0x312e34616475632f,0x6e692f616475632f\n"
@@ -13971,9 +13971,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c" 2 3
 extern void __device_stub__Z15sobolGPU_kerneljjPjPf(unsigned, unsigned, unsigned *, float *);
-static void __sti____cudaRegisterAll_44_tmpxft_00006d9d_00000000_4_sobol_gpu_cpp1_ii_50d613d9(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_00006095_00000000_4_sobol_gpu_cpp1_ii_50d613d9(void) __attribute__((__constructor__));
 void __device_stub__Z15sobolGPU_kerneljjPjPf(unsigned __par0, unsigned __par1, unsigned *__par2, float *__par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)4UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(unsigned, unsigned, unsigned *, float *))sobolGPU_kernel)); (void)cudaLaunch(((char *)((void ( *)(unsigned, unsigned, unsigned *, float *))sobolGPU_kernel))); };}
 # 55 "tests/SobolQRNG/sobol_gpu.cu"
 void sobolGPU_kernel( unsigned __cuda_0,unsigned __cuda_1,unsigned *__cuda_2,float *__cuda_3)
@@ -13981,7 +13981,7 @@ void sobolGPU_kernel( unsigned __cuda_0,unsigned __cuda_1,unsigned *__cuda_2,flo
 {__device_stub__Z15sobolGPU_kerneljjPjPf( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 142 "tests/SobolQRNG/sobol_gpu.cu"
 }
-# 1 "/tmp/tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_44_tmpxft_00006d9d_00000000_4_sobol_gpu_cpp1_ii_50d613d9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned, unsigned, unsigned *, float *))sobolGPU_kernel), (char*)"_Z15sobolGPU_kerneljjPjPf", "_Z15sobolGPU_kerneljjPjPf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c" 2
-# 1 "tmpxft_00006d9d_00000000-1_sobol_gpu.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_44_tmpxft_00006095_00000000_4_sobol_gpu_cpp1_ii_50d613d9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned, unsigned, unsigned *, float *))sobolGPU_kernel), (char*)"_Z15sobolGPU_kerneljjPjPf", "_Z15sobolGPU_kerneljjPjPf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c" 2
+# 1 "tmpxft_00006095_00000000-1_sobol_gpu.cudafe1.stub.c"

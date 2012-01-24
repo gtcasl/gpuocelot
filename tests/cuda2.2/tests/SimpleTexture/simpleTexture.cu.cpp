@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.cpp"
 # 1 "tests/SimpleTexture/simpleTexture.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15910,9 +15910,9 @@ exit(0);
 cudaThreadExit();
 # 204 "tests/SimpleTexture/simpleTexture.cu"
 }
-# 1 "tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c"
-# 1 "tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c"
+# 1 "tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16424,8 +16424,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006cd9_00000000-3_simpleTexture.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005fca_00000000-3_simpleTexture.fatbin.c" 1 3
 
 
 asm(
@@ -16647,7 +16647,7 @@ asm(
 ".quad 0x7473657400000000,0x656c706d69532f73,0x2f65727574786554,0x6554656c706d6973\n"
 ".quad 0x75632e6572757478,0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f\n"
 ".quad 0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a\n"
-".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f39646336\n"
+".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f61636635\n"
 ".quad 0x5f372d3030303030,0x6554656c706d6973,0x70632e6572757478,0x662e0a22692e3370\n"
 ".quad 0x2e22203209656c69,0x532f73747365742f,0x786554656c706d69,0x6d69732f65727574\n"
 ".quad 0x7574786554656c70,0x656e72656b5f6572,0x662e0a2275632e6c,0x2f22203309656c69\n"
@@ -17356,9 +17356,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c" 2 3
 extern void __device_stub__Z15transformKernelPfiif(float *, int, int, float);
-static void __sti____cudaRegisterAll_48_tmpxft_00006cd9_00000000_4_simpleTexture_cpp1_ii_tex(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_00005fca_00000000_4_simpleTexture_cpp1_ii_tex(void) __attribute__((__constructor__));
 void __device_stub__Z15transformKernelPfiif(float *__par0, int __par1, int __par2, float __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, float))transformKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, float))transformKernel))); };}
 # 41 "./tests/SimpleTexture/simpleTexture_kernel.cu"
 void transformKernel( float *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3)
@@ -17366,7 +17366,7 @@ void transformKernel( float *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3)
 {__device_stub__Z15transformKernelPfiif( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 58 "./tests/SimpleTexture/simpleTexture_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_48_tmpxft_00006cd9_00000000_4_simpleTexture_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, float))transformKernel), (char*)"_Z15transformKernelPfiif", "_Z15transformKernelPfiif", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 0, 0); }
-# 2 "tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c" 2
-# 1 "tmpxft_00006cd9_00000000-1_simpleTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_48_tmpxft_00005fca_00000000_4_simpleTexture_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, float))transformKernel), (char*)"_Z15transformKernelPfiif", "_Z15transformKernelPfiif", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 0, 0); }
+# 2 "tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c" 2
+# 1 "tmpxft_00005fca_00000000-1_simpleTexture.cudafe1.stub.c"

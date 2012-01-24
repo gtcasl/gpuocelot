@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000059ac_00000000-1_dxtc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d9e_00000000-1_dxtc.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000059ac_00000000-1_dxtc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006d9e_00000000-1_dxtc.cudafe1.cpp"
 # 1 "tests/dxtc/dxtc.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -41907,9 +41907,9 @@ cudaThreadExit();
 __shrExitEX(argc, (const char **)argv, 0); return 0;
 # 824 "tests/dxtc/dxtc.cu"
 }
-# 1 "tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c"
-# 1 "tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c"
+# 1 "tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -42421,8 +42421,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000059ac_00000000-3_dxtc.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006d9e_00000000-3_dxtc.fatbin.c" 1 3
 
 
 asm(
@@ -42434,7 +42434,7 @@ asm(
 ".quad 0x0000000000000000,0x0000000000000000,0x78642f7374736574,0x2e637478642f6374\n"
 ".quad 0x0000000000007563,0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e\n"
 ".quad 0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34\n"
-".quad 0x706d742f22203109,0x5f746678706d742f,0x6361393530303030,0x303030303030305f\n"
+".quad 0x706d742f22203109,0x5f746678706d742f,0x6539643630303030,0x303030303030305f\n"
 ".quad 0x637478645f372d30,0x22692e337070632e,0x3209656c69662e0a,0x2f73747365742220\n"
 ".quad 0x6475432f63747864,0x22682e6874614d61,0x3309656c69662e0a,0x6c2f7273752f2220\n"
 ".quad 0x6475632f6c61636f,0x6475632f312e3461,0x632f6d76766e2f61,0x64756c636e695f69\n"
@@ -46297,9 +46297,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c" 2 3
 extern void __device_stub__Z8compressPKjS0_P5uint2i(const uint *, const uint *, uint2 *, int);
-static void __sti____cudaRegisterAll_39_tmpxft_000059ac_00000000_4_dxtc_cpp1_ii_b480a5a9(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_39_tmpxft_00006d9e_00000000_4_dxtc_cpp1_ii_b480a5a9(void) __attribute__((__constructor__));
 void __device_stub__Z8compressPKjS0_P5uint2i(const uint *__par0, const uint *__par1, uint2 *__par2, int __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(const uint *, const uint *, uint2 *, int))compress)); (void)cudaLaunch(((char *)((void ( *)(const uint *, const uint *, uint2 *, int))compress))); };}
 # 469 "tests/dxtc/dxtc.cu"
 void compress( const uint *__cuda_0,const uint *__cuda_1,uint2 *__cuda_2,int __cuda_3)
@@ -46307,7 +46307,7 @@ void compress( const uint *__cuda_0,const uint *__cuda_1,uint2 *__cuda_2,int __c
 {__device_stub__Z8compressPKjS0_P5uint2i( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 498 "tests/dxtc/dxtc.cu"
 }
-# 1 "/tmp/tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_39_tmpxft_000059ac_00000000_4_dxtc_cpp1_ii_b480a5a9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const uint *, const uint *, uint2 *, int))compress), (char*)"_Z8compressPKjS0_P5uint2i", "_Z8compressPKjS0_P5uint2i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&kColorMetric, (char*)"kColorMetric", "kColorMetric", 0, 12, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable4, (char*)"alphaTable4", "alphaTable4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable3, (char*)"alphaTable3", "alphaTable3", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods4, (char*)"prods4", "prods4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods3, (char*)"prods3", "prods3", 0, 16, 1, 0); }
-# 2 "tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c" 2
-# 1 "tmpxft_000059ac_00000000-1_dxtc.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_39_tmpxft_00006d9e_00000000_4_dxtc_cpp1_ii_b480a5a9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const uint *, const uint *, uint2 *, int))compress), (char*)"_Z8compressPKjS0_P5uint2i", "_Z8compressPKjS0_P5uint2i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&kColorMetric, (char*)"kColorMetric", "kColorMetric", 0, 12, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable4, (char*)"alphaTable4", "alphaTable4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&alphaTable3, (char*)"alphaTable3", "alphaTable3", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods4, (char*)"prods4", "prods4", 0, 16, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&prods3, (char*)"prods3", "prods3", 0, 16, 1, 0); }
+# 2 "tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c" 2
+# 1 "tmpxft_00006d9e_00000000-1_dxtc.cudafe1.stub.c"

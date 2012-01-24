@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.cpp"
 # 1 "tests/particles/particleSystem.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -22456,9 +22456,9 @@ cudaConfigureCall(numBlocks, numThreads) ? ((void)0) : collideD((float4 *)newVel
 __cutilCheckMsg("Kernel execution failed", "tests/particles/particleSystem.cu", 243);
 # 251 "tests/particles/particleSystem.cu"
 } }
-# 1 "tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
-# 1 "tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c" 1 3
+# 1 "tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -22970,8 +22970,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005c3b_00000000-3_particleSystem.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_0000705e_00000000-3_particleSystem.fatbin.c" 1 3
 
 
 asm(
@@ -22984,7 +22984,7 @@ asm(
 ".quad 0x656c636974726170,0x632e6d6574737953,0x0000000000000075,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x6233633530303030,0x303030303030305f,0x747261705f372d30,0x74737953656c6369\n"
+".quad 0x6535303730303030,0x303030303030305f,0x747261705f372d30,0x74737953656c6369\n"
 ".quad 0x2e337070632e6d65,0x656c69662e0a2269,0x7473657422203209,0x6369747261702f73\n"
 ".quad 0x747261702f73656c,0x656b5f73656c6369,0x2275632e6c656e72,0x3309656c69662e0a\n"
 ".quad 0x6c2f7273752f2220,0x6475632f6c61636f,0x6475632f312e3461,0x64756c636e692f61\n"
@@ -24294,12 +24294,12 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c" 2 3
 extern void __device_stub__Z9integrateP6float4S0_fj(float4 *, float4 *, float, uint);
 extern void __device_stub__Z9calcHashDPjS_P6float4j(uint *, uint *, float4 *, uint);
 extern void __device_stub__Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j(uint *, uint *, float4 *, float4 *, uint *, uint *, float4 *, float4 *, uint);
 extern void __device_stub__Z8collideDP6float4S0_S0_PjS1_S1_j(float4 *, float4 *, float4 *, uint *, uint *, uint *, uint);
-static void __sti____cudaRegisterAll_49_tmpxft_00005c3b_00000000_4_particleSystem_cpp1_ii_e0d6462c(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_0000705e_00000000_4_particleSystem_cpp1_ii_e0d6462c(void) __attribute__((__constructor__));
 void __device_stub__Z9integrateP6float4S0_fj(float4 *__par0, float4 *__par1, float __par2, uint __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float4 *, float4 *, float, uint))integrate)); (void)cudaLaunch(((char *)((void ( *)(float4 *, float4 *, float, uint))integrate))); };}
 # 40 "tests/particles/particles_kernel.cu"
 void integrate( float4 *__cuda_0,float4 *__cuda_1,float __cuda_2,uint __cuda_3)
@@ -24307,7 +24307,7 @@ void integrate( float4 *__cuda_0,float4 *__cuda_1,float __cuda_2,uint __cuda_3)
 {__device_stub__Z9integrateP6float4S0_fj( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 72 "tests/particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z9calcHashDPjS_P6float4j( uint *__par0, uint *__par1, float4 *__par2, uint __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, float4 *, uint))calcHashD)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, float4 *, uint))calcHashD))); }; }
 # 95 "tests/particles/particles_kernel.cu"
 void calcHashD( uint *__cuda_0,uint *__cuda_1,float4 *__cuda_2,uint __cuda_3)
@@ -24315,7 +24315,7 @@ void calcHashD( uint *__cuda_0,uint *__cuda_1,float4 *__cuda_2,uint __cuda_3)
 {__device_stub__Z9calcHashDPjS_P6float4j( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 112 "tests/particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j( uint *__par0, uint *__par1, float4 *__par2, float4 *__par3, uint *__par4, uint *__par5, float4 *__par6, float4 *__par7, uint __par8) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)40UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)48UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)56UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par8, sizeof(__par8), (size_t)64UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, float4 *, float4 *, uint *, uint *, float4 *, float4 *, uint))reorderDataAndFindCellStartD)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, float4 *, float4 *, uint *, uint *, float4 *, float4 *, uint))reorderDataAndFindCellStartD))); }; }
 # 117 "tests/particles/particles_kernel.cu"
 void reorderDataAndFindCellStartD( uint *__cuda_0,uint *__cuda_1,float4 *__cuda_2,float4 *__cuda_3,uint *__cuda_4,uint *__cuda_5,float4 *__cuda_6,float4 *__cuda_7,uint __cuda_8)
@@ -24323,7 +24323,7 @@ void reorderDataAndFindCellStartD( uint *__cuda_0,uint *__cuda_1,float4 *__cuda_
 {__device_stub__Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8);
 # 178 "tests/particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z8collideDP6float4S0_S0_PjS1_S1_j( float4 *__par0, float4 *__par1, float4 *__par2, uint *__par3, uint *__par4, uint *__par5, uint __par6) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)40UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)48UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float4 *, float4 *, float4 *, uint *, uint *, uint *, uint))collideD)); (void)cudaLaunch(((char *)((void ( *)(float4 *, float4 *, float4 *, uint *, uint *, uint *, uint))collideD))); }; }
 # 253 "tests/particles/particles_kernel.cu"
 void collideD( float4 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,uint *__cuda_3,uint *__cuda_4,uint *__cuda_5,uint __cuda_6)
@@ -24331,7 +24331,7 @@ void collideD( float4 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,uint *__cuda_3
 {__device_stub__Z8collideDP6float4S0_S0_PjS1_S1_j( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6);
 # 288 "tests/particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00005c3b_00000000_4_particleSystem_cpp1_ii_e0d6462c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float4 *, uint *, uint *, uint *, uint))collideD), (char*)"_Z8collideDP6float4S0_S0_PjS1_S1_j", "_Z8collideDP6float4S0_S0_PjS1_S1_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, float4 *, float4 *, uint *, uint *, float4 *, float4 *, uint))reorderDataAndFindCellStartD), (char*)"_Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j", "_Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, float4 *, uint))calcHashD), (char*)"_Z9calcHashDPjS_P6float4j", "_Z9calcHashDPjS_P6float4j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float, uint))integrate), (char*)"_Z9integrateP6float4S0_fj", "_Z9integrateP6float4S0_fj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&params, (char*)"params", "params", 0, 104, 1, 0); }
-# 2 "tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c" 2
-# 1 "tmpxft_00005c3b_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_0000705e_00000000_4_particleSystem_cpp1_ii_e0d6462c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float4 *, uint *, uint *, uint *, uint))collideD), (char*)"_Z8collideDP6float4S0_S0_PjS1_S1_j", "_Z8collideDP6float4S0_S0_PjS1_S1_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, float4 *, float4 *, uint *, uint *, float4 *, float4 *, uint))reorderDataAndFindCellStartD), (char*)"_Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j", "_Z28reorderDataAndFindCellStartDPjS_P6float4S1_S_S_S1_S1_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, float4 *, uint))calcHashD), (char*)"_Z9calcHashDPjS_P6float4j", "_Z9calcHashDPjS_P6float4j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float, uint))integrate), (char*)"_Z9integrateP6float4S0_fj", "_Z9integrateP6float4S0_fj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&params, (char*)"params", "params", 0, 104, 1, 0); }
+# 2 "tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c" 2
+# 1 "tmpxft_0000705e_00000000-1_particleSystem.cudafe1.stub.c"

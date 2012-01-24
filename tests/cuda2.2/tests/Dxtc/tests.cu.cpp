@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000065e6_00000000-1_tests.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000058d3_00000000-1_tests.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000065e6_00000000-1_tests.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000058d3_00000000-1_tests.cudafe1.cpp"
 # 1 "tests/Dxtc/tests.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -13202,9 +13202,9 @@ __attribute__((unused)) void sortColors3(float *v, float3 *colors, int *xrefs)
 {int volatile ___ = 1;(void)v;(void)colors;(void)xrefs;
 # 51 "tests/Dxtc/tests.cu"
 exit(___);}
-# 1 "tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c"
-# 1 "tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c"
+# 1 "tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -13716,8 +13716,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000065e6_00000000-3_tests.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000058d3_00000000-3_tests.fatbin.c" 1 3
 
 
 asm(
@@ -13751,7 +13751,7 @@ asm(
 ".quad 0x0000000000000015,0x0000000000000000,0x0000000000000000,0x78442f7374736574\n"
 ".quad 0x73747365742f6374,0x000000000075632e,0x762e0a0a0a0a0a0a,0x33206e6f69737265\n"
 ".quad 0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73\n"
-".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x3665353630303030\n"
+".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x3364383530303030\n"
 ".quad 0x303030303030305f,0x747365745f372d30,0x692e337070632e73,0x09656c69662e0a22\n"
 ".quad 0x7374736574222032,0x65742f637478442f,0x0a2275632e737473,0x203309656c69662e\n"
 ".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e34,0x69632f6d76766e2f\n"
@@ -13913,8 +13913,8 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c" 2 3
-static void __sti____cudaRegisterAll_40_tmpxft_000065e6_00000000_4_tests_cpp1_ii_31d75fe4(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_40_tmpxft_000065e6_00000000_4_tests_cpp1_ii_31d75fe4(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 2 "tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c" 2
-# 1 "tmpxft_000065e6_00000000-1_tests.cudafe1.stub.c"
+# 3 "/tmp/tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c" 2 3
+static void __sti____cudaRegisterAll_40_tmpxft_000058d3_00000000_4_tests_cpp1_ii_31d75fe4(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_40_tmpxft_000058d3_00000000_4_tests_cpp1_ii_31d75fe4(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 2 "tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c" 2
+# 1 "tmpxft_000058d3_00000000-1_tests.cudafe1.stub.c"

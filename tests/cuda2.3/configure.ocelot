@@ -26,13 +26,13 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ nvidia ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,
 		workerThreadLimit: 1,
 		reconvergenceMechanism: "barrier",
-		warpSize: 4
+		warpSize: 1
 	},
 	optimizations: {
 		subkernelSize: 1000000000

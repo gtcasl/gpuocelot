@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006493_00000000-1_clock.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000057bd_00000000-1_clock.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006493_00000000-1_clock.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000057bd_00000000-1_clock.cudafe1.cpp"
 # 1 "tests/Clock/clock.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15796,9 +15796,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 125 "tests/Clock/clock.cu"
 }
-# 1 "tmpxft_00006493_00000000-1_clock.cudafe1.stub.c"
-# 1 "tmpxft_00006493_00000000-1_clock.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006493_00000000-1_clock.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c"
+# 1 "tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16310,8 +16310,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006493_00000000-1_clock.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006493_00000000-3_clock.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000057bd_00000000-3_clock.fatbin.c" 1 3
 
 
 asm(
@@ -16384,7 +16384,7 @@ asm(
 ".quad 0x0000000000000000,0x0000000000000000,0x7473657400000000,0x2f6b636f6c432f73\n"
 ".quad 0x75632e6b636f6c63,0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f\n"
 ".quad 0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a\n"
-".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f33393436\n"
+".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f64623735\n"
 ".quad 0x5f372d3030303030,0x70632e6b636f6c63,0x662e0a22692e3370,0x7422203209656c69\n"
 ".quad 0x6f6c432f73747365,0x6b636f6c632f6b63,0x2e6c656e72656b5f,0x6c69662e0a227563\n"
 ".quad 0x73752f2220330965,0x2f6c61636f6c2f72,0x2f312e3461647563,0x76766e2f61647563\n"
@@ -16481,9 +16481,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006493_00000000-1_clock.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c" 2 3
 static void __device_stub__Z14timedReductionPKfPfPl(const float *, float *, clock_t *);
-static void __sti____cudaRegisterAll_40_tmpxft_00006493_00000000_4_clock_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_40_tmpxft_000057bd_00000000_4_clock_cpp1_ii_main(void) __attribute__((__constructor__));
 static void __device_stub__Z14timedReductionPKfPfPl(const float *__par0, float *__par1, clock_t *__par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(const float *, float *, clock_t *))timedReduction)); (void)cudaLaunch(((char *)((void ( *)(const float *, float *, clock_t *))timedReduction))); };}
 # 42 "tests/Clock/clock_kernel.cu"
 static void timedReduction( const float *__cuda_0,float *__cuda_1,clock_t *__cuda_2)
@@ -16491,7 +16491,7 @@ static void timedReduction( const float *__cuda_0,float *__cuda_1,clock_t *__cud
 {__device_stub__Z14timedReductionPKfPfPl( __cuda_0,__cuda_1,__cuda_2);
 # 78 "tests/Clock/clock_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006493_00000000-1_clock.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_40_tmpxft_00006493_00000000_4_clock_cpp1_ii_main(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const float *, float *, clock_t *))timedReduction), (char*)"_Z14timedReductionPKfPfPl", "_Z14timedReductionPKfPfPl", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006493_00000000-1_clock.cudafe1.stub.c" 2
-# 1 "tmpxft_00006493_00000000-1_clock.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_40_tmpxft_000057bd_00000000_4_clock_cpp1_ii_main(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(const float *, float *, clock_t *))timedReduction), (char*)"_Z14timedReductionPKfPfPl", "_Z14timedReductionPKfPfPl", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c" 2
+# 1 "tmpxft_000057bd_00000000-1_clock.cudafe1.stub.c"

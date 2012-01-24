@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.cpp"
 # 1 "tests/QuasirandomGenerator/quasirandomGenerator_SM13.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15796,9 +15796,9 @@ extern "C" void inverseCND_SM13(float *d_Output, float *d_Input, unsigned N) {
 inverseCNDgpu(d_Output, d_Input, N);
 # 53 "tests/QuasirandomGenerator/quasirandomGenerator_SM13.cu"
 }
-# 1 "tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
-# 1 "tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
+# 1 "tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16310,8 +16310,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006a05_00000000-3_quasirandomGenerator_SM13.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005d16_00000000-3_quasirandomGenerator_SM13.fatbin.c" 1 3
 
 
 asm(
@@ -16743,7 +16743,7 @@ asm(
 ".quad 0x65476d6f646e6172,0x5f726f746172656e,0x0075632e33314d53,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3530613630303030,0x303030303030305f,0x736175715f372d30,0x476d6f646e617269\n"
+".quad 0x3631643530303030,0x303030303030305f,0x736175715f372d30,0x476d6f646e617269\n"
 ".quad 0x726f746172656e65,0x70632e33314d535f,0x662e0a22692e3370,0x7422203209656c69\n"
 ".quad 0x6175512f73747365,0x6d6f646e61726973,0x6f746172656e6547,0x7269736175712f72\n"
 ".quad 0x6e65476d6f646e61,0x6b5f726f74617265,0x75632e6c656e7265,0x656c69662e0a2268\n"
@@ -18643,10 +18643,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 2 3
 static void __device_stub__Z26quasirandomGeneratorKernelPfjj(float *, unsigned, unsigned);
 static void __device_stub__Z16inverseCNDKernelPfS_j(float *, float *, unsigned);
-static void __sti____cudaRegisterAll_60_tmpxft_00006a05_00000000_4_quasirandomGenerator_SM13_cpp1_ii_e31784a2(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_60_tmpxft_00005d16_00000000_4_quasirandomGenerator_SM13_cpp1_ii_e31784a2(void) __attribute__((__constructor__));
 static void __device_stub__Z26quasirandomGeneratorKernelPfjj(float *__par0, unsigned __par1, unsigned __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, unsigned, unsigned))quasirandomGeneratorKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, unsigned, unsigned))quasirandomGeneratorKernel))); };}
 # 60 "tests/QuasirandomGenerator/quasirandomGenerator_kernel.cuh"
 static void quasirandomGeneratorKernel( float *__cuda_0,unsigned __cuda_1,unsigned __cuda_2)
@@ -18654,7 +18654,7 @@ static void quasirandomGeneratorKernel( float *__cuda_0,unsigned __cuda_1,unsign
 {__device_stub__Z26quasirandomGeneratorKernelPfjj( __cuda_0,__cuda_1,__cuda_2);
 # 78 "tests/QuasirandomGenerator/quasirandomGenerator_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
 static void __device_stub__Z16inverseCNDKernelPfS_j( float *__par0, float *__par1, unsigned __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, unsigned))inverseCNDKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, unsigned))inverseCNDKernel))); }; }
 # 292 "tests/QuasirandomGenerator/quasirandomGenerator_kernel.cuh"
 static void inverseCNDKernel( float *__cuda_0,float *__cuda_1,unsigned __cuda_2)
@@ -18662,7 +18662,7 @@ static void inverseCNDKernel( float *__cuda_0,float *__cuda_1,unsigned __cuda_2)
 {__device_stub__Z16inverseCNDKernelPfS_j( __cuda_0,__cuda_1,__cuda_2);
 # 316 "tests/QuasirandomGenerator/quasirandomGenerator_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_60_tmpxft_00006a05_00000000_4_quasirandomGenerator_SM13_cpp1_ii_e31784a2(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, unsigned))inverseCNDKernel), (char*)"_Z16inverseCNDKernelPfS_j", "_Z16inverseCNDKernelPfS_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, unsigned, unsigned))quasirandomGeneratorKernel), (char*)"_Z26quasirandomGeneratorKernelPfjj", "_Z26quasirandomGeneratorKernelPfjj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&c_Table, (char*)"c_Table", "c_Table", 0, 372, 1, 0); }
-# 2 "tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 2
-# 1 "tmpxft_00006a05_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_60_tmpxft_00005d16_00000000_4_quasirandomGenerator_SM13_cpp1_ii_e31784a2(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, unsigned))inverseCNDKernel), (char*)"_Z16inverseCNDKernelPfS_j", "_Z16inverseCNDKernelPfS_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, unsigned, unsigned))quasirandomGeneratorKernel), (char*)"_Z26quasirandomGeneratorKernelPfjj", "_Z26quasirandomGeneratorKernelPfjj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&c_Table, (char*)"c_Table", "c_Table", 0, 372, 1, 0); }
+# 2 "tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c" 2
+# 1 "tmpxft_00005d16_00000000-1_quasirandomGenerator_SM13.cudafe1.stub.c"

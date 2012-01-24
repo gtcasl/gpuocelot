@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005660_00000000-1_alignedTypes.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005660_00000000-1_alignedTypes.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.cpp"
 # 1 "tests/alignedTypes/alignedTypes.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16540,9 +16540,9 @@ __cutilExit(argc, argv);
 cudaThreadExit(); return 0;
 # 316 "tests/alignedTypes/alignedTypes.cu"
 }
-# 1 "tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c"
-# 1 "tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c"
+# 1 "tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -17054,8 +17054,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005660_00000000-3_alignedTypes.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006ab6_00000000-3_alignedTypes.fatbin.c" 1 3
 
 
 asm(
@@ -17068,7 +17068,7 @@ asm(
 ".quad 0x6e67696c612f7365,0x2e73657079546465,0x0000000000007563,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3036363530303030,0x303030303030305f,0x67696c615f372d30,0x736570795464656e\n"
+".quad 0x3662613630303030,0x303030303030305f,0x67696c615f372d30,0x736570795464656e\n"
 ".quad 0x22692e337070632e,0x3209656c69662e0a,0x2f73747365742220,0x5464656e67696c61\n"
 ".quad 0x696c612f73657079,0x6570795464656e67,0x2e0a0a2275632e73,0x5a5f207972746e65\n"
 ".quad 0x654b747365743031,0x764568496c656e72,0x28695f31535f5450,0x206d617261702e0a\n"
@@ -17875,7 +17875,7 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c" 2 3
 static void __device_stub__Z10testKernelIhEvPT_S1_i(uint8 *, uint8 *, int);
 static void __device_stub__Z10testKernelItEvPT_S1_i(uint16 *, uint16 *, int);
 static void __device_stub__Z10testKernelI16RGBA8_misalignedEvPT_S2_i(RGBA8_misaligned *, RGBA8_misaligned *, int);
@@ -17888,7 +17888,7 @@ static void __device_stub__Z10testKernelI4LA32EvPT_S2_i(LA32 *, LA32 *, int);
 static void __device_stub__Z10testKernelI5RGB32EvPT_S2_i(RGB32 *, RGB32 *, int);
 static void __device_stub__Z10testKernelI6RGBA32EvPT_S2_i(RGBA32 *, RGBA32 *, int);
 static void __device_stub__Z10testKernelI8RGBA32_2EvPT_S2_i(RGBA32_2 *, RGBA32_2 *, int);
-static void __sti____cudaRegisterAll_47_tmpxft_00005660_00000000_4_alignedTypes_cpp1_ii_7d260802(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_47_tmpxft_00006ab6_00000000_4_alignedTypes_cpp1_ii_7d260802(void) __attribute__((__constructor__));
 static void __device_stub__Z10testKernelIhEvPT_S1_i(uint8 *__par0, uint8 *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint8 *, uint8 *, int))testKernel<unsigned char> )); (void)cudaLaunch(((char *)((void ( *)(uint8 *, uint8 *, int))testKernel<unsigned char> ))); };}
 template<> void __wrapper__device_stub_testKernel<uint8>( uint8 *&__cuda_0,uint8 *&__cuda_1,int &__cuda_2){__device_stub__Z10testKernelIhEvPT_S1_i( __cuda_0,__cuda_1,__cuda_2);}
 static void __device_stub__Z10testKernelItEvPT_S1_i(uint16 *__par0, uint16 *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint16 *, uint16 *, int))testKernel<unsigned short> )); (void)cudaLaunch(((char *)((void ( *)(uint16 *, uint16 *, int))testKernel<unsigned short> ))); };}
@@ -17913,6 +17913,6 @@ static void __device_stub__Z10testKernelI6RGBA32EvPT_S2_i(RGBA32 *__par0, RGBA32
 template<> void __wrapper__device_stub_testKernel<RGBA32>( RGBA32 *&__cuda_0,RGBA32 *&__cuda_1,int &__cuda_2){__device_stub__Z10testKernelI6RGBA32EvPT_S2_i( __cuda_0,__cuda_1,__cuda_2);}
 static void __device_stub__Z10testKernelI8RGBA32_2EvPT_S2_i(RGBA32_2 *__par0, RGBA32_2 *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(RGBA32_2 *, RGBA32_2 *, int))testKernel<RGBA32_2> )); (void)cudaLaunch(((char *)((void ( *)(RGBA32_2 *, RGBA32_2 *, int))testKernel<RGBA32_2> ))); };}
 template<> void __wrapper__device_stub_testKernel<RGBA32_2>( RGBA32_2 *&__cuda_0,RGBA32_2 *&__cuda_1,int &__cuda_2){__device_stub__Z10testKernelI8RGBA32_2EvPT_S2_i( __cuda_0,__cuda_1,__cuda_2);}
-static void __sti____cudaRegisterAll_47_tmpxft_00005660_00000000_4_alignedTypes_cpp1_ii_7d260802(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA32_2 *, RGBA32_2 *, int))testKernel<RGBA32_2> ), (char*)"_Z10testKernelI8RGBA32_2EvPT_S2_i", "_Z10testKernelI8RGBA32_2EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA32 *, RGBA32 *, int))testKernel<RGBA32> ), (char*)"_Z10testKernelI6RGBA32EvPT_S2_i", "_Z10testKernelI6RGBA32EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGB32 *, RGB32 *, int))testKernel<RGB32> ), (char*)"_Z10testKernelI5RGB32EvPT_S2_i", "_Z10testKernelI5RGB32EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(LA32 *, LA32 *, int))testKernel<LA32> ), (char*)"_Z10testKernelI4LA32EvPT_S2_i", "_Z10testKernelI4LA32EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(I32 *, I32 *, int))testKernel<unsigned int> ), (char*)"_Z10testKernelIjEvPT_S1_i", "_Z10testKernelIjEvPT_S1_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA8 *, RGBA8 *, int))testKernel<RGBA8> ), (char*)"_Z10testKernelI5RGBA8EvPT_S2_i", "_Z10testKernelI5RGBA8EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA32_misaligned *, RGBA32_misaligned *, int))testKernel<RGBA32_misaligned> ), (char*)"_Z10testKernelI17RGBA32_misalignedEvPT_S2_i", "_Z10testKernelI17RGBA32_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGB32_misaligned *, RGB32_misaligned *, int))testKernel<RGB32_misaligned> ), (char*)"_Z10testKernelI16RGB32_misalignedEvPT_S2_i", "_Z10testKernelI16RGB32_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(LA32_misaligned *, LA32_misaligned *, int))testKernel<LA32_misaligned> ), (char*)"_Z10testKernelI15LA32_misalignedEvPT_S2_i", "_Z10testKernelI15LA32_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA8_misaligned *, RGBA8_misaligned *, int))testKernel<RGBA8_misaligned> ), (char*)"_Z10testKernelI16RGBA8_misalignedEvPT_S2_i", "_Z10testKernelI16RGBA8_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint16 *, uint16 *, int))testKernel<unsigned short> ), (char*)"_Z10testKernelItEvPT_S1_i", "_Z10testKernelItEvPT_S1_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint8 *, uint8 *, int))testKernel<unsigned char> ), (char*)"_Z10testKernelIhEvPT_S1_i", "_Z10testKernelIhEvPT_S1_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
-# 2 "tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c" 2
-# 1 "tmpxft_00005660_00000000-1_alignedTypes.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_47_tmpxft_00006ab6_00000000_4_alignedTypes_cpp1_ii_7d260802(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA32_2 *, RGBA32_2 *, int))testKernel<RGBA32_2> ), (char*)"_Z10testKernelI8RGBA32_2EvPT_S2_i", "_Z10testKernelI8RGBA32_2EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA32 *, RGBA32 *, int))testKernel<RGBA32> ), (char*)"_Z10testKernelI6RGBA32EvPT_S2_i", "_Z10testKernelI6RGBA32EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGB32 *, RGB32 *, int))testKernel<RGB32> ), (char*)"_Z10testKernelI5RGB32EvPT_S2_i", "_Z10testKernelI5RGB32EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(LA32 *, LA32 *, int))testKernel<LA32> ), (char*)"_Z10testKernelI4LA32EvPT_S2_i", "_Z10testKernelI4LA32EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(I32 *, I32 *, int))testKernel<unsigned int> ), (char*)"_Z10testKernelIjEvPT_S1_i", "_Z10testKernelIjEvPT_S1_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA8 *, RGBA8 *, int))testKernel<RGBA8> ), (char*)"_Z10testKernelI5RGBA8EvPT_S2_i", "_Z10testKernelI5RGBA8EvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA32_misaligned *, RGBA32_misaligned *, int))testKernel<RGBA32_misaligned> ), (char*)"_Z10testKernelI17RGBA32_misalignedEvPT_S2_i", "_Z10testKernelI17RGBA32_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGB32_misaligned *, RGB32_misaligned *, int))testKernel<RGB32_misaligned> ), (char*)"_Z10testKernelI16RGB32_misalignedEvPT_S2_i", "_Z10testKernelI16RGB32_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(LA32_misaligned *, LA32_misaligned *, int))testKernel<LA32_misaligned> ), (char*)"_Z10testKernelI15LA32_misalignedEvPT_S2_i", "_Z10testKernelI15LA32_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(RGBA8_misaligned *, RGBA8_misaligned *, int))testKernel<RGBA8_misaligned> ), (char*)"_Z10testKernelI16RGBA8_misalignedEvPT_S2_i", "_Z10testKernelI16RGBA8_misalignedEvPT_S2_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint16 *, uint16 *, int))testKernel<unsigned short> ), (char*)"_Z10testKernelItEvPT_S1_i", "_Z10testKernelItEvPT_S1_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint8 *, uint8 *, int))testKernel<unsigned char> ), (char*)"_Z10testKernelIhEvPT_S1_i", "_Z10testKernelIhEvPT_S1_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);}
+# 2 "tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c" 2
+# 1 "tmpxft_00006ab6_00000000-1_alignedTypes.cudafe1.stub.c"

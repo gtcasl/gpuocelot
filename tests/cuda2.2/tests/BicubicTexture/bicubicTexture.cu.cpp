@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.cpp"
 # 1 "tests/BicubicTexture/bicubicTexture.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16984,9 +16984,9 @@ break;
 __cutilCheckMsg("kernel failed", "tests/BicubicTexture/bicubicTexture.cu", 97);
 # 98 "tests/BicubicTexture/bicubicTexture.cu"
 }
-# 1 "tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c"
-# 1 "tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c"
+# 1 "tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -17498,8 +17498,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_0000636b_00000000-3_bicubicTexture.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005656_00000000-3_bicubicTexture.fatbin.c" 1 3
 
 
 asm(
@@ -17728,7 +17728,7 @@ asm(
 ".quad 0x7865546369627563,0x6369622f65727574,0x7478655463696275,0x000075632e657275\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x6236333630303030,0x303030303030305f,0x756369625f372d30\n"
+".quad 0x5f746678706d742f,0x3635363530303030,0x303030303030305f,0x756369625f372d30\n"
 ".quad 0x7574786554636962,0x2e337070632e6572,0x656c69662e0a2269,0x65742f2e22203209\n"
 ".quad 0x756369422f737473,0x7574786554636962,0x62756369622f6572,0x7275747865546369\n"
 ".quad 0x6c656e72656b5f65,0x662e0a226875632e,0x2f22203309656c69,0x61636f6c2f727375\n"
@@ -18324,11 +18324,11 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c" 2 3
 extern void __device_stub__Z8d_renderP6uchar4jjfffff(uchar4 *, uint, uint, float, float, float, float, float);
 extern void __device_stub__Z15d_renderBicubicP6uchar4jjfffff(uchar4 *, uint, uint, float, float, float, float, float);
 extern void __device_stub__Z19d_renderFastBicubicP6uchar4jjfffff(uchar4 *, uint, uint, float, float, float, float, float);
-static void __sti____cudaRegisterAll_49_tmpxft_0000636b_00000000_4_bicubicTexture_cpp1_ii_tex(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_00005656_00000000_4_bicubicTexture_cpp1_ii_tex(void) __attribute__((__constructor__));
 void __device_stub__Z8d_renderP6uchar4jjfffff(uchar4 *__par0, uint __par1, uint __par2, float __par3, float __par4, float __par5, float __par6, float __par7){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)32UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_render)); (void)cudaLaunch(((char *)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_render))); };}
 # 161 "./tests/BicubicTexture/bicubicTexture_kernel.cuh"
 void d_render( uchar4 *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3,float __cuda_4,float __cuda_5,float __cuda_6,float __cuda_7)
@@ -18336,7 +18336,7 @@ void d_render( uchar4 *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3,float
 {__device_stub__Z8d_renderP6uchar4jjfffff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 175 "./tests/BicubicTexture/bicubicTexture_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c"
 void __device_stub__Z15d_renderBicubicP6uchar4jjfffff( uchar4 *__par0, uint __par1, uint __par2, float __par3, float __par4, float __par5, float __par6, float __par7) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderBicubic)); (void)cudaLaunch(((char *)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderBicubic))); }; }
 # 179 "./tests/BicubicTexture/bicubicTexture_kernel.cuh"
 void d_renderBicubic( uchar4 *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3,float __cuda_4,float __cuda_5,float __cuda_6,float __cuda_7)
@@ -18344,7 +18344,7 @@ void d_renderBicubic( uchar4 *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_
 {__device_stub__Z15d_renderBicubicP6uchar4jjfffff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 193 "./tests/BicubicTexture/bicubicTexture_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c"
 void __device_stub__Z19d_renderFastBicubicP6uchar4jjfffff( uchar4 *__par0, uint __par1, uint __par2, float __par3, float __par4, float __par5, float __par6, float __par7) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderFastBicubic)); (void)cudaLaunch(((char *)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderFastBicubic))); }; }
 # 197 "./tests/BicubicTexture/bicubicTexture_kernel.cuh"
 void d_renderFastBicubic( uchar4 *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3,float __cuda_4,float __cuda_5,float __cuda_6,float __cuda_7)
@@ -18352,7 +18352,7 @@ void d_renderFastBicubic( uchar4 *__cuda_0,uint __cuda_1,uint __cuda_2,float __c
 {__device_stub__Z19d_renderFastBicubicP6uchar4jjfffff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 211 "./tests/BicubicTexture/bicubicTexture_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_0000636b_00000000_4_bicubicTexture_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderFastBicubic), (char*)"_Z19d_renderFastBicubicP6uchar4jjfffff", "_Z19d_renderFastBicubicP6uchar4jjfffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderBicubic), (char*)"_Z15d_renderBicubicP6uchar4jjfffff", "_Z15d_renderBicubicP6uchar4jjfffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_render), (char*)"_Z8d_renderP6uchar4jjfffff", "_Z8d_renderP6uchar4jjfffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 1, 0); }
-# 2 "tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c" 2
-# 1 "tmpxft_0000636b_00000000-1_bicubicTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00005656_00000000_4_bicubicTexture_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderFastBicubic), (char*)"_Z19d_renderFastBicubicP6uchar4jjfffff", "_Z19d_renderFastBicubicP6uchar4jjfffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_renderBicubic), (char*)"_Z15d_renderBicubicP6uchar4jjfffff", "_Z15d_renderBicubicP6uchar4jjfffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uchar4 *, uint, uint, float, float, float, float, float))d_render), (char*)"_Z8d_renderP6uchar4jjfffff", "_Z8d_renderP6uchar4jjfffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 1, 0); }
+# 2 "tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c" 2
+# 1 "tmpxft_00005656_00000000-1_bicubicTexture.cudafe1.stub.c"

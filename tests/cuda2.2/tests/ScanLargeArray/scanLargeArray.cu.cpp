@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.cpp"
 # 1 "tests/ScanLargeArray/scanLargeArray.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16228,9 +16228,9 @@ cudaFree(d_idata);
 cudaThreadExit();
 # 176 "tests/ScanLargeArray/scanLargeArray.cu"
 }
-# 1 "tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c"
-# 1 "tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c"
+# 1 "tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16742,8 +16742,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006b7f_00000000-3_scanLargeArray.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005e74_00000000-3_scanLargeArray.fatbin.c" 1 3
 
 
 asm(
@@ -17026,7 +17026,7 @@ asm(
 ".quad 0x7473657400000000,0x614c6e6163532f73,0x7961727241656772,0x72614c6e6163732f\n"
 ".quad 0x2e79617272416567,0x0a0a0a0a00007563,0x69737265762e0a0a,0x2e0a302e33206e6f\n"
 ".quad 0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a\n"
-".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f66376236\n"
+".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f34376535\n"
 ".quad 0x5f372d3030303030,0x6772614c6e616373,0x632e796172724165,0x2e0a22692e337070\n"
 ".quad 0x22203209656c6966,0x2f73747365742f2e,0x6772614c6e616353,0x732f796172724165\n"
 ".quad 0x656772614c6e6163,0x656b5f7961727241,0x6875632e6c656e72,0x09656c69662e0a22\n"
@@ -18337,13 +18337,13 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c" 2 3
 extern void __device_stub__Z10uniformAddPfS_iii(float *, float *, int, int, int);
 static void __device_stub__Z7prescanILb1ELb0EEvPfPKfS0_iii(float *, const float *, float *, int, int, int);
 static void __device_stub__Z7prescanILb1ELb1EEvPfPKfS0_iii(float *, const float *, float *, int, int, int);
 static void __device_stub__Z7prescanILb0ELb0EEvPfPKfS0_iii(float *, const float *, float *, int, int, int);
 static void __device_stub__Z7prescanILb0ELb1EEvPfPKfS0_iii(float *, const float *, float *, int, int, int);
-static void __sti____cudaRegisterAll_49_tmpxft_00006b7f_00000000_4_scanLargeArray_cpp1_ii_67ad1a97(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_00005e74_00000000_4_scanLargeArray_cpp1_ii_67ad1a97(void) __attribute__((__constructor__));
 void __device_stub__Z10uniformAddPfS_iii(float *__par0, float *__par1, int __par2, int __par3, int __par4){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int, int))uniformAdd)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int, int))uniformAdd))); };}
 # 244 "./tests/ScanLargeArray/scanLargeArray_kernel.cuh"
 void uniformAdd( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4)
@@ -18351,7 +18351,7 @@ void uniformAdd( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int _
 {__device_stub__Z10uniformAddPfS_iii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 261 "./tests/ScanLargeArray/scanLargeArray_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c"
 static void __device_stub__Z7prescanILb1ELb0EEvPfPKfS0_iii( float *__par0, const float *__par1, float *__par2, int __par3, int __par4, int __par5) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)0> )); (void)cudaLaunch(((char *)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)0> ))); }; }
 template<> void __wrapper__device_stub_prescan<true,false>( float *&__cuda_0,const float *&__cuda_1,float *&__cuda_2,int &__cuda_3,int &__cuda_4,int &__cuda_5){__device_stub__Z7prescanILb1ELb0EEvPfPKfS0_iii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);}
 static void __device_stub__Z7prescanILb1ELb1EEvPfPKfS0_iii( float *__par0, const float *__par1, float *__par2, int __par3, int __par4, int __par5) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)1> )); (void)cudaLaunch(((char *)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)1> ))); }; }
@@ -18360,6 +18360,6 @@ static void __device_stub__Z7prescanILb0ELb0EEvPfPKfS0_iii( float *__par0, const
 template<> void __wrapper__device_stub_prescan<false,false>( float *&__cuda_0,const float *&__cuda_1,float *&__cuda_2,int &__cuda_3,int &__cuda_4,int &__cuda_5){__device_stub__Z7prescanILb0ELb0EEvPfPKfS0_iii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);}
 static void __device_stub__Z7prescanILb0ELb1EEvPfPKfS0_iii( float *__par0, const float *__par1, float *__par2, int __par3, int __par4, int __par5) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)0, (bool)1> )); (void)cudaLaunch(((char *)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)0, (bool)1> ))); }; }
 template<> void __wrapper__device_stub_prescan<false,true>( float *&__cuda_0,const float *&__cuda_1,float *&__cuda_2,int &__cuda_3,int &__cuda_4,int &__cuda_5){__device_stub__Z7prescanILb0ELb1EEvPfPKfS0_iii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);}
-static void __sti____cudaRegisterAll_49_tmpxft_00006b7f_00000000_4_scanLargeArray_cpp1_ii_67ad1a97(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)0, (bool)1> ), (char*)"_Z7prescanILb0ELb1EEvPfPKfS0_iii", "_Z7prescanILb0ELb1EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)0, (bool)0> ), (char*)"_Z7prescanILb0ELb0EEvPfPKfS0_iii", "_Z7prescanILb0ELb0EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)1> ), (char*)"_Z7prescanILb1ELb1EEvPfPKfS0_iii", "_Z7prescanILb1ELb1EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)0> ), (char*)"_Z7prescanILb1ELb0EEvPfPKfS0_iii", "_Z7prescanILb1ELb0EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int))uniformAdd), (char*)"_Z10uniformAddPfS_iii", "_Z10uniformAddPfS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c" 2
-# 1 "tmpxft_00006b7f_00000000-1_scanLargeArray.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00005e74_00000000_4_scanLargeArray_cpp1_ii_67ad1a97(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)0, (bool)1> ), (char*)"_Z7prescanILb0ELb1EEvPfPKfS0_iii", "_Z7prescanILb0ELb1EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)0, (bool)0> ), (char*)"_Z7prescanILb0ELb0EEvPfPKfS0_iii", "_Z7prescanILb0ELb0EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)1> ), (char*)"_Z7prescanILb1ELb1EEvPfPKfS0_iii", "_Z7prescanILb1ELb1EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, const float *, float *, int, int, int))prescan<(bool)1, (bool)0> ), (char*)"_Z7prescanILb1ELb0EEvPfPKfS0_iii", "_Z7prescanILb1ELb0EEvPfPKfS0_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int))uniformAdd), (char*)"_Z10uniformAddPfS_iii", "_Z10uniformAddPfS_iii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c" 2
+# 1 "tmpxft_00005e74_00000000-1_scanLargeArray.cudafe1.stub.c"

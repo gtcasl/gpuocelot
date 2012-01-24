@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006858_00000000-1_matrixMul.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005b58_00000000-1_matrixMul.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006858_00000000-1_matrixMul.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005b58_00000000-1_matrixMul.cudafe1.cpp"
 # 1 "tests/MatrixMul/matrixMul.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15884,9 +15884,9 @@ error_count++;
 printf(" nTotal Errors = %d n", error_count);
 # 193 "tests/MatrixMul/matrixMul.cu"
 }
-# 1 "tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c"
-# 1 "tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c"
+# 1 "tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16398,8 +16398,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006858_00000000-3_matrixMul.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005b58_00000000-3_matrixMul.fatbin.c" 1 3
 
 
 asm(
@@ -16485,7 +16485,7 @@ asm(
 ".quad 0x2f6c754d78697274,0x754d78697274616d,0x0000000075632e6c,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3835383630303030,0x303030303030305f,0x7274616d5f372d30,0x70632e6c754d7869\n"
+".quad 0x3835623530303030,0x303030303030305f,0x7274616d5f372d30,0x70632e6c754d7869\n"
 ".quad 0x662e0a22692e3370,0x2e22203209656c69,0x4d2f73747365742f,0x6c754d7869727461\n"
 ".quad 0x4d78697274616d2f,0x656e72656b5f6c75,0x0a0a0a2275632e6c,0x207972746e652e0a\n"
 ".quad 0x697274616d395a5f,0x5f5366506c754d78,0x702e0a2869695f53,0x36752e206d617261\n"
@@ -16637,9 +16637,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c" 2 3
 extern void __device_stub__Z9matrixMulPfS_S_ii(float *, float *, float *, int, int);
-static void __sti____cudaRegisterAll_44_tmpxft_00006858_00000000_4_matrixMul_cpp1_ii_d045d790(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_00005b58_00000000_4_matrixMul_cpp1_ii_d045d790(void) __attribute__((__constructor__));
 void __device_stub__Z9matrixMulPfS_S_ii(float *__par0, float *__par1, float *__par2, int __par3, int __par4){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, int, int))matrixMul)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, int, int))matrixMul))); };}
 # 60 "./tests/MatrixMul/matrixMul_kernel.cu"
 void matrixMul( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int __cuda_4)
@@ -16647,7 +16647,7 @@ void matrixMul( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int
 {__device_stub__Z9matrixMulPfS_S_ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 128 "./tests/MatrixMul/matrixMul_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_44_tmpxft_00006858_00000000_4_matrixMul_cpp1_ii_d045d790(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int, int))matrixMul), (char*)"_Z9matrixMulPfS_S_ii", "_Z9matrixMulPfS_S_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c" 2
-# 1 "tmpxft_00006858_00000000-1_matrixMul.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_44_tmpxft_00005b58_00000000_4_matrixMul_cpp1_ii_d045d790(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int, int))matrixMul), (char*)"_Z9matrixMulPfS_S_ii", "_Z9matrixMulPfS_S_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c" 2
+# 1 "tmpxft_00005b58_00000000-1_matrixMul.cudafe1.stub.c"

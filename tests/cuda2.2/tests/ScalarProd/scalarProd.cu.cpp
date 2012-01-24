@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.cpp"
 # 1 "tests/ScalarProd/scalarProd.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15892,9 +15892,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 195 "tests/ScalarProd/scalarProd.cu"
 }
-# 1 "tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c"
-# 1 "tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c"
+# 1 "tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16406,8 +16406,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006b1b_00000000-3_scalarProd.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005e0a_00000000-3_scalarProd.fatbin.c" 1 3
 
 
 asm(
@@ -16495,7 +16495,7 @@ asm(
 ".quad 0x0000000000000000,0x0000000000000000,0x63532f7374736574,0x646f725072616c61\n"
 ".quad 0x5072616c6163732f,0x000075632e646f72,0x762e0a0a0a0a0a0a,0x33206e6f69737265\n"
 ".quad 0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73\n"
-".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x6231623630303030\n"
+".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x6130653530303030\n"
 ".quad 0x303030303030305f,0x6c6163735f372d30,0x632e646f72507261,0x2e0a22692e337070\n"
 ".quad 0x22203209656c6966,0x63532f7374736574,0x646f725072616c61,0x5072616c6163732f\n"
 ".quad 0x6e72656b5f646f72,0x2e0a2275632e6c65,0x22203309656c6966,0x636f6c2f7273752f\n"
@@ -16615,9 +16615,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c" 2 3
 extern void __device_stub__Z13scalarProdGPUPfS_S_ii(float *, float *, float *, int, int);
-static void __sti____cudaRegisterAll_45_tmpxft_00006b1b_00000000_4_scalarProd_cpp1_ii_48817456(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_45_tmpxft_00005e0a_00000000_4_scalarProd_cpp1_ii_48817456(void) __attribute__((__constructor__));
 void __device_stub__Z13scalarProdGPUPfS_S_ii(float *__par0, float *__par1, float *__par2, int __par3, int __par4){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, int, int))scalarProdGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, int, int))scalarProdGPU))); };}
 # 58 "tests/ScalarProd/scalarProd_kernel.cu"
 void scalarProdGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3,int __cuda_4)
@@ -16625,7 +16625,7 @@ void scalarProdGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3
 {__device_stub__Z13scalarProdGPUPfS_S_ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 106 "tests/ScalarProd/scalarProd_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_45_tmpxft_00006b1b_00000000_4_scalarProd_cpp1_ii_48817456(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int, int))scalarProdGPU), (char*)"_Z13scalarProdGPUPfS_S_ii", "_Z13scalarProdGPUPfS_S_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c" 2
-# 1 "tmpxft_00006b1b_00000000-1_scalarProd.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_45_tmpxft_00005e0a_00000000_4_scalarProd_cpp1_ii_48817456(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int, int))scalarProdGPU), (char*)"_Z13scalarProdGPUPfS_S_ii", "_Z13scalarProdGPUPfS_S_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c" 2
+# 1 "tmpxft_00005e0a_00000000-1_scalarProd.cudafe1.stub.c"

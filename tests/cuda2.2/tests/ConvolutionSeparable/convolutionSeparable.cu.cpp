@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.cpp"
 # 1 "tests/ConvolutionSeparable/convolutionSeparable.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15978,9 +15978,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 291 "tests/ConvolutionSeparable/convolutionSeparable.cu"
 }
-# 1 "tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c"
-# 1 "tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c"
+# 1 "tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16492,8 +16492,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006506_00000000-3_convolutionSeparable.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000057d6_00000000-3_convolutionSeparable.fatbin.c" 1 3
 
 
 asm(
@@ -16638,7 +16638,7 @@ asm(
 ".quad 0x6974756c6f766e6f,0x6172617065536e6f,0x000075632e656c62,0x0a0a0a0a00000000\n"
 ".quad 0x69737265762e0a0a,0x2e0a302e33206e6f,0x7320746567726174,0x64612e0a30325f6d\n"
 ".quad 0x69735f7373657264,0x2e0a0a343620657a,0x22203109656c6966,0x706d742f706d742f\n"
-".quad 0x303030305f746678,0x3030305f36303536,0x5f372d3030303030,0x74756c6f766e6f63\n"
+".quad 0x303030305f746678,0x3030305f36643735,0x5f372d3030303030,0x74756c6f766e6f63\n"
 ".quad 0x72617065536e6f69,0x7070632e656c6261,0x69662e0a22692e33,0x2f2e22203209656c\n"
 ".quad 0x6f432f7374736574,0x6f6974756c6f766e,0x626172617065536e,0x6f766e6f632f656c\n"
 ".quad 0x65536e6f6974756c,0x5f656c6261726170,0x632e6c656e72656b,0x656c69662e0a2275\n"
@@ -18379,10 +18379,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c" 2 3
 extern void __device_stub__Z17convolutionRowGPUPfS_ii(float *, float *, int, int);
 extern void __device_stub__Z20convolutionColumnGPUPfS_iiii(float *, float *, int, int, int, int);
-static void __sti____cudaRegisterAll_55_tmpxft_00006506_00000000_4_convolutionSeparable_cpp1_ii_7d260802(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_55_tmpxft_000057d6_00000000_4_convolutionSeparable_cpp1_ii_7d260802(void) __attribute__((__constructor__));
 void __device_stub__Z17convolutionRowGPUPfS_ii(float *__par0, float *__par1, int __par2, int __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int))convolutionRowGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int))convolutionRowGPU))); };}
 # 94 "./tests/ConvolutionSeparable/convolutionSeparable_kernel.cu"
 void convolutionRowGPU( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3)
@@ -18390,7 +18390,7 @@ void convolutionRowGPU( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_
 {__device_stub__Z17convolutionRowGPUPfS_ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 157 "./tests/ConvolutionSeparable/convolutionSeparable_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c"
 void __device_stub__Z20convolutionColumnGPUPfS_iiii( float *__par0, float *__par1, int __par2, int __par3, int __par4, int __par5) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, int, int, int, int))convolutionColumnGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, int, int, int, int))convolutionColumnGPU))); }; }
 # 164 "./tests/ConvolutionSeparable/convolutionSeparable_kernel.cu"
 void convolutionColumnGPU( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,int __cuda_5)
@@ -18398,7 +18398,7 @@ void convolutionColumnGPU( float *__cuda_0,float *__cuda_1,int __cuda_2,int __cu
 {__device_stub__Z20convolutionColumnGPUPfS_iiii( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);
 # 228 "./tests/ConvolutionSeparable/convolutionSeparable_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_55_tmpxft_00006506_00000000_4_convolutionSeparable_cpp1_ii_7d260802(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int, int))convolutionColumnGPU), (char*)"_Z20convolutionColumnGPUPfS_iiii", "_Z20convolutionColumnGPUPfS_iiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int))convolutionRowGPU), (char*)"_Z17convolutionRowGPUPfS_ii", "_Z17convolutionRowGPUPfS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_Kernel, (char*)"d_Kernel", "d_Kernel", 0, 68, 1, 0); }
-# 2 "tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c" 2
-# 1 "tmpxft_00006506_00000000-1_convolutionSeparable.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_55_tmpxft_000057d6_00000000_4_convolutionSeparable_cpp1_ii_7d260802(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int, int, int))convolutionColumnGPU), (char*)"_Z20convolutionColumnGPUPfS_iiii", "_Z20convolutionColumnGPUPfS_iiii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, int, int))convolutionRowGPU), (char*)"_Z17convolutionRowGPUPfS_ii", "_Z17convolutionRowGPUPfS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_Kernel, (char*)"d_Kernel", "d_Kernel", 0, 68, 1, 0); }
+# 2 "tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c" 2
+# 1 "tmpxft_000057d6_00000000-1_convolutionSeparable.cudafe1.stub.c"

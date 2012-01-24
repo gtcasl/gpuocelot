@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.cpp"
 # 1 "tests/Histogram64/histogram64.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15924,9 +15924,9 @@ cudaThreadExit();
 __cutilExit(argc, argv); return 0;
 # 175 "tests/Histogram64/histogram64.cu"
 }
-# 1 "tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c"
-# 1 "tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c"
+# 1 "tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16438,8 +16438,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006790_00000000-3_histogram64.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005aa7_00000000-3_histogram64.fatbin.c" 1 3
 
 
 asm(
@@ -16605,7 +16605,7 @@ asm(
 ".quad 0x69482f7374736574,0x366d6172676f7473,0x676f747369682f34,0x75632e34366d6172\n"
 ".quad 0x0000000000000000,0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e\n"
 ".quad 0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34\n"
-".quad 0x706d742f22203109,0x5f746678706d742f,0x3039373630303030,0x303030303030305f\n"
+".quad 0x706d742f22203109,0x5f746678706d742f,0x3761613530303030,0x303030303030305f\n"
 ".quad 0x747369685f372d30,0x2e34366d6172676f,0x0a22692e33707063,0x203209656c69662e\n"
 ".quad 0x482f737473657422,0x6d6172676f747369,0x6f747369682f3436,0x6b5f34366d617267\n"
 ".quad 0x75632e6c656e7265,0x656c69662e0a2268,0x7273752f22203309,0x632f6c61636f6c2f\n"
@@ -16914,10 +16914,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c" 2 3
 extern void __device_stub__Z17histogram64KernelPjS_i(unsigned *, unsigned *, int);
 extern void __device_stub__Z22mergeHistogram64KernelPjS_j(unsigned *, unsigned *, unsigned);
-static void __sti____cudaRegisterAll_46_tmpxft_00006790_00000000_4_histogram64_cpp1_ii_ab711f84(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_46_tmpxft_00005aa7_00000000_4_histogram64_cpp1_ii_ab711f84(void) __attribute__((__constructor__));
 void __device_stub__Z17histogram64KernelPjS_i(unsigned *__par0, unsigned *__par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, int))histogram64Kernel)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, int))histogram64Kernel))); };}
 # 76 "tests/Histogram64/histogram64_kernel.cuh"
 void histogram64Kernel( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
@@ -16925,7 +16925,7 @@ void histogram64Kernel( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
 {__device_stub__Z17histogram64KernelPjS_i( __cuda_0,__cuda_1,__cuda_2);
 # 136 "tests/Histogram64/histogram64_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c"
 void __device_stub__Z22mergeHistogram64KernelPjS_j( unsigned *__par0, unsigned *__par1, unsigned __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, unsigned))mergeHistogram64Kernel)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, unsigned))mergeHistogram64Kernel))); }; }
 # 147 "tests/Histogram64/histogram64_kernel.cuh"
 void mergeHistogram64Kernel( unsigned *__cuda_0,unsigned *__cuda_1,unsigned __cuda_2)
@@ -16933,7 +16933,7 @@ void mergeHistogram64Kernel( unsigned *__cuda_0,unsigned *__cuda_1,unsigned __cu
 {__device_stub__Z22mergeHistogram64KernelPjS_j( __cuda_0,__cuda_1,__cuda_2);
 # 167 "tests/Histogram64/histogram64_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_46_tmpxft_00006790_00000000_4_histogram64_cpp1_ii_ab711f84(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, unsigned))mergeHistogram64Kernel), (char*)"_Z22mergeHistogram64KernelPjS_j", "_Z22mergeHistogram64KernelPjS_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))histogram64Kernel), (char*)"_Z17histogram64KernelPjS_i", "_Z17histogram64KernelPjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c" 2
-# 1 "tmpxft_00006790_00000000-1_histogram64.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_46_tmpxft_00005aa7_00000000_4_histogram64_cpp1_ii_ab711f84(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, unsigned))mergeHistogram64Kernel), (char*)"_Z22mergeHistogram64KernelPjS_j", "_Z22mergeHistogram64KernelPjS_j", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))histogram64Kernel), (char*)"_Z17histogram64KernelPjS_i", "_Z17histogram64KernelPjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c" 2
+# 1 "tmpxft_00005aa7_00000000-1_histogram64.cudafe1.stub.c"

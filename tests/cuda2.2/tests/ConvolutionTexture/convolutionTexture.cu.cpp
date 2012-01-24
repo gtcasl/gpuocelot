@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.cpp"
 # 1 "tests/ConvolutionTexture/convolutionTexture.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -15976,9 +15976,9 @@ __cutilExit(argc, argv);
 cudaThreadExit(); return 0;
 # 276 "tests/ConvolutionTexture/convolutionTexture.cu"
 }
-# 1 "tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c"
-# 1 "tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c"
+# 1 "tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16490,8 +16490,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006538_00000000-3_convolutionTexture.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005833_00000000-3_convolutionTexture.fatbin.c" 1 3
 
 
 asm(
@@ -16620,7 +16620,7 @@ asm(
 ".quad 0x657275747865546e,0x756c6f766e6f632f,0x747865546e6f6974,0x000075632e657275\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x3833353630303030,0x303030303030305f,0x766e6f635f372d30\n"
+".quad 0x5f746678706d742f,0x3333383530303030,0x303030303030305f,0x766e6f635f372d30\n"
 ".quad 0x546e6f6974756c6f,0x632e657275747865,0x2e0a22692e337070,0x22203209656c6966\n"
 ".quad 0x6f432f7374736574,0x6f6974756c6f766e,0x657275747865546e,0x756c6f766e6f632f\n"
 ".quad 0x747865546e6f6974,0x6e72656b5f657275,0x2e0a2275632e6c65,0x22203309656c6966\n"
@@ -19265,10 +19265,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c" 2 3
 extern void __device_stub__Z17convolutionRowGPUPfii(float *, int, int);
 extern void __device_stub__Z20convolutionColumnGPUPfii(float *, int, int);
-static void __sti____cudaRegisterAll_53_tmpxft_00006538_00000000_4_convolutionTexture_cpp1_ii_7d260802(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_53_tmpxft_00005833_00000000_4_convolutionTexture_cpp1_ii_7d260802(void) __attribute__((__constructor__));
 void __device_stub__Z17convolutionRowGPUPfii(float *__par0, int __par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))convolutionRowGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))convolutionRowGPU))); };}
 # 85 "tests/ConvolutionTexture/convolutionTexture_kernel.cu"
 void convolutionRowGPU( float *__cuda_0,int __cuda_1,int __cuda_2)
@@ -19276,7 +19276,7 @@ void convolutionRowGPU( float *__cuda_0,int __cuda_1,int __cuda_2)
 {__device_stub__Z17convolutionRowGPUPfii( __cuda_0,__cuda_1,__cuda_2);
 # 107 "tests/ConvolutionTexture/convolutionTexture_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c"
 void __device_stub__Z20convolutionColumnGPUPfii( float *__par0, int __par1, int __par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))convolutionColumnGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))convolutionColumnGPU))); }; }
 # 114 "tests/ConvolutionTexture/convolutionTexture_kernel.cu"
 void convolutionColumnGPU( float *__cuda_0,int __cuda_1,int __cuda_2)
@@ -19284,7 +19284,7 @@ void convolutionColumnGPU( float *__cuda_0,int __cuda_1,int __cuda_2)
 {__device_stub__Z20convolutionColumnGPUPfii( __cuda_0,__cuda_1,__cuda_2);
 # 136 "tests/ConvolutionTexture/convolutionTexture_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_53_tmpxft_00006538_00000000_4_convolutionTexture_cpp1_ii_7d260802(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))convolutionColumnGPU), (char*)"_Z20convolutionColumnGPUPfii", "_Z20convolutionColumnGPUPfii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))convolutionRowGPU), (char*)"_Z17convolutionRowGPUPfii", "_Z17convolutionRowGPUPfii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texData, (const void**)"texData", "texData", 2, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_Kernel, (char*)"d_Kernel", "d_Kernel", 0, 68, 1, 0); }
-# 2 "tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c" 2
-# 1 "tmpxft_00006538_00000000-1_convolutionTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_53_tmpxft_00005833_00000000_4_convolutionTexture_cpp1_ii_7d260802(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))convolutionColumnGPU), (char*)"_Z20convolutionColumnGPUPfii", "_Z20convolutionColumnGPUPfii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))convolutionRowGPU), (char*)"_Z17convolutionRowGPUPfii", "_Z17convolutionRowGPUPfii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texData, (const void**)"texData", "texData", 2, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&d_Kernel, (char*)"d_Kernel", "d_Kernel", 0, 68, 1, 0); }
+# 2 "tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c" 2
+# 1 "tmpxft_00005833_00000000-1_convolutionTexture.cudafe1.stub.c"

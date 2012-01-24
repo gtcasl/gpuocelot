@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.cpp"
 # 1 "tests/MersenneTwister/MersenneTwister.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -39111,9 +39111,9 @@ cudaThreadExit();
 __shrExitEX(argc, (const char **)argv, 0); return 0;
 # 175 "tests/MersenneTwister/MersenneTwister.cu"
 }
-# 1 "tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c"
-# 1 "tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c"
+# 1 "tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -39625,8 +39625,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005b3a_00000000-3_MersenneTwister.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006f4a_00000000-3_MersenneTwister.fatbin.c" 1 3
 
 
 asm(
@@ -39639,7 +39639,7 @@ asm(
 ".quad 0x654d2f7265747369,0x7754656e6e657372,0x75632e7265747369,0x0000000000000000\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x6133623530303030,0x303030303030305f,0x7372654d5f372d30\n"
+".quad 0x5f746678706d742f,0x6134663630303030,0x303030303030305f,0x7372654d5f372d30\n"
 ".quad 0x73697754656e6e65,0x337070632e726574,0x6c69662e0a22692e,0x7365742220320965\n"
 ".quad 0x657372654d2f7374,0x7473697754656e6e,0x657372654d2f7265,0x7473697754656e6e\n"
 ".quad 0x656e72656b5f7265,0x662e0a2275632e6c,0x2f22203309656c69,0x61636f6c2f727375\n"
@@ -40085,10 +40085,10 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c" 2 3
 extern void __device_stub__Z9RandomGPUPfi(float *, int);
 extern void __device_stub__Z12BoxMullerGPUPfi(float *, int);
-static void __sti____cudaRegisterAll_50_tmpxft_00005b3a_00000000_4_MersenneTwister_cpp1_ii_iDivUp(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_50_tmpxft_00006f4a_00000000_4_MersenneTwister_cpp1_ii_iDivUp(void) __attribute__((__constructor__));
 void __device_stub__Z9RandomGPUPfi(float *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int))RandomGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, int))RandomGPU))); };}
 # 62 "tests/MersenneTwister/MersenneTwister_kernel.cu"
 void RandomGPU( float *__cuda_0,int __cuda_1)
@@ -40096,7 +40096,7 @@ void RandomGPU( float *__cuda_0,int __cuda_1)
 {__device_stub__Z9RandomGPUPfi( __cuda_0,__cuda_1);
 # 109 "tests/MersenneTwister/MersenneTwister_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c"
 void __device_stub__Z12BoxMullerGPUPfi( float *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int))BoxMullerGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, int))BoxMullerGPU))); }; }
 # 127 "tests/MersenneTwister/MersenneTwister_kernel.cu"
 void BoxMullerGPU( float *__cuda_0,int __cuda_1)
@@ -40104,7 +40104,7 @@ void BoxMullerGPU( float *__cuda_0,int __cuda_1)
 {__device_stub__Z12BoxMullerGPUPfi( __cuda_0,__cuda_1);
 # 135 "tests/MersenneTwister/MersenneTwister_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_50_tmpxft_00005b3a_00000000_4_MersenneTwister_cpp1_ii_iDivUp(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))BoxMullerGPU), (char*)"_Z12BoxMullerGPUPfi", "_Z12BoxMullerGPUPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))RandomGPU), (char*)"_Z9RandomGPUPfi", "_Z9RandomGPUPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&ds_MT, (char*)"ds_MT", "ds_MT", 0, 65536, 0, 0); }
-# 2 "tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c" 2
-# 1 "tmpxft_00005b3a_00000000-1_MersenneTwister.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_50_tmpxft_00006f4a_00000000_4_MersenneTwister_cpp1_ii_iDivUp(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))BoxMullerGPU), (char*)"_Z12BoxMullerGPUPfi", "_Z12BoxMullerGPUPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))RandomGPU), (char*)"_Z9RandomGPUPfi", "_Z9RandomGPUPfi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&ds_MT, (char*)"ds_MT", "ds_MT", 0, 65536, 0, 0); }
+# 2 "tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c" 2
+# 1 "tmpxft_00006f4a_00000000-1_MersenneTwister.cudafe1.stub.c"

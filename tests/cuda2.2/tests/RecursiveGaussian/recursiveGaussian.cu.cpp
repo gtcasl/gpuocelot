@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.cpp"
 # 1 "tests/RecursiveGaussian/recursiveGaussian.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16938,9 +16938,9 @@ __cutilCheckMsg("Kernel execution failed", "tests/RecursiveGaussian/recursiveGau
 transpose(d_temp, d_dest, height, width);
 # 162 "tests/RecursiveGaussian/recursiveGaussian.cu"
 }
-# 1 "tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c"
-# 1 "tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c"
+# 1 "tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -17452,8 +17452,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006a65_00000000-3_recursiveGaussian.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005d6a_00000000-3_recursiveGaussian.fatbin.c" 1 3
 
 
 asm(
@@ -17797,7 +17797,7 @@ asm(
 ".quad 0x7372756365522f73,0x7373756147657669,0x756365722f6e6169,0x7561476576697372\n"
 ".quad 0x75632e6e61697373,0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f\n"
 ".quad 0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a\n"
-".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f35366136\n"
+".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f61366435\n"
 ".quad 0x5f372d3030303030,0x7669737275636572,0x6169737375614765,0x692e337070632e6e\n"
 ".quad 0x09656c69662e0a22,0x7365742f2e222032,0x72756365522f7374,0x7375614765766973\n"
 ".quad 0x6365722f6e616973,0x6147657669737275,0x6b5f6e6169737375,0x75632e6c656e7265\n"
@@ -18544,11 +18544,11 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c" 2 3
 extern void __device_stub__Z11d_transposePjS_ii(uint *, uint *, int, int);
 extern void __device_stub__Z22d_simpleRecursive_rgbaPjS_iif(uint *, uint *, int, int, float);
 extern void __device_stub__Z24d_recursiveGaussian_rgbaPjS_iiffffffff(uint *, uint *, int, int, float, float, float, float, float, float, float, float);
-static void __sti____cudaRegisterAll_52_tmpxft_00006a65_00000000_4_recursiveGaussian_cpp1_ii_95d227a9(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_52_tmpxft_00005d6a_00000000_4_recursiveGaussian_cpp1_ii_95d227a9(void) __attribute__((__constructor__));
 void __device_stub__Z11d_transposePjS_ii(uint *__par0, uint *__par1, int __par2, int __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, int, int))d_transpose)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, int, int))d_transpose))); };}
 # 47 "./tests/RecursiveGaussian/recursiveGaussian_kernel.cu"
 void d_transpose( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cuda_3)
@@ -18556,7 +18556,7 @@ void d_transpose( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cuda_3)
 {__device_stub__Z11d_transposePjS_ii( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 70 "./tests/RecursiveGaussian/recursiveGaussian_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c"
 void __device_stub__Z22d_simpleRecursive_rgbaPjS_iif( uint *__par0, uint *__par1, int __par2, int __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, int, int, float))d_simpleRecursive_rgba)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, int, int, float))d_simpleRecursive_rgba))); }; }
 # 109 "./tests/RecursiveGaussian/recursiveGaussian_kernel.cu"
 void d_simpleRecursive_rgba( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cuda_3,float __cuda_4)
@@ -18564,7 +18564,7 @@ void d_simpleRecursive_rgba( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cu
 {__device_stub__Z22d_simpleRecursive_rgbaPjS_iif( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 141 "./tests/RecursiveGaussian/recursiveGaussian_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c"
 void __device_stub__Z24d_recursiveGaussian_rgbaPjS_iiffffffff( uint *__par0, uint *__par1, int __par2, int __par3, float __par4, float __par5, float __par6, float __par7, float __par8, float __par9, float __par10, float __par11) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)36UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par8, sizeof(__par8), (size_t)40UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par9, sizeof(__par9), (size_t)44UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par10, sizeof(__par10), (size_t)48UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par11, sizeof(__par11), (size_t)52UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint *, int, int, float, float, float, float, float, float, float, float))d_recursiveGaussian_rgba)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint *, int, int, float, float, float, float, float, float, float, float))d_recursiveGaussian_rgba))); }; }
 # 155 "./tests/RecursiveGaussian/recursiveGaussian_kernel.cu"
 void d_recursiveGaussian_rgba( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __cuda_3,float __cuda_4,float __cuda_5,float __cuda_6,float __cuda_7,float __cuda_8,float __cuda_9,float __cuda_10,float __cuda_11)
@@ -18572,7 +18572,7 @@ void d_recursiveGaussian_rgba( uint *__cuda_0,uint *__cuda_1,int __cuda_2,int __
 {__device_stub__Z24d_recursiveGaussian_rgbaPjS_iiffffffff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8,__cuda_9,__cuda_10,__cuda_11);
 # 198 "./tests/RecursiveGaussian/recursiveGaussian_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_52_tmpxft_00006a65_00000000_4_recursiveGaussian_cpp1_ii_95d227a9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int, float, float, float, float, float, float, float, float))d_recursiveGaussian_rgba), (char*)"_Z24d_recursiveGaussian_rgbaPjS_iiffffffff", "_Z24d_recursiveGaussian_rgbaPjS_iiffffffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int, float))d_simpleRecursive_rgba), (char*)"_Z22d_simpleRecursive_rgbaPjS_iif", "_Z22d_simpleRecursive_rgbaPjS_iif", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int))d_transpose), (char*)"_Z11d_transposePjS_ii", "_Z11d_transposePjS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c" 2
-# 1 "tmpxft_00006a65_00000000-1_recursiveGaussian.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_52_tmpxft_00005d6a_00000000_4_recursiveGaussian_cpp1_ii_95d227a9(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int, float, float, float, float, float, float, float, float))d_recursiveGaussian_rgba), (char*)"_Z24d_recursiveGaussian_rgbaPjS_iiffffffff", "_Z24d_recursiveGaussian_rgbaPjS_iiffffffff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int, float))d_simpleRecursive_rgba), (char*)"_Z22d_simpleRecursive_rgbaPjS_iif", "_Z22d_simpleRecursive_rgbaPjS_iif", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint *, int, int))d_transpose), (char*)"_Z11d_transposePjS_ii", "_Z11d_transposePjS_ii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c" 2
+# 1 "tmpxft_00005d6a_00000000-1_recursiveGaussian.cudafe1.stub.c"

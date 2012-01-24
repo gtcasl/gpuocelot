@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.cpp"
 # 1 "tests/SimpleGL/simpleGL_kernel.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -13210,9 +13210,9 @@ dim3 grid(mesh_width / (block.x), mesh_height / (block.y), 1);
 cudaConfigureCall(grid, block) ? ((void)0) : kernel(pos, mesh_width, mesh_height, time);
 # 74 "tests/SimpleGL/simpleGL_kernel.cu"
 }
-# 1 "tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c"
-# 1 "tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c"
+# 1 "tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -13724,8 +13724,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006c19_00000000-3_simpleGL_kernel.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005f21_00000000-3_simpleGL_kernel.fatbin.c" 1 3
 
 
 asm(
@@ -13892,7 +13892,7 @@ asm(
 ".quad 0x7473657400000000,0x656c706d69532f73,0x6c706d69732f4c47,0x6e72656b5f4c4765\n"
 ".quad 0x00000075632e6c65,0x0a0a0a0a00000000,0x69737265762e0a0a,0x2e0a302e33206e6f\n"
 ".quad 0x7320746567726174,0x64612e0a30325f6d,0x69735f7373657264,0x2e0a0a343620657a\n"
-".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f39316336\n"
+".quad 0x22203109656c6966,0x706d742f706d742f,0x303030305f746678,0x3030305f31326635\n"
 ".quad 0x5f372d3030303030,0x4c47656c706d6973,0x2e6c656e72656b5f,0x0a22692e33707063\n"
 ".quad 0x203209656c69662e,0x532f737473657422,0x2f4c47656c706d69,0x4c47656c706d6973\n"
 ".quad 0x2e6c656e72656b5f,0x6c69662e0a227563,0x73752f2220330965,0x2f6c61636f6c2f72\n"
@@ -14281,9 +14281,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c" 2 3
 extern void __device_stub__Z6kernelP6float4jjf(float4 *, unsigned, unsigned, float);
-static void __sti____cudaRegisterAll_50_tmpxft_00006c19_00000000_4_simpleGL_kernel_cpp1_ii_ac7d3c8c(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_50_tmpxft_00005f21_00000000_4_simpleGL_kernel_cpp1_ii_ac7d3c8c(void) __attribute__((__constructor__));
 void __device_stub__Z6kernelP6float4jjf(float4 *__par0, unsigned __par1, unsigned __par2, float __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float4 *, unsigned, unsigned, float))kernel)); (void)cudaLaunch(((char *)((void ( *)(float4 *, unsigned, unsigned, float))kernel))); };}
 # 48 "tests/SimpleGL/simpleGL_kernel.cu"
 void kernel( float4 *__cuda_0,unsigned __cuda_1,unsigned __cuda_2,float __cuda_3)
@@ -14291,7 +14291,7 @@ void kernel( float4 *__cuda_0,unsigned __cuda_1,unsigned __cuda_2,float __cuda_3
 {__device_stub__Z6kernelP6float4jjf( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 65 "tests/SimpleGL/simpleGL_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_50_tmpxft_00006c19_00000000_4_simpleGL_kernel_cpp1_ii_ac7d3c8c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, unsigned, unsigned, float))kernel), (char*)"_Z6kernelP6float4jjf", "_Z6kernelP6float4jjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c" 2
-# 1 "tmpxft_00006c19_00000000-1_simpleGL_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_50_tmpxft_00005f21_00000000_4_simpleGL_kernel_cpp1_ii_ac7d3c8c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, unsigned, unsigned, float))kernel), (char*)"_Z6kernelP6float4jjf", "_Z6kernelP6float4jjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c" 2
+# 1 "tmpxft_00005f21_00000000-1_simpleGL_kernel.cudafe1.stub.c"

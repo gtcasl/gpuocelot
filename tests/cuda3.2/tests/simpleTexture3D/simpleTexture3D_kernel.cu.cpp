@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
 # 1 "tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -18482,9 +18482,9 @@ extern "C" void render_kernel(dim3 gridSize, dim3 blockSize, uint *d_output, uin
 cudaConfigureCall(gridSize, blockSize) ? ((void)0) : d_render(d_output, imageW, imageH, w);
 # 86 "tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 }
-# 1 "tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
-# 1 "tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
+# 1 "tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -18996,8 +18996,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005eb9_00000000-3_simpleTexture3D_kernel.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000072c1_00000000-3_simpleTexture3D_kernel.fatbin.c" 1 3
 
 
 asm(
@@ -19010,7 +19010,7 @@ asm(
 ".quad 0x69732f4433657275,0x74786554656c706d,0x656b5f4433657275,0x0075632e6c656e72\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x3962653530303030,0x303030303030305f,0x706d69735f372d30\n"
+".quad 0x5f746678706d742f,0x3163323730303030,0x303030303030305f,0x706d69735f372d30\n"
 ".quad 0x727574786554656c,0x6e72656b5f443365,0x2e337070632e6c65,0x656c69662e0a2269\n"
 ".quad 0x7473657422203209,0x656c706d69732f73,0x3365727574786554,0x656c706d69732f44\n"
 ".quad 0x3365727574786554,0x6c656e72656b5f44,0x69662e0a2275632e,0x752f22203309656c\n"
@@ -19180,9 +19180,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2 3
 extern void __device_stub__Z8d_renderPjjjf(uint *, uint, uint, float);
-static void __sti____cudaRegisterAll_57_tmpxft_00005eb9_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_57_tmpxft_000072c1_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) __attribute__((__constructor__));
 void __device_stub__Z8d_renderPjjjf(uint *__par0, uint __par1, uint __par2, float __par3){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint, uint, float))d_render)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint, uint, float))d_render))); };}
 # 32 "tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 void d_render( uint *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3)
@@ -19190,7 +19190,7 @@ void d_render( uint *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3)
 {__device_stub__Z8d_renderPjjjf( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 47 "tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_57_tmpxft_00005eb9_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint, uint, float))d_render), (char*)"_Z8d_renderPjjjf", "_Z8d_renderPjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 3, 1, 0); }
-# 2 "tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
-# 1 "tmpxft_00005eb9_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_57_tmpxft_000072c1_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint, uint, float))d_render), (char*)"_Z8d_renderPjjjf", "_Z8d_renderPjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 3, 1, 0); }
+# 2 "tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
+# 1 "tmpxft_000072c1_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"

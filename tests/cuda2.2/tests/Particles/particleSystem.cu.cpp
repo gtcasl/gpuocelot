@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.cpp"
 # 1 "tests/Particles/particleSystem.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -22848,9 +22848,9 @@ __cudaSafeCall(cudaUnbindTexture(particleHashTex), "tests/Particles/particleSyst
 __cudaSafeCall(cudaUnbindTexture(cellStartTex), "tests/Particles/particleSystem.cu", 298);
 # 304 "tests/Particles/particleSystem.cu"
 } }
-# 1 "tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
-# 1 "tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -23362,8 +23362,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006995_00000000-3_particleSystem.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005c97_00000000-3_particleSystem.fatbin.c" 1 3
 
 
 asm(
@@ -24077,7 +24077,7 @@ asm(
 ".quad 0x2f73656c63697472,0x656c636974726170,0x632e6d6574737953,0x0000000000000075\n"
 ".quad 0x762e0a0a0a0a0a0a,0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465\n"
 ".quad 0x7365726464612e0a,0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109\n"
-".quad 0x5f746678706d742f,0x3539393630303030,0x303030303030305f,0x747261705f372d30\n"
+".quad 0x5f746678706d742f,0x3739633530303030,0x303030303030305f,0x747261705f372d30\n"
 ".quad 0x74737953656c6369,0x2e337070632e6d65,0x656c69662e0a2269,0x7473657422203209\n"
 ".quad 0x6369747261502f73,0x747261702f73656c,0x656b5f73656c6369,0x2275632e6c656e72\n"
 ".quad 0x3309656c69662e0a,0x6c2f7273752f2220,0x6475632f6c61636f,0x6475632f312e3461\n"
@@ -26020,7 +26020,7 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c" 2 3
 extern void __device_stub__Z9integrateP6float4S0_S0_S0_f(float4 *, float4 *, float4 *, float4 *, float);
 extern void __device_stub__Z11updateGridDP6float4PjS1_(float4 *, uint *, uint *);
 extern void __device_stub__Z9calcHashDP6float4P5uint2(float4 *, uint2 *);
@@ -26029,7 +26029,7 @@ extern void __device_stub__Z8collideDP6float4S0_S0_S0_P5uint2Pj(float4 *, float4
 extern void __device_stub__Z8RadixSumP12KeyValuePairjjj(KeyValuePair *, uint, uint, uint);
 extern void __device_stub__Z14RadixPrefixSumv(void);
 extern void __device_stub__Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji(KeyValuePair *, KeyValuePair *, uint, uint, int);
-static void __sti____cudaRegisterAll_49_tmpxft_00006995_00000000_4_particleSystem_cpp1_ii_dee98040(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_00005c97_00000000_4_particleSystem_cpp1_ii_dee98040(void) __attribute__((__constructor__));
 void __device_stub__Z9integrateP6float4S0_S0_S0_f(float4 *__par0, float4 *__par1, float4 *__par2, float4 *__par3, float __par4){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float4 *, float4 *, float4 *, float4 *, float))integrate)); (void)cudaLaunch(((char *)((void ( *)(float4 *, float4 *, float4 *, float4 *, float))integrate))); };}
 # 59 "tests/Particles/particles_kernel.cu"
 void integrate( float4 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,float4 *__cuda_3,float __cuda_4)
@@ -26037,7 +26037,7 @@ void integrate( float4 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,float4 *__cud
 {__device_stub__Z9integrateP6float4S0_S0_S0_f( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 87 "tests/Particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z11updateGridDP6float4PjS1_( float4 *__par0, uint *__par1, uint *__par2) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float4 *, uint *, uint *))updateGridD)); (void)cudaLaunch(((char *)((void ( *)(float4 *, uint *, uint *))updateGridD))); }; }
 # 132 "tests/Particles/particles_kernel.cu"
 void updateGridD( float4 *__cuda_0,uint *__cuda_1,uint *__cuda_2)
@@ -26045,7 +26045,7 @@ void updateGridD( float4 *__cuda_0,uint *__cuda_1,uint *__cuda_2)
 {__device_stub__Z11updateGridDP6float4PjS1_( __cuda_0,__cuda_1,__cuda_2);
 # 143 "tests/Particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z9calcHashDP6float4P5uint2( float4 *__par0, uint2 *__par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float4 *, uint2 *))calcHashD)); (void)cudaLaunch(((char *)((void ( *)(float4 *, uint2 *))calcHashD))); }; }
 # 147 "tests/Particles/particles_kernel.cu"
 void calcHashD( float4 *__cuda_0,uint2 *__cuda_1)
@@ -26053,7 +26053,7 @@ void calcHashD( float4 *__cuda_0,uint2 *__cuda_1)
 {__device_stub__Z9calcHashDP6float4P5uint2( __cuda_0,__cuda_1);
 # 159 "tests/Particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z28reorderDataAndFindCellStartDP5uint2P6float4S2_S2_S2_Pj( uint2 *__par0, float4 *__par1, float4 *__par2, float4 *__par3, float4 *__par4, uint *__par5) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)40UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(uint2 *, float4 *, float4 *, float4 *, float4 *, uint *))reorderDataAndFindCellStartD)); (void)cudaLaunch(((char *)((void ( *)(uint2 *, float4 *, float4 *, float4 *, float4 *, uint *))reorderDataAndFindCellStartD))); }; }
 # 164 "tests/Particles/particles_kernel.cu"
 void reorderDataAndFindCellStartD( uint2 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,float4 *__cuda_3,float4 *__cuda_4,uint *__cuda_5)
@@ -26061,7 +26061,7 @@ void reorderDataAndFindCellStartD( uint2 *__cuda_0,float4 *__cuda_1,float4 *__cu
 {__device_stub__Z28reorderDataAndFindCellStartDP5uint2P6float4S2_S2_S2_Pj( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);
 # 202 "tests/Particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z8collideDP6float4S0_S0_S0_P5uint2Pj( float4 *__par0, float4 *__par1, float4 *__par2, float4 *__par3, uint2 *__par4, uint *__par5) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)40UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float4 *, float4 *, float4 *, float4 *, uint2 *, uint *))collideD)); (void)cudaLaunch(((char *)((void ( *)(float4 *, float4 *, float4 *, float4 *, uint2 *, uint *))collideD))); }; }
 # 336 "tests/Particles/particles_kernel.cu"
 void collideD( float4 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,float4 *__cuda_3,uint2 *__cuda_4,uint *__cuda_5)
@@ -26069,7 +26069,7 @@ void collideD( float4 *__cuda_0,float4 *__cuda_1,float4 *__cuda_2,float4 *__cuda
 {__device_stub__Z8collideDP6float4S0_S0_S0_P5uint2Pj( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);
 # 381 "tests/Particles/particles_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z8RadixSumP12KeyValuePairjjj( KeyValuePair *__par0, uint __par1, uint __par2, uint __par3) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(KeyValuePair *, uint, uint, uint))RadixSum)); (void)cudaLaunch(((char *)((void ( *)(KeyValuePair *, uint, uint, uint))RadixSum))); }; }
 # 101 "tests/Particles/radixsort_kernel.cu"
 void RadixSum( KeyValuePair *__cuda_0,uint __cuda_1,uint __cuda_2,uint __cuda_3)
@@ -26077,7 +26077,7 @@ void RadixSum( KeyValuePair *__cuda_0,uint __cuda_1,uint __cuda_2,uint __cuda_3)
 {__device_stub__Z8RadixSumP12KeyValuePairjjj( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 244 "tests/Particles/radixsort_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z14RadixPrefixSumv(void) { { volatile static char *__f; __f = ((char *)((void ( *)(void))RadixPrefixSum)); (void)cudaLaunch(((char *)((void ( *)(void))RadixPrefixSum))); }; }
 # 251 "tests/Particles/radixsort_kernel.cu"
 void RadixPrefixSum(void)
@@ -26085,7 +26085,7 @@ void RadixPrefixSum(void)
 {__device_stub__Z14RadixPrefixSumv();
 # 360 "tests/Particles/radixsort_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
 void __device_stub__Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji( KeyValuePair *__par0, KeyValuePair *__par1, uint __par2, uint __par3, int __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(KeyValuePair *, KeyValuePair *, uint, uint, int))RadixAddOffsetsAndShuffle)); (void)cudaLaunch(((char *)((void ( *)(KeyValuePair *, KeyValuePair *, uint, uint, int))RadixAddOffsetsAndShuffle))); }; }
 # 374 "tests/Particles/radixsort_kernel.cu"
 void RadixAddOffsetsAndShuffle( KeyValuePair *__cuda_0,KeyValuePair *__cuda_1,uint __cuda_2,uint __cuda_3,int __cuda_4)
@@ -26093,7 +26093,7 @@ void RadixAddOffsetsAndShuffle( KeyValuePair *__cuda_0,KeyValuePair *__cuda_1,ui
 {__device_stub__Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 573 "tests/Particles/radixsort_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00006995_00000000_4_particleSystem_cpp1_ii_dee98040(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(KeyValuePair *, KeyValuePair *, uint, uint, int))RadixAddOffsetsAndShuffle), (char*)"_Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji", "_Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(void))RadixPrefixSum), (char*)"_Z14RadixPrefixSumv", "_Z14RadixPrefixSumv", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(KeyValuePair *, uint, uint, uint))RadixSum), (char*)"_Z8RadixSumP12KeyValuePairjjj", "_Z8RadixSumP12KeyValuePairjjj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float4 *, float4 *, uint2 *, uint *))collideD), (char*)"_Z8collideDP6float4S0_S0_S0_P5uint2Pj", "_Z8collideDP6float4S0_S0_S0_P5uint2Pj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint2 *, float4 *, float4 *, float4 *, float4 *, uint *))reorderDataAndFindCellStartD), (char*)"_Z28reorderDataAndFindCellStartDP5uint2P6float4S2_S2_S2_Pj", "_Z28reorderDataAndFindCellStartDP5uint2P6float4S2_S2_S2_Pj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, uint2 *))calcHashD), (char*)"_Z9calcHashDP6float4P5uint2", "_Z9calcHashDP6float4P5uint2", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, uint *, uint *))updateGridD), (char*)"_Z11updateGridDP6float4PjS1_", "_Z11updateGridDP6float4PjS1_", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float4 *, float4 *, float))integrate), (char*)"_Z9integrateP6float4S0_S0_S0_f", "_Z9integrateP6float4S0_S0_S0_f", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&oldPosTex, (const void**)"oldPosTex", "oldPosTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&oldVelTex, (const void**)"oldVelTex", "oldVelTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&particleHashTex, (const void**)"particleHashTex", "particleHashTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&cellStartTex, (const void**)"cellStartTex", "cellStartTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&gridCountersTex, (const void**)"gridCountersTex", "gridCountersTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&gridCellsTex, (const void**)"gridCellsTex", "gridCellsTex", 1, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&params, (char*)"params", "params", 0, 112, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&dRadixSum, (char*)"dRadixSum", "dRadixSum", 0, 196608, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&dRadixBlockSum, (char*)"dRadixBlockSum", "dRadixBlockSum", 0, 64, 0, 0); }
-# 2 "tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c" 2
-# 1 "tmpxft_00006995_00000000-1_particleSystem.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00005c97_00000000_4_particleSystem_cpp1_ii_dee98040(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(KeyValuePair *, KeyValuePair *, uint, uint, int))RadixAddOffsetsAndShuffle), (char*)"_Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji", "_Z25RadixAddOffsetsAndShuffleP12KeyValuePairS0_jji", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(void))RadixPrefixSum), (char*)"_Z14RadixPrefixSumv", "_Z14RadixPrefixSumv", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(KeyValuePair *, uint, uint, uint))RadixSum), (char*)"_Z8RadixSumP12KeyValuePairjjj", "_Z8RadixSumP12KeyValuePairjjj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float4 *, float4 *, uint2 *, uint *))collideD), (char*)"_Z8collideDP6float4S0_S0_S0_P5uint2Pj", "_Z8collideDP6float4S0_S0_S0_P5uint2Pj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint2 *, float4 *, float4 *, float4 *, float4 *, uint *))reorderDataAndFindCellStartD), (char*)"_Z28reorderDataAndFindCellStartDP5uint2P6float4S2_S2_S2_Pj", "_Z28reorderDataAndFindCellStartDP5uint2P6float4S2_S2_S2_Pj", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, uint2 *))calcHashD), (char*)"_Z9calcHashDP6float4P5uint2", "_Z9calcHashDP6float4P5uint2", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, uint *, uint *))updateGridD), (char*)"_Z11updateGridDP6float4PjS1_", "_Z11updateGridDP6float4PjS1_", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float4 *, float4 *, float4 *, float4 *, float))integrate), (char*)"_Z9integrateP6float4S0_S0_S0_f", "_Z9integrateP6float4S0_S0_S0_f", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&oldPosTex, (const void**)"oldPosTex", "oldPosTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&oldVelTex, (const void**)"oldVelTex", "oldVelTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&particleHashTex, (const void**)"particleHashTex", "particleHashTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&cellStartTex, (const void**)"cellStartTex", "cellStartTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&gridCountersTex, (const void**)"gridCountersTex", "gridCountersTex", 1, 0, 0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&gridCellsTex, (const void**)"gridCellsTex", "gridCellsTex", 1, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&params, (char*)"params", "params", 0, 112, 1, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&dRadixSum, (char*)"dRadixSum", "dRadixSum", 0, 196608, 0, 0); __cudaRegisterVar(__cudaFatCubinHandle, (char*)&dRadixBlockSum, (char*)"dRadixBlockSum", "dRadixBlockSum", 0, 64, 0, 0); }
+# 2 "tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c" 2
+# 1 "tmpxft_00005c97_00000000-1_particleSystem.cudafe1.stub.c"

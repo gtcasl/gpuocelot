@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.cpp"
 # 1 "tests/DwtHaar1D/dwtHaar1D.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16076,9 +16076,9 @@ break;
 return retval;
 # 413 "tests/DwtHaar1D/dwtHaar1D.cu"
 }
-# 1 "tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c"
-# 1 "tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c" 1 3
+# 1 "tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c"
+# 1 "tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16590,8 +16590,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000065b8_00000000-3_dwtHaar1D.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_000058c6_00000000-3_dwtHaar1D.fatbin.c" 1 3
 
 
 asm(
@@ -16672,7 +16672,7 @@ asm(
 ".quad 0x2f44317261614874,0x3172616148747764,0x0000000075632e44,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3862353630303030,0x303030303030305f,0x487477645f372d30,0x70632e4431726161\n"
+".quad 0x3663383530303030,0x303030303030305f,0x487477645f372d30,0x70632e4431726161\n"
 ".quad 0x662e0a22692e3370,0x2e22203209656c69,0x442f73747365742f,0x4431726161487477\n"
 ".quad 0x726161487477642f,0x656e72656b5f4431,0x2e0a226875632e6c,0x2e206e7265747865\n"
 ".quad 0x2e20646572616873,0x2034206e67696c61,0x726168732038622e,0x2e0a0a3b5d5b6465\n"
@@ -16810,9 +16810,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c" 2 3
 extern void __device_stub__Z9dwtHaar1DPfS_S_jji(float *, float *, float *, const unsigned, const unsigned, const int);
-static void __sti____cudaRegisterAll_44_tmpxft_000065b8_00000000_4_dwtHaar1D_cpp1_ii_807bd51f(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_000058c6_00000000_4_dwtHaar1D_cpp1_ii_807bd51f(void) __attribute__((__constructor__));
 void __device_stub__Z9dwtHaar1DPfS_S_jji(float *__par0, float *__par1, float *__par2, const unsigned __par3, const unsigned __par4, const int __par5){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, const unsigned, const unsigned, const int))dwtHaar1D)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, const unsigned, const unsigned, const int))dwtHaar1D))); };}
 # 108 "./tests/DwtHaar1D/dwtHaar1D_kernel.cuh"
 void dwtHaar1D( float *__cuda_0,float *__cuda_1,float *__cuda_2,const unsigned __cuda_3,const unsigned __cuda_4,const int __cuda_5)
@@ -16820,7 +16820,7 @@ void dwtHaar1D( float *__cuda_0,float *__cuda_1,float *__cuda_2,const unsigned _
 {__device_stub__Z9dwtHaar1DPfS_S_jji( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);
 # 231 "./tests/DwtHaar1D/dwtHaar1D_kernel.cuh"
 }
-# 1 "/tmp/tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_44_tmpxft_000065b8_00000000_4_dwtHaar1D_cpp1_ii_807bd51f(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, const unsigned, const unsigned, const int))dwtHaar1D), (char*)"_Z9dwtHaar1DPfS_S_jji", "_Z9dwtHaar1DPfS_S_jji", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c" 2
-# 1 "tmpxft_000065b8_00000000-1_dwtHaar1D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_44_tmpxft_000058c6_00000000_4_dwtHaar1D_cpp1_ii_807bd51f(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, const unsigned, const unsigned, const int))dwtHaar1D), (char*)"_Z9dwtHaar1DPfS_S_jji", "_Z9dwtHaar1DPfS_S_jji", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c" 2
+# 1 "tmpxft_000058c6_00000000-1_dwtHaar1D.cudafe1.stub.c"

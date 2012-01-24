@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.cpp"
 # 1 "tests/nbody/bodysystemcuda.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -19890,9 +19890,9 @@ __cudaSafeCall(cudaGraphicsUnmapResources(2, pgres, 0), "tests/nbody/bodysystemc
 template void integrateNbodySystem< float> (float * , float * , float * , cudaGraphicsResource ** , unsigned , float , float , int , int , int , bool );
 # 329 "tests/nbody/bodysystemcuda.cu"
 template void integrateNbodySystem< double> (double * , double * , double * , cudaGraphicsResource ** , unsigned , float , float , int , int , int , bool );
-# 1 "tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c"
-# 1 "tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c"
+# 1 "tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -20404,8 +20404,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005bd4_00000000-3_bodysystemcuda.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00007019_00000000-3_bodysystemcuda.fatbin.c" 1 3
 
 
 asm(
@@ -20417,7 +20417,7 @@ asm(
 ".quad 0x0000000000000000,0x0000000000000000,0x626e2f7374736574,0x79646f622f79646f\n"
 ".quad 0x75636d6574737973,0x00000075632e6164,0x762e0a0a0a0a0a0a,0x33206e6f69737265\n"
 ".quad 0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a,0x3620657a69735f73\n"
-".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x3464623530303030\n"
+".quad 0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f,0x3931303730303030\n"
 ".quad 0x303030303030305f,0x79646f625f372d30,0x75636d6574737973,0x2e337070632e6164\n"
 ".quad 0x656c69662e0a2269,0x7273752f22203209,0x632f6c61636f6c2f,0x632f312e34616475\n"
 ".quad 0x6d76766e2f616475,0x6c636e695f69632f,0x2e0a22682e656475,0x22203309656c6966\n"
@@ -30070,14 +30070,14 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c" 2 3
 typedef vec4<float> ::Type _ZN4vec4IfE4TypeE;
 typedef vec4<double> ::Type _ZN4vec4IdE4TypeE;
 static void __device_stub__Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int);
 static void __device_stub__Z15integrateBodiesIfLb1EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int);
 static void __device_stub__Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int);
 static void __device_stub__Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int);
-static void __sti____cudaRegisterAll_49_tmpxft_00005bd4_00000000_4_bodysystemcuda_cpp1_ii_61ef69e1(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_00007019_00000000_4_bodysystemcuda_cpp1_ii_090c5e01(void) __attribute__((__constructor__));
 static void __device_stub__Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IfE4TypeE *__par0, _ZN4vec4IfE4TypeE *__par1, _ZN4vec4IfE4TypeE *__par2, float __par3, float __par4, int __par5){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)0> )); (void)cudaLaunch(((char *)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)0> ))); };}
 template<> void __wrapper__device_stub_integrateBodies<float,false>( _ZN4vec4IfE4TypeE *&__cuda_0,_ZN4vec4IfE4TypeE *&__cuda_1,_ZN4vec4IfE4TypeE *&__cuda_2,float &__cuda_3,float &__cuda_4,int &__cuda_5){__device_stub__Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);}
 static void __device_stub__Z15integrateBodiesIfLb1EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IfE4TypeE *__par0, _ZN4vec4IfE4TypeE *__par1, _ZN4vec4IfE4TypeE *__par2, float __par3, float __par4, int __par5){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)1> )); (void)cudaLaunch(((char *)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)1> ))); };}
@@ -30086,6 +30086,6 @@ static void __device_stub__Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi(
 template<> void __wrapper__device_stub_integrateBodies<double,false>( _ZN4vec4IdE4TypeE *&__cuda_0,_ZN4vec4IdE4TypeE *&__cuda_1,_ZN4vec4IdE4TypeE *&__cuda_2,float &__cuda_3,float &__cuda_4,int &__cuda_5){__device_stub__Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);}
 static void __device_stub__Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi(_ZN4vec4IdE4TypeE *__par0, _ZN4vec4IdE4TypeE *__par1, _ZN4vec4IdE4TypeE *__par2, float __par3, float __par4, int __par5){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int))integrateBodies<double, (bool)1> )); (void)cudaLaunch(((char *)((void ( *)(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int))integrateBodies<double, (bool)1> ))); };}
 template<> void __wrapper__device_stub_integrateBodies<double,true>( _ZN4vec4IdE4TypeE *&__cuda_0,_ZN4vec4IdE4TypeE *&__cuda_1,_ZN4vec4IdE4TypeE *&__cuda_2,float &__cuda_3,float &__cuda_4,int &__cuda_5){__device_stub__Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5);}
-static void __sti____cudaRegisterAll_49_tmpxft_00005bd4_00000000_4_bodysystemcuda_cpp1_ii_61ef69e1(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int))integrateBodies<double, (bool)1> ), (char*)"_Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int))integrateBodies<double, (bool)0> ), (char*)"_Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)1> ), (char*)"_Z15integrateBodiesIfLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIfLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)0> ), (char*)"_Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&softeningSquared, (char*)"softeningSquared", "softeningSquared", 0, 4, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&softeningSquared_fp64, (char*)"softeningSquared_fp64", "softeningSquared_fp64", 0, 8, 1, 0);}
-# 2 "tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c" 2
-# 1 "tmpxft_00005bd4_00000000-1_bodysystemcuda.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00007019_00000000_4_bodysystemcuda_cpp1_ii_090c5e01(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int))integrateBodies<double, (bool)1> ), (char*)"_Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIdLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, _ZN4vec4IdE4TypeE *, float, float, int))integrateBodies<double, (bool)0> ), (char*)"_Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIdLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)1> ), (char*)"_Z15integrateBodiesIfLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIfLb1EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(_ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, _ZN4vec4IfE4TypeE *, float, float, int))integrateBodies<float, (bool)0> ), (char*)"_Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", "_Z15integrateBodiesIfLb0EEvPN4vec4IT_E4TypeES4_S4_ffi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&softeningSquared, (char*)"softeningSquared", "softeningSquared", 0, 4, 1, 0);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&softeningSquared_fp64, (char*)"softeningSquared_fp64", "softeningSquared_fp64", 0, 8, 1, 0);}
+# 2 "tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c" 2
+# 1 "tmpxft_00007019_00000000-1_bodysystemcuda.cudafe1.stub.c"

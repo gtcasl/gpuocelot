@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.cpp"
 # 1 "tests/eigenvalues/bisect_large.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -17108,9 +17108,9 @@ freePtr(right_one);
 freePtr(pos_one);
 # 368 "tests/eigenvalues/bisect_large.cu"
 }
-# 1 "tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c"
-# 1 "tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c"
+# 1 "tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -17622,8 +17622,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005a0e_00000000-3_bisect_large.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006e32_00000000-3_bisect_large.fatbin.c" 1 3
 
 
 asm(
@@ -17636,7 +17636,7 @@ asm(
 ".quad 0x7463657369622f73,0x632e656772616c5f,0x0000000000000075,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x6530613530303030,0x303030303030305f,0x657369625f372d30,0x656772616c5f7463\n"
+".quad 0x3233653630303030,0x303030303030305f,0x657369625f372d30,0x656772616c5f7463\n"
 ".quad 0x22692e337070632e,0x3209656c69662e0a,0x2f73747365742220,0x6c61766e65676965\n"
 ".quad 0x657369622f736575,0x2e6c6974755f7463,0x6c69662e0a227563,0x73752f2220330965\n"
 ".quad 0x2f6c61636f6c2f72,0x2f312e3461647563,0x76766e2f61647563,0x636e695f69632f6d\n"
@@ -23224,11 +23224,11 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c" 2 3
 extern void __device_stub__Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_(float *, float *, const unsigned, const float, const float, const unsigned, const unsigned, float, unsigned *, unsigned *, float *, float *, unsigned *, float *, float *, unsigned *, unsigned *, unsigned *, unsigned *);
 extern void __device_stub__Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf(float *, float *, const unsigned, unsigned, float *, float *, unsigned *, float);
 extern void __device_stub__Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f(float *, float *, const unsigned, unsigned *, unsigned *, float *, float *, unsigned *, unsigned *, float *, unsigned *, float);
-static void __sti____cudaRegisterAll_47_tmpxft_00005a0e_00000000_4_bisect_large_cpp1_ii_155377b5(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_47_tmpxft_00006e32_00000000_4_bisect_large_cpp1_ii_155377b5(void) __attribute__((__constructor__));
 void __device_stub__Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_(float *__par0, float *__par1, const unsigned __par2, const float __par3, const float __par4, const unsigned __par5, const unsigned __par6, float __par7, unsigned *__par8, unsigned *__par9, float *__par10, float *__par11, unsigned *__par12, float *__par13, float *__par14, unsigned *__par15, unsigned *__par16, unsigned *__par17, unsigned *__par18){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)36UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par8, sizeof(__par8), (size_t)40UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par9, sizeof(__par9), (size_t)48UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par10, sizeof(__par10), (size_t)56UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par11, sizeof(__par11), (size_t)64UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par12, sizeof(__par12), (size_t)72UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par13, sizeof(__par13), (size_t)80UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par14, sizeof(__par14), (size_t)88UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par15, sizeof(__par15), (size_t)96UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par16, sizeof(__par16), (size_t)104UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par17, sizeof(__par17), (size_t)112UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par18, sizeof(__par18), (size_t)120UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, const unsigned, const float, const float, const unsigned, const unsigned, float, unsigned *, unsigned *, float *, float *, unsigned *, float *, float *, unsigned *, unsigned *, unsigned *, unsigned *))bisectKernelLarge)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, const unsigned, const float, const float, const unsigned, const unsigned, float, unsigned *, unsigned *, float *, float *, unsigned *, float *, float *, unsigned *, unsigned *, unsigned *, unsigned *))bisectKernelLarge))); };}
 # 140 "tests/eigenvalues/bisect_kernel_large.cu"
 void bisectKernelLarge( float *__cuda_0,float *__cuda_1,const unsigned __cuda_2,const float __cuda_3,const float __cuda_4,const unsigned __cuda_5,const unsigned __cuda_6,float __cuda_7,unsigned *__cuda_8,unsigned *__cuda_9,float *__cuda_10,float *__cuda_11,unsigned *__cuda_12,float *__cuda_13,float *__cuda_14,unsigned *__cuda_15,unsigned *__cuda_16,unsigned *__cuda_17,unsigned *__cuda_18)
@@ -23236,7 +23236,7 @@ void bisectKernelLarge( float *__cuda_0,float *__cuda_1,const unsigned __cuda_2,
 {__device_stub__Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8,__cuda_9,__cuda_10,__cuda_11,__cuda_12,__cuda_13,__cuda_14,__cuda_15,__cuda_16,__cuda_17,__cuda_18);
 # 501 "tests/eigenvalues/bisect_kernel_large.cu"
 }
-# 1 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c"
 void __device_stub__Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf( float *__par0, float *__par1, const unsigned __par2, unsigned __par3, float *__par4, float *__par5, unsigned *__par6, float __par7) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)40UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)48UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, const unsigned, unsigned, float *, float *, unsigned *, float))bisectKernelLarge_OneIntervals)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, const unsigned, unsigned, float *, float *, unsigned *, float))bisectKernelLarge_OneIntervals))); }; }
 # 42 "tests/eigenvalues/bisect_kernel_large_onei.cu"
 void bisectKernelLarge_OneIntervals( float *__cuda_0,float *__cuda_1,const unsigned __cuda_2,unsigned __cuda_3,float *__cuda_4,float *__cuda_5,unsigned *__cuda_6,float __cuda_7)
@@ -23244,7 +23244,7 @@ void bisectKernelLarge_OneIntervals( float *__cuda_0,float *__cuda_1,const unsig
 {__device_stub__Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 148 "tests/eigenvalues/bisect_kernel_large_onei.cu"
 }
-# 1 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c"
 void __device_stub__Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f( float *__par0, float *__par1, const unsigned __par2, unsigned *__par3, unsigned *__par4, float *__par5, float *__par6, unsigned *__par7, unsigned *__par8, float *__par9, unsigned *__par10, float __par11) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)24UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)32UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)40UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)48UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)56UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par8, sizeof(__par8), (size_t)64UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par9, sizeof(__par9), (size_t)72UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par10, sizeof(__par10), (size_t)80UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par11, sizeof(__par11), (size_t)88UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, const unsigned, unsigned *, unsigned *, float *, float *, unsigned *, unsigned *, float *, unsigned *, float))bisectKernelLarge_MultIntervals)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, const unsigned, unsigned *, unsigned *, float *, float *, unsigned *, unsigned *, float *, unsigned *, float))bisectKernelLarge_MultIntervals))); }; }
 # 47 "tests/eigenvalues/bisect_kernel_large_multi.cu"
 void bisectKernelLarge_MultIntervals( float *__cuda_0,float *__cuda_1,const unsigned __cuda_2,unsigned *__cuda_3,unsigned *__cuda_4,float *__cuda_5,float *__cuda_6,unsigned *__cuda_7,unsigned *__cuda_8,float *__cuda_9,unsigned *__cuda_10,float __cuda_11)
@@ -23252,7 +23252,7 @@ void bisectKernelLarge_MultIntervals( float *__cuda_0,float *__cuda_1,const unsi
 {__device_stub__Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7,__cuda_8,__cuda_9,__cuda_10,__cuda_11);
 # 223 "tests/eigenvalues/bisect_kernel_large_multi.cu"
 }
-# 1 "/tmp/tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_47_tmpxft_00005a0e_00000000_4_bisect_large_cpp1_ii_155377b5(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, const unsigned, unsigned *, unsigned *, float *, float *, unsigned *, unsigned *, float *, unsigned *, float))bisectKernelLarge_MultIntervals), (char*)"_Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f", "_Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, const unsigned, unsigned, float *, float *, unsigned *, float))bisectKernelLarge_OneIntervals), (char*)"_Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf", "_Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, const unsigned, const float, const float, const unsigned, const unsigned, float, unsigned *, unsigned *, float *, float *, unsigned *, float *, float *, unsigned *, unsigned *, unsigned *, unsigned *))bisectKernelLarge), (char*)"_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_", "_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c" 2
-# 1 "tmpxft_00005a0e_00000000-1_bisect_large.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_47_tmpxft_00006e32_00000000_4_bisect_large_cpp1_ii_155377b5(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, const unsigned, unsigned *, unsigned *, float *, float *, unsigned *, unsigned *, float *, unsigned *, float))bisectKernelLarge_MultIntervals), (char*)"_Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f", "_Z31bisectKernelLarge_MultIntervalsPfS_jPjS0_S_S_S0_S0_S_S0_f", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, const unsigned, unsigned, float *, float *, unsigned *, float))bisectKernelLarge_OneIntervals), (char*)"_Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf", "_Z30bisectKernelLarge_OneIntervalsPfS_jjS_S_Pjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, const unsigned, const float, const float, const unsigned, const unsigned, float, unsigned *, unsigned *, float *, float *, unsigned *, float *, float *, unsigned *, unsigned *, unsigned *, unsigned *))bisectKernelLarge), (char*)"_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_", "_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c" 2
+# 1 "tmpxft_00006e32_00000000-1_bisect_large.cudafe1.stub.c"

@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.cpp"
 # 1 "tests/imageDenoising/imageDenoising.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -13988,9 +13988,9 @@ extern "C" cudaError_t CUDA_FreeArray()
 return cudaFreeArray(a_Src);
 # 116 "tests/imageDenoising/imageDenoising.cu"
 }
-# 1 "tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
-# 1 "tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -14502,8 +14502,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00005aa0_00000000-3_imageDenoising.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00006ea3_00000000-3_imageDenoising.fatbin.c" 1 3
 
 
 asm(
@@ -14516,7 +14516,7 @@ asm(
 ".quad 0x616d692f676e6973,0x73696f6e65446567,0x000075632e676e69,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3061613530303030,0x303030303030305f,0x67616d695f372d30,0x6973696f6e654465\n"
+".quad 0x3361653630303030,0x303030303030305f,0x67616d695f372d30,0x6973696f6e654465\n"
 ".quad 0x2e337070632e676e,0x656c69662e0a2269,0x7473657422203209,0x446567616d692f73\n"
 ".quad 0x676e6973696f6e65,0x65446567616d692f,0x2e676e6973696f6e,0x6c69662e0a227563\n"
 ".quad 0x73752f2220330965,0x2f6c61636f6c2f72,0x2f312e3461647563,0x76766e2f61647563\n"
@@ -17243,7 +17243,7 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c" 2 3
 extern void __device_stub__Z4CopyPjii(TColor *, int, int);
 extern void __device_stub__Z3KNNPjiiff(TColor *, int, int, float, float);
 extern void __device_stub__Z7KNNdiagPjiiff(TColor *, int, int, float, float);
@@ -17251,7 +17251,7 @@ extern void __device_stub__Z3NLMPjiiff(TColor *, int, int, float, float);
 extern void __device_stub__Z7NLMdiagPjjjff(TColor *, unsigned, unsigned, float, float);
 extern void __device_stub__Z4NLM2Pjiiff(TColor *, int, int, float, float);
 extern void __device_stub__Z8NLM2diagPjiiff(TColor *, int, int, float, float);
-static void __sti____cudaRegisterAll_49_tmpxft_00005aa0_00000000_4_imageDenoising_cpp1_ii__Z3Maxff(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_00006ea3_00000000_4_imageDenoising_cpp1_ii__Z3Maxff(void) __attribute__((__constructor__));
 void __device_stub__Z4CopyPjii(TColor *__par0, int __par1, int __par2){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(TColor *, int, int))Copy)); (void)cudaLaunch(((char *)((void ( *)(TColor *, int, int))Copy))); };}
 # 14 "tests/imageDenoising/imageDenoising_copy_kernel.cu"
 void Copy( TColor *__cuda_0,int __cuda_1,int __cuda_2)
@@ -17259,7 +17259,7 @@ void Copy( TColor *__cuda_0,int __cuda_1,int __cuda_2)
 {__device_stub__Z4CopyPjii( __cuda_0,__cuda_1,__cuda_2);
 # 29 "tests/imageDenoising/imageDenoising_copy_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
 void __device_stub__Z3KNNPjiiff( TColor *__par0, int __par1, int __par2, float __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(TColor *, int, int, float, float))KNN)); (void)cudaLaunch(((char *)((void ( *)(TColor *, int, int, float, float))KNN))); }; }
 # 17 "tests/imageDenoising/imageDenoising_knn_kernel.cu"
 void KNN( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda_4)
@@ -17267,7 +17267,7 @@ void KNN( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda
 {__device_stub__Z3KNNPjiiff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 79 "tests/imageDenoising/imageDenoising_knn_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
 void __device_stub__Z7KNNdiagPjiiff( TColor *__par0, int __par1, int __par2, float __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(TColor *, int, int, float, float))KNNdiag)); (void)cudaLaunch(((char *)((void ( *)(TColor *, int, int, float, float))KNNdiag))); }; }
 # 99 "tests/imageDenoising/imageDenoising_knn_kernel.cu"
 void KNNdiag( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda_4)
@@ -17275,7 +17275,7 @@ void KNNdiag( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __
 {__device_stub__Z7KNNdiagPjiiff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 140 "tests/imageDenoising/imageDenoising_knn_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
 void __device_stub__Z3NLMPjiiff( TColor *__par0, int __par1, int __par2, float __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(TColor *, int, int, float, float))NLM)); (void)cudaLaunch(((char *)((void ( *)(TColor *, int, int, float, float))NLM))); }; }
 # 17 "tests/imageDenoising/imageDenoising_nlm_kernel.cu"
 void NLM( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda_4)
@@ -17283,7 +17283,7 @@ void NLM( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda
 {__device_stub__Z3NLMPjiiff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 85 "tests/imageDenoising/imageDenoising_nlm_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
 void __device_stub__Z7NLMdiagPjjjff( TColor *__par0, unsigned __par1, unsigned __par2, float __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(TColor *, unsigned, unsigned, float, float))NLMdiag)); (void)cudaLaunch(((char *)((void ( *)(TColor *, unsigned, unsigned, float, float))NLMdiag))); }; }
 # 104 "tests/imageDenoising/imageDenoising_nlm_kernel.cu"
 void NLMdiag( TColor *__cuda_0,unsigned __cuda_1,unsigned __cuda_2,float __cuda_3,float __cuda_4)
@@ -17291,7 +17291,7 @@ void NLMdiag( TColor *__cuda_0,unsigned __cuda_1,unsigned __cuda_2,float __cuda_
 {__device_stub__Z7NLMdiagPjjjff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 148 "tests/imageDenoising/imageDenoising_nlm_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
 void __device_stub__Z4NLM2Pjiiff( TColor *__par0, int __par1, int __par2, float __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(TColor *, int, int, float, float))NLM2)); (void)cudaLaunch(((char *)((void ( *)(TColor *, int, int, float, float))NLM2))); }; }
 # 32 "tests/imageDenoising/imageDenoising_nlm2_kernel.cu"
 void NLM2( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda_4)
@@ -17299,7 +17299,7 @@ void NLM2( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cud
 {__device_stub__Z4NLM2Pjiiff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 121 "tests/imageDenoising/imageDenoising_nlm2_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
 void __device_stub__Z8NLM2diagPjiiff( TColor *__par0, int __par1, int __par2, float __par3, float __par4) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)12UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)16UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)20UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(TColor *, int, int, float, float))NLM2diag)); (void)cudaLaunch(((char *)((void ( *)(TColor *, int, int, float, float))NLM2diag))); }; }
 # 141 "tests/imageDenoising/imageDenoising_nlm2_kernel.cu"
 void NLM2diag( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float __cuda_4)
@@ -17307,7 +17307,7 @@ void NLM2diag( TColor *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3,float _
 {__device_stub__Z8NLM2diagPjiiff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4);
 # 204 "tests/imageDenoising/imageDenoising_nlm2_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_00005aa0_00000000_4_imageDenoising_cpp1_ii__Z3Maxff(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))NLM2diag), (char*)"_Z8NLM2diagPjiiff", "_Z8NLM2diagPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))NLM2), (char*)"_Z4NLM2Pjiiff", "_Z4NLM2Pjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, unsigned, unsigned, float, float))NLMdiag), (char*)"_Z7NLMdiagPjjjff", "_Z7NLMdiagPjjjff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))NLM), (char*)"_Z3NLMPjiiff", "_Z3NLMPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))KNNdiag), (char*)"_Z7KNNdiagPjiiff", "_Z7KNNdiagPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))KNN), (char*)"_Z3KNNPjiiff", "_Z3KNNPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int))Copy), (char*)"_Z4CopyPjii", "_Z4CopyPjii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texImage, (const void**)"texImage", "texImage", 2, 1, 0); }
-# 2 "tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c" 2
-# 1 "tmpxft_00005aa0_00000000-1_imageDenoising.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00006ea3_00000000_4_imageDenoising_cpp1_ii__Z3Maxff(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))NLM2diag), (char*)"_Z8NLM2diagPjiiff", "_Z8NLM2diagPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))NLM2), (char*)"_Z4NLM2Pjiiff", "_Z4NLM2Pjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, unsigned, unsigned, float, float))NLMdiag), (char*)"_Z7NLMdiagPjjjff", "_Z7NLMdiagPjjjff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))NLM), (char*)"_Z3NLMPjiiff", "_Z3NLMPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))KNNdiag), (char*)"_Z7KNNdiagPjiiff", "_Z7KNNdiagPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int, float, float))KNN), (char*)"_Z3KNNPjiiff", "_Z3KNNPjiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(TColor *, int, int))Copy), (char*)"_Z4CopyPjii", "_Z4CopyPjii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&texImage, (const void**)"texImage", "texImage", 2, 1, 0); }
+# 2 "tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c" 2
+# 1 "tmpxft_00006ea3_00000000-1_imageDenoising.cudafe1.stub.c"

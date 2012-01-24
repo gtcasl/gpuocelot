@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006aeb_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005dbe_00000000-1_reduction.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006aeb_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005dbe_00000000-1_reduction.cudafe1.cpp"
 # 1 "tests/Reduction/reduction.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -16316,9 +16316,9 @@ __cudaSafeCallNoSync(cudaFree(d_odata), "tests/Reduction/reduction.cu", 548);
 }
 # 550 "tests/Reduction/reduction.cu"
 }
-# 1 "tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c"
-# 1 "tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c"
+# 1 "tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -16830,8 +16830,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_00006aeb_00000000-3_reduction.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005dbe_00000000-3_reduction.fatbin.c" 1 3
 
 
 asm(
@@ -16881,8 +16881,8 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c" 2 3
-static void __sti____cudaRegisterAll_44_tmpxft_00006aeb_00000000_4_reduction_cpp1_ii_isPow2(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_44_tmpxft_00006aeb_00000000_4_reduction_cpp1_ii_isPow2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 2 "tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c" 2
-# 1 "tmpxft_00006aeb_00000000-1_reduction.cudafe1.stub.c"
+# 3 "/tmp/tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c" 2 3
+static void __sti____cudaRegisterAll_44_tmpxft_00005dbe_00000000_4_reduction_cpp1_ii_isPow2(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_00005dbe_00000000_4_reduction_cpp1_ii_isPow2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 2 "tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c" 2
+# 1 "tmpxft_00005dbe_00000000-1_reduction.cudafe1.stub.c"

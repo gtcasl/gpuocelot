@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.cpp"
 # 1 "tests/PostProcessGL/postProcessGL.cu"
 # 61 "/usr/local/cuda4.1/cuda/include/device_types.h"
 # 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
@@ -13710,9 +13710,9 @@ radius, float threshold, float highlight)
 cudaConfigureCall(grid, block, sbytes) ? ((void)0) : cudaProcess(g_data, g_odata, imgw, imgh, (block.x) + (2 * radius), radius, (0.8000000119F), (4.0F));
 # 155 "tests/PostProcessGL/postProcessGL.cu"
 }
-# 1 "tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c"
-# 1 "tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c" 1 3
+# 1 "tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c"
+# 1 "tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c" 1 3
 # 1 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 1 3
 # 74 "/usr/local/cuda4.1/cuda/include/crt/host_runtime.h" 3
 template <typename T>
@@ -14224,8 +14224,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c" 2 3
-# 1 "/tmp/tmpxft_000069d3_00000000-3_postProcessGL.fatbin.c" 1 3
+# 2 "/tmp/tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c" 2 3
+# 1 "/tmp/tmpxft_00005ce1_00000000-3_postProcessGL.fatbin.c" 1 3
 
 
 asm(
@@ -14382,7 +14382,7 @@ asm(
 ".quad 0x74736f702f4c4773,0x47737365636f7250,0x0000000075632e4c,0x762e0a0a0a0a0a0a\n"
 ".quad 0x33206e6f69737265,0x677261742e0a302e,0x30325f6d73207465,0x7365726464612e0a\n"
 ".quad 0x3620657a69735f73,0x656c69662e0a0a34,0x706d742f22203109,0x5f746678706d742f\n"
-".quad 0x3364393630303030,0x303030303030305f,0x74736f705f372d30,0x47737365636f7250\n"
+".quad 0x3165633530303030,0x303030303030305f,0x74736f705f372d30,0x47737365636f7250\n"
 ".quad 0x692e337070632e4c,0x09656c69662e0a22,0x2f7273752f222032,0x75632f6c61636f6c\n"
 ".quad 0x75632f312e346164,0x2f6d76766e2f6164,0x756c636e695f6963,0x662e0a22682e6564\n"
 ".quad 0x7422203309656c69,0x736f502f73747365,0x737365636f725074,0x5074736f702f4c47\n"
@@ -14797,9 +14797,9 @@ static const struct {int m; int v; const unsigned long long* d; char* f;} __fatD
  { 0x466243b1, 1, fatbinData, 0 };
 
 }
-# 3 "/tmp/tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c" 2 3
+# 3 "/tmp/tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c" 2 3
 extern void __device_stub__Z11cudaProcessPiS_iiiiff(int *, int *, int, int, int, int, float, float);
-static void __sti____cudaRegisterAll_48_tmpxft_000069d3_00000000_4_postProcessGL_cpp1_ii_4a3afa9a(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_00005ce1_00000000_4_postProcessGL_cpp1_ii_4a3afa9a(void) __attribute__((__constructor__));
 void __device_stub__Z11cudaProcessPiS_iiiiff(int *__par0, int *__par1, int __par2, int __par3, int __par4, int __par5, float __par6, float __par7){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par2, sizeof(__par2), (size_t)16UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par3, sizeof(__par3), (size_t)20UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par4, sizeof(__par4), (size_t)24UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par5, sizeof(__par5), (size_t)28UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par6, sizeof(__par6), (size_t)32UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par7, sizeof(__par7), (size_t)36UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int *, int, int, int, int, float, float))cudaProcess)); (void)cudaLaunch(((char *)((void ( *)(int *, int *, int, int, int, int, float, float))cudaProcess))); };}
 # 61 "tests/PostProcessGL/postProcessGL.cu"
 void cudaProcess( int *__cuda_0,int *__cuda_1,int __cuda_2,int __cuda_3,int __cuda_4,int __cuda_5,float __cuda_6,float __cuda_7)
@@ -14807,7 +14807,7 @@ void cudaProcess( int *__cuda_0,int *__cuda_1,int __cuda_2,int __cuda_3,int __cu
 {__device_stub__Z11cudaProcessPiS_iiiiff( __cuda_0,__cuda_1,__cuda_2,__cuda_3,__cuda_4,__cuda_5,__cuda_6,__cuda_7);
 # 147 "tests/PostProcessGL/postProcessGL.cu"
 }
-# 1 "/tmp/tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_48_tmpxft_000069d3_00000000_4_postProcessGL_cpp1_ii_4a3afa9a(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *, int, int, int, int, float, float))cudaProcess), (char*)"_Z11cudaProcessPiS_iiiiff", "_Z11cudaProcessPiS_iiiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 2 "tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c" 2
-# 1 "tmpxft_000069d3_00000000-1_postProcessGL.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_48_tmpxft_00005ce1_00000000_4_postProcessGL_cpp1_ii_4a3afa9a(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *, int, int, int, int, float, float))cudaProcess), (char*)"_Z11cudaProcessPiS_iiiiff", "_Z11cudaProcessPiS_iiiiff", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 2 "tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c" 2
+# 1 "tmpxft_00005ce1_00000000-1_postProcessGL.cudafe1.stub.c"

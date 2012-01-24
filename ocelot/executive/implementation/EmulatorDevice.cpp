@@ -329,7 +329,7 @@ namespace executive
 		_properties.integrated = 1;
 		_properties.concurrentKernels = 0;
 		_properties.major = 2;
-		_properties.minor = 3;
+		_properties.minor = 1;
 		
 		_properties.integrated = true;
 		_properties.unifiedAddressing = true;

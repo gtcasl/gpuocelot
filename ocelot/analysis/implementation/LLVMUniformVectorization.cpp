@@ -182,29 +182,6 @@ analysis::LLVMUniformVectorization::Translation::~Translation() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*! \brief given an instruction from the scalar set, get a set of scalar values that are 
-	either replicated scalar instructions from the vectorized set or extracted vector elements */
-analysis::LLVMUniformVectorization::InstructionVector 
-	analysis::LLVMUniformVectorization::Translation::getInstructionAsReplicated(
-		llvm::Value *inst, llvm::Instruction *before) {
-	
-	report("  getting instruction " << inst << " as replicated - inserting before " << before);
-	assert(0 && "not yet implemented");
-}
-
-/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
-	is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
-llvm::Instruction *
-	analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
-		llvm::Value *inst, llvm::Instruction *before) {
-		
-	report("  getting instruction " << inst << " as vectorized - inserting before " << before);
-	assert(0 && "not yet implemented");
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
 void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	report("Scalar Preprocessing step");
 	
@@ -285,7 +262,7 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 	
 	report("   extracting thread-local arguments");
 	ThreadLocalArgument localArgs;
-	_loadThreadLocal(localArgs, 0, schedulerEntryBlock.block);
+	_loadThreadLocal(localArgs, 0, schedulerEntryBlock.block->getTerminator());
 	schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
 	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
@@ -361,7 +338,9 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 }
 
 void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
-	ThreadLocalArgument &local, int threadId, llvm::BasicBlock *block) {
+	ThreadLocalArgument &local, int threadId, llvm::Instruction *before) {
+	
+	llvm::BasicBlock *block = before->getParent();
 	
 	report("  Loading thread-local arguments for thread " << threadId 
 		<< ". Inserting into block " << block->getName().str());
@@ -375,14 +354,15 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	
 		llvm::GetElementPtrInst *contextGemp = llvm::GetElementPtrInst::Create(contextArrayBasePointer,
 			llvm::ArrayRef<llvm::Value*>(idx), "contextPtrGemp", block);
+		contextGemp->moveBefore(before);
 	
-		local.context = new llvm::LoadInst(contextGemp, "contextPtr" + threadSuffix, block);
+		llvm::LoadInst *loadInst = new llvm::LoadInst(contextGemp, "contextPtr" + threadSuffix, block);
+		loadInst->moveBefore(before);
+		local.context = loadInst;
 	}
 	else {
 		local.context = contextArrayBasePointer;
 	}
-	
-	report("   structure members");
 	
 	// load dimensions
 	llvm::Instruction **dim3Instances[] = {
@@ -403,13 +383,13 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 			
 			llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
 				llvm::ArrayRef<llvm::Value*>(ind), "", block);
+			ptr->moveBefore(before);
 			
 			std::string name = std::string(dim3names[idx]) + "." + dim3suffix[j] + threadSuffix;
 			*(dim3Instances[idx * 3 + j]) = new llvm::LoadInst(ptr, name, block);
+			(*(dim3Instances[idx * 3 + j]))->moveBefore(before);
 		}
 	}
-	
-	report("   scalar members");
 	
 	// scalars
 	llvm::Instruction **ptrInstances[] = {
@@ -431,8 +411,10 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 		
 		llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
 			llvm::ArrayRef<llvm::Value*>(ind), std::string(ptrNames[idx]) + "Ptr" + threadSuffix, block);
+		ptr->moveBefore(before);
 		
 		*(ptrInstances[idx]) = new llvm::LoadInst(ptr, ptrNames[idx] + threadSuffix, block);
+		(*(ptrInstances[idx]))->moveBefore(before);
 	}
 }
 
@@ -473,21 +455,329 @@ void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous(
 }
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		//
+		// - special treatment to scheduler block
+		// - replicate all instructions except control-flow instructions
+		//
+		if (&*bb_it == schedulerEntryBlock.block) {
+			for (int tid = 1; tid < pass->warpSize; tid++) {
+				ThreadLocalArgument localArgs;
+				_loadThreadLocal(localArgs, tid, schedulerEntryBlock.block->getTerminator());
+				schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
+			}
+		}
+		else {
+			for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+				if (llvm::TerminatorInst *terminator = llvm::dyn_cast<llvm::TerminatorInst>(&*inst_it)) {
+					assert(terminator);
+					assert(0 && "control-flow handled separately");
+				}
+				else {
+					_replicateInstruction(&*inst_it);
+				}
+			}
+		}
+	}
+}
 
+void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
+	VectorizedInstruction vectorized;
+	
+	report("     replicateInstruction(" << String(inst) << ")");
+	
+	llvm::Instruction * ThreadLocalArgument::* localInstances[] = {
+		&ThreadLocalArgument::threadId_x, 
+		&ThreadLocalArgument::threadId_y, 
+		&ThreadLocalArgument::threadId_z, 
+		&ThreadLocalArgument::blockDim_x, 
+		&ThreadLocalArgument::blockDim_y, 
+		&ThreadLocalArgument::blockDim_z, 
+		&ThreadLocalArgument::blockId_x, 
+		&ThreadLocalArgument::blockId_y, 
+		&ThreadLocalArgument::blockId_z, 
+		&ThreadLocalArgument::gridDim_x, 
+		&ThreadLocalArgument::gridDim_y, 
+		&ThreadLocalArgument::gridDim_z, 
+		&ThreadLocalArgument::localPointer,
+		&ThreadLocalArgument::sharedPointer,
+		&ThreadLocalArgument::constantPointer,
+		&ThreadLocalArgument::parameterPointer,
+		&ThreadLocalArgument::argumentPointer,
+		&ThreadLocalArgument::metadataPointer,
+		&ThreadLocalArgument::ptrThreadDescriptorArray
+	};
+	
+	assert(0 && schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
+	
+	typedef std::vector< std::pair< int, llvm::Instruction * ThreadLocalArgument::*> > OperandVector;
+	OperandVector operands;
+	
+	int operandIndex = 0;
+	for (llvm::User::op_iterator op_it = inst->op_begin(); op_it != inst->op_end(); ++op_it, ++operandIndex) {
+		if (llvm::Instruction *opInst = llvm::dyn_cast<llvm::Instruction>(*op_it)) {
+			for (int l = 0; localInstances[l] != &ThreadLocalArgument::ptrThreadDescriptorArray; l++) {
+				if (opInst == (schedulerEntryBlock.threadLocalArguments[0].*(localInstances[l]))) {
+								
+					report("       - operand " << operandIndex << " uses thread-local argument [" << l << "]");
+
+					operands.push_back(std::pair<int, llvm::Instruction * ThreadLocalArgument::*>(
+						operandIndex, localInstances[l]));
+				}
+			}
+		}
+	}
+	
+	vectorized.replicated.push_back(inst);
+		
+	for (int tid = 1; tid < pass->warpSize; tid++) {
+		std::string name = inst->getName().str() + ".t" + boost::lexical_cast<std::string, int>(tid);
+		llvm::Instruction *clone = inst->clone();
+		
+		clone->setName(name);
+		
+		for (OperandVector::const_iterator op_it = operands.begin(); op_it != operands.end(); ++op_it) {
+			llvm::Instruction *operand = (schedulerEntryBlock.threadLocalArguments[tid].*(op_it->second));
+			clone->setOperand(op_it->first, operand);
+		}
+		
+		clone->insertAfter(inst);
+		vectorized.replicated.push_back(clone);
+	}
+	vectorizedInstructionMap[inst] = vectorized;
 }
 
 void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
+	report("     _resolveDependencies()");
+	
+	for (VectorizedInstructionMap::iterator inst_it = vectorizedInstructionMap.begin();
+		inst_it != vectorizedInstructionMap.end(); ++inst_it) {
+		
+		report("      resolving dependencies for: " << String(inst_it->first));
+		
+		for (unsigned int i = 0; i < inst_it->first->getNumOperands(); i++) {
+			if (llvm::Instruction *opInst = 
+				llvm::dyn_cast<llvm::Instruction>(inst_it->first->getOperand(i))) {		
+				VectorizedInstructionMap::iterator vecOp_it = vectorizedInstructionMap.find(opInst);
+				if (vecOp_it != vectorizedInstructionMap.end()) {
+					report("        updating operand " << i << " with: " << String(vecOp_it->first));
+					for (int tid = 1; tid < pass->warpSize; tid++) {
+						inst_it->second.replicated[tid]->setOperand(i, vecOp_it->second.replicated[tid]);
+					}
+				}
+				else {
+					report("        operand " << i << " not in mapping");
+				}
+			}
+		}
+	}		
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! \brief given an instruction from the scalar set, get a set of scalar values that are 
+	either replicated scalar instructions from the vectorized set or extracted vector elements */
+analysis::LLVMUniformVectorization::InstructionVector 
+	analysis::LLVMUniformVectorization::Translation::getInstructionAsReplicated(
+		llvm::Value *inst, llvm::Instruction *before) {
+	
+	report("  getting instruction " << inst << " as replicated - inserting before " << before);
+	assert(0 && "not yet implemented");
+}
+
+/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
+	is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
+llvm::Instruction *
+	analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
+		llvm::Value *value, llvm::Instruction *before) {
+	
+	report("  getting instruction " << String(value) 
+		<< " as vectorized - inserting before " << String(before));
+	
+	llvm::Instruction *vectorizedInstruction = 0;
+	
+	if (llvm::Instruction *instruction = llvm::dyn_cast<llvm::Instruction>(value)) {
+		VectorizedInstructionMap::iterator vec_inst = vectorizedInstructionMap.find(instruction);
+		
+		assert(vec_inst != vectorizedInstructionMap.end());
+		
+		if (vec_inst->second.vector) {
+			vectorizedInstruction = vec_inst->second.vector;
+		}
+		else {
+			vectorizedInstruction = _vectorize(vec_inst);
+		}
+	}
+	else if (llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(value)) {
+		llvm::VectorType *vecType = llvm::VectorType::get(value->getType(), pass->warpSize);
+		llvm::Value *vectorValue = llvm::UndefValue::get(vecType);
+		for (int tid = 0; tid < pass->warpSize; tid++) {
+			vectorValue = llvm::InsertElementInst::Create(vectorValue, 
+				constant, getConstInt32(tid), "", before);
+		}
+		vectorizedInstruction = static_cast<llvm::Instruction*>(vectorValue);
+	}
+
+	assert(vectorizedInstruction && "failed to vectorize instruction");
+	return vectorizedInstruction;
 }
 
 void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
-
+	report("     _vectorizeReplicated()");
+	for (VectorizedInstructionMap::iterator inst_it = vectorizedInstructionMap.begin();
+		inst_it != vectorizedInstructionMap.end(); ++inst_it) {
+		
+		report("       visiting " << String(inst_it->first));
+		
+		_vectorize(inst_it);
+	}
 }
+
+llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
+	VectorizedInstructionMap::iterator &vec_it) {
+	report("       _vectorize( " << String(vec_it->first) << " )");
+	
+	llvm::Instruction *vectorized = vec_it->second.vector;
+	if (!vectorized) {
+		if (vec_it->second.isVectorizable()) {
+			if (llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(vec_it->first)) {
+				vectorized = _vectorizeBinaryOperator(binOp, vec_it);
+			}
+			else if (llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(vec_it->first)) {
+				vectorized = _vectorizeCall(callInst, vec_it);
+			}
+			else {
+				assert(0 && "unhandled vectorizable instruction");	
+			}
+		}
+		else {
+			vectorized = _vectorizeUnvectorizable(vec_it->first, vec_it);
+		}
+	}
+	return vectorized;
+}
+
+llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeUnvectorizable(
+	llvm::Instruction *inst, VectorizedInstructionMap::iterator &vec_it) {
+	
+	// pack replicated instructions	
+	llvm::Value *lastInserted = llvm::UndefValue::get(llvm::VectorType::get(
+		inst->getType(), pass->warpSize));
+	llvm::Instruction *insertInst = 0;
+	
+	for (int tid = 0; tid < pass->warpSize; tid++) {
+		llvm::ConstantInt *idx = getConstInt32(tid);
+		llvm::Instruction *element = vec_it->second.replicated[tid];
+		std::stringstream ss;
+		ss << "insert." << element->getName().str();
+		
+		insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
+			idx, ss.str(), inst->getParent());
+		insertInst->removeFromParent();
+		insertInst->insertAfter(vec_it->second.replicated[tid]);
+		lastInserted = insertInst;
+	}
+	
+	return insertInst;
+}
+
+llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeBinaryOperator(
+	llvm::BinaryOperator *inst, VectorizedInstructionMap::iterator &vec_it) {
+
+	llvm::Instruction *op0 = getInstructionAsVectorized(vec_it->first->getOperand(0), inst);
+	llvm::Instruction *op1 = getInstructionAsVectorized(vec_it->first->getOperand(1), inst);
+	
+	std::stringstream ss;
+	ss << inst->getName().str() << ".vec";
+
+	vec_it->second.vector = llvm::BinaryOperator::Create(inst->getOpcode(), op0, op1, ss.str(), inst);
+	
+	return vec_it->second.vector;
+}
+			
+llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeCall(
+	llvm::CallInst *callInst, VectorizedInstructionMap::iterator &vec_it) {
+	
+	llvm::Instruction *before = 0;
+	
+	// it's a call instruction
+	std::string calleeName = callInst->getCalledFunction()->getName().str();
+
+	report(" call instruction: " << calleeName);
+
+	assert(hydrazine::isPowerOfTwo(pass->warpSize) && 
+		"warp size must be power of 2 for vectorizing function calls");
+
+	const char *floatSuffixes[] = {
+		"f32", "v2f32", "v4f32", "v8f32", "v16f32", "v32f32", "v64f32", "v128f32", "v256f32", 
+		"v512f32", 0
+	};
+	const char *str[] = {
+		"__ocelot_sqrtf", "llvm.sqrt",
+		"__ocelot_sinf", "llvm.sin",
+		"__ocelot_cosf", "llvm.cos",
+		"llvm.sqrt.f32", "llvm.sqrt",
+		"llvm.sin.f32", "llvm.sin",
+		"llvm.cos.f32f", "llvm.cos",
+		0, 0
+	};
+	llvm::Function *funcIntrinsic = 0;
+	for (int n = 0; str[n]; n+=2) {
+		if (calleeName == str[n]) {
+			int s = 0;
+			for (; floatSuffixes[s]; s++) {
+				if ((1 << s) == pass->warpSize) {
+					break;
+				}
+			}
+			assert((1 << s) == pass->warpSize);
+			std::string destName = std::string(str[n+1]) + "." + floatSuffixes[s];
+			funcIntrinsic = function->getParent()->getFunction(destName);
+			if (!funcIntrinsic) {
+				report("creating intrinsic type " << calleeName);
+				llvm::VectorType *vecType = llvm::VectorType::get(callInst->getType(), pass->warpSize);
+				std::vector< llvm::Type *> args;
+				args.push_back(vecType);
+				llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
+				funcIntrinsic = llvm::Function::Create(funcType, 
+					llvm::GlobalValue::ExternalLinkage, destName, function->getParent());
+			}
+			else {
+				report("using existing intrinsic definition ");
+			}
+			assert(funcIntrinsic && "failed to get identified intrinsic");
+			break;
+		}
+	}
+	assert(funcIntrinsic && "failed to identify intrinsic");
+	
+	std::vector< llvm::Value *> args;
+	for (unsigned int op = 0; op < callInst->getNumOperands() - 1; ++op) {
+		args.push_back(getInstructionAsVectorized(callInst->getOperand(op), before));
+	}
+	
+	report("  vectorizing call to function type " << funcIntrinsic << " with " << args.size() << " arguments");
+
+	std::string name = callInst->getName().str() + ".vec";
+	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args, name, before);
+	vec_it->second.vector = vecCallInst;
+	
+	return vecCallInst;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable() const {
+
+	assert(0 && "unimplemented");
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_finalizeTranslation() {
 
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

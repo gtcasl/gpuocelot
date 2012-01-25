@@ -58,7 +58,6 @@ namespace analysis
 		class ThreadLocalArgument {
 		public:
 		
-			llvm::Instruction *ptrThreadDescriptorArray;
 			
 			llvm::Value * context;
 		
@@ -86,6 +85,8 @@ namespace analysis
 			llvm::Instruction * globallyScopedLocal;
 			llvm::Instruction * externalSharedSize;
 			llvm::Instruction * metadataPointer;
+			
+			llvm::Instruction *ptrThreadDescriptorArray;
 		};
 		typedef std::vector< ThreadLocalArgument > ThreadLocalArgumentVector;
 
@@ -97,8 +98,6 @@ namespace analysis
 			VectorizedInstruction(): vector(0) { }
 
 			bool isVectorizable() const;
-			
-			void vectorize(llvm::Instruction *scalarInst, llvm::Instruction *before);
 		
 		private:
 			
@@ -159,7 +158,7 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
-			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, llvm::BasicBlock *block);
+			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, llvm::Instruction *before);
 			
 			void _initializeSchedulerEntryBlock();
 			
@@ -173,9 +172,24 @@ namespace analysis
 			
 			void _replicateInstructions();
 			
+			void _replicateInstruction(llvm::Instruction *inst);
+			
 			void _resolveDependencies();
 			
+			void _updateDependency( );
+			
+			void _removeScalar();
+			
 			void _vectorizeReplicated();
+			
+			llvm::Instruction *_vectorize(VectorizedInstructionMap::iterator &vec_it);
+			
+			llvm::Instruction * _vectorizeBinaryOperator(llvm::BinaryOperator *inst, 
+				VectorizedInstructionMap::iterator &vec_it);
+			llvm::Instruction * _vectorizeCall(llvm::CallInst *inst, 
+				VectorizedInstructionMap::iterator &vec_it);
+			llvm::Instruction * _vectorizeUnvectorizable(llvm::Instruction *inst, 
+				VectorizedInstructionMap::iterator &vec_it);
 			
 			void _finalizeTranslation();
 		

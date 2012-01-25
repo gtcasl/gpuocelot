@@ -196,6 +196,8 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 
 	// complete scheduler
 	_completeSchedulerEntryBlock();
+	
+	report("Scalar Preprocessing step complete");
 }
 
 
@@ -262,9 +264,9 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 	
 	report("   extracting thread-local arguments");
 	ThreadLocalArgument localArgs;
-	_loadThreadLocal(localArgs, 0, schedulerEntryBlock.block->getTerminator());
+	_loadThreadLocal(localArgs, 0, 0, schedulerEntryBlock.block);
 	schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
-	
+		
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		if (&*bb_it == schedulerEntryBlock.block) {
 			continue;
@@ -282,7 +284,7 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 		
 		for (auto inst_it = toVisit.begin(); inst_it != toVisit.end(); ++inst_it) {
 			
-			llvm::GetElementPtrInst * &gemp = *inst_it;
+			llvm::GetElementPtrInst * &gemp = *inst_it;			
 			ThreadLocalArgument &local = schedulerEntryBlock.threadLocalArguments[0];
 			
 			llvm::Instruction **dim3Instances[] = {
@@ -323,14 +325,18 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 			}
 			assert(selected && "failed to identify thread-local argument");
 			
+			std::vector< llvm::LoadInst * > killWithFire;
 			for (llvm::Value::use_iterator use_it = gemp->use_begin(); use_it != gemp->use_end(); ++use_it) {
 				llvm::User *user = *use_it;
 				
 				llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(user);
 				assert(loadInst && "user of GEMP must be LoadInst");
-				
 				loadInst->replaceAllUsesWith(selected);
-				loadInst->eraseFromParent();
+				killWithFire.push_back(loadInst);
+			}
+			for (std::vector< llvm::LoadInst * >::iterator kill_it = killWithFire.begin();
+				kill_it != killWithFire.end(); ++kill_it) {
+				(*kill_it)->eraseFromParent();
 			}
 			gemp->eraseFromParent();
 		}
@@ -338,12 +344,16 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 }
 
 void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
-	ThreadLocalArgument &local, int threadId, llvm::Instruction *before) {
+	ThreadLocalArgument &local, int threadId, llvm::Instruction *before, llvm::BasicBlock *block) {
 	
-	llvm::BasicBlock *block = before->getParent();
+	report("  _loadThreadLocal(thread " << threadId << ")");
 	
-	report("  Loading thread-local arguments for thread " << threadId 
-		<< ". Inserting into block " << block->getName().str());
+	if (!block) {
+		block = before->getParent();
+	}
+	
+	report("  Loading thread-local arguments for thread " << threadId);
+	report("  inserting into block " << block->getName().str());
 	
 	llvm::Value *contextArrayBasePointer = &function->getArgumentList().front();
 	std::string threadSuffix = std::string(".t") + boost::lexical_cast<std::string, int>(threadId);
@@ -354,10 +364,14 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	
 		llvm::GetElementPtrInst *contextGemp = llvm::GetElementPtrInst::Create(contextArrayBasePointer,
 			llvm::ArrayRef<llvm::Value*>(idx), "contextPtrGemp", block);
-		contextGemp->moveBefore(before);
+		if (before) { 
+			contextGemp->moveBefore(before);
+		}
 	
 		llvm::LoadInst *loadInst = new llvm::LoadInst(contextGemp, "contextPtr" + threadSuffix, block);
-		loadInst->moveBefore(before);
+		if (before) {
+			loadInst->moveBefore(before);
+		}
 		local.context = loadInst;
 	}
 	else {
@@ -377,17 +391,21 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	for (int idx = 0; idx < 4; idx++) {
 		for (int j = 0; j < 3; j++) {
 			std::vector< llvm::Value *> ind;
-			ind.push_back(getConstInt32(0));
+			ind.push_back(getConstInt32(threadId));
 			ind.push_back(getConstInt32(idx));
 			ind.push_back(getConstInt32(j));
 			
 			llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
 				llvm::ArrayRef<llvm::Value*>(ind), "", block);
-			ptr->moveBefore(before);
+			if (before) {
+				ptr->moveBefore(before);
+			}
 			
 			std::string name = std::string(dim3names[idx]) + "." + dim3suffix[j] + threadSuffix;
 			*(dim3Instances[idx * 3 + j]) = new llvm::LoadInst(ptr, name, block);
-			(*(dim3Instances[idx * 3 + j]))->moveBefore(before);
+			if (before) {
+				(*(dim3Instances[idx * 3 + j]))->moveBefore(before);
+			}
 		}
 	}
 	
@@ -401,20 +419,24 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 		&local.metadataPointer,
 	};
 	const char *ptrNames[] = {
-		"local", "shared", "const", "param", "argument", "metadata", 
+		"localPtr", "sharedPtr", "constPtr", "paramPtr", "argumentPtr", "metadataPtr", 
 	};
 	for (int idx = 0; idx < 6; idx++) {
 	
 		std::vector< llvm::Value *> ind;
-		ind.push_back(getConstInt32(0));
+		ind.push_back(getConstInt32(threadId));
 		ind.push_back(getConstInt32(idx + 4));
 		
 		llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
 			llvm::ArrayRef<llvm::Value*>(ind), std::string(ptrNames[idx]) + "Ptr" + threadSuffix, block);
-		ptr->moveBefore(before);
+		if (before) {
+			ptr->moveBefore(before);
+		}
 		
 		*(ptrInstances[idx]) = new llvm::LoadInst(ptr, ptrNames[idx] + threadSuffix, block);
-		(*(ptrInstances[idx]))->moveBefore(before);
+		if (before) {
+			(*(ptrInstances[idx]))->moveBefore(before);
+		}
 	}
 }
 
@@ -444,38 +466,47 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	\brief transforms the kernel into a form that executes multiple logical threads
 */
 void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous() {
-	
+	report("Transform Warp Synchronous begin");
 	if (pass->warpSize > 1) {
 		_replicateInstructions();
 		_resolveDependencies();
-		_vectorizeReplicated();
+		//_vectorizeReplicated();
 	}
 	
 	_finalizeTranslation();
+	report("Transform Warp Synchronous complete");
 }
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
+	report("  replicateInstructions()");
+	for (int tid = 1; tid < pass->warpSize; tid++) {
+		ThreadLocalArgument localArgs;
+		_loadThreadLocal(localArgs, tid, schedulerEntryBlock.block->getTerminator());
+		schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
+	}
+	report("    thread local arguments size: " << schedulerEntryBlock.threadLocalArguments.size());
+	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
-		//
-		// - special treatment to scheduler block
-		// - replicate all instructions except control-flow instructions
-		//
 		if (&*bb_it == schedulerEntryBlock.block) {
-			for (int tid = 1; tid < pass->warpSize; tid++) {
-				ThreadLocalArgument localArgs;
-				_loadThreadLocal(localArgs, tid, schedulerEntryBlock.block->getTerminator());
-				schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
-			}
+			continue;
 		}
 		else {
+			std::vector< llvm::Instruction *> instructions;
+			instructions.reserve(bb_it->getInstList().size());
+			
 			for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
 				if (llvm::TerminatorInst *terminator = llvm::dyn_cast<llvm::TerminatorInst>(&*inst_it)) {
 					assert(terminator);
-					assert(0 && "control-flow handled separately");
+					//assert(0 && "control-flow handled separately");
 				}
 				else {
-					_replicateInstruction(&*inst_it);
+					//_replicateInstruction(&*inst_it);
+					instructions.push_back(&*inst_it);
 				}
+			}
+			for (std::vector< llvm::Instruction *>::iterator inst_it = instructions.begin();
+				inst_it != instructions.end(); ++inst_it) {
+				_replicateInstruction(*inst_it);
 			}
 		}
 	}
@@ -484,7 +515,7 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
 	VectorizedInstruction vectorized;
 	
-	report("     replicateInstruction(" << String(inst) << ")");
+	report("   replicateInstruction(" << String(inst) << ")");
 	
 	llvm::Instruction * ThreadLocalArgument::* localInstances[] = {
 		&ThreadLocalArgument::threadId_x, 
@@ -508,7 +539,7 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 		&ThreadLocalArgument::ptrThreadDescriptorArray
 	};
 	
-	assert(0 && schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
+	assert(schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
 	
 	typedef std::vector< std::pair< int, llvm::Instruction * ThreadLocalArgument::*> > OperandVector;
 	OperandVector operands;
@@ -518,8 +549,6 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 		if (llvm::Instruction *opInst = llvm::dyn_cast<llvm::Instruction>(*op_it)) {
 			for (int l = 0; localInstances[l] != &ThreadLocalArgument::ptrThreadDescriptorArray; l++) {
 				if (opInst == (schedulerEntryBlock.threadLocalArguments[0].*(localInstances[l]))) {
-								
-					report("       - operand " << operandIndex << " uses thread-local argument [" << l << "]");
 
 					operands.push_back(std::pair<int, llvm::Instruction * ThreadLocalArgument::*>(
 						operandIndex, localInstances[l]));
@@ -527,14 +556,22 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 			}
 		}
 	}
+	bool updateName = (!llvm::StoreInst::classof(inst));
 	
+	std::string baseName = inst->getName().str() + ".t";
+	if (updateName) {
+		std::string name = baseName + boost::lexical_cast<std::string, int>(0);
+		inst->setName(name);
+	}
 	vectorized.replicated.push_back(inst);
-		
+
 	for (int tid = 1; tid < pass->warpSize; tid++) {
-		std::string name = inst->getName().str() + ".t" + boost::lexical_cast<std::string, int>(tid);
+		std::string name = baseName + boost::lexical_cast<std::string, int>(tid);
 		llvm::Instruction *clone = inst->clone();
 		
-		clone->setName(name);
+		if (updateName) {
+			clone->setName(name);
+		}
 		
 		for (OperandVector::const_iterator op_it = operands.begin(); op_it != operands.end(); ++op_it) {
 			llvm::Instruction *operand = (schedulerEntryBlock.threadLocalArguments[tid].*(op_it->second));
@@ -548,25 +585,25 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 }
 
 void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
-	report("     _resolveDependencies()");
+	report("   _resolveDependencies()");
 	
 	for (VectorizedInstructionMap::iterator inst_it = vectorizedInstructionMap.begin();
 		inst_it != vectorizedInstructionMap.end(); ++inst_it) {
 		
-		report("      resolving dependencies for: " << String(inst_it->first));
+		report("    resolving dependencies for: " << String(inst_it->first));
 		
 		for (unsigned int i = 0; i < inst_it->first->getNumOperands(); i++) {
 			if (llvm::Instruction *opInst = 
 				llvm::dyn_cast<llvm::Instruction>(inst_it->first->getOperand(i))) {		
 				VectorizedInstructionMap::iterator vecOp_it = vectorizedInstructionMap.find(opInst);
 				if (vecOp_it != vectorizedInstructionMap.end()) {
-					report("        updating operand " << i << " with: " << String(vecOp_it->first));
+					report("      updating operand " << i << " with: " << String(vecOp_it->first));
 					for (int tid = 1; tid < pass->warpSize; tid++) {
 						inst_it->second.replicated[tid]->setOperand(i, vecOp_it->second.replicated[tid]);
 					}
 				}
 				else {
-					report("        operand " << i << " not in mapping");
+					report("      operand " << i << " not in mapping: " << String(opInst));
 				}
 			}
 		}
@@ -768,8 +805,11 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable() const {
-
-	assert(0 && "unimplemented");
+	if (replicated[0]->getType()->isFloatTy() ||replicated[0]->getType()->isDoubleTy()) {
+		if (replicated[0]->isBinaryOp() || llvm::CallInst::classof(replicated[0])) {
+			return true;	
+		}
+	}
 	return false;
 }
 

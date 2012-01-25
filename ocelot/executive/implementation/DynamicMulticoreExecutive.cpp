@@ -162,8 +162,10 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	analysis::KernelPartitioningPass::KernelGraph *kernelGraph = kernel->kernelGraph();
 
 	DynamicTranslationCache::Translation *entryTranslation =
-		DynamicExecutionManager::get().translationCache.getOrInsertTranslation(1, 
+		DynamicExecutionManager::get().translationCache.getOrInsertTranslation(2, 
 			kernelGraph->getEntrySubkernel());
+
+	assert(0 && "Early exit due to manually defined warp size");
 
 	assert(entryTranslation); 
 	

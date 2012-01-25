@@ -158,7 +158,7 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
-			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, llvm::Instruction *before);
+			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, llvm::Instruction *before, llvm::BasicBlock *block = 0);
 			
 			void _initializeSchedulerEntryBlock();
 			

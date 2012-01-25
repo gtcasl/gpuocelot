@@ -97,6 +97,8 @@ namespace analysis
 		public:
 			VectorizedInstruction(): vector(0) { }
 
+			bool isPackable() const;
+
 			bool isVectorizable() const;
 		
 		private:
@@ -158,7 +160,8 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
-			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, llvm::Instruction *before, llvm::BasicBlock *block = 0);
+			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
+				llvm::Instruction *before, llvm::BasicBlock *block = 0);
 			
 			void _initializeSchedulerEntryBlock();
 			

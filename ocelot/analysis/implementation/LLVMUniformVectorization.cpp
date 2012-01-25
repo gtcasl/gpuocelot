@@ -470,7 +470,7 @@ void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous(
 	if (pass->warpSize > 1) {
 		_replicateInstructions();
 		_resolveDependencies();
-		//_vectorizeReplicated();
+		_vectorizeReplicated();
 	}
 	
 	_finalizeTranslation();
@@ -556,8 +556,8 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 			}
 		}
 	}
-	bool updateName = (!llvm::StoreInst::classof(inst));
 	
+	bool updateName = (!llvm::StoreInst::classof(inst));
 	std::string baseName = inst->getName().str() + ".t";
 	if (updateName) {
 		std::string name = baseName + boost::lexical_cast<std::string, int>(0);
@@ -666,7 +666,9 @@ void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
 		
 		report("       visiting " << String(inst_it->first));
 		
-		_vectorize(inst_it);
+		if (inst_it->second.isVectorizable()) {
+			_vectorize(inst_it);
+		}
 	}
 }
 
@@ -686,8 +688,16 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 			else {
 				assert(0 && "unhandled vectorizable instruction");	
 			}
+			if (vectorized) {
+				report("   VECTORIZED: " << String(vectorized));
+				// there can be but one
+				for (InstructionVector::iterator inst_it = vec_it->second.replicated.begin();
+					inst_it != vec_it->second.replicated.end(); ++inst_it) {
+					(*inst_it)->removeFromParent();
+				}
+			}
 		}
-		else {
+		else if (vec_it->second.isPackable()) {
 			vectorized = _vectorizeUnvectorizable(vec_it->first, vec_it);
 		}
 	}
@@ -804,8 +814,16 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+bool analysis::LLVMUniformVectorization::VectorizedInstruction::isPackable() const {
+	return llvm::VectorType::isValidElementType(replicated[0]->getType());
+}
+
 bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable() const {
-	if (replicated[0]->getType()->isFloatTy() ||replicated[0]->getType()->isDoubleTy()) {
+	if (replicated[0]->getType()->isFloatTy() ||
+		replicated[0]->getType()->isDoubleTy() ||
+		replicated[0]->getType()->isIntegerTy(32)) {
+		
 		if (replicated[0]->isBinaryOp() || llvm::CallInst::classof(replicated[0])) {
 			return true;	
 		}

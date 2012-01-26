@@ -487,6 +487,8 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
 	_basicBlockPasses();
 }
@@ -494,19 +496,17 @@ void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
 void analysis::LLVMUniformVectorization::Translation::_basicBlockPasses() {
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		_eliminateBitcasts(bb_it);
-		_promoteGempPointerArithmetic(bb_it);
+		//_promoteGempPointerArithmetic(bb_it);
 	}
 }
-void analysis::LLVMUniformVectorization::Translation::_eliminateBitcasts(llvm::Function::iterator bb_it) {
+
+void analysis::LLVMUniformVectorization::Translation::_eliminateBitcasts(
+	llvm::Function::iterator bb_it) {
 	std::vector< llvm::Instruction *> killWithFire;
 	for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
 		if (llvm::BitCastInst *bitcast = llvm::dyn_cast<llvm::BitCastInst>(&*inst_it)) {
 			if (bitcast->getSrcTy() == bitcast->getDestTy()) {
-				// tired of these cluttering up my source file
-				llvm::User::op_iterator op_it = bitcast->op_begin();
-				
-				report("   replacing " << String(bitcast) << " with " << String(*op_it));
-				
+				llvm::User::op_iterator op_it = bitcast->op_begin();				
 				bitcast->replaceAllUsesWith(*op_it);
 				killWithFire.push_back(bitcast);
 			}
@@ -518,20 +518,32 @@ void analysis::LLVMUniformVectorization::Translation::_eliminateBitcasts(llvm::F
 	}
 }
 
-void analysis::LLVMUniformVectorization::Translation::_promoteGempPointerArithmetic(llvm::Function::iterator bb_it) {
+void analysis::LLVMUniformVectorization::Translation::_promoteGempPointerArithmetic(
+	llvm::Function::iterator bb_it) {
 	for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
 		llvm::PtrToIntInst *ptrToInt = llvm::dyn_cast<llvm::PtrToIntInst>(&*inst_it);
-		llvm::BinaryOperator *binop;
+		llvm::BinaryOperator *binop = 0;
+		llvm::IntToPtrInst *intToPtr = 0;
+		bool promoted = false;
 		if (inst_it->hasOneUse() && ptrToInt) {
 			// if user is single add instruction
 			binop = llvm::dyn_cast<llvm::BinaryOperator>(*ptrToInt->use_begin());
 			if (ptrToInt->hasOneUse() && binop && binop->getOpcode() == 9) {
-				llvm::IntToPtrInst *intToPtr = llvm::dyn_cast<llvm::IntToPtrInst>(*binop->use_begin());
-				if (intToPtr && binop->hasOneUse()) {
+				intToPtr = llvm::dyn_cast<llvm::IntToPtrInst>(*binop->use_begin());
+				if (intToPtr && 
+					binop->hasOneUse() && 
+					ptrToInt->getParent() == binop->getParent() &&
+					binop->getParent() == intToPtr->getParent()) {
+					
 					// replace all three with one gemp
 					report("  Promoting pointer arithmetic to GEMP instruction");
+					report("    src ptr type: " << String(ptrToInt->getSrcTy()));
+					report("    dst ptr type: " << String(intToPtr->getDestTy()));
 				}
 			}
+		}
+		if (promoted) {
+			inst_it = bb_it->begin();
 		}
 	}
 }
@@ -607,14 +619,12 @@ void analysis::LLVMUniformVectorization::Translation::_packThreadLocal() {
 }
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
-	VectorizedInstruction vectorized;
-	
-	report("   replicateInstruction(" << String(inst) << ")");
-	
+
 	assert(schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
 	
 	typedef std::vector< std::pair< int, llvm::Instruction * ThreadLocalArgument::*> > OperandVector;
 	OperandVector operands;
+	VectorizedInstruction vectorized;
 	
 	int operandIndex = 0;
 	for (llvm::User::op_iterator op_it = inst->op_begin(); op_it != inst->op_end(); ++op_it, ++operandIndex) {
@@ -662,14 +672,11 @@ void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
 	for (VectorizedInstructionMap::iterator inst_it = vectorizedInstructionMap.begin();
 		inst_it != vectorizedInstructionMap.end(); ++inst_it) {
 		
-		report("    resolving dependencies for: " << String(inst_it->first));
-		
 		for (unsigned int i = 0; i < inst_it->first->getNumOperands(); i++) {
 			if (llvm::Instruction *opInst = 
 				llvm::dyn_cast<llvm::Instruction>(inst_it->first->getOperand(i))) {		
 				VectorizedInstructionMap::iterator vecOp_it = vectorizedInstructionMap.find(opInst);
 				if (vecOp_it != vectorizedInstructionMap.end()) {
-					report("      updating operand " << i << " with: " << String(vecOp_it->first));
 					for (int tid = 1; tid < pass->warpSize; tid++) {
 						inst_it->second.replicated[tid]->setOperand(i, vecOp_it->second.replicated[tid]);
 					}
@@ -699,9 +706,6 @@ analysis::LLVMUniformVectorization::InstructionVector
 llvm::Instruction *
 	analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
 		llvm::Value *value, llvm::Instruction *before) {
-	
-	report("  getting instruction " << String(value) 
-		<< " as vectorized - inserting before " << String(before));
 	
 	llvm::Instruction *vectorizedInstruction = 0;
 	
@@ -741,10 +745,7 @@ llvm::Instruction *
 void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
 	report("     _vectorizeReplicated()");
 	for (VectorizedInstructionMap::iterator inst_it = vectorizedInstructionMap.begin();
-		inst_it != vectorizedInstructionMap.end(); ++inst_it) {
-		
-		report("       visiting " << String(inst_it->first));
-		
+		inst_it != vectorizedInstructionMap.end(); ++inst_it) {		
 		if (inst_it->second.isVectorizable()) {
 			_vectorize(inst_it);
 		}
@@ -753,8 +754,7 @@ void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
 
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 	VectorizedInstructionMap::iterator &vec_it) {
-	report("       _vectorize( " << String(vec_it->first) << " )");
-	
+		
 	llvm::Instruction *vectorized = vec_it->second.vector;
 	if (!vectorized) {
 		if (vec_it->second.isVectorizable()) {
@@ -768,8 +768,6 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 				assert(0 && "unhandled vectorizable instruction");	
 			}
 			if (vectorized) {
-				report("   VECTORIZED: " << String(vectorized));
-
 				InstructionVector extracted;
 				std::string name = vec_it->first->getName().str() + ".extracted";
 				for (int tid = 0; tid < pass->warpSize; tid++) {
@@ -891,8 +889,6 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 	for (unsigned int op = 0; op < callInst->getNumOperands() - 1; ++op) {
 		args.push_back(getInstructionAsVectorized(callInst->getOperand(op), before));
 	}
-	
-	report("  vectorizing call to function type " << funcIntrinsic << " with " << args.size() << " arguments");
 
 	std::string name = callInst->getName().str() + ".vec";
 	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args, name, before);

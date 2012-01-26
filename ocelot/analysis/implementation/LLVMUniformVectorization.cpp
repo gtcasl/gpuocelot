@@ -222,7 +222,7 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	_completeSchedulerEntryBlock();
 	
 	// clean-up step
-	_eliminateBitcasts();
+	_scalarOptimization();
 	
 	report("Scalar Preprocessing step complete");
 }
@@ -487,26 +487,51 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	}
 }
 
+void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
+	_basicBlockPasses();
+}
 
-void analysis::LLVMUniformVectorization::Translation::_eliminateBitcasts() {
+void analysis::LLVMUniformVectorization::Translation::_basicBlockPasses() {
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
-		std::vector< llvm::Instruction *> killWithFire;
-		for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
-			if (llvm::BitCastInst *bitcast = llvm::dyn_cast<llvm::BitCastInst>(&*inst_it)) {
-				if (bitcast->getSrcTy() == bitcast->getDestTy()) {
-					// tired of these cluttering up my source file
-					llvm::User::op_iterator op_it = bitcast->op_begin();
-					
-					report("   replacing " << String(bitcast) << " with " << String(*op_it));
-					
-					bitcast->replaceAllUsesWith(*op_it);
-					killWithFire.push_back(bitcast);
-				}
+		_eliminateBitcasts(bb_it);
+		_promoteGempPointerArithmetic(bb_it);
+	}
+}
+void analysis::LLVMUniformVectorization::Translation::_eliminateBitcasts(llvm::Function::iterator bb_it) {
+	std::vector< llvm::Instruction *> killWithFire;
+	for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+		if (llvm::BitCastInst *bitcast = llvm::dyn_cast<llvm::BitCastInst>(&*inst_it)) {
+			if (bitcast->getSrcTy() == bitcast->getDestTy()) {
+				// tired of these cluttering up my source file
+				llvm::User::op_iterator op_it = bitcast->op_begin();
+				
+				report("   replacing " << String(bitcast) << " with " << String(*op_it));
+				
+				bitcast->replaceAllUsesWith(*op_it);
+				killWithFire.push_back(bitcast);
 			}
 		}
-		for (std::vector< llvm::Instruction *> ::iterator kill_it = killWithFire.begin();
-			kill_it != killWithFire.end(); ++kill_it) {
-			(*kill_it)->eraseFromParent();
+	}
+	for (std::vector< llvm::Instruction *> ::iterator kill_it = killWithFire.begin();
+		kill_it != killWithFire.end(); ++kill_it) {
+		(*kill_it)->eraseFromParent();
+	}
+}
+
+void analysis::LLVMUniformVectorization::Translation::_promoteGempPointerArithmetic(llvm::Function::iterator bb_it) {
+	for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+		llvm::PtrToIntInst *ptrToInt = llvm::dyn_cast<llvm::PtrToIntInst>(&*inst_it);
+		llvm::BinaryOperator *binop;
+		if (inst_it->hasOneUse() && ptrToInt) {
+			// if user is single add instruction
+			binop = llvm::dyn_cast<llvm::BinaryOperator>(*ptrToInt->use_begin());
+			if (ptrToInt->hasOneUse() && binop && binop->getOpcode() == 9) {
+				llvm::IntToPtrInst *intToPtr = llvm::dyn_cast<llvm::IntToPtrInst>(*binop->use_begin());
+				if (intToPtr && binop->hasOneUse()) {
+					// replace all three with one gemp
+					report("  Promoting pointer arithmetic to GEMP instruction");
+				}
+			}
 		}
 	}
 }
@@ -898,6 +923,10 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_finalizeTranslation() {
+	_eliminateUnusedVectorPacking();
+}
+
+void analysis::LLVMUniformVectorization::Translation::_eliminateUnusedVectorPacking() {
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
 			if (inst_it->use_empty() && (llvm::dyn_cast<llvm::ExtractElementInst>(&*inst_it) ||

@@ -160,7 +160,11 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
-			void _eliminateBitcasts();
+			void _scalarOptimization();
+			
+			void _basicBlockPasses();
+			void _eliminateBitcasts(llvm::Function::iterator bb_it);
+			void _promoteGempPointerArithmetic(llvm::Function::iterator bb_it);
 			
 			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
 				llvm::Instruction *before, llvm::BasicBlock *block = 0);
@@ -199,6 +203,8 @@ namespace analysis
 				VectorizedInstructionMap::iterator &vec_it);
 			
 			void _finalizeTranslation();
+			
+			void _eliminateUnusedVectorPacking();
 		
 		protected:
 			

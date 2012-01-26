@@ -160,6 +160,8 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
+			void _eliminateBitcasts();
+			
 			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
 				llvm::Instruction *before, llvm::BasicBlock *block = 0);
 			
@@ -174,6 +176,8 @@ namespace analysis
 			void _transformWarpSynchronous();
 			
 			void _replicateInstructions();
+			
+			void _packThreadLocal();
 			
 			void _replicateInstruction(llvm::Instruction *inst);
 			

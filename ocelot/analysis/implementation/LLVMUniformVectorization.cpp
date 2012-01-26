@@ -156,6 +156,30 @@ llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt1
 	return llvm::ConstantInt::get(llvm::Type::getInt16Ty(context()), n);
 }
 
+static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
+	ThreadLocalArgumentInstances[] = {
+	
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::threadId_x, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::threadId_y, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::threadId_z, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::blockDim_x, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::blockDim_y, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::blockDim_z, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::blockId_x, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::blockId_y, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::blockId_z, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::gridDim_x, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::gridDim_y, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::gridDim_z, 
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::localPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::sharedPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::constantPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::parameterPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::argumentPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::metadataPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::ptrThreadDescriptorArray
+};
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -196,6 +220,9 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 
 	// complete scheduler
 	_completeSchedulerEntryBlock();
+	
+	// clean-up step
+	_eliminateBitcasts();
 	
 	report("Scalar Preprocessing step complete");
 }
@@ -460,6 +487,30 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	}
 }
 
+
+void analysis::LLVMUniformVectorization::Translation::_eliminateBitcasts() {
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		std::vector< llvm::Instruction *> killWithFire;
+		for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+			if (llvm::BitCastInst *bitcast = llvm::dyn_cast<llvm::BitCastInst>(&*inst_it)) {
+				if (bitcast->getSrcTy() == bitcast->getDestTy()) {
+					// tired of these cluttering up my source file
+					llvm::User::op_iterator op_it = bitcast->op_begin();
+					
+					report("   replacing " << String(bitcast) << " with " << String(*op_it));
+					
+					bitcast->replaceAllUsesWith(*op_it);
+					killWithFire.push_back(bitcast);
+				}
+			}
+		}
+		for (std::vector< llvm::Instruction *> ::iterator kill_it = killWithFire.begin();
+			kill_it != killWithFire.end(); ++kill_it) {
+			(*kill_it)->eraseFromParent();
+		}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -468,6 +519,7 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous() {
 	report("Transform Warp Synchronous begin");
 	if (pass->warpSize > 1) {
+		_packThreadLocal();
 		_replicateInstructions();
 		_resolveDependencies();
 		_vectorizeReplicated();
@@ -479,12 +531,6 @@ void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous(
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 	report("  replicateInstructions()");
-	for (int tid = 1; tid < pass->warpSize; tid++) {
-		ThreadLocalArgument localArgs;
-		_loadThreadLocal(localArgs, tid, schedulerEntryBlock.block->getTerminator());
-		schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
-	}
-	report("    thread local arguments size: " << schedulerEntryBlock.threadLocalArguments.size());
 	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		if (&*bb_it == schedulerEntryBlock.block) {
@@ -512,32 +558,33 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 	}
 }
 
+
+void analysis::LLVMUniformVectorization::Translation::_packThreadLocal() {
+	report("  packThreadLocal()");
+	
+	for (int tid = 1; tid < pass->warpSize; tid++) {
+		ThreadLocalArgument localArgs;
+		_loadThreadLocal(localArgs, tid, schedulerEntryBlock.block->getTerminator());
+		schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
+	}
+	
+	// create entries in the mapping
+	for (int i = 0; 
+		ThreadLocalArgumentInstances[i] != &ThreadLocalArgument::ptrThreadDescriptorArray; ++i) {
+		
+		VectorizedInstruction packedThreadLocal;
+		for (int tid = 0; tid < pass->warpSize; tid++) {
+			packedThreadLocal.replicated.push_back(
+				schedulerEntryBlock.threadLocalArguments[tid].*(ThreadLocalArgumentInstances[i]));
+		}
+		vectorizedInstructionMap[packedThreadLocal.replicated[0]] = packedThreadLocal;
+	}
+}
+
 void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
 	VectorizedInstruction vectorized;
 	
 	report("   replicateInstruction(" << String(inst) << ")");
-	
-	llvm::Instruction * ThreadLocalArgument::* localInstances[] = {
-		&ThreadLocalArgument::threadId_x, 
-		&ThreadLocalArgument::threadId_y, 
-		&ThreadLocalArgument::threadId_z, 
-		&ThreadLocalArgument::blockDim_x, 
-		&ThreadLocalArgument::blockDim_y, 
-		&ThreadLocalArgument::blockDim_z, 
-		&ThreadLocalArgument::blockId_x, 
-		&ThreadLocalArgument::blockId_y, 
-		&ThreadLocalArgument::blockId_z, 
-		&ThreadLocalArgument::gridDim_x, 
-		&ThreadLocalArgument::gridDim_y, 
-		&ThreadLocalArgument::gridDim_z, 
-		&ThreadLocalArgument::localPointer,
-		&ThreadLocalArgument::sharedPointer,
-		&ThreadLocalArgument::constantPointer,
-		&ThreadLocalArgument::parameterPointer,
-		&ThreadLocalArgument::argumentPointer,
-		&ThreadLocalArgument::metadataPointer,
-		&ThreadLocalArgument::ptrThreadDescriptorArray
-	};
 	
 	assert(schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
 	
@@ -547,11 +594,11 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 	int operandIndex = 0;
 	for (llvm::User::op_iterator op_it = inst->op_begin(); op_it != inst->op_end(); ++op_it, ++operandIndex) {
 		if (llvm::Instruction *opInst = llvm::dyn_cast<llvm::Instruction>(*op_it)) {
-			for (int l = 0; localInstances[l] != &ThreadLocalArgument::ptrThreadDescriptorArray; l++) {
-				if (opInst == (schedulerEntryBlock.threadLocalArguments[0].*(localInstances[l]))) {
+			for (int l = 0; ThreadLocalArgumentInstances[l] != &ThreadLocalArgument::ptrThreadDescriptorArray; l++) {
+				if (opInst == (schedulerEntryBlock.threadLocalArguments[0].*(ThreadLocalArgumentInstances[l]))) {
 
 					operands.push_back(std::pair<int, llvm::Instruction * ThreadLocalArgument::*>(
-						operandIndex, localInstances[l]));
+						operandIndex, ThreadLocalArgumentInstances[l]));
 				}
 			}
 		}
@@ -561,7 +608,7 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 	std::string baseName = inst->getName().str() + ".t";
 	if (updateName) {
 		std::string name = baseName + boost::lexical_cast<std::string, int>(0);
-		inst->setName(name);
+		//inst->setName(name);
 	}
 	vectorized.replicated.push_back(inst);
 
@@ -636,13 +683,20 @@ llvm::Instruction *
 	if (llvm::Instruction *instruction = llvm::dyn_cast<llvm::Instruction>(value)) {
 		VectorizedInstructionMap::iterator vec_inst = vectorizedInstructionMap.find(instruction);
 		
-		assert(vec_inst != vectorizedInstructionMap.end());
-		
-		if (vec_inst->second.vector) {
-			vectorizedInstruction = vec_inst->second.vector;
+		if (vec_inst != vectorizedInstructionMap.end()) {
+			if (vec_inst->second.vector) {
+				vectorizedInstruction = vec_inst->second.vector;
+			}
+			else {
+				vectorizedInstruction = _vectorize(vec_inst);
+			}
+		}
+		else if (llvm::ExtractElementInst *extractInst = llvm::dyn_cast<llvm::ExtractElementInst>(instruction)) {
+			vectorizedInstruction = llvm::dyn_cast<llvm::Instruction>(extractInst->getVectorOperand());
 		}
 		else {
-			vectorizedInstruction = _vectorize(vec_inst);
+			report("  Instruction not in mapping: " << String(instruction));
+			assert(0 && "asdf");
 		}
 	}
 	else if (llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(value)) {
@@ -690,11 +744,21 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 			}
 			if (vectorized) {
 				report("   VECTORIZED: " << String(vectorized));
-				// there can be but one
-				for (InstructionVector::iterator inst_it = vec_it->second.replicated.begin();
-					inst_it != vec_it->second.replicated.end(); ++inst_it) {
-					(*inst_it)->removeFromParent();
+
+				InstructionVector extracted;
+				std::string name = vec_it->first->getName().str() + ".extracted";
+				for (int tid = 0; tid < pass->warpSize; tid++) {
+					llvm::Instruction *element = llvm::ExtractElementInst::Create(vec_it->second.vector, 
+						getConstInt32(tid), name, vectorized);
+					element->removeFromParent();
+					element->insertAfter(vectorized);
+					extracted.push_back(element);
 				}
+				for (int tid = 0; tid < pass->warpSize; tid++) {
+					vec_it->second.replicated[tid]->replaceAllUsesWith(extracted[tid]);
+					vec_it->second.replicated[tid]->eraseFromParent();
+				}
+				vec_it->second.replicated = extracted;
 			}
 		}
 		else if (vec_it->second.isPackable()) {
@@ -716,7 +780,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		llvm::ConstantInt *idx = getConstInt32(tid);
 		llvm::Instruction *element = vec_it->second.replicated[tid];
 		std::stringstream ss;
-		ss << "insert." << element->getName().str();
+		ss << "insert." << element->getName().str() << ".vec";
 		
 		insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
 			idx, ss.str(), inst->getParent());
@@ -834,7 +898,15 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_finalizeTranslation() {
-
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+			if (inst_it->use_empty() && (llvm::dyn_cast<llvm::ExtractElementInst>(&*inst_it) ||
+				llvm::dyn_cast<llvm::InsertElementInst>(&*inst_it))) {
+				inst_it->eraseFromParent();
+				inst_it = bb_it->begin();
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

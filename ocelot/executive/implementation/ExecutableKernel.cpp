@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -154,6 +154,11 @@ const ir::Dim3& ExecutableKernel::gridDim() const
 	return _gridDim;
 }
 
+
+void ExecutableKernel::setTraceGenerators(const TraceGeneratorVector &traceGenerators) {
+	_generators = traceGenerators;
+}
+
 void ExecutableKernel::addTraceGenerator(
 	trace::TraceGenerator *generator) {
 	_generators.push_back(generator);
@@ -171,7 +176,7 @@ void ExecutableKernel::removeTraceGenerator(
 }
 
 void ExecutableKernel::initializeTraceGenerators() {
-
+	report("ExecutableKernel::initializeTraceGenerators() - " << _generators.size() << " active");
 	// notify trace generator(s)
 	for (TraceGeneratorVector::iterator it = _generators.begin(); 
 		it != _generators.end(); ++it) {
@@ -180,6 +185,7 @@ void ExecutableKernel::initializeTraceGenerators() {
 }
 
 void ExecutableKernel::finalizeTraceGenerators() {
+	report("ExecutableKernel::finalizeTraceGenerators()");
 
 	// notify trace generator(s)
 	for (TraceGeneratorVector::iterator it = _generators.begin(); 

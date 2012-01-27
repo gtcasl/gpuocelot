@@ -1490,6 +1490,7 @@ namespace executive
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())
 		{
+
 			Throw("Invalid Module - " << moduleName);
 		}
 		
@@ -1567,6 +1568,7 @@ namespace executive
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setTraceGenerators(traceGenerators);
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)

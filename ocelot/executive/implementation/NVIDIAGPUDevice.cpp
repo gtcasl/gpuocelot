@@ -1491,6 +1491,7 @@ namespace executive
 		if(module == _modules.end())
 		{
 
+
 			Throw("Invalid Module - " << moduleName);
 		}
 		
@@ -1562,6 +1563,7 @@ namespace executive
 				<< properties().name);
 		}
 		
+		kernel->device = this;
 		kernel->setKernelShape(block.x, block.y, block.z);
 		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
 			argumentBlockSize);

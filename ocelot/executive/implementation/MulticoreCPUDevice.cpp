@@ -141,6 +141,7 @@ namespace executive
 				<< properties().name);
 		}
 		
+		kernel->device = this;
 		kernel->setKernelShape(block.x, block.y, block.z);
 		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
 			argumentBlockSize);
@@ -149,6 +150,7 @@ namespace executive
 		kernel->setExternSharedMemorySize(sharedMemory);
 		kernel->setWorkerThreads(_workerThreads);
 		kernel->setExternalFunctionSet(*externals);
+		kernel->setTraceGenerators(traceGenerators);
 		
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 		

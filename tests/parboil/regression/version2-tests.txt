@@ -1,0 +1,12 @@
+../bfs ../benchmarks/bfs/input/1M/graph_input.dat ../benchmarks/bfs/output/1M/bfs.out
+../cutcp
+../fft
+../histo
+../lbm
+../mm
+../mri-q
+../sad
+../spmv
+../stencil
+../tpacf
+

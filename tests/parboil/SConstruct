@@ -85,7 +85,7 @@ for testApplication in testApplications:
 
 if 'test' in BUILD_TARGETS:
 	def runAllTests(env, target, source):
-		cmd = "python hydrazine/python/RunRegression.py -t regression/tests.txt -v -l regression/regression.log"
+		cmd = "python hydrazine/python/RunRegression.py -t regression/version2-tests.txt -v -l regression/regression.log"
 		subprocess.call(cmd, shell=True)
 	
 	testCommand = Command('test', tests, runAllTests)

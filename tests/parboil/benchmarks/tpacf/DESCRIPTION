@@ -1,0 +1,4 @@
+The Two Point Angular Correlation Function (TPACF) describes the angular distribution of a set of points.  The function describes the probability of finding two points separated by a given angular distance.  This benchmark computes the angular correlation function for a data set of astronomical bodies.
+
+See Also:
+  S. D. Landy and A. S. Szalay.  "Bias and Variance of Angular Correlation Functions." Astrophysical Journal 412:64-71, 1993.

@@ -1,0 +1,10 @@
+A register-tiled matrix-matrix multiplication, with default column-majored
+layout on matrix A and C, but B is transposed.
+
+src/cuda/
+        CUDA version of sgemm('N', 'T', ...)
+
+See also:
+
+Volkov, V., and Demmel, J. W. 2008. Benchmarking GPUs to tune dense linear      
+algebra, 2008 ACM/IEEE Conference on Supercomputing (SC08)

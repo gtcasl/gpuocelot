@@ -1,0 +1,4 @@
+This benchmark implements a basic FFT.  
+Written and maintained by Sara Bagsorkhi, based on some of the ideas from 
+the SC08 paper by Naga K. Govindaraju et al.
+

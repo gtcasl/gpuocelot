@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+# (c) Copyright 2007 The Board of Trustees of the University of Illinois.
+
+import sys
+import itertools
+
+import filecompare as fc
+import binaryfilecompare as bfc
+
+def compare_floats(ref_list, cmp_list):
+	# Lists should be the same length
+	if len(ref_list) != len(cmp_list): return False
+
+	# Absolute tolerance is 0.01% of the maximum
+	# magnitude of ref_list
+	abstol = 1e-4 * max([abs(x) for x in ref_list])
+
+	# Numbers should be equal within absolute
+	# and relative tolerances.
+	for (r, c) in zip(ref_list, cmp_list):
+		diff = abs(r - c)
+		if not (diff <= abstol or diff < 0.002 * abs(r)):
+			# Floats mismatch
+			return False
+
+	# All numbers are within tolerance
+	return True
+
+size_err = "Output data size does not match expected size\n"
+recon_err = "Reconstructed image does not match the expected image\n"
+
+def compare_array(count):
+	# The files contain an array of real values followed by an
+	# array of imaginary values.
+	return fc.Compare(bfc.many_float(count),
+		equal=compare_floats,
+		message=recon_err)
+
+comparison = fc.Then(
+	fc.Bind(fc.Compare(bfc.uint32, message=size_err), compare_array),
+	fc.Compare(bfc.eof))
+
+fc.default_main(comparison)

@@ -1,0 +1,1 @@
+Implementation of a Sparse Matrix Vector. The input file is a compressed matrix of Jagged Diagonal Storage (JDS) sparse matrix format. The output is a vector.   

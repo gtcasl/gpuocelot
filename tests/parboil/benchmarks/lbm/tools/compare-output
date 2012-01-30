@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+# (c) Copyright 2007 The Board of Trustees of the University of Illinois.
+
+import sys
+import itertools
+
+import filecompare as fc
+import binaryfilecompare as bfc
+
+def compare_floats(ref_list, cmp_list):
+	# Lists should be the same length
+	if len(ref_list) != len(cmp_list): return False
+
+	# Absolute tolerance is 0.01% of the maximum
+	# magnitude of ref_list
+	abstol = 1e-3 * max([abs(x) for x in ref_list])
+
+	# Numbers should be equal within absolute
+	# and relative tolerances.
+	for (r, c) in zip(ref_list, cmp_list):
+		diff = abs(r - c)
+		if not (diff <= abstol or diff < 0.002 * abs(r)):
+			# Floats mismatch
+			return False
+
+	# All numbers are within tolerance
+	return True
+
+size_err = "Output data size does not match expected size\n"
+reference_err = "Final simulated flow volume does not match expected flow volume\n"
+
+comparison = fc.Then(
+        fc.Compare(bfc.many_float(3*130*100*100), equal=compare_floats, message=reference_err),
+	fc.Compare(bfc.eof))
+
+fc.default_main(comparison)

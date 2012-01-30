@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+
+# (c) Copyright 2007 The Board of Trustees of the University of Illinois.
+
+import sys
+import itertools
+
+import filecompare as fc
+import textfilecompare as tfc
+
+def compare_float(tolerance):
+	def do_comparison(ref, cmp):
+		diff = abs(ref - cmp)
+		if (diff > tolerance * abs(ref)):
+			# Floats mismatch
+			return False
+
+		# Numbers are within tolerance
+		return True
+	return do_comparison
+
+charge_err = "Computed theta values in bins does not match the expected values\n"
+
+def compare_floats(count, tolerance):
+	# Return a monad that compares 'count' number of floating-point
+	# numbers with the given fractional tolerance.
+
+	comparison = fc.Compare(tfc.float,
+			        equal=compare_float(tolerance),
+				message=charge_err)
+	return fc.Sequence_(itertools.repeat(comparison, count))
+
+# Numbers should be equal with a tolerance of 1%
+# except for the first 3 bins, which are less accurate due to 
+# a low number of samples
+comparison = fc.Sequence_([
+	compare_floats(1, 0.2),
+	compare_floats(2, 0.1),
+	compare_floats(17, 0.01),
+	fc.Compare(tfc.eof)
+	])
+
+fc.default_main(comparison)

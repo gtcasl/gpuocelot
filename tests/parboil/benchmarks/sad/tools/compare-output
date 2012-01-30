@@ -1,0 +1,37 @@
+#! /usr/bin/env python
+
+# (c) Copyright 2007 The Board of Trustees of the University of Illinois.
+
+import sys
+import itertools
+import filecompare as fc
+import binaryfilecompare as bfc
+
+# The block type of a sub-block.  See sad.h for a list of block types.
+sub_block_type = [1,
+	2,2,
+	3,3,
+	4,4,4,4,
+	5,5,5,5,5,5,5,5,
+	6,6,6,6,6,6,6,6,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
+
+def compare_macroblock(n):
+	def compare_subblocks(blocknum):
+		msg = ("Mismatched SAD in macroblock %d, block type %d\n" %
+			(n, sub_block_type[blocknum]))
+		return fc.Compare(bfc.many_uint16(1089), message=msg)
+
+	return fc.Sequence_(itertools.imap(compare_subblocks, range(41)))
+
+def compare_frame_SADs(num_macroblocks):
+	return fc.Sequence_(itertools.imap(compare_macroblock, range(num_macroblocks)))
+
+comparison = fc.Then(
+	fc.Bind(fc.Compare(bfc.uint32),
+		lambda n: fc.Then(
+			fc.Compare(bfc.uint32),
+			compare_frame_SADs(n))),
+	fc.Compare(bfc.eof))
+
+fc.default_main(comparison)

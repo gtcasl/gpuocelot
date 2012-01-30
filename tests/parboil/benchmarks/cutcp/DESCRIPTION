@@ -1,0 +1,5 @@
+A benchmark for computing short-range electrostatic potentials induced by point charges in a 3D volume.  The algorithm derives its efficiency from spatially sorting the point charges and ignoring long-range interactions.  This benchmark is adapted from VMD, a molecular modeling application.
+
+See also:
+  Christopher I. Rodrigues, David J. Hardy, John E. Stone, Klaus Schulten, and Wen-Mei W. Hwu.  "GPU Acceleration of Cutoff Pair Potential for Molecular Modeling Applications."  in Proceedings of the International Conference on Computing Frontiers, May 2008.
+

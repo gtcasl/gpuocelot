@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import struct
+
+tol_diff = 0.001
+tol_ratio = 0.002
+
+def Exit(b):
+  if b:
+    print "Pass"
+    sys.exit(0)
+  else:
+    print "Mismatch"
+    sys.exit(1)
+
+def Run():
+  try:
+    hx = open(sys.argv[1], 'rb')
+    hy = open(sys.argv[2], 'rb')
+  except:
+    Exit(False)
+
+  try:
+    # size (int)
+    dx = hx.read(4)
+    dy = hy.read(4)
+
+    lx = struct.unpack("i", dx)[0]
+    ly = struct.unpack("i", dy)[0]
+  except:
+    Exit(False)
+
+  data_r = hx.read()
+  data_c = hy.read()
+
+  hx.close()
+  hy.close()
+
+  if lx != ly:
+    print "Reference and compare are different in size"
+    Exit(False)
+  if len(data_r) != 4 * lx:
+    print "Reference: sanity check failed"
+    Exit(False)
+  if len(data_c) != 4 * ly:
+    print "Compare: sanity check failed"
+    Exit(False)
+
+  for i in range(0, lx, 4):
+    r = struct.unpack('f', data_r[i:i+4])[0]
+    c = struct.unpack('f', data_c[i:i+4])[0]
+
+    diff = abs(r - c)
+    if not (diff <= tol_diff or diff < tol_ratio * abs(r)):
+      print r, c
+      Exit(False)
+
+  Exit(True)
+
+Run()
+

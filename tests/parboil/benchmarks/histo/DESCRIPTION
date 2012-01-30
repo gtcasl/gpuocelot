@@ -1,0 +1,3 @@
+The histogram application computes the two dimensional histogram of a two dimensional input. The input has the property of being concentrated mostly in the center of the histogram.
+
+Currently maintained by John Stratton <stratton@crhc.illinois.edu>

@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+# (c) Copyright 2010 The Board of Trustees of the University of Illinois.
+
+import sys
+import itertools
+
+import filecompare as fc
+import textfilecompare as tfc
+
+def compare_floats(ref_list, cmp_list):
+
+	# Lists should be the same length
+	if len(ref_list) != len(cmp_list):
+	  print "Different in length"
+	  print "ref=" + str(len(ref_list)) +" "+ str(ref_list[-2])
+	  print "cmp=" + str(len(cmp_list)) +" "+ str(cmp_list[-1])
+	  return False
+
+
+	# Numbers should be equal with a tolerance of 1%
+	# or 0.01, whichever is greater.
+	for (r, c) in zip(ref_list, cmp_list):
+		diff = abs(r - c)
+		if not (diff < 0.01 or diff < 0.01 * abs(r)):
+			# Floats mismatch
+			return False
+
+	# All numbers are within tolerance
+	return True
+
+err = "Computed values do not match the expected values\n"
+
+comparison = fc.Then(
+	fc.Compare(tfc.floats, equal=compare_floats, message=err),
+	fc.Compare(tfc.eof)
+	)
+
+fc.default_main(comparison)

@@ -1,0 +1,4 @@
+Inputs: 100_100_130_ldc.of
+Parameters: -- 3000
+
+This is a long (3000 timestep) 100x100x130 LDC simulation.

@@ -1,0 +1,9 @@
+A benchmark for a Breadth-First Search implementation on GPU. It reads a near regular graph as input and produces the cost (distance from source) of each node in the input graph. 
+input sets:
+1M  - one million nodes
+10M - ten million nodes
+NY  - an irregular graph derived from the map of New York. 
+SF  - a scale-free graph that's been converted to a near regular graph
+
+See also:
+    Lijuan Luo, Martin Wong, Wen-mei Hwu. "An Effective GPU Implementation of Breadth-First Search"

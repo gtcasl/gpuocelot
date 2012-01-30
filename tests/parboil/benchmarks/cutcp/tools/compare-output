@@ -1,0 +1,43 @@
+#! /usr/bin/env python
+
+# (c) Copyright 2008-2010 The Board of Trustees of the University of Illinois.
+
+import sys
+import itertools
+
+import filecompare as fc
+import binaryfilecompare as bfc
+
+# Comparison function for the electrostatic potential magnitude
+def compare_absmagnitude(ref, cmp):
+    # The maximum relative error for a single lattice point is just under 0.5%
+    # Errors should average out overall, so require the value to be within 0.25%
+    if abs(ref - cmp) / ref > 0.0025:
+        return False
+
+    return True
+
+# Comparison function for the electrostatic potential values
+def compare_pointvalues(ref, cmp):
+    for f_r, f_c in zip(ref, cmp):
+        # The maximum relative error for a single lattice point is
+        # just under 0.5%
+        if 0.005 * abs(f_c - f_r) > abs(f_r):
+            return False
+
+    return True
+
+comparison = fc.Sequence([
+    # Sum of the absolute value of the output over all output points
+    fc.Compare(bfc.float,
+               equal = compare_absmagnitude),
+
+    # Two planes of the output data
+    fc.Bind(fc.Compare(bfc.uint32),
+            lambda size: fc.Compare(bfc.many_float(2 * size),
+                                    equal = compare_pointvalues)),
+
+    # End of file
+    fc.Compare(bfc.eof)])
+
+fc.default_main(comparison)

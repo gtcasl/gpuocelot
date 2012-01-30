@@ -91,7 +91,7 @@ testApplications = [
 	('OceanFFT', ['oceanFFT_kernel.cu','oceanFFT.cpp',], 'oceanFFT'),
 	('Particles', ['particleSystem.cu','particles.cpp','shaders.cpp','particleSystem.cpp','render_particles.cpp',], 'particles'),
 	('PostProcessGL', ['postProcessGL.cu','main.cpp',], 'postProcessGL'),
-	('Ptxjit', ['ptxjit.cpp',], 'ptxjit'),
+#	('Ptxjit', ['ptxjit.cpp',], 'ptxjit'),
 	('QuasirandomGenerator', ['quasirandomGenerator_SM13.cu','quasirandomGenerator_SM10.cu','quasirandomGenerator.cpp','quasirandomGenerator_gold.cpp',], 'quasirandomGenerator'),
 	('RadixSortThrust', ['radixSortThrust.cu',], 'radixSortThrust'),
 	('RecursiveGaussian', ['recursiveGaussian.cu','recursiveGaussian.cpp',], 'recursiveGaussian'),
@@ -103,10 +103,10 @@ testApplications = [
 	('SimpleCubemapTexture', ['simpleCubemapTexture.cu',], 'simpleCubemapTexture'),
 	('SimpleGL', ['simpleGL_kernel.cu','simpleGL.cpp',], 'simpleGL'),
 	('SimpleLayeredTexture', ['simpleLayeredTexture.cu',], 'simpleLayeredTexture'),
-	('SimpleMPI', ['simpleMPI.cu','simpleMPI.cpp',], 'simpleMPI'),
+#	('SimpleMPI', ['simpleMPI.cu','simpleMPI.cpp',], 'simpleMPI'),
 	('SimpleMultiCopy', ['simpleMultiCopy.cu',], 'simpleMultiCopy'),
 	('SimpleMultiGPU', ['simpleMultiGPU_kernel.cu','simpleMultiGPU.cpp',], 'simpleMultiGPU'),
-	('SimpleP2P', ['simpleP2P.cu',], 'simpleP2P'),
+#	('SimpleP2P', ['simpleP2P.cu',], 'simpleP2P'),
 	('SimplePitchLinearTexture', ['simplePitchLinearTexture.cu',], 'simplePitchLinearTexture'),
 	('SimplePrintf', ['simplePrintf.cu'], 'simplePrintf'),
 	('SimpleStreams', ['simpleStreams.cu',], 'simpleStreams'),
@@ -123,11 +123,11 @@ testApplications = [
 	('SortingNetworks', ['oddEvenMergeSort.cu','bitonicSort.cu','sortingNetworks_validate.cpp','main.cpp',], 'sortingNetworks'),
 	('Template', ['template.cu','template_gold.cpp',], 'template'),
 	('ThreadFenceReduction', ['threadFenceReduction.cu',], 'threadFenceReduction'),
-	('ThreadMigration', ['threadMigration.cu','threadMigration.cpp',], 'threadMigration'),
+#	('ThreadMigration', ['threadMigration.cu','threadMigration.cpp',], 'threadMigration'),
 	('Transpose', ['transpose.cu',], 'transpose'),
 	('VectorAdd', ['vectorAdd.cu',], 'vectorAdd'),
 #	('VectorAddDrv', ['vectorAddDrv.cpp',], 'vectorAddDrv'),
-	('VolumeFiltering', ['volumeFilter_kernel.cu','volumeRender_kernel.cu','volumeFiltering.cpp','volume.cpp',], 'volumeFiltering'),
+#	('VolumeFiltering', ['volumeFilter_kernel.cu','volumeRender_kernel.cu','volumeFiltering.cpp','volume.cpp',], 'volumeFiltering'),
 	#('VolumeRender', ['volumeRender_kernel.cu','volumeRender.cpp',], 'volumeRender'),
 
 ]
@@ -135,7 +135,7 @@ testApplications = [
 # Identify applications requiring CUFFT or CUBLAS that lack "FFT" or "BLAS" in their names 
 #
 specificallyRequiresCufft = ('FluidsGL')
-specificallyRequiresCublas = ()
+specificallyRequiresCublas = ('MatrixMul')
 
 #
 # Construct build rules for all tests

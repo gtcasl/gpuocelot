@@ -43,12 +43,12 @@ testApplications = [
 	('histo', ['histo_final.cu','histo_intermediates.cu','histo_main.cu','histo_prescan.cu','main.cu','util.cu'], 'histo'), #
 	('lbm', ['main.cu'], 'lbm'), #
 	('mm', ['io.cc','main.cu',], 'mm'), # 
-	('mri-gridding', ['CPU_kernels.c','CUDA_interface.cu','sort.cu','scanLargeArray.cu'], 'mri-gridding'),
-	('mri-q', ['computeQ.cu','file.cc','main.cu'], 'mri-q'), #
+#	('mri-gridding', ['CPU_kernels.c','CUDA_interface.cu','sort.cu','scanLargeArray.cu'], 'mri-gridding'), #-- NO MAIN function
+	('mri-q', ['file.cc','main.cu'], 'mri-q'), #
 	('sad', ['file.c','image.c','largerBlocks.cu','main.cu','sad4.cu',], 'sad'), #
 	('spmv', ['file.cc','gpu_info.cc','main.cu'], 'spmv'), #
 	('stencil', ['file.cc','main.cu'], 'stencil'), #
-	('tpacf', ['args.cc','main.cu','model_io.cc','scan_largearray_kernel.cu'], 'tpacf'), 
+	('tpacf', ['args.cc','main.cu','model_io.cc',], 'tpacf'),  #
 ]
 
 #

@@ -128,7 +128,7 @@ testApplications = [
 	('VectorAdd', ['vectorAdd.cu',], 'vectorAdd'),
 #	('VectorAddDrv', ['vectorAddDrv.cpp',], 'vectorAddDrv'),
 #	('VolumeFiltering', ['volumeFilter_kernel.cu','volumeRender_kernel.cu','volumeFiltering.cpp','volume.cpp',], 'volumeFiltering'),
-	#('VolumeRender', ['volumeRender_kernel.cu','volumeRender.cpp',], 'volumeRender'),
+   ('VolumeRender', ['volumeRender_kernel.cu','volumeRender.cpp',], 'volumeRender'),
 
 ]
 #

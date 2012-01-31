@@ -478,6 +478,9 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	case LLVMExecutableKernel::ReturnCall:
 	{
 		nextFunction      = stack.returned();
+		if (*(int*)&nextFunction == -1) {
+			return true;
+		}
 		context.local     = stack.localMemory();
 		context.parameter = stack.parameterMemory();
 		context.argument  = stack.argumentMemory();
@@ -489,12 +492,12 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	}
 
 	_guessFunction = nextFunction;
-
+	
 	assertM(nextFunction < _queuedThreads.size(), "Next function " 
 		<< nextFunction << " is out of range of function table with "
 		<< _queuedThreads.size() << " entries.");
 	_queuedThreads[nextFunction].push_back(contextId);
-	
+
 	return false;
 }
 

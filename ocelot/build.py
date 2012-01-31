@@ -12,6 +12,7 @@ import re
 import subprocess
 import time
 from optparse import OptionParser
+import sys
 
 ################################################################################
 ## Build Ocelot
@@ -174,6 +175,12 @@ def main():
 
 	# Submit if the tests pass
 	submit(options, testsPassed)
+	
+	if buildSucceeded and ((options.test_level == 'none') or testsPassed):
+		sys.exit(0)
+	else:
+		print "Build failed"
+		sys.exit(1)
 
 ################################################################################
 

@@ -4744,15 +4744,26 @@ void PTXToLLVMTranslator::_translateRem( const ir::PTXInstruction& i )
 void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i, 
 	const analysis::DataflowGraph::Block& block )
 {
-	_yield( executive::LLVMExecutableKernel::ReturnCall );
+    //It is an exit instruction
+    if(!block.targets().empty() && !((*block.targets().begin())->label()).compare("exit")) {
+    	_yield( executive::LLVMExecutableKernel::ExitCall );
 
-	if( !block.targets().empty() )
-	{
-		ir::LLVMBr branch;
+	    ir::LLVMBr branch;
+    	branch.iftrue = "%exit";
+	
+    	_add( branch );
+    }
+    else {
+    	_yield( executive::LLVMExecutableKernel::ReturnCall );
+
+	    if( !block.targets().empty() )
+    	{
+    		ir::LLVMBr branch;
 		
-		branch.iftrue = "%" + (*block.targets().begin())->label();
-		_add( branch );
-	}
+    		branch.iftrue = "%" + (*block.targets().begin())->label();
+    		_add( branch );
+    	}
+    }
 }
 
 void PTXToLLVMTranslator::_translateRsqrt( const ir::PTXInstruction& i )

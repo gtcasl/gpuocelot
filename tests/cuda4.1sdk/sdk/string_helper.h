@@ -114,6 +114,9 @@ inline char* sdkFindFilePath(const char* filename, const char* executable_path)
     // The origin for the relative search may be the .exe file, a .bat file launching an .exe, a browser .exe launching the .exe or .bat, etc
     const char* searchPath[] = 
     {
+
+        "./tests/<lexecutable_name>/data/",         //lower case
+        "./tests/<uexecutable_name>/data/",         //upper case
         "./",                                       // same dir 
         "./data/",                                  // "/data/" subdir 
         "./src/",                                   // "/src/" subdir
@@ -179,6 +182,8 @@ inline char* sdkFindFilePath(const char* filename, const char* executable_path)
     {
         std::string path(searchPath[i]);        
         size_t executable_name_pos = path.find("<executable_name>");
+        size_t lexecutable_name_pos = path.find("<lexecutable_name>");
+        size_t uexecutable_name_pos = path.find("<uexecutable_name>");
 
         // If there is executable_name variable in the searchPath 
         // replace it with the value
@@ -195,7 +200,35 @@ inline char* sdkFindFilePath(const char* filename, const char* executable_path)
                 continue;
             }
         }
-        
+        else if(lexecutable_name_pos != std::string::npos)
+        {
+            if(executable_path != 0) 
+            {
+                path.replace(lexecutable_name_pos, strlen("<lexecutable_name>"), executable_name);
+                path[lexecutable_name_pos] =  tolower(executable_name[0]);
+
+            } 
+            else 
+            {
+                // Skip this path entry if no executable argument is given
+                continue;
+            }
+        }
+        else if(uexecutable_name_pos != std::string::npos)
+        {
+            if(executable_path != 0) 
+            {
+                path.replace(uexecutable_name_pos, strlen("<uexecutable_name>"), executable_name);
+                path[uexecutable_name_pos] = toupper(executable_name[0]);
+
+            } 
+            else 
+            {
+                // Skip this path entry if no executable argument is given
+                continue;
+            }
+        }
+ 
         // Test if the file exists
         path.append(filename);
         std::fstream fh(path.c_str(), std::fstream::in);

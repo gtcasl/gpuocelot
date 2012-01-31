@@ -680,7 +680,7 @@ cutFindFilePath(const char* filename, const char* executable_path)
         return file_path;
     free( file_path);
 
-    // search in ../../../src/<executable_name>/data/
+    // search in tests/<executable_name>/data/
     if (executable_path == 0)
         return 0;
     size_t executable_path_len = strlen(executable_path);
@@ -695,7 +695,7 @@ cutFindFilePath(const char* filename, const char* executable_path)
         ++exe;
     size_t executable_len = strlen(exe);
     size_t executable_dir_len = executable_path_len - executable_len;
-    const char projects_relative_path[] = "../../../src/";
+    const char projects_relative_path[] = "tests/";
     size_t projects_relative_path_len = strlen(projects_relative_path);
     file_path = 
       (char*) malloc( sizeof(char) * (executable_path_len +
@@ -705,6 +705,7 @@ cutFindFilePath(const char* filename, const char* executable_path)
     strcat(file_path, projects_relative_path);
     strcat(file_path, exe);
     file_path_len = strlen(file_path);
+    unsigned int exe_first_letter = file_path_len - executable_len;
     if (*(file_path + file_path_len - 1) == 'e' &&
         *(file_path + file_path_len - 2) == 'x' &&
         *(file_path + file_path_len - 3) == 'e' &&
@@ -723,6 +724,17 @@ cutFindFilePath(const char* filename, const char* executable_path)
 	std::fstream fh1(file_path, std::fstream::in);
     if (fh1.good())
         return file_path;
+    else {
+        char c = file_path[exe_first_letter];
+        if(isupper(c))
+            file_path[exe_first_letter] = tolower(c);
+        else
+            file_path[exe_first_letter] = toupper(c);
+
+        std::fstream fh2(file_path, std::fstream::in);
+        if(fh2.good())
+            return file_path;
+    }
     free( file_path);
     return 0;
 }

@@ -120,7 +120,6 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 	}
 	
 	if (!translation) {	
-
 		translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
 			getOptimizationLevel(), warpSize, specialization);
 		
@@ -1072,7 +1071,7 @@ static void cloneAndOptimizeTranslation(
 		
 #endif
 
-		assert(0 && "quitting");
+		assert(0 && "due to broken LLVM module");
 		
 		delete translatedKernel.llvmModule;
 		translatedKernel.llvmModule = 0;

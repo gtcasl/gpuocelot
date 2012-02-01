@@ -265,8 +265,8 @@ void analysis::LLVMUniformVectorization::Translation::_enumerateEntries() {
 	
 	ExternalEdgeVector Subkernel::*entryLists[] = {
 		&Subkernel::inEdges,
-		&Subkernel::barrierEntries,
-		&Subkernel::divergentEntries,
+//		&Subkernel::barrierEntries,
+//		&Subkernel::divergentEntries,
 	};
 	
 	for (int i = 0; i < 3; i++) {

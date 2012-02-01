@@ -41,12 +41,22 @@ namespace analysis {
 		
 		class ExternalEdge {
 		public:
-			ExternalEdge(): entryId(0), exitStatus(Thread_subkernel) { }
+		
+			enum Flags {
+				F_normal = 0,
+				F_external = 1,
+				F_barrier = 2,
+				F_divergence = 4,
+			};
+			
+		public:
+			ExternalEdge(): entryId(0), exitStatus(Thread_subkernel), flags(0) { }
 			ExternalEdge(const ir::BasicBlock::Edge &edge, 
 				ir::BasicBlock::Pointer _handler,
 				SubkernelId _entryId = 0,
-				ThreadExitType _exit = Thread_subkernel): 
-				sourceEdge(edge), handler(_handler), entryId(_entryId), exitStatus(_exit) { }
+				ThreadExitType _exit = Thread_subkernel,
+				int _flags = 0): 
+				sourceEdge(edge), handler(_handler), entryId(_entryId), exitStatus(_exit), flags(_flags) { }
 			
 			static SubkernelId getSubkernelId(SubkernelId entryId) {
 				return (entryId >> 16);
@@ -73,6 +83,9 @@ namespace analysis {
 			
 			//! \brief indicates disposition of exit edge
 			ThreadExitType exitStatus;
+			
+			//! \brief identifies category of edge
+			int flags;
 		};
 		typedef std::vector<ExternalEdge> ExternalEdgeVector;
 		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
@@ -158,28 +171,31 @@ namespace analysis {
 			
 			// in edges
 			ExternalEdgeVector inEdges;
-			
-			//! entry points for barriers
-			ExternalEdgeVector barrierEntries;
-			
-			//! exit points for barriers
-			ExternalEdgeVector barrierExits;
-			
-			//! divergent entry handlers
-			ExternalEdgeVector divergentEntries;
-			
-			//! divergent exit handlers
-			ExternalEdgeVector divergentExits;
 		};
 		typedef std::map< SubkernelId, Subkernel> SubkernelMap;
 		
 		//!
 		class KernelGraph {
 		public:
-			KernelGraph(ir::PTXKernel *_kernel, SubkernelId baseId = 0);
+			enum PartitioningHeuristic {
+				Partition_maximum = 0,
+				Partition_minimum,
+				Partition_minimumWithBarriers,
+				Partition_loops,
+				PartitioningHeuristic_invalid
+			};
+			
+		public:
+		
+			KernelGraph(ir::PTXKernel *_kernel, 
+				SubkernelId baseId = 0, 
+				PartitioningHeuristic _h = Partition_minimumWithBarriers);
 			~KernelGraph();
 		
 			size_t localMemorySize() const;
+			
+			static std::string toString(PartitioningHeuristic h);
+			static PartitioningHeuristic fromString(const std::string &s);
 		
 		protected:
 		
@@ -193,6 +209,8 @@ namespace analysis {
 			
 			void _partitionMaximumSize(SubkernelId baseId);
 			void _partitionMinimumSize(SubkernelId baseId);
+			void _partitionMiminumWithBarriers(SubkernelId baseId);
+			void _partitionLoops(SubkernelId baseId);
 		
 		public:
 		
@@ -215,6 +233,9 @@ namespace analysis {
 			
 			//! \brief maps registers to offset
 			RegisterOffsetMap registerOffsets;
+			
+			//! \brief identifies the partitioning heuristic to use
+			PartitioningHeuristic heuristic;
 		};
 		
 		class BarrierPartitioning {

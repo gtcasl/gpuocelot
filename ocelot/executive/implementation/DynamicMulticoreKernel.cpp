@@ -12,7 +12,7 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
-#include <ocelot/executive/interface/DynamicMulticoreCPUDevice.h>
+#include <ocelot/executive/interface/DynamicMulticoreDevice.h>
 #include <ocelot/executive/interface/DynamicExecutionManager.h>
 
 // Hydrazine includes

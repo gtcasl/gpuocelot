@@ -241,6 +241,10 @@ tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 tests.append(('TestDriverAPISequence', \
 	'ocelot/cuda/test/driver/sequence.cpp', 'full'))
+tests.append(('TestConvergence', 'ocelot/executive/test/TestConvergence.cu', 'full'))
+tests.append(('TestConvergenceBarrier', 'ocelot/executive/test/TestConvergentBarrier.cu', 'full'))
+tests.append(('TestConvergenceLoop', 'ocelot/executive/test/TestConvergenceLoop.cu', 'full'))
+tests.append(('TestDivergence', 'ocelot/executive/test/TestDivergence.cu', 'full'))
 
 for test in tests:
 	libs = ocelot_libs

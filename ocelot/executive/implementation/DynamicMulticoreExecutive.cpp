@@ -165,8 +165,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		DynamicExecutionManager::get().translationCache.getOrInsertTranslation(2, 
 			kernelGraph->getEntrySubkernel());
 
-	assert(0 && "Early exit due to manually defined warp size");
-
 	assert(entryTranslation); 
 	
 	int tid = 0;
@@ -184,7 +182,8 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	
 	do {
 		if (maxIterations && ++iterations >= maxIterations) {
-			reportE(REPORT_SCHEDULE_OPERATIONS, " early termination (maxIterations = " << maxIterations << ")");
+			reportE(REPORT_SCHEDULE_OPERATIONS, " early termination (maxIterations = " 
+				<< maxIterations << ")");
 			break;
 		}
 	

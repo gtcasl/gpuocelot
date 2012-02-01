@@ -34,6 +34,17 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static ir::PTXInstruction *getTerminator(ir::BasicBlock::Pointer block) {
+	return static_cast<ir::PTXInstruction*>(block->instructions.back());
+}
+
+static bool doesBarrierTerminateBlock(ir::BasicBlock::Pointer block) {
+	return static_cast<ir::PTXInstruction*>(block->instructions.back())->opcode == ir::PTXInstruction::Bar;
+}
+			
+////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+
 analysis::KernelPartitioningPass::KernelPartitioningPass() {
 
 }
@@ -96,15 +107,19 @@ void analysis::KernelPartitioningPass::BarrierPartitioning::runOnKernel(ir::PTXK
 
 analysis::KernelPartitioningPass::KernelGraph::KernelGraph(
 	ir::PTXKernel *_kernel, 
-	SubkernelId baseId)
+	SubkernelId baseId,
+	PartitioningHeuristic _h)
 : 
-	ptxKernel(_kernel) 
+	ptxKernel(_kernel),
+	heuristic(_h)
 {
 	// data flow analysis
 	_sourceKernelDfg = new analysis::DataflowGraph;
 	_sourceKernelDfg->analyze(*ptxKernel);
 	
 	size_t spillRegionSize = _computeRegisterOffsets();
+	
+	report(" KernelGraph( partitioning with heuristic " << toString(heuristic) << ")");
 	
 #if REPORT_BASE && REPORT_EMIT_SOURCE_PTXKERNEL
 	report("Partitioning kernel " << _kernel->name);
@@ -123,6 +138,56 @@ analysis::KernelPartitioningPass::KernelGraph::~KernelGraph() {
 	}
 	subkernels.clear();
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::string analysis::KernelPartitioningPass::KernelGraph::toString(
+	analysis::KernelPartitioningPass::KernelGraph::PartitioningHeuristic h) {
+
+	switch (h) {
+		case Partition_maximum:
+			return "maximum";
+		case Partition_minimum:
+			return "minimum";
+		case Partition_minimumWithBarriers:
+			return "minimumWithBarriers";
+		case Partition_loops:
+			return "loops";
+		default:
+			break;
+	}
+	return "invalid";
+}
+
+analysis::KernelPartitioningPass::KernelGraph::PartitioningHeuristic
+	analysis::KernelPartitioningPass::KernelGraph::fromString(const std::string &s) {
+
+	PartitioningHeuristic h[] = {
+		Partition_maximum,
+		Partition_minimum,
+		Partition_minimumWithBarriers,
+		Partition_loops,
+		PartitioningHeuristic_invalid
+	};
+	const char *str[] = {
+		"maximum", "minimum", "minimumWithBarriers", "loops", 0
+	};
+	for (int i = 0; h[i] != PartitioningHeuristic_invalid; i++) {
+		if (std::string(str[i]) == s) {
+			return h[i];
+		}
+	}
+	return PartitioningHeuristic_invalid;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Partitioning heuristics implemented here. Try out several. 
+//
+// - partitionMaximumSize: the entire kernel is one subkernel with compulsory exits at barriers
+// - partitionMinimumSize: subkernel consists of just one basic block with all edges 
+// - partitionMinimumWithBarriers: consists of one to two basic blocks if adjacent via barrier edge 
+// - partitionLoops: subkernel contains loop header and body
 
 
 void analysis::KernelPartitioningPass::KernelGraph::_partitionMaximumSize(SubkernelId baseId) {
@@ -162,6 +227,122 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionMinimumSize(Subker
 			entrySubkernelId = subkernel.id;
 		}
 	}
+}
+
+void analysis::KernelPartitioningPass::KernelGraph::_partitionMiminumWithBarriers(SubkernelId baseId) {
+	report("KernelGraph::_partitionMiminumWithBarriers()");
+	
+	std::vector< BasicBlockSet > partitions;
+	BasicBlockSet visited;
+	BasicBlockSet activePartition;
+	
+	// add all blocks to subkernel
+	ir::ControlFlowGraph *cfg = ptxKernel->cfg();
+	ir::ControlFlowGraph::BlockPointerVector topological = cfg->topological_sequence();
+	
+	for (ir::ControlFlowGraph::BlockPointerVector::iterator bb_it = topological.begin(); 
+		bb_it != topological.end(); ++bb_it) {
+		ir::BasicBlock::Pointer block = *bb_it;
+		
+		if (!block->instructions.size()) {
+			continue;
+		}
+
+		if (visited.find(block) == visited.end()) {
+			activePartition.insert(block);
+			
+			ir::BasicBlock::Pointer succ = block;
+			for (; getTerminator(succ)->opcode == ir::PTXInstruction::Bar; ) {
+				succ = succ->out_edges[0]->tail;
+				activePartition.insert(succ);
+			}
+			
+			visited.insert(activePartition.begin(), activePartition.end());
+			partitions.push_back(activePartition);
+			activePartition.clear();
+		}
+	}
+	
+	for (std::vector< BasicBlockSet >::iterator sk_it = partitions.begin(); 
+		sk_it != partitions.end();
+		++sk_it) {
+				
+		Subkernel subkernel(baseId + subkernels.size());
+		subkernel.sourceBlocks = *sk_it;
+		subkernel.create(ptxKernel, _sourceKernelDfg, registerOffsets);
+		subkernels.insert(std::make_pair(subkernel.id, subkernel));
+		
+		if (subkernels.size() == 1) {
+			entrySubkernelId = subkernel.id;
+		}
+	}
+}
+
+void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(SubkernelId baseId) {
+	assert(0 && "unimplemented");
+}
+
+/*!
+	\brief constructs a partitioning of the PTX kernel according to some heuristic
+		then uses these to create subkernels
+*/
+void analysis::KernelPartitioningPass::KernelGraph::_partition(SubkernelId baseId) {
+	//
+	// select partitioning heuristic here
+	//
+	// A partitioning constructs a set of basic-block sets. The edges are then
+	// classified as internal if they do not cross partitions and external if they do.
+	// External edges are further classified as in-edges or out-edges from the perspective
+	// of each subkernel.
+	//
+	
+	// construct subkernels according to one of several partitioning heuristics
+	switch (heuristic) {
+		case Partition_maximum:
+			_partitionMaximumSize(baseId);
+			break;
+		case Partition_minimum:
+			_partitionMinimumSize(baseId);
+			break;
+		case Partition_minimumWithBarriers:
+			_partitionMiminumWithBarriers(baseId);
+			break;
+		case Partition_loops:
+			_partitionLoops(baseId);
+			break;
+		default:
+			assert(0 && "invalid partitioning heuristic");
+			break;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+	\brief inserts local variable declarations for spill regions, resume points, and resume status
+*/
+void analysis::KernelPartitioningPass::KernelGraph::_createSpillRegion(size_t spillSize) {
+	
+	ir::PTXStatement resumeTarget(ir::PTXStatement::Local);
+		
+	resumeTarget.type = ir::PTXOperand::u32;
+	resumeTarget.name = "_Zocelot_resume_point";
+	
+	ptxKernel->locals.insert(std::make_pair(resumeTarget.name, ir::Local(resumeTarget)));
+	
+	ir::PTXStatement resumeStatus(ir::PTXStatement::Local);
+	resumeStatus.type = ir::PTXOperand::u32;
+	resumeStatus.name = "_Zocelot_resume_status";
+	ptxKernel->locals.insert(std::make_pair(resumeStatus.name, ir::Local(resumeStatus)));
+	
+	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
+	spillRegion.type = ir::PTXOperand::b8;
+	spillRegion.name = "_Zocelot_spill_area";
+	spillRegion.array.stride.push_back((unsigned int)spillSize);
+	
+	ptxKernel->locals.insert(std::make_pair(spillRegion.name, ir::Local(spillRegion)));
+		
+	report("  Spill region size is " << spillSize);
 }
 
 void analysis::KernelPartitioningPass::KernelGraph::_linkExternalEdges() {
@@ -209,52 +390,6 @@ void analysis::KernelPartitioningPass::KernelGraph::_linkExternalEdges() {
 }
 
 /*!
-	\brief constructs a partitioning of the PTX kernel according to some heuristic
-		then uses these to create subkernels
-*/
-void analysis::KernelPartitioningPass::KernelGraph::_partition(SubkernelId baseId) {
-	//
-	// select partitioning heuristic here
-	//
-	// A partitioning constructs a set of basic-block sets. The edges are then
-	// classified as internal if they do not cross partitions and external if they do.
-	// External edges are further classified as in-edges or out-edges from the perspective
-	// of each subkernel.
-	//
-	
-	// construct subkernels according to one of several partitioning heuristics
-	_partitionMinimumSize(baseId);
-}
-
-/*!
-	\brief inserts local variable declarations for spill regions, resume points, and resume status
-*/
-void analysis::KernelPartitioningPass::KernelGraph::_createSpillRegion(size_t spillSize) {
-	
-	ir::PTXStatement resumeTarget(ir::PTXStatement::Local);
-		
-	resumeTarget.type = ir::PTXOperand::u32;
-	resumeTarget.name = "_Zocelot_resume_point";
-	
-	ptxKernel->locals.insert(std::make_pair(resumeTarget.name, ir::Local(resumeTarget)));
-	
-	ir::PTXStatement resumeStatus(ir::PTXStatement::Local);
-	resumeStatus.type = ir::PTXOperand::u32;
-	resumeStatus.name = "_Zocelot_resume_status";
-	ptxKernel->locals.insert(std::make_pair(resumeStatus.name, ir::Local(resumeStatus)));
-	
-	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
-	spillRegion.type = ir::PTXOperand::b8;
-	spillRegion.name = "_Zocelot_spill_area";
-	spillRegion.array.stride.push_back((unsigned int)spillSize);
-	
-	ptxKernel->locals.insert(std::make_pair(spillRegion.name, ir::Local(spillRegion)));
-		
-	report("  Spill region size is " << spillSize);
-}
-
-
-/*!
 
 */
 void analysis::KernelPartitioningPass::KernelGraph::_createHandlers() {
@@ -298,8 +433,9 @@ size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
 	}
 	return localsSize;
 }
-			
-////////////////////////////////////////////////////////////////////////////////////////////////////			
+
+////////////////////////////////////////////////////////////////////////////////////////////////////	
+		
 analysis::KernelPartitioningPass::Subkernel::Subkernel(SubkernelId _id): id(_id) {
 
 }
@@ -358,10 +494,11 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
 	
 	_analyzeExternalEdges(source, internalEdges, blockMapping);
-	_analyzeBarriers(source, internalEdges, blockMapping);
-	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
+//	_analyzeBarriers(source, internalEdges, blockMapping);
+//	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
 }
 
+#if 0
 //! creates barrier entries and exits
 void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
 	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
@@ -369,7 +506,6 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
 	report(" _analyzeBarriers()");
 	
 	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
-	
 	
 	for (ir::ControlFlowGraph::iterator bb_it = subkernelCfg->begin(); 
 		bb_it != subkernelCfg->end(); ++bb_it) {
@@ -383,14 +519,19 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
 				report("  barrier in block " << bb_it->label);
 				
 				ir::ControlFlowGraph::iterator blockBeforeBarrier = bb_it;
-				ir::ControlFlowGraph::edge_iterator barrierEdge = bb_it->out_edges.front();
-				ir::ControlFlowGraph::iterator blockAfterBarrier = barrierEdge->tail;
+				//ir::ControlFlowGraph::edge_iterator barrierEdge = bb_it->out_edges.front();
+				//ir::ControlFlowGraph::iterator blockAfterBarrier = barrierEdge->tail;
+				ir::ControlFlowGraph::iterator blockAfterBarrier = barrierSuccessors[blockMapping[bb_it]];
+				
+				report("   removing split edge");
 				
 				// remove the split edge, add a new one between the barrier block and the exit
-				subkernelCfg->remove_edge(barrierEdge);
+				//subkernelCfg->remove_edge(barrierEdge);
 				subkernelCfg->insert_edge(ir::BasicBlock::Edge(blockBeforeBarrier, 
 					subkernelCfg->get_exit_block(), ir::BasicBlock::Edge::Dummy));
 
+				report("   removing split edge");
+				
 				// create a handler block and transform the source code
 				ir::BasicBlock handlerBlock(blockAfterBarrier->label + "_barrier_entry");
 				ir::ControlFlowGraph::iterator entryHandlerBlock = subkernelCfg->insert_block(handlerBlock);
@@ -422,6 +563,7 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
 		}
 	}
 }
+#endif
 
 //! creates external edges for subkernel entries and exits
 void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
@@ -448,8 +590,11 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 		for (ir::BasicBlock::EdgePointerVector::iterator edge_it = (*bb_it)->out_edges.begin();
 			edge_it != (*bb_it)->out_edges.end(); ++edge_it ) {
 		
-			//bool isExitEdge = (*edge_it)->tail == source->cfg()->get_exit_block();
-			if (sourceBlocks.find((*edge_it)->tail) == sourceBlocks.end()) {
+			bool isExitEdge = (*edge_it)->tail == source->cfg()->get_exit_block();
+			bool isBarrierExit = doesBarrierTerminateBlock((*edge_it)->head);
+			bool isExternalEdge = sourceBlocks.find((*edge_it)->tail) == sourceBlocks.end();
+			
+			if (!isExitEdge && (isExternalEdge || isBarrierExit)) {
 				
 				ir::BasicBlock handler;
 				std::string suffix = ((*edge_it)->tail->label != "" ? "_to_" : "");
@@ -457,7 +602,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 					(*edge_it)->tail->label.substr(4);
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
-				outEdges.push_back(ExternalEdge(**edge_it, handlerBlock));
+				int flags = (isBarrierExit ? ExternalEdge::F_barrier: 0) | (isExternalEdge ? ExternalEdge::F_external: 0);
+				outEdges.push_back(ExternalEdge(**edge_it, handlerBlock, 0, Thread_subkernel, flags));
 				
 				report("  adding EXTERNAL OUT-Edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
@@ -473,7 +619,10 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 			edge_it != (*bb_it)->in_edges.end(); ++edge_it) {
 			
 			bool isEntryEdge = (*edge_it)->head == source->cfg()->get_entry_block();
-			if (sourceBlocks.find((*edge_it)->head) == sourceBlocks.end() && !isEntryEdge) {
+			bool isBarrierExit = doesBarrierTerminateBlock((*edge_it)->head);
+			bool isExternalEdge = sourceBlocks.find((*edge_it)->head) == sourceBlocks.end();
+			
+			if (!isEntryEdge && (isExternalEdge || isBarrierExit)) {
 			
 				ir::BasicBlock handler;
 				std::string suffix = ((*edge_it)->head->label != "" ? "_from_" : "");
@@ -483,7 +632,9 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				
 				// assign unique entryId 
 				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)inEdges.size());
-				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock, entryId));
+				
+				int flags = (isBarrierExit ? ExternalEdge::F_barrier: 0) | (isExternalEdge ? ExternalEdge::F_external: 0);
+				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock, entryId, Thread_subkernel, flags));
 				
 				report("  adding EXTERNAL IN-Edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
@@ -505,18 +656,23 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 		
 		report(" looking in block mapping: " << edge_it->head->label << " -> " << edge_it->tail->label);
 		
-		if (blockMapping.find(edge_it->head) == blockMapping.end()) {
-			assert(0 && "Failed to find predecessor block in mapping");
-		}
-		if (blockMapping.find(edge_it->tail) == blockMapping.end()) {
-			assert(0 && "Failed to find successor block in mapping");
-		}
+		bool isBarrierExit = doesBarrierTerminateBlock(edge_it->head);
 		
-		ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
-			blockMapping[edge_it->tail], edge_it->type);
+		if (!isBarrierExit) {
+			if (blockMapping.find(edge_it->head) == blockMapping.end()) {
+				assert(0 && "Failed to find predecessor block in mapping");
+			}
+			if (blockMapping.find(edge_it->tail) == blockMapping.end()) {
+				report("  failed to find successor block '" << edge_it->tail->label << "' in mapping");
+				assert(0 && "Failed to find successor block in mapping");
+			}
+		
+			ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
+				blockMapping[edge_it->tail], edge_it->type);
 			
-		report("  adding internal edge: " << internalEdge.head->label << " -> " << internalEdge.tail -> label);
-		subkernelCfg->insert_edge(internalEdge);
+			report("  adding internal edge: " << internalEdge.head->label << " -> " << internalEdge.tail -> label);
+			subkernelCfg->insert_edge(internalEdge);
+		}
 	}
 	
 	// identify frontier blocks along in eges
@@ -554,6 +710,7 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
 /*!
 	\brief partitions blocks in parent kernel such that bar.sync is last instruction
 */
+/*
 void analysis::KernelPartitioningPass::Subkernel::_partitionBlocksAtBarrier() {
 	report("partitioning blocks at barriers");
 	int barrierCount = 0;
@@ -632,7 +789,6 @@ void analysis::KernelPartitioningPass::Subkernel::_partitionBlocksAtBarrier() {
 	report("  encountered " << barrierCount << " barriers");
 }
 
-
 class ExternalEdgeIterator {
 public:
 	typedef analysis::KernelPartitioningPass::ExternalEdgeVector ExternalEdgeVector;
@@ -702,6 +858,8 @@ protected:
 	
 	ExternalEdgeVector::iterator iterator;
 };
+
+*/
 
 void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
 	analysis::DataflowGraph::RegisterSet &uses) {
@@ -809,7 +967,8 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
 		frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
 	}
-	
+
+#if 0
 	report("Barrier exits");
 	
 	for (ExternalEdgeVector::iterator edge_it = barrierExits.begin();
@@ -828,6 +987,7 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		RegisterSet aliveValues = cfgToDfg[edge_it->sourceBlock]->aliveOut();
 		*/
 	}
+#endif
 
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
 }

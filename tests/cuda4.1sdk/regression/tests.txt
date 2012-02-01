@@ -2,7 +2,6 @@
 ../ConvolutionSeparable -qatest
 ../FluidsGL -qatest
 ../MersenneTwister -qatest
-../regression -qatest
 ../SimpleMultiGPU -qatest
 ../SortingNetworks
 ../AsyncAPI -qatest
@@ -12,6 +11,7 @@
 ../ScalarProd -qatest
 ../SimplePitchLinearTexture -qatest
 ../Template -qatest
+../MatrixMul -qatest
 ../BandwidthTest -qatest
 ../CppIntegration -qatest
 ../Histogram -qatest
@@ -31,7 +31,6 @@
 ../SimpleTemplates -qatest
 ../Transpose -qatest
 ../BinomialOptions -qatest
-../DeviceQueryDrv -qatest
 ../InlinePTX -qatest
 ../OceanFFT -qatest
 ../SimpleTexture -qatest
@@ -69,3 +68,4 @@
 ../SimpleMultiCopy -qatest
 ../SobolQRNG -qatest
 ../SimpleAtomicIntrinsics -qatest
+../VolumeRender -qatest

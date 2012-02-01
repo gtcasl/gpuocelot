@@ -25,13 +25,10 @@ void LLVMFunctionCallStack::call(unsigned int l, unsigned int a, unsigned int i,
 
 unsigned int LLVMFunctionCallStack::returned()
 {
-	unsigned int resumePoint = -1;
-	if (_sizes.size()) {
-		const ParameterAndLocalSize& sizes = _sizes.back();
-		_stack.resize(_stack.size() - sizes.localSize - sizes.parameterSize);
-		resumePoint = sizes.resumePoint;
-		_sizes.pop_back();
-	}
+	const ParameterAndLocalSize& sizes = _sizes.back();
+	_stack.resize(_stack.size() - sizes.localSize - sizes.parameterSize);
+	unsigned int resumePoint = sizes.resumePoint;
+	_sizes.pop_back();
 	return resumePoint;
 }
 

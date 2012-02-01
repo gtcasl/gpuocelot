@@ -2681,14 +2681,16 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			_nextTraceGenerators.begin(), 
 			_nextTraceGenerators.end());
 
-		if (!api::OcelotConfiguration::get().executive.asynchronousKernelLaunch) {
-			_getWorkerThread().launch(moduleName, kernelName, convert(launch.gridDim), 
+		if (config::get().executive.asynchronousKernelLaunch) {
+			_getWorkerThread().launch(moduleName, kernelName,
+				convert(launch.gridDim), 
 				convert(launch.blockDim), launch.sharedMemory, 
 				thread.parameterBlock, paramSize, traceGens, &_externals);
 		}
 		else {
-			_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), convert(launch.blockDim), 
-				launch.sharedMemory, thread.parameterBlock, paramSize, traceGens, &_externals);
+			_getDevice().launch(moduleName, kernelName, convert(launch.gridDim),
+				convert(launch.blockDim), launch.sharedMemory,
+				thread.parameterBlock, paramSize, traceGens, &_externals);
 		}
 		report(" launch completed successfully");	
 	}
@@ -2819,7 +2821,8 @@ cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *entry,
 	    _bind();
 
 		executive::ExecutableKernel *executableKernel =
-			_getDevice().getKernel(kernel->second.module, kernel->second.kernel);
+			_getDevice().getKernel(kernel->second.module,
+				kernel->second.kernel);
 		executableKernel->setCacheConfiguration(
 			_translateCacheConfiguration(cacheConfig));
 		
@@ -2893,7 +2896,7 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	try {
 		if (_getDevice().queryEvent(event)) {
 		
-			if(!api::OcelotConfiguration::get().executive.asynchronousKernelLaunch ||
+			if(!config::get().executive.asynchronousKernelLaunch ||
 				!_getWorkerThread().areAnyKernelsRunning())
 			{
 				result = cudaSuccess;

@@ -26,8 +26,8 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
-		asynchronousKernelLaunch: false,
+		devices: [ llvm, emulated ],
+		asynchronousKernelLaunch: true,
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,
@@ -36,7 +36,8 @@
 		warpSize: 1
 	},
 	optimizations: {
-		subkernelSize: 1000
+		subkernelSize: 1000,
+		simplifyCFG: true
 	},
 	checkpoint: {
 		enabled: false,

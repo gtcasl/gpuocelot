@@ -358,6 +358,10 @@ namespace ir {
 		bool mayHaveAddressableOperand() const;
 		/*! \brief Can the instruction affect state other than destinations? */
 		bool hasSideEffects() const;
+		/*! \brief Does the instruction trigger a memory operation */
+		bool isMemoryInstruction() const;
+		/*! \brief Can the instruction exit the kernel/function */
+		bool isExit() const;
 
 	public:
 		/*! Opcode of PTX instruction */

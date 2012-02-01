@@ -19,6 +19,8 @@
 #include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
 #include <ocelot/transforms/interface/SplitBasicBlockPass.h>
 #include <ocelot/transforms/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
+#include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -114,6 +116,20 @@ namespace tools
 			manager.addPass( *pass );
 		}
 		
+		if( passes & HoistSpecialDefinitions )
+		{
+			transforms::Pass* pass =
+				new transforms::HoistSpecialValueDefinitionsPass;
+			manager.addPass( *pass );
+		}
+		
+		if( passes & SimplifyCFG )
+		{
+			transforms::Pass* pass =
+				new transforms::SimplifyControlFlowGraphPass;
+			manager.addPass( *pass );
+		}
+		
 		if( input.empty() )
 		{
 			std::cout << "No input file name given.  Bailing out." << std::endl;
@@ -205,6 +221,16 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched sync-elimination." );
 			types |= tools::PTXOptimizer::SyncElimination;
 		}
+		else if( *pass == "hoist-special-definitions" )
+		{
+			report( "  Matched hoist-special-definitions." );
+			types |= tools::PTXOptimizer::HoistSpecialDefinitions;
+		}
+		else if( *pass == "simplify-cfg" )
+		{
+			report( "  Matched simplify-cfg." );
+			types |= tools::PTXOptimizer::SimplifyCFG;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -238,7 +264,7 @@ int main( int argc, char** argv )
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
 		"mimd-threading, dead-code-elimination, split-blocks, "
-		"sync-elimination)" );
+		"sync-elimination, hoist-special-definitions, simplify-cfg)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

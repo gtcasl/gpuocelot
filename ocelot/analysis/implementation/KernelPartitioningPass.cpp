@@ -368,13 +368,19 @@ void analysis::KernelPartitioningPass::KernelGraph::_linkExternalEdges() {
 					
 						ExternalEdge &inEdge = *inedge_it;
 						if (inEdge.sourceEdge.head == edge_it->sourceEdge.head && 
-							inEdge.sourceEdge.tail == edge_it->sourceEdge.tail && 
-							inEdge.sourceEdge.type == edge_it->sourceEdge.type) {
+							inEdge.sourceEdge.tail == edge_it->sourceEdge.tail) {
 						
-							edge_it->entryId = inEdge.entryId;
-							found = true;
-							report("  linking " << edge_it->handler->label << " to " << inEdge.handler->label 
-								<< " (entry " << edge_it->entryId << ")");
+							if (inEdge.sourceEdge.type == edge_it->sourceEdge.type) {
+								edge_it->entryId = inEdge.entryId;
+								found = true;
+								report("  linking " << edge_it->handler->label << " to " << inEdge.handler->label 
+									<< " (entry " << edge_it->entryId << ")");
+							}
+							else {
+								report("  NOT linking " << edge_it->handler->label << " to " << inEdge.handler->label 
+									<< " (entry " << edge_it->entryId << ") due to mis-matched edge types: " 
+									<< edge_it->sourceEdge.type << " -> " << inEdge.sourceEdge.type);
+							}
 						}
 					}	
 				}
@@ -450,7 +456,6 @@ void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source,
 	report("Subkernel::create(" << source->name << ")");
 	
 	_create(source);
-	
 	
 	subkernel->write(std::cout);
 }
@@ -603,7 +608,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
 				int flags = (isBarrierExit ? ExternalEdge::F_barrier: 0) | (isExternalEdge ? ExternalEdge::F_external: 0);
-				outEdges.push_back(ExternalEdge(**edge_it, handlerBlock, 0, Thread_subkernel, flags));
+				ThreadExitType entryStatus = (isBarrierExit ? Thread_subkernel : Thread_barrier);
+				outEdges.push_back(ExternalEdge(**edge_it, handlerBlock, 0, entryStatus, flags));
 				
 				report("  adding EXTERNAL OUT-Edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
@@ -634,7 +640,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)inEdges.size());
 				
 				int flags = (isBarrierExit ? ExternalEdge::F_barrier: 0) | (isExternalEdge ? ExternalEdge::F_external: 0);
-				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock, entryId, Thread_subkernel, flags));
+				ThreadExitType entryStatus = (isBarrierExit ? Thread_barrier : Thread_subkernel);
+				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock, entryId, entryStatus, flags));
 				
 				report("  adding EXTERNAL IN-Edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
@@ -705,161 +712,6 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
 	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
 	report(" _analyzeDivergentControlFlow()");
 }
-
-
-/*!
-	\brief partitions blocks in parent kernel such that bar.sync is last instruction
-*/
-/*
-void analysis::KernelPartitioningPass::Subkernel::_partitionBlocksAtBarrier() {
-	report("partitioning blocks at barriers");
-	int barrierCount = 0;
-	
-	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
-	
-	for (ir::ControlFlowGraph::iterator bb_it = subkernelCfg->begin(); 
-		bb_it != subkernelCfg->end(); ++bb_it) {
-
-		unsigned int n = 0;
-		for (ir::BasicBlock::InstructionList::iterator inst_it = (bb_it)->instructions.begin();
-			inst_it != (bb_it)->instructions.end(); ++inst_it, n++) {
-
-			ir::PTXInstruction *inst = static_cast<ir::PTXInstruction *>(*inst_it);
-			
-			if (inst->opcode == ir::PTXInstruction::Ret) {
-				inst->opcode = ir::PTXInstruction::Exit;
-			}
-			
-			if (inst->opcode == ir::PTXInstruction::Bar) {
-				report("  barrier in block " << bb_it->label << "(instruction " << n << ")");
-				
-				if (n + 1 < (unsigned int)(bb_it)->instructions.size()) {
-				
-					std::string label = (bb_it)->label + "_bar";
-					ir::ControlFlowGraph::iterator block = subkernelCfg->split_block(bb_it, n+1, 
-						ir::BasicBlock::Edge::FallThrough, label);
-					
-					ir::ControlFlowGraph::edge_iterator splitEdge = block->in_edges.front();
-					ir::ControlFlowGraph::iterator beforeBarrierBlock = splitEdge->head;
-					
-					// remove the split edge, add a new one between the barrier block and the exit
-					subkernelCfg->remove_edge(splitEdge);
-					subkernelCfg->insert_edge(ir::BasicBlock::Edge(beforeBarrierBlock, 
-						subkernelCfg->get_exit_block(), ir::BasicBlock::Edge::Dummy));
-
-					// create a handler block and transform the source code
-					ir::BasicBlock handlerBlock(block->label + "_barrier_entry");
-					ir::ControlFlowGraph::iterator entryHandlerBlock = subkernelCfg->insert_block(handlerBlock);
-					ir::ControlFlowGraph::edge_iterator entryEdge = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
-						entryHandlerBlock, block, ir::BasicBlock::Edge::Branch));
-					ir::ControlFlowGraph::edge_iterator dummyEntry = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
-						subkernelCfg->get_entry_block(), entryHandlerBlock, ir::BasicBlock::Edge::Dummy));
-										
-					// construct a subkernel entry
-					SubkernelId entryId = ExternalEdge::getEncodedEntry(id, 
-						(SubkernelId)(inEdges.size() + barrierEntries.size()));
-						
-					ExternalEdge externalEntryEdge;
-					externalEntryEdge.handler = entryHandlerBlock;
-					externalEntryEdge.frontierBlock = block;
-					externalEntryEdge.exitStatus = Thread_barrier;
-					externalEntryEdge.entryId = entryId;
-					barrierEntries.push_back(externalEntryEdge);
-
-					ExternalEdge externalExitEdge;
-					externalExitEdge.handler = beforeBarrierBlock;
-					externalExitEdge.frontierBlock = beforeBarrierBlock;
-					externalExitEdge.exitStatus = Thread_barrier;
-					externalEntryEdge.entryId = entryId;
-					barrierExits.push_back(externalExitEdge);
-				
-					report("  - partitioned into additional block: " << block->label);
-				}
-				
-				++barrierCount;
-				break;
-			}
-			else {
-				// found a barrier that is the last instruction in a basic block - this could potentially
-				// be along the subkernel frontier, so make sure this gets handled correctly.
-			}
-		}
-	}
-	
-	report("  encountered " << barrierCount << " barriers");
-}
-
-class ExternalEdgeIterator {
-public:
-	typedef analysis::KernelPartitioningPass::ExternalEdgeVector ExternalEdgeVector;
-	typedef analysis::KernelPartitioningPass::Subkernel Subkernel;
-	typedef analysis::KernelPartitioningPass::ExternalEdge ExternalEdge;
-	
-	ExternalEdgeIterator(): subkernel(0), selector(0) { }
-	
-	ExternalEdgeIterator(
-		Subkernel *_sk, 
-		size_t _sel,
-		 ExternalEdgeVector::iterator _it):
-		 subkernel(_sk), selector(_sel), iterator(_it) {
-		 
-	}
-
-	static ExternalEdgeIterator begin(Subkernel *_sk) { 
-
-		return ExternalEdgeIterator(_sk, 0, _sk->outEdges.begin());
-	}
-	
-	static ExternalEdgeIterator end(Subkernel *_sk) {
-		return ExternalEdgeIterator(_sk, 5, _sk->divergentExits.end());
-	}
-	
-	ExternalEdgeIterator &operator++() {
-		static ExternalEdgeVector Subkernel::* member[] = {
-			&Subkernel::outEdges, 
-			&Subkernel::inEdges, 
-			&Subkernel::barrierEntries, 
-			&Subkernel::barrierExits, 
-			&Subkernel::divergentEntries, 
-			&Subkernel::divergentExits
-		};
-		if (++iterator == (subkernel->*(member[selector])).end()) {
-			++selector;
-		}
-		return *this;
-	}
-	
-	ExternalEdgeIterator operator++(int) {
-		ExternalEdgeIterator copy(*this);
-		(*this)++;
-		return copy;
-	}
-	
-	ExternalEdge &operator->() {
-		return *iterator;
-	}
-	
-	bool operator ==(const ExternalEdgeIterator &it) const {
-		return (it.subkernel == subkernel && it.selector == selector && it.iterator == iterator);
-	}
-	
-	bool operator !=(const ExternalEdgeIterator &it) const {
-		return !(*this == it);
-	}
-	
-	size_t index() const {
-		return selector;
-	}
-	
-protected:
-	Subkernel *subkernel;
-
-	size_t selector;
-	
-	ExternalEdgeVector::iterator iterator;
-};
-
-*/
 
 void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
 	analysis::DataflowGraph::RegisterSet &uses) {
@@ -962,32 +814,15 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		
 		_spillLiveValues(subkernelDfg, handlerDfgBlock, usedRegisters, aliveValues, registerOffsets, false);
 
-		_createExit(handlerDfgBlock, subkernelDfg, edge_it->exitStatus, edge_it->entryId);
+		ThreadExitType exitStatus = edge_it->exitStatus;
+		if (edge_it->flags & ExternalEdge::F_barrier) {
+			exitStatus = Thread_barrier;
+		}
+		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, edge_it->entryId);
 		
 		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
 		frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
 	}
-
-#if 0
-	report("Barrier exits");
-	
-	for (ExternalEdgeVector::iterator edge_it = barrierExits.begin();
-		edge_it != barrierExits.end(); ++edge_it) {
-	
-		report("  barrier exit: " << edge_it->frontierBlock->label);
-
-		assert(subkernelCfgToDfg.find(edge_it->frontierBlock) != subkernelCfgToDfg.end());
-		auto frontierDfgBlock = subkernelCfgToDfg[edge_it->frontierBlock];
-		
-		RegisterSet aliveValues = frontierDfgBlock->aliveOut();
-		report("    " << aliveValues.size() << " live values at barrier");
-
-		// restore live values
-				/*		
-		RegisterSet aliveValues = cfgToDfg[edge_it->sourceBlock]->aliveOut();
-		*/
-	}
-#endif
 
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
 }
@@ -1082,8 +917,6 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 			--instr_it;
 			
 			subkernelDfg->erase(dfgBlock, instr_it );
-			_createExit(dfgBlock, subkernelDfg, Thread_barrier, 
-				block_it->second.at(0).entryId);
 		}
 		else if (terminator->opcode == ir::PTXInstruction::Exit) {
 			ExternalEdge &externalEdge = block_it->second.front();

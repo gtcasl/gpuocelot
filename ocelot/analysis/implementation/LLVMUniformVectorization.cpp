@@ -263,18 +263,23 @@ void analysis::LLVMUniformVectorization::Translation::_enumerateEntries() {
 	typedef analysis::KernelPartitioningPass::ExternalEdgeVector ExternalEdgeVector;
 	typedef analysis::KernelPartitioningPass::ExternalEdge ExternalEdge;
 	
+	report("_enumerateEntries()");
+	
 	ExternalEdgeVector Subkernel::*entryLists[] = {
 		&Subkernel::inEdges,
 //		&Subkernel::barrierEntries,
 //		&Subkernel::divergentEntries,
 	};
 	
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 1; i++) {
 		for (ExternalEdgeVector::iterator edge_it = (subkernel->*(entryLists[i])).begin();
 			edge_it != (subkernel->*(entryLists[i])).end(); ++edge_it) {
 			ExternalEdge &edge = *edge_it;
 			
 			schedulerEntryBlock.entries[edge.entryId] = ocelotToLlvmBlockMap[edge.handler];
+			
+			report("  adding entry " << edge.entryId << " to " 
+				<< schedulerEntryBlock.entries[edge.entryId]->getName().str());
 		}
 	}
 }
@@ -468,7 +473,8 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 }
 
 void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlock( ) {
-		
+	report("  _completeSchedulerEntryBlock()");
+	
 	llvm::BitCastInst *bitcastPtr = new llvm::BitCastInst(
 		schedulerEntryBlock.threadLocalArguments[0].localPointer, 
 		llvm::PointerType::get(llvm::IntegerType::get(context(), 32), 0), 
@@ -484,6 +490,8 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 		
 		switchInst->setSuccessor(idx, entry_it->second);
 		switchInst->setSuccessorValue(idx, getConstInt32(entry_it->first));
+		
+		report("  added successor " << idx << " -> " << entry_it->second->getName().str());
 	}
 }
 

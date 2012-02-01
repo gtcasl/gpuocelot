@@ -25,15 +25,17 @@ namespace tools
 			/*! \brief The possible PTX to PTX passes */
 			enum PassType
 			{
-				InvalidPassType      = 0x0,
-				RemoveBarriers       = 0x1,
-				ReverseIfConversion  = 0x2,
-				SubkernelFormation   = 0x4,
-				StructuralTransform  = 0x8,
-				MIMDThreadScheduling = 0x10,
-				DeadCodeElimination  = 0x20,
-				SplitBasicBlocks     = 0x40,
-				SyncElimination      = 0x80
+				InvalidPassType         = 0x0,
+				RemoveBarriers          = 0x1,
+				ReverseIfConversion     = 0x2,
+				SubkernelFormation      = 0x4,
+				StructuralTransform     = 0x8,
+				MIMDThreadScheduling    = 0x10,
+				DeadCodeElimination     = 0x20,
+				SplitBasicBlocks        = 0x40,
+				SyncElimination         = 0x80,
+				HoistSpecialDefinitions = 0x100,
+				SimplifyCFG             = 0x200
 			};
 	
 		public:

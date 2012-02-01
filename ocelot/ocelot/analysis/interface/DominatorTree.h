@@ -57,6 +57,12 @@ namespace analysis {
 		/*! Get the dominator of a given block */
 		ir::ControlFlowGraph::iterator getDominator(
 			ir::ControlFlowGraph::iterator block);
+			
+		/*! Get the nearest common dominator of two blocks */
+		ir::ControlFlowGraph::iterator getCommonDominator(
+			ir::ControlFlowGraph::iterator block1,
+			ir::ControlFlowGraph::iterator block2);
+		
 	private:
 		void computeDT();
 		int intersect(int b1, int b2) const;

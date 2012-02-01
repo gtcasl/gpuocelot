@@ -18,6 +18,8 @@
 #include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
 #include <ocelot/transforms/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
+#include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
 
 namespace ocelot
 {
@@ -33,6 +35,8 @@ namespace ocelot
 		transforms::LinearScanRegisterAllocationPass _linearScanAllocation;
 		transforms::MIMDThreadSchedulingPass _mimdThreadScheduling;
 		transforms::SyncEliminationPass _syncElimination;
+		transforms::HoistSpecialValueDefinitionsPass _hoistSpecialValues;
+		transforms::SimplifyControlFlowGraphPass _simplifyCFG;
 		
 		bool _initialized;
 		

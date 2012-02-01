@@ -239,6 +239,19 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 	return regs;
 }
 
+PTXOperand::RegisterType PTXKernel::getUnusedRegister() const {
+	RegisterVector regs = getReferencedRegisters();
+	
+	PTXOperand::RegisterType max = 0;
+
+	for (RegisterVector::const_iterator reg = regs.begin();
+		reg != regs.end(); ++reg) {
+		max = std::max(max, reg->id);
+	}
+	
+	return max + 1;
+}
+
 bool PTXKernel::executable() const {
 	return false;
 }
@@ -261,6 +274,7 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 
 	bool inParameterList = false;
 	bool isReturnArgument = false;
+	bool hasExit = false;
 	unsigned int statementIndex = 0;
 	for( ; kernelStart != kernelEnd; ++kernelStart, ++statementIndex ) 
 	{
@@ -322,7 +336,8 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
-			else if( statement.instruction.opcode == PTXInstruction::Exit )
+			else if( statement.instruction.opcode == PTXInstruction::Exit
+				|| statement.instruction.opcode == PTXInstruction::Ret )
 			{
 				last_inserted_block = block;
 				if (edge.type != ControlFlowGraph::Edge::Invalid) {
@@ -330,24 +345,17 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 				}
 				edge.head = block;
 				edge.tail = cfg.get_exit_block();
-				edge.type = ControlFlowGraph::Edge::FallThrough;
+				if (hasExit)
+				{
+					edge.type = ControlFlowGraph::Edge::Branch;
+				}
+				else
+				{
+					edge.type = ControlFlowGraph::Edge::FallThrough;
+					hasExit = true;
+				}
 				cfg.insert_edge(edge);
 				
-				block = cfg.insert_block(
-					ControlFlowGraph::BasicBlock("", cfg.newId()));
-				edge.type = ControlFlowGraph::Edge::Invalid;
-			}
-			else if( statement.instruction.opcode == PTXInstruction::Ret )
-			{
-				last_inserted_block = block;
-				if (edge.type != ControlFlowGraph::Edge::Invalid) {
-					cfg.insert_edge(edge);
-				}
-				edge.head = block;
-				edge.tail = cfg.get_exit_block();
-				edge.type = ControlFlowGraph::Edge::Branch;
-				cfg.insert_edge(edge);
-
 				block = cfg.insert_block(
 					ControlFlowGraph::BasicBlock("", cfg.newId()));
 				edge.type = ControlFlowGraph::Edge::Invalid;

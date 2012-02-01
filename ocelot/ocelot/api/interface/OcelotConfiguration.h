@@ -192,7 +192,13 @@ namespace api {
 			bool mimdThreadScheduling;
 			
 			/*! \brief Sync elimination pass */
-			bool syncElimination;			
+			bool syncElimination;	
+			
+			/*! \brief Hoist special values pass */
+			bool hoistSpecialValues;	
+			
+			/*! \brief Simplify control graph pass */
+			bool simplifyCFG;			
 		};
 
 

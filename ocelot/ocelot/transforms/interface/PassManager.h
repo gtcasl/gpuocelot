@@ -99,6 +99,7 @@ private:
 private:
 	PassMap           _passes;
 	ir::Module*       _module;
+	ir::IRKernel*     _kernel;
 	AnalysisMap*      _analyses;
 };
 

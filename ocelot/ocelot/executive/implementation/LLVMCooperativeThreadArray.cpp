@@ -340,9 +340,9 @@ void LLVMCooperativeThreadArray::_computeNextFunction()
 	}
 	else
 	{
-		_nextFunction        = 1;
-		unsigned int total   = 0;
-		unsigned int count   = _queuedThreads[1].size();
+		_nextFunction      = 1;
+		unsigned int total = 0;
+		unsigned int count = _queuedThreads[1].size();
 		
 		ThreadListVector::iterator queue = _queuedThreads.begin();
 		
@@ -478,9 +478,6 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	case LLVMExecutableKernel::ReturnCall:
 	{
 		nextFunction      = stack.returned();
-		if (*(int*)&nextFunction == -1) {
-			return true;
-		}
 		context.local     = stack.localMemory();
 		context.parameter = stack.parameterMemory();
 		context.argument  = stack.argumentMemory();

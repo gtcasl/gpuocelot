@@ -104,6 +104,17 @@ ir::ControlFlowGraph::iterator DominatorTree::getDominator(
 	return blocks[i_dom[n]];
 }
 
+ir::ControlFlowGraph::iterator DominatorTree::getCommonDominator(
+	ir::ControlFlowGraph::iterator block1,
+	ir::ControlFlowGraph::iterator block2) {
+
+	int n1 = blocksToIndex[block1];
+	int n2 = blocksToIndex[block2];
+	
+	int n = intersect(i_dom[n1], i_dom[n2]);
+	
+	return blocks[n];
+}
 
 /*! Computes the dominator tree from a CFG using algorithm desrcibed in
 	"A simple and fast dominance algorithm" by 

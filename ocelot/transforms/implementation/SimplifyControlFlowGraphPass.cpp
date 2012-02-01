@@ -150,18 +150,51 @@ bool SimplifyControlFlowGraphPass::_deleteEmptyBlocks(ir::IRKernel& k)
 	bool any = false;
 	
 	for(ir::ControlFlowGraph::iterator block = k.cfg()->begin();
-		block != k.cfg()->end(); ++block)
+		block != k.cfg()->end(); )
 	{
-		if(block == k.cfg()->get_entry_block()) continue;
-		if(block == k.cfg()->get_exit_block())  continue;
+		if(block == k.cfg()->get_entry_block()) { ++block; continue; }
+		if(block == k.cfg()->get_exit_block())  { ++block; continue; }
 	
 		if(block->instructions.empty())
 		{
 			// redirect all in_edges to the target
 			ir::BasicBlock::EdgePointerVector inEdges = block->in_edges;
 		
-			for(ir::ControlFlowGraph::edge_pointer_iterator edge = inEdges.begin();
-				edge != inEdges.end(); ++edge)
+			if(block->has_fallthrough_edge())
+			{
+				ir::ControlFlowGraph::iterator fallthrough =
+					block->get_fallthrough_edge()->tail;
+
+				k.cfg()->remove_edge(block->get_fallthrough_edge());
+
+				for(ir::ControlFlowGraph::edge_pointer_iterator
+					edge = inEdges.begin();	edge != inEdges.end(); ++edge)
+				{
+					if((*edge)->type == ir::Edge::FallThrough)
+					{
+						k.cfg()->insert_edge(ir::Edge((*edge)->head,
+							fallthrough, ir::Edge::FallThrough));
+					}
+					else
+					{
+						k.cfg()->insert_edge(ir::Edge((*edge)->head,
+							fallthrough, ir::Edge::Branch));
+							
+						ir::PTXInstruction& ptx =
+							static_cast<ir::PTXInstruction&>(
+							*(*edge)->head->instructions.back());
+							
+						ptx.d.identifier = fallthrough->label;
+					}
+				}
+			}
+		
+			// delete the block, should wipe out all edges
+			k.cfg()->remove_block(block++);
+		}
+		else
+		{
+			++block;
 		}
 	}
 	

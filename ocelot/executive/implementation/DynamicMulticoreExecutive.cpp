@@ -29,6 +29,7 @@
 #define REPORT_BASE 0
 
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
+#define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -130,7 +131,8 @@ executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
 void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::Dim3 &blockId) {
 
 	const ir::Dim3 blockDim = kernel->blockDim();
-	SubkernelId startingSubkernel = kernel->kernelGraph()->getEntrySubkernel();
+	SubkernelId startingSubkernel = analysis::KernelPartitioningPass::ExternalEdge::getEncodedEntry(
+		kernel->kernelGraph()->getEntrySubkernel(), 0);
 	
 	std::memset(localMemory, 0, localMemorySize * blockDim.size());
 	
@@ -150,7 +152,10 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 		
 		_setResumePoint(&contexts[i], startingSubkernel);
 		_setResumeStatus(&contexts[i], analysis::KernelPartitioningPass::Thread_entry);
+		
+		report("  initialized contest - startingSubkernel = " << startingSubkernel);
 	}
+	report("  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
 }
 
 void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
@@ -158,14 +163,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		<< kernel->name << "' for CTA size " << kernel->blockDim().size() << " threads");
 
 	_initializeThreadContexts(block);
-
-	analysis::KernelPartitioningPass::KernelGraph *kernelGraph = kernel->kernelGraph();
-
-	DynamicTranslationCache::Translation *entryTranslation =
-		DynamicExecutionManager::get().translationCache.getOrInsertTranslation(2, 
-			kernelGraph->getEntrySubkernel());
-
-	assert(entryTranslation); 
 	
 	int tid = 0;
 	
@@ -173,9 +170,9 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	int exitingThreads = 0;
 	int iterations = 0;
 	
-	int maxIterations = 0;
+	int maxIterations = 24;
 	
-#if REPORT_SCHEDULE_OPERATIONS && REPORT_BASE
+#if REPORT_LOCAL_MEMORY && REPORT_BASE
 	reportE(REPORT_SCHEDULE_OPERATIONS, "Parameter memory: ");
 	_emitParameterMemory(&contexts[0]);
 #endif
@@ -197,10 +194,13 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			//   execute subkernel
 			SubkernelId encodedSubkernel = _getResumePoint(&contexts[tid]);
 			SubkernelId subkernelId = analysis::KernelPartitioningPass::ExternalEdge::getSubkernelId(encodedSubkernel);
+			SubkernelId entryId = analysis::KernelPartitioningPass::ExternalEdge::getEntryId(encodedSubkernel);
 			int warpSize = 1;
 			unsigned int specialization = 0;
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  encoded resume point: " << encodedSubkernel);
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  subkernel: " << subkernelId);
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  entry: " << entryId);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  mapped subkernel ID: " << subkernelId);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  fetching translation (warp size: " << warpSize << ")");
 		
@@ -210,11 +210,11 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		
 			assert(translation);
 			
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel");
-		
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel " << translation->name());
+				
 			translation->execute(warp);
 			
-#if REPORT_SCHEDULE_OPERATIONS && REPORT_BASE
+#if REPORT_LOCAL_MEMORY  && REPORT_BASE
 			reportE(REPORT_SCHEDULE_OPERATIONS, "Local memory: ");
 			_emitThreadLocalMemory(warp[0]);
 #endif

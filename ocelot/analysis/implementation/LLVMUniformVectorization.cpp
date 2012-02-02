@@ -41,18 +41,9 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; \
-	throw hydrazine::Exception(ss.str()); }
-
-#ifdef REPORT_BASE
-#undef REPORT_BASE
-#endif
-
-#define REPORT_BASE 1
+#define REPORT_FINAL_SUBKERNEL 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -197,7 +188,9 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	_transformWarpSynchronous();
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
+#if REPORT_BASE && REPORT_FINAL_SUBKERNEL
 	report(" LLVM function:\n" << String(function));
+#endif
 }
 
 analysis::LLVMUniformVectorization::Translation::~Translation() {
@@ -479,7 +472,11 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 		schedulerEntryBlock.threadLocalArguments[0].localPointer, 
 		llvm::PointerType::get(llvm::IntegerType::get(context(), 32), 0), 
 		"bitcast", schedulerEntryBlock.block);
-	llvm::LoadInst *resumePoint = new llvm::LoadInst(bitcastPtr, "resumePoint", schedulerEntryBlock.block);
+	llvm::LoadInst *encodedResumePoint = new llvm::LoadInst(bitcastPtr, "encodedResumePoint", 
+		schedulerEntryBlock.block);
+	
+	llvm::BinaryOperator *resumePoint = llvm::BinaryOperator::Create(llvm::Instruction::And, 
+		encodedResumePoint, getConstInt32(0x0ffff), "resumePoint", schedulerEntryBlock.block);
 	
 	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(resumePoint, schedulerEntryBlock.defaultEntry, 
 		schedulerEntryBlock.entries.size() + 1, schedulerEntryBlock.block);
@@ -493,7 +490,7 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 		switchInst->setSuccessor(idx, entry_it->second);
 		switchInst->setSuccessorValue(idx, getConstInt32(entry_it->first));
 		*/
-		switchInst->addCase(getConstInt32(entry_it->first), entry_it->second);
+		switchInst->addCase(getConstInt32(entry_it->first & 0x0ffff), entry_it->second);
 		
 		report("  added successor " << idx << " -> " << entry_it->second->getName().str());
 	}

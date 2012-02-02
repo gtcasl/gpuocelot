@@ -94,7 +94,7 @@ executive::ExecutableKernel* executive::DynamicMulticoreDevice::getKernel(const 
 		
 		if (ptx_kernel_it  != kernelMap.end()) {
 			const ir::PTXKernel *ptxKernel = ptx_kernel_it->second;
-			multicoreKernel = new DynamicMulticoreKernel(*ptxKernel, this);
+			multicoreKernel = new DynamicMulticoreKernel(*ptxKernel, this, getFreeSubkernelId());
 			mod_it->second.kernels[kernel] = multicoreKernel;
 		}
 	}
@@ -214,5 +214,20 @@ void executive::DynamicMulticoreDevice::limitWorkerThreads(unsigned int threads)
 void executive::DynamicMulticoreDevice::setOptimizationLevel(
 	translator::Translator::OptimizationLevel level) {
 
+}
+
+executive::DynamicMulticoreKernel::SubkernelId 
+	executive::DynamicMulticoreDevice::getFreeSubkernelId() const {
+	DynamicMulticoreKernel::SubkernelId baseId = 0;
+	for (ModuleMap::const_iterator module_it = modules.begin(); module_it != modules.end();
+		++module_it ) {
+		
+		for (DynamicMulticoreKernelMap::const_iterator kernel_it = module_it->second.kernels.begin();
+			kernel_it != module_it->second.kernels.end(); ++kernel_it) {
+		
+			baseId = std::max(baseId, kernel_it->second->getSubkernelIdRange().second);
+		}
+	}
+	return baseId + 1;
 }
 

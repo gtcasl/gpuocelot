@@ -21,9 +21,11 @@ namespace executive {
 
 	class DynamicMulticoreKernel: public ExecutableKernel {
 	public:
-	
+		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
+		typedef std::pair< SubkernelId, SubkernelId > SubkernelIdRange;
+		
 	public:
-		DynamicMulticoreKernel(const ir::IRKernel& k, executive::DynamicMulticoreDevice* d = 0);
+		DynamicMulticoreKernel(const ir::IRKernel& k, executive::DynamicMulticoreDevice* d = 0, SubkernelId _baseId = 0);
 		DynamicMulticoreKernel(executive::Device* d = 0);
 		virtual ~DynamicMulticoreKernel();
 	
@@ -57,6 +59,8 @@ namespace executive {
 		virtual TextureVector textureReferences() const;
 		
 		analysis::KernelPartitioningPass::KernelGraph *kernelGraph() const;
+		
+		SubkernelIdRange getSubkernelIdRange() const;
 	
 	private:
 	

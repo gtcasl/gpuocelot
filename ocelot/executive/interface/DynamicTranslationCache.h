@@ -45,6 +45,8 @@ namespace executive {
 		
 			void execute(LLVMContext **contexts) const;
 		
+			std::string name() const;
+		
 		public:
 		
 			//! \brief
@@ -142,7 +144,7 @@ namespace executive {
 		*/
 		Translation *getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
 			unsigned int specialization = 0);
-		
+					
 	private:
 	
 		void _translateKernel(TranslatedKernel &kernel);

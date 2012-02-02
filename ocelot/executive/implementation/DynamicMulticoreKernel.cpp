@@ -45,7 +45,7 @@ executive::DynamicMulticoreKernel::DynamicMulticoreKernel(executive::Device* d) 
 }
 
 executive::DynamicMulticoreKernel::DynamicMulticoreKernel(const ir::IRKernel& _kernel,
-	executive::DynamicMulticoreDevice* _d): 
+	executive::DynamicMulticoreDevice* _d, SubkernelId _baseId): 
 _kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory(0) {
 
 	report("DynamicMulticoreKernel(kernel, device)");
@@ -66,7 +66,7 @@ _kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory
 	report(" partitioning PTX kernel");
 	
 	analysis::KernelPartitioningPass partitioningPass;
-	_kernelGraph = partitioningPass.runOnFunction(* const_cast<ir::PTXKernel *>(_ptxKernel));
+	_kernelGraph = partitioningPass.runOnFunction(* const_cast<ir::PTXKernel *>(_ptxKernel), _baseId);
 	
 	mapArgumentOffsets();
 }
@@ -83,6 +83,23 @@ executive::DynamicMulticoreKernel::~DynamicMulticoreKernel() {
 
 analysis::KernelPartitioningPass::KernelGraph *executive::DynamicMulticoreKernel::kernelGraph() const {
 	return _kernelGraph;
+}
+
+
+executive::DynamicMulticoreKernel::SubkernelIdRange 
+	executive::DynamicMulticoreKernel::getSubkernelIdRange() const {
+	
+	SubkernelIdRange range(0, 0);
+	for (analysis::KernelPartitioningPass::SubkernelMap::const_iterator sk_it = _kernelGraph->subkernels.begin();
+		sk_it != _kernelGraph->subkernels.end(); ++sk_it) {
+		if (!range.first || range.first > sk_it->first) {
+			range.first = sk_it->first;
+		}
+		if (!range.second || range.second < sk_it->first) {
+			range.second = sk_it->first;
+		}
+	}
+	return range;
 }
 
 /*!	\brief Launch a kernel on a 2D grid */

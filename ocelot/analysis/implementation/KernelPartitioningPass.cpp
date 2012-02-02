@@ -27,7 +27,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_EMIT_SUBKERNEL_PTX 1
 #define REPORT_EMIT_SOURCE_PTXKERNEL 1
@@ -479,8 +479,6 @@ void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source,
 	report("Subkernel::create(" << source->name << ")");
 	
 	_create(source);
-	
-	subkernel->write(std::cout);
 }
 
 void analysis::KernelPartitioningPass::Subkernel::createHandlers(
@@ -500,7 +498,7 @@ void analysis::KernelPartitioningPass::Subkernel::createHandlers(
 
 void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source) {
 
-	report("Subkernel::_create(" << source->name << ")");
+	report("Subkernel::_create(" << source->name << " id: " << id << ")");
 	
 	std::stringstream ss;
 	ss << "_subkernel_" << source->name << "_" << id;
@@ -567,14 +565,14 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				ThreadExitType entryStatus;
 				
 				if (isBarrierExit) {
-					exitStatus = Thread_barrier;
+					entryStatus = Thread_barrier;
 				}
 				else if (isExitEdge) {
-					exitStatus = Thread_exit;
+					entryStatus = Thread_exit;
 					handler.label = (*edge_it)->head->label + "_thread_exit";
 				}
 				else {
-					exitStatus = Thread_subkernel;
+					entryStatus = Thread_subkernel;
 				}
 				
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);

@@ -68,6 +68,8 @@ namespace executive {
 		/*! \brief Get a translated kernel from the device */
 		virtual ExecutableKernel* getKernel(const std::string& module, 
 			const std::string& kernel);
+		
+		DynamicMulticoreKernel::SubkernelId getFreeSubkernelId() const;
 	
 		public:
 			/*! \brief helper function for launching a kernel

@@ -105,6 +105,7 @@ protected:
 	void _translateAnd( const ir::PTXInstruction& i );
 	void _translateAtom( const ir::PTXInstruction& i );
 	void _translateBar( const ir::PTXInstruction& i );
+	void _translateBfe( const ir::PTXInstruction& i );
 	void _translateBfi( const ir::PTXInstruction& i );
 	void _translateBfind( const ir::PTXInstruction& i );
 	void _translateBra( const ir::PTXInstruction& i, 

@@ -2279,6 +2279,7 @@ namespace parser
 		if( string == "atom" ) return ir::PTXInstruction::Atom;
 		if( string == "bar.sync" ) return ir::PTXInstruction::Bar;
 		if( string == "bar" ) return ir::PTXInstruction::Bar;
+		if( string == "bfe" ) return ir::PTXInstruction::Bfe;
 		if( string == "bfi" ) return ir::PTXInstruction::Bfi;
 		if( string == "bfind" ) return ir::PTXInstruction::Bfind;
 		if( string == "bra" ) return ir::PTXInstruction::Bra;

@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,7 +58,8 @@ _kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory
 	_gridDim.z = 1;
 	
 	_ptxKernel = static_cast<const ir::PTXKernel *>(&_kernel);
-		
+	
+	device = _device;
 	name = _kernel.name;
 	arguments = _kernel.arguments;
 	module = _kernel.module;
@@ -108,6 +109,7 @@ void executive::DynamicMulticoreKernel::launchGrid(int width, int height, int de
 	report( "Launching kernel \"" << name << "\" on grid ( x = " 
 		<< width << ", y = " << height << " )"  );
 	report("  shared memory size: " << this->sharedMemorySize() + this->externSharedMemorySize());
+	report("  device = " << (void *)device);
 	
 	_gridDim.x = width;
 	_gridDim.y = height;

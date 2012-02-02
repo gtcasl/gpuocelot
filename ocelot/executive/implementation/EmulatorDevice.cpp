@@ -38,7 +38,7 @@
 	throw hydrazine::Exception(s.str());}
 
 // Turn on report messages
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // Memory Alignment (must be a power of 2) 
 // (cuda currently requires 256-byte alignment)
@@ -1000,6 +1000,7 @@ namespace executive
 	void* EmulatorDevice::getTextureReference(const std::string& moduleName, 
 		const std::string& textureName)
 	{
+		report("EmulatorDevice::getTextureReference(" << moduleName << ", " << textureName << ")");
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
 		

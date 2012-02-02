@@ -10,8 +10,14 @@
 
 #include <cstring>
 
+#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/Module.h>
+
 namespace executive
 {
+
+
 
 /*! \brief A class contains the state for executing a kernel */
 class LLVMContext
@@ -46,6 +52,32 @@ public:
 public:
 	/*! \brief Generic pointer back to other state */
 	char* metadata;	// [11] 
+};
+
+class MetaData
+{
+public:
+	
+	typedef void (*Function)(LLVMContext*);
+	typedef std::unordered_map<ir::ControlFlowGraph::BasicBlock::Id, 
+		ir::ControlFlowGraph::const_iterator> BlockIdMap;
+	typedef ExecutableKernel::TextureVector TextureVector;
+
+public:
+	BlockIdMap           blocks;
+	const ir::PTXKernel* kernel;
+	Function             function;
+	TextureVector        textures;
+
+public:
+	unsigned int sharedSize;
+	unsigned int localSize;
+	unsigned int globalLocalSize;
+	unsigned int parameterSize;
+	unsigned int argumentSize;
+	unsigned int constantSize;
+	unsigned int warpSize;
+	unsigned int subkernels;  
 };
 
 }

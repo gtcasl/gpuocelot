@@ -12,6 +12,7 @@
 #include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/executive/interface/LLVMContext.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/Thread.h>
@@ -40,9 +41,11 @@ class LLVMContext;
 class LLVMModuleManager
 {
 public:
-	typedef void (*Function)(LLVMContext*);
+	typedef executive::MetaData MetaData;
+	typedef executive::MetaData::Function Function;
+	typedef executive::MetaData::TextureVector TextureVector;
+
 	typedef unsigned int FunctionId;
-	typedef ExecutableKernel::TextureVector TextureVector;
 
 public:
 	/*! \brief Loads a module into the manager, kernels are now visible */
@@ -76,31 +79,7 @@ public:
 	class ModuleDatabase;
 
 	class KernelAndTranslation
-	{
-	public:
-		class MetaData
-		{
-		public:
-			typedef std::unordered_map<ir::ControlFlowGraph::BasicBlock::Id, 
-				ir::ControlFlowGraph::const_iterator> BlockIdMap;
-
-		public:
-			BlockIdMap           blocks;
-			const ir::PTXKernel* kernel;
-			Function             function;
-			TextureVector        textures;
-		
-		public:
-			unsigned int sharedSize;
-			unsigned int localSize;
-			unsigned int globalLocalSize;
-			unsigned int parameterSize;
-			unsigned int argumentSize;
-			unsigned int constantSize;
-			unsigned int warpSize;
-			unsigned int subkernels;  
-		};
-	
+	{	
 	public:
 		KernelAndTranslation(ir::PTXKernel* k = 0, 
 			translator::Translator::OptimizationLevel level = 
@@ -125,8 +104,6 @@ public:
 		Device*                                   _device;
 		const ModuleDatabase*                     _database;
 	};
-
-	typedef KernelAndTranslation::MetaData MetaData;
 
 	class DatabaseMessage
 	{

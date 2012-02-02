@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
@@ -152,8 +152,6 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 		
 		_setResumePoint(&contexts[i], startingSubkernel);
 		_setResumeStatus(&contexts[i], analysis::KernelPartitioningPass::Thread_entry);
-		
-		report("  initialized contest - startingSubkernel = " << startingSubkernel);
 	}
 	report("  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
 }
@@ -185,7 +183,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		}
 	
 		LLVMContext *warp[1] = { &contexts[tid] };
-	
+			
 		reportE(REPORT_SCHEDULE_OPERATIONS, "--------------");
 		reportE(REPORT_SCHEDULE_OPERATIONS, "  executing thread " << tid);
 			
@@ -211,6 +209,9 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			assert(translation);
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel " << translation->name());
+
+			contexts[tid].metadata = (char *)translation->metadata;
+			report("  using metadata " << (void *)contexts[tid].metadata );
 				
 			translation->execute(warp);
 			

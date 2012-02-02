@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // Print out information when executing atomic operations 
 #define REPORT_ATOMIC_OPERATIONS 0
@@ -46,7 +46,7 @@
 // The id of the thread to print operations for
 #define NTH_THREAD 0
 
-typedef executive::LLVMModuleManager::KernelAndTranslation::MetaData MetaData;
+typedef executive::MetaData MetaData;
 
 template < typename T >
 static void __report( executive::LLVMContext* context, 
@@ -878,9 +878,13 @@ extern "C"
 	void __ocelot_tex_2d_ff( float* result, executive::LLVMContext* context, 
 		unsigned int index, float c0, float c1 )
 	{
+		report("  __ocelot_tex_2d_ff(index = " << index << ", c0 = " << c0 << ", c1 = " << c1 << ")");
+		
 		MetaData* state = (MetaData*) context->metadata;
+		report("     - fetching texture from metadata = " << (void *)context->metadata);
 		const ir::Texture& texture = *state->textures[ index ];
 		
+		report("     - sampling");
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
 		result[2] = executive::tex::sample< 2, float >( texture, c0, c1 );

@@ -145,7 +145,7 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -206,7 +206,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent, const ir::ExternalFunctionSet& externals)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -324,7 +324,7 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -463,7 +463,7 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	report( "  Setting up constant memory references." );
@@ -526,7 +526,7 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent, executive::Device* device)
 {
 	typedef std::unordered_map<std::string, unsigned int> TextureMap;
@@ -572,7 +572,7 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	report( "  Setting up local memory references." );
@@ -691,7 +691,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupGlobalLocalMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	report( "  Setting up globally scoped local memory references." );
@@ -758,7 +758,7 @@ static void setupGlobalLocalMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	executive::MetaData* metadata,
 	const ir::PTXKernel& parent, executive::Device* device,
 	const ir::ExternalFunctionSet& externals)
 {
@@ -907,11 +907,11 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	delete llvmKernel;
 }
 
-static LLVMModuleManager::KernelAndTranslation::MetaData* generateMetadata(
+static executive::MetaData* generateMetadata(
 	ir::PTXKernel& kernel, translator::Translator::OptimizationLevel level)
 {
-	LLVMModuleManager::KernelAndTranslation::MetaData* 
-		metadata = new LLVMModuleManager::KernelAndTranslation::MetaData;
+	executive::MetaData* 
+		metadata = new executive::MetaData;
 	report(" Building metadata.");
 	
 	if(level == translator::Translator::DebugOptimization
@@ -1155,7 +1155,7 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	#endif
 }
 
-LLVMModuleManager::KernelAndTranslation::MetaData*
+executive::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
 	#if HAVE_LLVM

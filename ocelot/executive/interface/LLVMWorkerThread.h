@@ -9,6 +9,7 @@
 
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMModuleManager.h>
+#include <ocelot/executive/interface/LLVMContext.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/Thread.h>
@@ -48,7 +49,7 @@ public:
 		const std::string& functionName);
 
 	/*! \brief Get the translated function from the database */
-	LLVMModuleManager::KernelAndTranslation::MetaData* getFunctionMetaData(
+	MetaData* getFunctionMetaData(
 		const LLVMModuleManager::FunctionId& id);
 
 private:

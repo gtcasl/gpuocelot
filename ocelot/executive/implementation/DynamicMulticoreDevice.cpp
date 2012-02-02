@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -63,6 +63,8 @@ executive::DynamicMulticoreDevice::~DynamicMulticoreDevice() {
 void executive::DynamicMulticoreDevice::load(const ir::Module* module) {
 	report("DynamicMulticoreDevice::load(" << module->path() << ")");
 	modules[module->path()] = Module(module);
+	_modules.insert(std::make_pair(module->path(), 
+		new EmulatorDevice::Module(module, this)));
 }
 
 

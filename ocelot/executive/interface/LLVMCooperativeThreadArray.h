@@ -37,7 +37,7 @@ public:
 	void flushTranslatedKernels();
 
 private:
-	typedef std::vector<LLVMModuleManager::MetaData*> FunctionTable;
+	typedef std::vector<executive::MetaData*> FunctionTable;
 	typedef std::vector<LLVMFunctionCallStack> StackVector;
 	typedef std::vector<LLVMContext> LLVMContextVector;
 	typedef std::vector<unsigned int> ThreadList;

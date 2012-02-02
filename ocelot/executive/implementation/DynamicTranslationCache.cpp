@@ -70,11 +70,11 @@
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
-#define REPORT_TRANSLATION_OPERATIONS 0		// translation events
+#define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -155,14 +155,14 @@ void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *
 
 //! \brief loads a module into the translation cache
 bool executive::DynamicTranslationCache::loadModule(const ir::Module *module, 
-	executive::DynamicMulticoreDevice *device) {
+	executive::DynamicMulticoreDevice *_device) {
 	
-	report("DynamicTranslationCache::loadModule(" << module->path() << ")");
+	report("DynamicTranslationCache::loadModule(" << module->path() << ", device = " << (void *)_device << ")");
 	
 	if (modules.find(module->path()) == modules.end()) {
 		ModuleMetadata newModule;
 		newModule.ptxModule = module;
-		this->device = device;
+		this->device = _device;
 		modules[module->path()] = newModule;
 		return true;
 	}
@@ -647,12 +647,15 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 				else {
 					ptx.a.reg = textures.size();
 					textures.insert(std::make_pair(ptx.a.identifier, textures.size()));
-						
+					
+					report("  getting texture reference, device = " << (void *)device);
+					
 					ir::Texture* texture = (ir::Texture*)device->getTextureReference(
 						kernel.module->path(), ptx.a.identifier);
 					
 					assert(texture != 0);
 					
+					report("   adding texture to metadata");
 					metadata->textures.push_back(texture);
 					reportE(REPORT_TRANSLATION_OPERATIONS, " adding as texture " << ptx.a.reg);
 				}
@@ -1130,27 +1133,30 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 	typedef analysis::KernelPartitioningPass::SubkernelMap SubkernelMap;
 	SubkernelMap &subkernels = translatedKernel.kernel->kernelGraph()->subkernels;
 
+	// compte memory sizes and layouts
+	translatedKernel.metadata = generateMetadata(*translatedKernel.kernel->kernelGraph()->ptxKernel, 
+		getOptimizationLevel());
+	
+	size_t subkernelCount = 0;
+	
 	for (SubkernelMap::iterator subkernel_it = subkernels.begin(); 
-		subkernel_it != subkernels.end(); ++subkernel_it) {
+		subkernel_it != subkernels.end(); ++subkernel_it, ++subkernelCount) {
 	
 		subkernelsToKernel[subkernel_it->first] = &translatedKernel;
 	
 		ir::PTXKernel *subkernelPtx = subkernel_it->second.subkernel;
-	
-		DynamicMulticoreExecutive::Metadata *metadata = 0;
-	
-		// apply PTX optimizations and transformations needed to support the dynamic translation cache
-		//optimizePTX(*subkernelPtx, optimization);
-		
+			
 		report("  translating subkernel " << subkernelPtx->name);
 		
 		try {
-	
-			// compte memory sizes and layouts
-			metadata = generateMetadata(*subkernelPtx, getOptimizationLevel());
+			
+			report("   setting up PTX memory references");
 		
 			// translate global memory references
-			setupPTXMemoryReferences(*subkernelPtx, metadata, device);
+			setupPTXMemoryReferences(*subkernelPtx, 
+				(executive::DynamicMulticoreExecutive::Metadata*)translatedKernel.metadata, device);
+			
+			report("   setting up call targets");
 
 			// rewrite call functions with hyperblock exits chained to target functions
 			setupCallTargets(*subkernelPtx, *this);
@@ -1163,11 +1169,12 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			manager.addPass(translator);
 			manager.runOnKernel(*subkernelPtx);
 
+			report("   loading LLVM kernel");
 			ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
 				translator.translatedKernel());
 
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
-			llvmKernel->assemble(false);
+			llvmKernel->assemble(!subkernelCount);
 
 			llvm::SMDiagnostic error;
 
@@ -1201,18 +1208,12 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			TranslatedSubkernel newSubkernel;
 			newSubkernel.llvmFunction = translatedKernel.llvmModule->getFunction(getTranslatedName(
 				subkernelPtx->name));
-			newSubkernel.metadata = metadata;
+			newSubkernel.metadata = translatedKernel.metadata;
 			newSubkernel.subkernelPtx = subkernelPtx;
 			translatedKernel.subkernels[subkernel_it->first] = newSubkernel;
-		
-			// might convert back from SSA at some point.
-		
-			translatedKernel.metadata = metadata;
 		}
 		catch(...)
 		{
-			delete metadata;
-			metadata = 0;
 			throw;
 		}
 	

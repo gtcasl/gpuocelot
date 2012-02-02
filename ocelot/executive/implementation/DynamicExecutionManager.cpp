@@ -23,7 +23,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +51,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	size_t sharedMemorySize) {
 	
 	report("DynamicExecutionManager::launch()");
-	
+
 	translationCache.loadModule(kernel.module, static_cast<executive::DynamicMulticoreDevice*>(kernel.device));
 	
 	// make the kernel graph available to the dynamic translation cache if need be

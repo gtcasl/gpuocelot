@@ -72,7 +72,7 @@ namespace executive {
 		analysis::KernelPartitioningPass::KernelGraph *_kernelGraph;
 	
 		const ir::PTXKernel* _ptxKernel;
-		const DynamicMulticoreDevice *_device;
+		DynamicMulticoreDevice *_device;
 		char *_argumentMemory;
 		char *_constantMemory;
 	};

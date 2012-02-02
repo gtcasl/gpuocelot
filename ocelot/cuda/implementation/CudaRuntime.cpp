@@ -2475,8 +2475,8 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 				texture->second.texture, *texref, *desc, size);
 			result = cudaSuccess;
 		}
-		catch(hydrazine::Exception&) {
-
+		catch(hydrazine::Exception &exp) {
+			report("  exception thrown from _getDevice().bindTexture(): " << exp.what());
 		}
 		_unbind();
 	}
@@ -2688,7 +2688,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			_nextTraceGenerators.begin(), 
 			_nextTraceGenerators.end());
 
-		_getWorkerThread().launch(moduleName, kernelName, convert(launch.gridDim), 
+		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, paramSize, traceGens, &_externals);
 		report(" launch completed successfully");	

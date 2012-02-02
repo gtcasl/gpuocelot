@@ -558,13 +558,27 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 			if (/*!isExitEdge &&*/ (isExternalEdge || isBarrierExit)) {
 				
 				ir::BasicBlock handler;
+				
 				std::string suffix = ((*edge_it)->tail->label != "" ? "_to_" : "");
 				handler.label = (*edge_it)->head->label + "_exit_handler" + suffix + 
 					(*edge_it)->tail->label.substr(4);
-				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
 				int flags = (isBarrierExit ? ExternalEdge::F_barrier: 0) | (isExternalEdge ? ExternalEdge::F_external: 0);
-				ThreadExitType entryStatus = (isBarrierExit ? Thread_subkernel : Thread_barrier);
+				ThreadExitType entryStatus;
+				
+				if (isBarrierExit) {
+					exitStatus = Thread_barrier;
+				}
+				else if (isExitEdge) {
+					exitStatus = Thread_exit;
+					handler.label = (*edge_it)->head->label + "_thread_exit";
+				}
+				else {
+					exitStatus = Thread_subkernel;
+				}
+				
+				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
+				
 				outEdges.push_back(ExternalEdge(**edge_it, handlerBlock, 0, entryStatus, flags));
 				
 				report("  adding EXTERNAL OUT-Edge " << (*edge_it)->head->label << " -> " 

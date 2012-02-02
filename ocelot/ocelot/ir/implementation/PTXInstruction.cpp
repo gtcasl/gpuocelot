@@ -764,7 +764,8 @@ std::string ir::PTXInstruction::valid() const {
 			if (!(type == PTXOperand::u32 || type == PTXOperand::u64)) {
 				return "invalid instruction type " + PTXOperand::toString(type);
 			}
-			if (!(addressSpace == Global || addressSpace == Local || addressSpace == Shared)) {
+			if (!(addressSpace == Global || addressSpace == Local
+				|| addressSpace == Shared)) {
 				return "invalid address space " + toString(addressSpace);
 			}
 			break;
@@ -2408,7 +2409,7 @@ std::string ir::PTXInstruction::toString() const {
 				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString();
 		}
-		case Tex: {
+		case Tex: {			
 			return guard() + "tex." + toString( geometry ) + ".v4." 
 				+ PTXOperand::toString( d.type ) + "." 
 				+ PTXOperand::toString( type ) + " " + d.toString() + ", [" 
@@ -2463,7 +2464,7 @@ bool ir::PTXInstruction::isBranch() const {
 
 bool ir::PTXInstruction::mayHaveAddressableOperand() const {
 	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
-		|| opcode == Atom;
+		|| opcode == Atom || opcode == Ldu;
 }
 
 bool ir::PTXInstruction::hasSideEffects() const {
@@ -2472,6 +2473,17 @@ bool ir::PTXInstruction::hasSideEffects() const {
 		|| opcode == Membar || opcode == Tex || opcode == Tld4
 		|| opcode == Prefetch || opcode == Sust || opcode == Suq
 		|| opcode == Trap || opcode == Reconverge || opcode == Ret;
+}
+
+bool ir::PTXInstruction::isMemoryInstruction() const {
+	return opcode == St || opcode == Atom
+		|| opcode == Ldu
+		|| opcode == Tex || opcode == Tld4
+		|| opcode == Prefetch || opcode == Sust || opcode == Ld;
+}
+
+bool ir::PTXInstruction::isExit() const {
+	return opcode == Exit || opcode == Trap || opcode == Ret;
 }
 
 

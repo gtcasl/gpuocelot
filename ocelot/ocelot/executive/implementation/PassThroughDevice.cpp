@@ -329,7 +329,7 @@ void executive::PassThroughDevice::select() {
 	_target->select();
 }
 
-bool executive::PassThroughDevice::selected() const {
+bool executive::PassThroughDevice::selected() {
 	TRACE();
 	CHECK();
 	return _target->selected();
@@ -340,7 +340,6 @@ void executive::PassThroughDevice::unselect() {
 	CHECK();
 	_target->unselect();
 }
-
 
 static ir::Texture::Interpolation convert(cudaTextureFilterMode filter)
 {
@@ -388,7 +387,7 @@ void executive::PassThroughDevice::bindTexture(
 	{
 		throw hydrazine::Exception("Invalid Texture - " + textureName 
 			+ " in Module - " + moduleName);
-	}	
+	}
 
 	ir::Texture& texture = *tex->second;
 

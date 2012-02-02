@@ -320,8 +320,6 @@ namespace executive
 			/*! \brief Select this device as the current device. 
 				Only one device is allowed to be selected at any time. */
 			void select();
-			/*! \brief is this device selected? */
-			bool selected() const;
 			/*! \brief Deselect this device. */
 			void unselect();
 		

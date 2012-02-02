@@ -42,8 +42,7 @@ namespace executive
 			_status(),
 			_attribs(),
 			_context(0), 
-			_event(0),
-			_selected(false)
+			_event(0)
     {
 		report("Creating new ATIGPUDevice");
 
@@ -206,26 +205,6 @@ namespace executive
     {
 		assertM(false, "Not implemented.");
 		return 0;
-    }
-
-    void ATIGPUDevice::select()
-    {
-		// Multiple devices is not supported yet
-		assert(!selected());
-		_selected = true;
-    }
-
-    bool ATIGPUDevice::selected() const
-    {
-		// Multiple devices is not supported yet
-        return _selected;
-    }
-
-    void ATIGPUDevice::unselect()
-    {
-		// Multiple devices is not supported yet
-		assert(selected());
-		_selected = false;
     }
 
 	Device::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(

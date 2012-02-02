@@ -340,9 +340,9 @@ void LLVMCooperativeThreadArray::_computeNextFunction()
 	}
 	else
 	{
-		_nextFunction        = 1;
-		unsigned int total   = 0;
-		unsigned int count   = _queuedThreads[1].size();
+		_nextFunction      = 1;
+		unsigned int total = 0;
+		unsigned int count = _queuedThreads[1].size();
 		
 		ThreadListVector::iterator queue = _queuedThreads.begin();
 		
@@ -489,12 +489,12 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	}
 
 	_guessFunction = nextFunction;
-
+	
 	assertM(nextFunction < _queuedThreads.size(), "Next function " 
 		<< nextFunction << " is out of range of function table with "
 		<< _queuedThreads.size() << " entries.");
 	_queuedThreads[nextFunction].push_back(contextId);
-	
+
 	return false;
 }
 

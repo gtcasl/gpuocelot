@@ -79,6 +79,7 @@ NEW_LINE ([\n]*)
 TAB [\t]*
 SPACE [ ]*
 WHITESPACE [ \t]*
+LABEL ({IDENTIFIER}{WHITESPACE}":")
 
 /******************************************************************************/
 
@@ -523,9 +524,21 @@ WHITESPACE [ \t]*
                                     stream >> yylval->doubleFloat; \
                                     return TOKEN_DOUBLE_CONSTANT; }
 
-{IDENTIFIER}":"                 { sstrcpy( yylval->text, yytext, \
-                                    MIN( strlen( yytext ), 1024 ) ); \
-                                    return TOKEN_LABEL; }
+{LABEL}                         { const char* position = strchr( yytext, ' ' );\
+                                    if( position == 0 ) \
+                                    { \
+                                        sstrcpy( yylval->text, yytext, \
+                                           MIN( strlen( yytext ), 1024 ) ); \
+                                    } \
+                                    else \
+                                    { \
+                                        sstrcpy( yylval->text, yytext, \
+                                           MIN( position - yytext + 1, \
+                                           1024 ) ); \
+                                    } \
+                                    \
+                                    return TOKEN_LABEL; \
+                                }
 @{IDENTIFIER}                   { sstrcpy( yylval->text, yytext + 1, 1024 ); \
                                     return TOKEN_PREDICATE_IDENTIFIER; }
 @!{IDENTIFIER}                  { sstrcpy( yylval->text, yytext + 2, 1024 ); \

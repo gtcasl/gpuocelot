@@ -117,7 +117,7 @@ namespace executive
 				Only one device is allowed to be selected at any time. */
 			void select();
 			/*! \brief is this device selected? */
-			bool selected() const;
+			bool selected();
 			/*! \brief Deselect this device. */
 			void unselect();
 		

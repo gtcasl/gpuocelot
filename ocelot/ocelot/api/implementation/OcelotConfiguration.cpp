@@ -160,6 +160,7 @@ api::OcelotConfiguration::Executive::Executive():
 	enableNVIDIA(true),
 	enableAMD(true),
 	enableRemote(false),
+	asynchronousKernelLaunch(false),
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
@@ -279,6 +280,8 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
 	executive.enableRemote = config.parse<bool>("enableRemote", false);
+	executive.asynchronousKernelLaunch =
+		config.parse<bool>("asynchronousKernelLaunch", false);
 	executive.port = config.parse<int>("port", 2011);
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
@@ -336,7 +339,13 @@ static void initializeOptimizations(
 		config.parse<bool>("mimdThreadScheduling", false);
 	
 	optimizations.syncElimination =
-		config.parse<bool>("syncElimination", false);			
+		config.parse<bool>("syncElimination", false);	
+	
+	optimizations.hoistSpecialValues =
+		config.parse<bool>("hoistSpecialValues", false);	
+	
+	optimizations.simplifyCFG =
+		config.parse<bool>("simplifyCFG", false);			
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {
@@ -353,10 +362,21 @@ api::OcelotConfiguration::OcelotConfiguration(
 	initialize(file);
 }
 
-//! \brief invokes initialize() on the previously parsed configuration object
-void *api::OcelotConfiguration::configuration() {
+//! \brief parses and returns configuration object
+void *api::OcelotConfiguration::configuration() const {
 	std::ifstream file(path.c_str());
-	return initialize(file, true);
+	hydrazine::json::Parser parser;
+	hydrazine::json::Object *config = 0;
+	try {
+		config = parser.parse_object(file);
+	}
+	catch (hydrazine::Exception exp) {
+		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
+			<< path << "', loading defaults.\n" << std::endl;
+			
+		std::cerr << "exception:\n" << exp.what() << std::endl;
+	}
+	return config;
 }
 
 void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) {

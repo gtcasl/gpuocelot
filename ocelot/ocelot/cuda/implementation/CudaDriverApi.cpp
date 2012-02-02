@@ -44,7 +44,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if REPORT_BASE
-#define trace() { std::cout << " - " << __func__ << "() " << std::endl; }
+#define trace() { std::cout << " - " << __FUNCTION__ << "() " << std::endl; }
 #else
 #define trace()
 #endif

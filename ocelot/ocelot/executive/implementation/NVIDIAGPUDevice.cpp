@@ -386,6 +386,7 @@ namespace executive
 	void NVIDIAGPUDevice::Module::load()
 	{
 		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
+		
 		assert(!loaded());
 		std::stringstream stream;
 		
@@ -607,6 +608,9 @@ namespace executive
 	}
 
 	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
+
+
+
 	{
 		
 	}
@@ -1379,21 +1383,18 @@ namespace executive
 			
 	void NVIDIAGPUDevice::select()
 	{
-		assert(!selected());
-		_selected = true;
+		Device::select();
+		
+		report("NVIDIAGPUDevice::select()");
 		checkError(driver::cuCtxPushCurrent(_context));
 	}
 	
-	bool NVIDIAGPUDevice::selected() const
-	{
-		return _selected;
-	}
-
 	void NVIDIAGPUDevice::unselect()
 	{
-		assert(selected());
-		_selected = false;
+		Device::unselect();
+		
 		checkError(driver::cuCtxPopCurrent(&_context));
+		report("NVIDIAGPUDevice::unselect()");
 	}
 		
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
@@ -1489,6 +1490,8 @@ namespace executive
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())
 		{
+
+
 			Throw("Invalid Module - " << moduleName);
 		}
 		
@@ -1560,12 +1563,14 @@ namespace executive
 				<< properties().name);
 		}
 		
+		kernel->device = this;
 		kernel->setKernelShape(block.x, block.y, block.z);
 		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
 			argumentBlockSize);
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setTraceGenerators(traceGenerators);
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)
@@ -1575,6 +1580,7 @@ namespace executive
 		
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 		synchronize();
+		
 	}
 
 	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(const std::string& path, 

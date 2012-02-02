@@ -4744,12 +4744,12 @@ void PTXToLLVMTranslator::_translateRem( const ir::PTXInstruction& i )
 void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i, 
 	const analysis::DataflowGraph::Block& block )
 {
-	_yield( executive::LLVMExecutableKernel::ReturnCall );
+    _yield( executive::LLVMExecutableKernel::ReturnCall );
 
-	if( !block.targets().empty() )
+    if( !block.targets().empty() )
 	{
 		ir::LLVMBr branch;
-		
+	
 		branch.iftrue = "%" + (*block.targets().begin())->label();
 		_add( branch );
 	}

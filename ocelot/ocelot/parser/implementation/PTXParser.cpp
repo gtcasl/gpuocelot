@@ -1450,6 +1450,8 @@ namespace parser
 	void PTXParser::State::arrayOperand( YYLTYPE& location )
 	{
 		assert( !identifiers.empty() );
+		
+		report("  Rule: arrayOperand()");
 
 		OperandMap::iterator mode = operands.find( identifiers.front() );
 	
@@ -1477,6 +1479,8 @@ namespace parser
 			operand.vec = ir::PTXOperand::v1;
 		
 			operand.array.push_back( mode->second.operand );
+			
+			report("    pushing operand " << mode->second.operand.toString());
 		}
 		else if( identifiers.size() >= 2 )
 		{
@@ -1761,7 +1765,7 @@ namespace parser
 	
 	void PTXParser::State::callPrototypeName( const std::string& identifier )
 	{
-		report( "  Rule: callPrototypeName" );
+		report( "  Rule: callPrototypeName '" << identifier << "'" );
 		prototype.name = identifier;
 	}
 					
@@ -1804,7 +1808,7 @@ namespace parser
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Function/Prototype '" 
-				<< statement.instruction.a.identifier 
+				<< prototype.name
 				<< "' not declared in this scope.", 
 				NoDeclaration );	
 		}
@@ -2008,6 +2012,8 @@ namespace parser
 					DuplicateDeclaration );
 			}
 		}
+		
+		report( "   name: '" << name << "'" );
 		
 		prototypes.insert( std::make_pair( name, prototype ) );
 		

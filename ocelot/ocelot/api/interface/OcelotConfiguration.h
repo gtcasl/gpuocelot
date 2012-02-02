@@ -165,6 +165,9 @@ namespace api {
 			//! \brief filter enabling remote GPU devices if present
 			bool enableRemote;
 			
+			//! \brief if true, enables asynchronous kernel launches
+			bool asynchronousKernelLaunch;
+			
 			//! \brief The port to connect to an ocelot server for remoting
 			int port;
 
@@ -203,7 +206,13 @@ namespace api {
 			bool mimdThreadScheduling;
 			
 			/*! \brief Sync elimination pass */
-			bool syncElimination;			
+			bool syncElimination;	
+			
+			/*! \brief Hoist special values pass */
+			bool hoistSpecialValues;	
+			
+			/*! \brief Simplify control graph pass */
+			bool simplifyCFG;			
 		};
 
 
@@ -221,8 +230,8 @@ namespace api {
 		//! \brief initializes configuration object from a stream as JSON
 		void *initialize(std::istream &stream, bool preserve = false);
 		
-		//! \brief invokes initialize() on the previously parsed configuration object
-		void *configuration();
+		//! \brief parses and returns configuration object if need be
+		void *configuration() const;
 
     //! \brief gets singleton configuration object or 
     //	constructs from 'configure.ocelot'

@@ -124,11 +124,14 @@ namespace ir
 		
 			/*! \brief Assignment operator (deep) */
 			const PTXKernel& operator=(const PTXKernel& k);
-	
+		
 		public:
 			/*! \brief Get the set of all referenced 
 				registers in the instruction set */
 			RegisterVector getReferencedRegisters() const;
+			
+			/*! \brief Get an unused register */
+			PTXOperand::RegisterType getUnusedRegister() const;
 			
 			/*! \brief returns a prototype for this kernel */
 			Prototype getPrototype() const;

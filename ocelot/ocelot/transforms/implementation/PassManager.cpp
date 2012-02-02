@@ -430,6 +430,7 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 	AnalysisMap analyses;
 	
 	_analyses = &analyses;
+	_kernel = &kernel;
 	
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
@@ -439,15 +440,15 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 		runKernelPass(&kernel, pass->second);
 	}
 
-	freeUnusedDataStructures(analyses, &kernel,
-		analysis::Analysis::NoAnalysis);
-
-	_analyses = 0;
+	freeUnusedDataStructures(analyses, &kernel, analysis::Analysis::NoAnalysis);
 
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
 		finalizeKernelPass(_module, pass->second);
 	}
+
+	_analyses = 0;
+	_kernel   = 0;
 }
 
 void PassManager::runOnModule()
@@ -492,7 +493,8 @@ void PassManager::runOnModule()
 		}
 		
 		_analyses = &*analyses;
-
+		_kernel = kernel->second;
+		
 		for(PassMap::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)
 		{
@@ -503,19 +505,21 @@ void PassManager::runOnModule()
 			allocateNewDataStructures(*analyses, kernel->second,
 				pass->first, this);
 			
+			
 			runKernelPass(_module, kernel->second, pass->second);
 		}
 		
 		freeUnusedDataStructures(*analyses, kernel->second,
 			analysis::Analysis::NoAnalysis);
-		
-		_analyses = 0;
 
 		for(PassMap::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)
 		{
 			finalizeKernelPass(_module, pass->second);
 		}
+		
+		_analyses = 0;
+		_kernel   = 0;
 	}
 }
 
@@ -524,8 +528,16 @@ analysis::Analysis* PassManager::getAnalysis(int type)
 	assert(_analyses != 0);
 
 	AnalysisMap::iterator analysis = _analyses->find(type);
-	if(analysis == _analyses->end()) return 0;
+	if(analysis == _analyses->end())
+	{
+		assert(_kernel != 0);
+		allocateNewDataStructures(*_analyses, _kernel, type, this);
+		
+		analysis = _analyses->find(type);
+	}
 	
+	if(analysis == _analyses->end()) return 0;
+		
 	return analysis->second;
 }
 
@@ -544,10 +556,11 @@ void PassManager::invalidateAnalysis(int type)
 	assert(_analyses != 0);
 
 	AnalysisMap::iterator analysis = _analyses->find(type);
-	assert(analysis != _analyses->end());
-	
-	delete analysis->second;
-	_analyses->erase(analysis);
+	if(analysis != _analyses->end())
+	{
+		delete analysis->second;
+		_analyses->erase(analysis);
+	}
 }
 
 

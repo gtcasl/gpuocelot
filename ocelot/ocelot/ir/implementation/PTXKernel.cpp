@@ -202,10 +202,7 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand = d.array.begin(); 
 							operand != d.array.end(); ++operand )
 						{
-							if( operand->addressMode
-								!= ir::PTXOperand::Register
-								&& operand->addressMode
-								!= ir::PTXOperand::Indirect) continue;
+							if( !operand->isRegister() ) continue;
 							report( "   Added %r" << operand->reg );
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );
@@ -242,6 +239,19 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 	return regs;
 }
 
+PTXOperand::RegisterType PTXKernel::getUnusedRegister() const {
+	RegisterVector regs = getReferencedRegisters();
+	
+	PTXOperand::RegisterType max = 0;
+
+	for (RegisterVector::const_iterator reg = regs.begin();
+		reg != regs.end(); ++reg) {
+		max = std::max(max, reg->id);
+	}
+	
+	return max + 1;
+}
+
 bool PTXKernel::executable() const {
 	return false;
 }
@@ -264,6 +274,7 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 
 	bool inParameterList = false;
 	bool isReturnArgument = false;
+	bool hasExit = false;
 	unsigned int statementIndex = 0;
 	for( ; kernelStart != kernelEnd; ++kernelStart, ++statementIndex ) 
 	{
@@ -325,7 +336,8 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
-			else if( statement.instruction.opcode == PTXInstruction::Exit )
+			else if( statement.instruction.opcode == PTXInstruction::Exit
+				|| statement.instruction.opcode == PTXInstruction::Ret )
 			{
 				last_inserted_block = block;
 				if (edge.type != ControlFlowGraph::Edge::Invalid) {
@@ -333,24 +345,17 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 				}
 				edge.head = block;
 				edge.tail = cfg.get_exit_block();
-				edge.type = ControlFlowGraph::Edge::FallThrough;
+				if (hasExit)
+				{
+					edge.type = ControlFlowGraph::Edge::Branch;
+				}
+				else
+				{
+					edge.type = ControlFlowGraph::Edge::FallThrough;
+					hasExit = true;
+				}
 				cfg.insert_edge(edge);
 				
-				block = cfg.insert_block(
-					ControlFlowGraph::BasicBlock("", cfg.newId()));
-				edge.type = ControlFlowGraph::Edge::Invalid;
-			}
-			else if( statement.instruction.opcode == PTXInstruction::Ret )
-			{
-				last_inserted_block = block;
-				if (edge.type != ControlFlowGraph::Edge::Invalid) {
-					cfg.insert_edge(edge);
-				}
-				edge.head = block;
-				edge.tail = cfg.get_exit_block();
-				edge.type = ControlFlowGraph::Edge::Branch;
-				cfg.insert_edge(edge);
-
 				block = cfg.insert_block(
 					ControlFlowGraph::BasicBlock("", cfg.newId()));
 				edge.type = ControlFlowGraph::Edge::Invalid;
@@ -454,9 +459,8 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 					&& (instr.*operands[i]).condition == PTXOperand::PT) {
 					continue;
 				}
-				if ((instr.*operands[i]).addressMode == PTXOperand::Register
+				if ((instr.*operands[i]).isRegister()
 					|| (instr.*operands[i]).addressMode 
-					== PTXOperand::Indirect || (instr.*operands[i]).addressMode 
 					== PTXOperand::ArgumentList) {
 					if (!(instr.*operands[i]).array.empty()) {
 						for (PTXOperand::Array::iterator a_it = 
@@ -464,9 +468,7 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 							a_it != (instr.*operands[i]).array.end();
 							++a_it) {
 							
-							if( a_it->addressMode != ir::PTXOperand::Indirect
-							    && a_it->addressMode
-							    != ir::PTXOperand::Register ) continue;
+							if( !a_it->isRegister() ) continue;
 							
 							RegisterMap::iterator it =
 								map.find(a_it->registerName());
@@ -557,6 +559,9 @@ void PTXKernel::write(std::ostream& stream) const
 	}
 	if (argCount) {
 		stream << "(" << strArguments.str() << ")\n";
+	}
+	else {
+		stream << "()\n";
 	}
 	stream << "{\n";
 	

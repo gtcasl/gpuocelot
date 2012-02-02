@@ -4,7 +4,7 @@
 #	\file   build.py
 #	\author Gregory Diamos <gregory.diamos@gatech.edu>
 #   \date   Sunday March 13, 2011
-#	\brief  The Ocelot build script to direct scons builds and run unit tests
+#	\brief  The Ocelot build script to direct scons builds and run unit tests 
 ################################################################################
 
 import os
@@ -12,11 +12,12 @@ import re
 import subprocess
 import time
 from optparse import OptionParser
+import sys
 
 ################################################################################
 ## Build Ocelot
 def build(options):
-	command = "scons"
+	command = "scons -Q "
 
 	if options.clean:
 		command += " -c"
@@ -174,6 +175,12 @@ def main():
 
 	# Submit if the tests pass
 	submit(options, testsPassed)
+	
+	if buildSucceeded and ((options.test_level == 'none') or testsPassed):
+		sys.exit(0)
+	else:
+		print "Build failed"
+		sys.exit(1)
 
 ################################################################################
 

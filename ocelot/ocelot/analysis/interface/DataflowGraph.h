@@ -313,6 +313,12 @@ class DataflowGraph : public KernelAnalysis
 		DataflowGraph();
 		/*! \brief The destructor */
 		~DataflowGraph();
+		
+	public:
+		#ifndef _WIN32
+		DataflowGraph(const DataflowGraph& ) = delete;
+		DataflowGraph& operator=(const DataflowGraph& ) = delete;
+		#endif
 
 	public:
 		/*! \brief Return an iterator to the program entry point */
@@ -354,6 +360,10 @@ class DataflowGraph : public KernelAnalysis
 			the split instruction goes in the first block */
 		iterator split( iterator block, unsigned int instruction, 
 			bool isFallthrough );
+		/*! \brief Split a block into two starting at a given instruction iterator,
+			the split instruction goes in the first block */
+		iterator split( iterator block, InstructionVector::iterator position, 
+			bool isFallthrough, const std::string& l );
 		/*! \brief Redirect an edge between two blocks to a third */
 		void redirect( iterator source, 
 			iterator destination, iterator newTarget );

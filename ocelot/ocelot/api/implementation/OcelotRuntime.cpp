@@ -178,6 +178,16 @@ namespace ocelot
 			ocelot::addPTXPass(_syncElimination);
 		}
 
+		if (c.optimizations.hoistSpecialValues)
+		{
+			ocelot::addPTXPass(_hoistSpecialValues);
+		}
+
+		if (c.optimizations.simplifyCFG)
+		{
+			ocelot::addPTXPass(_simplifyCFG);
+		}
+
 		// add built-in functions
 		registerExternalFunction("malloc",  (void*)(cudaMallocWrapper));
 		registerExternalFunction("free",    (void*)(cudaFreeWrapper));

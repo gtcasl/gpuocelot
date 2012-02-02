@@ -165,6 +165,7 @@ namespace analysis
 			void _basicBlockPasses();
 			void _eliminateBitcasts(llvm::Function::iterator bb_it);
 			void _promoteGempPointerArithmetic(llvm::Function::iterator bb_it);
+			void _eliminateEmptyBlocks();
 			
 			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
 				llvm::Instruction *before, llvm::BasicBlock *block = 0);

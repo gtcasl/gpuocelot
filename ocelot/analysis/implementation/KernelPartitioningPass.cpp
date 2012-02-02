@@ -349,6 +349,25 @@ void analysis::KernelPartitioningPass::KernelGraph::_linkExternalEdges() {
 
 	report("Linking external edges");
 	
+	report("  but first!");	
+	for (SubkernelMap::iterator subkernel_it = subkernels.begin(); subkernel_it != subkernels.end(); 
+		++subkernel_it) {
+
+		Subkernel &subkernel = subkernel_it->second;
+		
+		report("    subkernel " << subkernel.subkernel->name << " out edges: ");
+		for (ExternalEdgeVector::iterator edge_it = subkernel.outEdges.begin(); 
+			edge_it != subkernel.outEdges.end(); ++edge_it) {
+			report("    " << edge_it->sourceEdge.head->label << " -> " << edge_it->sourceEdge.tail->label);
+		}
+	
+		report("  and here are all the in_edges:");
+		for (ExternalEdgeVector::iterator edge_it = subkernel.inEdges.begin(); 
+			edge_it != subkernel.inEdges.end(); ++edge_it) {
+			report("    " << edge_it->sourceEdge.head->label << " -> " << edge_it->sourceEdge.tail->label);
+		}
+	}
+	
 	for (SubkernelMap::iterator subkernel_it = subkernels.begin(); subkernel_it != subkernels.end(); 
 		++subkernel_it) {
 		
@@ -362,28 +381,32 @@ void analysis::KernelPartitioningPass::KernelGraph::_linkExternalEdges() {
 				++checksk_it) {
 				
 				Subkernel &checksk = checksk_it->second;
-				if (checksk.id != subkernel.id) {
-					for (ExternalEdgeVector::iterator inedge_it = checksk.inEdges.begin(); 
-						inedge_it != checksk.inEdges.end() && !found; ++inedge_it) {
-					
-						ExternalEdge &inEdge = *inedge_it;
-						if (inEdge.sourceEdge.head == edge_it->sourceEdge.head && 
-							inEdge.sourceEdge.tail == edge_it->sourceEdge.tail) {
-						
-							if (inEdge.sourceEdge.type == edge_it->sourceEdge.type) {
-								edge_it->entryId = inEdge.entryId;
-								found = true;
-								report("  linking " << edge_it->handler->label << " to " << inEdge.handler->label 
-									<< " (entry " << edge_it->entryId << ")");
-							}
-							else {
-								report("  NOT linking " << edge_it->handler->label << " to " << inEdge.handler->label 
-									<< " (entry " << edge_it->entryId << ") due to mis-matched edge types: " 
-									<< edge_it->sourceEdge.type << " -> " << inEdge.sourceEdge.type);
-							}
-						}
-					}	
+				bool sameSubkernel = (checksk.id == subkernel.id);
+				
+				if (sameSubkernel) {
+					report("   same subkernel");
 				}
+				
+				for (ExternalEdgeVector::iterator inedge_it = checksk.inEdges.begin(); 
+					inedge_it != checksk.inEdges.end() && !found; ++inedge_it) {
+				
+					ExternalEdge &inEdge = *inedge_it;
+					if (inEdge.sourceEdge.head == edge_it->sourceEdge.head && 
+						inEdge.sourceEdge.tail == edge_it->sourceEdge.tail) {
+					
+						if (inEdge.sourceEdge.type == edge_it->sourceEdge.type) {
+							edge_it->entryId = inEdge.entryId;
+							found = true;
+							report("  linking " << edge_it->handler->label << " to " << inEdge.handler->label 
+								<< " (entry " << edge_it->entryId << ")");
+						}
+						else {
+							report("  NOT linking " << edge_it->handler->label << " to " << inEdge.handler->label 
+								<< " (entry " << edge_it->entryId << ") due to mis-matched edge types: " 
+								<< edge_it->sourceEdge.type << " -> " << inEdge.sourceEdge.type);
+						}
+					}
+				}	
 			}
 			if (!found) {
 				report(" failed to link external edge: " << edge_it->sourceEdge.head->label << " -> " 
@@ -441,7 +464,7 @@ size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////	
-		
+
 analysis::KernelPartitioningPass::Subkernel::Subkernel(SubkernelId _id): id(_id) {
 
 }
@@ -637,14 +660,14 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
 				// assign unique entryId 
-				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)inEdges.size());
+				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 1));
 				
 				int flags = (isBarrierExit ? ExternalEdge::F_barrier: 0) | (isExternalEdge ? ExternalEdge::F_external: 0);
 				ThreadExitType entryStatus = (isBarrierExit ? Thread_barrier : Thread_subkernel);
 				inEdges.push_back(ExternalEdge(**edge_it, handlerBlock, entryId, entryStatus, flags));
 				
 				report("  adding EXTERNAL IN-Edge " << (*edge_it)->head->label << " -> " 
-					<< (*edge_it)->tail->label);
+					<< (*edge_it)->tail->label << " with entry ID " << entryId);
 			}
 			if (isEntryEdge) {
 				report(" ENTRY EDGE");

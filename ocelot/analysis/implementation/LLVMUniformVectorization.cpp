@@ -482,22 +482,28 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	llvm::LoadInst *resumePoint = new llvm::LoadInst(bitcastPtr, "resumePoint", schedulerEntryBlock.block);
 	
 	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(resumePoint, schedulerEntryBlock.defaultEntry, 
-		schedulerEntryBlock.entries.size(), schedulerEntryBlock.block);
+		schedulerEntryBlock.entries.size() + 1, schedulerEntryBlock.block);
+	
+	report("    default entry: " << schedulerEntryBlock.defaultEntry->getName().str());
 	
 	unsigned int idx = 0;
 	for (EntryMap::const_iterator entry_it = schedulerEntryBlock.entries.begin();
 		entry_it != schedulerEntryBlock.entries.end(); ++entry_it, ++idx) {
-		
+		/*
 		switchInst->setSuccessor(idx, entry_it->second);
 		switchInst->setSuccessorValue(idx, getConstInt32(entry_it->first));
+		*/
+		switchInst->addCase(getConstInt32(entry_it->first), entry_it->second);
 		
 		report("  added successor " << idx << " -> " << entry_it->second->getName().str());
 	}
+	//switchInst->setDefaultDest(schedulerEntryBlock.defaultEntry);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
+	_eliminateEmptyBlocks();
 	_basicBlockPasses();
 }
 
@@ -553,6 +559,28 @@ void analysis::LLVMUniformVectorization::Translation::_promoteGempPointerArithme
 		if (promoted) {
 			inst_it = bb_it->begin();
 		}
+	}
+}
+
+void analysis::LLVMUniformVectorization::Translation::_eliminateEmptyBlocks() {
+
+	std::vector< llvm::BasicBlock *> killWithFire;
+	llvm::Function::iterator bb_it = function->begin();
+	++bb_it;
+	for (; bb_it != function->end(); ++bb_it) {
+		int count = 0;
+		for (llvm::pred_iterator pred_it = llvm::pred_begin(&*bb_it); pred_it != llvm::pred_end(&*bb_it); ++pred_it) {
+			++count;
+			break;
+		}
+		if (!count) {
+			killWithFire.push_back(&*bb_it);
+		}
+	}
+	for (std::vector< llvm::BasicBlock *>::iterator bb_it = killWithFire.begin(); 
+		bb_it != killWithFire.end(); ++bb_it ) {
+		report("  eliminating " << (*bb_it)->getName().str());
+		(*bb_it)->eraseFromParent();
 	}
 }
 

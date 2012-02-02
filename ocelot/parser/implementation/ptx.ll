@@ -116,6 +116,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return OPCODE_BAR; }
 "bfi"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFI; }
+"bfe"                           { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BFE; }
 "bfind"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFIND; }
 "bra"                           { sstrcpy( yylval->text, yytext, 1024 ); \

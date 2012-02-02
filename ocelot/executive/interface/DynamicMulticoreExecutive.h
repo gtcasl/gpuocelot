@@ -20,10 +20,12 @@ namespace executive {
 	public:
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::ThreadExitType ThreadExitType;
+		typedef executive::MetaData Metadata;
 		
 		/*!
 			\brief per kernel data structure accessible to the translation
 		*/
+		/*
 		class Metadata {
 		public:
 			Metadata();
@@ -44,6 +46,7 @@ namespace executive {
 			
 			executive::ExecutableKernel::TextureVector textures;
 		};
+		*/
 		
 	public:
 		DynamicMulticoreExecutive(executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);

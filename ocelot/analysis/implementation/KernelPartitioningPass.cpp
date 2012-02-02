@@ -491,8 +491,6 @@ void analysis::KernelPartitioningPass::Subkernel::createHandlers(
 	subkernelDfg.analyze(*subkernel);
 	
 	_createExternalHandlers(sourceDfg, &subkernelDfg, registerOffsets);
-	_createBarrierHandlers(sourceDfg, &subkernelDfg, registerOffsets);
-	_createDivergenceHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	
 	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX
 	subkernel->write(std::cout);
@@ -522,76 +520,7 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
 	
 	_analyzeExternalEdges(source, internalEdges, blockMapping);
-//	_analyzeBarriers(source, internalEdges, blockMapping);
-//	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
 }
-
-#if 0
-//! creates barrier entries and exits
-void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
-	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
-	
-	report(" _analyzeBarriers()");
-	
-	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
-	
-	for (ir::ControlFlowGraph::iterator bb_it = subkernelCfg->begin(); 
-		bb_it != subkernelCfg->end(); ++bb_it) {
-		
-		for (ir::BasicBlock::InstructionList::iterator inst_it = bb_it->instructions.begin();
-			inst_it != bb_it->instructions.end(); ++inst_it) {
-		
-			const ir::PTXInstruction *inst = static_cast<const ir::PTXInstruction *>(*inst_it);
-			
-			if (inst->opcode == ir::PTXInstruction::Bar) {
-				report("  barrier in block " << bb_it->label);
-				
-				ir::ControlFlowGraph::iterator blockBeforeBarrier = bb_it;
-				//ir::ControlFlowGraph::edge_iterator barrierEdge = bb_it->out_edges.front();
-				//ir::ControlFlowGraph::iterator blockAfterBarrier = barrierEdge->tail;
-				ir::ControlFlowGraph::iterator blockAfterBarrier = barrierSuccessors[blockMapping[bb_it]];
-				
-				report("   removing split edge");
-				
-				// remove the split edge, add a new one between the barrier block and the exit
-				//subkernelCfg->remove_edge(barrierEdge);
-				subkernelCfg->insert_edge(ir::BasicBlock::Edge(blockBeforeBarrier, 
-					subkernelCfg->get_exit_block(), ir::BasicBlock::Edge::Dummy));
-
-				report("   removing split edge");
-				
-				// create a handler block and transform the source code
-				ir::BasicBlock handlerBlock(blockAfterBarrier->label + "_barrier_entry");
-				ir::ControlFlowGraph::iterator entryHandlerBlock = subkernelCfg->insert_block(handlerBlock);
-				
-				ir::ControlFlowGraph::edge_iterator entryEdge = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
-					entryHandlerBlock, blockAfterBarrier, ir::BasicBlock::Edge::Branch));
-					
-				ir::ControlFlowGraph::edge_iterator dummyEntry = subkernelCfg->insert_edge(ir::BasicBlock::Edge(
-					subkernelCfg->get_entry_block(), entryHandlerBlock, ir::BasicBlock::Edge::Dummy));
-									
-				// construct a subkernel entry
-				SubkernelId entryId = ExternalEdge::getEncodedEntry(id, 
-					(SubkernelId)(inEdges.size() + barrierEntries.size()));
-					
-				ExternalEdge externalEntryEdge;
-				externalEntryEdge.handler = entryHandlerBlock;
-				externalEntryEdge.frontierBlock = blockAfterBarrier;
-				externalEntryEdge.exitStatus = Thread_barrier;
-				externalEntryEdge.entryId = entryId;
-				barrierEntries.push_back(externalEntryEdge);
-
-				ExternalEdge externalExitEdge;
-				externalExitEdge.handler = blockBeforeBarrier;
-				externalExitEdge.frontierBlock = blockBeforeBarrier;
-				externalExitEdge.exitStatus = Thread_barrier;
-				externalEntryEdge.entryId = entryId;
-				barrierExits.push_back(externalExitEdge);
-			}
-		}
-	}
-}
-#endif
 
 //! creates external edges for subkernel entries and exits
 void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
@@ -622,11 +551,15 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 			bool isBarrierExit = doesBarrierTerminateBlock((*edge_it)->head);
 			bool isExternalEdge = sourceBlocks.find((*edge_it)->tail) == sourceBlocks.end();
 			
-			if (!isExitEdge && (isExternalEdge || isBarrierExit)) {
+			if (isExitEdge) {
+				report("  this block exits");
+			}
+			
+			if (/*!isExitEdge &&*/ (isExternalEdge || isBarrierExit)) {
 				
 				ir::BasicBlock handler;
 				std::string suffix = ((*edge_it)->tail->label != "" ? "_to_" : "");
-				handler.label = (*edge_it)->head->label + "_external_out_handler" + suffix + 
+				handler.label = (*edge_it)->head->label + "_exit_handler" + suffix + 
 					(*edge_it)->tail->label.substr(4);
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
@@ -655,7 +588,7 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 			
 				ir::BasicBlock handler;
 				std::string suffix = ((*edge_it)->head->label != "" ? "_from_" : "");
-				handler.label = (*edge_it)->tail->label + "_external_in_handler_" + suffix +
+				handler.label = (*edge_it)->tail->label + "_entry_handler" + suffix +
 					(*edge_it)->head->label.substr(4);
 				ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 				
@@ -917,6 +850,7 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 			<< " external edges) terminator: " << terminator->toString());
 		
 		if (terminator->opcode == ir::PTXInstruction::Bra) {
+			report("   branch");
 			for (ExternalEdgeVector::iterator edge_it = block_it->second.begin(); 
 				edge_it != block_it->second.end(); ++edge_it) {
 				
@@ -931,10 +865,9 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 			assert(0 && "unhandled");
 		}
 		else if (terminator->opcode == ir::PTXInstruction::Bar) {
-			report(" I forget what I wanted here. there are this many edges: " << block_it->second.size());
+			report("   barrier");
 			report("    block: " << block_it->first->label);
 
-			//block_it->first->instructions.pop_back();
 			auto dfgBlock = subkernelCfgToDfg[block_it->first];
 			analysis::DataflowGraph::InstructionVector::iterator instr_it = dfgBlock->instructions().end();
 			--instr_it;
@@ -942,6 +875,7 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 			subkernelDfg->erase(dfgBlock, instr_it );
 		}
 		else if (terminator->opcode == ir::PTXInstruction::Exit) {
+			report("   exit");
 			ExternalEdge &externalEdge = block_it->second.front();
 			terminator->opcode = ir::PTXInstruction::Bra;
 			terminator->d = ir::PTXOperand(ir::PTXOperand::Label, externalEdge.handler->label);
@@ -957,41 +891,6 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 	}	
 	
 	report("end frontier exit blocks:");		
-}
-
-/*!
-	\brief inserts a scheduler block 
-*/
-void analysis::KernelPartitioningPass::Subkernel::_createScheduler() {
-	//
-	// insert a block into the entry of a subkernel
-	//	
-}
-
-
-void analysis::KernelPartitioningPass::Subkernel::_createBarrierHandlers(
-	analysis::DataflowGraph *sourceDfg,
-	analysis::DataflowGraph *subkernelDfg,
-	const RegisterOffsetMap &registerOffsets) {
-	
-	report("_createBarrierHandlers()");
-	
-	
-}
-
-void analysis::KernelPartitioningPass::Subkernel::_createDivergenceHandlers(
-	analysis::DataflowGraph *sourceDfg,
-	analysis::DataflowGraph *subkernelDfg,
-	const RegisterOffsetMap &registerOffsets) {
-	
-	report("_createDivergenceHandlers()");
-}
-
-void analysis::KernelPartitioningPass::Subkernel::_createYieldHandlers(
-	analysis::DataflowGraph *sourceDfg,
-	analysis::DataflowGraph *subkernelDfg,
-	const RegisterOffsetMap &registerOffsets) {
-	
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::DataflowGraph::iterator block, 
@@ -1011,15 +910,17 @@ void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::Dataflow
 	store.a = ir::PTXOperand(type, ir::PTXOperand::u32);
 	subkernelDfg->insert(block, store);
 	
-	move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point");
-	move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
-	subkernelDfg->insert(block, move);
+	if (type != Thread_exit) {
+		move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point");
+		move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+		subkernelDfg->insert(block, move);
 	
-	store.type = ir::PTXOperand::u32;
-	store.addressSpace = ir::PTXInstruction::Local;
-	store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
-	store.a = ir::PTXOperand(target, ir::PTXOperand::u32);
-	subkernelDfg->insert(block, store);
+		store.type = ir::PTXOperand::u32;
+		store.addressSpace = ir::PTXInstruction::Local;
+		store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
+		store.a = ir::PTXOperand(target, ir::PTXOperand::u32);
+		subkernelDfg->insert(block, store);
+	}
 	
 	ir::PTXInstruction exit(ir::PTXInstruction::Exit);
 	subkernelDfg->insert(block, exit);

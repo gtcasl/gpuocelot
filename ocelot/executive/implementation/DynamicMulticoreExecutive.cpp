@@ -187,7 +187,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			break;
 		}
 	
-	//   form warp
 		LLVMContext *warp[1] = { &contexts[tid] };
 	
 		reportE(REPORT_SCHEDULE_OPERATIONS, "--------------");
@@ -227,8 +226,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			//   update contexts
 			if (_getResumeStatus(&contexts[tid]) == analysis::KernelPartitioningPass::Thread_barrier) {
 				++tid;
-				executing = false;
-				reportE(REPORT_SCHEDULE_OPERATIONS, " barriers not supported.");
 			}
 			else {
 				// continue executing [for now, more sophisticated scheduler shortly]
@@ -244,7 +241,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		
 		if (tid >= kernel->blockDim().size()) {
 			tid = 0;
-			exitingThreads = 0;
 		}
 	
 	} while (executing);

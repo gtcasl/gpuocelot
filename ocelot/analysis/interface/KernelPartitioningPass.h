@@ -123,21 +123,6 @@ namespace analysis {
 				analysis::DataflowGraph *subkernelDfg,
 				const RegisterOffsetMap &registerOffsets);
 				
-			void _createBarrierHandlers(
-				analysis::DataflowGraph *sourceDfg,
-				analysis::DataflowGraph *subkernelDfg,
-				const RegisterOffsetMap &registerOffsets);
-				
-			void _createDivergenceHandlers(
-				analysis::DataflowGraph *sourceDfg,
-				analysis::DataflowGraph *subkernelDfg,
-				const RegisterOffsetMap &registerOffsets);
-				
-			void _createYieldHandlers(
-				analysis::DataflowGraph *sourceDfg,
-				analysis::DataflowGraph *subkernelDfg,
-				const RegisterOffsetMap &registerOffsets);
-			
 			void _spillLiveValues(
 				analysis::DataflowGraph *subkernelDfg, 
 				analysis::DataflowGraph::iterator handlerDfg, 

@@ -918,8 +918,16 @@ static executive::DynamicMulticoreExecutive::Metadata* generateMetadata(
 	
 	if(level == translator::Translator::DebugOptimization
 		|| level == translator::Translator::ReportOptimization) {
-						
-		assert(0 && "unimplemented");
+		
+		report("  Adding debugging symbols");
+		ir::ControlFlowGraph::BasicBlock::Id id = 0;
+		
+		for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin();
+			block != kernel.cfg()->end(); ++block)
+		{
+			block->id = id++;
+			metadata->blocks.insert(std::make_pair(block->id, block));
+		}
 	}
 	
 	metadata->kernel = &kernel;

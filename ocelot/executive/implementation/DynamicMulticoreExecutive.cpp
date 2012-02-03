@@ -128,6 +128,15 @@ executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
 	delete [] parameterMemory;
 }
 
+static std::ostream & operator<<(std::ostream &out, const executive::LLVMContext::Dimension &dim) {
+	out << "(" << dim.x << ", " << dim.y << ", " << dim.z << ")";
+	return out;
+}
+static std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
+	out << "(" << dim.x << ", " << dim.y << ", " << dim.z << ")";
+	return out;
+}
+
 void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::Dim3 &blockId) {
 
 	const ir::Dim3 blockDim = kernel->blockDim();
@@ -136,6 +145,7 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 	
 	std::memset(localMemory, 0, localMemorySize * blockDim.size());
 	
+	report("DynamicMulticoreExecutive::_initializeThreadContexts(blockId = " << blockId << ") - blockDim = " << blockDim);
 	for (int i = 0; i < blockDim.size(); i++) {
 		contexts[i].tid = {i % blockDim.x, (i / blockDim.x) % blockDim.y, i / (blockDim.x * blockDim.y)};
 		
@@ -152,6 +162,8 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 		
 		_setResumePoint(&contexts[i], startingSubkernel);
 		_setResumeStatus(&contexts[i], analysis::KernelPartitioningPass::Thread_entry);
+		
+		report("  created thread id " << contexts[i].tid);
 	}
 	report("  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
 }
@@ -168,7 +180,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	int exitingThreads = 0;
 	int iterations = 0;
 	
-	int maxIterations = 24;
+	int maxIterations = 0;
 	
 #if REPORT_LOCAL_MEMORY && REPORT_BASE
 	reportE(REPORT_SCHEDULE_OPERATIONS, "Parameter memory: ");

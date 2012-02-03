@@ -211,6 +211,9 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	// construct scheduler entry and load thread-local values
 	_initializeSchedulerEntryBlock();
 
+	// relocate any additional blocks created during translation
+	_hoistDeclarationBlocks();
+
 	// complete scheduler
 	_completeSchedulerEntryBlock();
 	
@@ -219,6 +222,7 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	
 	report("Scalar Preprocessing step complete");
 }
+
 
 
 void analysis::LLVMUniformVectorization::Translation::_computeLLVMToOcelotBlockMap() {
@@ -462,6 +466,34 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 		if (before) {
 			(*(ptrInstances[idx]))->moveBefore(before);
 		}
+	}
+}
+
+void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() {
+	llvm::BasicBlock *block = 0;
+	std::vector< llvm::Instruction * > instructions;
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		if (bb_it->getName().str() == "$OcelotTextureAllocateBlock") {
+			block = &*bb_it;
+			for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+				instructions.push_back(&*inst_it);
+			}
+			break;
+		}
+	}
+	
+	if (block) {
+		for (std::vector< llvm::Instruction * >::iterator inst_it = instructions.begin(); 
+			inst_it != instructions.end(); ++inst_it) {
+			if (!llvm::TerminatorInst::classof(*inst_it)) {
+				llvm::Instruction *inst = *inst_it;
+				inst->removeFromParent();
+				inst->insertAfter(&schedulerEntryBlock.block->back());
+			}
+		}
+		assert(block->getTerminator()->getNumSuccessors() && "$OcelotTextureAllocateBlock has no successors");
+		schedulerEntryBlock.defaultEntry = block->getTerminator()->getSuccessor(0);
+		block->eraseFromParent();
 	}
 }
 

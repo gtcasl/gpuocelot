@@ -29,7 +29,7 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_EMIT_SUBKERNEL_PTX 1
+#define REPORT_EMIT_SUBKERNEL_PTX 0
 #define REPORT_EMIT_SOURCE_PTXKERNEL 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

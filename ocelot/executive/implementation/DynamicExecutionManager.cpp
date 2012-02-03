@@ -62,7 +62,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	DynamicMulticoreExecutive executive(kernel, sharedMemorySize);
 	
 	for (int blockIdy = 0; blockIdy < kernel.gridDim().y; blockIdy++) {
-		for (int blockIdx = 0; blockIdx < kernel.gridDim().z; blockIdx++) {
+		for (int blockIdx = 0; blockIdx < kernel.gridDim().x; blockIdx++) {
 			report("Executing block " << blockIdx << ", " << blockIdy);
 			
 			executive.execute(ir::Dim3(blockIdx, blockIdy, 1));

@@ -160,6 +160,7 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
+			void _hoistDeclarationBlocks();
 			void _scalarOptimization();
 			
 			void _basicBlockPasses();

@@ -29,13 +29,13 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Print out information when executing atomic operations 
 #define REPORT_ATOMIC_OPERATIONS 0
 
 // Only print out register updates from the Nth thread
-#define DEBUG_NTH_THREAD_ONLY 1
+#define DEBUG_NTH_THREAD_ONLY 0
 
 // Print out PTX instructions as they are executed
 #define DEBUG_PTX_INSTRUCTION_TRACE 1
@@ -44,7 +44,7 @@
 #define DEBUG_PTX_INSTRUCTION_TRACE 1
 
 // The id of the thread to print operations for
-#define NTH_THREAD 0
+#define NTH_THREAD 1
 
 typedef executive::MetaData MetaData;
 
@@ -881,10 +881,11 @@ extern "C"
 		report("  __ocelot_tex_2d_ff(index = " << index << ", c0 = " << c0 << ", c1 = " << c1 << ")");
 		
 		MetaData* state = (MetaData*) context->metadata;
-		report("     - fetching texture from metadata = " << (void *)context->metadata);
+		report("     - fetching texture from metadata = " << (void *)context->metadata 
+			<< " from textures array of size " << state->textures.size());
 		const ir::Texture& texture = *state->textures[ index ];
 		
-		report("     - sampling");
+		report("     - sampling from data " << texture.data);
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
 		result[2] = executive::tex::sample< 2, float >( texture, c0, c1 );

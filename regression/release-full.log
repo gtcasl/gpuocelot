@@ -26,10 +26,14 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0483930110931 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
+INFO     Test completed in 0.0492939949036 seconds
 INFO      It produced the following output:
-(0.000825) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
+TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
+INFO     Test completed in 0.0524270534515 seconds
+INFO      It produced the following output:
 Pass/Fail : Pass
 
 
@@ -47,8 +51,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1328284580
-Test time : 0.000715256
+Test Seed : 1328304051
+Test time : 0.000490665
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -57,8 +61,9 @@ Test Point 3 Passed
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0644221305847 seconds
+INFO     Test completed in 0.0557799339294 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -72,8 +77,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1328284580
-Test time : 0.000949383
+Test Seed : 1328304051
+Test time : 0.000857353
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -204,223 +209,16 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0619769096375 seconds
-INFO      It produced the following output:
-(0.000597) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
-(0.002837) EmulatorDevice.cpp:1003: EmulatorDevice::getTextureReference(ocelot/cuda/test/textures/texture2D.cu, Surface)
-(0.011904) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 0)
-(0.011925) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.011934) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.011949) LLVMRuntimeLibrary.inl:892:       - results: [0.953125, 0, 0, 0]
-(0.011961) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 0)
-(0.011969) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.011975) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.011981) LLVMRuntimeLibrary.inl:892:       - results: [0.96875, 0, 0, 0]
-(0.011990) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 0)
-(0.011998) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012004) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012010) LLVMRuntimeLibrary.inl:892:       - results: [0.984375, 0, 0, 0]
-(0.012019) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 0)
-(0.012027) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012033) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012039) LLVMRuntimeLibrary.inl:892:       - results: [0, 0, 0, 0]
-(0.012047) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 0)
-(0.012054) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012060) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012067) LLVMRuntimeLibrary.inl:892:       - results: [0.015625, 0, 0, 0]
-(0.012075) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 0)
-(0.012083) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012089) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012095) LLVMRuntimeLibrary.inl:892:       - results: [0.03125, 0, 0, 0]
-(0.012105) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 0)
-(0.012112) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012117) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012124) LLVMRuntimeLibrary.inl:892:       - results: [0.046875, 0, 0, 0]
-(0.012133) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 0)
-(0.012140) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012146) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012152) LLVMRuntimeLibrary.inl:892:       - results: [0.0625, 0, 0, 0]
-(0.012161) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 0)
-(0.012169) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012175) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012181) LLVMRuntimeLibrary.inl:892:       - results: [0.078125, 0, 0, 0]
-(0.012190) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 0)
-(0.012197) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012203) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012210) LLVMRuntimeLibrary.inl:892:       - results: [0.09375, 0, 0, 0]
-(0.012218) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 0)
-(0.012227) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012233) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012240) LLVMRuntimeLibrary.inl:892:       - results: [0.109375, 0, 0, 0]
-(0.012248) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 0)
-(0.012256) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012262) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012269) LLVMRuntimeLibrary.inl:892:       - results: [0.125, 0, 0, 0]
-(0.012296) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 16)
-(0.012304) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012310) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012355) LLVMRuntimeLibrary.inl:892:       - results: [0.328125, 0, 0, 0]
-(0.012365) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 16)
-(0.012373) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012380) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012386) LLVMRuntimeLibrary.inl:892:       - results: [0.34375, 0, 0, 0]
-(0.012395) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 16)
-(0.012403) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012409) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012415) LLVMRuntimeLibrary.inl:892:       - results: [0.359375, 0, 0, 0]
-(0.012424) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 16)
-(0.012432) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012438) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012445) LLVMRuntimeLibrary.inl:892:       - results: [0.375, 0, 0, 0]
-(0.012453) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 16)
-(0.012461) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012467) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012474) LLVMRuntimeLibrary.inl:892:       - results: [0.390625, 0, 0, 0]
-(0.012482) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 16)
-(0.012490) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012496) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012502) LLVMRuntimeLibrary.inl:892:       - results: [0.40625, 0, 0, 0]
-(0.012511) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 16)
-(0.012519) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012525) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012531) LLVMRuntimeLibrary.inl:892:       - results: [0.421875, 0, 0, 0]
-(0.012540) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 16)
-(0.012547) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012553) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012560) LLVMRuntimeLibrary.inl:892:       - results: [0.4375, 0, 0, 0]
-(0.012568) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 16)
-(0.012576) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012582) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012589) LLVMRuntimeLibrary.inl:892:       - results: [0.453125, 0, 0, 0]
-(0.012597) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 16)
-(0.012605) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012611) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012617) LLVMRuntimeLibrary.inl:892:       - results: [0.46875, 0, 0, 0]
-(0.012626) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 16)
-(0.012634) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012640) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012647) LLVMRuntimeLibrary.inl:892:       - results: [0.484375, 0, 0, 0]
-(0.012656) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 16)
-(0.012664) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012670) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012676) LLVMRuntimeLibrary.inl:892:       - results: [0.5, 0, 0, 0]
-(0.012696) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 32)
-(0.012704) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012710) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012716) LLVMRuntimeLibrary.inl:892:       - results: [0.703125, 0, 0, 0]
-(0.012725) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 32)
-(0.012733) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012738) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012745) LLVMRuntimeLibrary.inl:892:       - results: [0.71875, 0, 0, 0]
-(0.012762) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 32)
-(0.012770) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012776) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012783) LLVMRuntimeLibrary.inl:892:       - results: [0.734375, 0, 0, 0]
-(0.012792) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 32)
-(0.012799) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012805) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012811) LLVMRuntimeLibrary.inl:892:       - results: [0.75, 0, 0, 0]
-(0.012820) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 32)
-(0.012828) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012834) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012841) LLVMRuntimeLibrary.inl:892:       - results: [0.765625, 0, 0, 0]
-(0.012849) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 32)
-(0.012857) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012863) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012869) LLVMRuntimeLibrary.inl:892:       - results: [0.78125, 0, 0, 0]
-(0.012878) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 32)
-(0.012886) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012892) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012898) LLVMRuntimeLibrary.inl:892:       - results: [0.796875, 0, 0, 0]
-(0.012907) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 32)
-(0.012915) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012921) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012927) LLVMRuntimeLibrary.inl:892:       - results: [0.8125, 0, 0, 0]
-(0.012936) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 32)
-(0.012944) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012950) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012956) LLVMRuntimeLibrary.inl:892:       - results: [0.828125, 0, 0, 0]
-(0.012964) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 32)
-(0.012972) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.012978) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012985) LLVMRuntimeLibrary.inl:892:       - results: [0.84375, 0, 0, 0]
-(0.012993) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 32)
-(0.013001) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013007) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013013) LLVMRuntimeLibrary.inl:892:       - results: [0.859375, 0, 0, 0]
-(0.013022) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 32)
-(0.013030) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013036) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013042) LLVMRuntimeLibrary.inl:892:       - results: [0.875, 0, 0, 0]
-(0.013062) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 48)
-(0.013070) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013076) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013082) LLVMRuntimeLibrary.inl:892:       - results: [0.078125, 0, 0, 0]
-(0.013091) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 48)
-(0.013098) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013105) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013111) LLVMRuntimeLibrary.inl:892:       - results: [0.09375, 0, 0, 0]
-(0.013120) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 48)
-(0.013127) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013134) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013140) LLVMRuntimeLibrary.inl:892:       - results: [0.109375, 0, 0, 0]
-(0.013148) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 48)
-(0.013164) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013170) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013177) LLVMRuntimeLibrary.inl:892:       - results: [0.125, 0, 0, 0]
-(0.013186) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 48)
-(0.013194) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013200) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013206) LLVMRuntimeLibrary.inl:892:       - results: [0.140625, 0, 0, 0]
-(0.013214) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 48)
-(0.013222) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013228) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013235) LLVMRuntimeLibrary.inl:892:       - results: [0.15625, 0, 0, 0]
-(0.013243) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 48)
-(0.013251) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013257) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013263) LLVMRuntimeLibrary.inl:892:       - results: [0.171875, 0, 0, 0]
-(0.013272) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 48)
-(0.013280) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013286) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013292) LLVMRuntimeLibrary.inl:892:       - results: [0.1875, 0, 0, 0]
-(0.013301) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 48)
-(0.013309) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013315) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013321) LLVMRuntimeLibrary.inl:892:       - results: [0.203125, 0, 0, 0]
-(0.013330) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 48)
-(0.013337) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013343) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013350) LLVMRuntimeLibrary.inl:892:       - results: [0.21875, 0, 0, 0]
-(0.013358) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 48)
-(0.013366) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013372) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013378) LLVMRuntimeLibrary.inl:892:       - results: [0.234375, 0, 0, 0]
-(0.013387) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 48)
-(0.013395) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xcb5550
-(0.013401) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013407) LLVMRuntimeLibrary.inl:892:       - results: [0.25, 0, 0, 0]
-(0, 12) - in = 0.140625, out = 0.000000 ***
-(0, 13) - in = 0.156250, out = 0.000000 ***
-(0, 14) - in = 0.171875, out = 0.000000 ***
-(0, 15) - in = 0.187500, out = 0.000000 ***
-(0, 16) - in = 0.203125, out = 1379482624.000000 ***
-Pass/Fail : Fail
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.0698449611664 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.0711798667908 seconds
 INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.000548) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.0474739074707 seconds
+INFO     Test completed in 0.06139087677 seconds
 INFO      It produced the following output:
-(0.003201) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
 Pass/Fail : Pass
 
 
@@ -429,8 +227,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1328284580
-Test time : 0.000678062
+Test Seed : 1328304051
+Test time : 0.000621557
 
 Status : Test output:
 Accessors test passed.
@@ -446,43 +244,8 @@ pass: predicated Add and Ld isntructions
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.070072889328 seconds
-INFO      It produced the following output:
-(0.000679) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
-sequence() - A_gpu = 0x0c0f500
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.0583481788635 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1328284580
-Test time : 2.45571e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0461750030518 seconds
-INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.000528) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0989391803741 seconds
+INFO     Test completed in 0.0616359710693 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -495,230 +258,62 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1328284580
-Test time : 1.7643e-05
+Test Seed : 1328304051
+Test time : 2.14577e-05
 
 Status : 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
+INFO     Test completed in 0.0570340156555 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1328304051
+Test time : 1.93119e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
+INFO     Test completed in 0.0783009529114 seconds
+INFO      It produced the following output:
+sequence() - A_gpu = 0x08d5500
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
+INFO     Test completed in 0.047641992569 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0489349365234 seconds
+INFO     Test completed in 0.0521059036255 seconds
 INFO      It produced the following output:
-(0.000587) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
 No CAL devices found
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0636839866638 seconds
+INFO     Test completed in 0.0674510002136 seconds
 INFO      It produced the following output:
-(0.000581) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
-(0.003096) EmulatorDevice.cpp:1003: EmulatorDevice::getTextureReference(ocelot/cuda/test/textures/textureArray.cu, Surface)
-(0.012523) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 0)
-(0.012546) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012555) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012571) LLVMRuntimeLibrary.inl:892:       - results: [0.953125, 0, 0, 0]
-(0.012583) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 0)
-(0.012591) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012598) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012604) LLVMRuntimeLibrary.inl:892:       - results: [0.96875, 0, 0, 0]
-(0.012613) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 0)
-(0.012621) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012627) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012633) LLVMRuntimeLibrary.inl:892:       - results: [0.984375, 0, 0, 0]
-(0.012642) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 0)
-(0.012650) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012656) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012662) LLVMRuntimeLibrary.inl:892:       - results: [0, 0, 0, 0]
-(0.012671) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 0)
-(0.012678) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012684) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012691) LLVMRuntimeLibrary.inl:892:       - results: [0.015625, 0, 0, 0]
-(0.012700) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 0)
-(0.012707) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012713) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012720) LLVMRuntimeLibrary.inl:892:       - results: [0.03125, 0, 0, 0]
-(0.012729) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 0)
-(0.012736) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012742) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012749) LLVMRuntimeLibrary.inl:892:       - results: [0.046875, 0, 0, 0]
-(0.012758) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 0)
-(0.012765) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012771) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012778) LLVMRuntimeLibrary.inl:892:       - results: [0.0625, 0, 0, 0]
-(0.012787) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 0)
-(0.012795) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012801) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012808) LLVMRuntimeLibrary.inl:892:       - results: [0.078125, 0, 0, 0]
-(0.012817) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 0)
-(0.012824) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012831) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012837) LLVMRuntimeLibrary.inl:892:       - results: [0.09375, 0, 0, 0]
-(0.012846) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 0)
-(0.012855) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012861) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012868) LLVMRuntimeLibrary.inl:892:       - results: [0.109375, 0, 0, 0]
-(0.012877) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 0)
-(0.012885) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012891) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.012897) LLVMRuntimeLibrary.inl:892:       - results: [0.125, 0, 0, 0]
-(0.012939) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 16)
-(0.012947) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.012953) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013000) LLVMRuntimeLibrary.inl:892:       - results: [0.328125, 0, 0, 0]
-(0.013010) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 16)
-(0.013018) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013024) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013031) LLVMRuntimeLibrary.inl:892:       - results: [0.34375, 0, 0, 0]
-(0.013040) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 16)
-(0.013048) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013054) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013060) LLVMRuntimeLibrary.inl:892:       - results: [0.359375, 0, 0, 0]
-(0.013069) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 16)
-(0.013077) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013083) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013089) LLVMRuntimeLibrary.inl:892:       - results: [0.375, 0, 0, 0]
-(0.013098) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 16)
-(0.013106) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013112) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013118) LLVMRuntimeLibrary.inl:892:       - results: [0.390625, 0, 0, 0]
-(0.013127) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 16)
-(0.013135) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013141) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013147) LLVMRuntimeLibrary.inl:892:       - results: [0.40625, 0, 0, 0]
-(0.013156) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 16)
-(0.013164) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013170) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013176) LLVMRuntimeLibrary.inl:892:       - results: [0.421875, 0, 0, 0]
-(0.013185) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 16)
-(0.013193) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013199) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013206) LLVMRuntimeLibrary.inl:892:       - results: [0.4375, 0, 0, 0]
-(0.013215) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 16)
-(0.013222) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013229) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013235) LLVMRuntimeLibrary.inl:892:       - results: [0.453125, 0, 0, 0]
-(0.013244) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 16)
-(0.013252) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013258) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013264) LLVMRuntimeLibrary.inl:892:       - results: [0.46875, 0, 0, 0]
-(0.013273) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 16)
-(0.013281) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013287) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013294) LLVMRuntimeLibrary.inl:892:       - results: [0.484375, 0, 0, 0]
-(0.013302) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 16)
-(0.013310) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013316) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013323) LLVMRuntimeLibrary.inl:892:       - results: [0.5, 0, 0, 0]
-(0.013342) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 32)
-(0.013350) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013356) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013362) LLVMRuntimeLibrary.inl:892:       - results: [0.703125, 0, 0, 0]
-(0.013371) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 32)
-(0.013379) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013385) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013391) LLVMRuntimeLibrary.inl:892:       - results: [0.71875, 0, 0, 0]
-(0.013409) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 32)
-(0.013417) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013423) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013430) LLVMRuntimeLibrary.inl:892:       - results: [0.734375, 0, 0, 0]
-(0.013438) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 32)
-(0.013446) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013452) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013458) LLVMRuntimeLibrary.inl:892:       - results: [0.75, 0, 0, 0]
-(0.013467) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 32)
-(0.013474) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013480) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013487) LLVMRuntimeLibrary.inl:892:       - results: [0.765625, 0, 0, 0]
-(0.013495) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 32)
-(0.013503) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013509) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013515) LLVMRuntimeLibrary.inl:892:       - results: [0.78125, 0, 0, 0]
-(0.013524) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 32)
-(0.013532) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013538) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013544) LLVMRuntimeLibrary.inl:892:       - results: [0.796875, 0, 0, 0]
-(0.013552) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 32)
-(0.013560) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013566) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013572) LLVMRuntimeLibrary.inl:892:       - results: [0.8125, 0, 0, 0]
-(0.013581) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 32)
-(0.013588) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013595) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013601) LLVMRuntimeLibrary.inl:892:       - results: [0.828125, 0, 0, 0]
-(0.013609) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 32)
-(0.013617) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013623) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013629) LLVMRuntimeLibrary.inl:892:       - results: [0.84375, 0, 0, 0]
-(0.013638) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 32)
-(0.013646) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013652) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013658) LLVMRuntimeLibrary.inl:892:       - results: [0.859375, 0, 0, 0]
-(0.013666) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 32)
-(0.013674) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013680) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013687) LLVMRuntimeLibrary.inl:892:       - results: [0.875, 0, 0, 0]
-(0.013705) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 0, c1 = 48)
-(0.013713) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013719) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013726) LLVMRuntimeLibrary.inl:892:       - results: [0.078125, 0, 0, 0]
-(0.013734) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 1, c1 = 48)
-(0.013741) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013747) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013754) LLVMRuntimeLibrary.inl:892:       - results: [0.09375, 0, 0, 0]
-(0.013762) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 2, c1 = 48)
-(0.013770) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013776) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013782) LLVMRuntimeLibrary.inl:892:       - results: [0.109375, 0, 0, 0]
-(0.013791) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 3, c1 = 48)
-(0.013807) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013813) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013819) LLVMRuntimeLibrary.inl:892:       - results: [0.125, 0, 0, 0]
-(0.013828) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 4, c1 = 48)
-(0.013836) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013842) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013848) LLVMRuntimeLibrary.inl:892:       - results: [0.140625, 0, 0, 0]
-(0.013857) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 5, c1 = 48)
-(0.013865) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013870) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013877) LLVMRuntimeLibrary.inl:892:       - results: [0.15625, 0, 0, 0]
-(0.013885) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 6, c1 = 48)
-(0.013893) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013899) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013905) LLVMRuntimeLibrary.inl:892:       - results: [0.171875, 0, 0, 0]
-(0.013914) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 7, c1 = 48)
-(0.013921) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013927) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013934) LLVMRuntimeLibrary.inl:892:       - results: [0.1875, 0, 0, 0]
-(0.013942) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 8, c1 = 48)
-(0.013950) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013956) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013962) LLVMRuntimeLibrary.inl:892:       - results: [0.203125, 0, 0, 0]
-(0.013971) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 9, c1 = 48)
-(0.013979) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.013985) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.013991) LLVMRuntimeLibrary.inl:892:       - results: [0.21875, 0, 0, 0]
-(0.014000) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 10, c1 = 48)
-(0.014007) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.014014) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.014020) LLVMRuntimeLibrary.inl:892:       - results: [0.234375, 0, 0, 0]
-(0.014029) LLVMRuntimeLibrary.inl:881:    __ocelot_tex_2d_ff(index = 0, c0 = 11, c1 = 48)
-(0.014036) LLVMRuntimeLibrary.inl:884:       - fetching texture from metadata = 0xce6780
-(0.014042) LLVMRuntimeLibrary.inl:887:       - sampling
-(0.014049) LLVMRuntimeLibrary.inl:892:       - results: [0.25, 0, 0, 0]
-(0, 12) - in = 0.140625, out = 0.000000 ***
-(0, 13) - in = 0.156250, out = 0.000000 ***
-(0, 14) - in = 0.171875, out = -255397237735844997593300992.000000 ***
-(0, 15) - in = 0.187500, out = 0.000000 ***
-(0, 16) - in = 0.203125, out = 0.000000 ***
-Pass/Fail : Fail
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.0737209320068 seconds
+INFO     Test completed in 0.0846970081329 seconds
 INFO      It produced the following output:
-(0.009963) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
 Pass/Fail : Pass
 
 
@@ -727,8 +322,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1328284580
-Test time : 0.0135059
+Test Seed : 1328304051
+Test time : 0.0246058
 
 Status : Test output:
 looping kernel succeeded
@@ -738,14 +333,13 @@ matrix vector kernel succeeded
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0398950576782 seconds
+INFO     Test completed in 0.0396258831024 seconds
 INFO      It produced the following output:
 TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.000687) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.059779882431 seconds
+INFO     Test completed in 0.05526304245 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -758,17 +352,47 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1328284580
-Test time : 1.62125e-05
+Test Seed : 1328304051
+Test time : 1.4782e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.101113080978 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
+INFO     Test completed in 0.0476608276367 seconds
 INFO      It produced the following output:
-(0.009194) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1328304051
+Test time : 0.0034759
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.0714008808136 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
+INFO     Test completed in 0.130286931992 seconds
+INFO      It produced the following output:
 Pass/Fail : Pass
 
 
@@ -778,8 +402,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1328284580
-Test time : 0.052603
+Test Seed : 1328304051
+Test time : 0.0879347
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -814,43 +438,9 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.0463349819183 seconds
-INFO      It produced the following output:
-(0.003387) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1328284581
-Test time : 0.00400114
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0799460411072 seconds
-INFO      It produced the following output:
-(0.000587) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
-Pass/Fail : Pass
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 0.0753610134125 seconds
+INFO     Test completed in 0.0855269432068 seconds
 INFO      It produced the following output:
-(0.003652) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
 Pass/Fail : Fail
 
 
@@ -860,18 +450,18 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1328284581
-Test time : 0.0290546
+Test Seed : 1328304051
+Test time : 0.0286264
 
 Status : Ran 'TestVectorElements-u32' for 19 iterations.
- Output parameter 0 (I16) computed value - -6621 does not match reference value - -13361
+ Output parameter 0 (I16) computed value - -18544 does not match reference value - -28592
   On device - 0 - 'Ocelot Dynamic Multicore CPU'
-Test 'TestAdd-u16' seed '1328284581' failed.
+Test 'TestAdd-u16' seed '1328304051' failed.
 
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.041198015213 seconds
+INFO     Test completed in 0.0414447784424 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -886,8 +476,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1328284581
-Test time : 1.66893e-05
+Test Seed : 1328304051
+Test time : 1.5974e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -899,9 +489,8 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0732998847961 seconds
+INFO     Test completed in 0.072114944458 seconds
 INFO      It produced the following output:
-(0.000563) OcelotConfiguration.cpp:239:  Unknown optimization level - using none
 test_malloc(256, 128)
 PASSED
 test_mallocArray(256, 128)
@@ -919,26 +508,26 @@ Pass/Fail : Pass
 
 INFO     
 Passing tests:
- (0.070s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
+ (0.078s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
+ (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
  (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
- (0.101s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
- (0.080s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
- (0.099s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
- (0.073s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
- (0.046s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
- (0.060s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
- (0.064s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
- (0.049s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
- (0.074s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
+ (0.130s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
+ (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
+ (0.067s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
+ (0.057s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
+ (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.072s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
+ (0.048s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
+ (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
+ (0.052s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
+ (0.061s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
+ (0.056s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
+ (0.052s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
+ (0.085s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
 
 Failing tests:
- (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Failed
- (0.046s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.064s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Failed
+ (0.048s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.086s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
+ (0.049s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
  (0.040s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
- (0.075s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
- (0.070s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
 

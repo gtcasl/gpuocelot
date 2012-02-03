@@ -38,7 +38,7 @@
 	throw hydrazine::Exception(s.str());}
 
 // Turn on report messages
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Memory Alignment (must be a power of 2) 
 // (cuda currently requires 256-byte alignment)
@@ -939,6 +939,8 @@ namespace executive
 			Throw("Invalid Texture - " << textureName 
 				<< " in Module - " << moduleName);
 		}
+		
+		report("EmulatorDevice::bindTexture(pointer = " << pointer << ") to texture = " << (void *)tex);
 		
 		ir::Texture& texture = *tex;
 

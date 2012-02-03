@@ -149,15 +149,13 @@ extern "C"
 	unsigned int __ocelot_bfe_b32( unsigned int a, unsigned int pos,
         unsigned int len, bool isSigned )
 	{
-		//return hydrazine::bfe( a, pos, len, isSigned );
-        return 0;
+		return hydrazine::bfe( a, pos, len, isSigned );
 	}
 	
     long long unsigned int __ocelot_bfe_b64( long long unsigned int a, 
         unsigned int pos, unsigned int len, bool isSigned )
 	{
-		//return hydrazine::bfe( a, pos, len, isSigned );
-        return 0;
+		return hydrazine::bfe( a, pos, len, isSigned );
 	}
 
 	unsigned int __ocelot_bfind_b32( unsigned int a, bool shift )

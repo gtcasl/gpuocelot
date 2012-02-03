@@ -17,6 +17,7 @@
 #include <ocelot/opencl/interface/Kernel.h>
 #include <ocelot/opencl/interface/MemoryObject.h>
 #include <ocelot/opencl/interface/CommandQueue.h>
+#include <ocelot/opencl/interface/Program.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
@@ -36,40 +37,7 @@ namespace opencl {
 	typedef std::map< unsigned int, char * > PointerMap;
 
 	typedef std::set< MemoryObject * > MemoryObjectSet;
-		typedef std::vector< Kernel * > KernelVector;
-
-	//! programs created in OpenCL runtime	
-	class Program {
-	private:
-		//! program id
-		static unsigned int _id;
-
-	public:
-		Program(const std::string & source, const void * context);
-
-	public:
-		std::string name;
-	
-		//! ptx modules associated with device id	
-		std::map <int, std::string> ptxModule;
-
-		//! ptx code associated with device id
-		std::map <int, std::string> ptxCode;
-		
-		//! source code of program
-		std::string source;
-
-		//! kernels
-		IndexSet kernels;
-
-		//! get build status
-		bool built;
-
-		//! associated context
-		const void * context;
-
-	};
-	
+	typedef std::vector< Kernel * > KernelVector;
 	typedef std::vector< Program * > ProgramVector;
 	
 	/*! Host thread OpenCL context consists of these */

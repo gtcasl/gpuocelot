@@ -99,19 +99,7 @@ void opencl::HostThreadContext::clear() {
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-unsigned int opencl::Program::_id = 0;
-
-
-opencl::Program::Program(const std::string & s, const void * c): 
-		source(s), built(false), context(c) {
-	std::stringstream stream;
-	stream << "__clmodule_" << _id;
-	name = stream.str();
-	_id++;
-}
-
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 opencl::RegisteredTexture::RegisteredTexture(const std::string& m, 

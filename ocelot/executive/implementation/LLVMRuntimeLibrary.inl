@@ -888,7 +888,9 @@ extern "C"
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
 		result[1] = executive::tex::sample< 1, float >( texture, c0, c1 );
 		result[2] = executive::tex::sample< 2, float >( texture, c0, c1 );
-		result[3] = executive::tex::sample< 3, float >( texture, c0, c1 );	
+		result[3] = executive::tex::sample< 3, float >( texture, c0, c1 );
+		report("     - results: [" << result[0] << ", " << result[1] << ", " << result[2] << ", " << result[3] << "]");
+		
 	}
 
 	void __ocelot_tex_2d_sf( unsigned int* result, 

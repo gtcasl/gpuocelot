@@ -41,7 +41,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_FINAL_SUBKERNEL 1
 
@@ -486,15 +486,10 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	unsigned int idx = 0;
 	for (EntryMap::const_iterator entry_it = schedulerEntryBlock.entries.begin();
 		entry_it != schedulerEntryBlock.entries.end(); ++entry_it, ++idx) {
-		/*
-		switchInst->setSuccessor(idx, entry_it->second);
-		switchInst->setSuccessorValue(idx, getConstInt32(entry_it->first));
-		*/
-		switchInst->addCase(getConstInt32(entry_it->first & 0x0ffff), entry_it->second);
-		
+
+		switchInst->addCase(getConstInt32(entry_it->first & 0x0ffff), entry_it->second);		
 		report("  added successor " << idx << " -> " << entry_it->second->getName().str());
 	}
-	//switchInst->setDefaultDest(schedulerEntryBlock.defaultEntry);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,7 +502,6 @@ void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
 void analysis::LLVMUniformVectorization::Translation::_basicBlockPasses() {
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		_eliminateBitcasts(bb_it);
-		//_promoteGempPointerArithmetic(bb_it);
 	}
 }
 
@@ -613,10 +607,8 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 			for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
 				if (llvm::TerminatorInst *terminator = llvm::dyn_cast<llvm::TerminatorInst>(&*inst_it)) {
 					assert(terminator);
-					//assert(0 && "control-flow handled separately");
 				}
 				else {
-					//_replicateInstruction(&*inst_it);
 					instructions.push_back(&*inst_it);
 				}
 			}

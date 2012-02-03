@@ -55,6 +55,13 @@ private:
 	*/
 	bool _deleteUnconnectedBlocks(ir::IRKernel& k);
 
+	/*! \brief Swap branch/fallthroughs to eliminate instructions
+		where possible.
+	
+		\return True if this pass changes the CFG.
+	*/
+	bool _swapBranchAndFallthroughEdges(ir::IRKernel& k);
+
 };
 
 }

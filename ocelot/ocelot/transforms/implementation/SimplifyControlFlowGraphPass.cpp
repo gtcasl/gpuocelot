@@ -33,7 +33,8 @@ void SimplifyControlFlowGraphPass::runOnKernel(ir::IRKernel& k)
 	
 	while(changed)
 	{
-		changed = false;
+		changed = _swapBranchAndFallthroughEdges(k);
+		
 		_mergeExitBlocks(k);
 		_deleteEmptyBlocks(k);
 		_deleteUnconnectedBlocks(k);
@@ -102,6 +103,7 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 	ir::BasicBlock::EdgePointerVector deletedEdges =
 		k.cfg()->get_exit_block()->in_edges;
 	
+	// 1a) Create edges targetting the new block
 	for(ir::ControlFlowGraph::edge_pointer_iterator edge = deletedEdges.begin();
 		edge != deletedEdges.end(); ++edge)
 	{
@@ -122,8 +124,12 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 		
 		if((*edge)->type == ir::Edge::Branch)
 		{
-			block->first->instructions.push_back(new ir::PTXInstruction(
-				ir::PTXInstruction::Bra, ir::PTXOperand(newExit->label)));
+			ir::PTXInstruction* newBranch = new ir::PTXInstruction(
+				ir::PTXInstruction::Bra, ir::PTXOperand(newExit->label));
+				
+			newBranch->uni = true;
+		
+			block->first->instructions.push_back(newBranch);
 		}
 		
 		delete *block->second;
@@ -203,7 +209,15 @@ bool SimplifyControlFlowGraphPass::_deleteEmptyBlocks(ir::IRKernel& k)
 
 bool SimplifyControlFlowGraphPass::_deleteUnconnectedBlocks(ir::IRKernel& k)
 {
+	return false;
+	// TODO implement this
+}
+
+bool SimplifyControlFlowGraphPass::_swapBranchAndFallthroughEdges(
+	ir::IRKernel& k)
+{
 	return false;	
+	// TODO implement this
 }
 
 }

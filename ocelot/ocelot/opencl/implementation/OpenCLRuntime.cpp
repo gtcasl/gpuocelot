@@ -138,13 +138,6 @@ void opencl::OpenCLRuntime::_unlock() {
 	_mutex.unlock();
 }
 
-//! sets the last error state for the OpenCLRuntime object
-cl_int opencl::OpenCLRuntime::_setLastError(cl_int result) {
-	Context& thread = _getCurrentThread();
-	thread.lastError = result;
-	return result;
-}
-
 opencl::Context& opencl::OpenCLRuntime::_bind() {
 	_enumerateDevices();
 
@@ -514,8 +507,6 @@ void opencl::OpenCLRuntime::registerTexture(const void* texref,
 */
 void opencl::OpenCLRuntime::clearErrors() {
 	_lock();
-	Context& thread = _getCurrentThread();
-	thread.lastError = CL_SUCCESS;
 	_unlock();
 }
 
@@ -817,7 +808,7 @@ cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries,
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
-    return _setLastError(result);
+    return result;
 }
 
 cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform, 
@@ -864,7 +855,7 @@ cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform,
 		}
 	}
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 	
 
@@ -908,7 +899,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
-    return _setLastError(result);
+    return result;
 }
 
 cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
@@ -943,7 +934,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 	}
 
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 
 cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * properties,
@@ -982,7 +973,6 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 		if(err == CL_SUCCESS)
 			context = (cl_context) &thread;
 	}
-	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1045,7 +1035,6 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	catch(...) {
 		err = CL_OUT_OF_HOST_MEMORY;
 	}
-	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1085,7 +1074,6 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 		}
 	}
 
-	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1203,7 +1191,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	}
 	
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 
 cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
@@ -1292,7 +1280,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 	}
 
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 
 cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
@@ -1348,7 +1336,6 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 		err = CL_OUT_OF_HOST_MEMORY;
 	}
 
-	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1430,7 +1417,6 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		err = CL_OUT_OF_HOST_MEMORY;
 	}
 
-	_setLastError(err);
 	if(errcode_ret)
 		*errcode_ret = err;
 	_unlock();
@@ -1506,7 +1492,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 
 cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queue,
@@ -1579,7 +1565,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 
 cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
@@ -1614,7 +1600,7 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 	}
 
 	_unlock();
-	return _setLastError(result);
+	return result;
 }
 
 cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_queue,
@@ -1711,5 +1697,5 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	}
 
 	_unlock();
-	return _setLastError(result);
+	return result;
 }

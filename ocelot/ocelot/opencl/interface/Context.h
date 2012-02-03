@@ -32,9 +32,6 @@ namespace opencl {
 		//! set of valid command queues
 		IndexSet validQueues;
 	
-		//! last result returned by a OpenCL call
-		cl_int lastError;
-		
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector persistentTraceGenerators;
 

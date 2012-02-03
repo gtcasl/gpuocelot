@@ -10,8 +10,7 @@
 #endif
 
 
-opencl::Context::Context(): selectedDevice(0),
-	lastError(CL_SUCCESS) {
+opencl::Context::Context(): selectedDevice(0) {
 }
 
 opencl::Context::~Context() {
@@ -20,7 +19,6 @@ opencl::Context::~Context() {
 opencl::Context::Context(const Context& c): 
 	selectedDevice(c.selectedDevice),
 	validDevices(c.validDevices),
-	lastError(c.lastError),
 	persistentTraceGenerators(c.persistentTraceGenerators),
 	nextTraceGenerators(c.nextTraceGenerators) {
 }
@@ -30,7 +28,6 @@ opencl::Context& opencl::Context::operator=(
 	if(&c == this) return *this;
 	selectedDevice = c.selectedDevice;
 	validDevices = c.validDevices;
-	lastError = c.lastError;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
 	return *this;
@@ -46,7 +43,6 @@ opencl::Context& opencl::Context::operator=(
 	if (this == &c) return *this;
 	std::swap(selectedDevice, c.selectedDevice);
 	std::swap(validDevices, c.validDevices);
-	std::swap(lastError, c.lastError);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
 	return *this;

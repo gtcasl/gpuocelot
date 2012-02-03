@@ -14,6 +14,7 @@
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/opencl/interface/Kernel.h>
 #include <ocelot/opencl/interface/MemoryObject.h>
 #include <ocelot/opencl/interface/CommandQueue.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
@@ -32,60 +33,10 @@ namespace opencl {
 
 	typedef std::set< int > IndexSet;
 	
-	typedef std::map< unsigned int, size_t > SizeMap;
 	typedef std::map< unsigned int, char * > PointerMap;
-	typedef std::map< unsigned int, unsigned int > OffsetMap;
 
 	typedef std::set< MemoryObject * > MemoryObjectSet;
-	//! references a kernel registered to OpenCL runtime
-	class RegisteredKernel {
-	public:
-		RegisteredKernel(const std::string& kernel, const int program, const void * context);
-		~RegisteredKernel();
-
-	public:
-		//! name of kernel
-		const std::string kernel;
-
-		//! associated program
-		const int program;
-
-		//! associated context
-		const void * context;
-	
-		//! Sizes for individual parameter
-		SizeMap parameterSizes;
-		
-		//! Sizes for individual parameters
-		PointerMap parameterPointers;
-
-		//! parameter memory
-		char *parameterBlock;
-		
-		//! size of parameter memory
-		size_t parameterBlockSize;
-
-		//! offset of parameters
-		OffsetMap parameterOffsets;	
-
-		//! number of dimensions for work-items
-		cl_uint workDim;
-		
-		//! global ID offset for work-items
-		size_t globalWorkOffset[3];
-
-		//! global dimensions of work-items
-		size_t globalWorkSize[3];
-
-		//! local dimensions of work-items in work-group
-		size_t localWorkSize[3];
-
-		//! number of work groups
-		size_t workGroupNum[3];
-			
-	};
-	
-	typedef std::vector< RegisteredKernel * > RegisteredKernelVector;
+		typedef std::vector< Kernel * > KernelVector;
 
 	//! programs created in OpenCL runtime	
 	class Program {
@@ -270,7 +221,7 @@ namespace opencl {
 		// Load all modules and register them with all devices
 		void _registerAllModules(int device);
 		// Map kernel parameters for device
-		void _mapKernelParameters(RegisteredKernel & kernel, int device);
+		void _mapKernelParameters(Kernel & kernel, int device);
 
 	private:
 		//! locking object for opencl runtime
@@ -292,7 +243,7 @@ namespace opencl {
 		HostThreadContextMap _threads;
 		
 		//! vectors of kernels
-		RegisteredKernelVector _kernels;
+		KernelVector _kernels;
 
 		//! vectors of buffer objects
 		MemoryObjectSet _memories;
@@ -346,7 +297,7 @@ namespace opencl {
 	//	PassSet _passes;
 	
 	private:
-		void _launchKernel(RegisteredKernel & kernel, cl_device_id device);
+		void _launchKernel(Kernel & kernel, cl_device_id device);
 		
 	public:
 		OpenCLRuntime();

@@ -112,22 +112,6 @@ opencl::Program::Program(const std::string & s, const void * c):
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-opencl::RegisteredKernel::RegisteredKernel(const std::string &k, const int p,
-const void * c): kernel(k), program(p), context(c) {
-	parameterBlock = NULL;
-}
-
-opencl::RegisteredKernel::~RegisteredKernel()
-{
-	PointerMap::iterator pointer;
-	for(pointer = parameterPointers.begin(); pointer != parameterPointers.end(); pointer++) {
-		delete pointer->second;
-	}
-
-	if(parameterBlock)
-		delete parameterBlock;
-}
-
 
 /*
 opencl::RegisteredTexture::RegisteredTexture(const std::string& m, 
@@ -333,7 +317,7 @@ void opencl::OpenCLRuntime::_registerAllModules(int device) {
 	}
 }
 
-void opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int device) {
+void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, int device) {
 
 	const Program & prog = *(_programs[kernel.program]);
 	assert(prog.ptxModule.find(device) != prog.ptxModule.end());
@@ -341,7 +325,7 @@ void opencl::OpenCLRuntime::_mapKernelParameters(RegisteredKernel & kernel, int 
 	const std::string & moduleName = prog.ptxModule.find(device)->second;
 	assert(_modules.find(moduleName) != _modules.end());
 
-	const std::string & kernelName = kernel.kernel;
+	const std::string & kernelName = kernel.name;
 	const ir::Kernel * k = _modules.find(moduleName)->second.getKernel(kernelName);
 
 	if(k->arguments.size() != kernel.parameterSizes.size())
@@ -471,7 +455,7 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	}
 
 	// kernels
-	for (RegisteredKernelVector::iterator kernel = _kernels.begin();
+	for (KernelVector::iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel) {
 		delete *kernel;
 	}
@@ -786,9 +770,9 @@ static ir::Dim3 convert(const size_t d[3]) {
 	return std::move(ir::Dim3(d[0], d[1], d[2]));
 }
 
-void opencl::OpenCLRuntime::_launchKernel(RegisteredKernel &kernel, cl_device_id device)
+void opencl::OpenCLRuntime::_launchKernel(Kernel &kernel, cl_device_id device)
 {
-	const std::string & kernelName = kernel.kernel;
+	const std::string & kernelName = kernel.name;
 	assert(_programs[kernel.program]->built);
 	assert(_programs[kernel.program]->ptxModule.find(device) != _programs[kernel.program]->ptxModule.end());
 	const std::string & moduleName = _programs[kernel.program]->ptxModule[device];
@@ -1415,7 +1399,7 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 		report("Registered kernel - " << kernelName
 			<< " in program '" << prog.name << "'");
 		try {
-			_kernels.push_back(new RegisteredKernel(kernelName, program, prog.context));
+			_kernels.push_back(new Kernel(kernelName, program, prog.context));
 		}
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
@@ -1677,7 +1661,7 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 		if(kernel < 0 || kernel >= (cl_kernel)_kernels.size())
 			throw CL_INVALID_KERNEL;
 
-		RegisteredKernel & k = *(_kernels[kernel]);
+		Kernel & k = *(_kernels[kernel]);
 		HostThreadContext & thread = _getCurrentThread();
 		if(k.context != (void *) &thread)
 			throw CL_INVALID_KERNEL;
@@ -1722,7 +1706,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 			throw CL_INVALID_KERNEL;
 
 		CommandQueue & q = *(_queues[command_queue]);
-		RegisteredKernel & k = *(_kernels[kernel]);
+		Kernel & k = *(_kernels[kernel]);
 		if(q.context() != k.context)
 			throw CL_INVALID_CONTEXT;
 		

@@ -46,61 +46,6 @@
 
 typedef api::OcelotConfiguration config;
 
-////////////////////////////////////////////////////////////////////////////////
-
-opencl::HostThreadContext::HostThreadContext(): selectedDevice(0),
-	lastError(CL_SUCCESS) {
-}
-
-opencl::HostThreadContext::~HostThreadContext() {
-}
-
-opencl::HostThreadContext::HostThreadContext(const HostThreadContext& c): 
-	selectedDevice(c.selectedDevice),
-	validDevices(c.validDevices),
-	lastError(c.lastError),
-	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators) {
-}
-
-opencl::HostThreadContext& opencl::HostThreadContext::operator=(
-	const HostThreadContext& c) {
-	if(&c == this) return *this;
-	selectedDevice = c.selectedDevice;
-	validDevices = c.validDevices;
-	lastError = c.lastError;
-	persistentTraceGenerators = c.persistentTraceGenerators;
-	nextTraceGenerators = c.nextTraceGenerators;
-	return *this;
-}
-
-opencl::HostThreadContext::HostThreadContext(HostThreadContext&& c): 
-	selectedDevice(0) {
-	*this = std::move(c);
-}
-
-opencl::HostThreadContext& opencl::HostThreadContext::operator=(
-	HostThreadContext&& c) {
-	if (this == &c) return *this;
-	std::swap(selectedDevice, c.selectedDevice);
-	std::swap(validDevices, c.validDevices);
-	std::swap(lastError, c.lastError);
-	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
-	std::swap(nextTraceGenerators, c.nextTraceGenerators);
-	return *this;
-}
-
-
-void opencl::HostThreadContext::clear() {
-	validDevices.clear();
-	persistentTraceGenerators.clear();
-	nextTraceGenerators.clear();
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-
 /*
 opencl::RegisteredTexture::RegisteredTexture(const std::string& m, 
 	const std::string& t, bool n) : module(m), texture(t), norm(n) {
@@ -195,15 +140,15 @@ void opencl::OpenCLRuntime::_unlock() {
 
 //! sets the last error state for the OpenCLRuntime object
 cl_int opencl::OpenCLRuntime::_setLastError(cl_int result) {
-	HostThreadContext& thread = _getCurrentThread();
+	Context& thread = _getCurrentThread();
 	thread.lastError = result;
 	return result;
 }
 
-opencl::HostThreadContext& opencl::OpenCLRuntime::_bind() {
+opencl::Context& opencl::OpenCLRuntime::_bind() {
 	_enumerateDevices();
 
-	HostThreadContext& thread = _getCurrentThread();
+	Context& thread = _getCurrentThread();
 
 	if (_devices.empty()) return thread;
 	
@@ -252,14 +197,14 @@ std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
 	return result;
 }
 
-opencl::HostThreadContext& opencl::OpenCLRuntime::_getCurrentThread() {
-	HostThreadContextMap::iterator t = _threads.find(
+opencl::Context& opencl::OpenCLRuntime::_getCurrentThread() {
+	ContextMap::iterator t = _threads.find(
 		boost::this_thread::get_id());
 	if (t == _threads.end()) {
 		report("Creating new context for thread "
 			<< boost::this_thread::get_id());
 		t = _threads.insert(std::make_pair(boost::this_thread::get_id(), 
-			new HostThreadContext())).first;
+			new Context())).first;
 	}
 	return *(t->second);
 }
@@ -429,7 +374,7 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// mutex
 
 	// thread contexts
-	for(HostThreadContextMap::iterator thread = _threads.begin();
+	for(ContextMap::iterator thread = _threads.begin();
 		thread != _threads.end(); ++thread) {
 		delete thread->second;
 	}
@@ -475,7 +420,7 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
 	_lock();
-	HostThreadContext& thread = _getCurrentThread();
+	Context& thread = _getCurrentThread();
 	if (persistent) {
 		thread.persistentTraceGenerators.push_back(&gen);
 	}
@@ -487,7 +432,7 @@ void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 
 void opencl::OpenCLRuntime::clearTraceGenerators() {
 	_lock();
-	HostThreadContext& thread = _getCurrentThread();
+	Context& thread = _getCurrentThread();
 	thread.persistentTraceGenerators.clear();
 	thread.nextTraceGenerators.clear();
 	_unlock();
@@ -569,7 +514,7 @@ void opencl::OpenCLRuntime::registerTexture(const void* texref,
 */
 void opencl::OpenCLRuntime::clearErrors() {
 	_lock();
-	HostThreadContext& thread = _getCurrentThread();
+	Context& thread = _getCurrentThread();
 	thread.lastError = CL_SUCCESS;
 	_unlock();
 }
@@ -577,7 +522,7 @@ void opencl::OpenCLRuntime::clearErrors() {
 void opencl::OpenCLRuntime::reset() {
 	_lock();
 	report("Resetting opencl runtime.");
-	HostThreadContext& thread = _getCurrentThread();
+	Context& thread = _getCurrentThread();
 	thread.clear();
 	//_dimensions.clear();
 	
@@ -769,7 +714,7 @@ void opencl::OpenCLRuntime::_launchKernel(Kernel &kernel, cl_device_id device)
 		<< ") on thread " << boost::this_thread::get_id());
 	
 	try {
-		HostThreadContext &thread = _getCurrentThread();
+		Context &thread = _getCurrentThread();
 		trace::TraceGeneratorVector traceGens;
 
 		traceGens = thread.persistentTraceGenerators;
@@ -1026,7 +971,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 		err = CL_UNIMPLEMENTED;
 	}
 	else {
-		HostThreadContext &thread = _getCurrentThread();
+		Context &thread = _getCurrentThread();
 		for (cl_uint i = 0; i < num_devices; i++) {
 			if(devices[i] == -1 || devices[i] >= (int)_devices.size()) {
 				err = CL_INVALID_DEVICE;
@@ -1055,7 +1000,7 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	cl_int err = CL_SUCCESS;
 
 	try {
-		HostThreadContext &thread = _getCurrentThread();
+		Context &thread = _getCurrentThread();
 		if(context != (void *)&thread)
 			throw CL_INVALID_CONTEXT;
 		
@@ -1117,7 +1062,7 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	
 	_lock();
 	cl_int err = CL_SUCCESS;
-	HostThreadContext &thread = _getCurrentThread();
+	Context &thread = _getCurrentThread();
 	if(context != (void *)&thread)
 		err = CL_INVALID_CONTEXT;
 	else if(count == 0 || strings == 0)
@@ -1157,7 +1102,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	cl_int result = CL_SUCCESS;
 	_lock();
 	try {
-		HostThreadContext &thread = _getCurrentThread();
+		Context &thread = _getCurrentThread();
 		
 		if(thread.validPrograms.find(program) == thread.validPrograms.end())//Not found
 			throw CL_INVALID_PROGRAM;
@@ -1274,7 +1219,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 		if(param_name < CL_PROGRAM_REFERENCE_COUNT || param_name > CL_PROGRAM_BINARIES)
 			throw CL_INVALID_VALUE;
 		
-		HostThreadContext &thread = _getCurrentThread();
+		Context &thread = _getCurrentThread();
 	
 		if(thread.validPrograms.find(program) == thread.validPrograms.end())//Not found
 			throw CL_INVALID_PROGRAM;
@@ -1360,7 +1305,7 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	_lock();
 
 	try{
-		HostThreadContext & thread = _getCurrentThread();
+		Context & thread = _getCurrentThread();
 		if(thread.validPrograms.find(program) == thread.validPrograms.end())
 			throw CL_INVALID_PROGRAM;
 
@@ -1421,7 +1366,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	cl_int err = CL_SUCCESS;
 
 	try {
-		HostThreadContext & thread = _getCurrentThread();
+		Context & thread = _getCurrentThread();
 		if(context != (void *)&thread)
 			throw CL_INVALID_CONTEXT;
 
@@ -1505,7 +1450,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 	_lock();
 
 	try {
-		HostThreadContext & thread = _getCurrentThread();
+		Context & thread = _getCurrentThread();
 		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
@@ -1577,7 +1522,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	_lock();
 
 	try {
-		HostThreadContext & thread = _getCurrentThread();
+		Context & thread = _getCurrentThread();
 		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
@@ -1650,7 +1595,7 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 			throw CL_INVALID_KERNEL;
 
 		Kernel & k = *(_kernels[kernel]);
-		HostThreadContext & thread = _getCurrentThread();
+		Context & thread = _getCurrentThread();
 		if(k.context != (void *) &thread)
 			throw CL_INVALID_KERNEL;
 
@@ -1686,7 +1631,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	_lock();
 
 	try {
-		HostThreadContext &thread = _getCurrentThread();
+		Context &thread = _getCurrentThread();
 		if(thread.validQueues.find(command_queue) == thread.validQueues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 

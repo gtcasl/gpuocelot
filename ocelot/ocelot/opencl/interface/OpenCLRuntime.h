@@ -18,6 +18,7 @@
 #include <ocelot/opencl/interface/MemoryObject.h>
 #include <ocelot/opencl/interface/CommandQueue.h>
 #include <ocelot/opencl/interface/Program.h>
+#include <ocelot/opencl/interface/Context.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
@@ -40,47 +41,8 @@ namespace opencl {
 	typedef std::vector< Kernel * > KernelVector;
 	typedef std::vector< Program * > ProgramVector;
 	
-	/*! Host thread OpenCL context consists of these */
-	class HostThreadContext {	
-	public:
-		//! index of selected device
-		executive::Device * selectedDevice;
-		
-		//! set of valid device indices
-		IndexSet validDevices;
-
-		//! set of valid programs
-		IndexSet validPrograms;
-
-		//! set of valid buffer objects
-		MemoryObjectSet validMemories;
-
-		//! set of valid command queues
-		IndexSet validQueues;
 	
-		//! last result returned by a OpenCL call
-		cl_int lastError;
-		
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector persistentTraceGenerators;
-
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector nextTraceGenerators;
-			
-	public:
-		HostThreadContext();
-		~HostThreadContext();
-
-		HostThreadContext(const HostThreadContext& c);	
-		HostThreadContext& operator=(const HostThreadContext& c);
-
-		HostThreadContext(HostThreadContext&& c);	
-		HostThreadContext& operator=(HostThreadContext&& c);
-
-		void clear();
-	};
-	
-	typedef std::map<boost::thread::id, HostThreadContext *> HostThreadContextMap;
+	typedef std::map<boost::thread::id, Context *> ContextMap;
 
 //
 //	class RegisteredTexture
@@ -165,7 +127,7 @@ namespace opencl {
 		//! \brief sets the last error state for the OpenCLRuntime object
 		cl_int _setLastError(cl_int result);
 		//! \brief Bind the current thread to a device context
-		HostThreadContext& _bind();
+		Context& _bind();
 		//! \brief Unbind the current thread
 		void _unbind();
 		//! \brief Lock the mutex and bind the the thread
@@ -177,7 +139,7 @@ namespace opencl {
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
-		HostThreadContext& _getCurrentThread();
+		Context& _getCurrentThread();
 		//! \brief create program binary
 		Program & _createProgramSource(const std::string & source);
 		//! \brief create program binary
@@ -208,7 +170,7 @@ namespace opencl {
 		ProgramVector _programs;
 		
 		//! map of pthreads to thread contexts
-		HostThreadContextMap _threads;
+		ContextMap _threads;
 		
 		//! vectors of kernels
 		KernelVector _kernels;

@@ -3,10 +3,9 @@
 	\date   Monday May 9, 2011
 	\brief  The header file for the ThreadFrontierAnalysis class.
 
-	Note: This analysis is covered by Intel Patents (pending), be very careful
-		about commercial reuse.  This module is provided for research use only,
-		care was taken such that only the code in this compilation unit is
-		covered by the patents.
+	Note: This analysis was rewritten to use an edge-covering tree based
+		algorithm for assinging thread priorities, it should be safe
+		for commercial use now.
 */
 
 #ifndef THREAD_FRONTIER_ANALYSIS_H_INCLUDED
@@ -29,8 +28,7 @@ namespace analysis
 			stalled threads may be waiting.
 
 	The intersection of this set and a branch target's predecessors need to be
-	checked for re-convergence. The algorithm used here is taken directly
-	from [1].
+	checked for re-convergence. See more info here [1].
 	
 	[1] - "SIMD Reconvergence at Thread Frontiers" by Diamos et al. 
 */
@@ -39,6 +37,7 @@ class ThreadFrontierAnalysis: public KernelAnalysis
 public:
 	typedef ir::ControlFlowGraph::ConstBlockPointerVector BlockVector;
 	typedef ir::ControlFlowGraph::const_iterator          const_iterator;
+	typedef ir::ControlFlowGraph::const_edge_pointer_iterator   const_edge_iterator;
 	typedef unsigned int                                  Priority;
 	typedef std::unordered_map<const_iterator, Priority>  PriorityMap;
 
@@ -56,11 +55,43 @@ public:
 	Priority getPriority(const_iterator block) const;
 
 private:
+	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
+
+	/*! \brief A node in the edge-covering tree */
+	class Node
+	{
+	public:
+		typedef std::list<Node>    NodeList;
+		typedef NodeList::iterator node_iterator;
+	
+	public:
+		Node(const_iterator block, node_iterator parent,
+			node_iterator root, Priority priority);
+	
+	public:
+		const_iterator block;
+		NodeList       children;
+		node_iterator  parent;
+		node_iterator  root;
+		
+		Priority       priority;
+		
+	public:
+		void updatePriority(Priority p);
+		bool isThisMyParent(node_iterator possibleParent);
+		
+	public:
+		void assignPriorities(PriorityMap&);
+	};
+	
+	typedef Node::node_iterator node_iterator;
+	typedef std::unordered_map<const_iterator, node_iterator> NodeMap;
+
+private:
 	void _computePriorities(ir::IRKernel& kernel);
 	void _computeFrontiers(ir::IRKernel& kernel);
 
-private:
-	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
+	void _visitNode(NodeMap& nodes, node_iterator node);
 
 private:
 	PriorityMap _priorities;

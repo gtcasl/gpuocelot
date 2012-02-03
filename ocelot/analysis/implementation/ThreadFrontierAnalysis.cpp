@@ -30,7 +30,7 @@ namespace analysis
 {
 
 ThreadFrontierAnalysis::ThreadFrontierAnalysis()
-: KernelAnalysis(Analysis::ThreadFrontierAnalysis, "ThreadFrontierAnalysis",
+: KernelAnalysis(Analysis::NoAnalysis, "ThreadFrontierAnalysis",
 	Analysis::StructuralAnalysis)
 {
 
@@ -60,266 +60,36 @@ ThreadFrontierAnalysis::Priority ThreadFrontierAnalysis::getPriority(
 	return priority->second;
 }
 
-typedef std::unordered_set<ir::BasicBlock::Id> BlockSet;
-typedef std::unordered_map<ir::BasicBlock::Id,
-	ir::ControlFlowGraph::const_iterator> BlockIdMap;
-	
-static void addFallthroughs(ThreadFrontierAnalysis::PriorityMap& priorities,
-	ThreadFrontierAnalysis::Priority& priority,
-	BlockSet& visitedBlocks, ir::ControlFlowGraph::const_iterator block,
-	BlockIdMap& unstructuredBranches);
-	
-static void addUnstructuredGraph(
-	ThreadFrontierAnalysis::PriorityMap& priorities,
-	ThreadFrontierAnalysis::Priority& priority,
-	BlockSet& visitedBlocks, ir::ControlFlowGraph::const_iterator block,
-	BlockIdMap& unstructuredBranches)
-{
-	// can this block reach another via an unstructured branch?
-	BlockIdMap::const_iterator unstructuredBranch =
-		unstructuredBranches.find(block->id);
-	if(unstructuredBranch != unstructuredBranches.end())
-	{
-		block = unstructuredBranch->second;
-		
-		if(visitedBlocks.count(block->id) == 1) return;
-		
-		// are all predecessors scheduled?
-		for(ir::BasicBlock::BlockPointerVector::const_iterator predecessor =
-			block->predecessors.begin(); predecessor !=
-			block->predecessors.end(); ++predecessor)
-		{
-			if(visitedBlocks.count((*predecessor)->id) == 0)
-			{
-				return;
-			}
-		}
-		
-		report("  block " << block->label << " is (unstructured)");
-		
-		unstructuredBranches.erase(unstructuredBranch);
-		addFallthroughs(priorities, priority, visitedBlocks, block,
-			unstructuredBranches);
-	}
-}
-
-static unsigned int rewind(ir::ControlFlowGraph::const_iterator& block)
-{
-	// rewind back to the start of the fallthrough chain
-	bool rewind = true;
-	
-	unsigned int count = 1;
-	
-	while(rewind)
-	{
-		rewind = false;
-		for(ir::BasicBlock::BlockPointerVector::const_iterator predecessor =
-			block->predecessors.begin(); predecessor !=
-			block->predecessors.end(); ++predecessor)
-		{
-			if((*predecessor)->has_fallthrough_edge())
-			{
-				if((*predecessor)->get_fallthrough_edge()->tail->id
-					== block->id)
-				{
-					block = *predecessor;
-					rewind = true;
-					++count;
-					break;
-				}
-			}
-		}
-	}
-	
-	return count;
-}
-
-static void addFallthroughs(
-	ThreadFrontierAnalysis::PriorityMap& priorities,
-	ThreadFrontierAnalysis::Priority& priority,
-	BlockSet& visitedBlocks, ir::ControlFlowGraph::const_iterator block,
-	BlockIdMap& unstructuredBranches)
-{
-	ThreadFrontierAnalysis::BlockVector found;
-
-	rewind(block);
-	
-	report("   setting block " << block->label
-			<< " priority to " << priority);
-	priorities.insert(std::make_pair(block, priority--));
-	assert(visitedBlocks.count(block->id) == 0);
-	visitedBlocks.insert(block->id);
-	found.push_back(block);
-	
-	// set chains of fallthrough blocks at once
-	while(block->has_fallthrough_edge())
-	{
-		block = block->get_fallthrough_edge()->tail;
-		report("   setting block " << block->label
-			<< " priority to " << priority << " (fallthrough)");
-		priorities.insert(std::make_pair(block, priority--));
-		assert(visitedBlocks.count(block->id) == 0);
-		visitedBlocks.insert(block->id);
-		found.push_back(block);
-	}
-
-	// Check for unstructured branches that can reach other blocks
-	for(ThreadFrontierAnalysis::BlockVector::const_iterator block =
-		found.begin(); block != found.end(); ++block)
-	{
-		addUnstructuredGraph(priorities, priority, visitedBlocks, *block,
-			unstructuredBranches);
-	}
-}
-
-static void addExitChain(
-	ThreadFrontierAnalysis::PriorityMap& priorities,
-	BlockSet& visitedBlocks, ir::ControlFlowGraph::const_iterator block)
-{
-	unsigned int chainLength = rewind(block);
-	
-	report(" Assigning exit nodes.");
-	
-	// set chains of fallthrough blocks at the same time
-	for(unsigned int i = 0; i < chainLength; ++i)
-	{
-		if(i != 0) block = block->get_fallthrough_edge()->tail;
-		report("  setting block " << block->label
-			<< " priority to " << (chainLength - i) << " (exit)");
-		priorities.insert(std::make_pair(block, chainLength - i));
-		assert(visitedBlocks.count(block->id) == 0);
-		visitedBlocks.insert(block->id);
-	}
-}
-
-static void depthFirstTraversal(ThreadFrontierAnalysis::PriorityMap& priorities,
-	ThreadFrontierAnalysis::Priority& priority,
-	BlockSet& visitedBlocks, StructuralAnalysis::Node* entryNode,
-	BlockIdMap& unstructuredBranches)
-{
-	typedef std::stack<StructuralAnalysis::Node*> NodeStack;
-	typedef std::set<StructuralAnalysis::Node*>   NodeSet;
-
-	NodeStack  nextNode;
-	NodeSet    visited;
-
-	nextNode.push(entryNode);
-	visited.insert(nextNode.top());
-
-	while(!nextNode.empty())
-	{
-		StructuralAnalysis::Node* node = nextNode.top();
-		nextNode.pop();
-
-		if(!node->isCombined)
-		{
-			if(visitedBlocks.count(node->BB->id) == 0)
-			{		
-				report("  block " << node->BB->label << " is (structured)");
-				
-				addFallthroughs(priorities, priority, visitedBlocks, node->BB,
-					unstructuredBranches);
-				addUnstructuredGraph(priorities, priority,
-					visitedBlocks, node->BB, unstructuredBranches);
-			}
-		}
-		else
-		{
-			// Make sure the entry is visited first
-			bool insertEntry = visited.insert(node->entryNode).second;
-			
-			for(NodeSet::const_iterator child = node->childNode.begin();
-				child != node->childNode.end(); ++child)
-			{
-				if(visited.insert(*child).second)
-				{
-					nextNode.push(*child);
-				}
-			}
-
-			if(insertEntry)
-			{
-				nextNode.push(node->entryNode);
-			}
-		}
-	}
-}
-
-
 void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 {
+	typedef std::unordered_set<const_iterator> BlockSet;
+
+	#if REPORT_BASE != 0
+	kernel.cfg()->write(std::cout);	
+	#endif
+	
 	report("Setting basic block priorities.");
 	
-	Analysis* analysis = getAnalysis(Analysis::StructuralAnalysis);
-	assert(analysis != 0);
-	
-	analysis::StructuralAnalysis* structuralAnalysis
-		= static_cast<analysis::StructuralAnalysis*>(analysis);
+	Node::NodeList edgeCoveringTree;
+	NodeMap        nodeMap;
 
-	#if (REPORT_BASE != 0)
-	structuralAnalysis->write(std::cout);
-	#endif
+	node_iterator root = edgeCoveringTree.insert(edgeCoveringTree.end(),
+		Node(kernel.cfg()->get_exit_block(),
+		node_iterator(), node_iterator(), 0));
 
-	BlockSet   visitedBlocks;
-	BlockIdMap unstructuredBranches;
-	
-	// create a set of blocks that are reachable from unstructured branches
-	for(analysis::StructuralAnalysis::EdgeVecTy::const_iterator edge =
-		structuralAnalysis->unstructuredBRVec.begin(); edge !=
-		structuralAnalysis->unstructuredBRVec.end(); ++edge)
-	{
-		unstructuredBranches.insert(std::make_pair(edge->first->id,
-			edge->second));
-	}
+	root->parent = root;
+	root->root   = root;
 
-	Priority priority = kernel.cfg()->size();
-
-	// Add the exit chain first	
-	addExitChain(_priorities, visitedBlocks,
-		kernel.cfg()->get_exit_block());
+	// 1) Build the edge-covering tree
+	_visitNode(nodeMap, root);
 	
-	// do a depth first traversal of the control tree, set priorities
-	report(" Traversing the control tree.");
-	assert(!structuralAnalysis->Net.empty());
-	
-	depthFirstTraversal(_priorities, priority, visitedBlocks,
-		*structuralAnalysis->Net.begin(), unstructuredBranches);
-	
-	// assign any remaining unstructured blocks
-	report(" Adding unstructured blocks.");
-	if(visitedBlocks.size() != kernel.cfg()->size())
-	{
-		for(BlockIdMap::const_iterator unstructuredBranch =
-			unstructuredBranches.begin(); 
-			unstructuredBranch != unstructuredBranches.end();
-			++unstructuredBranch)
-		{
-			ir::ControlFlowGraph::const_iterator block =
-				unstructuredBranch->second;
-			if(visitedBlocks.count(block->id) == 0)
-			{
-				report("  block " << block->label << " is (unstructured)");
-				
-				addFallthroughs(_priorities, priority, visitedBlocks, block,
-					unstructuredBranches);
-			}
-		}
-	}
-	
-	// assign any unreachable blocks
-	if(!structuralAnalysis->unreachableNodeSet.empty())
-	{
-		depthFirstTraversal(_priorities, priority, visitedBlocks,
-			*structuralAnalysis->unreachableNodeSet.begin(),
-			unstructuredBranches);
-	}
-	
-	assert(visitedBlocks.size() == kernel.cfg()->size());
+	// 2) Walk the tree, assign priorities
+	root->assignPriorities(_priorities);
 }
 
 void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 {
-	typedef std::map<Priority, const_iterator,
+	typedef std::multimap<Priority, const_iterator,
 		std::greater<Priority>> ReversePriorityMap;
 	typedef std::unordered_set<const_iterator> BlockSet;
 
@@ -371,6 +141,92 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 			}
 		}
 	}
+}
+
+void ThreadFrontierAnalysis::_visitNode(NodeMap& nodes, node_iterator node)
+{
+	assert(nodes.count(node->block) == 0);
+	
+	report(" Visiting basic block '" << node->block->label << "'");
+	
+	nodes.insert(std::make_pair(node->block, node));
+	
+	for(const_edge_iterator edge = node->block->in_edges.begin();
+		edge != node->block->in_edges.end(); ++edge)
+	{
+		const_iterator predecessor = (*edge)->head;
+		
+		NodeMap::iterator predecessorNode = nodes.find(predecessor);
+		
+		if(predecessorNode == nodes.end())
+		{
+			node_iterator child = node->children.insert(node->children.end(),
+				Node(predecessor, node, node->root, node->priority + 1));
+			report("  adding child '" << child->block->label << "'...");
+			_visitNode(nodes, child);
+			report(" Returned to basic block '" << node->block->label << "'");
+		}
+		else
+		{
+			// swap if it results in a longer path through the subtree
+			if(predecessorNode->second->priority < node->priority + 1)
+			{
+				// detect loops (can this be more efficient?)
+				if(node->block != predecessor &&
+					!node->isThisMyParent(predecessorNode->second))
+				{
+					report("  adding subtree rooted at '"
+						<< predecessorNode->second->block->label << "'");
+			
+					predecessorNode->second->updatePriority(node->priority + 1);
+					node->children.splice(node->children.end(),
+						predecessorNode->second->parent->children,
+						predecessorNode->second);
+					nodes[predecessor] = --node->children.end();
+				}
+			}
+		}
+	}
+}
+
+ThreadFrontierAnalysis::Node::Node(const_iterator b, node_iterator p,
+	node_iterator r, Priority pri)
+: block(b), parent(p), root(r), priority(pri)
+{
+
+}
+
+void ThreadFrontierAnalysis::Node::assignPriorities(PriorityMap& priorities)
+{
+	priorities[block] = priority;
+	report(" Assigning basic block '" << block->label
+		<< "' priority " << priority);	
+	
+	for(node_iterator child = children.begin();
+		child != children.end(); ++child)
+	{
+		child->assignPriorities(priorities);
+	}
+}
+
+void ThreadFrontierAnalysis::Node::updatePriority(Priority p)
+{
+	priority = p;
+
+	for(node_iterator child = children.begin();
+		child != children.end(); ++child)
+	{
+		child->updatePriority(p + 1);
+	}
+}
+
+bool ThreadFrontierAnalysis::Node::isThisMyParent(node_iterator possibleParent)
+{
+	if(parent == possibleParent) return true;
+
+	if(parent == root) return false;
+	
+	return parent->isThisMyParent(possibleParent);
 }
 
 }

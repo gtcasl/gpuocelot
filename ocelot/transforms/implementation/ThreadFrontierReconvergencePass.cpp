@@ -46,7 +46,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 {
 	report("Running thread frontier reconvergence pass");
 	typedef analysis::ThreadFrontierAnalysis::Priority Priority;
-	typedef std::map<Priority, ir::ControlFlowGraph::const_iterator,
+	typedef std::multimap<Priority, ir::ControlFlowGraph::const_iterator,
 		std::greater<Priority>> ReversePriorityMap;
 	typedef analysis::ThreadFrontierAnalysis TFAnalysis;
 	typedef ir::ControlFlowGraph::const_pointer_iterator const_pointer_iterator;
@@ -67,8 +67,12 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	}
 	
 	typedef std::unordered_map<ir::BasicBlock::Id, unsigned int> IdToPCMap;
+	typedef std::unordered_map<unsigned int,
+		ir::ControlFlowGraph::const_iterator> PCToBlockMap;
 
-	IdToPCMap pcs;
+	IdToPCMap     pcs;
+	PCToBlockMap  branchPCs;
+	PCToBlockMap  fallthroughPCs;
 	
 	// lay the code out in priority order
 	report(" Packing instructions into a vector");
@@ -91,9 +95,14 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 				const ir::PTXInstruction&>(**instruction);
 				
 			report("   [" << instructions.size() << "] '" << ptx.toString());
-							
+			
 			instructions.push_back(ptx);
 			instructions.back().pc = instructions.size() - 1;
+			
+			if(ptx.isBranch())
+			{
+				branchPCs.insert(std::make_pair(instructions.back().pc, block));
+			}
 		}
 		
 		if(!_gen6)
@@ -104,10 +113,10 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 				ir::ControlFlowGraph::const_iterator target =
 					block->get_fallthrough_edge()->tail;
 				
-				bool needsCheck = false;
+				ReversePriorityMap::const_iterator next = priorityAndBlock;
+				++next;
 				
-				assert(tfAnalysis->getPriority(target)
-					== (priorityAndBlock->first - 1));
+				bool needsCheck = target != next->second;
 				
 				TFAnalysis::BlockVector frontier =
 						tfAnalysis->getThreadFrontier(block);
@@ -125,12 +134,15 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 				
 				if(needsCheck)
 				{
+					fallthroughPCs.insert(std::make_pair(
+						instructions.size(), block));
+					
 					instructions.push_back(ir::PTXInstruction(
-						ir::PTXInstruction::Bra, ir::PTXOperand(target->label)));
+						ir::PTXInstruction::Bra,
+						ir::PTXOperand(target->label)));
 		
 					instructions.back().needsReconvergenceCheck = true;
-					instructions.back().branchTargetInstruction = 
-						instructions.size();
+					instructions.back().branchTargetInstruction = -1;
 					report("   [" << (instructions.size() - 1) << "] '"
 						<< instructions.back().toString());
 					report("    - artificial branch for check on"
@@ -141,102 +153,114 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	}
 	
 	report(" Updating branch targets");
-	for(ReversePriorityMap::const_iterator
-		priorityAndBlock = priorityToBlocks.begin();
-		priorityAndBlock != priorityToBlocks.end(); ++priorityAndBlock)
+	for(PCToBlockMap::const_iterator pcAndBlock = branchPCs.begin();
+		pcAndBlock != branchPCs.end(); ++pcAndBlock)
 	{
-		ir::ControlFlowGraph::const_iterator block = priorityAndBlock->second;
-		IdToPCMap::const_iterator blockToPc = pcs.find(block->id);
-		assert(blockToPc != pcs.end());
+		ir::ControlFlowGraph::const_iterator block = pcAndBlock->second;
+		unsigned int pc                            = pcAndBlock->first;
 		
-		unsigned int pc = blockToPc->second;
-		
-		for(ir::ControlFlowGraph::InstructionList::const_iterator 
-			instruction = block->instructions.begin();
-			instruction != block->instructions.end(); ++instruction, ++pc)
-		{
-			const ir::PTXInstruction& ptx = static_cast<
-				const ir::PTXInstruction&>(instructions[pc]);
-			if(ptx.opcode == ir::PTXInstruction::Bra)
-			{
-				ir::ControlFlowGraph::const_iterator target =
-					block->get_branch_edge()->tail;
-				
-				IdToPCMap::const_iterator targetPC = pcs.find(target->id);
-				assert(targetPC != pcs.end());
-				
-				report("  setting branch target of '" << ptx.toString()
-					<< "' to " << targetPC->second);
-				
-				instructions[pc].branchTargetInstruction = targetPC->second;
-				
-				TFAnalysis::BlockVector frontier =
-					tfAnalysis->getThreadFrontier(block);
-				
-				if(_gen6)
-				{
-					ir::ControlFlowGraph::const_iterator firstBlock =
-						k.cfg()->end();
-				
-					TFAnalysis::Priority highest = 0;
-				
-					frontier.push_back(block->get_branch_edge()->tail);
-					
-					if(block->has_fallthrough_edge())
-					{
-						frontier.push_back(
-							block->get_fallthrough_edge()->tail);
-					}
-				
-					// gen6 jumps to the block with the highest priority
-					for(TFAnalysis::BlockVector::const_iterator
-						stalledBlock = frontier.begin();
-						stalledBlock != frontier.end(); ++stalledBlock)
-					{
-						TFAnalysis::Priority priority =
-							tfAnalysis->getPriority(*stalledBlock);
-						if(priority >= highest)
-						{
-							highest    = priority;
-							firstBlock = *stalledBlock;
-						}
-					}
-				
-					// the reconverge point is the first block in the frontier
-					assert(firstBlock != k.cfg()->end());
+		const ir::PTXInstruction& ptx = static_cast<
+			const ir::PTXInstruction&>(instructions[pc]);
 			
-					IdToPCMap::const_iterator reconverge =
-						pcs.find(firstBlock->id);
-					assert(reconverge != pcs.end());
-					instructions[pc].reconvergeInstruction =
-						reconverge->second;
-					report("   re-converge point "  << reconverge->second
-						<< ", " << firstBlock->label);
-				}
-				else
+		ir::ControlFlowGraph::const_iterator target =
+			block->get_branch_edge()->tail;
+					
+		IdToPCMap::const_iterator targetPC = pcs.find(target->id);
+		assert(targetPC != pcs.end());
+		
+		report("  setting branch target of '" << ptx.toString()
+			<< "' to " << targetPC->second);
+		
+		instructions[pc].branchTargetInstruction = targetPC->second;
+		
+		TFAnalysis::BlockVector frontier =
+			tfAnalysis->getThreadFrontier(block);
+		
+		if(_gen6)
+		{
+			ir::ControlFlowGraph::const_iterator firstBlock =
+				k.cfg()->end();
+		
+			TFAnalysis::Priority highest = 0;
+		
+			frontier.push_back(block->get_branch_edge()->tail);
+			
+			if(block->has_fallthrough_edge())
+			{
+				frontier.push_back(
+					block->get_fallthrough_edge()->tail);
+			}
+		
+			// gen6 jumps to the block with the highest priority
+			for(TFAnalysis::BlockVector::const_iterator
+				stalledBlock = frontier.begin();
+				stalledBlock != frontier.end(); ++stalledBlock)
+			{
+				TFAnalysis::Priority priority =
+					tfAnalysis->getPriority(*stalledBlock);
+				if(priority >= highest)
 				{
-					// Does this branch need to check for re-convergence?
-					// Or: are any of the target's predecessors
-					//       in the thread frontier?
-					bool needsCheck = false;
-					
-					for(TFAnalysis::BlockVector::const_iterator
-						stalledBlock = frontier.begin();
-						stalledBlock != frontier.end(); ++stalledBlock)
-					{
-						if((*stalledBlock)->id == target->id)
-						{
-							needsCheck = true;
-							report("   needs re-convergence check.");
-							break;
-						}
-					}
-					
-					instructions[pc].needsReconvergenceCheck = needsCheck;
+					highest    = priority;
+					firstBlock = *stalledBlock;
 				}
 			}
+		
+			// the reconverge point is the first block in the frontier
+			assert(firstBlock != k.cfg()->end());
+	
+			IdToPCMap::const_iterator reconverge =
+				pcs.find(firstBlock->id);
+			assert(reconverge != pcs.end());
+			instructions[pc].reconvergeInstruction =
+				reconverge->second;
+			report("   re-converge point "  << reconverge->second
+				<< ", " << firstBlock->label);
+		}
+		else
+		{
+			// Does this branch need to check for re-convergence?
+			// Or: are any of the target's predecessors
+			//       in the thread frontier?
+			bool needsCheck = false;
+			
+			for(TFAnalysis::BlockVector::const_iterator
+				stalledBlock = frontier.begin();
+				stalledBlock != frontier.end(); ++stalledBlock)
+			{
+				if((*stalledBlock)->id == target->id)
+				{
+					needsCheck = true;
+					report("   needs re-convergence check.");
+					break;
+				}
+			}
+			
+			instructions[pc].needsReconvergenceCheck = needsCheck;
 		}
 	}
+	
+	report(" Updating fallthrough targets");
+	for(PCToBlockMap::const_iterator pcAndBlock = fallthroughPCs.begin();
+		pcAndBlock != fallthroughPCs.end(); ++pcAndBlock)
+	{
+		ir::ControlFlowGraph::const_iterator block = pcAndBlock->second;
+		unsigned int pc                            = pcAndBlock->first;
+		
+		const ir::PTXInstruction& ptx = static_cast<
+			const ir::PTXInstruction&>(instructions[pc]);
+			
+		ir::ControlFlowGraph::const_iterator target =
+			block->get_fallthrough_edge()->tail;
+					
+		IdToPCMap::const_iterator targetPC = pcs.find(target->id);
+		assert(targetPC != pcs.end());
+		
+		report("  setting branch target of '" << ptx.toString()
+			<< "' to " << targetPC->second);
+		
+		instructions[pc].branchTargetInstruction = targetPC->second;
+	}
+	
 }
 
 void ThreadFrontierReconvergencePass::finalize()

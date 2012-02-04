@@ -160,7 +160,11 @@ public:
 	class Module
 	{
 	public:
-		Module(const KernelVector& kernels, FunctionId nextId);
+		Module(const KernelVector& kernels, FunctionId nextId,
+			ir::Module* originalModule);
+		
+	public:
+		void destroy();
 	
 	public:
 		FunctionId getFunctionId(const std::string& kernelName) const;
@@ -174,6 +178,7 @@ public:
 		
 	private:
 		FunctionIdMap  _ids;
+		ir::Module*    _originalModule;
 	};
 
 	typedef std::unordered_map<std::string, Module> ModuleMap;

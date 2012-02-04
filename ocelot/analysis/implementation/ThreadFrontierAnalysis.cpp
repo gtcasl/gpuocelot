@@ -30,8 +30,8 @@ namespace analysis
 {
 
 ThreadFrontierAnalysis::ThreadFrontierAnalysis()
-: KernelAnalysis(Analysis::NoAnalysis, "ThreadFrontierAnalysis",
-	Analysis::StructuralAnalysis)
+: KernelAnalysis(Analysis::ThreadFrontierAnalysis, "ThreadFrontierAnalysis",
+	Analysis::NoAnalysis)
 {
 
 }
@@ -132,7 +132,7 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 		
 		// add block successors if they have not already been scheduled
 		for(ir::BasicBlock::BlockPointerVector::const_iterator
-			successor = block->successors.begin();
+			successor  = block->successors.begin();
 			successor != block->successors.end(); ++successor)
 		{
 			if(getPriority(*successor) < priorityAndBlock->first)
@@ -200,7 +200,7 @@ void ThreadFrontierAnalysis::Node::assignPriorities(PriorityMap& priorities)
 {
 	priorities[block] = priority;
 	report(" Assigning basic block '" << block->label
-		<< "' priority " << priority);	
+		<< "' (" << block->id << ") priority " << priority);	
 	
 	for(node_iterator child = children.begin();
 		child != children.end(); ++child)

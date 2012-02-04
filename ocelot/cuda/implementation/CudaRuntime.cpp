@@ -452,6 +452,9 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	if(module->second.loaded()) return;
+	
+	_wait();
+
 	module->second.loadNow();
 	
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
@@ -3532,6 +3535,7 @@ void cuda::CudaRuntime::limitWorkerThreads(unsigned int limit) {
 
 void cuda::CudaRuntime::registerPTXModule(std::istream& ptx, 
 	const std::string& name) {
+	_wait();
 	_lock();
 	report("Loading module (ptx) - " << name);
 	assert(_modules.count(name) == 0);

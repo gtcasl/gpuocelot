@@ -733,9 +733,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
-	report( "Copying cfg" );
-	
-	report("\nControlFlowGraph::operator=()");
+	report("Copying cfg " << &cfg << " to " << this );
 	
 	typedef std::unordered_map<const_iterator, iterator> BlockMap;
 	BlockMap block_map;

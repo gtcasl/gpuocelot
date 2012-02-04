@@ -99,7 +99,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 			instructions.push_back(ptx);
 			instructions.back().pc = instructions.size() - 1;
 			
-			if(ptx.isBranch())
+			if(ptx.opcode == ir::PTXInstruction::Bra)
 			{
 				branchPCs.insert(std::make_pair(instructions.back().pc, block));
 			}

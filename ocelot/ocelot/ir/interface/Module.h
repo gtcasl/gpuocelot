@@ -61,7 +61,13 @@ namespace ir {
 
 		/*!	Construct an empty module */
 		Module();
-
+		
+		/*!	Construct a module from an existing one */
+		Module(const Module& m);
+		
+		/*! \brief copy a module */
+		const Module& operator=(const Module& m);
+		
 		/*!	Deconstruct a module */
 		~Module();
 		

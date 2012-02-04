@@ -44,11 +44,25 @@ ir::Module::Module()
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
-	version.major = 2; version.minor = 1;
-	target.targets.push_back("sm_21");
+	version.major = 2; version.minor = 3;
+	target.targets.push_back("sm_23");
 	_statements.push_back(version);
 	_statements.push_back(target);
-	_target = ".target sm_13";
+	_target = ".target sm_23";
+}
+
+ir::Module::Module(const ir::Module& m) 
+: _ptxPointer(0), _addressSize(64), _loaded(false) {
+	PTXStatement version;
+	PTXStatement target;
+	version.directive = PTXStatement::Version;
+	version.major = 2; version.minor = 3;
+	target.targets.push_back("sm_23");
+	_statements.push_back(version);
+	_statements.push_back(target);
+	_target = ".target sm_23";
+	
+	*this = m;
 }
 
 ir::Module::~Module() {
@@ -61,6 +75,33 @@ ir::Module::Module(const std::string& name,
 	_modulePath = name;
 	_statements = statements;
 	extractPTXKernels();
+}
+
+const ir::Module& ir::Module::operator=(const Module& m) {
+	unload();
+	
+	_ptxPointer = m._ptxPointer;
+	_loaded     = m.loaded();
+
+	if(loaded()) {
+		_modulePath = m.path();
+		_statements = m._statements;
+		
+		_textures   = m._textures;
+		_prototypes = m._prototypes;
+		_globals    = m._globals;
+		
+		for(KernelMap::const_iterator k = m._kernels.begin();
+			k != m._kernels.end(); ++k)
+		{
+			insertKernel(new PTXKernel(*k->second));
+		}
+	}
+	else {
+		_ptx = m._ptx;
+	}
+	
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

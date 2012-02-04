@@ -49,7 +49,7 @@ void SubkernelFormationPass::runOnModule(ir::Module& m)
 	report("Running SubkernelFormationPass - expected region size: "
 		<< _expectedRegionSize);
 	// This pass requires all kernels to be loaded
-	m.loadNow();
+	assert(m.loaded());
 
 	ExtractKernelsPass pass(_expectedRegionSize);
 	

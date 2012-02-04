@@ -26,12 +26,29 @@
 
 // Forward Declarations
 
+struct _cl_context : public opencl::Context {
+};
+
+struct _cl_program : public opencl::Program {
+};
+
+struct _cl_command_queue : public opencl::CommandQueue {
+};
+
+struct _cl_kernel : public opencl::Kernel {
+};
+
+struct _cl_mem : public opencl::MemoryObject {
+};
+
+struct _cl_device_id : public executive::Device {
+};
+
 namespace transforms { class Pass; }
 
 namespace opencl {
 
 	/*!	\brief Set of thread ids */
-	typedef std::set< boost::thread::id > ThreadSet;	
 
 	typedef std::set< int > IndexSet;
 	
@@ -42,7 +59,7 @@ namespace opencl {
 	typedef std::vector< Program * > ProgramVector;
 	
 	
-	typedef std::map<boost::thread::id, Context *> ContextMap;
+	typedef std::vector< Context * > ContextVector;
 
 //
 //	class RegisteredTexture
@@ -139,19 +156,19 @@ namespace opencl {
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
-		Context& _getCurrentThread();
+		Context * _createContext();
 		//! \brief create program binary
 		Program & _createProgramSource(const std::string & source);
 		//! \brief create program binary
 		Program & _createProgramBinary(const std::string & binary);
 		// Load module and register it with devices
-		void _registerModule(ModuleMap::iterator module, int device);
+		void _registerModule(ModuleMap::iterator module, executive::Device *);
 		// Load module and register it with devices
-		void _registerModule(const std::string& name, int device);
+		void _registerModule(const std::string& name, executive::Device *);
 		// Load all modules and register them with all devices
-		void _registerAllModules(int device);
+		void _registerAllModules(executive::Device *);
 		// Map kernel parameters for device
-		void _mapKernelParameters(Kernel & kernel, int device);
+		void _mapKernelParameters(Kernel & kernel, executive::Device *);
 
 	private:
 		//! locking object for opencl runtime
@@ -170,7 +187,7 @@ namespace opencl {
 		ProgramVector _programs;
 		
 		//! map of pthreads to thread contexts
-		ContextMap _threads;
+		ContextVector _contexts;
 		
 		//! vectors of kernels
 		KernelVector _kernels;
@@ -227,7 +244,7 @@ namespace opencl {
 	//	PassSet _passes;
 	
 	private:
-		void _launchKernel(Kernel & kernel, cl_device_id device);
+		void _launchKernel(Kernel & kernel, executive::Device * device);
 		
 	public:
 		OpenCLRuntime();

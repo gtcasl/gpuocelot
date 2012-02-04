@@ -1,21 +1,36 @@
 #ifndef OCELOT_OPENCL_COMMANDQUEUE_H_INCLUDED
 #define OCELOT_OPENCL_COMMANDQUEUE_H_INCLUDED
 
+//C++ lib
+#include <map>
+
+
+//Ocelot lib
+#include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
+#include <ocelot/executive/interface/Device.h>
+#include <ocelot/opencl/interface/Context.h>
+
+
 namespace opencl {
+	class Context;
+
 	/*! \brief class defining command queue in opencl */
 	class CommandQueue {
 	public:
-		CommandQueue(cl_context context, cl_device_id device, cl_command_queue_properties properties, unsigned int stream);
+		CommandQueue(Context * context, 
+			executive::Device * device, 
+			cl_command_queue_properties properties, 
+			unsigned int stream);
 
 	public:
-		const cl_context context() const;
-		const cl_device_id device() const;
-		const cl_command_queue_properties properties() const;
-		const unsigned int stream() const;
+		Context * context() ;
+		executive::Device * device() ;
+		cl_command_queue_properties properties() ;
+		unsigned int stream() ;
 
 	private:
-		cl_context _context;
-		cl_device_id _device;
+		Context * _context;
+		executive::Device * _device;
 		cl_command_queue_properties _properties;
 		unsigned int _stream;
 	};

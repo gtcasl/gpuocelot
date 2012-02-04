@@ -5,8 +5,9 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Kernel.h>
 
-opencl::Kernel::Kernel(const std::string &n, const int p,
-const void * c): name(n), program(p), context(c) {
+opencl::Kernel::Kernel(const std::string &n, 
+	Program * p,
+	const Context * c): name(n), program(p), context(c) {
 	parameterBlock = NULL;
 }
 

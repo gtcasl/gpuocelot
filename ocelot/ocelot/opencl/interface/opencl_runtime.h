@@ -13,9 +13,6 @@
 #include <limits.h>
 #include <cstdint>
 
-//Ocelot includes
-#include <ocelot/executive/interface/Device.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1178,13 +1175,13 @@ typedef union
  
 /******************************************************************************/
 
-typedef int cl_platform_id;
-typedef int cl_device_id;
-typedef void * cl_context;
-typedef int cl_command_queue;
-typedef void * cl_mem;
-typedef int cl_program;
-typedef int cl_kernel;
+typedef struct _cl_platform_id *    cl_platform_id;
+typedef struct _cl_device_id *      cl_device_id;
+typedef struct _cl_context *        cl_context;
+typedef struct _cl_command_queue *  cl_command_queue;
+typedef struct _cl_mem *            cl_mem;
+typedef struct _cl_program *        cl_program;
+typedef struct _cl_kernel *         cl_kernel;
 typedef struct _cl_event *          cl_event;
 typedef struct _cl_sampler *        cl_sampler;
 
@@ -1424,6 +1421,7 @@ typedef struct _cl_buffer_region {
 #define CL_MEM_COPY_HOST_PTR                        (1 << 5)
 
 /* cl_channel_order */
+#if 0
 #define CL_R                                        0x10B0
 #define CL_A                                        0x10B1
 #define CL_RG                                       0x10B2
@@ -1454,6 +1452,7 @@ typedef struct _cl_buffer_region {
 #define CL_UNSIGNED_INT32                           0x10DC
 #define CL_HALF_FLOAT                               0x10DD
 #define CL_FLOAT                                    0x10DE
+#endif
 
 /* cl_mem_object_type */
 #define CL_MEM_OBJECT_BUFFER                        0x10F0
@@ -2130,41 +2129,6 @@ clEnqueueBarrier(cl_command_queue /* command_queue */) CL_API_SUFFIX__VERSION_1_
  */
 extern CL_API_ENTRY void * CL_API_CALL clGetExtensionFunctionAddress(const char * /* func_name */) CL_API_SUFFIX__VERSION_1_0;
 
-
-/************************************************************************************/
-
-struct _cl_platform_id {
-	//To be defined
-};
-
-
-struct _cl_context {
-	//To be defined
-};
-
-struct _cl_command_queue {
-	//To be defined
-};
-
-struct _cl_mem {
-	//To be defined
-};
-
-struct _cl_program {
-	//To be defined
-};
-
-struct _cl_kernel {
-	//To be defined
-};
-
-struct _cl_event {
-	//To be defined
-};
-
-struct _cl_sampler {
-	//To be defined
-};
 
 //Ocelot defined Error code
 #define CL_UNIMPLEMENTED	-15

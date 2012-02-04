@@ -2,11 +2,13 @@
 #include <ocelot/opencl/interface/MemoryObject.h>
 
 
-opencl::MemoryObject::MemoryObject(std::map < int, executive::Device::MemoryAllocation * > & a, cl_context context, cl_mem_object_type type, cl_mem_flags flags)
+opencl::MemoryObject::MemoryObject(
+	std::map < executive::Device *, executive::Device::MemoryAllocation * > & a, 
+	const Context * context, cl_mem_object_type type, cl_mem_flags flags)
 	:allocations(a), _context(context), _type(type), _flags(flags) {
 }
 
-const cl_context opencl::MemoryObject::context() const {
+const opencl::Context * opencl::MemoryObject::context() const {
 	return _context;
 }
 
@@ -18,7 +20,9 @@ const cl_mem_flags opencl::MemoryObject::flags() const {
 	return _flags;
 }
 
-opencl::BufferObject::BufferObject(std::map< int, executive::Device::MemoryAllocation * > & allocations, cl_context context, cl_mem_flags flags, size_t size)
+opencl::BufferObject::BufferObject(
+	std::map< executive::Device *, executive::Device::MemoryAllocation * > & allocations, 
+	const Context * context, cl_mem_flags flags, size_t size)
 	:MemoryObject(allocations, context, CL_MEM_OBJECT_BUFFER, flags), _size(size) {
 }
 

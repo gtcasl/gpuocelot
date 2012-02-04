@@ -1,22 +1,25 @@
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/CommandQueue.h>
 
-opencl::CommandQueue::CommandQueue(cl_context context, cl_device_id device, cl_command_queue_properties properties, unsigned int stream)
+opencl::CommandQueue::CommandQueue(Context * context, 
+	executive::Device * device, 
+	cl_command_queue_properties properties, 
+	unsigned int stream)
 	:_context(context), _device(device), _properties(properties), _stream(stream) {
 }
 
-const cl_context opencl::CommandQueue::context() const {
+opencl::Context * opencl::CommandQueue::context() {
 	return _context;
 }
 
-const cl_device_id opencl::CommandQueue::device() const {
+executive::Device * opencl::CommandQueue::device() {
 	return _device;
 }
 
-const cl_command_queue_properties opencl::CommandQueue::properties() const {
+cl_command_queue_properties opencl::CommandQueue::properties() {
 	return _properties;
 }
 
-const unsigned int opencl::CommandQueue::stream() const {
+unsigned int opencl::CommandQueue::stream() {
 	return _stream;
 }

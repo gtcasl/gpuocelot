@@ -8,11 +8,20 @@
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/MemoryObject.h>
+#include <ocelot/opencl/interface/CommandQueue.h>
+#include <ocelot/opencl/interface/Program.h>
 
 namespace opencl {
 
+	class MemoryObject;
+	class Program;
+	class CommandQueue;
+
 	typedef std::set< int > IndexSet;
 	typedef std::set< MemoryObject * > MemoryObjectSet;
+	typedef std::set< executive::Device *> DeviceSet;
+	typedef std::set< CommandQueue * > QueueSet;
+	typedef std::set< Program * > ProgramSet;
 
 	/*! Host thread OpenCL context consists of these */
 	class Context {	
@@ -21,16 +30,16 @@ namespace opencl {
 		executive::Device * selectedDevice;
 		
 		//! set of valid device indices
-		IndexSet validDevices;
+		DeviceSet validDevices;
 
 		//! set of valid programs
-		IndexSet validPrograms;
+		ProgramSet validPrograms;
 
 		//! set of valid buffer objects
 		MemoryObjectSet validMemories;
 
 		//! set of valid command queues
-		IndexSet validQueues;
+		QueueSet validQueues;
 	
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector persistentTraceGenerators;

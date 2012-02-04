@@ -4,11 +4,16 @@
 // C++ libs
 #include <string>
 #include <map>
+#include <set>
 
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
+#include <ocelot/opencl/interface/Program.h>
+#include <ocelot/opencl/interface/Context.h>
 
 namespace opencl {
+
+	class Program;
     
 	typedef std::map< unsigned int, size_t > SizeMap;
     typedef std::map<unsigned int, char * > PointerMap;
@@ -17,7 +22,7 @@ namespace opencl {
     //! references a kernel registered to OpenCL runtime
 	class Kernel {
 	public:
-		Kernel(const std::string& name, const int program, const void * context);
+		Kernel(const std::string& name, Program * program, const Context * context);
 		~Kernel();
 
 	public:
@@ -25,10 +30,10 @@ namespace opencl {
 		const std::string name;
 
 		//! associated program
-		const int program;
+		Program * program;
 
 		//! associated context
-		const void * context;
+		const Context * context;
 	
 		//! Sizes for individual parameter
 		SizeMap parameterSizes;

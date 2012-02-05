@@ -19,12 +19,16 @@
 #include <ocelot/opencl/interface/CommandQueue.h>
 #include <ocelot/opencl/interface/Program.h>
 #include <ocelot/opencl/interface/Context.h>
+#include <ocelot/opencl/interface/Platform.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
 
 // Forward Declarations
+
+struct _cl_platform_id : public opencl::Platform {
+};
 
 struct _cl_context : public opencl::Context {
 };
@@ -53,6 +57,7 @@ namespace opencl {
 	typedef std::map< unsigned int, char * > PointerMap;
 	typedef std::map< unsigned int, size_t > SizeMap;
 
+	typedef std::list< Platform * > PlatformList;
 	typedef std::list< executive::Device *> DeviceList;
 	typedef std::list< MemoryObject * > MemoryObjectList;
 	typedef std::list< Kernel * > KernelList;
@@ -132,6 +137,8 @@ namespace opencl {
 		/*! \brief Report a memory error and throw an exception */
 		void _memoryError(const void* address, size_t count, 
 			const std::string& function = "");		
+		/*! \brief Create platform */
+		void _enumeratePlatforms();
 		/*! \brief Create devices if they do not already exist */
 		void _enumerateDevices();
 		//! \brief acquires mutex and locks the runtime
@@ -180,19 +187,22 @@ namespace opencl {
 		//! Registered modules
 		ModuleMap _modules;
 
+		//! Available platforms
+		PlatformList _platforms;
+
 		//! created programs
 		ProgramList _programs;
 		
-		//! map of pthreads to thread contexts
+		//! List of contexts
 		ContextList _contexts;
 		
-		//! vectors of kernels
+		//! List of kernels
 		KernelList _kernels;
 
-		//! vectors of buffer objects
+		//! List of Memory objects
 		MemoryObjectList _memories;
 
-		//! vectors of command queues;
+		//! List of command queues;
 		CommandQueueList _queues;
 		
 		//! maps texture symbols to module-textures

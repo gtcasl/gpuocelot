@@ -67,6 +67,20 @@ size_t opencl::Dimension::pitch() const {
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
+void opencl::OpenCLRuntime::_enumeratePlatforms() {
+	report("Create platforms ");
+	Platform * p = new Platform();
+	_platforms.push_back(p);
+}
+
+
+
+opencl::Context * opencl::OpenCLRuntime::_createContext() {
+	report("Creating new context ");
+	Context * c = new Context();
+	_contexts.push_back(c);
+	return c;
+}
 
 void opencl::OpenCLRuntime::_enumerateDevices() {
 	if(_devicesLoaded) return;
@@ -191,16 +205,6 @@ std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
 		}
 	}
 	return result;
-}
-
-opencl::Context * opencl::OpenCLRuntime::_createContext() {
-	report("Creating new context ");
-	Context * c = new Context();
-	if(!c)
-		throw;
-
-	_contexts.push_back(c);
-	return c;
 }
 
 
@@ -805,13 +809,19 @@ cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries,
 	try {
 		if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
 			throw CL_INVALID_VALUE;
-
-		//Assume only 1 platform, platform_id = 0
-		if(platforms)
-			*platforms = 0;
+		
+		_enumeratePlatforms();
 
 		if(num_platforms)
-			*num_platforms = 1;
+			*num_platforms = _platforms.size();
+
+		if(platforms) {
+			PlatformList::iterator p = _platforms.begin();
+			for(cl_uint i = 0; i < std::min((cl_uint)_platforms.size(), num_entries); 
+				i++, p++)
+				platforms[i] = (cl_platform_id)*p;
+		}
+
 	}
 	catch(cl_int exception) {
 		result = exception;
@@ -830,41 +840,27 @@ cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform,
 	size_t * param_value_size_ret) {
 	cl_int result = CL_SUCCESS;
 	_lock();
-	if(platform)
-		result = CL_INVALID_PLATFORM;
-	else if(!param_value && !param_value_size_ret)
-		result = CL_INVALID_VALUE;
-	else {
-		switch(param_name) {
-			case CL_PLATFORM_NAME: {
-				char ocelotPlatform[] = "Ocelot";						
-				if(param_value && param_value_size < strlen(ocelotPlatform))
-					result = CL_INVALID_VALUE;
-				else {
-					if(param_value != 0)
-						strcpy((char *)param_value, ocelotPlatform);
-					if(param_value_size_ret != 0)
-						*param_value_size_ret = strlen(ocelotPlatform);
-				}
-				break;
-			}
-			case CL_PLATFORM_VERSION: {
-				char ocelotVersion[] = "2.1";
-				if(param_value && param_value_size < strlen(ocelotVersion))
-					result = CL_INVALID_VALUE;
-				else {
-					if(param_value != 0)
-						strcpy((char *)param_value, ocelotVersion);
-					if(param_value_size_ret != 0)
-						*param_value_size_ret = strlen(ocelotVersion);
-				}
-				break;
-			}
-			default:
-				assertM(false, "Platform info unimplemented!\n");
-				result = CL_UNIMPLEMENTED;
-				break;
-		}
+
+	try {
+		if(std::find(_platforms.begin(), _platforms.end(), platform) == _platforms.end())
+			throw CL_INVALID_PLATFORM;
+
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+		
+		cl_int err;
+		if((err = platform->getInfo(param_name,
+			param_value_size,
+			param_value,
+			param_value_size_ret)) != CL_SUCCESS)
+			throw err;
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
 	return result;
@@ -882,7 +878,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 	_lock();
 
 	try {
-		if(platform) //Temorarily assume platform=0
+		if(std::find(_platforms.begin(), _platforms.end(), platform) == _platforms.end())
 			throw CL_INVALID_PLATFORM;
 		
 		if(device_type < CL_DEVICE_TYPE_CPU || device_type > CL_DEVICE_TYPE_ALL)
@@ -967,7 +963,8 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 			|| properties[2] != 0 /*properties terminates with 0*/ ))
 			throw CL_INVALID_PROPERTY;
 		
-		if(properties[1] != 0 /*platform_id should be zero*/)
+		if(std::find(_platforms.begin(), _platforms.end(), (cl_platform_id)properties[1]) 
+			== _platforms.end() )
 			throw CL_INVALID_PLATFORM;
 
 		if(devices == 0 || num_devices == 0

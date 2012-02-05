@@ -302,16 +302,16 @@ void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, executive::Dev
 
 		//check if it is a memory address argument
 		if(oriSize == sizeof(cl_mem) &&  
-			_memories.find((MemoryObject *)(*(cl_mem *)pointer)) != _memories.end()) {//pointer is memory object
+			std::find(_memories.begin(), _memories.end(), *(cl_mem *)pointer) != _memories.end()) {//pointer is memory object
 		
 			if(argSize != sizeof(void *))
 				throw CL_INVALID_KERNEL_ARGS;
 
-			MemoryObject & mem = *((MemoryObject *)(*(cl_mem *)pointer));
-			if(mem.allocations.find(device) == mem.allocations.end())
+			MemoryObject * mem = *(cl_mem *)pointer;
+			if(mem->allocations.find(device) == mem->allocations.end())
 				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-			void * addr = mem.allocations[device]->pointer();
+			void * addr = mem->allocations[device]->pointer();
 			memcpy(kernel.parameterBlock + offset, &addr, argSize);
 		}
 		else { //non-memory argument
@@ -367,7 +367,7 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// mutex
 
 	// contexts
-	for(ContextVector::iterator context = _contexts.begin();
+	for(ContextList::iterator context = _contexts.begin();
 		context != _contexts.end(); ++context) {
 		delete *context;
 	}
@@ -375,25 +375,25 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// textures
 	
 	// programs
-	for (ProgramVector::iterator program = _programs.begin();
+	for (ProgramList::iterator program = _programs.begin();
 		program != _programs.end(); ++program) {
 		delete *program;
 	}
 
 	// kernels
-	for (KernelVector::iterator kernel = _kernels.begin();
+	for (KernelList::iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel) {
 		delete *kernel;
 	}
 
 	// memory objects
-	for (MemoryObjectSet::iterator memory = _memories.begin();
+	for (MemoryObjectList::iterator memory = _memories.begin();
 		memory != _memories.end(); ++memory) {
 		delete *memory;
 	}
 
 	// command queues
-	for (CommandQueueVector::iterator queue = _queues.begin();
+	for (CommandQueueList::iterator queue = _queues.begin();
 		queue != _queues.end(); ++queue) {
 		delete *queue;
 	}
@@ -519,7 +519,7 @@ void opencl::OpenCLRuntime::reset() {
 	report("Resetting opencl runtime.");
 	//_dimensions.clear();
 	
-	for(ContextVector::iterator context = _contexts.begin(); 
+	for(ContextList::iterator context = _contexts.begin(); 
 		context != _contexts.end(); ++context)
 	{
 		report(" Delete context - ");
@@ -985,7 +985,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 				err = CL_INVALID_DEVICE;
 				break;
 			}
-			ctx->validDevices.insert(devices[i]);
+			ctx->validDevices.push_back(devices[i]);
 		}
 	}
 	catch(cl_int exception) {
@@ -1016,7 +1016,8 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 		if(std::find(_contexts.begin(), _contexts.end(), context) == _contexts.end())
 			throw CL_INVALID_CONTEXT;
 		
-		if(context->validDevices.find(device) == context->validDevices.end())//Not found
+		if(std::find(context->validDevices.begin(), context->validDevices.end(), device) 
+			== context->validDevices.end())//Not found
 			throw CL_INVALID_DEVICE;
 	
 		if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
@@ -1047,7 +1048,7 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
 		}
-		context->validQueues.insert(queue);
+		context->validQueues.push_back(queue);
 		
 	}
 	catch(cl_int exception) {
@@ -1092,7 +1093,7 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 
 		program = new Program(stream.str(), context);
 		_programs.push_back(program);
-		context->validPrograms.insert(program);
+		context->validPrograms.push_back(program);
 	}
 	catch(cl_int exception) {
 		err = exception;
@@ -1118,7 +1119,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	_lock();
 	try {
 		
-		if(find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
+		if(std::find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
 			throw CL_INVALID_PROGRAM;
 
 		if((num_devices == 0 && device_list) || (num_devices && device_list == NULL))
@@ -1128,7 +1129,9 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			throw CL_INVALID_VALUE;
 
 		for(cl_uint i = 0; i < num_devices; i++) {
-			if(program->context->validDevices.find(device_list[i]) == program->context->validDevices.end()) {//Not found
+			if(std::find(program->context->validDevices.begin(), 
+				program->context->validDevices.end(),
+				device_list[i]) == program->context->validDevices.end()) {//Not found
 				throw CL_INVALID_DEVICE;
 				break;
 			}
@@ -1168,16 +1171,16 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			ptx.read((char*)temp.data(), size);
 	
 			// Register ptx with device
-			DeviceSet devices;
+			DeviceList devices;
 			if(num_devices) {
 				for(cl_uint i = 0; i < num_devices; i++)
-					devices.insert((device_list[i]));
+					devices.push_back((device_list[i]));
 			}
 			else
 				devices = program->context->validDevices;
 	
 			try{
-				for(DeviceSet::iterator d = devices.begin(); d != devices.end(); d++) {
+				for(DeviceList::iterator d = devices.begin(); d != devices.end(); d++) {
 					std::stringstream moduleName;
 					moduleName << program->name << "_" << (*d)->properties().name;
 					report("Loading module (ptx) - " << moduleName.str());
@@ -1232,7 +1235,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 		if(param_name < CL_PROGRAM_REFERENCE_COUNT || param_name > CL_PROGRAM_BINARIES)
 			throw CL_INVALID_VALUE;
 		
-		if(find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
+		if(std::find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
 			throw CL_INVALID_PROGRAM;
 
 		switch(param_name) {
@@ -1241,7 +1244,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 					throw CL_INVALID_VALUE;
 
 				if(param_value)	{
-					DeviceSet::iterator device;
+					DeviceList::iterator device;
 					unsigned int i = 0;
 					//get ptx code size for every valid device
 					for(device = program->context->validDevices.begin(); 
@@ -1266,7 +1269,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 					throw CL_INVALID_VALUE;
 
 				if(param_value)	{
-					DeviceSet::iterator device;
+					DeviceList::iterator device;
 					unsigned int i = 0;
 					//get ptx code size for every valid device
 					for(device = program->context->validDevices.begin(); 
@@ -1348,7 +1351,7 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
 		}
-		program->kernels.insert(kernel);
+		program->kernels.push_back(kernel);
 
 	}
 	catch(cl_int exception) {
@@ -1401,7 +1404,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		}
 
 		std::map< executive::Device *, executive::Device::MemoryAllocation * > allocations;
-		for(DeviceSet::iterator device = context->validDevices.begin();
+		for(DeviceList::iterator device = context->validDevices.begin();
 			device != context->validDevices.end(); device++) {
 			(*device)->select();
 			try {
@@ -1420,12 +1423,12 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 
 		try {
 			buffer = new BufferObject(allocations, context, flags, size);
-			_memories.insert(buffer);
+			_memories.push_back(buffer);
 		}
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
 		}
-		context->validMemories.insert(buffer);
+		context->validMemories.push_back(buffer);
 
 	}
 	catch(cl_int exception) {

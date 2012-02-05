@@ -50,17 +50,15 @@ namespace opencl {
 
 	/*!	\brief Set of thread ids */
 
-	typedef std::set< int > IndexSet;
-	
 	typedef std::map< unsigned int, char * > PointerMap;
+	typedef std::map< unsigned int, size_t > SizeMap;
 
-	typedef std::set< MemoryObject * > MemoryObjectSet;
-	typedef std::vector< Kernel * > KernelVector;
-	typedef std::vector< Program * > ProgramVector;
-	
-	
-	typedef std::vector< Context * > ContextVector;
-
+	typedef std::list< executive::Device *> DeviceList;
+	typedef std::list< MemoryObject * > MemoryObjectList;
+	typedef std::list< Kernel * > KernelList;
+	typedef std::list< Program * > ProgramList;
+	typedef std::list< Context * > ContextList;
+	typedef std::list< CommandQueue * > CommandQueueList;
 //
 //	class RegisteredTexture
 //	{
@@ -116,7 +114,6 @@ namespace opencl {
 //	typedef std::set< transforms::Pass* > PassSet;
 
 
-	typedef std::vector< CommandQueue * > CommandQueueVector;
 //	typedef std::vector< FatBinaryContext > FatBinaryVector;
 //	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 //	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
@@ -184,19 +181,19 @@ namespace opencl {
 		ModuleMap _modules;
 
 		//! created programs
-		ProgramVector _programs;
+		ProgramList _programs;
 		
 		//! map of pthreads to thread contexts
-		ContextVector _contexts;
+		ContextList _contexts;
 		
 		//! vectors of kernels
-		KernelVector _kernels;
+		KernelList _kernels;
 
 		//! vectors of buffer objects
-		MemoryObjectSet _memories;
+		MemoryObjectList _memories;
 
 		//! vectors of command queues;
-		CommandQueueVector _queues;
+		CommandQueueList _queues;
 		
 		//! maps texture symbols to module-textures
 		//RegisteredTextureMap _textures;

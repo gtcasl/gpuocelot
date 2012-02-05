@@ -4,11 +4,11 @@
 
 opencl::MemoryObject::MemoryObject(
 	std::map < executive::Device *, executive::Device::MemoryAllocation * > & a, 
-	const Context * context, cl_mem_object_type type, cl_mem_flags flags)
+	Context * context, cl_mem_object_type type, cl_mem_flags flags)
 	:allocations(a), _context(context), _type(type), _flags(flags) {
 }
 
-const opencl::Context * opencl::MemoryObject::context() const {
+opencl::Context * opencl::MemoryObject::context() const {
 	return _context;
 }
 
@@ -22,7 +22,7 @@ const cl_mem_flags opencl::MemoryObject::flags() const {
 
 opencl::BufferObject::BufferObject(
 	std::map< executive::Device *, executive::Device::MemoryAllocation * > & allocations, 
-	const Context * context, cl_mem_flags flags, size_t size)
+	Context * context, cl_mem_flags flags, size_t size)
 	:MemoryObject(allocations, context, CL_MEM_OBJECT_BUFFER, flags), _size(size) {
 }
 

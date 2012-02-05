@@ -8,7 +8,7 @@
 unsigned int opencl::Program::_id = 0;
 
 
-opencl::Program::Program(const std::string & s, const Context * c): 
+opencl::Program::Program(const std::string & s, Context * c): 
 		source(s), built(false), context(c) {
 	std::stringstream stream;
 	stream << "__clmodule_" << _id;

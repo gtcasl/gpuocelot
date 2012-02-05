@@ -7,7 +7,7 @@
 
 opencl::Kernel::Kernel(const std::string &n, 
 	Program * p,
-	const Context * c): name(n), program(p), context(c) {
+	Context * c): name(n), program(p), context(c) {
 	parameterBlock = NULL;
 }
 

@@ -14,15 +14,17 @@
 namespace opencl {
 
 	class Program;
-    
+ 
 	typedef std::map< unsigned int, size_t > SizeMap;
-    typedef std::map<unsigned int, char * > PointerMap;
+   	typedef std::map<unsigned int, char * > PointerMap;
 	typedef std::map< unsigned int, unsigned int > OffsetMap;
 
+   
     //! references a kernel registered to OpenCL runtime
 	class Kernel {
+
 	public:
-		Kernel(const std::string& name, Program * program, const Context * context);
+		Kernel(const std::string& name, Program * program, Context * context);
 		~Kernel();
 
 	public:
@@ -33,7 +35,7 @@ namespace opencl {
 		Program * program;
 
 		//! associated context
-		const Context * context;
+		Context * context;
 	
 		//! Sizes for individual parameter
 		SizeMap parameterSizes;

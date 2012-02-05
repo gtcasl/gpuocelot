@@ -15,16 +15,17 @@ namespace opencl {
 
 	class Kernel;
 
-	typedef std::set< Kernel * > KernelSet;
+	typedef std::list< Kernel * > KernelList;
 
 	//! programs created in OpenCL runtime	
 	class Program {
+
 	private:
 		//! program id
 		static unsigned int _id;
 
 	public:
-		Program(const std::string & source, const Context * context);
+		Program(const std::string & source, Context * context);
 
 	public:
 		std::string name;
@@ -39,13 +40,13 @@ namespace opencl {
 		std::string source;
 
 		//! kernels
-		KernelSet kernels;
+		KernelList kernels;
 
 		//! get build status
 		bool built;
 
 		//! associated context
-		const Context * context;
+		Context * context;
 
 	};
 

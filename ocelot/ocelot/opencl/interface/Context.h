@@ -17,29 +17,29 @@ namespace opencl {
 	class Program;
 	class CommandQueue;
 
-	typedef std::set< int > IndexSet;
-	typedef std::set< MemoryObject * > MemoryObjectSet;
-	typedef std::set< executive::Device *> DeviceSet;
-	typedef std::set< CommandQueue * > QueueSet;
-	typedef std::set< Program * > ProgramSet;
+	typedef std::list< MemoryObject * > MemoryObjectList;
+	typedef std::list< executive::Device *> DeviceList;
+	typedef std::list< CommandQueue * > QueueList;
+	typedef std::list< Program * > ProgramList;
 
 	/*! Host thread OpenCL context consists of these */
 	class Context {	
-	public:
+	
+		public:
 		//! index of selected device
 		executive::Device * selectedDevice;
 		
 		//! set of valid device indices
-		DeviceSet validDevices;
+		DeviceList validDevices;
 
 		//! set of valid programs
-		ProgramSet validPrograms;
+		ProgramList validPrograms;
 
 		//! set of valid buffer objects
-		MemoryObjectSet validMemories;
+		MemoryObjectList validMemories;
 
 		//! set of valid command queues
-		QueueSet validQueues;
+		QueueList validQueues;
 	
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector persistentTraceGenerators;

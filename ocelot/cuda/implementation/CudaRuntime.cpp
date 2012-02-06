@@ -272,6 +272,7 @@ void cuda::CudaRuntime::_memoryError(const void* address, size_t count,
 }
 
 void cuda::CudaRuntime::_enumerateDevices() {	
+	report("_enumerateDevices() - devicesLoad = " << _devicesLoaded);
 	if(_devicesLoaded) return;
 	report("Creating devices.");
 	if(config::get().executive.enableNVIDIA) {
@@ -516,26 +517,38 @@ cuda::CudaRuntime::CudaRuntime() :
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 
+	report("CudaRuntime::CudaRuntime() ");
+
 	// get device count
 	if(config::get().executive.enableNVIDIA) {
+		report("  enabled NVIDIA device");
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::SASS, _computeCapability);
 	}
 	if(config::get().executive.enableEmulated) {
+		report("  enabled EMULATED device");
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::Emulated, _computeCapability);
 	}
 	if(config::get().executive.enableLLVM) {
+		report("  enabled LLVM device");
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::LLVM, _computeCapability);
 	}
 	if(config::get().executive.enableAMD) {
+		report("  enabled AMD device");
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::CAL, _computeCapability);
 	}
 	if(config::get().executive.enableRemote) {
+		report("  enabled REMOTE device");
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::Remote, _computeCapability);
+	}
+	if (config::get().executive.enableDynamicMulticore) {
+		report("  enabled DYNAMIC multicore");
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::DynamicLLVM, _computeCapability);
 	}
 }
 
@@ -2184,6 +2197,7 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size,
 cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	cudaError_t result = cudaSuccess;
 	*count = _deviceCount;	
+	report("cudaGetDeviceCount(" << _deviceCount << ")");
 	return _setLastError(result);
 }
 
@@ -2335,7 +2349,49 @@ cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags(int f) {
 	return _setLastError(result);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+cudaError_t cuda::CudaRuntime::cudaDeviceReset(void) {
+
+    _lock();
+   
+    _devicesLoaded = false;
+    _workers.clear(); 
+	for (DeviceVector::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		delete *device;
+	}
+    _devices.clear();
+
+    _unlock();
+    return _setLastError(cudaSuccess);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSynchronize(void) {
+	return cudaThreadSynchronize();
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSetLimit(enum cudaLimit limit,
+	size_t value) {
+	return CudaRuntimeInterface::cudaDeviceSetLimit(limit, value);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceGetLimit(size_t *pValue,
+	enum cudaLimit limit) {
+	return CudaRuntimeInterface::cudaDeviceGetLimit(pValue, limit);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceGetCacheConfig(
+	enum cudaFuncCache *pCacheConfig) {
+	return CudaRuntimeInterface::cudaDeviceGetCacheConfig(pCacheConfig);
+}
+
+cudaError_t cuda::CudaRuntime::cudaDeviceSetCacheConfig(
+	enum cudaFuncCache cacheConfig) {
+	return CudaRuntimeInterface::cudaDeviceSetCacheConfig(cacheConfig);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //! binds a texture to a reference and a CUDA memory block
 cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset, 

@@ -161,6 +161,14 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 			return RemoteDevice::deviceCount(computeCapability);
 		}
 		break;
+		case ir::Instruction::DynamicLLVM:
+		{
+			#if HAVE_LLVM
+			return 1;
+			#else
+			return 0;
+			#endif
+		}
 		default: break;
 	}
 	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));

@@ -26,7 +26,9 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_DEVICE_CALLS 0
+
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +63,7 @@ executive::DynamicMulticoreDevice::~DynamicMulticoreDevice() {
 
 /*! \brief Load a module, must have a unique name */
 void executive::DynamicMulticoreDevice::load(const ir::Module* module) {
-	report("DynamicMulticoreDevice::load(" << module->path() << ")");
+	reportE(REPORT_DEVICE_CALLS, "DynamicMulticoreDevice::load(" << module->path() << ")");
 	modules[module->path()] = Module(module);
 	_modules.insert(std::make_pair(module->path(), 
 		new EmulatorDevice::Module(module, this)));
@@ -70,7 +72,7 @@ void executive::DynamicMulticoreDevice::load(const ir::Module* module) {
 
 /*! \brief Unload a module by name */
 void executive::DynamicMulticoreDevice::unload(const std::string& name) {
-	report("DynamicMulticoreDevice::unload(" << name << ")");
+	reportE(REPORT_DEVICE_CALLS, "DynamicMulticoreDevice::unload(" << name << ")");
 	ModuleMap::iterator mod_it = modules.find(name);
 	if (mod_it != modules.end()) {
 		modules.erase(mod_it);
@@ -81,7 +83,7 @@ void executive::DynamicMulticoreDevice::unload(const std::string& name) {
 /*! \brief Get a translated kernel from the device */
 executive::ExecutableKernel* executive::DynamicMulticoreDevice::getKernel(const std::string& module, 
 	const std::string& kernel) {
-	report("DynamicMulticoreDevice::getKernel(" << module << ", " << kernel << ")");
+	reportE(REPORT_DEVICE_CALLS, "DynamicMulticoreDevice::getKernel(" << module << ", " << kernel << ")");
 	
 	ModuleMap::iterator mod_it = modules.find(module);
 	if (mod_it == modules.end()) {
@@ -130,7 +132,7 @@ void executive::DynamicMulticoreDevice::launch(
 	const trace::TraceGeneratorVector &traceGenerators,
 	const ir::ExternalFunctionSet* externals) {
 
-	report("DynamicMulticoreDevice::launch(" << module << ", " << kernel << ")");
+	reportE(REPORT_DEVICE_CALLS, "DynamicMulticoreDevice::launch(" << module << ", " << kernel << ")");
 	
 	ExecutableKernel *executableKernel = getKernel(module, kernel);
 	if (!executableKernel) {

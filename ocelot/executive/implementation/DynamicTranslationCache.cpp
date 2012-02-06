@@ -74,6 +74,8 @@
 
 #define REPORT_TRANSLATIONS 0
 
+#define ALWAYS_REPORT_BROKEN_LLVM 1
+
 #define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1071,20 +1073,16 @@ static void cloneAndOptimizeTranslation(
 		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
 			<< verifyError << "\"" << std::endl;
 			
-#if REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
+#if (REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		
 		translatedKernel.llvmModule->dump();
 		
 		std::cerr << "\nerror on subkernel: " << translatedSubkernel.llvmFunction->getName().str() << std::endl;
 		std::cerr << " specialization: " << translation->llvmFunction->getName().str() << std::endl;
-		
-		for (llvm::Module::iterator mod_it = translation->llvmFunction->getParent()->begin(); 
-			mod_it != translation->llvmFunction->getParent()->end(); ++mod_it) {
-			identifyPredecessors(std::cerr, &*mod_it);
-		}
-		
+				
 #endif
+
 
 		assert(0 && "due to broken LLVM module");
 		

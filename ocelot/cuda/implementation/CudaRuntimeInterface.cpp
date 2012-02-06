@@ -516,6 +516,39 @@ cudaError_t cuda::CudaRuntimeInterface::cudaSetDeviceFlags( int flags ) {
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceReset(void) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceSynchronize(void) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceSetLimit(enum cudaLimit limit,
+	size_t value) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceGetLimit(size_t *pValue,
+	enum cudaLimit limit) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceGetCacheConfig(
+	enum cudaFuncCache *pCacheConfig) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceSetCacheConfig(
+	enum cudaFuncCache cacheConfig) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 
 cudaError_t cuda::CudaRuntimeInterface::cudaBindTexture(size_t *offset, 

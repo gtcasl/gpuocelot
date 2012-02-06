@@ -21,7 +21,7 @@
  * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
  ******************************************************************************/
 
-/* $Revision: 11928 $ on $Date: 2010-07-13 21:34:56 +0530 (Tue, 13 Jul 2010) $ */
+/* $Revision: 11928 $ on $Date: 2010-07-13 09:04:56 -0700 (Tue, 13 Jul 2010) $ */
 
 /* cl_ext.h contains OpenCL extensions which don't have external */
 /* (OpenGL, D3D) dependencies.                                   */

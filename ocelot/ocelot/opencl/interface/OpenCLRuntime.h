@@ -45,7 +45,7 @@ struct _cl_kernel : public opencl::Kernel {
 struct _cl_mem : public opencl::MemoryObject {
 };
 
-struct _cl_device_id : public executive::Device {
+struct _cl_device_id : public opencl::Device {
 };
 
 namespace transforms { class Pass; }
@@ -58,7 +58,7 @@ namespace opencl {
 	typedef std::map< unsigned int, size_t > SizeMap;
 
 	typedef std::list< Platform * > PlatformList;
-	typedef std::list< executive::Device *> DeviceList;
+	typedef std::list< Device *> DeviceList;
 	typedef std::list< MemoryObject * > MemoryObjectList;
 	typedef std::list< Kernel * > KernelList;
 	typedef std::list< Program * > ProgramList;
@@ -125,7 +125,6 @@ namespace opencl {
 //	typedef std::map< void*, Dimension > DimensionMap;
 	typedef std::map< std::string, ir::Module > ModuleMap;
 //	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
-	typedef executive::DeviceVector DeviceVector;
 
 	////////////////////////////////////////////////////////////////////////////
 	/*! OpenCL runtime context */
@@ -140,7 +139,7 @@ namespace opencl {
 		/*! \brief Create platform */
 		void _enumeratePlatforms();
 		/*! \brief Create devices if they do not already exist */
-		void _enumerateDevices();
+		void _enumerateDevices(Platform *);
 		//! \brief acquires mutex and locks the runtime
 		void _lock();
 		//! \brief releases mutex
@@ -156,7 +155,7 @@ namespace opencl {
 		/*! \brief Unbind the thread and unlock the mutex */
 		void _release();
 		//! \brief gets the current device for the current thread
-		executive::Device& _getDevice();
+		//executive::Device& _getDevice();
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
@@ -172,7 +171,7 @@ namespace opencl {
 		// Load all modules and register them with all devices
 		void _registerAllModules(executive::Device *);
 		// Map kernel parameters for device
-		void _mapKernelParameters(Kernel & kernel, executive::Device *);
+		void _mapKernelParameters(Kernel & kernel, Device *);
 
 	private:
 		//! locking object for opencl runtime
@@ -221,13 +220,13 @@ namespace opencl {
 		unsigned int _deviceCount;
 		
 		//! Device vector
-		DeviceVector _devices;
+		DeviceList _devices;
 		
 		//! Have the devices been loaded?
 		bool _devicesLoaded;
 		
 		//! Currently selected device
-		executive::Device * _selectedDevice;
+		//executive::Device * _selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
 		int _nextSymbol;
@@ -251,7 +250,7 @@ namespace opencl {
 	//	PassSet _passes;
 	
 	private:
-		void _launchKernel(Kernel & kernel, executive::Device * device);
+		void _launchKernel(Kernel & kernel, Device * device);
 		
 	public:
 		OpenCLRuntime();

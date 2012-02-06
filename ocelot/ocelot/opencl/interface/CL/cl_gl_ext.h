@@ -21,7 +21,7 @@
  * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
  **********************************************************************************/
 
-/* $Revision: 11708 $ on $Date: 2010-06-14 12:06:24 +0530 (Mon, 14 Jun 2010) $ */
+/* $Revision: 11708 $ on $Date: 2010-06-13 23:36:24 -0700 (Sun, 13 Jun 2010) $ */
 
 /* cl_gl_ext.h contains vendor (non-KHR) OpenCL extensions which have           */
 /* OpenGL dependencies.                                                         */
@@ -41,8 +41,8 @@ extern "C" {
 
 /*
  * For each extension, follow this template
- * cl_VEN_extname extension
- #define cl_VEN_extname 1
+ *  cl_VEN_extname extension  */
+/* #define cl_VEN_extname 1
  * ... define new types, if any
  * ... define new tokens, if any
  * ... define new APIs, if any

@@ -9,6 +9,7 @@
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/Context.h>
+#include <ocelot/opencl/interface/Device.h>
 
 namespace opencl {
 
@@ -17,7 +18,7 @@ namespace opencl {
 	/*! \brief class defining memory object in opencl */
 	class MemoryObject {
 	public:
-		MemoryObject(std::map< executive::Device *, executive::Device::MemoryAllocation * > & addrs, 
+		MemoryObject(std::map< Device *, executive::Device::MemoryAllocation * > & addrs, 
 			Context * context, cl_mem_object_type type, cl_mem_flags flags);
 
 	public:
@@ -25,7 +26,7 @@ namespace opencl {
 		const cl_mem_object_type type() const;
 		const cl_mem_flags flags() const;
 		const virtual size_t size() const = 0;
-		std::map< executive::Device *, executive::Device::MemoryAllocation * > allocations; //allocations on device
+		std::map< Device *, executive::Device::MemoryAllocation * > allocations; //allocations on device
 
 	private:
 		Context * _context;
@@ -36,7 +37,7 @@ namespace opencl {
 	/*! \breif class defining buffer object in opencl */
 	class BufferObject: public MemoryObject {
 	public:
-		BufferObject(std::map< executive::Device *, executive::Device::MemoryAllocation * > & addrs, 
+		BufferObject(std::map< Device *, executive::Device::MemoryAllocation * > & addrs, 
 			Context * context, const cl_mem_flags flags, size_t size);
 
 	public:

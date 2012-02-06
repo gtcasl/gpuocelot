@@ -7,8 +7,8 @@
 
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
-#include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/Kernel.h>
+#include <ocelot/opencl/interface/Device.h>
 #include <ocelot/opencl/interface/Context.h>
 
 namespace opencl {
@@ -31,10 +31,10 @@ namespace opencl {
 		std::string name;
 	
 		//! ptx modules associated with device id	
-		std::map <executive::Device *, std::string> ptxModule;
+		std::map <Device *, std::string> ptxModule;
 
 		//! ptx code associated with device id
-		std::map <executive::Device *, std::string> ptxCode;
+		std::map <Device *, std::string> ptxCode;
 		
 		//! source code of program
 		std::string source;

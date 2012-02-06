@@ -18,7 +18,7 @@ namespace opencl {
 	class CommandQueue;
 
 	typedef std::list< MemoryObject * > MemoryObjectList;
-	typedef std::list< executive::Device *> DeviceList;
+	typedef std::list< Device *> DeviceList;
 	typedef std::list< CommandQueue * > QueueList;
 	typedef std::list< Program * > ProgramList;
 
@@ -27,7 +27,7 @@ namespace opencl {
 	
 		public:
 		//! index of selected device
-		executive::Device * selectedDevice;
+		Device * selectedDevice;
 		
 		//! set of valid device indices
 		DeviceList validDevices;

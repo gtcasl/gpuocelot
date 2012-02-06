@@ -2,7 +2,7 @@
 #include <ocelot/opencl/interface/CommandQueue.h>
 
 opencl::CommandQueue::CommandQueue(Context * context, 
-	executive::Device * device, 
+	Device * device, 
 	cl_command_queue_properties properties, 
 	unsigned int stream)
 	:_context(context), _device(device), _properties(properties), _stream(stream) {
@@ -12,7 +12,7 @@ opencl::Context * opencl::CommandQueue::context() {
 	return _context;
 }
 
-executive::Device * opencl::CommandQueue::device() {
+opencl::Device * opencl::CommandQueue::device() {
 	return _device;
 }
 

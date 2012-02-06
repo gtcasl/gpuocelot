@@ -9,6 +9,7 @@
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/Context.h>
+#include <ocelot/opencl/interface/Device.h>
 
 
 namespace opencl {
@@ -18,19 +19,19 @@ namespace opencl {
 	class CommandQueue {
 	public:
 		CommandQueue(Context * context, 
-			executive::Device * device, 
+			Device * device, 
 			cl_command_queue_properties properties, 
 			unsigned int stream);
 
 	public:
 		Context * context() ;
-		executive::Device * device() ;
+		Device * device() ;
 		cl_command_queue_properties properties() ;
 		unsigned int stream() ;
 
 	private:
 		Context * _context;
-		executive::Device * _device;
+		Device * _device;
 		cl_command_queue_properties _properties;
 		unsigned int _stream;
 	};

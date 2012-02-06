@@ -104,6 +104,7 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 	case ir::PTXInstruction::AddC:
 	case ir::PTXInstruction::Cvt:
 	case ir::PTXInstruction::Div:
+	case ir::PTXInstruction::Fma:
 	case ir::PTXInstruction::Mad24:
 	case ir::PTXInstruction::Mad:
 	case ir::PTXInstruction::Max:

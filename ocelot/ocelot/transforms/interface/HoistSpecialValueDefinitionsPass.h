@@ -140,9 +140,13 @@ private:
 		VariableDescriptor*> AddressSpaceMap;
 
 private:
-	void _findAllUses(ir::IRKernel& k, ir::ControlFlowGraph::iterator b);
+	void _findAllVariableUses(ir::IRKernel& k,
+		ir::ControlFlowGraph::iterator b);
+	void _findAllAddressSpaceUses(ir::IRKernel& k,
+		ir::ControlFlowGraph::iterator b);
 	
-	void _hoistAllUses(ir::IRKernel& k);
+	void _hoistAllVariableUses(ir::IRKernel& k);
+	void _hoistAllAddressSpaceUses(ir::IRKernel& k);
 	
 	void _addSpecialVariableUse(ir::IRKernel& kernel,
 		ir::ControlFlowGraph::iterator block,

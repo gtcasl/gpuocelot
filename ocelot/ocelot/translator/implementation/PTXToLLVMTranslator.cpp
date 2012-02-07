@@ -8396,7 +8396,8 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getLoadOrStorePointer(
 	else
 	{
 		assert( o.addressMode == ir::PTXOperand::Register 
-			|| o.addressMode == ir::PTXOperand::Indirect );
+			|| o.addressMode == ir::PTXOperand::Indirect
+			|| o.addressMode == ir::PTXOperand::Immediate );
 
 		ir::LLVMInstruction::Operand reg = _translate( o );
 		

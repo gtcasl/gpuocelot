@@ -20,6 +20,7 @@
 #include <ocelot/opencl/interface/Program.h>
 #include <ocelot/opencl/interface/Context.h>
 #include <ocelot/opencl/interface/Platform.h>
+#include <ocelot/opencl/interface/Object.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
@@ -137,7 +138,9 @@ namespace opencl {
 		void _memoryError(const void* address, size_t count, 
 			const std::string& function = "");		
 		/*! \brief Create platform */
-		void _enumeratePlatforms();
+		void _enumeratePlatforms(cl_uint num_entries, 
+			    cl_platform_id * platforms, 
+			    cl_uint * num_platforms);
 		/*! \brief Create devices if they do not already exist */
 		void _enumerateDevices(Platform *);
 		//! \brief acquires mutex and locks the runtime
@@ -185,9 +188,6 @@ namespace opencl {
 		
 		//! Registered modules
 		ModuleMap _modules;
-
-		//! Available platforms
-		PlatformList _platforms;
 
 		//! created programs
 		ProgramList _programs;

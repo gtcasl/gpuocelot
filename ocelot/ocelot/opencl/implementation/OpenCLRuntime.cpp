@@ -67,10 +67,20 @@ size_t opencl::Dimension::pitch() const {
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
-void opencl::OpenCLRuntime::_enumeratePlatforms() {
+void opencl::OpenCLRuntime::_enumeratePlatforms(cl_uint num_entries, 
+	cl_platform_id * platforms, 
+	cl_uint * num_platforms) {
 	report("Create platforms ");
 	Platform * p = new Platform();
-	_platforms.push_back(p);
+	
+	if(platforms) {
+		for(cl_uint i = 0; i < std::min((cl_uint)1, num_entries); 
+			i++)
+			platforms[i] = (cl_platform_id)p;
+	}
+
+	if(num_platforms)
+		*num_platforms = 1;
 
 	_enumerateDevices(p);
 }
@@ -829,17 +839,7 @@ cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries,
 		if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
 			throw CL_INVALID_VALUE;
 		
-		_enumeratePlatforms();
-
-		if(num_platforms)
-			*num_platforms = _platforms.size();
-
-		if(platforms) {
-			PlatformList::iterator p = _platforms.begin();
-			for(cl_uint i = 0; i < std::min((cl_uint)_platforms.size(), num_entries); 
-				i++, p++)
-				platforms[i] = (cl_platform_id)*p;
-		}
+		_enumeratePlatforms(num_entries, platforms, num_platforms);
 
 	}
 	catch(cl_int exception) {
@@ -861,7 +861,7 @@ cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform,
 	_lock();
 
 	try {
-		if(std::find(_platforms.begin(), _platforms.end(), platform) == _platforms.end())
+		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 
 		if(!param_value && !param_value_size_ret)
@@ -897,7 +897,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 	_lock();
 
 	try {
-		if(std::find(_platforms.begin(), _platforms.end(), platform) == _platforms.end())
+		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 	
 	
@@ -987,8 +987,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 			|| properties[2] != 0 /*properties terminates with 0*/ ))
 			throw CL_INVALID_PROPERTY;
 		
-		if(std::find(_platforms.begin(), _platforms.end(), (cl_platform_id)properties[1]) 
-			== _platforms.end() )
+		if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 
 		if(devices == 0 || num_devices == 0

@@ -382,6 +382,14 @@ ir::Global* ir::Module::getGlobal(const std::string& name) {
 	return 0;
 }
 
+const ir::Global* ir::Module::getGlobal(const std::string& name) const {
+	GlobalMap::const_iterator global = _globals.find(name);
+	if (global != _globals.end()) {
+		return &global->second;
+	}
+	return 0;
+}
+
 ir::Global* ir::Module::insertGlobal(const Global& global) {
 	typedef std::pair<GlobalMap::iterator, bool> Insertion;
 	

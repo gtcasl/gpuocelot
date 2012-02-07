@@ -4640,6 +4640,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			const char *source = 0;
 
 			switch (instr.a.addressMode) {
+				case PTXOperand::Register:
 				case PTXOperand::Indirect:
 					source += getRegAsU64(threadID, instr.a.reg);
 					break;
@@ -4668,6 +4669,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 		const char *source = 0;
 
 		switch (instr.a.addressMode) {
+			case PTXOperand::Register:
 			case PTXOperand::Indirect:
 				source += getRegAsU64(threadID, instr.a.reg);
 				break;
@@ -4791,6 +4793,7 @@ void executive::CooperativeThreadArray::eval_Ldu(CTAContext &context,
 			const char *source = 0;
 
 			switch (instr.a.addressMode) {
+				case PTXOperand::Register:
 				case PTXOperand::Indirect:
 					source += getRegAsU64(threadID, instr.a.reg);
 					break;
@@ -4826,6 +4829,7 @@ void executive::CooperativeThreadArray::eval_Ldu(CTAContext &context,
 		const char *source = 0;
 
 		switch (instr.a.addressMode) {
+			case PTXOperand::Register:
 			case PTXOperand::Indirect:
 				source += getRegAsU64(threadID, instr.a.reg);
 				break;

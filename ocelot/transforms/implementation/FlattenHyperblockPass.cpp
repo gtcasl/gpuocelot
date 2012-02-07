@@ -62,6 +62,10 @@ void FlattenHyperblockPass::runOnKernel(ir::IRKernel& k)
 
 	analysis::HyperblockAnalysis& hyperblockGraph =
 		*static_cast<analysis::HyperblockAnalysis*>(a);
+
+	#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);	
+	#endif
 	
 	report(" \"" << k.name << "\"  has "
 		<< k.cfg()->size() << " basic blocks.");
@@ -73,9 +77,16 @@ void FlattenHyperblockPass::runOnKernel(ir::IRKernel& k)
 	}
 	
 	invalidateAnalysis(analysis::Analysis::HyperblockAnalysis);
+	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);
+	invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
+	invalidateAnalysis(analysis::Analysis::PostDominatorTreeAnalysis);
 
 	report(" \"" << k.name << "\"  has "
 		<< k.cfg()->size() << " basic blocks.");
+		
+	#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);	
+	#endif
 
 }
 
@@ -354,8 +365,16 @@ void FlattenHyperblockPass::_flattenBlock(
 						<< " -> BB_" << (*edge)->tail->id);
 
 					deletedEdges.push_back(*edge);
+					
+					bool swapFallthrough =
+						((*edge)->type == ir::Edge::FallThrough) &&
+						entry->has_fallthrough_edge();
+					
+					ir::Edge::Type edgeType = swapFallthrough ?
+						ir::Edge::Branch : ((*edge)->type);
+						
 					newEdges.push_back(ir::Edge(*(bb_iterator)entry,
-						(*edge)->tail, (*edge)->type));
+						(*edge)->tail, edgeType));
 				}
 			}
 			
@@ -737,7 +756,7 @@ void FlattenHyperblockPass::PredicateEquation::simplify()
 		}
 		else
 		{
-			allTrue = false;
+			//allTrue = false;
 		}
 	}
 

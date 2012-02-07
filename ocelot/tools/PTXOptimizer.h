@@ -34,7 +34,8 @@ namespace tools
 				DeadCodeElimination  = 0x20,
 				SplitBasicBlocks     = 0x40,
 				SyncElimination      = 0x80,
-				Hyperblock           = 0x100
+				Hyperblock           = 0x100,
+				AnalyzePTX           = 0x200
 			};
 	
 		public:

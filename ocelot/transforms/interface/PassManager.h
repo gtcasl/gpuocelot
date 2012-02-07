@@ -95,10 +95,11 @@ public:
 	#endif
 
 private:
-	PassList     _passes;
-	PassList     _tempPasses;
-	ir::Module*  _module;
-	AnalysisMap* _analyses;
+	PassList      _passes;
+	PassList      _tempPasses;
+	ir::Module*   _module;
+	AnalysisMap*  _analyses;
+	ir::IRKernel* _kernel;
 };
 
 }

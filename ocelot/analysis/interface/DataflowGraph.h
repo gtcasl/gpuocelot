@@ -119,7 +119,8 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::list< PhiInstruction > PhiInstructionVector;
 		/*! \brief A vector of blocks */
 		typedef std::list< Block > BlockVector;
-		typedef std::list<InstructionVector::iterator> InstructionIteratorList;
+		typedef std::list< InstructionVector::iterator >
+			InstructionIteratorList;
 		
 		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
@@ -181,7 +182,8 @@ class DataflowGraph : public KernelAnalysis
 				};
 		
 				/*! \brief A unique set of register Ids */
-				typedef std::unordered_set< Register, Register_Hash > RegisterSet;
+				typedef std::unordered_set< Register,
+					Register_Hash > RegisterSet;
 
 			private:
 				/*! \brief Registers that are alive entering the block */
@@ -258,6 +260,8 @@ class DataflowGraph : public KernelAnalysis
 				ir::ControlFlowGraph::BasicBlock::Id id() const;
 				/*! \brief Get a pointer to the underlying block */
 				ir::ControlFlowGraph::iterator block();
+				/*! \brief Get a pointer to the underlying block */
+				ir::ControlFlowGraph::const_iterator block() const;
 
 			public:
 				/*! \brief Determine the block that produced a register */
@@ -292,6 +296,10 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A map from cfg blocks to dfg equivalents */
 		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
 			iterator > IteratorMap;
+		/*! \brief An iterator to an instruction */
+		typedef InstructionVector::iterator instruction_iterator;
+		/*! \brief A const iterator to an instruction */
+		typedef InstructionVector::const_iterator const_instruction_iterator;
 
 	private:
 		BlockVector _blocks;
@@ -423,6 +431,26 @@ namespace std
 			const analysis::DataflowGraph::iterator& it ) const
 		{
 			return ( size_t )it->id();
+		}
+	};
+	
+	template<>
+	struct hash< analysis::DataflowGraph::instruction_iterator >
+	{
+		inline size_t operator()(
+			const analysis::DataflowGraph::instruction_iterator& it ) const
+		{
+			return ( size_t )it->i;
+		}
+	};
+	
+	template<>
+	struct hash< analysis::DataflowGraph::const_instruction_iterator >
+	{
+		inline size_t operator()(
+			const analysis::DataflowGraph::const_instruction_iterator& i ) const
+		{
+			return ( size_t )i->i;
 		}
 	};
 

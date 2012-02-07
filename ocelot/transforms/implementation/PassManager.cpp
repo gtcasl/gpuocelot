@@ -503,20 +503,7 @@ void PassManager::clear()
 
 void PassManager::destroyPasses()
 {
-	for(PassList::iterator pass = _passes.begin();
-		pass != _passes.end(); ++pass)
-	{
-		delete *pass;
-	}
-
-	for(PassList::iterator pass = _tempPasses.begin();
-		pass != _tempPasses.end(); ++pass)
-	{
-		delete *pass;
-	}
-
-	_passes.clear();
-	_tempPasses.clear();
+	clear();
 }
 
 void PassManager::runOnKernel(const std::string& name)
@@ -545,6 +532,7 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 	AnalysisUseMap uses = initializeAnalysisUses(_passes);
 	
 	_analyses = &analyses;
+	_kernel   = &kernel;
 	
 	for(PassList::iterator pass = _passes.begin();
 		pass != _passes.end(); ++pass)
@@ -560,6 +548,7 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 	freeAllDataStructures(analyses);
 
 	_analyses = 0;
+	_kernel   = 0;
 
 	for(PassList::iterator pass = _passes.begin();
 		pass != _passes.end(); ++pass)
@@ -613,6 +602,7 @@ void PassManager::runOnModule()
 		}
 		
 		_analyses = &*analyses;
+		_kernel   = kernel->second;
 		*uses     = initializeAnalysisUses(_passes);
 
 		for(PassList::iterator pass = _passes.begin();
@@ -632,6 +622,7 @@ void PassManager::runOnModule()
 		freeAllDataStructures(*analyses);
 				
 		_analyses = 0;
+		_kernel   = 0;
 
 		for(PassList::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)
@@ -646,6 +637,14 @@ analysis::Analysis* PassManager::getAnalysis(int type)
 	assert(_analyses != 0);
 
 	AnalysisMap::iterator analysis = _analyses->find(type);
+	if(analysis == _analyses->end())
+	{
+		assert(_kernel != 0);
+		allocateNewDataStructures(*_analyses, _kernel, type, this);
+		
+		analysis = _analyses->find(type);
+	}
+	
 	if(analysis == _analyses->end()) return 0;
 	
 	return analysis->second;
@@ -666,10 +665,11 @@ void PassManager::invalidateAnalysis(int type)
 	assert(_analyses != 0);
 
 	AnalysisMap::iterator analysis = _analyses->find(type);
-	assert(analysis != _analyses->end());
-	
-	delete analysis->second;
-	_analyses->erase(analysis);
+	if(analysis != _analyses->end())
+	{
+		delete analysis->second;
+		_analyses->erase(analysis);
+	}
 }
 
 }

@@ -10,16 +10,18 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/Context.h>
 #include <ocelot/opencl/interface/Device.h>
+#include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
 
 	class Context;
 
 	/*! \brief class defining memory object in opencl */
-	class MemoryObject {
+	class MemoryObject : public Object{
 	public:
 		MemoryObject(std::map< Device *, executive::Device::MemoryAllocation * > & addrs, 
 			Context * context, cl_mem_object_type type, cl_mem_flags flags);
+		~MemoryObject();
 
 	public:
 		Context * context() const;

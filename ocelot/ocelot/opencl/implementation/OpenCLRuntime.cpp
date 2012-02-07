@@ -75,10 +75,21 @@ void opencl::OpenCLRuntime::_enumeratePlatforms() {
 	_enumerateDevices(p);
 }
 
-opencl::Context * opencl::OpenCLRuntime::_createContext() {
+opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
+	cl_uint deviceNum, const cl_device_id * devices) {
 	report("Creating new context ");
-	Context * c = new Context();
-	_contexts.push_back(c);
+	DeviceList deviceList;
+	for (cl_uint i = 0; i < deviceNum; i++) {
+		if(devices[i] == NULL  	
+			|| std::find(_devices.begin(), _devices.end(), devices[i]) == _devices.end()) {
+			throw CL_INVALID_DEVICE;
+			break;             	
+		}
+		deviceList.push_back(devices[i]);
+	}
+	Context * c = new Context(platform, deviceList);
+	_contexts.push_back(c);    	
+
 	return c;
 }
 
@@ -370,45 +381,45 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// free things that need freeing
 	//
 	// devices
-	for (DeviceList::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		delete (*device)->exeDevice;
-		delete *device;
-	}
-	
-	// mutex
-
-	// contexts
-	for(ContextList::iterator context = _contexts.begin();
-		context != _contexts.end(); ++context) {
-		delete *context;
-	}
-	
-	// textures
-	
-	// programs
-	for (ProgramList::iterator program = _programs.begin();
-		program != _programs.end(); ++program) {
-		delete *program;
-	}
-
-	// kernels
-	for (KernelList::iterator kernel = _kernels.begin();
-		kernel != _kernels.end(); ++kernel) {
-		delete *kernel;
-	}
-
-	// memory objects
-	for (MemoryObjectList::iterator memory = _memories.begin();
-		memory != _memories.end(); ++memory) {
-		delete *memory;
-	}
-
-	// command queues
-	for (CommandQueueList::iterator queue = _queues.begin();
-		queue != _queues.end(); ++queue) {
-		delete *queue;
-	}
+//	for (DeviceList::iterator device = _devices.begin(); 
+//		device != _devices.end(); ++device) {
+//		delete (*device)->exeDevice;
+//		delete *device;
+//	}
+//	
+//	// mutex
+//
+//	// contexts
+//	for(ContextList::iterator context = _contexts.begin();
+//		context != _contexts.end(); ++context) {
+//		delete *context;
+//	}
+//	
+//	// textures
+//	
+//	// programs
+//	for (ProgramList::iterator program = _programs.begin();
+//		program != _programs.end(); ++program) {
+//		delete *program;
+//	}
+//
+//	// kernels
+//	for (KernelList::iterator kernel = _kernels.begin();
+//		kernel != _kernels.end(); ++kernel) {
+//		delete *kernel;
+//	}
+//
+//	// memory objects
+//	for (MemoryObjectList::iterator memory = _memories.begin();
+//		memory != _memories.end(); ++memory) {
+//		delete *memory;
+//	}
+//
+//	// command queues
+//	for (CommandQueueList::iterator queue = _queues.begin();
+//		queue != _queues.end(); ++queue) {
+//		delete *queue;
+//	}
 	
 	// fat binaries
 	
@@ -988,15 +999,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 			throw CL_UNIMPLEMENTED;
 		}
 		
-		ctx = _createContext();
-		for (cl_uint i = 0; i < num_devices; i++) {
-			if(devices[i] == NULL 
-				|| std::find(_devices.begin(), _devices.end(), devices[i]) == _devices.end()) {
-				err = CL_INVALID_DEVICE;
-				break;
-			}
-			ctx->validDevices.push_back(devices[i]);
-		}
+		ctx = _createContext((Platform *)properties[1], num_devices, devices);
 	}
 	catch(cl_int exception) {
 		err = exception;

@@ -159,7 +159,7 @@ namespace opencl {
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
-		Context * _createContext();
+		Context * _createContext(Platform *, cl_uint, const cl_device_id *);
 		//! \brief create program binary
 		Program & _createProgramSource(const std::string & source);
 		//! \brief create program binary

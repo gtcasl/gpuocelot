@@ -7,11 +7,19 @@
 
 opencl::Device::Device(executive::Device * d, 
 	cl_device_type type, Platform * p):
+	Object(OBJTYPE_DEVICE),
 	exeDevice(d), _type(type), _vendorId(_deviceCount++),
 	_platform(p), _builtInKernels("") {
+
+	_platform->retain();
 }
 
 opencl::Device::~Device() {
+
+	if(_platform->release())
+		delete _platform;
+
+	delete exeDevice;
 }
 
 cl_uint opencl::Device::_deviceCount = 0;

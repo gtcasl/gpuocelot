@@ -7,8 +7,11 @@
 
 opencl::Kernel::Kernel(const std::string &n, 
 	Program * p,
-	Context * c): name(n), program(p), context(c) {
+	Context * c): Object(OBJTYPE_KERNEL),
+	name(n), program(p), context(c) {
 	parameterBlock = NULL;
+	program->retain();
+	context->retain();
 }
 
 opencl::Kernel::~Kernel()
@@ -20,6 +23,12 @@ opencl::Kernel::~Kernel()
 
 	if(parameterBlock)
 		delete parameterBlock;
+
+	if(program->release())
+		delete program;
+
+	if(context->release())
+		delete context;
 }
 
 

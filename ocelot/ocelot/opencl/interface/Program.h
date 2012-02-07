@@ -10,6 +10,7 @@
 #include <ocelot/opencl/interface/Kernel.h>
 #include <ocelot/opencl/interface/Device.h>
 #include <ocelot/opencl/interface/Context.h>
+#include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
 
@@ -18,7 +19,7 @@ namespace opencl {
 	typedef std::list< Kernel * > KernelList;
 
 	//! programs created in OpenCL runtime	
-	class Program {
+	class Program : public Object {
 
 	private:
 		//! program id
@@ -26,6 +27,8 @@ namespace opencl {
 
 	public:
 		Program(const std::string & source, Context * context);
+
+		~Program();	
 
 	public:
 		std::string name;

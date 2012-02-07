@@ -10,49 +10,26 @@
 #endif
 
 
-opencl::Context::Context(): selectedDevice(0) {
+opencl::Context::Context(Platform * p, DeviceList & devices): 
+	Object(OBJTYPE_CONTEXT), platform(p) {
+
+	for(DeviceList::iterator d = devices.begin();
+		d != devices.end(); d++) {
+		this->validDevices.push_back(*d);
+		(*d)->retain();
+	}
+
+	platform->retain();
 }
 
 opencl::Context::~Context() {
+	for(std::list< Device * >::iterator d = validDevices.begin();
+		d != validDevices.end(); d++) {
+		if((*d)->release())
+			delete (*d);
+	}
+
+	if(platform->release())
+		delete platform;
 }
-
-opencl::Context::Context(const Context& c): 
-	selectedDevice(c.selectedDevice),
-	validDevices(c.validDevices),
-	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators) {
-}
-
-opencl::Context& opencl::Context::operator=(
-	const Context& c) {
-	if(&c == this) return *this;
-	selectedDevice = c.selectedDevice;
-	validDevices = c.validDevices;
-	persistentTraceGenerators = c.persistentTraceGenerators;
-	nextTraceGenerators = c.nextTraceGenerators;
-	return *this;
-}
-
-opencl::Context::Context(Context&& c): 
-	selectedDevice(0) {
-	*this = std::move(c);
-}
-
-opencl::Context& opencl::Context::operator=(
-	Context&& c) {
-	if (this == &c) return *this;
-	std::swap(selectedDevice, c.selectedDevice);
-	std::swap(validDevices, c.validDevices);
-	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
-	std::swap(nextTraceGenerators, c.nextTraceGenerators);
-	return *this;
-}
-
-
-void opencl::Context::clear() {
-	validDevices.clear();
-	persistentTraceGenerators.clear();
-	nextTraceGenerators.clear();
-}
-
 

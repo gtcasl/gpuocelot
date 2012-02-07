@@ -5,10 +5,11 @@
 
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
+#include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
 
-	class Platform {
+	class Platform : public Object{
 	public:
 		Platform();
 		~Platform();

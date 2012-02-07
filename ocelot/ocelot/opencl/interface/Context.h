@@ -10,6 +10,8 @@
 #include <ocelot/opencl/interface/MemoryObject.h>
 #include <ocelot/opencl/interface/CommandQueue.h>
 #include <ocelot/opencl/interface/Program.h>
+#include <ocelot/opencl/interface/Platform.h>
+#include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
 
@@ -23,12 +25,12 @@ namespace opencl {
 	typedef std::list< Program * > ProgramList;
 
 	/*! Host thread OpenCL context consists of these */
-	class Context {	
+	class Context : public Object{	
 	
 		public:
-		//! index of selected device
-		Device * selectedDevice;
-		
+		//! platform
+		Platform * platform;
+	
 		//! set of valid device indices
 		DeviceList validDevices;
 
@@ -48,16 +50,9 @@ namespace opencl {
 		trace::TraceGeneratorVector nextTraceGenerators;
 			
 	public:
-		Context();
+		Context(Platform * platform, DeviceList & devices);
 		~Context();
 
-		Context(const Context& c);	
-		Context& operator=(const Context& c);
-
-		Context(Context&& c);	
-		Context& operator=(Context&& c);
-
-		void clear();
 	};
 
 }

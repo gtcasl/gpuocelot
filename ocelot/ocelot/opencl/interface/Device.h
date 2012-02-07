@@ -7,10 +7,11 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/Platform.h>
+#include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
 	
-	class Device {
+	class Device : public Object{
 	public:
 		Device(executive::Device * device, 
 			cl_device_type type, Platform *p);

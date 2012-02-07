@@ -5,7 +5,7 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Platform.h>
 
-opencl::Platform::Platform():
+opencl::Platform::Platform(): Object(OBJTYPE_PLATFORM),
 	_profile("FULL_PROFILE"), _version("1.2"),
 	_name("Ocelot OpenCL"), _vendor("Gatch CASL"),
 	_extensions("cl_khr_gl_sharing") {

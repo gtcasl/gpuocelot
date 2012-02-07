@@ -5,7 +5,14 @@
 opencl::MemoryObject::MemoryObject(
 	std::map < Device *, executive::Device::MemoryAllocation * > & a, 
 	Context * context, cl_mem_object_type type, cl_mem_flags flags)
-	:allocations(a), _context(context), _type(type), _flags(flags) {
+	:Object(OBJTYPE_MEMORY),
+	allocations(a), _context(context), _type(type), _flags(flags) {
+	_context->retain();
+}
+
+opencl::MemoryObject::~MemoryObject() {
+	if(_context->release())
+		delete _context;
 }
 
 opencl::Context * opencl::MemoryObject::context() const {

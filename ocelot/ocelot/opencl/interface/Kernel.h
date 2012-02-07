@@ -10,6 +10,7 @@
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/Program.h>
 #include <ocelot/opencl/interface/Context.h>
+#include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
 
@@ -21,7 +22,7 @@ namespace opencl {
 
    
     //! references a kernel registered to OpenCL runtime
-	class Kernel {
+	class Kernel : public Object{
 
 	public:
 		Kernel(const std::string& name, Program * program, Context * context);

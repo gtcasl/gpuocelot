@@ -7,21 +7,23 @@
 
 //Ocelot lib
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
-#include <ocelot/executive/interface/Device.h>
 #include <ocelot/opencl/interface/Context.h>
 #include <ocelot/opencl/interface/Device.h>
+#include <ocelot/opencl/interface/Object.h>
 
 
 namespace opencl {
 	class Context;
 
 	/*! \brief class defining command queue in opencl */
-	class CommandQueue {
+	class CommandQueue : public Object {
 	public:
 		CommandQueue(Context * context, 
 			Device * device, 
 			cl_command_queue_properties properties, 
 			unsigned int stream);
+
+		~CommandQueue();	
 
 	public:
 		Context * context() ;

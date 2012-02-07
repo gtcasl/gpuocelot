@@ -24,10 +24,10 @@ namespace opencl {
 		    size_t * param_value_size_ret);
 
 		//Get Platform
-		Platform * platform();
+		const bool hasPlatform(Platform *p) const;
 
 		//Get device type
-		const cl_device_type type() const;
+		const bool isType(const cl_device_type type) const;
 
 		//Executive device
 		executive::Device * exeDevice;

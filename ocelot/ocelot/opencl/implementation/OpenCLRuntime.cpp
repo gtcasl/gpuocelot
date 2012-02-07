@@ -82,7 +82,6 @@ void opencl::OpenCLRuntime::_enumeratePlatforms(cl_uint num_entries,
 	if(num_platforms)
 		*num_platforms = 1;
 
-	_enumerateDevices(p);
 }
 
 opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
@@ -91,7 +90,7 @@ opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
 	DeviceList deviceList;
 	for (cl_uint i = 0; i < deviceNum; i++) {
 		if(devices[i] == NULL  	
-			|| std::find(_devices.begin(), _devices.end(), devices[i]) == _devices.end()) {
+			|| !devices[i]->isValidObject(Object::OBJTYPE_DEVICE)) {
 			throw CL_INVALID_DEVICE;
 			break;             	
 		}
@@ -103,70 +102,84 @@ opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
 	return c;
 }
 
-void opencl::OpenCLRuntime::_enumerateDevices(Platform * platform) {
-	if(_devicesLoaded) return;
-	report("Creating devices.");
-	if(config::get().executive.enableNVIDIA) {
-		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::SASS, _flags,
-				_computeCapability);
-		report(" - Added " << d.size() << " nvidia gpu devices." );
+void opencl::OpenCLRuntime::_enumerateDevices(cl_platform_id platform,
+    cl_device_type device_type, 
+    cl_uint num_entries,
+    cl_device_id * devices,
+    cl_uint * num_devices) {
+	if(!_devicesLoaded) {
+		report("Creating devices.");
+		if(config::get().executive.enableNVIDIA) {
+			executive::DeviceVector d = 
+				executive::Device::createDevices(ir::Instruction::SASS, _flags,
+					_computeCapability);
+			report(" - Added " << d.size() << " nvidia gpu devices." );
+	
+			for(size_t i = 0; i < d.size(); i++)
+				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+		}
+		if(config::get().executive.enableEmulated) {
+			executive::DeviceVector d = 
+				executive::Device::createDevices(ir::Instruction::Emulated, _flags,
+					_computeCapability);
+			report(" - Added " << d.size() << " emulator devices." );
+			
+			for(size_t i = 0; i < d.size(); i++)
+				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+		}
+		if(config::get().executive.enableLLVM) {
+			executive::DeviceVector d = 
+				executive::Device::createDevices(ir::Instruction::LLVM, _flags,
+					_computeCapability);
+			report(" - Added " << d.size() << " llvm-cpu devices." );
+			for(size_t i = 0; i < d.size(); i++)
+				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_CPU, platform));
+			
+			if (config::get().executive.workerThreadLimit > 0) {
+				for (executive::DeviceVector::iterator d_it = d.begin();
+					d_it != d.end(); ++d_it) {
+					(*d_it)->limitWorkerThreads(
+						config::get().executive.workerThreadLimit);
+				}
+			}
+		}
+		if(config::get().executive.enableAMD) {
+			executive::DeviceVector d =
+				executive::Device::createDevices(ir::Instruction::CAL, _flags,
+					_computeCapability);
+			report(" - Added " << d.size() << " amd gpu devices." );
+			for(size_t i = 0; i < d.size(); i++)
+				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+		}
+		if(config::get().executive.enableRemote) {
+			executive::DeviceVector d =
+				executive::Device::createDevices(ir::Instruction::Remote, _flags,
+					_computeCapability);
+			report(" - Added " << d.size() << " remote devices." );
+			for(size_t i = 0; i < d.size(); i++)
+				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+		}
+		
+		_devicesLoaded = true;
+		
+	}
 
-		for(size_t i = 0; i < d.size(); i++)
-			_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
-	}
-	if(config::get().executive.enableEmulated) {
-		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::Emulated, _flags,
-				_computeCapability);
-		report(" - Added " << d.size() << " emulator devices." );
-		
-		for(size_t i = 0; i < d.size(); i++)
-			_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
-	}
-	if(config::get().executive.enableLLVM) {
-		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::LLVM, _flags,
-				_computeCapability);
-		report(" - Added " << d.size() << " llvm-cpu devices." );
-		for(size_t i = 0; i < d.size(); i++)
-			_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_CPU, platform));
-		
-		if (config::get().executive.workerThreadLimit > 0) {
-			for (executive::DeviceVector::iterator d_it = d.begin();
-				d_it != d.end(); ++d_it) {
-				(*d_it)->limitWorkerThreads(
-					config::get().executive.workerThreadLimit);
+	if (_devices.empty())
+		throw CL_DEVICE_NOT_FOUND;
+
+	cl_uint j = 0;
+	if(devices != 0) {
+		for(DeviceList::iterator d = _devices.begin(); d != _devices.end(); d++) {
+			if((*d)->isType(device_type) && (*d)->hasPlatform(platform)) {
+				if(j < num_entries)
+					devices[j] = (cl_device_id)(*d);
+				j++;
 			}
 		}
 	}
-	if(config::get().executive.enableAMD) {
-		executive::DeviceVector d =
-			executive::Device::createDevices(ir::Instruction::CAL, _flags,
-				_computeCapability);
-		report(" - Added " << d.size() << " amd gpu devices." );
-		for(size_t i = 0; i < d.size(); i++)
-			_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
-	}
-	if(config::get().executive.enableRemote) {
-		executive::DeviceVector d =
-			executive::Device::createDevices(ir::Instruction::Remote, _flags,
-				_computeCapability);
-		report(" - Added " << d.size() << " remote devices." );
-		for(size_t i = 0; i < d.size(); i++)
-			_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
-	}
 	
-	_devicesLoaded = true;
-	
-	if(_devices.empty())
-	{
-		std::cerr << "==Ocelot== WARNING - No OpenCL devices found or all " 
-			<< "devices disabled!\n";
-		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
-			<< "configure.ocelot.\n";
-	}
-
+	if(num_devices != 0)
+		*num_devices = j;
 	
 }
 
@@ -391,11 +404,10 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// free things that need freeing
 	//
 	// devices
-//	for (DeviceList::iterator device = _devices.begin(); 
-//		device != _devices.end(); ++device) {
-//		delete (*device)->exeDevice;
-//		delete *device;
-//	}
+	for (DeviceList::iterator device = _devices.begin(); 
+		device != _devices.end(); ++device) {
+		delete *device;
+	}
 //	
 //	// mutex
 //
@@ -900,32 +912,14 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 	
-	
 		if(device_type < CL_DEVICE_TYPE_CPU || device_type > CL_DEVICE_TYPE_ALL)
 			throw CL_INVALID_DEVICE_TYPE;
 		
 		if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
 			throw CL_INVALID_VALUE;
  
-		if (_devices.empty())
-			throw CL_DEVICE_NOT_FOUND;
-	
-		cl_uint j = 0;
-		if(devices != 0) {
-			for(DeviceList::iterator d = _devices.begin();
-				d != _devices.end() && j < num_entries; d++) {
-				if((device_type == CL_DEVICE_TYPE_ALL ||
-					(*d)->type() == device_type)
-					&& (*d)->platform() == platform) {
-					devices[j] = (cl_device_id)(*d);
-					j++;
-				}
-			}
-		}
-		
-		if(num_devices != 0)
-			*num_devices = j;
-	
+		_enumerateDevices(platform, device_type, num_entries, devices, num_devices);
+			
 	}
 	catch(cl_int exception) {
 		result = exception;
@@ -947,7 +941,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 	
 	try {
 
-		if(device == NULL || std::find(_devices.begin(), _devices.end(), device) == _devices.end())
+		if(!device->isValidObject(Object::OBJTYPE_DEVICE))
 			throw CL_INVALID_DEVICE;
 
 		if(!param_value && !param_value_size_ret)

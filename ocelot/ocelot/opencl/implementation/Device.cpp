@@ -24,12 +24,12 @@ opencl::Device::~Device() {
 
 cl_uint opencl::Device::_deviceCount = 0;
 
-opencl::Platform * opencl::Device::platform() {
-	return _platform;
+const bool opencl::Device::hasPlatform(Platform * platform) const {
+	return platform == _platform;
 }
 
-const cl_device_type opencl::Device::type() const {
-	return _type;
+const bool opencl::Device::isType(const cl_device_type type) const {
+	return (type == CL_DEVICE_TYPE_ALL || type==_type);
 }
 
 cl_int opencl::Device::getInfo(cl_device_info param_name,

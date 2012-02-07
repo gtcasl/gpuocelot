@@ -58,7 +58,6 @@ namespace opencl {
 	typedef std::map< unsigned int, char * > PointerMap;
 	typedef std::map< unsigned int, size_t > SizeMap;
 
-	typedef std::list< Platform * > PlatformList;
 	typedef std::list< Device *> DeviceList;
 	typedef std::list< MemoryObject * > MemoryObjectList;
 	typedef std::list< Kernel * > KernelList;
@@ -142,7 +141,11 @@ namespace opencl {
 			    cl_platform_id * platforms, 
 			    cl_uint * num_platforms);
 		/*! \brief Create devices if they do not already exist */
-		void _enumerateDevices(Platform *);
+		void _enumerateDevices(cl_platform_id platform,    
+			cl_device_type device_type, 
+		    cl_uint num_entries,
+	    	cl_device_id * devices,
+    		cl_uint * num_devices);
 		//! \brief acquires mutex and locks the runtime
 		void _lock();
 		//! \brief releases mutex
@@ -219,7 +222,6 @@ namespace opencl {
 		//! The total number of enabled devices in the system
 		unsigned int _deviceCount;
 		
-		//! Device vector
 		DeviceList _devices;
 		
 		//! Have the devices been loaded?

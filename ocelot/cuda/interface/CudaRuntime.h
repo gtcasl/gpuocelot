@@ -436,6 +436,7 @@ namespace cuda {
 		// Memset
 		//
 		virtual cudaError_t  cudaMemset(void *devPtr, int value, size_t count);
+		virtual cudaError_t cudaMemsetAsync(void *devPtr, int value, size_t count, cudaStream_t stream = 0);
 		virtual cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, 
 			int value, size_t width, size_t height);
 		virtual cudaError_t  cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, 
@@ -511,6 +512,7 @@ namespace cuda {
 
 	public:
 		virtual cudaError_t cudaGetLastError(void);
+		virtual cudaError_t cudaPeekAtLastError();
 
 	public:
 		//

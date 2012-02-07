@@ -258,6 +258,10 @@ cudaError_t  cudaMemset(void *devPtr, int value, size_t count) {
 	return cuda::CudaRuntimeInterface::get()->cudaMemset(devPtr, value, count);
 }
 
+cudaError_t cudaMemsetAsync(void *devPtr, int value, size_t count, cudaStream_t stream) {
+	return cuda::CudaRuntimeInterface::get()->cudaMemsetAsync(devPtr, value, count);
+}
+
 cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height) {
 	return cuda::CudaRuntimeInterface::get()->cudaMemset2D(devPtr, pitch, value, width, height);
 }
@@ -369,6 +373,10 @@ cudaError_t  cudaGetLastError(void) {
 	return cuda::CudaRuntimeInterface::get()->cudaGetLastError();
 }
 
+cudaError_t cudaPeekAtLastError() {
+	return cuda::CudaRuntimeInterface::get()->cudaGetLastError();
+}
+
 #define _CASE(x) case x: return #x;
 
 const char*  cudaGetErrorString(cudaError_t error) {
@@ -469,6 +477,9 @@ cudaError_t  cudaStreamQuery(cudaStream_t stream) {
 	return cuda::CudaRuntimeInterface::get()->cudaStreamQuery(stream);
 }
 
+cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaStreamWaitEvent(stream, event, flags);
+}
 
 /*******************************************************************************
 *                                                                              *

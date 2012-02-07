@@ -463,6 +463,7 @@ extern cudaError_t cudaMemcpyFromSymbolAsync(void *dst, const char *symbol,
 *******************************************************************************/
 
 extern cudaError_t cudaMemset(void *devPtr, int value, size_t count);
+extern cudaError_t cudaMemsetAsync(void *devPtr, int value, size_t count, cudaStream_t stream=0);
 extern cudaError_t cudaMemset2D(void *devPtr, size_t pitch, int value, 
 	size_t width, size_t height);
 
@@ -528,6 +529,7 @@ extern struct cudaChannelFormatDesc cudaCreateChannelDesc(int x, int y, int z,
 *******************************************************************************/
 
 extern cudaError_t cudaGetLastError(void);
+extern cudaError_t cudaPeekAtLastError();
 extern const char* cudaGetErrorString(cudaError_t error);
 
 /*******************************************************************************
@@ -556,6 +558,7 @@ extern cudaError_t cudaStreamCreate(cudaStream_t *pStream);
 extern cudaError_t cudaStreamDestroy(cudaStream_t stream);
 extern cudaError_t cudaStreamSynchronize(cudaStream_t stream);
 extern cudaError_t cudaStreamQuery(cudaStream_t stream);
+extern cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags);
 
 /*******************************************************************************
 *                                                                              *

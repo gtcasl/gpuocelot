@@ -1059,6 +1059,7 @@ cvtRoundingModifier : intRoundingModifier | floatRoundingModifier;
 cvtModifier : cvtRoundingModifier optionalFtz sat;
 cvtModifier : cvtRoundingModifier optionalFtz;
 cvtModifier : optionalFtz sat;
+cvtModifier : sat optionalFtz;
 cvtModifier : optionalFtz;
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'

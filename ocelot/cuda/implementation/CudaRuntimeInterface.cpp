@@ -448,10 +448,15 @@ cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromSymbolAsync(
 	return cudaErrorNotYetImplemented;
 }
 
-
-
 cudaError_t cuda::CudaRuntimeInterface::cudaMemset(
 	void *devPtr, int value, size_t count) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaMemsetAsync(void *devPtr, int value, size_t count, 
+	cudaStream_t stream) {
+
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -609,9 +614,12 @@ struct cudaChannelFormatDesc cuda::CudaRuntimeInterface::cudaCreateChannelDesc(
 	return desc;
 }
 
-
-
 cudaError_t cuda::CudaRuntimeInterface::cudaGetLastError(void) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaPeekAtLastError() {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -668,7 +676,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaStreamQuery(cudaStream_t stream) {
 	return cudaErrorNotYetImplemented;
 }
 
-
+cudaError_t cuda::CudaRuntimeInterface::cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, 
+	unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 cudaError_t cuda::CudaRuntimeInterface::cudaEventCreate(cudaEvent_t *event) {
 	assert(0 && "unimplemented");

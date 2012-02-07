@@ -2016,6 +2016,13 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 	return _setLastError(result);
 }
 
+
+cudaError_t cuda::CudaRuntime::cudaMemsetAsync(void *devPtr, int value, size_t count, 
+	cudaStream_t stream) {
+
+	return cudaMemset(devPtr, value, count);	// not really asynchronous
+}
+
 cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch, 
 	int value, size_t width, size_t height) {
 
@@ -2648,6 +2655,14 @@ struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x,
 ////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
+	cudaError_t error;
+	HostThreadContext& thread = _getCurrentThread();
+	error = thread.lastError;
+	thread.lastError = cudaSuccess;
+	return error;
+}
+
+cudaError_t cuda::CudaRuntime::cudaPeekAtLastError() {
 	HostThreadContext& thread = _getCurrentThread();
 	return thread.lastError;
 }

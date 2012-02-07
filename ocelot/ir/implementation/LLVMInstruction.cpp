@@ -1424,8 +1424,8 @@ namespace ir
 	{
 		std::stringstream stream;
 		stream << d.toString() << " = ";
-		if( isVolatile ) stream << "volatile ";
-		stream << LLVMInstruction::toString( opcode ) << " " 
+		stream << LLVMInstruction::toString( opcode ) << " " 	
+			<< (isVolatile ? "volatile " : "")
 			<< a.type.toString() << " " << a.toString();
 		if( alignment != 1 ) stream << ", align " << alignment;
 		return stream.str();
@@ -1795,8 +1795,8 @@ namespace ir
 	std::string LLVMStore::toString() const
 	{
 		std::stringstream stream;
-		if( isVolatile ) stream << "volatile ";
-		stream << LLVMInstruction::toString( opcode ) << " " 
+		stream << LLVMInstruction::toString( opcode ) << " "
+			<< (isVolatile ? "volatile " : "")
 			<< a.type.toString() << " " << a.toString() << ", " 
 			<< d.type.toString() << " " << d.toString();
 		if( alignment != 1 ) stream << ", align " << alignment;

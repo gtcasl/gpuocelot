@@ -29,7 +29,7 @@
 #define REPORT_BASE 0
 
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
-#define REPORT_LOCAL_MEMORY 0							// display contents of local memory
+#define REPORT_LOCAL_MEMORY 1							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -191,6 +191,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		if (maxIterations && ++iterations >= maxIterations) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, " early termination (maxIterations = " 
 				<< maxIterations << ")");
+				assert(0 && "Early termination");
 			break;
 		}
 	
@@ -224,6 +225,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 
 			contexts[tid].metadata = (char *)translation->metadata;
 			report("  using metadata " << (void *)contexts[tid].metadata );
+			report("  entering");
 				
 			translation->execute(warp);
 			

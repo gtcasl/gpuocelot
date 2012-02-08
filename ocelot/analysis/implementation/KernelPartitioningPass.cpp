@@ -27,7 +27,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_EMIT_SUBKERNEL_PTX 0
 #define REPORT_EMIT_SOURCE_PTXKERNEL 1
@@ -524,6 +524,7 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
 	
+	report("");
 	report(" _analyzeExternalEdges()");
 	
 	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
@@ -539,6 +540,9 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 		blockMapping[*bb_it] = subkernelCfg->insert_block(newBlock);
 	}
 	
+	typedef std::pair<std::string, std::string> LabelPair;
+	std::set< LabelPair > internalEdgeSet;
+	
 	for (BasicBlockSet::iterator bb_it = sourceBlocks.begin();
 		bb_it != sourceBlocks.end(); ++bb_it) {
 		
@@ -553,7 +557,7 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				report("  this block exits");
 			}
 			
-			if (/*!isExitEdge &&*/ (isExternalEdge || isBarrierExit)) {
+			if (isExternalEdge || isBarrierExit) {
 				
 				ir::BasicBlock handler;
 				
@@ -583,9 +587,14 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 					<< (*edge_it)->tail->label);
 			}
 			else {
-				report("  replicating internal edge " << (*edge_it)->head->label << " -> " 
+				report("  - replicating internal edge " << (*edge_it)->head->label << " -> " 
 					<< (*edge_it)->tail->label);
-				internalEdges.push_back(**edge_it);
+				
+				LabelPair blockPair((*edge_it)->head->label, (*edge_it)->tail->label);
+				if (internalEdgeSet.find(blockPair) == internalEdgeSet.end()) {
+					internalEdgeSet.insert(blockPair);
+					internalEdges.push_back(**edge_it);
+				}
 			}
 		}
 		
@@ -615,8 +624,12 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 					<< (*edge_it)->tail->label << " with entry ID " << entryId);
 			}
 			if (isEntryEdge) {
-				report(" ENTRY EDGE");
-				internalEdges.push_back(**edge_it);
+				report(" ENTRY EDGE: " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label);
+				LabelPair blockPair((*edge_it)->head->label, (*edge_it)->tail->label);
+				if (internalEdgeSet.find(blockPair) == internalEdgeSet.end()) {
+					internalEdgeSet.insert(blockPair);
+					internalEdges.push_back(**edge_it);
+				}
 			}
 		}
 	}
@@ -625,7 +638,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 	blockMapping[source->cfg()->get_exit_block()] = subkernelCfg->get_exit_block();
 	
 	// create internal edges
-	report(" creating internal edges");
+	report("Creating internal edges");
+	
 	for (std::vector< ir::BasicBlock::Edge >::iterator edge_it = internalEdges.begin();
 		edge_it != internalEdges.end(); ++edge_it) {
 		
@@ -645,7 +659,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 			ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
 				blockMapping[edge_it->tail], edge_it->type);
 			
-			report("  adding internal edge: " << internalEdge.head->label << " -> " << internalEdge.tail -> label);
+			report("  adding internal edge: " << internalEdge.head->label << " -> " 
+				<< internalEdge.tail -> label << " type: " << ir::ControlFlowGraph::toString(edge_it->type));
 			subkernelCfg->insert_edge(internalEdge);
 		}
 	}

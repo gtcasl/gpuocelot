@@ -76,7 +76,7 @@
 
 #define ALWAYS_REPORT_BROKEN_LLVM 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -858,21 +858,7 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 */
 void DynamicTranslationCacheOptimizePTX(ir::PTXKernel& kernel, 
 	translator::Translator::OptimizationLevel optimization) {
-	
-	/*
-	reportE(REPORT_TRANSLATION_OPERATIONS, " Building dataflow graph.");
-	kernel.dfg();
 
-	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing PTX");
-		
-	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
-	reportE(REPORT_TRANSLATION_OPERATIONS, "  Running convert predication to select pass");
-	convertPredicationToSelect.initialize(*kernel.module);
-	convertPredicationToSelect.runOnKernel(kernel);
-	convertPredicationToSelect.finalize();
-
-	kernel.dfg()->toSsa();
-	*/
 }
 
 /*!
@@ -1018,11 +1004,17 @@ static void cloneAndOptimizeTranslation(
 		ss << "_spec" << specialization;
 	}
 
-	translation->llvmFunction = llvm::CloneFunction(translatedSubkernel.llvmFunction);
-	translation->llvmFunction->setName(ss.str());
-	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
-	
-	translatedKernel.llvmModule->getFunctionList().push_back(translation->llvmFunction);
+	if (warpSize == 1 && specialization == 0) {
+		translation->llvmFunction = translatedSubkernel.llvmFunction;
+		report("  translating source subkernel");
+	}
+	else {
+		translation->llvmFunction = llvm::CloneFunction(translatedSubkernel.llvmFunction);
+		translation->llvmFunction->setName(ss.str());
+		translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
+		translatedKernel.llvmModule->getFunctionList().push_back(translation->llvmFunction);
+		report("  CLONED");
+	}
 		
 	llvm::FunctionPassManager manager(translatedKernel.llvmModule);
 	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
@@ -1081,7 +1073,8 @@ static void cloneAndOptimizeTranslation(
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
 	std::string verifyError;
 	
-	if (llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &verifyError)) {
+	if (false && 
+		llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &verifyError)) {
 	
 		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
 			<< verifyError << "\"" << std::endl;
@@ -1095,7 +1088,6 @@ static void cloneAndOptimizeTranslation(
 		std::cerr << " specialization: " << translation->llvmFunction->getName().str() << std::endl;
 				
 #endif
-
 
 		assert(0 && "due to broken LLVM module");
 		
@@ -1198,7 +1190,6 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
 			llvmKernel->assemble(!subkernelCount);
 			
-
 		#if REPORT_LLVM_MASTER
 			report("translated PTX to LLVM");
 			reportE(REPORT_SOURCE_LLVM_ASSEMBLY, llvmKernel->code());
@@ -1252,7 +1243,6 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 				translatedSubkernel.subkernelPtx->name));
 	}
 	
-	
 	report(" _translateKernel('" << translatedKernel.kernel->name << "') complete for " 
 		<< translatedKernel.subkernels.size() << " subkernels");
 }
@@ -1294,20 +1284,13 @@ executive::DynamicTranslationCache::Translation *
 	
 		translation->function = hydrazine::bit_cast<DynamicTranslationCache::ExecutableFunction>(
 			executive::LLVMState::jit()->getPointerToFunction(translation->llvmFunction));
-		
-		report("  verifying");
-		
-		// this step may be ellided for performance
-		std::string errors;
-		if (llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &errors)) {
-			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
-		}
+
 		
 #if REPORT_LLVM_MASTER
 		std::string llvmText;
 		llvm::raw_string_ostream llvmStream(llvmText);
 		translation->llvmFunction->print(llvmStream);
-		reportE(REPORT_OPTIMIZED_LLVM_ASSEMBLY, "Specialized and optimized LLVM function:\n" << llvmText);
+		subkernel.subkernelPtx->write(std::cout);
 #endif
 		
 		report("  updating translation cache data structures");

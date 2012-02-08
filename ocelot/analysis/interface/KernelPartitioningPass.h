@@ -177,7 +177,7 @@ namespace analysis {
 		
 			KernelGraph(ir::PTXKernel *_kernel, 
 				SubkernelId baseId = 0, 
-				PartitioningHeuristic _h = Partition_minimumWithBarriers);
+				PartitioningHeuristic _h = Partition_maximum);
 			~KernelGraph();
 		
 			size_t localMemorySize() const;

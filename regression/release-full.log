@@ -27,43 +27,105 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.0492939949036 seconds
+INFO     Test completed in 0.0553510189056 seconds
 INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+(0.000715) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.002697) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/functions/simpleFunc.cu, device = 0x1110ab0)
+(0.002721) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(kernel)
+(0.002734) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.002741) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'kernel'
+(0.002749) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.002757) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.002763) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernel_1
+(0.002769) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.002776) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.002783) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.002791) DynamicTranslationCache.cpp:278:     Argument kernel_param_0, offset 0
+(0.002799) DynamicTranslationCache.cpp:278:     Argument kernel_param_1, offset 8
+(0.002823) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [kernel_param_0]" mapping "kernel_param_0" to 0
+(0.002836) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u32 %r1, [kernel_param_1]" mapping "kernel_param_1" to 8
+(0.002843) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.002850) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.002860) DynamicTranslationCache.cpp:435:     total parameter memory size is 8
+(0.002868) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.002880) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.002887) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.002895) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.002902) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.002910) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.002918) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.002928) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 88
+(0.002948) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r8, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.002961) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r9, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.002972) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r10, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.002984) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r11, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.002995) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r12, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.003006) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r13, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.003013) DynamicTranslationCache.cpp:835:     Total local memory size is 96.
+(0.003020) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.003026) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.003034) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.003880) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.003889) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.006887) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.007024) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.007031) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernel_2
+(0.007037) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.007044) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.007051) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.007077) DynamicTranslationCache.cpp:278:     Argument kernel_param_0, offset 0
+(0.007085) DynamicTranslationCache.cpp:278:     Argument kernel_param_1, offset 8
+(0.007092) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.007100) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.007108) DynamicTranslationCache.cpp:435:     total parameter memory size is 8
+(0.007115) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.007123) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.007130) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.007137) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.007143) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.007151) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.007157) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.007167) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 88
+(0.007183) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r1, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.007190) DynamicTranslationCache.cpp:835:     Total local memory size is 96.
+(0.007197) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.007203) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.007210) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.007426) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.007434) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.007502) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.007583) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.007591) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernel_3
+(0.007597) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.007603) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.007612) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.007619) DynamicTranslationCache.cpp:278:     Argument kernel_param_0, offset 0
+(0.007626) DynamicTranslationCache.cpp:278:     Argument kernel_param_1, offset 8
+(0.007634) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.007641) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.007657) DynamicTranslationCache.cpp:350:     For arguments of call instruction 'call.uni (retval0), square, (param0)'
+(0.007664) DynamicTranslationCache.cpp:360:      mapping 'retval0' to 0
+(0.007671) DynamicTranslationCache.cpp:373:      mapping 'param0' to 4
+(0.007684) DynamicTranslationCache.cpp:405:     For instruction "st.param.f32 [param0], %r10" mapping "param0" to 4
+(0.007696) DynamicTranslationCache.cpp:405:     For instruction "ld.param.f32 %r11, [retval0]" mapping "retval0" to 0
+(0.007704) DynamicTranslationCache.cpp:435:     total parameter memory size is 8
+(0.007711) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.007720) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.007726) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.007733) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.007740) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.007747) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.007754) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.007763) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 88
+(0.007776) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r13, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.007789) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r12, _Zocelot_spill_aTestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:907: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+rea + 8, mapping local label _Zocelot_spill_area to 8
+(0.007807) DynamicTranslationCache.cpp:835:     Total local memory size is 96.
+(0.007815) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.007821) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0524270534515 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1328304051
-Test time : 0.000490665
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0557799339294 seconds
+INFO     Test completed in 0.0565979480743 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -77,8 +139,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1328304051
-Test time : 0.000857353
+Test Seed : 1328728661
+Test time : 0.000957251
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -209,15 +271,326 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
+INFO     Test completed in 0.0705709457397 seconds
+INFO      It produced the following output:
+(0.000941) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.002205) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(simpleKernels, device = 0xd3ff90)
+(0.002229) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(increment)
+(0.002242) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.002249) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'increment'
+(0.002257) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.002266) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.002272) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_increment_1
+(0.002278) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.002284) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.002291) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.002300) DynamicTranslationCache.cpp:278:     Argument memory, offset 0
+(0.002325) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [memory]" mapping "memory" to 0
+(0.002333) DynamicTranslationCache.cpp:317:     total argument memory size is 8
+(0.002339) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.002348) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.002357) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.002368) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.002375) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.002382) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.002389) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.002396) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.002404) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.002415) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 16
+(0.002434) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r3, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.002446) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r4, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.002453) DynamicTranslationCache.cpp:835:     Total local memory size is 24.
+(0.002460) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.002465) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.002473) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.002902) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.002911) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.003556) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.003621) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.003628) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_increment_2
+(0.003634) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.003640) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.003647) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.003654) DynamicTranslationCache.cpp:278:     Argument memory, offset 0
+(0.003661) DynamicTranslationCache.cpp:317:     total argument memory size is 8
+(0.003667) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.003675) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.003681) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.003689) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.003695) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.003702) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.003709) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.003716) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.003754) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.003763) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 16
+(0.003777) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r1, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.003784) DynamicTranslationCache.cpp:835:     Total local memory size is 24.
+(0.003791) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.003798) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.003804) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.003972) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.003980) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.004043) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.005165) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.005175) DynamicTranslationCache.cpp:1263:  _translateKernel('increment') complete for 2 subkernels
+(0.005184) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.005202) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.005210) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.005220) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_increment_1 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.005230) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.006495) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.007541) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.007740) DynamicTranslationCache.cpp:1115:  verified module
+(0.007748) DynamicTranslationCache.cpp:1118: performed transformations
+(0.007800) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.007807) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.007814) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.007823) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.009158) DynamicTranslationCache.cpp:1304:   verifying
+(0.009382) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_increment_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+exit:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = inttoptr i64 %r0 to i32*
+  %r1 = load i32* %rt3, align 4
+  %r2 = add i32 %r1, 1
+  store i32 %r2, i32* %rt3, align 4
+  %rt8 = ptrtoint i8* %localPtr.t0 to i64
+  %rt9 = add i64 %rt8, 4
+  %rt10 = inttoptr i64 %rt9 to i32*
+  store i32 8, i32* %rt10, align 4
+  %rt16 = bitcast i8* %localPtr.t0 to i32*
+  store i32 131073, i32* %rt16, align 4
+  ret void
+}
+
+(0.009391) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.009404) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+(0.009415) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.009422) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.009429) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_increment_2 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.009438) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.009452) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.010353) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.010534) DynamicTranslationCache.cpp:1115:  verified module
+(0.010543) DynamicTranslationCache.cpp:1118: performed transformations
+(0.010589) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.010596) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.010603) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.010610) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.011118) DynamicTranslationCache.cpp:1304:   verifying
+(0.011275) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_increment_2(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %rt3 = ptrtoint i8* %localPtr.t0 to i64
+  %rt4 = add i64 %rt3, 4
+  %rt5 = inttoptr i64 %rt4 to i32*
+  store i32 6, i32* %rt5, align 4
+  ret void
+}
+
+(0.011283) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.011291) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+(0.012242) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(simpleKernels, device = 0xd3ff90)
+(0.012251) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(increment)
+(0.012259) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.014988) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(simpleKernels, device = 0xd3ff90)
+(0.015000) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(increment)
+(0.015012) DynamicTranslationCache.cpp:167:    kernel already registered
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1328728661
+Test time : 0.0155704
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0711798667908 seconds
+INFO     Test completed in 0.0691428184509 seconds
+INFO      It produced the following output:
+(0.000769) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.002578) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/textures/texture2D.cu, device = 0x2186ac0)
+(0.002601) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(_Z6kernelPfii)
+(0.002615) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.002622) DynamicTranslationCache.cpp:1156: Getting metadata for kernel '_Z6kernelPfii'
+(0.002630) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.002638) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.002644) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel__Z6kernelPfii_1
+(0.002650) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.002656) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.002663) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.002672) DynamicTranslationCache.cpp:278:     Argument _Z6kernelPfii_param_0, offset 0
+(0.002679) DynamicTranslationCache.cpp:278:     Argument _Z6kernelPfii_param_1, offset 8
+(0.002686) DynamicTranslationCache.cpp:278:     Argument _Z6kernelPfii_param_2, offset 12
+(0.002710) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [_Z6kernelPfii_param_0]" mapping "_Z6kernelPfii_param_0" to 0
+(0.002723) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u32 %r1, [_Z6kernelPfii_param_1]" mapping "_Z6kernelPfii_param_1" to 8
+(0.002730) DynamicTranslationCache.cpp:317:     total argument memory size is 16
+(0.002737) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.002747) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.002755) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.002766) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.002773) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.002781) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.002787) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.002795) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.002822) DynamicTranslationCache.cpp:655:    found texture instruction: tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [Surface, {%r11, %r12}]
+(0.002830) DynamicTranslationCache.cpp:666:    getting texture reference, device = 0x2186ac0
+(0.002836) DynamicTranslationCache.cpp:673:     adding texture to metadata
+(0.002844) DynamicTranslationCache.cpp:675:   adding as texture 0
+(0.002851) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.002861) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 160
+(0.002881) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r21, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.002889) DynamicTranslationCache.cpp:835:     Total local memory size is 168.
+(0.002896) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.002902) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.002910) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.003594) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.003604) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.004376) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.005677) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.005688) DynamicTranslationCache.cpp:1263:  _translateKernel('_Z6kernelPfii') complete for 1 subkernels
+(0.005697) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.005736) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.005744) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.005754) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel__Z6kernelPfii_1 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.005765) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.007118) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.008716) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.008921) DynamicTranslationCache.cpp:1115:  verified module
+(0.008929) DynamicTranslationCache.cpp:1118: performed transformations
+(0.008980) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.008988) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.008995) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.009004) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.011075) DynamicTranslationCache.cpp:1304:   verifying
+(0.011294) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel__Z6kernelPfii_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+exit:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %floatingPointTexture1 = alloca [4 x float], align 16
+  %floatingPointTexture1.sub2 = bitcast [4 x float]* %floatingPointTexture1 to float*
+  %0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 2, i32 1
+  %1 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 2, i32 0
+  %2 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 1, i32 1
+  %3 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 1, i32 0
+  %4 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 0, i32 1
+  %5 = bitcast %LLVMContext* %__ctaContext to i32*
+  %blockId.y.t0 = load i32* %0, align 4
+  %blockId.x.t0 = load i32* %1, align 4
+  %blockDim.y.t0 = load i32* %2, align 4
+  %blockDim.x.t0 = load i32* %3, align 4
+  %threadId.y.t0 = load i32* %4, align 4
+  %threadId.x.t0 = load i32* %5, align 4
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i64 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %r1 = load i32* %rt6, align 4
+  %rt13 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r6 = add i32 %threadId.x.t0, %rt13
+  %rt20 = mul i32 %blockDim.y.t0, %blockId.y.t0
+  %r10 = add i32 %threadId.y.t0, %rt20
+  %r11 = uitofp i32 %r6 to float
+  %r12 = uitofp i32 %r10 to float
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture1.sub2, %LLVMContext* %__ctaContext, i32 0, float %r11, float %r12) nounwind
+  %r14 = load float* %floatingPointTexture1.sub2, align 16
+  %rt24 = mul i32 %r1, %r10
+  %r18 = add i32 %rt24, %r6
+  %rt25 = zext i32 %r18 to i64
+  %r19 = shl nuw nsw i64 %rt25, 2
+  %r20 = add i64 %r19, %r0
+  %rt26 = inttoptr i64 %r20 to float*
+  store float %r14, float* %rt26, align 4
+  %rt30 = ptrtoint i8* %localPtr.t0 to i64
+  %rt31 = add i64 %rt30, 4
+  %rt32 = inttoptr i64 %rt31 to i32*
+  store i32 6, i32* %rt32, align 4
+  ret void
+}
+
+(0.011302) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.011316) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
+INFO     Test completed in 0.0497720241547 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1328728661
+Test time : 1.52588e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0529282093048 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1328728661
+Test time : 1.4782e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.06139087677 seconds
+INFO     Test completed in 0.0753860473633 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -227,8 +600,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1328304051
-Test time : 0.000621557
+Test Seed : 1328728661
+Test time : 0.000653505
 
 Status : Test output:
 Accessors test passed.
@@ -243,76 +616,455 @@ pass: predicated Add and Ld isntructions
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0616359710693 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1328304051
-Test time : 2.14577e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.0570340156555 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1328304051
-Test time : 1.93119e-05
-
-Status : 
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.0783009529114 seconds
+INFO     Test completed in 0.0851621627808 seconds
 INFO      It produced the following output:
-sequence() - A_gpu = 0x08d5500
+(0.000798) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+sequence() - A_gpu = 0x01292800
+(0.004320) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/kernels/sequence.cu, device = 0x1290a10)
+(0.004346) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(sequence)
+(0.004359) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.004366) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'sequence'
+(0.004374) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.004382) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.004388) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_sequence_1
+(0.004394) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.004400) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.004407) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.004416) DynamicTranslationCache.cpp:278:     Argument sequence_param_0, offset 0
+(0.004422) DynamicTranslationCache.cpp:278:     Argument sequence_param_1, offset 8
+(0.004447) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [sequence_param_0]" mapping "sequence_param_0" to 0
+(0.004459) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u32 %r1, [sequence_param_1]" mapping "sequence_param_1" to 8
+(0.004467) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.004474) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.004483) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.004491) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.004503) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.004510) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.004518) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.004524) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.004532) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.004541) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.004552) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 80
+(0.004571) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r8, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.004583) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r9, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.004594) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r10, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.004606) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r11, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.004617) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r12, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.004628) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r13, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.004634) DynamicTranslationCache.cpp:835:     Total local memory size is 88.
+(0.004641) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.004647) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.004654) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.005461) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.005471) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.006334) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.006429) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.006436) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_sequence_2
+(0.006442) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.006448) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.006488) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.006496) DynamicTranslationCache.cpp:278:     Argument sequence_param_0, offset 0
+(0.006503) DynamicTranslationCache.cpp:278:     Argument sequence_param_1, offset 8
+(0.006510) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.006516) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.006524) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.006530) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.006538) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.006544) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.006551) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.006558) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.006565) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.006571) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.006580) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 80
+(0.006593) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r1, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.006600) DynamicTranslationCache.cpp:835:     Total local memory size is 88.
+(0.006607) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.006613) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.006619) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.006785) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.006793) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.006855) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.006896) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.006904) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_sequence_3
+(0.006909) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.006915) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.006922) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.006929) DynamicTranslationCache.cpp:278:     Argument sequence_param_0, offset 0
+(0.006935) DynamicTranslationCache.cpp:278:     Argument sequence_param_1, offset 8
+(0.006942) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.006948) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.006956) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.006962) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.006970) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.006976) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.006983) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.006989) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.006996) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.007002) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.007011) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 80
+(0.007024) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r12, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.007035) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r11, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.007042) DynamicTranslationCache.cpp:835:     Total local memory size is 88.
+(0.007049) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.007054) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.007061) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.009426) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.009473) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.009682) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.011263) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.011275) DynamicTranslationCache.cpp:1263:  _translateKernel('sequence') complete for 3 subkernels
+(0.011292) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.011316) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.011324) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.011333) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_sequence_1 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.011344) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.012727) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.014190) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.014408) DynamicTranslationCache.cpp:1115:  verified module
+(0.014416) DynamicTranslationCache.cpp:1118: performed transformations
+(0.014462) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.014470) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.014477) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.014485) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.016122) DynamicTranslationCache.cpp:1304:   verifying
+(0.016369) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_sequence_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+"$BB_1_0002":
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 2, i32 0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 1, i32 0
+  %2 = bitcast %LLVMContext* %__ctaContext to i32*
+  %blockId.x.t0 = load i32* %0, align 4
+  %blockDim.x.t0 = load i32* %1, align 4
+  %threadId.x.t0 = load i32* %2, align 4
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i64 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %r1 = load i32* %rt6, align 4
+  %rt13 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r6 = add i32 %threadId.x.t0, %rt13
+  %r7 = icmp slt i32 %r6, %r1
+  %rt44 = ptrtoint i8* %localPtr.t0 to i64
+  %rt45 = add i64 %rt44, 24
+  %rt46 = inttoptr i64 %rt45 to i64*
+  store i64 %r0, i64* %rt46, align 8
+  %rt52 = add i64 %rt44, 56
+  %rt53 = inttoptr i64 %rt52 to i32*
+  store i32 %r6, i32* %rt53, align 4
+  %rt58 = add i64 %rt44, 4
+  %rt59 = inttoptr i64 %rt58 to i32*
+  store i32 8, i32* %rt59, align 4
+  %rt65 = bitcast i8* %localPtr.t0 to i32*
+  %. = select i1 %r7, i32 196609, i32 131073
+  store i32 %., i32* %rt65, align 4
+  ret void
+}
+
+(0.016378) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.016391) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+(0.016401) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.016407) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.016414) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_sequence_3 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.016424) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.016437) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.017192) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.017354) DynamicTranslationCache.cpp:1115:  verified module
+(0.017362) DynamicTranslationCache.cpp:1118: performed transformations
+(0.017400) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.017407) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.017414) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.017421) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.018135) DynamicTranslationCache.cpp:1304:   verifying
+(0.018375) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_sequence_3(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %rt11 = ptrtoint i8* %localPtr.t0 to i64
+  %rt12 = add i64 %rt11, 56
+  %rt13 = inttoptr i64 %rt12 to i32*
+  %r2 = load i32* %rt13, align 4
+  %rt5 = add i64 %rt11, 24
+  %rt6 = inttoptr i64 %rt5 to i64*
+  %r1 = load i64* %rt6, align 8
+  %r5 = shl i32 %r2, 1
+  %rt14 = sext i32 %r2 to i64
+  %r6 = shl nsw i64 %rt14, 2
+  %r7 = add i64 %r6, %r1
+  %rt15 = inttoptr i64 %r7 to i32*
+  store i32 %r5, i32* %rt15, align 4
+  %rt20 = add i64 %rt11, 4
+  %rt21 = inttoptr i64 %rt20 to i32*
+  store i32 6, i32* %rt21, align 4
+  ret void
+}
+
+(0.018384) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.018392) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+(0.018805) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/kernels/sequence.cu, device = 0x1290a10)
+(0.018815) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(testShr)
+(0.018825) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.018831) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'testShr'
+(0.018838) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.018846) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.018852) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_testShr_4
+(0.018858) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.018864) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.018871) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.018879) DynamicTranslationCache.cpp:278:     Argument testShr_param_0, offset 0
+(0.018895) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [testShr_param_0]" mapping "testShr_param_0" to 0
+(0.018903) DynamicTranslationCache.cpp:317:     total argument memory size is 8
+(0.018910) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.018920) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.018927) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.018935) DynamicTranslationCache.cpp:504:     Found local shared variable __cuda_local_var_16224_30_non_const_storage of size 1024
+(0.018949) DynamicTranslationCache.cpp:548:     For instruction mov.u64 %r8, __cuda_local_var_16224_30_non_const_storage, mapping shared label __cuda_local_var_16224_30_non_const_storage to 0
+(0.018958) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.018964) DynamicTranslationCache.cpp:568:     Total shared memory size is 1024.
+(0.018971) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.018978) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.018986) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.018993) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.019003) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 160
+(0.019018) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r22, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.019031) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r23, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.019041) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r24, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.019053) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r25, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.019065) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r21, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.019085) DynamicTranslationCache.cpp:835:     Total local memory size is 168.
+(0.019093) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.019099) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.019106) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.020099) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.020108) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.021125) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.022287) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.022296) DynamicTranslationCache.cpp:1263:  _translateKernel('testShr') complete for 1 subkernels
+(0.022305) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.022316) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.022323) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.022330) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_testShr_4 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.022339) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.022356) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.025451) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.025637) DynamicTranslationCache.cpp:1115:  verified module
+(0.025645) DynamicTranslationCache.cpp:1118: performed transformations
+(0.025693) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.025701) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.025709) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.025716) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.027545) DynamicTranslationCache.cpp:1304:   verifying
+(0.027776) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_testShr_4(%LLVMContext.1* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = bitcast %LLVMContext.1* %__ctaContext to i32*
+  %threadId.x.t0 = load i32* %0, align 4
+  %rt10 = zext i32 %threadId.x.t0 to i64
+  %localPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i64 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0, align 8
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast, align 4
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %cond = icmp eq i32 %resumePoint, 1
+  br i1 %cond, label %"$BB_4_0002_bar_thread_exit", label %"$BB_4_0002_exit_handler_to_4_0002_bar"
+
+"$BB_4_0002_exit_handler_to_4_0002_bar":          ; preds = %SchedulerEntry
+  %1 = trunc i64 %rt10 to i32
+  %2 = bitcast i8* %localPtr.t0 to i32*
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i64 0, i32 8
+  %3 = getelementptr %LLVMContext.1* %__ctaContext, i64 0, i32 2, i32 0
+  %4 = getelementptr %LLVMContext.1* %__ctaContext, i64 0, i32 1, i32 0
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %blockId.x.t0 = load i32* %3, align 4
+  %blockDim.x.t0 = load i32* %4, align 4
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt9 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r5 = add i32 %rt9, %1
+  %r6 = shl i32 %r5, 1
+  %r7 = shl nuw nsw i64 %rt10, 2
+  %rt13 = ptrtoint i8* %sharedPtr.t0 to i64
+  %rt14 = add i64 %rt13, %r7
+  %rt15 = inttoptr i64 %rt14 to i32*
+  store i32 %r6, i32* %rt15, align 4
+  %rt20 = ptrtoint i8* %localPtr.t0 to i64
+  %rt21 = add i64 %rt20, 16
+  %rt22 = inttoptr i64 %rt21 to i64*
+  store i64 %r0, i64* %rt22, align 8
+  %rt28 = add i64 %rt20, 48
+  %rt29 = inttoptr i64 %rt28 to i32*
+  store i32 %r5, i32* %rt29, align 4
+  %rt35 = add i64 %rt20, 72
+  %rt36 = inttoptr i64 %rt35 to i64*
+  store i64 0, i64* %rt36, align 8
+  %rt41 = add i64 %rt20, 4
+  %rt42 = inttoptr i64 %rt41 to i32*
+  store i32 5, i32* %rt42, align 4
+  store i32 262145, i32* %2, align 4
+  br label %exit
+
+"$BB_4_0002_bar_thread_exit":                     ; preds = %SchedulerEntry
+  %5 = trunc i64 %rt10 to i32
+  %rt60 = ptrtoint i8* %localPtr.t0 to i64
+  %rt61 = add i64 %rt60, 48
+  %rt62 = inttoptr i64 %rt61 to i32*
+  %r18 = load i32* %rt62, align 4
+  %rt68 = add i64 %rt60, 72
+  %rt54 = add i64 %rt60, 16
+  %rt69 = inttoptr i64 %rt68 to i64*
+  %rt55 = inttoptr i64 %rt54 to i64*
+  %r17 = load i64* %rt55, align 8
+  %r19 = load i64* %rt69, align 8
+  %r23 = and i32 %r18, 1
+  %r24 = icmp eq i32 %r23, 0
+  %r26 = xor i32 %5, 1
+  %rt72 = zext i32 %r26 to i64
+  %r27 = shl nuw nsw i64 %rt72, 2
+  %r29 = select i1 %r24, i32 13, i32 19
+  %rt75 = ptrtoint i8* %sharedPtr.t0 to i64
+  %r28 = add i64 %r27, %rt75
+  %rt76 = add i64 %r28, %r19
+  %rt77 = inttoptr i64 %rt76 to i32*
+  %r30 = load i32* %rt77, align 4
+  %r31 = mul i32 %r29, %r30
+  %rt78 = sext i32 %r18 to i64
+  %r32 = shl nsw i64 %rt78, 2
+  %r33 = add i64 %r32, %r17
+  %rt79 = inttoptr i64 %r33 to i32*
+  store i32 %r31, i32* %rt79, align 4
+  %rt84 = add i64 %rt60, 4
+  %rt85 = inttoptr i64 %rt84 to i32*
+  store i32 6, i32* %rt85, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_4_0002_bar_thread_exit", %"$BB_4_0002_exit_handler_to_4_0002_bar"
+  ret void
+}
+
+(0.027823) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.027834) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.047641992569 seconds
+INFO     Test completed in 0.0528171062469 seconds
 INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+(0.000846) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.004292) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/functions/indirectCall.cu, device = 0x65aa20)
+(0.004317) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(kernelEntry)
+(0.004331) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.004337) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'kernelEntry'
+(0.004345) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.004353) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.004359) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernelEntry_1
+(0.004365) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.004371) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.004379) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.004387) DynamicTranslationCache.cpp:278:     Argument kernelEntry_param_0, offset 0
+(0.004394) DynamicTranslationCache.cpp:278:     Argument kernelEntry_param_1, offset 8
+(0.004415) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [kernelEntry_param_0]" mapping "kernelEntry_param_0" to 0
+(0.004427) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u32 %r1, [kernelEntry_param_1]" mapping "kernelEntry_param_1" to 8
+(0.004435) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.004441) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.004452) DynamicTranslationCache.cpp:435:     total parameter memory size is 8
+(0.004460) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.004472) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.004479) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.004486) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.004493) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.004501) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.004509) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.004520) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 120
+(0.004539) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r10, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.004551) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r11, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.004562) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r12, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.004573) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r13, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.004584) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r14, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.004595) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r15, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.004601) DynamicTranslationCache.cpp:835:     Total local memory size is 128.
+(0.004608) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.004614) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.004622) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.005641) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.005650) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.006631) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.006736) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.006743) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernelEntry_2
+(0.006749) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.006755) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.006781) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.006789) DynamicTranslationCache.cpp:278:     Argument kernelEntry_param_0, offset 0
+(0.006796) DynamicTranslationCache.cpp:278:     Argument kernelEntry_param_1, offset 8
+(0.006804) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.006810) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.006818) DynamicTranslationCache.cpp:435:     total parameter memory size is 8
+(0.006825) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.006834) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.006840) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.006847) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.006853) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.006860) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.006867) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.006876) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 120
+(0.006889) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r11, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.006900) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r12, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.006912) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r13, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.006923) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r14, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.006929) DynamicTranslationCache.cpp:835:     Total local memory size is 128.
+(0.006936) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.006942) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.006948) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.007405) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.007413) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.007675) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.007739) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.007746) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernelEntry_3
+(0.007751) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.007757) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.007764) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.007771) DynamicTranslationCache.cpp:278:     Argument kernelEntry_param_0, offset 0
+(0.007778) DynamicTranslationCache.cpp:278:     Argument kernelEntry_param_1, offset 8
+(0.007785) DynamicTranslationCache.cpp:317:     total argument memory size is 12
+(0.007791) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.007799) DynamicTranslationCache.cpp:435:     total parameter memory size is 8
+(0.007805) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.007813) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.007820) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.007827) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.007833) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.007840) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.007846) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.007855) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 120
+(0.007868) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r13, _Zocelot_spill_area + 8, mapping local label _Zocelot_spill_area to 8
+(0.007879) DynamicTranslationCache.cpp:827:     For instruction TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:907: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+mov.s32 %r14, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.007900) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r15, _Zocelot_resume_point, mapping local label _Zocelot_resume_point to 0
+(0.007907) DynamicTranslationCache.cpp:835:     Total local memory size is 128.
+(0.007914) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.007920) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0521059036255 seconds
+INFO     Test completed in 0.0472209453583 seconds
 INFO      It produced the following output:
+(0.001056) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
 No CAL devices found
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0674510002136 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.0846970081329 seconds
+INFO     Test completed in 0.067106962204 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -322,8 +1074,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1328304051
-Test time : 0.0246058
+Test Seed : 1328728661
+Test time : 0.0159578
 
 Status : Test output:
 looping kernel succeeded
@@ -331,15 +1083,163 @@ matrix vector kernel succeeded
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
+INFO     Test completed in 0.0868499279022 seconds
+INFO      It produced the following output:
+(0.000965) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.002877) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/textures/textureArray.cu, device = 0x13ecac0)
+(0.002907) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(_Z6kernelPfii)
+(0.002923) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.002930) DynamicTranslationCache.cpp:1156: Getting metadata for kernel '_Z6kernelPfii'
+(0.002938) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.002947) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.002954) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel__Z6kernelPfii_1
+(0.002960) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.002967) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.002975) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.002985) DynamicTranslationCache.cpp:278:     Argument _Z6kernelPfii_param_0, offset 0
+(0.002992) DynamicTranslationCache.cpp:278:     Argument _Z6kernelPfii_param_1, offset 8
+(0.003000) DynamicTranslationCache.cpp:278:     Argument _Z6kernelPfii_param_2, offset 12
+(0.003522) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [_Z6kernelPfii_param_0]" mapping "_Z6kernelPfii_param_0" to 0
+(0.003536) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u32 %r1, [_Z6kernelPfii_param_1]" mapping "_Z6kernelPfii_param_1" to 8
+(0.003545) DynamicTranslationCache.cpp:317:     total argument memory size is 16
+(0.003552) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.003562) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.003571) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.003584) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.003591) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.003599) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.003606) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.003649) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.003686) DynamicTranslationCache.cpp:655:    found texture instruction: tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [Surface, {%r11, %r12}]
+(0.003694) DynamicTranslationCache.cpp:666:    getting texture reference, device = 0x13ecac0
+(0.003968) DynamicTranslationCache.cpp:673:     adding texture to metadata
+(0.003979) DynamicTranslationCache.cpp:675:   adding as texture 0
+(0.003987) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.004000) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 160
+(0.004025) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r21, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.004033) DynamicTranslationCache.cpp:835:     Total local memory size is 168.
+(0.004040) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.004047) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.004055) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.004874) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.004883) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.010226) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.013759) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.013778) DynamicTranslationCache.cpp:1263:  _translateKernel('_Z6kernelPfii') complete for 1 subkernels
+(0.013788) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.013853) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.013861) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.013871) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel__Z6kernelPfii_1 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.013882) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.015158) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.016615) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.016797) DynamicTranslationCache.cpp:1115:  verified module
+(0.016805) DynamicTranslationCache.cpp:1118: performed transformations
+(0.016851) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.016859) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.016866) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.016875) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.019011) DynamicTranslationCache.cpp:1304:   verifying
+(0.019244) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel__Z6kernelPfii_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+exit:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %floatingPointTexture1 = alloca [4 x float], align 16
+  %floatingPointTexture1.sub2 = bitcast [4 x float]* %floatingPointTexture1 to float*
+  %0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 2, i32 1
+  %1 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 2, i32 0
+  %2 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 1, i32 1
+  %3 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 1, i32 0
+  %4 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 0, i32 1
+  %5 = bitcast %LLVMContext* %__ctaContext to i32*
+  %blockId.y.t0 = load i32* %0, align 4
+  %blockId.x.t0 = load i32* %1, align 4
+  %blockDim.y.t0 = load i32* %2, align 4
+  %blockDim.x.t0 = load i32* %3, align 4
+  %threadId.y.t0 = load i32* %4, align 4
+  %threadId.x.t0 = load i32* %5, align 4
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i64 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %r1 = load i32* %rt6, align 4
+  %rt13 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r6 = add i32 %threadId.x.t0, %rt13
+  %rt20 = mul i32 %blockDim.y.t0, %blockId.y.t0
+  %r10 = add i32 %threadId.y.t0, %rt20
+  %r11 = uitofp i32 %r6 to float
+  %r12 = uitofp i32 %r10 to float
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture1.sub2, %LLVMContext* %__ctaContext, i32 0, float %r11, float %r12) nounwind
+  %r14 = load float* %floatingPointTexture1.sub2, align 16
+  %rt24 = mul i32 %r1, %r10
+  %r18 = add i32 %rt24, %r6
+  %rt25 = zext i32 %r18 to i64
+  %r19 = shl nuw nsw i64 %rt25, 2
+  %r20 = add i64 %r19, %r0
+  %rt26 = inttoptr i64 %r20 to float*
+  store float %r14, float* %rt26, align 4
+  %rt30 = ptrtoint i8* %localPtr.t0 to i64
+  %rt31 = add i64 %rt30, 4
+  %rt32 = inttoptr i64 %rt31 to i32*
+  store i32 6, i32* %rt32, align 4
+  ret void
+}
+
+(0.019253) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.019267) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+Pass/Fail : Pass
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0396258831024 seconds
+INFO     Test completed in 0.0410809516907 seconds
 INFO      It produced the following output:
-TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:892: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:907: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+(0.000919) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.002322) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(someModule, device = 0x721960)
+(0.002345) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(kernel)
+(0.002358) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.002365) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'kernel'
+(0.002372) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.002381) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.002387) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_kernel_1
+(0.002393) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.002399) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.002406) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.002415) DynamicTranslationCache.cpp:278:     Argument result, offset 0
+(0.002442) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r3, [result]" mapping "result" to 0
+(0.002451) DynamicTranslationCache.cpp:317:     total argument memory size is 8
+(0.002457) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.002474) DynamicTranslationCache.cpp:350:     For arguments of call instruction 'call.uni (returned), malloc, (value)'
+(0.002482) DynamicTranslationCache.cpp:360:      mapping 'returned' to 0
+(0.002489) DynamicTranslationCache.cpp:373:      mapping 'value' to 8
+(0.002498) DynamicTranslationCache.cpp:350:     For arguments of call instruction 'call.uni free, (freeValue)'
+(0.002505) DynamicTranslationCache.cpp:373:      mapping 'freeValue' to 0
+(0.002517) DynamicTranslationCache.cpp:405:     For instruction "st.param.u64 [value], %r0" mapping "value" to 8
+(0.002529) DynamicTranslationCache.cpp:405:     For instruction "ld.param.u64 %r1, [returned]" mapping "returned" to 0
+(0.002541) DynamicTranslationCache.cpp:405:     For instruction "st.param.u64 [freeValue], %r1" mapping "freeValue" to 0
+(0.002548) DynamicTranslationCache.cpp:435:     total parameter memory size is 16
+(0.002557) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.002568) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.002576) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.002584) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.002590) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.002598) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.002606) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.002617) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 24
+(0.002636) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r4, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.002644) DynamicTranslationCache.cpp:835:     Total local memory size is 32.
+(0.002651) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.002657) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.05526304245 seconds
+INFO     Test completed in 0.0665278434753 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -352,46 +1252,115 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1328304051
-Test time : 1.4782e-05
+Test Seed : 1328728661
+Test time : 1.93119e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.0476608276367 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.0551710128784 seconds
 INFO      It produced the following output:
+(0.000900) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU 
+(0.001120) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.002856) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/globals/global.cu, device = 0x141c690)
+(0.002882) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(copyFromGlobal)
+(0.002898) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.002905) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'copyFromGlobal'
+(0.002913) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.002922) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.002928) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_copyFromGlobal_1
+(0.002934) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.002941) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.002948) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.002958) DynamicTranslationCache.cpp:278:     Argument copyFromGlobal_param_0, offset 0
+(0.002983) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [copyFromGlobal_param_0]" mapping "copyFromGlobal_param_0" to 0
+(0.002991) DynamicTranslationCache.cpp:317:     total argument memory size is 8
+(0.002998) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.003008) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.003017) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.003028) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.003036) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.003044) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.003051) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.003058) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.003067) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.003079) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 120
+(0.003104) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r16, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.003112) DynamicTranslationCache.cpp:835:     Total local memory size is 128.
+(0.003119) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.003125) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.003134) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.003757) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.003766) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.004531) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.005683) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.005693) DynamicTranslationCache.cpp:1263:  _translateKernel('copyFromGlobal') complete for 1 subkernels
+(0.005701) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.005724) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.005732) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.005742) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_copyFromGlobal_1 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.005752) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.007110) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.008557) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.008749) DynamicTranslationCache.cpp:1115:  verified module
+(0.008757) DynamicTranslationCache.cpp:1118: performed transformations
+(0.008842) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.008851) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.008858) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.008867) DynamicTranslationCache.cpp:1141:   Binding global variable Pi to 0x141ec00
+(0.008921) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.010551) DynamicTranslationCache.cpp:1304:   verifying
+(0.010760) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_copyFromGlobal_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+exit:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 8
+  %0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 2, i32 0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 1, i32 0
+  %2 = bitcast %LLVMContext* %__ctaContext to i32*
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %blockId.x.t0 = load i32* %0, align 4
+  %blockDim.x.t0 = load i32* %1, align 4
+  %threadId.x.t0 = load i32* %2, align 4
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt9 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r5 = add i32 %threadId.x.t0, %rt9
+  %r6 = load float* @Pi, align 4
+  %r7 = ashr i32 %r5, 31
+  %r8 = lshr i32 %r7, 25
+  %r9 = add i32 %r8, %r5
+  %r10 = and i32 %r9, -128
+  %r11 = sub i32 %r5, %r10
+  %r12 = sitofp i32 %r11 to float
+  %r13 = fmul float %r6, %r12
+  %rt11 = sext i32 %r5 to i64
+  %r14 = shl nsw i64 %rt11, 2
+  %r15 = add i64 %r14, %r0
+  %rt12 = inttoptr i64 %r15 to float*
+  store float %r13, float* %rt12, align 4
+  %rt16 = ptrtoint i8* %localPtr.t0 to i64
+  %rt17 = add i64 %rt16, 4
+  %rt18 = inttoptr i64 %rt17 to i32*
+  store i32 6, i32* %rt18, align 4
+  ret void
+}
+
+(0.010768) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.010782) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+(0.010822) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(ocelot/cuda/test/globals/global.cu, device = 0x141c690)
+(0.010831) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(copyFromGlobal)
+(0.010838) DynamicTranslationCache.cpp:167:    kernel already registered
 Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1328304051
-Test time : 0.0034759
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0714008808136 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.130286931992 seconds
+INFO     Test completed in 0.114614009857 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -402,8 +1371,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1328304051
-Test time : 0.0879347
+Test Seed : 1328728661
+Test time : 0.063185
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -438,30 +1407,33 @@ R = [
 
 
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 0.0855269432068 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
+INFO     Test completed in 0.0591480731964 seconds
 INFO      It produced the following output:
-Pass/Fail : Fail
+Pass/Fail : Pass
 
 
-Name : TestPTXAssembly
+Name : TestEmulator
 
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
+Description: 
 
 
-Test Seed : 1328304051
-Test time : 0.0286264
+Test Seed : 1328728661
+Test time : 0.00517964
 
-Status : Ran 'TestVectorElements-u32' for 19 iterations.
- Output parameter 0 (I16) computed value - -18544 does not match reference value - -28592
-  On device - 0 - 'Ocelot Dynamic Multicore CPU'
-Test 'TestAdd-u16' seed '1328304051' failed.
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.0414447784424 seconds
+INFO     Test completed in 0.043251991272 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -476,8 +1448,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1328304051
-Test time : 1.5974e-05
+Test Seed : 1328728661
+Test time : 1.7643e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -489,9 +1461,10 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.072114944458 seconds
+INFO     Test completed in 0.0754358768463 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
+(0.000906) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
 PASSED
 test_mallocArray(256, 128)
 checking results from last cudaMemcpyFromArray
@@ -506,28 +1479,214 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
+INFO     Test completed in 0.095853805542 seconds
+INFO      It produced the following output:
+(0.003741) DynamicMulticoreDevice.cpp:55:   DynamicMulticoreDevice()
+(0.005101) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.005125) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.005139) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.005146) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'test'
+(0.005154) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.005162) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.005169) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_test_1
+(0.005175) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.005181) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.005188) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.005197) DynamicTranslationCache.cpp:278:     Argument out, offset 0
+(0.005204) DynamicTranslationCache.cpp:278:     Argument in, offset 8
+(0.005226) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [in]" mapping "in" to 8
+(0.005238) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r1, [out]" mapping "out" to 0
+(0.005246) DynamicTranslationCache.cpp:317:     total argument memory size is 16
+(0.005253) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.005262) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.005271) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.005282) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.005289) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.005297) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.005304) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.005311) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.005320) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.005331) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 72
+(0.005352) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r10, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.005359) DynamicTranslationCache.cpp:835:     Total local memory size is 80.
+(0.005366) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.005373) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.005381) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.005924) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.005932) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.006661) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.007792) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.007802) DynamicTranslationCache.cpp:1263:  _translateKernel('test') complete for 1 subkernels
+(0.007809) DynamicTranslationCache.cpp:163:    registered new kernel
+(0.007828) DynamicTranslationCache.cpp:1274: _specializeTranslation()
+(0.007836) DynamicTranslationCache.cpp:1284:   cloning and optimizing
+(0.007845) DynamicTranslationCache.cpp:991:   Optimizing kernel _subkernel_test_1 for warpSize 1, optimziation level BasicOptimization and specialization 0
+(0.007855) DynamicTranslationCache.cpp:1023:   translating source subkernel
+(0.009180) DynamicTranslationCache.cpp:1040: Overriding optimization level
+(0.010360) DynamicTranslationCache.cpp:1087:   Checking llvm module for errors.
+(0.010564) DynamicTranslationCache.cpp:1115:  verified module
+(0.010572) DynamicTranslationCache.cpp:1118: performed transformations
+(0.010624) DynamicTranslationCache.cpp:1291:  Generating native code.
+(0.010631) DynamicTranslationCache.cpp:1293:   JIT compiling
+(0.010638) DynamicTranslationCache.cpp:1124:   Linking global variables.
+(0.010647) DynamicTranslationCache.cpp:1298:   Invoking LLVM to Native JIT
+(0.012073) DynamicTranslationCache.cpp:1304:   verifying
+(0.012315) DynamicTranslationCache.cpp:1316: Specialized and optimized LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_test_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+exit:
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0, align 8
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i64 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0, align 8
+  %rt0 = getelementptr i8* %argumentPtr.t0, i64 8
+  %rt3 = bitcast i8* %rt0 to i64*
+  %r0 = load i64* %rt3, align 8
+  %rt6 = bitcast i8* %argumentPtr.t0 to i64*
+  %r1 = load i64* %rt6, align 8
+  %rt8 = inttoptr i64 %r0 to <4 x i32>*
+  %rt7 = load <4 x i32>* %rt8, align 16
+  %rt9 = inttoptr i64 %r1 to <4 x i32>*
+  %rt13 = shufflevector <4 x i32> %rt7, <4 x i32> undef, <4 x i32> <i32 1, i32 2, i32 3, i32 0>
+  store <4 x i32> %rt13, <4 x i32>* %rt9, align 16
+  %rt17 = ptrtoint i8* %localPtr.t0 to i64
+  %rt18 = add i64 %rt17, 4
+  %rt19 = inttoptr i64 %rt18 to i32*
+  store i32 6, i32* %rt19, align 4
+  ret void
+}
+
+(0.012323) DynamicTranslationCache.cpp:1319:   updating translation cache data structures
+(0.012337) DynamicTranslationCache.cpp:1331:   _specializeTranslation() complete
+(0.013261) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.013270) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.013278) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.014090) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.014099) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.014106) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.014960) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.014969) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.014976) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.015784) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.015793) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.015800) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.016609) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.016618) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.016625) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.017441) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.017450) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.017457) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.018265) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.018274) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.018281) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.019079) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.019088) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.019095) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.019905) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.019914) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.019920) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.020729) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.020738) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.020758) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.021568) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.021577) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.021584) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.022389) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.022398) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.022405) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.023213) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.023222) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.023229) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.024034) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.024043) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.024050) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.024873) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.024882) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.024889) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.025696) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.025705) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.025712) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.026525) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestVectorElements-u32, device = 0x7f6bdc0046f0)
+(0.026535) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.026542) DynamicTranslationCache.cpp:167:    kernel already registered
+(0.027305) DynamicTranslationCache.cpp:175:  DynamicTranslationCache::loadModule(TestAdd-u16, device = 0x7f6bdc0046f0)
+(0.027317) DynamicTranslationCache.cpp:149:  DynamicTranslationCache::registerKernel(test)
+(0.027327) DynamicTranslationCache.cpp:1152: __translateKernel()
+(0.027333) DynamicTranslationCache.cpp:1156: Getting metadata for kernel 'test'
+(0.027341) DynamicTranslationCache.cpp:932:   Building metadata.
+(0.027348) DynamicTranslationCache.cpp:1176:   ---------------------
+(0.027354) DynamicTranslationCache.cpp:1177:   translating subkernel _subkernel_test_1
+(0.027360) DynamicTranslationCache.cpp:1181:    setting up PTX memory references
+(0.027366) DynamicTranslationCache.cpp:844:   Setting up memory references for kernel variables.
+(0.027372) DynamicTranslationCache.cpp:265:    Setting up argument memory references.
+(0.027379) DynamicTranslationCache.cpp:278:     Argument out, offset 0
+(0.027386) DynamicTranslationCache.cpp:278:     Argument in, offset 8
+(0.027400) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r0, [in]" mapping "in" to 8
+(0.027412) DynamicTranslationCache.cpp:304:     For instruction "ld.param.u64 %r1, [out]" mapping "out" to 0
+(0.027420) DynamicTranslationCache.cpp:317:     total argument memory size is 16
+(0.027426) DynamicTranslationCache.cpp:327:    Setting up parameter memory references.
+(0.027434) DynamicTranslationCache.cpp:435:     total parameter memory size is 0
+(0.027441) DynamicTranslationCache.cpp:449:    Setting up shared memory references.
+(0.027449) DynamicTranslationCache.cpp:558:     Mapping external shared variables.
+(0.027456) DynamicTranslationCache.cpp:568:     Total shared memory size is 0.
+(0.027463) DynamicTranslationCache.cpp:577:    Setting up constant memory references.
+(0.027470) DynamicTranslationCache.cpp:600:     Total constant memory size is 0
+(0.027477) DynamicTranslationCache.cpp:642:   Setting up texture memory references.
+(0.027495) DynamicTranslationCache.cpp:689:    Setting up local memory references.
+(0.027505) DynamicTranslationCache.cpp:797:     Found local local variable _Zocelot_spill_area of size 32
+(0.027519) DynamicTranslationCache.cpp:827:     For instruction mov.s32 %r5, _Zocelot_resume_status + 4, mapping local label _Zocelot_resume_status to 4
+(0.027527) DynamicTranslationCache.cpp:835:     Total local memory size is 40.
+(0.027534) DynamicTranslationCache.cpp:1187:    setting up call targets
+(0.027540) DynamicTranslationCache.cpp:885:    Setting up targets of call instructions.
+(0.027546) DynamicTranslationCache.cpp:1192:   Converting from PTX IR to LLVM IR.
+(0.027886) DynamicTranslationCache.cpp:1200:    loading LLVM kernel
+(0.027894) DynamicTranslationCache.cpp:1204:   Assembling LLVM kernel.
+(0.028575) DynamicTranslationCache.cpp:1209: translated PTX to LLVM
+(0.029372) DynamicTranslationCache.cpp:1249:  parsed kernel
+(0.029381) DynamicTranslationCache.cpp:1263:  _translateKernel('test') complete for 1 subkernels
+(0.029388) DynamicTranslationCache.cpp:163:    registered new kernel
+Pass/Fail : Fail
+
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1328728661
+Test time : 0.0288978
+
+Status : Ran 'TestVectorElements-u32' for 18 iterations.
+ Output parameter 0 (I16) computed value - -13402 does not match reference value - 17979
+  On device - 0 - 'Ocelot Dynamic Multicore CPU'
+Test 'TestAdd-u16' seed '1328728661' failed.
+
+
+
 INFO     
 Passing tests:
- (0.078s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
- (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
- (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
- (0.130s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
- (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
- (0.067s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
- (0.057s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
- (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
- (0.072s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
- (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
- (0.052s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
- (0.056s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
- (0.052s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
- (0.085s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
+ (0.085s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
+ (0.069s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
+ (0.043s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
+ (0.115s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
+ (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
+ (0.087s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
+ (0.050s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
+ (0.053s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.075s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
+ (0.059s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
+ (0.067s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
+ (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
+ (0.075s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
+ (0.057s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
+ (0.047s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
+ (0.067s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
 
 Failing tests:
- (0.048s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.086s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
- (0.049s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
- (0.040s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
+ (0.053s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.096s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
+ (0.055s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
+ (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
 

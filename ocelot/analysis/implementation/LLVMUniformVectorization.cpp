@@ -43,7 +43,7 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_FINAL_SUBKERNEL 1
+#define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -184,8 +184,13 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	pass(_pass)
 {
 	report("Translation(" << f->getName().str() << ") on subkernel with warp size " << pass->warpSize);
-	_scalarPreprocess();
-	_transformWarpSynchronous();
+	
+	if (pass->warpSize == 1) {
+		_scalarPreprocess();
+	}
+	else {
+		_transformWarpSynchronous();
+	}
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
 #if REPORT_BASE && REPORT_FINAL_SUBKERNEL
@@ -475,6 +480,9 @@ void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() 
 		"$OcelotTextureAllocateBlock", 
 		0
 	};
+	
+	report("_hoistDeclarationBlocks()");
+	
 	for (int i = 0; initializerBlocks[i]; i++) {
 		llvm::BasicBlock *block = 0;
 		std::vector< llvm::Instruction * > instructions;
@@ -489,6 +497,7 @@ void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() 
 		}
 	
 		if (block) {
+			report("  hoisting declarations in " << block->getName().str());
 			for (std::vector< llvm::Instruction * >::iterator inst_it = instructions.begin(); 
 				inst_it != instructions.end(); ++inst_it) {
 				if (!llvm::TerminatorInst::classof(*inst_it)) {

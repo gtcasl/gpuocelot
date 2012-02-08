@@ -382,7 +382,7 @@ bool opencl::Device::read(const void * src, void * host, size_t offset, size_t s
 	return true;
 }
 
-bool opencl::Device::write(void * dest, const void * host, size_t offset, size_t size) {
+bool opencl::Device::write(void * dest, const void * host, size_t offset, size_t size) {	
 	if(!_exeDevice->checkMemoryAccess((char *)dest + offset, size))
 		return false;
 

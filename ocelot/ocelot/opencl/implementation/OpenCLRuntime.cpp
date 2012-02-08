@@ -312,7 +312,7 @@ void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, Device * devic
 			if(mem->allocations.find(device) == mem->allocations.end())
 				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-			void * addr = mem->allocations[device]; //FIX ME
+			void * addr = mem->allocations[device];
 			memcpy(kernel.parameterBlock + offset, &addr, argSize);
 		}
 		else { //non-memory argument
@@ -1490,7 +1490,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
 		void * allocation = allocations.find(device)->second;
-		
+
 		if(!device->write(allocation, ptr, offset, cb))
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 

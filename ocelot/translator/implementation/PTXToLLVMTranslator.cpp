@@ -9247,22 +9247,7 @@ void PTXToLLVMTranslator::_addKernelPrefix()
 	kernel.parameters[ 0 ].name = "%__ctaContext";
 	
 	_llvmKernel->push_front( kernel );
-
-	ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
 	
-	dim3.label = "%Dimension";
-	dim3.operand.type.category = ir::LLVMInstruction::Type::Structure;
-	dim3.operand.type.members.resize( 3 );
-	dim3.operand.type.members[ 0 ].category 
-		= ir::LLVMInstruction::Type::Element;
-	dim3.operand.type.members[ 0 ].type = ir::LLVMInstruction::I32;
-	dim3.operand.type.members[ 1 ] = dim3.operand.type.members[ 0 ];
-	dim3.operand.type.members[ 2 ] = dim3.operand.type.members[ 0 ];
-	
-	_llvmKernel->push_front( dim3 );
-
-	_llvmKernel->push_front( 
-		ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
 
 	ir::LLVMStatement brev( ir::LLVMStatement::FunctionDeclaration );
 
@@ -9405,8 +9390,23 @@ void PTXToLLVMTranslator::_addKernelPrefix()
 	
 	_llvmKernel->push_front( contextType );
 
+	_llvmKernel->push_front(ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
+		
+	ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
+	
+	dim3.label = "%Dimension";
+	dim3.operand.type.category = ir::LLVMInstruction::Type::Structure;
+	dim3.operand.type.members.resize( 3 );
+	dim3.operand.type.members[ 0 ].category 
+		= ir::LLVMInstruction::Type::Element;
+	dim3.operand.type.members[ 0 ].type = ir::LLVMInstruction::I32;
+	dim3.operand.type.members[ 1 ] = dim3.operand.type.members[ 0 ];
+	dim3.operand.type.members[ 2 ] = dim3.operand.type.members[ 0 ];
+	
+	_llvmKernel->push_front( dim3 );
+
 	_llvmKernel->push_front( 
-		ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
+		ir::LLVMStatement( ir::LLVMStatement::NewLine ) );	
 }
 
 void PTXToLLVMTranslator::_addKernelSuffix()

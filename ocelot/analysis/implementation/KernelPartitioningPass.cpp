@@ -676,6 +676,12 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 }
 
 //! \brief identifies divergent control flow and constructs unreachable handlers for entries and exits
+void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
+	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
+	report(" _analyzeBarriers()");
+}
+
+//! \brief identifies divergent control flow and constructs unreachable handlers for entries and exits
 void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
 	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
 	report(" _analyzeDivergentControlFlow()");

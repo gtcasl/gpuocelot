@@ -76,7 +76,7 @@
 
 #define ALWAYS_REPORT_BROKEN_LLVM 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,6 +87,19 @@ namespace llvm {
 }
 
 std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst);
+std::string String(llvm::Type *value);
+std::string String(llvm::Value *value);
+
+std::string String(llvm::Module *module) {
+	
+	llvm::AssemblyAnnotationWriter *annotations = 0;
+	
+	std::string str;
+	llvm::raw_string_ostream os(str);
+	module->print(os, annotations);
+	
+	return str;
+}
 
 static translator::Translator::OptimizationLevel getOptimizationLevel() {
 	return (translator::Translator::OptimizationLevel)api::configuration().executive.optimizationLevel;
@@ -1151,7 +1164,8 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 		subkernelsToKernel[subkernel_it->first] = &translatedKernel;
 	
 		ir::PTXKernel *subkernelPtx = subkernel_it->second.subkernel;
-			
+		
+		report("  ---------------------");
 		report("  translating subkernel " << subkernelPtx->name);
 		
 		try {
@@ -1182,8 +1196,6 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
 			llvmKernel->assemble(!subkernelCount);
 			
-			std::cout << llvmKernel->code() << std::endl;
-
 			llvm::SMDiagnostic error;
 
 		#if REPORT_LLVM_MASTER
@@ -1191,14 +1203,20 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			reportE(REPORT_SOURCE_LLVM_ASSEMBLY, llvmKernel->code());
 		#endif
 
+			if (translatedKernel.llvmModule) {
+				reportE(REPORT_TRANSLATION_OPERATIONS,
+					"Module BEFORE parsing new kernel:\n" << String(translatedKernel.llvmModule));
+					
+				reportE(REPORT_TRANSLATION_OPERATIONS, "New kernel:\n" << llvmKernel->code());
+			}
+
 			reportE(REPORT_TRANSLATION_OPERATIONS, "  Parsing LLVM assembly.");
 			llvm::Module *newModule = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
 				translatedKernel.llvmModule, error, llvm::getGlobalContext());
 
 			if (newModule == 0) {
-				reportE(REPORT_TRANSLATION_OPERATIONS, "   Parsing kernel failed, dumping code:\n" 
-					<< llvmKernel->numberedCode());
-	
+				reportE(REPORT_TRANSLATION_OPERATIONS, "   Parsing kernel failed, dumping code:\n");
+					
 				std::string m;
 				llvm::raw_string_ostream message(m);
 				message << "LLVM Parser failed: ";
@@ -1209,6 +1227,11 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			}
 			else {
 				reportE(REPORT_TRANSLATION_OPERATIONS, " parsed kernel");
+				
+				translatedKernel.llvmModule = newModule;
+				
+				reportE(REPORT_TRANSLATION_OPERATIONS, 
+					"Module AFTER parsing new kernel:\n" << String(translatedKernel.llvmModule));
 			}
 
 			delete llvmKernel;
@@ -1229,6 +1252,8 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 		assertM(false, "LLVM support not compiled into ocelot.");
 		#endif
 	}
+	
+	
 	report(" _translateKernel('" << translatedKernel.kernel->name << "') complete for " 
 		<< translatedKernel.subkernels.size() << " subkernels");
 }

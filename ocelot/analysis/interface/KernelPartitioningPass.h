@@ -47,6 +47,8 @@ namespace analysis {
 				F_external = 1,
 				F_barrier = 2,
 				F_divergence = 4,
+				F_exit = 8,
+				F_return = 16,
 			};
 			
 		public:
@@ -114,8 +116,9 @@ namespace analysis {
 			
 			void _partitionBlocksAtBarrier();
 			
+
+			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);			
 			void _analyzeBarriers(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
-			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
 			void _analyzeDivergentControlFlow(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
 			
 			void _createExternalHandlers(

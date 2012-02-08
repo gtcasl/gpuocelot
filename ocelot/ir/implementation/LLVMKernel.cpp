@@ -45,18 +45,29 @@ namespace ir
 		_code += "; Code assembled by Ocelot LLVMKernel " + version.toString() 
 			+ "\n\n";
 		
+		bool moduleScope = true;
+		
 		for( LLVMStatementVector::const_iterator 
 			statement = llvmStatements().begin(); 
 			statement != llvmStatements().end(); ++statement )
 		{
 			// filter out declarations
-			if (!includeDeclarations && statement->type == LLVMStatement::FunctionDeclaration) {
+			if (!includeDeclarations && 
+				(statement->type == LLVMStatement::FunctionDeclaration
+					|| (moduleScope && statement->type == LLVMStatement::TypeDeclaration))) {
 				continue;
 			}
 			if( statement->type == LLVMStatement::Instruction ) {
 				_code += "\t";
 			}
 			_code += statement->toString() + "\n";
+			
+			if (statement->type == LLVMStatement::BeginFunctionBody) {
+				moduleScope = false;
+			}
+			else if (statement->type == LLVMStatement::EndFunctionBody) {
+				moduleScope = true;
+			}
 		}
 	}
 	

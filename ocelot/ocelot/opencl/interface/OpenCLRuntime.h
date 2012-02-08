@@ -13,7 +13,7 @@
 
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/opencl/interface/Device.h>
 #include <ocelot/opencl/interface/Kernel.h>
 #include <ocelot/opencl/interface/MemoryObject.h>
 #include <ocelot/opencl/interface/CommandQueue.h>
@@ -171,11 +171,11 @@ namespace opencl {
 		//! \brief create program binary
 		Program & _createProgramBinary(const std::string & binary);
 		// Load module and register it with devices
-		void _registerModule(ModuleMap::iterator module, executive::Device *);
+		void _registerModule(ModuleMap::iterator module, Device *);
 		// Load module and register it with devices
-		void _registerModule(const std::string& name, executive::Device *);
+		void _registerModule(const std::string& name, Device *);
 		// Load all modules and register them with all devices
-		void _registerAllModules(executive::Device *);
+		void _registerAllModules(Device *);
 		// Map kernel parameters for device
 		void _mapKernelParameters(Kernel & kernel, Device *);
 
@@ -219,16 +219,8 @@ namespace opencl {
 		//! Registered opengl buffers and mapping to graphics resources
 		//GLBufferMap _buffers;
 		
-		//! The total number of enabled devices in the system
-		unsigned int _deviceCount;
-		
-		DeviceList _devices;
-		
 		//! Have the devices been loaded?
 		bool _devicesLoaded;
-		
-		//! Currently selected device
-		//executive::Device * _selectedDevice;
 		
 		//! the next symbol for dynamically registered kernels
 		int _nextSymbol;

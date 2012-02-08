@@ -4,10 +4,9 @@
 
 opencl::CommandQueue::CommandQueue(Context * context, 
 	Device * device, 
-	cl_command_queue_properties properties, 
-	unsigned int stream)
+	cl_command_queue_properties properties)
 	:Object(OBJTYPE_COMMANDQUEUE),
-	_context(context), _device(device), _properties(properties), _stream(stream) {
+	_context(context), _device(device), _properties(properties) {
 
 	_context->retain();
 	_device->retain();
@@ -33,6 +32,3 @@ cl_command_queue_properties opencl::CommandQueue::properties() {
 	return _properties;
 }
 
-unsigned int opencl::CommandQueue::stream() {
-	return _stream;
-}

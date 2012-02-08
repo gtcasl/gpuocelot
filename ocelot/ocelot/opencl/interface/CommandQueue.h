@@ -20,8 +20,7 @@ namespace opencl {
 	public:
 		CommandQueue(Context * context, 
 			Device * device, 
-			cl_command_queue_properties properties, 
-			unsigned int stream);
+			cl_command_queue_properties properties);
 
 		~CommandQueue();	
 
@@ -29,13 +28,11 @@ namespace opencl {
 		Context * context() ;
 		Device * device() ;
 		cl_command_queue_properties properties() ;
-		unsigned int stream() ;
 
 	private:
 		Context * _context;
 		Device * _device;
 		cl_command_queue_properties _properties;
-		unsigned int _stream;
 	};
 
 }

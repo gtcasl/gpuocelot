@@ -3,7 +3,7 @@
 
 
 opencl::MemoryObject::MemoryObject(
-	std::map < Device *, executive::Device::MemoryAllocation * > & a, 
+	std::map < Device *, void * > & a, 
 	Context * context, cl_mem_object_type type, cl_mem_flags flags)
 	:Object(OBJTYPE_MEMORY),
 	allocations(a), _context(context), _type(type), _flags(flags) {
@@ -28,7 +28,7 @@ const cl_mem_flags opencl::MemoryObject::flags() const {
 }
 
 opencl::BufferObject::BufferObject(
-	std::map< Device *, executive::Device::MemoryAllocation * > & allocations, 
+	std::map< Device *, void * > & allocations, 
 	Context * context, cl_mem_flags flags, size_t size)
 	:MemoryObject(allocations, context, CL_MEM_OBJECT_BUFFER, flags), _size(size) {
 }

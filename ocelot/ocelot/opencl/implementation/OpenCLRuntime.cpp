@@ -110,77 +110,33 @@ void opencl::OpenCLRuntime::_enumerateDevices(cl_platform_id platform,
 	if(!_devicesLoaded) {
 		report("Creating devices.");
 		if(config::get().executive.enableNVIDIA) {
-			executive::DeviceVector d = 
-				executive::Device::createDevices(ir::Instruction::SASS, _flags,
-					_computeCapability);
-			report(" - Added " << d.size() << " nvidia gpu devices." );
+			Device::createDevices(platform, Device::DEVICE_NVIDIA_GPU,
+				_flags, _computeCapability);
 	
-			for(size_t i = 0; i < d.size(); i++)
-				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
 		}
 		if(config::get().executive.enableEmulated) {
-			executive::DeviceVector d = 
-				executive::Device::createDevices(ir::Instruction::Emulated, _flags,
-					_computeCapability);
-			report(" - Added " << d.size() << " emulator devices." );
-			
-			for(size_t i = 0; i < d.size(); i++)
-				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+			Device::createDevices(platform, Device::DEVICE_EMULATED,
+				_flags,_computeCapability);
 		}
 		if(config::get().executive.enableLLVM) {
-			executive::DeviceVector d = 
-				executive::Device::createDevices(ir::Instruction::LLVM, _flags,
-					_computeCapability);
-			report(" - Added " << d.size() << " llvm-cpu devices." );
-			for(size_t i = 0; i < d.size(); i++)
-				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_CPU, platform));
-			
-			if (config::get().executive.workerThreadLimit > 0) {
-				for (executive::DeviceVector::iterator d_it = d.begin();
-					d_it != d.end(); ++d_it) {
-					(*d_it)->limitWorkerThreads(
-						config::get().executive.workerThreadLimit);
-				}
-			}
+			Device::createDevices(platform, Device::DEVICE_MULTICORE_CPU,
+				_flags,_computeCapability, config::get().executive.workerThreadLimit);
 		}
 		if(config::get().executive.enableAMD) {
-			executive::DeviceVector d =
-				executive::Device::createDevices(ir::Instruction::CAL, _flags,
-					_computeCapability);
-			report(" - Added " << d.size() << " amd gpu devices." );
-			for(size_t i = 0; i < d.size(); i++)
-				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+			Device::createDevices(platform, Device::DEVICE_AMD_GPU,
+				_flags,_computeCapability);
 		}
 		if(config::get().executive.enableRemote) {
-			executive::DeviceVector d =
-				executive::Device::createDevices(ir::Instruction::Remote, _flags,
-					_computeCapability);
-			report(" - Added " << d.size() << " remote devices." );
-			for(size_t i = 0; i < d.size(); i++)
-				_devices.push_back(new Device(d[i], CL_DEVICE_TYPE_GPU, platform));
+			Device::createDevices(platform, Device::DEVICE_REMOTE,
+				_flags,_computeCapability);
 		}
 		
 		_devicesLoaded = true;
 		
 	}
 
-	if (_devices.empty())
+	if (Device::getDevices(platform, device_type, num_entries, devices, num_devices) == 0)
 		throw CL_DEVICE_NOT_FOUND;
-
-	cl_uint j = 0;
-	if(devices != 0) {
-		for(DeviceList::iterator d = _devices.begin(); d != _devices.end(); d++) {
-			if((*d)->isType(device_type) && (*d)->hasPlatform(platform)) {
-				if(j < num_entries)
-					devices[j] = (cl_device_id)(*d);
-				j++;
-			}
-		}
-	}
-	
-	if(num_devices != 0)
-		*num_devices = j;
-	
 }
 
 //! acquires mutex and locks the runtime
@@ -249,7 +205,7 @@ std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
 }
 
 
-void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, executive::Device * device) {
+void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, Device * device) {
 	if(module->second.loaded()) return;
 	module->second.loadNow();	
 /*	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
@@ -274,14 +230,14 @@ void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, executiv
 	device->unselect();
 }
 
-void opencl::OpenCLRuntime::_registerModule(const std::string& name, executive::Device * device) {
+void opencl::OpenCLRuntime::_registerModule(const std::string& name, Device * device) {
 	ModuleMap::iterator module = _modules.find(name);
 	if(module != _modules.end()) {
 		_registerModule(module, device);
 	}
 }
 
-void opencl::OpenCLRuntime::_registerAllModules(executive::Device * device) {
+void opencl::OpenCLRuntime::_registerAllModules(Device * device) {
 	for(ModuleMap::iterator module = _modules.begin(); 
 		module != _modules.end(); ++module) {
 		_registerModule(module, device);
@@ -356,7 +312,7 @@ void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, Device * devic
 			if(mem->allocations.find(device) == mem->allocations.end())
 				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-			void * addr = mem->allocations[device]->pointer();
+			void * addr = mem->allocations[device]; //FIX ME
 			memcpy(kernel.parameterBlock + offset, &addr, argSize);
 		}
 		else { //non-memory argument
@@ -370,33 +326,11 @@ void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, Device * devic
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-opencl::OpenCLRuntime::OpenCLRuntime() : _inExecute(false), _deviceCount(0),
+opencl::OpenCLRuntime::OpenCLRuntime() : _inExecute(false),
 	_devicesLoaded(false), 
 	/*_selectedDevice(NULL),*/ _nextSymbol(1), _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
-
-	// get device count
-	if(config::get().executive.enableNVIDIA) {
-		_deviceCount += executive::Device::deviceCount(
-			ir::Instruction::SASS, _computeCapability);
-	}
-	if(config::get().executive.enableEmulated) {
-		_deviceCount += executive::Device::deviceCount(
-			ir::Instruction::Emulated, _computeCapability);
-	}
-	if(config::get().executive.enableLLVM) {
-		_deviceCount += executive::Device::deviceCount(
-			ir::Instruction::LLVM, _computeCapability);
-	}
-	if(config::get().executive.enableAMD) {
-		_deviceCount += executive::Device::deviceCount(
-			ir::Instruction::CAL, _computeCapability);
-	}
-	if(config::get().executive.enableRemote) {
-		_deviceCount += executive::Device::deviceCount(
-			ir::Instruction::Remote, _computeCapability);
-	}
 }
 
 opencl::OpenCLRuntime::~OpenCLRuntime() {
@@ -404,10 +338,10 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// free things that need freeing
 	//
 	// devices
-	for (DeviceList::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		delete *device;
-	}
+//	for (DeviceList::iterator device = _devices.begin(); 
+//		device != _devices.end(); ++device) {
+//		delete *device;
+//	}
 //	
 //	// mutex
 //
@@ -499,10 +433,7 @@ void opencl::OpenCLRuntime::clearPTXPasses() {
 */
 void opencl::OpenCLRuntime::limitWorkerThreads(unsigned int limit) {
 	_lock();
-	for (DeviceList::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		(*device)->exeDevice->limitWorkerThreads(limit);
-	}
+	Device::limitWorkerThreadForAll(limit);
 	_unlock();
 }
 
@@ -736,12 +667,7 @@ void opencl::OpenCLRuntime::unregisterModule(const std::string& name) {
 		Ocelot_Exception("Module - " << name << " - is not registered.");
 	}
 	
-	for (DeviceList::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		(*device)->exeDevice->select();
-		(*device)->exeDevice->unload(name);
-		(*device)->exeDevice->unselect();
-	}
+	Device::unregisterModuleForAll(name);	
 	
 	_modules.erase(module);
 	
@@ -773,7 +699,7 @@ void opencl::OpenCLRuntime::_launchKernel(Kernel &kernel, Device * device)
 
 		_inExecute = true;
 
-		device->exeDevice->launch(moduleName, kernelName, convert(kernel.workGroupNum), 
+		device->launch(moduleName, kernelName, convert(kernel.workGroupNum), 
 			convert(kernel.localWorkSize), /*launch.sharedMemory*/0, 
 			kernel.parameterBlock, kernel.parameterBlockSize, traceGens, NULL/*&_externals*/);
 		_inExecute = false;
@@ -789,7 +715,7 @@ void opencl::OpenCLRuntime::_launchKernel(Kernel &kernel, Device * device)
 		throw;
 	}
 	catch( const std::exception& e ) {
-		std::cerr << "==Ocelot== " << device->exeDevice->properties().name
+		std::cerr << "==Ocelot== " << device->name()
 			<< " failed to run kernel \""
 			<< kernelName
 			<< "\" with exception: \n";
@@ -808,12 +734,8 @@ void opencl::OpenCLRuntime::setOptimizationLevel(
 	_lock();
 
 	_optimization = l;
-	for (DeviceList::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		(*device)->exeDevice->select();
-		(*device)->exeDevice->setOptimizationLevel(l);
-		(*device)->exeDevice->unselect();
-	}
+
+	Device::setOptimizationLevelForAll(l);	
 
 	_unlock();
 }
@@ -1036,19 +958,8 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 			throw CL_UNIMPLEMENTED;
 		}
 
-		device->exeDevice->select();
-		unsigned int stream;
 		try {
-			stream = device->exeDevice->createStream();
-		}
-		catch(...) {
-			device->exeDevice->unselect();
-			throw CL_OUT_OF_RESOURCES;
-		}
-		device->exeDevice->unselect();
-
-		try {
-			queue = new CommandQueue(context, device, properties, stream);
+			queue = new CommandQueue(context, device, properties);
 			_queues.push_back(queue);
 		}
 		catch(...) {
@@ -1188,7 +1099,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			try{
 				for(DeviceList::iterator d = devices.begin(); d != devices.end(); d++) {
 					std::stringstream moduleName;
-					moduleName << program->name << "_" << (*d)->exeDevice->properties().name;
+					moduleName << program->name << "_" << (*d)->name();
 					report("Loading module (ptx) - " << moduleName.str());
 	
 					std::string name = moduleName.str();
@@ -1199,7 +1110,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 				
 					module->second.lazyLoad(temp, name);
 			
-					_registerModule(module, (*d)->exeDevice);
+					_registerModule(module, (*d));
 	
 					assert(program->ptxModule.count(*d) == 0);
 					program->ptxModule.insert(std::make_pair(*d, name));
@@ -1409,22 +1320,22 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 			throw CL_UNIMPLEMENTED;
 		}
 
-		std::map< Device *, executive::Device::MemoryAllocation * > allocations;
+		std::map< Device *, void * > allocations;
 		for(DeviceList::iterator device = context->validDevices.begin();
 			device != context->validDevices.end(); device++) {
-			(*device)->exeDevice->select();
+			(*device)->select();
 			try {
-				executive::Device::MemoryAllocation * allocation =  (*device)->exeDevice->allocate(size);
+				void * allocation =  (*device)->allocate(size);
 				if(allocation == NULL) throw;
 				allocations.insert(std::make_pair(*device, allocation));
-				report("clCreateBuffer() return address = " <<  allocation->pointer() << ", size = " << size);
+				report("clCreateBuffer() return address = " <<  allocation << ", size = " << size);
 			}
 			catch(...) {
-				(*device)->exeDevice->unselect();
+				(*device)->unselect();
 				throw CL_OUT_OF_RESOURCES;
 			}
 
-			(*device)->exeDevice->unselect();
+			(*device)->unselect();
 		}
 
 		try {
@@ -1503,14 +1414,14 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 			throw CL_UNIMPLEMENTED;
 		}
 
-		std::map<Device *, executive::Device::MemoryAllocation *> & allocations = buffer->allocations;
+		std::map<Device *, void *> & allocations = buffer->allocations;
 		Device * device = command_queue->device();
 		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-		executive::Device::MemoryAllocation * allocation = allocations.find(device)->second;
-		assert(device->exeDevice->checkMemoryAccess((char *)allocation->pointer() + offset, cb));
-		allocation->copy(ptr, offset, cb);
+		void * allocation = allocations.find(device)->second;
+		if(!device->read(allocation, ptr, offset, cb))
+			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
 	}
 	catch(cl_int exception) {
@@ -1573,15 +1484,15 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 			throw CL_UNIMPLEMENTED;
 		}
 
-		std::map<Device *, executive::Device::MemoryAllocation *> & allocations = buffer->allocations;
+		std::map<Device *, void *> & allocations = buffer->allocations;
 		Device * device = command_queue->device();
 		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-		executive::Device::MemoryAllocation * allocation = allocations.find(device)->second;
-		assert(device->exeDevice->checkMemoryAccess((char *)allocation->pointer() + offset, cb));
+		void * allocation = allocations.find(device)->second;
 		
-		allocation->copy(offset, ptr, cb);
+		if(!device->write(allocation, ptr, offset, cb))
+			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
 	}
 	catch(cl_int exception) {

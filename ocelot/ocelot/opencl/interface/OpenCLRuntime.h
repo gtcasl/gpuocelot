@@ -58,7 +58,7 @@ namespace opencl {
 	typedef std::map< unsigned int, char * > PointerMap;
 	typedef std::map< unsigned int, size_t > SizeMap;
 
-	typedef std::list< Device *> DeviceList;
+	typedef Device::DeviceList DeviceList;
 	typedef std::list< MemoryObject * > MemoryObjectList;
 	typedef std::list< Kernel * > KernelList;
 	typedef std::list< Program * > ProgramList;

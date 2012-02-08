@@ -19,15 +19,17 @@ namespace opencl {
 	class Program;
 	class CommandQueue;
 
-	typedef std::list< MemoryObject * > MemoryObjectList;
-	typedef std::list< Device *> DeviceList;
-	typedef std::list< CommandQueue * > QueueList;
-	typedef std::list< Program * > ProgramList;
-
 	/*! Host thread OpenCL context consists of these */
 	class Context : public Object{	
 	
 		public:
+
+		typedef std::list< MemoryObject * > MemoryObjectList;
+		typedef Device::DeviceList DeviceList;
+		typedef std::list< CommandQueue * > QueueList;
+		typedef std::list< Program * > ProgramList;
+
+
 		//! platform
 		Platform * platform;
 	

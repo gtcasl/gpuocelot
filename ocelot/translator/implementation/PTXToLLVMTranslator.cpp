@@ -3985,6 +3985,18 @@ void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 								_add( add );
 							}
 						}
+						else if( i.a.addressMode == ir::PTXOperand::Address &&
+							i.addressSpace == ir::PTXInstruction::Local &&
+							i.a.isGlobalLocal)
+						{
+							ir::LLVMPtrtoint cast;
+		
+							cast.d = _destination( i );
+							cast.a = _getAddressableVariablePointer(
+								i.addressSpace, i.a);
+							
+							_add( cast );
+						}
 						else
 						{
 							ir::LLVMBitcast cast;
@@ -3996,12 +4008,6 @@ void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 
 							if( i.a.addressMode == ir::PTXOperand::Address )
 							{
-								assertM( i.addressSpace !=
-									ir::PTXInstruction::Local
-									|| !i.a.isGlobalLocal, "Taking the address "
-									"of a globally local "
-									"value is not supported." );
-								
 								cast.a.i64 = i.a.offset;
 							}
 							else

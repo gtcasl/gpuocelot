@@ -16,7 +16,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -128,15 +128,42 @@ static bool isOperandASpecialRegister(ir::PTXOperand& operand)
 	return operand.addressMode == ir::PTXOperand::Special;
 }
 
-static bool isOperandAVariable(ir::PTXOperand& operand)
+static bool isOperandAVariable(const ir::PTXInstruction& ptx,
+	const ir::PTXOperand& operand)
 {
-	return operand.addressMode == ir::PTXOperand::Address;
+	if(operand.addressMode == ir::PTXOperand::Address)
+	{
+		if(ptx.opcode == ir::PTXInstruction::Cvta)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
-static bool isOperandAnAddress(ir::PTXOperand& operand)
+static bool isGlobalLocal(const ir::IRKernel& kernel,
+	const ir::PTXInstruction& ptx,
+	const ir::PTXOperand& operand)
 {
-	return operand.addressMode == ir::PTXOperand::Address ||
-		operand.addressMode == ir::PTXOperand::Indirect;
+	const ir::Global* global = kernel.module->getGlobal(operand.identifier);
+	if(global != 0)
+	{
+		return global->space() == ir::PTXInstruction::Local;
+	}
+	
+	return false;
+}
+
+static bool isOperandAnAddress(const ir::IRKernel& kernel,
+	const ir::PTXInstruction& ptx,
+	const ir::PTXOperand& operand)
+{
+	return (ptx.isMemoryInstruction() || ptx.opcode == ir::PTXInstruction::Cvta)
+		&& (operand.addressMode == ir::PTXOperand::Address ||
+		operand.addressMode == ir::PTXOperand::Indirect) && 
+		!(ptx.addressSpace == ir::PTXInstruction::Local &&
+		isGlobalLocal(kernel, ptx, operand));
 }
 
 static inline ir::PTXInstruction*
@@ -155,7 +182,7 @@ void HoistSpecialValueDefinitionsPass::_findAllVariableUses(
 	{
 		ir::PTXInstruction& ptx = *toPTX(instruction);
 		
-		ir::PTXOperand* operands[] = { &ptx.a, &ptx.b, &ptx.c, &ptx.d };
+		ir::PTXOperand* operands[] = {&ptx.a, &ptx.b, &ptx.c, &ptx.d};
 		
 		for(unsigned int i = 0; i < 4; ++i)
 		{
@@ -172,7 +199,7 @@ void HoistSpecialValueDefinitionsPass::_findAllVariableUses(
 			
 			if(hoistSpecialMemoryOperations)
 			{
-				if(isOperandAVariable(operand))
+				if(isOperandAVariable(ptx, operand))
 				{
 					_addMemoryVariableUse(kernel, block, instruction, &operand);
 				}
@@ -203,7 +230,7 @@ void HoistSpecialValueDefinitionsPass::_findAllAddressSpaceUses(
 					ptx.addressSpace != ir::PTXInstruction::Generic &&
 					ptx.addressSpace != ir::PTXInstruction::Param)
 				{
-					if(isOperandAnAddress(operand))
+					if(isOperandAnAddress(kernel, ptx, operand))
 					{
 						_addAddressSpaceUse(kernel, block,
 							instruction, &operand);

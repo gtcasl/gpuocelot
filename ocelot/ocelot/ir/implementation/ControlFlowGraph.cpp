@@ -304,7 +304,8 @@ ControlFlowGraph::edge_iterator
 }
 
 void ControlFlowGraph::remove_edge(edge_iterator edge) {
-	report( "Removed edge from " << edge->head->label 
+	report( "Removed " << toString(edge->type)
+		<< " edge from " << edge->head->label 
 		<< " -> " << edge->tail->label );
 	edge_pointer_iterator out = std::find(edge->head->out_edges.begin(), 
 		edge->head->out_edges.end(), edge);
@@ -732,9 +733,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
-	report( "Copying cfg" );
-	
-	report("\nControlFlowGraph::operator=()");
+	report("Copying cfg " << &cfg << " to " << this );
 	
 	typedef std::unordered_map<const_iterator, iterator> BlockMap;
 	BlockMap block_map;

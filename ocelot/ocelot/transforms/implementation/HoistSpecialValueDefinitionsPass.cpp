@@ -9,12 +9,14 @@
 
 #include <ocelot/analysis/interface/DominatorTree.h>
 
+#include <ocelot/ir/interface/Module.h>
+
 // Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -48,11 +50,21 @@ void HoistSpecialValueDefinitionsPass::runOnKernel(ir::IRKernel& k)
 	for(ir::ControlFlowGraph::iterator block = k.cfg()->begin();
 		block != k.cfg()->end(); ++block)
 	{
-		_findAllUses(k, block);
+		_findAllVariableUses(k, block);
 	}
 	
 	report("  Hoisting all uses...");
-	_hoistAllUses(k);
+	_hoistAllVariableUses(k);
+	
+	report("  Finding all uses of special address spaces...");
+	for(ir::ControlFlowGraph::iterator block = k.cfg()->begin();
+		block != k.cfg()->end(); ++block)
+	{
+		_findAllAddressSpaceUses(k, block);
+	}
+	
+	report("  Hoisting all uses...");
+	_hoistAllAddressSpaceUses(k);
 }	
 
 void HoistSpecialValueDefinitionsPass::finalize()
@@ -116,15 +128,42 @@ static bool isOperandASpecialRegister(ir::PTXOperand& operand)
 	return operand.addressMode == ir::PTXOperand::Special;
 }
 
-static bool isOperandAVariable(ir::PTXOperand& operand)
+static bool isOperandAVariable(const ir::PTXInstruction& ptx,
+	const ir::PTXOperand& operand)
 {
-	return operand.addressMode == ir::PTXOperand::Address;
+	if(operand.addressMode == ir::PTXOperand::Address)
+	{
+		if(ptx.opcode == ir::PTXInstruction::Cvta)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
-static bool isOperandAnAddress(ir::PTXOperand& operand)
+static bool isGlobalLocal(const ir::IRKernel& kernel,
+	const ir::PTXInstruction& ptx,
+	const ir::PTXOperand& operand)
 {
-	return operand.addressMode == ir::PTXOperand::Address ||
-		operand.addressMode == ir::PTXOperand::Indirect;
+	const ir::Global* global = kernel.module->getGlobal(operand.identifier);
+	if(global != 0)
+	{
+		return global->space() == ir::PTXInstruction::Local;
+	}
+	
+	return false;
+}
+
+static bool isOperandAnAddress(const ir::IRKernel& kernel,
+	const ir::PTXInstruction& ptx,
+	const ir::PTXOperand& operand)
+{
+	return (ptx.isMemoryInstruction() || ptx.opcode == ir::PTXInstruction::Cvta)
+		&& (operand.addressMode == ir::PTXOperand::Address ||
+		operand.addressMode == ir::PTXOperand::Indirect) && 
+		!(ptx.addressSpace == ir::PTXInstruction::Local &&
+		isGlobalLocal(kernel, ptx, operand));
 }
 
 static inline ir::PTXInstruction*
@@ -133,8 +172,8 @@ static inline ir::PTXInstruction*
 	return static_cast<ir::PTXInstruction*>(*i);
 }
 
-void HoistSpecialValueDefinitionsPass::_findAllUses(ir::IRKernel& kernel,
-	ir::ControlFlowGraph::iterator block)
+void HoistSpecialValueDefinitionsPass::_findAllVariableUses(
+	ir::IRKernel& kernel, ir::ControlFlowGraph::iterator block)
 {
 	// search all instructions for a match
 	for(ir::ControlFlowGraph::instruction_iterator
@@ -143,7 +182,7 @@ void HoistSpecialValueDefinitionsPass::_findAllUses(ir::IRKernel& kernel,
 	{
 		ir::PTXInstruction& ptx = *toPTX(instruction);
 		
-		ir::PTXOperand* operands[] = { &ptx.a, &ptx.b, &ptx.c, &ptx.d };
+		ir::PTXOperand* operands[] = {&ptx.a, &ptx.b, &ptx.c, &ptx.d};
 		
 		for(unsigned int i = 0; i < 4; ++i)
 		{
@@ -160,28 +199,49 @@ void HoistSpecialValueDefinitionsPass::_findAllUses(ir::IRKernel& kernel,
 			
 			if(hoistSpecialMemoryOperations)
 			{
-				if( ptx.addressSpace != ir::PTXInstruction::Global &&
-					ptx.addressSpace != ir::PTXInstruction::Generic)
-				{
-					if(isOperandAnAddress(operand))
-					{
-						_addAddressSpaceUse(kernel, block,
-							instruction, &operand);
-					}
-				}
-				
-				if(isOperandAVariable(operand))
+				if(isOperandAVariable(ptx, operand))
 				{
 					_addMemoryVariableUse(kernel, block, instruction, &operand);
 				}
 			}
 		}
-		
-		
 	}
 }
 
-void HoistSpecialValueDefinitionsPass::_hoistAllUses(ir::IRKernel& k)
+void HoistSpecialValueDefinitionsPass::_findAllAddressSpaceUses(
+	ir::IRKernel& kernel, ir::ControlFlowGraph::iterator block)
+{
+	// search all instructions for a match
+	for(ir::ControlFlowGraph::instruction_iterator
+		instruction = block->instructions.begin();
+		instruction != block->instructions.end(); ++instruction)
+	{
+		ir::PTXInstruction& ptx = *toPTX(instruction);
+		
+		ir::PTXOperand* operands[] = { &ptx.a, &ptx.b, &ptx.c, &ptx.d };
+		
+		for(unsigned int i = 0; i < 4; ++i)
+		{
+			ir::PTXOperand& operand = *operands[i];
+					
+			if(hoistSpecialMemoryOperations)
+			{
+				if( ptx.addressSpace != ir::PTXInstruction::Global &&
+					ptx.addressSpace != ir::PTXInstruction::Generic &&
+					ptx.addressSpace != ir::PTXInstruction::Param)
+				{
+					if(isOperandAnAddress(kernel, ptx, operand))
+					{
+						_addAddressSpaceUse(kernel, block,
+							instruction, &operand);
+					}
+				}
+			}
+		}
+	}
+}
+
+void HoistSpecialValueDefinitionsPass::_hoistAllVariableUses(ir::IRKernel& k)
 {
 	Analysis* a = getAnalysis(Analysis::DominatorTreeAnalysis);
 	assert(a != 0);
@@ -189,16 +249,26 @@ void HoistSpecialValueDefinitionsPass::_hoistAllUses(ir::IRKernel& k)
 	analysis::DominatorTree* dominatorTree =
 		static_cast<analysis::DominatorTree*>(a);
 	
-	for(AddressSpaceMap::iterator space = _addressSpaces.begin();
-		space != _addressSpaces.end(); ++space)
-	{
-		space->second->hoistAllUses(this, k, dominatorTree, _nextRegister);
-	}
-	
 	for(VariableMap::iterator variable = _variables.begin();
 		variable != _variables.end(); ++variable)
 	{
 		variable->second->hoistAllUses(this, k, dominatorTree, _nextRegister);
+	}
+}
+
+void HoistSpecialValueDefinitionsPass::_hoistAllAddressSpaceUses(
+	ir::IRKernel& k)
+{
+	Analysis* a = getAnalysis(Analysis::DominatorTreeAnalysis);
+	assert(a != 0);
+	
+	analysis::DominatorTree* dominatorTree =
+		static_cast<analysis::DominatorTree*>(a);
+		
+	for(AddressSpaceMap::iterator space = _addressSpaces.begin();
+		space != _addressSpaces.end(); ++space)
+	{
+		space->second->hoistAllUses(this, k, dominatorTree, _nextRegister);
 	}
 }
 
@@ -232,6 +302,45 @@ void HoistSpecialValueDefinitionsPass::_addSpecialVariableUse(
 	variable->second->uses.push_back(VariableUse(block, ptx, operand));	
 }
 
+static ir::PTXInstruction::AddressSpace getSpace(ir::IRKernel& kernel,
+	ir::PTXInstruction& ptx, ir::PTXOperand& operand)
+{
+	if(ptx.isMemoryInstruction())
+	{
+		return ptx.addressSpace;
+	}
+	
+	if(operand.addressMode == ir::PTXOperand::Address)
+	{
+		ir::Kernel::LocalMap::iterator local =
+			kernel.locals.find(operand.identifier);
+		if(local != kernel.locals.end())
+		{
+			return local->second.space;
+		}
+		
+		ir::Kernel::ParameterMap::iterator arg =
+			kernel.parameters.find(operand.identifier);
+		if(arg != kernel.parameters.end())
+		{
+			return ir::PTXInstruction::Param;
+		}
+		
+		if(kernel.getParameter(operand.identifier) != 0)
+		{
+			return ir::PTXInstruction::Param;
+		}
+		
+		const ir::Global* global = kernel.module->getGlobal(operand.identifier);
+		if(global != 0)
+		{
+			return global->space();
+		}
+	}
+	
+	return ir::PTXInstruction::Generic;
+}
+
 void HoistSpecialValueDefinitionsPass::_addMemoryVariableUse(
 	ir::IRKernel& kernel, ir::ControlFlowGraph::iterator block,
 	ir::ControlFlowGraph::instruction_iterator ptx, ir::PTXOperand* operand)
@@ -243,7 +352,8 @@ void HoistSpecialValueDefinitionsPass::_addMemoryVariableUse(
 	if(variable == _variables.end())
 	{
 		variable = _variables.insert(std::make_pair(name,
-			new MemoryVariable(name, toPTX(ptx)->addressSpace))).first;
+			new MemoryVariable(name,
+				getSpace(kernel, *toPTX(ptx), *operand)))).first;
 	}
 	
 	report("   Found use of special address: " << toPTX(ptx)->toString()
@@ -341,21 +451,39 @@ void HoistSpecialValueDefinitionsPass::MemoryVariable::hoistAllUses(
 	// Find a block that dominates all uses
 	ir::ControlFlowGraph::iterator dominator =
 		getDominatorOfAllUses(pass, k, dominatorTree);
-		
+			
 	// Insert a definition of the memory
-	ir::PTXInstruction* cvta = new ir::PTXInstruction(ir::PTXInstruction::Cvta);
+	ir::PTXInstruction* cvta = 0;
 	
-	cvta->addressSpace = toPTX(uses.front().instruction)->addressSpace;
+	if(space != ir::PTXInstruction::Global)
+	{
+		cvta = new ir::PTXInstruction(ir::PTXInstruction::Cvta);
+		cvta->addressSpace = space;
+	}
+	else
+	{
+		cvta = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+	}
+	
+	cvta->type = ir::PTXOperand::u64;
+	
 	cvta->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
 		nextRegister++);
 	cvta->a = *uses.front().operand;
 	
+	report("    to " << dominator->label << " (" << cvta->toString() << ")");	
+	
 	insertBeforeTerminator(dominator, cvta);
+	
+	report("     handling users...");
 	
 	// Convert all uses into generic accesses to this location
 	for(VariableUseVector::iterator use = uses.begin();
 		use != uses.end(); ++use)
 	{
+		report("      converting '"
+			<< toPTX(use->instruction)->toString() << "' to");
+		
 		if(toPTX(use->instruction)->isMemoryInstruction())
 		{
 			toPTX(use->instruction)->addressSpace = ir::PTXInstruction::Generic;
@@ -366,6 +494,8 @@ void HoistSpecialValueDefinitionsPass::MemoryVariable::hoistAllUses(
 		}
 		
 		*use->operand = cvta->d;
+		
+		report("       '" << toPTX(use->instruction)->toString() << "'.");
 	}
 }
 
@@ -383,8 +513,6 @@ void HoistSpecialValueDefinitionsPass::SpecialRegister::hoistAllUses(
 	ir::ControlFlowGraph::iterator dominator =
 		getDominatorOfAllUses(pass, k, dominatorTree);
 		
-	report("    to " << dominator->label);
-	
 	// Insert a definition of the register
 	ir::PTXInstruction* cvt = new ir::PTXInstruction(ir::PTXInstruction::Cvt);
 	
@@ -393,13 +521,22 @@ void HoistSpecialValueDefinitionsPass::SpecialRegister::hoistAllUses(
 		nextRegister++);
 	cvt->a = *uses.front().operand;
 	
+	report("    to " << dominator->label << " (" << cvt->toString() << ")");	
+	
 	insertBeforeTerminator(dominator, cvt);
+	
+	report("     handling users...");
 	
 	// Convert all uses into register reads
 	for(VariableUseVector::iterator use = uses.begin();
 		use != uses.end(); ++use)
 	{
+		report("      converting '"
+			<< toPTX(use->instruction)->toString() << "' to");
+		
 		*use->operand = cvt->d;
+		
+		report("       '" << toPTX(use->instruction)->toString() << "'.");
 	}
 }
 
@@ -425,23 +562,28 @@ void HoistSpecialValueDefinitionsPass::AddressSpace::hoistAllUses(
 	ir::ControlFlowGraph::iterator dominator =
 		getDominatorOfAllUses(pass, k, dominatorTree);
 	
-	report("    to " << dominator->label);
-	
 	// Insert a definition of the address space
 	ir::PTXInstruction* cvta = new ir::PTXInstruction(ir::PTXInstruction::Cvta);
 	
+	cvta->type = ir::PTXOperand::u64;
 	cvta->addressSpace = toPTX(uses.front().instruction)->addressSpace;
 	cvta->d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u64,
 		nextRegister++);
 	cvta->a = ir::PTXOperand(0ULL, ir::PTXOperand::u64);
 	
+	report("    to " << dominator->label << " (" << cvta->toString() << ")");	
+	
 	insertBeforeTerminator(dominator, cvta);
+	
+	report("     handling users...");
 	
 	// Convert all uses into generic accesses to this location
 	for(VariableUseVector::iterator use = uses.begin();
 		use != uses.end(); ++use)
 	{
-		if(toPTX(use->instruction)->isMemoryInstruction())
+		report("      converting '"
+			<< toPTX(use->instruction)->toString() << "' to");
+		
 		{
 			toPTX(use->instruction)->addressSpace = ir::PTXInstruction::Generic;
 			
@@ -458,6 +600,8 @@ void HoistSpecialValueDefinitionsPass::AddressSpace::hoistAllUses(
 				mov->a = *use->operand;
 			
 				use->block->instructions.insert(use->instruction, mov);
+				
+				report("       '" << mov->toString() << "'.");
 			
 				offset = mov->d;
 			}
@@ -483,16 +627,20 @@ void HoistSpecialValueDefinitionsPass::AddressSpace::hoistAllUses(
 				add->a = offset;
 				add->b = cvta->d;
 				
+				report("       '" << add->toString() << "'.");
+				
 				use->block->instructions.insert(use->instruction, add);
 			
 				*use->operand = add->d;
 			}
 		}
-		else if(toPTX(use->instruction)->opcode == ir::PTXInstruction::Cvta)
+		
+		if(toPTX(use->instruction)->opcode == ir::PTXInstruction::Cvta)
 		{
 			toPTX(use->instruction)->opcode = ir::PTXInstruction::Mov;
-			*use->operand = cvta->d;
 		}
+		
+		report("       '" << toPTX(use->instruction)->toString() << "'.");
 	}
 }
 

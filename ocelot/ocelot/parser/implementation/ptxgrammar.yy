@@ -64,7 +64,7 @@
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
-%token<text> OPCODE_BFI OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
+%token<text> OPCODE_BFI OPCODE_BFE OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -812,7 +812,7 @@ intRounding : intRoundingToken
 optionalFloatRounding : floatRounding | /* empty string */;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
-	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
+	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
 	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
 	| pmevent | popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
@@ -1009,6 +1009,11 @@ shiftAmount : /* empty string */
 	state.shiftAmount( false );
 };
 
+bfe : OPCODE_BFE dataType operand ',' operand ',' operand 
+	',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2 );
+};
 bfi : OPCODE_BFI dataType operand ',' operand ',' operand 
 	',' operand ',' operand ';'
 {

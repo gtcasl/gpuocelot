@@ -558,6 +558,36 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+        case Bfe: {
+            if( !( type == PTXOperand::u32 
+                   || type == PTXOperand::s32 
+                   || type == PTXOperand::u64
+                   || type == PTXOperand::s64 ) ){
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+            }
+            if( !PTXOperand::valid( type, d.type ) ) {
+                return "operand D type " + PTXOperand::toString( d.type )
+                    + " cannot be assigned to " + PTXOperand::toString( type );
+            }
+            if( !PTXOperand::valid( type, a.type )
+                && a.addressMode != PTXOperand::Immediate ) {
+                return "operand 1 type " + PTXOperand::toString( a.type )
+                    + " cannot be assigned to " + PTXOperand::toString( type );
+            }
+            if( !PTXOperand::valid( PTXOperand::u32, b.type )
+                && a.addressMode != PTXOperand::Immediate ) {
+                return "operand 1 type " + PTXOperand::toString( b.type )
+                    + " cannot be assigned to " + PTXOperand::toString( PTXOperand::u32 );
+            }
+            if( !PTXOperand::valid( PTXOperand::u32, c.type )
+                && a.addressMode != PTXOperand::Immediate ) {
+                return "operand 1 type " + PTXOperand::toString( c.type )
+                    + " cannot be assigned to " + PTXOperand::toString( PTXOperand::u32 );
+            }
+
+            break;
+        }
 		case Bfi: {
 			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
 				return "invalid instruction type " 
@@ -1996,6 +2026,11 @@ std::string ir::PTXInstruction::toString() const {
 				}
 			}
 			return result;
+		}
+        case Bfe: {
+			return guard() + "bfe." + PTXOperand::toString( type ) + " " 
+				+ d.toString() + ", " + a.toString()
+				+ ", " + b.toString() + ", " + c.toString();
 		}
 		case Bfi: {
 			return guard() + "bfi." + PTXOperand::toString( type ) + " " 

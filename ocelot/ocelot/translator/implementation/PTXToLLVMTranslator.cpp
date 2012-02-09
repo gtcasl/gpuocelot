@@ -1119,6 +1119,7 @@ void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i,
 	case ir::PTXInstruction::And:      _translateAnd( i );         break;
 	case ir::PTXInstruction::Atom:     _translateAtom( i );        break;
 	case ir::PTXInstruction::Bar:      _translateBar( i );         break;
+	case ir::PTXInstruction::Bfe:      _translateBfe( i );         break;
 	case ir::PTXInstruction::Bfi:      _translateBfi( i );         break;
 	case ir::PTXInstruction::Bfind:    _translateBfind( i );       break;
 	case ir::PTXInstruction::Bra:      _translateBra( i, block );  break;
@@ -2037,6 +2038,42 @@ void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	assertM(false, "All barriers should have been removed.");
 }
 
+void PTXToLLVMTranslator::_translateBfe( const ir::PTXInstruction& i )
+{
+    ir::LLVMCall call;
+    
+    if( i.type == ir::PTXOperand::u32 || i.type == ir::PTXOperand::s32 )
+    {
+	    call.name = "@__ocelot_bfe_b32";
+    }
+    else
+    {
+        call.name = "@__ocelot_bfe_b64";
+    }
+    
+    ir::LLVMInstruction::Operand sign;    
+    sign.constant = true;
+    sign.type.category = ir::LLVMInstruction::Type::Element;
+    sign.type.type = ir::LLVMInstruction::I1;
+	
+    if( ir::PTXOperand::isSigned( i.type ) )
+    {
+    sign.i1 = 1;
+    }
+    else
+    {
+    sign.i1 = 0;
+    }
+	
+    call.d = _destination( i );
+	
+    call.parameters.push_back( _translate( i.a ) );
+    call.parameters.push_back( _translate( i.b ) );
+    call.parameters.push_back( _translate( i.c ) );
+    call.parameters.push_back( sign );
+	
+    _add( call );
+}
 void PTXToLLVMTranslator::_translateBfi( const ir::PTXInstruction& i )
 {
 	ir::LLVMCall call;
@@ -3948,6 +3985,18 @@ void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 								_add( add );
 							}
 						}
+						else if( i.a.addressMode == ir::PTXOperand::Address &&
+							i.addressSpace == ir::PTXInstruction::Local &&
+							i.a.isGlobalLocal)
+						{
+							ir::LLVMPtrtoint cast;
+		
+							cast.d = _destination( i );
+							cast.a = _getAddressableVariablePointer(
+								i.addressSpace, i.a);
+							
+							_add( cast );
+						}
 						else
 						{
 							ir::LLVMBitcast cast;
@@ -3959,12 +4008,6 @@ void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 
 							if( i.a.addressMode == ir::PTXOperand::Address )
 							{
-								assertM( i.addressSpace !=
-									ir::PTXInstruction::Local
-									|| !i.a.isGlobalLocal, "Taking the address "
-									"of a globally local "
-									"value is not supported." );
-								
 								cast.a.i64 = i.a.offset;
 							}
 							else
@@ -8359,7 +8402,8 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getLoadOrStorePointer(
 	else
 	{
 		assert( o.addressMode == ir::PTXOperand::Register 
-			|| o.addressMode == ir::PTXOperand::Indirect );
+			|| o.addressMode == ir::PTXOperand::Indirect
+			|| o.addressMode == ir::PTXOperand::Immediate );
 
 		ir::LLVMInstruction::Operand reg = _translate( o );
 		
@@ -9280,7 +9324,36 @@ void PTXToLLVMTranslator::_addKernelPrefix()
 	brev.label = "__ocelot_brev_b64";
 	_llvmKernel->push_front( brev );		
 
-	ir::LLVMStatement bfi( ir::LLVMStatement::FunctionDeclaration );
+    ir::LLVMStatement bfe( ir::LLVMStatement::FunctionDeclaration );
+
+    bfe.label = "__ocelot_bfe_b32";
+    bfe.linkage = ir::LLVMStatement::InvalidLinkage;
+    bfe.convention = ir::LLVMInstruction::DefaultCallingConvention;
+    bfe.visibility = ir::LLVMStatement::Default;
+	
+    bfe.operand.type.category = ir::LLVMInstruction::Type::Element;
+    bfe.operand.type.type = ir::LLVMInstruction::I32;
+	
+    bfe.parameters.resize( 4 );
+    bfe.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+    bfe.parameters[0].type.type = ir::LLVMInstruction::I32;
+    bfe.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+    bfe.parameters[1].type.type = ir::LLVMInstruction::I32;
+    bfe.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+    bfe.parameters[2].type.type = ir::LLVMInstruction::I32;
+    bfe.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
+    bfe.parameters[3].type.type = ir::LLVMInstruction::I1;
+
+    _llvmKernel->push_front( bfe );		
+
+    bfe.label = "__ocelot_bfe_b64";
+    bfe.operand.type.type = ir::LLVMInstruction::I64;
+    bfe.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+    bfe.parameters[0].type.type = ir::LLVMInstruction::I64;
+	
+    _llvmKernel->push_front( bfe );		
+    
+    ir::LLVMStatement bfi( ir::LLVMStatement::FunctionDeclaration );
 
 	bfi.label = "__ocelot_bfi_b32";
 	bfi.linkage = ir::LLVMStatement::InvalidLinkage;

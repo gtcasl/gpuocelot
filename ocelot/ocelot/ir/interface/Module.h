@@ -61,7 +61,13 @@ namespace ir {
 
 		/*!	Construct an empty module */
 		Module();
-
+		
+		/*!	Construct a module from an existing one */
+		Module(const Module& m);
+		
+		/*! \brief copy a module */
+		const Module& operator=(const Module& m);
+		
 		/*!	Deconstruct a module */
 		~Module();
 		
@@ -144,6 +150,15 @@ namespace ir {
 				or 0 if it does not exist
 		*/
 		Global* getGlobal(const std::string& name);
+
+		/*! \brief Gets a global instance by name. 
+
+			\param name [mangled] name of global
+
+			\return pointer to global instance with (name) 
+				or 0 if it does not exist
+		*/
+		const Global* getGlobal(const std::string& name) const;
 
 		/*! \brief Insert a global into the module.
 

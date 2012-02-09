@@ -10,7 +10,15 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/IRKernel.h>
 
-// Standard Library Includes
+// Hydrazine Includes
+#include <hydrazine/implementation/debug.h>
+
+// Preprocessor Defines
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -33,8 +41,22 @@ void SimplifyControlFlowGraphPass::runOnKernel(ir::IRKernel& k)
 	
 	while(changed)
 	{
-		changed = false;
+		#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);
+		#endif
+
+		changed = _swapBranchAndFallthroughEdges(k);
+		
+		#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);
+		#endif
+		
 		_mergeExitBlocks(k);
+		
+		#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);
+		#endif
+
 		_deleteEmptyBlocks(k);
 		_deleteUnconnectedBlocks(k);
 	}
@@ -45,12 +67,15 @@ void SimplifyControlFlowGraphPass::finalize()
 	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);
 	invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
 	invalidateAnalysis(analysis::Analysis::PostDominatorTreeAnalysis);
+	invalidateAnalysis(analysis::Analysis::ThreadFrontierAnalysis);
 }
 
 bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 {
 	typedef std::unordered_map<ir::ControlFlowGraph::iterator,
 		ir::ControlFlowGraph::instruction_iterator> BlockMap;
+	
+	report("Merging exit blocks...");
 	
 	BlockMap exitBlocks;
 	
@@ -102,6 +127,7 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 	ir::BasicBlock::EdgePointerVector deletedEdges =
 		k.cfg()->get_exit_block()->in_edges;
 	
+	// 1a) Create edges targetting the new block
 	for(ir::ControlFlowGraph::edge_pointer_iterator edge = deletedEdges.begin();
 		edge != deletedEdges.end(); ++edge)
 	{
@@ -122,12 +148,18 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 		
 		if((*edge)->type == ir::Edge::Branch)
 		{
-			block->first->instructions.push_back(new ir::PTXInstruction(
-				ir::PTXInstruction::Bra, ir::PTXOperand(newExit->label)));
+			ir::PTXInstruction* newBranch = new ir::PTXInstruction(
+				ir::PTXInstruction::Bra, ir::PTXOperand(newExit->label));
+				
+			newBranch->uni = true;
+		
+			block->first->instructions.push_back(newBranch);
 		}
 		
 		delete *block->second;
 		block->first->instructions.erase(block->second);
+		
+		report(" merging block " << block->first->label);
 	}
 	
 	// 3 Add an appropriate exit instruction to the new exit block
@@ -147,6 +179,8 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 
 bool SimplifyControlFlowGraphPass::_deleteEmptyBlocks(ir::IRKernel& k)
 {
+	report("Deleting empty blocks...");
+	
 	bool any = false;
 	
 	for(ir::ControlFlowGraph::iterator block = k.cfg()->begin();
@@ -189,6 +223,8 @@ bool SimplifyControlFlowGraphPass::_deleteEmptyBlocks(ir::IRKernel& k)
 				}
 			}
 		
+			report(" " << block->label);
+		
 			// delete the block, should wipe out all edges
 			k.cfg()->remove_block(block++);
 		}
@@ -203,7 +239,15 @@ bool SimplifyControlFlowGraphPass::_deleteEmptyBlocks(ir::IRKernel& k)
 
 bool SimplifyControlFlowGraphPass::_deleteUnconnectedBlocks(ir::IRKernel& k)
 {
+	return false;
+	// TODO implement this
+}
+
+bool SimplifyControlFlowGraphPass::_swapBranchAndFallthroughEdges(
+	ir::IRKernel& k)
+{
 	return false;	
+	// TODO implement this
 }
 
 }

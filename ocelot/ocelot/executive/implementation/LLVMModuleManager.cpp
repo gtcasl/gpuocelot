@@ -1223,13 +1223,19 @@ const std::string& LLVMModuleManager::KernelAndTranslation::name() const
 ////////////////////////////////////////////////////////////////////////////////
 // Module
 LLVMModuleManager::Module::Module(const KernelVector& kernels,
-	FunctionId nextFunctionId)
+	FunctionId nextFunctionId, ir::Module* m)
+: _originalModule(m)
 {	
 	for(KernelVector::const_iterator kernel = kernels.begin();
 		kernel != kernels.end(); ++kernel)
 	{
 		_ids.insert(std::make_pair(kernel->name(), nextFunctionId++));
 	}
+}
+
+void LLVMModuleManager::Module::destroy()
+{
+	delete _originalModule;
 }
 
 LLVMModuleManager::FunctionId LLVMModuleManager::Module::getFunctionId(
@@ -1290,8 +1296,6 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
-	
-
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -1312,6 +1316,12 @@ LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 		kernel != _kernels.end(); ++kernel)
 	{
 		kernel->unload();
+	}
+	
+	for(ModuleMap::iterator module = _modules.begin();
+		module != _modules.end(); ++module)
+	{
+		module->second.destroy();
 	}
 }
 
@@ -1346,9 +1356,11 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 
 	report("Loading module '" << module->path() << "'");
 
+	ir::Module* newModule = new ir::Module(*module);
+
 	typedef transforms::SubkernelFormationPass::ExtractKernelsPass Pass;
 	Pass pass(config::get().optimizations.subkernelSize);
-	transforms::PassManager manager(const_cast<ir::Module*>(module));
+	transforms::PassManager manager(newModule);
 
 	manager.addPass(pass);
 	manager.runOnModule();
@@ -1373,7 +1385,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 	}
 
 	_modules.insert(std::make_pair(module->path(),
-		Module(subkernels, _kernels.size())));
+		Module(subkernels, _kernels.size(), newModule)));
 	_kernels.insert(_kernels.end(), subkernels.begin(), subkernels.end());
 }
 
@@ -1422,6 +1434,8 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 	report(" Removed " << (_kernels.size() - newKernels.size()) << " kernels.");
 
 	_kernels = std::move(newKernels);
+	
+	module->second.destroy();
 	
 	_modules.erase(module);
 	

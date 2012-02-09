@@ -489,11 +489,15 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	}
 
 	_guessFunction = nextFunction;
-	
-	assertM(nextFunction < _queuedThreads.size(), "Next function " 
-		<< nextFunction << " is out of range of function table with "
-		<< _queuedThreads.size() << " entries.");
-	_queuedThreads[nextFunction].push_back(contextId);
+	if (nextFunction != 0xffffffff) {
+		assertM(nextFunction < _queuedThreads.size(), "Next function " 
+			<< nextFunction << " is out of range of function table with "
+			<< _queuedThreads.size() << " entries.");
+		_queuedThreads[nextFunction].push_back(contextId);
+	}
+	else {
+		return true;
+	}
 
 	return false;
 }

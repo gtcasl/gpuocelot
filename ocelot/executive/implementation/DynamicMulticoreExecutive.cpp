@@ -26,10 +26,10 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
-#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
-#define REPORT_LOCAL_MEMORY 1							// display contents of local memory
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -119,9 +119,20 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	report("DynamicMulticoreExecutve('" << _kernel.name << "', shared mem size: " << sharedMemorySize);
 	report("  localMemorySize: " << localMemorySize);
 	report("  paramMemorySize: " << parameterMemorySize);
+	
+	report(" contexts = " << (void *)contexts);
+	report(" localMemory = " << (void *)localMemory);
+	report(" sharedMemory = " << (void *)sharedMemory);
+	report(" parameterMemory = " << (void *)parameterMemory);
 }
 
 executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
+
+	report(" contexts = " << (void *)contexts);
+	report(" localMemory = " << (void *)localMemory);
+	report(" sharedMemory = " << (void *)sharedMemory);
+	report(" parameterMemory = " << (void *)parameterMemory);
+
 	delete [] contexts;
 	delete [] localMemory;
 	delete [] sharedMemory;
@@ -220,13 +231,12 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 					subkernelId, specialization);
 		
 			assert(translation);
-			
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel " << translation->name());
-
+	
+			_setResumeStatus(&contexts[tid], analysis::KernelPartitioningPass::Thread_exit);
 			contexts[tid].metadata = (char *)translation->metadata;
-			report("  using metadata " << (void *)contexts[tid].metadata );
-			report("  entering");
 				
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel " << translation->name());
+			
 			translation->execute(warp);
 			
 #if REPORT_LOCAL_MEMORY  && REPORT_BASE

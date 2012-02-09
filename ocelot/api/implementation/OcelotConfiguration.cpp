@@ -7,9 +7,9 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
 #include <ocelot/executive/interface/ReconvergenceMechanism.h>
-
 #include <ocelot/ir/interface/Instruction.h>
 #include <ocelot/translator/interface/Translator.h>
+#include <ocelot/analysis/interface/KernelPartitioningPass.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/json.h>
@@ -177,6 +177,8 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		"optimizationLevel", "full");
 	std::string strReconvMech = config.parse<std::string>(
 		"reconvergenceMechanism", "ipdom");
+	std::string strPartitioning = config.parse<std::string>(
+		"partitioningHeuristic", "minimumWithBarriers");
 		
 	executive.preferredISA = (int)ir::Instruction::Emulated;
 	if (strPrefISA == "emulated" || strPrefISA == "Emulated") {
@@ -238,6 +240,14 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	else {
 		report("Unknown optimization level - using none");
 	}
+	
+	analysis::KernelPartitioningPass::PartitioningHeuristic partitioning =
+		analysis::KernelPartitioningPass::fromString(strPartitioning);
+	if (partitioning == analysis::KernelPartitioningPass::PartitioningHeuristic_invalid) {
+		report("Unknown partitioning heuristic. Using minimumWithBarriers");
+		partitioning = analysis::KernelPartitioningPass::Partition_minimumWithBarriers;
+	}
+	executive.partitioningHeuristic = (int)partitioning;
 
 	executive.reconvergenceMechanism
 		= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;

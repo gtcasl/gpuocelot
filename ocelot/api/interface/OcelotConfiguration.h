@@ -131,6 +131,10 @@ namespace api {
 			/*!  \brief selects optimization level - cast to 
 				translator::Translator::OptimizationLevel */
 			int optimizationLevel;
+			
+			/*! \brief specifies partitioning heuristic - cast to 
+				analysis::KernelPartitioningPass::PartioningHeuristic */
+			int partitioningHeuristic;
 
 			//! \brief if true, Ocelot will either choose only 
 			//                  the preferred ISA or die

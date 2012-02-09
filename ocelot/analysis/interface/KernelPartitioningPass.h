@@ -25,6 +25,16 @@ namespace analysis {
 		
 		typedef analysis::DataflowGraph::RegisterSet RegisterSet;
 		
+		enum PartitioningHeuristic {
+			Partition_maximum = 0,
+			Partition_minimum,
+			Partition_minimumWithBarriers,
+			Partition_loops,
+			PartitioningHeuristic_invalid
+		};
+		static std::string toString(PartitioningHeuristic h);
+		static PartitioningHeuristic fromString(const std::string &s);
+		
 		enum ThreadExitType {
 			Thread_entry = 0,
 			Thread_fallthrough = 1,
@@ -165,25 +175,16 @@ namespace analysis {
 		//!
 		class KernelGraph {
 		public:
-			enum PartitioningHeuristic {
-				Partition_maximum = 0,
-				Partition_minimum,
-				Partition_minimumWithBarriers,
-				Partition_loops,
-				PartitioningHeuristic_invalid
-			};
 			
 		public:
 		
 			KernelGraph(ir::PTXKernel *_kernel, 
 				SubkernelId baseId = 0, 
-				PartitioningHeuristic _h = Partition_maximum);
+				PartitioningHeuristic _h = Partition_minimum);
 			~KernelGraph();
 		
 			size_t localMemorySize() const;
 			
-			static std::string toString(PartitioningHeuristic h);
-			static PartitioningHeuristic fromString(const std::string &s);
 		
 		protected:
 		
@@ -236,7 +237,8 @@ namespace analysis {
 		KernelPartitioningPass();
 		~KernelPartitioningPass();
 		
-		KernelGraph *runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId = 0);
+		KernelGraph *runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId = 0, 
+			PartitioningHeuristic _h = Partition_maximum);
 
 	};
 }

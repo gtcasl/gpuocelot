@@ -27,7 +27,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_EMIT_SUBKERNEL_PTX 0
 #define REPORT_EMIT_SOURCE_PTXKERNEL 1
@@ -53,13 +53,15 @@ analysis::KernelPartitioningPass::~KernelPartitioningPass() {
 }
 
 analysis::KernelPartitioningPass::KernelGraph *
- analysis::KernelPartitioningPass::runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId) {
+	analysis::KernelPartitioningPass::runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId,
+		PartitioningHeuristic _h) {
+	
 	report("KernelPartitioningPass::runOnFunction(" << ptxKernel.name << ")");
 	
 	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
 	barrierPass.runOnKernel(ptxKernel);
 	
-	return new KernelGraph(&ptxKernel, baseId);
+	return new KernelGraph(&ptxKernel, baseId, _h);
 }
 
 
@@ -141,8 +143,8 @@ analysis::KernelPartitioningPass::KernelGraph::~KernelGraph() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::string analysis::KernelPartitioningPass::KernelGraph::toString(
-	analysis::KernelPartitioningPass::KernelGraph::PartitioningHeuristic h) {
+std::string analysis::KernelPartitioningPass::toString(
+	analysis::KernelPartitioningPass::PartitioningHeuristic h) {
 
 	switch (h) {
 		case Partition_maximum:
@@ -159,8 +161,8 @@ std::string analysis::KernelPartitioningPass::KernelGraph::toString(
 	return "invalid";
 }
 
-analysis::KernelPartitioningPass::KernelGraph::PartitioningHeuristic
-	analysis::KernelPartitioningPass::KernelGraph::fromString(const std::string &s) {
+analysis::KernelPartitioningPass::PartitioningHeuristic
+	analysis::KernelPartitioningPass::fromString(const std::string &s) {
 
 	PartitioningHeuristic h[] = {
 		Partition_maximum,
@@ -491,6 +493,7 @@ void analysis::KernelPartitioningPass::Subkernel::createHandlers(
 	_createExternalHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	
 	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX
+	report("subkernel->write");
 	subkernel->write(std::cout);
 	#endif
 }

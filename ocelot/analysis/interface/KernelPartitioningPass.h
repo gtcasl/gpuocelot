@@ -12,6 +12,7 @@
 #include <set>
 #include <unordered_set>
 #include <map>
+#include <fstream>
 
 // Ocelot includes
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -119,6 +120,8 @@ namespace analysis {
 			void createHandlers(
 				analysis::DataflowGraph *sourceDfg,
 				const RegisterOffsetMap &registerOffsets);
+				
+			ExternalEdgeVector::const_iterator getEntryEdge(SubkernelId entryId) const;
 			
 		protected:
 		
@@ -172,6 +175,21 @@ namespace analysis {
 		};
 		typedef std::map< SubkernelId, Subkernel> SubkernelMap;
 		
+		class KernelGraph;
+		
+		class AnnotatedWriter {
+		public:
+			AnnotatedWriter();
+			virtual ~AnnotatedWriter();
+		public:
+			virtual std::string escape(const std::string &s) const;
+			virtual std::ostream &write(std::ostream &out, const KernelGraph &kernelGraph);
+			virtual std::ostream &write(std::ostream &out, const Subkernel &subkernel);
+			virtual std::ostream &write(std::ostream &out, ir::BasicBlock::ConstPointer &block);
+			virtual std::ostream &writeEntryHandler(std::ostream &out, ir::BasicBlock::ConstPointer &block);
+			virtual std::ostream &writeExitHandler(std::ostream &out, ir::BasicBlock::ConstPointer &block);
+		};
+		
 		//!
 		class KernelGraph {
 		public:
@@ -185,7 +203,6 @@ namespace analysis {
 		
 			size_t localMemorySize() const;
 			
-		
 		protected:
 		
 			void _partition(SubkernelId baseId);
@@ -204,6 +221,8 @@ namespace analysis {
 		public:
 		
 			SubkernelId getEntrySubkernel() const;
+			
+			std::ostream & write(std::ostream &out, AnnotatedWriter &writer);
 			
 		private:
 		

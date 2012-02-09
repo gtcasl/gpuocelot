@@ -5,6 +5,8 @@
 	\brief implements kernel partitioning
 */
 
+#include <stdio.h>
+
 // Boost includes
 #include <boost/lexical_cast.hpp>
 
@@ -17,6 +19,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/math.h>
+#include <hydrazine/implementation/string.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -25,12 +28,17 @@
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_EMIT_SUBKERNEL_PTX 0
 #define REPORT_EMIT_SOURCE_PTXKERNEL 1
+
+#define REPORT_BASE 0
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define EMIT_PARTITIONED_KERNELGRAPH 1		// emits to .dot text files in directory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,9 +69,34 @@ analysis::KernelPartitioningPass::KernelGraph *
 	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
 	barrierPass.runOnKernel(ptxKernel);
 	
-	return new KernelGraph(&ptxKernel, baseId, _h);
+	KernelGraph *graph = new KernelGraph(&ptxKernel, baseId, _h);
+	
+#if EMIT_PARTITIONED_KERNELGRAPH
+	std::ofstream output(ptxKernel.name + ".dot");
+	AnnotatedWriter writer;
+	graph->write(output, writer);
+#endif
+	
+	return graph;
 }
 
+#define CASE(x) case x: return #x
+std::string analysis::KernelPartitioningPass::toString(const ThreadExitType &code) {
+	switch (code) {
+		CASE(Thread_entry);
+		CASE(Thread_fallthrough);
+		CASE(Thread_branch);
+		CASE(Thread_tailcall);
+		CASE(Thread_call);
+		CASE(Thread_barrier);
+		CASE(Thread_exit);
+		CASE(Thread_return);
+		CASE(Thread_subkernel);
+		CASE(ThreadExitType_invalid);
+		default: break;
+	}
+	return "ThreadExitType_invalid";
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -467,11 +500,282 @@ size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////	
 
+analysis::KernelPartitioningPass::AnnotatedWriter::AnnotatedWriter() { }
+analysis::KernelPartitioningPass::AnnotatedWriter::~AnnotatedWriter() { }
+
+std::string analysis::KernelPartitioningPass::AnnotatedWriter::escape(const std::string &s) const {
+	std::string ns = s;
+	for (size_t i = 0; i < ns.size(); i++) {
+		if (ns.at(i) == '$' ) {
+			ns[i] = ' ';
+		}
+	}
+	return hydrazine::toGraphVizParsableLabel(ns);
+}
+
+std::ostream & analysis::KernelPartitioningPass::AnnotatedWriter::write(
+	std::ostream &out, const KernelGraph &kernelGraph) {
+	
+	out << "digraph G {\n";
+	
+	// subkernels
+	out << "\n  // subkernels\n";
+	for (SubkernelMap::const_iterator sk_it = kernelGraph.subkernels.begin(); 
+		sk_it != kernelGraph.subkernels.end(); ++sk_it) {
+		write(out, sk_it->second);
+	}	
+	
+	// external edges
+	out << "\n  // external edges\n";
+	for (SubkernelMap::const_iterator sk_it = kernelGraph.subkernels.begin(); 
+		sk_it != kernelGraph.subkernels.end(); ++sk_it) {
+		
+		for (ExternalEdgeVector::const_iterator edge_it = sk_it->second.outEdges.begin(); 
+			edge_it != sk_it->second.outEdges.end(); ++edge_it) {
+			
+			SubkernelMap::const_iterator targetSubkernel_it = kernelGraph.subkernels.find(edge_it->entryId >> 16);
+			if (targetSubkernel_it != kernelGraph.subkernels.end()) {
+		
+				ExternalEdgeVector::const_iterator targetEdge_it = targetSubkernel_it->second.getEntryEdge(edge_it->entryId);
+				std::string target = "exit";
+				if (targetEdge_it != targetSubkernel_it->second.inEdges.end()) {
+					target = targetEdge_it->handler->label;
+				}
+				out << escape(edge_it->handler->label) << " -> " 
+					<< escape(target) << " [style=bold];";
+			}
+		}
+	}
+	
+	out << "entry [shape=Mdiamond];\n";
+	
+	out << "}\n";
+	return out;
+}
+
+//! writes a single subkernel
+std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::write(std::ostream &out, 
+	const Subkernel &subkernel) {
+	
+	out << "subgraph cluster" << escape(subkernel.subkernel->name) << " {\n";
+	out << "color=black;\n";
+	out << "label=\"" << escape(subkernel.subkernel->name) << "(id " << subkernel.id << ")\";\n";
+	
+	std::map< std::string, bool > handlerBlocks;
+	std::set< std::string > internalBlocks;
+	
+	for (ExternalEdgeVector::const_iterator edge_it = subkernel.inEdges.begin();
+		edge_it != subkernel.inEdges.end(); ++edge_it) {
+		handlerBlocks[edge_it->handler->label] = false;
+	}
+	for (ExternalEdgeVector::const_iterator edge_it = subkernel.outEdges.begin();
+		edge_it != subkernel.outEdges.end(); ++edge_it) {
+		handlerBlocks[edge_it->handler->label] = true;		
+	}
+		
+	// blocks
+	for (ir::ControlFlowGraph::const_iterator bb_it = subkernel.subkernel->cfg()->begin();
+		bb_it != subkernel.subkernel->cfg()->end(); ++bb_it) {
+		
+		ir::BasicBlock::ConstPointer block = bb_it;
+		bool special = handlerBlocks.find(bb_it->label) != handlerBlocks.end();
+		internalBlocks.insert(block->label);
+		if (special) {
+			if (handlerBlocks[bb_it->label]) {
+				writeExitHandler(out, block);
+			}
+			else {
+				writeEntryHandler(out, block);
+			}
+		}
+		else {
+			write(out, block);
+		}
+	}
+	
+	// internal edges
+	for (ir::ControlFlowGraph::const_iterator bb_it = subkernel.subkernel->cfg()->begin();
+		bb_it != subkernel.subkernel->cfg()->end(); ++bb_it) {
+	
+		for (ir::BasicBlock::EdgePointerVector::const_iterator out_it = bb_it->out_edges.begin();
+			out_it != bb_it->out_edges.end(); ++out_it) {
+			std::string style = "";
+
+			if (internalBlocks.find((*out_it)->tail->label) != internalBlocks.end()) {
+				out << "  " << escape((*out_it)->head->label) << " -> " << escape((*out_it)->tail->label);
+				switch ((*out_it)->type) {
+				case ir::BasicBlock::Edge::Branch:
+					out << " [color=blue]";
+					break;
+				case ir::BasicBlock::Edge::FallThrough:
+					out << " [color=slategray]";
+					break;
+				case ir::BasicBlock::Edge::Dummy:
+					out << " [style=dotted,color=darkgrey]";
+					break;
+				default: break;
+				}
+				out << ";\n";
+			}
+		}
+	}
+	
+	out << "}\n";
+	return out;
+}
+
+std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::write(std::ostream &out, 
+	ir::BasicBlock::ConstPointer &block) {
+	
+	std::string style = "";
+	std::string shape = "shape=record,";
+	if (block->label == "entry") {
+		shape = "shape=Mdiamond,";
+	}
+	else if (block->label == "exit") {
+		shape = "shape=Msquare,";
+	}
+	
+	out << "  " << escape(block->label) << " [" << shape << style << "label=\"{" << escape(block->label);
+	if (block->label != "entry" && block->label != "exit") {
+		out << " | .. original PTX omitted ..";	
+	}
+	out << "}\"];\n";
+	
+	return out;
+}
+
+std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::writeEntryHandler(
+	std::ostream &out, ir::BasicBlock::ConstPointer &block) {
+
+	std::string style = "";
+	std::string shape = "shape=record,";
+	if (block->label == "entry") {
+		shape = "shape=Mdiamond,";
+	}
+	else if (block->label == "exit") {
+		shape = "shape=Msquare,";
+	}
+	
+	out << "  " << escape(block->label) << " [" << shape << style 
+		<< "label=\"{" << escape(block->label);
+
+	std::map< std::string, ir::PTXOperand::RegisterType > symbolMap;
+	symbolMap["_Zocelot_spill_area"] = 0x0ffffff;
+	symbolMap["_Zocelot_resume_status"] = 0x0ffffff;
+	symbolMap["_Zocelot_resume_point"] = 0x0ffffff;
+
+	for (ir::BasicBlock::InstructionList::const_iterator inst_it = block->instructions.begin();
+		inst_it != block->instructions.end(); ++inst_it){ 
+		const ir::PTXInstruction *inst = static_cast<ir::PTXInstruction*>(*inst_it);
+		
+		bool displayInstruction = true;
+		
+		if (inst->opcode == ir::PTXInstruction::Mov && inst->a.addressMode == ir::PTXOperand::Address) {
+			symbolMap[inst->a.identifier] = inst->d.reg;
+			displayInstruction = false;
+		}
+		else if (inst->opcode == ir::PTXInstruction::Ld && inst->addressSpace == ir::PTXInstruction::Local) {
+			if (symbolMap["_Zocelot_spill_area"] == inst->a.reg) {
+				out << " | restore r" << inst->d.reg << ", offset: " << inst->a.offset;
+				displayInstruction = false;
+			}
+		}
+		
+		if (displayInstruction) {
+			out << " |" << escape(inst->toString()) << " ";
+		}
+	}
+
+	out << "}\"];\n";
+	return out;
+}
+
+std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::writeExitHandler(
+	std::ostream &out, ir::BasicBlock::ConstPointer &block) {
+
+	std::string style = "";
+	std::string shape = "shape=record,";
+	if (block->label == "entry") {
+		shape = "shape=Mdiamond,";
+	}
+	else if (block->label == "exit") {
+		shape = "shape=Msquare,";
+	}
+	
+	out << "  " << escape(block->label) << " [" << shape << style << "label=\"{" << escape(block->label);
+
+	std::map< std::string, ir::PTXOperand::RegisterType > symbolMap;
+	symbolMap["_Zocelot_spill_area"] = 0x0ffffff;
+	symbolMap["_Zocelot_resume_status"] = 0x0ffffff;
+	symbolMap["_Zocelot_resume_point"] = 0x0ffffff;
+
+	ThreadExitType exitType = Thread_subkernel;
+
+	for (ir::BasicBlock::InstructionList::const_iterator inst_it = block->instructions.begin();
+		inst_it != block->instructions.end(); ++inst_it){ 
+		const ir::PTXInstruction *inst = static_cast<ir::PTXInstruction*>(*inst_it);
+		
+		bool displayInstruction = true;
+		
+		if (inst->opcode == ir::PTXInstruction::Mov && inst->a.addressMode == ir::PTXOperand::Address) {
+			symbolMap[inst->a.identifier] = inst->d.reg;
+			displayInstruction = false;
+		}
+		else if (inst->opcode == ir::PTXInstruction::St && inst->addressSpace == ir::PTXInstruction::Local) {
+			if (symbolMap["_Zocelot_spill_area"] == inst->d.reg) {
+				out << " | store r" << inst->a.reg << ", offset: " << inst->d.offset;
+				displayInstruction = false;
+			}
+			else if (symbolMap["_Zocelot_resume_status"] == inst->d.reg) {
+				exitType = (ThreadExitType)inst->a.imm_uint;
+				displayInstruction = false;
+			}
+			else if (symbolMap["_Zocelot_resume_point"] == inst->d.reg) {
+				out << " | resume point 0x" << std::hex << inst->a.imm_uint << std::hex;
+				displayInstruction = false;
+			}
+		}
+		else if (inst->opcode == ir::PTXInstruction::Exit) {
+			out << " | yield " << toString(exitType);
+			displayInstruction = false;
+		}
+		
+		if (displayInstruction) {
+			out << " |" << escape(inst->toString()) << " ";
+		}
+	}
+
+	out << "}\"];\n";
+	return out;
+}
+		
+std::ostream & analysis::KernelPartitioningPass::KernelGraph::write(std::ostream &out,
+	analysis::KernelPartitioningPass::AnnotatedWriter &writer) {
+	return writer.write(out, *this);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////	
+
 analysis::KernelPartitioningPass::Subkernel::Subkernel(SubkernelId _id): id(_id) {
 
 }
 
 analysis::KernelPartitioningPass::Subkernel::Subkernel() {
+}
+
+
+analysis::KernelPartitioningPass::ExternalEdgeVector::const_iterator
+	analysis::KernelPartitioningPass::Subkernel::getEntryEdge(SubkernelId entryId) const {
+
+	for (ExternalEdgeVector::const_iterator edge_it = inEdges.begin(); 
+		edge_it != inEdges.end(); ++edge_it) {
+	
+		if (entryId == edge_it->entryId) {
+			return edge_it;
+		}
+	}
+	return inEdges.end();
 }
 
 void analysis::KernelPartitioningPass::Subkernel::create(ir::PTXKernel *source,

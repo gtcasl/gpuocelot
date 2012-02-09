@@ -557,7 +557,7 @@ def Environment():
 		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-lrt']) 
 	
 	# set ocelot libs
-	ocelot_libs = '-locelot'
+	ocelot_libs = '-locelot-opencl'
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
 
 	# generate OcelotConfig flags

@@ -58,12 +58,6 @@ namespace opencl {
 		//Get name
 		const char * name();
 
-		//Select device
-		void select();
-
-		//Unselect device
-		void unselect();
-
 		//Load module
 		void load(const ir::Module * module);
 

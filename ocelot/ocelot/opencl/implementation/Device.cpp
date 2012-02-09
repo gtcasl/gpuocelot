@@ -119,7 +119,9 @@ cl_uint opencl::Device::getDevices(cl_platform_id platform, cl_device_type type,
 void opencl::Device::limitWorkerThreadForAll(unsigned int limit) {
 	for (DeviceList::iterator device = _deviceList.begin(); 
 		device != _deviceList.end(); ++device) {
+		(*device)->_exeDevice->select();
 		(*device)->_exeDevice->limitWorkerThreads(limit);
+		(*device)->_exeDevice->unselect();
 	}
 } 
 
@@ -337,20 +339,18 @@ const char * opencl::Device::name() {
 	return _exeDevice->properties().name;
 } 
 
-void opencl::Device::select() {
-	_exeDevice->select();
-}
+void opencl::Device::load(const ir::Module * module) {
 
-void opencl::Device::unselect() {
+	_exeDevice->select();
+	_exeDevice->load(module);
 	_exeDevice->unselect();
 }
 
-void opencl::Device::load(const ir::Module * module) {
-	_exeDevice->load(module);
-}
-
 void opencl::Device::unload(const std::string & name) {
+
+	_exeDevice->select();
 	_exeDevice->unload(name);
+	_exeDevice->unselect();
 }
 
 void opencl::Device::launch(const std::string& module,
@@ -360,33 +360,56 @@ void opencl::Device::launch(const std::string& module,
                 const trace::TraceGeneratorVector& traceGenerators,
                 const ir::ExternalFunctionSet* externals) {
 
+	_exeDevice->select();
 	_exeDevice->launch(module, kernel, grid, block, sharedMemory,
-					argumentBlock, argumentBlockSize, traceGenerators,
-					externals);
+		argumentBlock, argumentBlockSize, traceGenerators,
+		externals);
+	_exeDevice->unselect();
 }
 
 void opencl::Device::setOptimizationLevel(translator::Translator::OptimizationLevel level) {
+
+	_exeDevice->select();
 	_exeDevice->setOptimizationLevel(level);
+	_exeDevice->unselect();
 
 }
 
 void * opencl::Device::allocate(size_t size) {
-	return _exeDevice->allocate(size)->pointer();
+
+	void * ptr;
+
+	_exeDevice->select();
+	ptr = _exeDevice->allocate(size)->pointer();
+	_exeDevice->unselect();
+
+	return ptr;
 }
 
 bool opencl::Device::read(const void * src, void * host, size_t offset, size_t size) {
+	
+
 	if(!_exeDevice->checkMemoryAccess((char *)src + offset, size))
 		return false;
 
+	_exeDevice->select();
 	_exeDevice->getMemoryAllocation(src)->copy(host, offset, size);
+	_exeDevice->unselect();
+
 	return true;
 }
 
-bool opencl::Device::write(void * dest, const void * host, size_t offset, size_t size) {	
-	if(!_exeDevice->checkMemoryAccess((char *)dest + offset, size))
-		return false;
+bool opencl::Device::write(void * dest, const void * host, size_t offset, size_t size) {
 
+
+	if(!_exeDevice->checkMemoryAccess((char *)dest + offset, size)) {
+		return false;
+	}
+
+	_exeDevice->select();
 	_exeDevice->getMemoryAllocation(dest)->copy(offset, host, size);
+	_exeDevice->unselect();
+
 	return true;
 }
 

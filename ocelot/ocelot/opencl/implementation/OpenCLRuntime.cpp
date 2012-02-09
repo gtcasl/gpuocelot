@@ -224,10 +224,8 @@ void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, Device *
 	}
 	
 	manager.runOnModule();*/
-	device->select();
 	device->load(&module->second);
 	device->setOptimizationLevel(_optimization);
-	device->unselect();
 }
 
 void opencl::OpenCLRuntime::_registerModule(const std::string& name, Device * device) {
@@ -1323,7 +1321,6 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		std::map< Device *, void * > allocations;
 		for(DeviceList::iterator device = context->validDevices.begin();
 			device != context->validDevices.end(); device++) {
-			(*device)->select();
 			try {
 				void * allocation =  (*device)->allocate(size);
 				if(allocation == NULL) throw;
@@ -1331,11 +1328,9 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 				report("clCreateBuffer() return address = " <<  allocation << ", size = " << size);
 			}
 			catch(...) {
-				(*device)->unselect();
 				throw CL_OUT_OF_RESOURCES;
 			}
 
-			(*device)->unselect();
 		}
 
 		try {

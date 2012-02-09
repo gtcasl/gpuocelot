@@ -256,7 +256,6 @@ void analysis::LLVMUniformVectorization::Translation::_computeLLVMToOcelotBlockM
 		}
 		else {
 			report("  failed to find label '" << label << "' in Ocelot block mapping");
-//			assert(0 && "failed to find block in mapping");
 		}
 	}
 }
@@ -269,8 +268,6 @@ void analysis::LLVMUniformVectorization::Translation::_enumerateEntries() {
 	
 	ExternalEdgeVector Subkernel::*entryLists[] = {
 		&Subkernel::inEdges,
-//		&Subkernel::barrierEntries,
-//		&Subkernel::divergentEntries,
 	};
 	
 	for (int i = 0; i < 1; i++) {

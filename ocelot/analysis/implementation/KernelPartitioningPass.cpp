@@ -31,14 +31,16 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_EMIT_SUBKERNEL_PTX 0
-#define REPORT_EMIT_SOURCE_PTXKERNEL 1
+#define REPORT_EMIT_SUBKERNEL_PTX 1
+#define REPORT_EMIT_SOURCE_PTXKERNEL 0
 
 #define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define EMIT_PARTITIONED_KERNELGRAPH 1		// emits to .dot text files in directory
+#define EMIT_PARTITIONED_KERNELGRAPH 1					// emits to .dot text files in directory
+#define EMIT_KERNELGRAPH_ORIGINAL_PTX 1					// if 1, shows PTX for original basic blocks
+#define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 0		// enables replacing actual instructions in handler blocks
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -542,7 +544,7 @@ std::ostream & analysis::KernelPartitioningPass::AnnotatedWriter::write(
 					target = targetEdge_it->handler->label;
 				}
 				out << escape(edge_it->handler->label) << " -> " 
-					<< escape(target) << " [style=bold];";
+					<< escape(target) << " [style=bold,label=\"entry id: 0x" << std::hex << edge_it->entryId << std::dec << "\"];";
 			}
 		}
 	}
@@ -638,7 +640,15 @@ std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::write(std::ostr
 	
 	out << "  " << escape(block->label) << " [" << shape << style << "label=\"{" << escape(block->label);
 	if (block->label != "entry" && block->label != "exit") {
+#if EMIT_KERNELGRAPH_ORIGINAL_PTX
+		for (ir::BasicBlock::InstructionList::const_iterator inst_it = block->instructions.begin();
+			inst_it != block->instructions.end(); ++inst_it) {
+			
+			out << " | " << escape((*inst_it)->toString());
+		}
+#else
 		out << " | .. original PTX omitted ..";	
+#endif
 	}
 	out << "}\"];\n";
 	
@@ -670,17 +680,18 @@ std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::writeEntryHandl
 		const ir::PTXInstruction *inst = static_cast<ir::PTXInstruction*>(*inst_it);
 		
 		bool displayInstruction = true;
-		
+#if EMIT_KERNELGRAPH_SUCCINCT_HANDLERS
 		if (inst->opcode == ir::PTXInstruction::Mov && inst->a.addressMode == ir::PTXOperand::Address) {
 			symbolMap[inst->a.identifier] = inst->d.reg;
 			displayInstruction = false;
 		}
 		else if (inst->opcode == ir::PTXInstruction::Ld && inst->addressSpace == ir::PTXInstruction::Local) {
 			if (symbolMap["_Zocelot_spill_area"] == inst->a.reg) {
-				out << " | restore r" << inst->d.reg << ", offset: " << inst->a.offset;
+				out << " | restore r" << std::dec << inst->d.reg << ", offset: " << inst->a.offset;
 				displayInstruction = false;
 			}
 		}
+#endif
 		
 		if (displayInstruction) {
 			out << " |" << escape(inst->toString()) << " ";
@@ -710,21 +721,23 @@ std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::writeExitHandle
 	symbolMap["_Zocelot_resume_status"] = 0x0ffffff;
 	symbolMap["_Zocelot_resume_point"] = 0x0ffffff;
 
+#if EMIT_KERNELGRAPH_SUCCINCT_HANDLERS
 	ThreadExitType exitType = Thread_subkernel;
+#endif
 
 	for (ir::BasicBlock::InstructionList::const_iterator inst_it = block->instructions.begin();
 		inst_it != block->instructions.end(); ++inst_it){ 
 		const ir::PTXInstruction *inst = static_cast<ir::PTXInstruction*>(*inst_it);
 		
 		bool displayInstruction = true;
-		
+#if EMIT_KERNELGRAPH_SUCCINCT_HANDLERS
 		if (inst->opcode == ir::PTXInstruction::Mov && inst->a.addressMode == ir::PTXOperand::Address) {
 			symbolMap[inst->a.identifier] = inst->d.reg;
 			displayInstruction = false;
 		}
 		else if (inst->opcode == ir::PTXInstruction::St && inst->addressSpace == ir::PTXInstruction::Local) {
 			if (symbolMap["_Zocelot_spill_area"] == inst->d.reg) {
-				out << " | store r" << inst->a.reg << ", offset: " << inst->d.offset;
+				out << " | store r" << std::dec << inst->a.reg << ", offset: " << inst->d.offset;
 				displayInstruction = false;
 			}
 			else if (symbolMap["_Zocelot_resume_status"] == inst->d.reg) {
@@ -740,7 +753,8 @@ std::ostream &analysis::KernelPartitioningPass::AnnotatedWriter::writeExitHandle
 			out << " | yield " << toString(exitType);
 			displayInstruction = false;
 		}
-		
+#endif
+
 		if (displayInstruction) {
 			out << " |" << escape(inst->toString()) << " ";
 		}
@@ -1039,7 +1053,8 @@ void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
 			};
 			for (int i = 0; i < 6; i++) {
 				ir::PTXOperand &operand = (instr->*operands[i]);
-				if (operand.addressMode == ir::PTXOperand::Register) {
+				if (operand.addressMode == ir::PTXOperand::Register || 
+					operand.addressMode == ir::PTXOperand::Indirect) {
 					uses.insert(operand.reg);
 				}
 			}
@@ -1133,17 +1148,20 @@ void analysis::KernelPartitioningPass::Subkernel::_spillLiveValues(
 	
 	ir::PTXInstruction move(ir::PTXInstruction::Mov);
 	
+	size_t spilled = 0;
 	for (RegisterSet::const_iterator alive_it = aliveValues.begin();
 		alive_it != aliveValues.end(); ++alive_it) {
 	
 		if (usedRegisters.find(*alive_it) == usedRegisters.end()) {
+			report("      skipping alive: " << alive_it->id << " [type: " 
+				<< ir::PTXOperand::toString(alive_it->type) << "]");
 			continue;
 		}
 
-		report("      alive-out: " << alive_it->id << " [type: " 
+		report("      alive: " << alive_it->id << " [type: " 
 			<< ir::PTXOperand::toString(alive_it->type) << "]");
 		
-		if (alive_it == aliveValues.begin()) {
+		if (!spilled++) {
 			move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area");
 			move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
 			

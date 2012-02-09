@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory

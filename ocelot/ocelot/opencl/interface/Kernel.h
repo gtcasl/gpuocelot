@@ -100,6 +100,7 @@ namespace opencl {
 		//! number of work groups
 		size_t _workGroupNum[3];
 
+	private:
 		//! check if built on device
 		bool _isBuiltOnDevice(Device * device);
 			

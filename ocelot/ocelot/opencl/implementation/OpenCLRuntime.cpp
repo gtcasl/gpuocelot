@@ -1035,7 +1035,6 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 
 		try {
 			buffer = new BufferObject(allocations, context, flags, size);
-			_memories.push_back(buffer);
 		}
 		catch(...) {
 			throw CL_OUT_OF_HOST_MEMORY;
@@ -1073,7 +1072,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(std::find(_memories.begin(), _memories.end(), buffer) == _memories.end())
+		if(!buffer->isValidObject(Object::OBJTYPE_MEMORY))
 			throw CL_INVALID_MEM_OBJECT;
 
 		if(buffer->type() != CL_MEM_OBJECT_BUFFER)
@@ -1146,7 +1145,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(std::find(_memories.begin(), _memories.end(), buffer) == _memories.end())
+		if(!buffer->isValidObject(Object::OBJTYPE_MEMORY))
 			throw CL_INVALID_MEM_OBJECT;
 
 		if(command_queue->context() != buffer->context())

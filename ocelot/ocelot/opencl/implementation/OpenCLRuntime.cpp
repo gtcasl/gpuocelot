@@ -204,7 +204,7 @@ std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
 	return result;
 }
 
-
+#if 0
 void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, Device * device) {
 	if(module->second.loaded()) return;
 	module->second.loadNow();	
@@ -241,92 +241,17 @@ void opencl::OpenCLRuntime::_registerAllModules(Device * device) {
 		_registerModule(module, device);
 	}
 }
+#endif
 
 void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, Device * device) {
 
-	const Program & prog = *(kernel.program);
-	assert(prog.ptxModule.find(device) != prog.ptxModule.end());
 
-	const std::string & moduleName = prog.ptxModule.find(device)->second;
-	assert(_modules.find(moduleName) != _modules.end());
-
-	const std::string & kernelName = kernel.name;
-	const ir::Kernel * k = _modules.find(moduleName)->second.getKernel(kernelName);
-
-	if(k->arguments.size() != kernel.parameterSizes.size())
-		throw CL_INVALID_KERNEL_ARGS;
-
-	//Get aligned parameter sizes	
-	kernel.parameterBlockSize = 0;
-	kernel.parameterOffsets.clear();
-	unsigned int argId = 0;
-	for (ir::Kernel::ParameterVector::const_iterator parameter = k->arguments.begin(); 
-		parameter != k->arguments.end(); ++parameter, ++argId) {
-		kernel.parameterOffsets[argId] = kernel.parameterBlockSize;
-		unsigned int misalignment = (kernel.parameterBlockSize) % parameter->getAlignment();
-		unsigned int alignmentOffset = misalignment == 0 
-			? 0 : parameter->getAlignment() - misalignment;
-		kernel.parameterBlockSize += alignmentOffset;
-		kernel.parameterBlockSize += parameter->getSize();
-	}
-
-	if(kernel.parameterBlock)
-	{
-		delete[] kernel.parameterBlock;
-		kernel.parameterBlock = NULL;
-	}
-	try {
-		kernel.parameterBlock = new char[kernel.parameterBlockSize];
-		assert(kernel.parameterBlock);
-		memset(kernel.parameterBlock, 0, kernel.parameterBlockSize);
-	}
-	catch(...) {
-		throw CL_OUT_OF_HOST_MEMORY;
-	}
-
-	//Copy parameters to aligned offset
-	assert(kernel.parameterSizes.size() == kernel.parameterPointers.size());
-	assert(kernel.parameterSizes.size() == kernel.parameterOffsets.size());
-	argId = 0;
-	for(SizeMap::iterator size = kernel.parameterSizes.begin();
-		size != kernel.parameterSizes.end(); size++, argId++) {
-		assert(size->first == argId);
-		assert(kernel.parameterPointers.find(argId) != kernel.parameterPointers.end());
-		assert(kernel.parameterOffsets.find(argId) != kernel.parameterOffsets.end());
-		
-		unsigned int offset = kernel.parameterOffsets[argId];
-		size_t oriSize = size->second;
-		size_t argSize = k->arguments[argId].getSize();
-		void * pointer = kernel.parameterPointers[argId];
-
-		//check if it is a memory address argument
-		if(oriSize == sizeof(cl_mem) &&  
-			std::find(_memories.begin(), _memories.end(), *(cl_mem *)pointer) != _memories.end()) {//pointer is memory object
-		
-			if(argSize != sizeof(void *))
-				throw CL_INVALID_KERNEL_ARGS;
-
-			MemoryObject * mem = *(cl_mem *)pointer;
-			if(mem->allocations.find(device) == mem->allocations.end())
-				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
-
-			void * addr = mem->allocations[device];
-			memcpy(kernel.parameterBlock + offset, &addr, argSize);
-		}
-		else { //non-memory argument
-			if(oriSize != argSize)
-				throw CL_INVALID_KERNEL_ARGS;
-
-			memcpy(kernel.parameterBlock + offset, pointer, argSize);
-		}
-
-	}
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-opencl::OpenCLRuntime::OpenCLRuntime() : _inExecute(false),
+opencl::OpenCLRuntime::OpenCLRuntime() : /*_inExecute(false),*/
 	_devicesLoaded(false), 
-	/*_selectedDevice(NULL),*/ _nextSymbol(1), _computeCapability(2), _flags(0), 
+	/*_selectedDevice(NULL), _nextSymbol(1),*/ _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 }
@@ -437,6 +362,8 @@ void opencl::OpenCLRuntime::limitWorkerThreads(unsigned int limit) {
 
 void opencl::OpenCLRuntime::registerPTXModule(std::istream& ptx, 
 	const std::string& name) {
+	
+#if 0
 	_lock();
 	report("Loading module (ptx) - " << name);
 	assert(_modules.count(name) == 0);
@@ -463,6 +390,7 @@ void opencl::OpenCLRuntime::registerPTXModule(std::istream& ptx,
 	}
 		
 	_unlock();
+#endif
 }
 
 /*
@@ -658,6 +586,7 @@ ocelot::PointerMap opencl::OpenCLRuntime::contextSwitch(unsigned int destination
 }
 
 void opencl::OpenCLRuntime::unregisterModule(const std::string& name) {
+#if 0
 	_lock();
 	ModuleMap::iterator module = _modules.find(name);
 	if (module == _modules.end()) {
@@ -670,61 +599,9 @@ void opencl::OpenCLRuntime::unregisterModule(const std::string& name) {
 	_modules.erase(module);
 	
 	_unlock();
+#endif
 }
 
-static ir::Dim3 convert(const size_t d[3]) {
-	return std::move(ir::Dim3(d[0], d[1], d[2]));
-}
-
-void opencl::OpenCLRuntime::_launchKernel(Kernel &kernel, Device * device)
-{
-	const std::string & kernelName = kernel.name;
-	assert(kernel.program->built);
-	assert(kernel.program->ptxModule.find(device) != kernel.program->ptxModule.end());
-	const std::string & moduleName = (kernel.program)->ptxModule[device];
-
-	report("kernel launch (" << kernelName 
-		<< ") on device " << device);
-	
-	try {
-		Context &ctx = *((Context *) kernel.context);
-		trace::TraceGeneratorVector traceGens;
-
-		traceGens = ctx.persistentTraceGenerators;
-		traceGens.insert(traceGens.end(),
-			ctx.nextTraceGenerators.begin(), 
-			ctx.nextTraceGenerators.end());
-
-		_inExecute = true;
-
-		device->launch(moduleName, kernelName, convert(kernel.workGroupNum), 
-			convert(kernel.localWorkSize), /*launch.sharedMemory*/0, 
-			kernel.parameterBlock, kernel.parameterBlockSize, traceGens, NULL/*&_externals*/);
-		_inExecute = false;
-		report(" launch completed successfully");	
-	}
-	catch( const executive::RuntimeException& e ) {
-		std::cerr << "==Ocelot== PTX Emulator failed to run kernel \"" 
-			<< kernelName 
-			<< "\" with exception: \n";
-		std::cerr << _formatError( e.toString() ) 
-			<< "\n" << std::flush;
-		_inExecute = false;
-		throw;
-	}
-	catch( const std::exception& e ) {
-		std::cerr << "==Ocelot== " << device->name()
-			<< " failed to run kernel \""
-			<< kernelName
-			<< "\" with exception: \n";
-		std::cerr << _formatError( e.what() )
-			<< "\n" << std::flush;
-		throw;
-	}
-	catch(...) {
-		throw;
-	}
-}
 
 
 void opencl::OpenCLRuntime::setOptimizationLevel(
@@ -799,12 +676,10 @@ cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform,
 		if(!param_value && !param_value_size_ret)
 			throw CL_INVALID_VALUE;
 		
-		cl_int err;
-		if((err = platform->getInfo(param_name,
+		platform->getInfo(param_name,
 			param_value_size,
 			param_value,
-			param_value_size_ret)) != CL_SUCCESS)
-			throw err;
+			param_value_size_ret);
 
 	}
 	catch(cl_int exception) {
@@ -867,10 +742,8 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 		if(!param_value && !param_value_size_ret)
 			throw CL_INVALID_VALUE;
 
-		cl_int err = device->getInfo(param_name, param_value_size, param_value,
+		device->getInfo(param_name, param_value_size, param_value,
 			param_value_size_ret);
-		if(err != CL_SUCCESS)
-			throw err;
 
 	}
 	catch(cl_int exception) {
@@ -989,26 +862,14 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	Program * program = NULL;
 
 	try {
-		if(std::find(_contexts.begin(), _contexts.end(), context) == _contexts.end())
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
 			throw CL_INVALID_CONTEXT;
 		
 		if(count == 0 || strings == 0)
 			throw CL_INVALID_VALUE;
 		
-		cl_uint i;
-		for(i = 0; i < count; i++) {
-			if(strings[i] == 0) {
-				throw CL_INVALID_VALUE;
-			}
-		}	
-		
-		std::stringstream stream;
-		for(i = 0; i < count; i++)
-			stream << strings[i];
+		program = new Program(context, count, strings, lengths, Program::PROGRAM_SOURCE);
 
-		program = new Program(stream.str(), context);
-		_programs.push_back(program);
-		context->validPrograms.push_back(program);
 	}
 	catch(cl_int exception) {
 		err = exception;
@@ -1034,7 +895,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	_lock();
 	try {
 		
-		if(std::find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
+		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))//Not program object
 			throw CL_INVALID_PROGRAM;
 
 		if((num_devices == 0 && device_list) || (num_devices && device_list == NULL))
@@ -1043,87 +904,15 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 		if(pfn_notify == NULL && user_data)
 			throw CL_INVALID_VALUE;
 
-		for(cl_uint i = 0; i < num_devices; i++) {
-			if(std::find(program->context->validDevices.begin(), 
-				program->context->validDevices.end(),
-				device_list[i]) == program->context->validDevices.end()) {//Not found
-				throw CL_INVALID_DEVICE;
-				break;
-			}
-		}
-
 		if(options || pfn_notify || user_data) {
 			assertM(false, "unsupported options, pfn_nofify or user_data arguments");
 			throw CL_UNIMPLEMENTED;
 		}
 
-		//For source building, since we don't have opencl frontend, load buildout.ptx instead
-		if(!program->ptxModule.empty() && !program->built) {
-			assertM(false, "unsupported binary. note that clCreateProgramWithBinaries is currently unsupported!");
-			throw CL_UNIMPLEMENTED;
-		}
+		if(!program->setupDevices(num_devices, device_list))
+			throw CL_INVALID_DEVICE;
 
-		if(!program->built) {
-			//Not built is loaded
-			std::ifstream ptx("buildout.ptx", std::ifstream::in); //Temorarily load ptx file as built binary
-			if(ptx.fail()) {
-				assertM(false, "buildout.ptx not found, run opencl programram with libOpenCL first!");
-				throw CL_BUILD_PROGRAM_FAILURE;
-			}
-				
-			std::string temp;
-		
-			ptx.seekg(0, std::ios::end);
-			size_t size = ptx.tellg();
-			ptx.seekg(0, std::ios::beg);
-			
-			if(!size) {
-				assertM(false, "buildout.ptx is empty!");
-				throw CL_BUILD_PROGRAM_FAILURE;
-			}
-	
-			temp.resize(size);
-			ptx.read((char*)temp.data(), size);
-	
-			// Register ptx with device
-			DeviceList devices;
-			if(num_devices) {
-				for(cl_uint i = 0; i < num_devices; i++)
-					devices.push_back((device_list[i]));
-			}
-			else
-				devices = program->context->validDevices;
-	
-			try{
-				for(DeviceList::iterator d = devices.begin(); d != devices.end(); d++) {
-					std::stringstream moduleName;
-					moduleName << program->name << "_" << (*d)->name();
-					report("Loading module (ptx) - " << moduleName.str());
-	
-					std::string name = moduleName.str();
-					assert(_modules.count(name) == 0);
-			
-					ModuleMap::iterator module = _modules.insert(
-						std::make_pair(name, ir::Module())).first;
-				
-					module->second.lazyLoad(temp, name);
-			
-					_registerModule(module, (*d));
-	
-					assert(program->ptxModule.count(*d) == 0);
-					program->ptxModule.insert(std::make_pair(*d, name));
-		
-					assert(program->ptxCode.count(*d) == 0);
-					program->ptxCode.insert(std::make_pair(*d, temp));
-				}
-	
-				assert(program->ptxModule.size() == program->ptxCode.size());
-				program->built = true;
-			}
-			catch(...) {
-				throw CL_BUILD_PROGRAM_FAILURE;
-			}
-		}
+		program->build(options, pfn_notify, user_data);
 								
 	}
 	catch(cl_int exception) {
@@ -1147,69 +936,11 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 	
 	try {
 		
-		if(param_name < CL_PROGRAM_REFERENCE_COUNT || param_name > CL_PROGRAM_BINARIES)
-			throw CL_INVALID_VALUE;
-		
-		if(std::find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
+		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))
 			throw CL_INVALID_PROGRAM;
 
-		switch(param_name) {
-			case CL_PROGRAM_BINARY_SIZES: {
-				if(param_value_size < program->context->validDevices.size() * sizeof(size_t))
-					throw CL_INVALID_VALUE;
+		program->getInfo(param_name, param_value_size, param_value, param_value_size_ret);
 
-				if(param_value)	{
-					DeviceList::iterator device;
-					unsigned int i = 0;
-					//get ptx code size for every valid device
-					for(device = program->context->validDevices.begin(); 
-							device != program->context->validDevices.end(); device++) {
-						//if ptx code for a specific device does not exist, return 0
-						std::map <Device *, std::string>::iterator ptx;
-						if((ptx = program->ptxCode.find(*device)) != program->ptxCode.end())
-							((size_t *)param_value)[i] = ptx->second.size();
-						else
-							((size_t *)param_value)[i] = 0;
-						i++;
-					}
-				}
-
-				if(param_value_size_ret)
-					*param_value_size_ret = program->context->validDevices.size() * sizeof(size_t);
-	
-				break;
-			}
-			case CL_PROGRAM_BINARIES: {
-				if(param_value_size < program->context->validDevices.size() * sizeof(char *))
-					throw CL_INVALID_VALUE;
-
-				if(param_value)	{
-					DeviceList::iterator device;
-					unsigned int i = 0;
-					//get ptx code size for every valid device
-					for(device = program->context->validDevices.begin(); 
-							device != program->context->validDevices.end(); device++) {
-							
-						//if ptx code for a specific device does not exist, don't copy
-						std::map <Device *, std::string>::iterator ptx;
-						if((ptx = program->ptxCode.find(*device)) != program->ptxCode.end())
-							std::memcpy(((char **)param_value)[i], ptx->second.data(), ptx->second.size());
-						i++;
-					}
-				}
-
-				if(param_value_size_ret)
-					*param_value_size_ret = program->context->validDevices.size() * sizeof(size_t);
-	
-				break;
-			}
-				
-				break;
-			default:
-				assertM(false, "unsupported program info");
-				throw CL_UNIMPLEMENTED;
-				break;
-		}
 	}
 	catch(cl_int exception) {
 		result = exception;
@@ -1234,40 +965,10 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 
 	try{
 
-		if(find(_programs.begin(), _programs.end(), program) == _programs.end())//Not found
+		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))//Not found
 			throw CL_INVALID_PROGRAM;
 
-		if(!program->built)
-			throw CL_INVALID_PROGRAM_EXECUTABLE;
-
-		if(!kernel_name)
-			throw CL_INVALID_VALUE;
-
-		std::map < Device *, std::string >::iterator module;
-		std::string kernelName(kernel_name);
-		
-		for(module = program->ptxModule.begin(); module != program->ptxModule.end(); module++) {
-			ModuleMap::iterator m = _modules.find(module->second);
-			assert(m != _modules.end());
-			if(m->second.getKernel(kernelName)==0) {//kernel not found
-				throw CL_INVALID_KERNEL_NAME;
-				break;
-			}
-	
-		}
-
-		report("Registered kernel - " << kernelName
-			<< " in program '" << program->name << "'");
-
-		try {
-			kernel = new Kernel(kernelName, program, program->context);
-			_kernels.push_back(kernel);
-		}
-		catch(...) {
-			throw CL_OUT_OF_HOST_MEMORY;
-		}
-		program->kernels.push_back(kernel);
-
+		kernel = program->createKernel(kernel_name);
 	}
 	catch(cl_int exception) {
 		err = exception;
@@ -1509,14 +1210,10 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 	_lock();
 
 	try {
-		if(std::find(_kernels.begin(), _kernels.end(), kernel) == _kernels.end())
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
 			throw CL_INVALID_KERNEL;
 
-		kernel->parameterSizes[arg_index] = arg_size;
-		char * paramVal = new char[arg_size];
-		memcpy(paramVal, arg_value, arg_size);
-		kernel->parameterPointers[arg_index] = paramVal;
-		
+		kernel->setArg(arg_index, arg_size, arg_value);	
 		
 	}
 	catch(cl_int exception) {
@@ -1547,71 +1244,20 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(std::find(_kernels.begin(), _kernels.end(), kernel) == _kernels.end())
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
 			throw CL_INVALID_KERNEL;
 
-		if(command_queue->context() != kernel->context)
+		if(!kernel->isValidContext(command_queue->context()))
 			throw CL_INVALID_CONTEXT;
-		
-		if(kernel->parameterSizes.size() == 0)
-			throw CL_INVALID_KERNEL_ARGS;
-
-		assert(kernel->parameterSizes.size() == kernel->parameterPointers.size());
-		
-		_mapKernelParameters(*kernel, command_queue->device());
-
-		if(work_dim < 1 || work_dim > 3)
-			throw CL_INVALID_WORK_DIMENSION;
-
-		if(global_work_size == NULL)
-			throw CL_INVALID_GLOBAL_WORK_SIZE;
-
-		for(cl_uint dim = 0; dim < work_dim; dim++) {
-			if (global_work_size[dim] == 0)
-				throw CL_INVALID_GLOBAL_WORK_SIZE;
-		}
-
-		if(global_work_offset != NULL) {
-			assertM(false, "non-null global work offset unsupported");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		if(local_work_size) {
-			for(cl_uint dim = 0; dim < work_dim; dim++) {
-			if(local_work_size[dim] == 0)
-				throw CL_INVALID_WORK_ITEM_SIZE;
-
-			if (global_work_size[dim] / local_work_size[dim] * local_work_size[dim] != global_work_size[dim])
-				throw CL_INVALID_WORK_GROUP_SIZE;
-			}
-		}
 
 		if((event_wait_list == NULL && num_events_in_wait_list > 0) || (event_wait_list && num_events_in_wait_list == 0))
 			throw CL_INVALID_EVENT_WAIT_LIST;
+	
+		kernel->mapParametersOnDevice(command_queue->device());
+		
+		kernel->setConfiguration(work_dim, global_work_offset, global_work_size, local_work_size);	
 
-
-		for(cl_uint dim = 0; dim < 3; dim++) {
-			if(dim < work_dim) {
-				kernel->globalWorkSize[dim] = global_work_size[dim];
-				if(local_work_size)
-					kernel->localWorkSize[dim] = local_work_size[dim];
-				else
-					kernel->localWorkSize[dim] = global_work_size[dim];
-			}
-			else {
-				kernel->globalWorkSize[dim] = 1;
-				kernel->localWorkSize[dim] = 1;
-			}
-
-			kernel->workGroupNum[dim] = kernel->globalWorkSize[dim] / kernel->localWorkSize[dim];
-		}
-
-		try {
-			_launchKernel(*kernel, command_queue->device());
-		}
-		catch(...) {
-			throw CL_OUT_OF_RESOURCES;
-		}
+		kernel->launchOnDevice(command_queue->device());
 	}
 	catch(cl_int exception) {
 		result = exception;

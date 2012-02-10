@@ -60,8 +60,8 @@ namespace opencl {
 
 	typedef Device::DeviceList DeviceList;
 	typedef std::list< MemoryObject * > MemoryObjectList;
-	typedef std::list< Kernel * > KernelList;
-	typedef std::list< Program * > ProgramList;
+	typedef Program::KernelList KernelList;
+	typedef Program::ProgramList ProgramList;
 	typedef std::list< Context * > ContextList;
 	typedef std::list< CommandQueue * > CommandQueueList;
 //
@@ -123,7 +123,7 @@ namespace opencl {
 //	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 //	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
 //	typedef std::map< void*, Dimension > DimensionMap;
-	typedef std::map< std::string, ir::Module > ModuleMap;
+//	typedef std::map< std::string, ir::Module > ModuleMap;
 //	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 
 	////////////////////////////////////////////////////////////////////////////
@@ -166,16 +166,12 @@ namespace opencl {
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
 		Context * _createContext(Platform *, cl_uint, const cl_device_id *);
-		//! \brief create program binary
-		Program & _createProgramSource(const std::string & source);
-		//! \brief create program binary
-		Program & _createProgramBinary(const std::string & binary);
 		// Load module and register it with devices
-		void _registerModule(ModuleMap::iterator module, Device *);
+		//void _registerModule(ModuleMap::iterator module, Device *);
 		// Load module and register it with devices
-		void _registerModule(const std::string& name, Device *);
+		//void _registerModule(const std::string& name, Device *);
 		// Load all modules and register them with all devices
-		void _registerAllModules(Device *);
+		//void _registerAllModules(Device *);
 		// Map kernel parameters for device
 		void _mapKernelParameters(Kernel & kernel, Device *);
 
@@ -184,22 +180,19 @@ namespace opencl {
 		boost::mutex _mutex;
 		
 		//! There is a thread in execute
-		bool _inExecute;
+		//bool _inExecute;
 		
 		//! locking object for access to the runtime from worker threads
-		boost::mutex _executingMutex;
+		//boost::mutex _executingMutex;
 		
 		//! Registered modules
-		ModuleMap _modules;
+		//ModuleMap _modules;
 
-		//! created programs
-		ProgramList _programs;
-		
 		//! List of contexts
 		ContextList _contexts;
 		
 		//! List of kernels
-		KernelList _kernels;
+		//KernelList _kernels;
 
 		//! List of Memory objects
 		MemoryObjectList _memories;
@@ -223,7 +216,7 @@ namespace opencl {
 		bool _devicesLoaded;
 		
 		//! the next symbol for dynamically registered kernels
-		int _nextSymbol;
+		//int _nextSymbol;
 		
 		//! The minimum supoported compute capability
 		int _computeCapability;
@@ -243,9 +236,6 @@ namespace opencl {
 		//! PTX passes
 	//	PassSet _passes;
 	
-	private:
-		void _launchKernel(Kernel & kernel, Device * device);
-		
 	public:
 		OpenCLRuntime();
 		~OpenCLRuntime();

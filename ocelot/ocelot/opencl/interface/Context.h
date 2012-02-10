@@ -36,9 +36,6 @@ namespace opencl {
 		//! set of valid device indices
 		DeviceList validDevices;
 
-		//! set of valid programs
-		ProgramList validPrograms;
-
 		//! set of valid buffer objects
 		MemoryObjectList validMemories;
 

@@ -50,7 +50,7 @@ namespace opencl {
 
 	public:
 		//Get info
-		cl_int getInfo(cl_device_info param_name,
+		void getInfo(cl_device_info param_name,
 		    size_t param_value_size,
 		    void * param_value,
 		    size_t * param_value_size_ret);
@@ -59,7 +59,7 @@ namespace opencl {
 		const char * name();
 
 		//Load module
-		void load(const ir::Module * module);
+		void load(ir::Module * module);
 
 		//Unload module
 		void unload(const std::string & name); 	

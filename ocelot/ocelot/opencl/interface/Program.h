@@ -16,40 +16,125 @@ namespace opencl {
 
 	class Kernel;
 
-	typedef std::list< Kernel * > KernelList;
-
 	//! programs created in OpenCL runtime	
 	class Program : public Object {
+
+	public:
+		typedef enum {
+			PROGRAM_SOURCE,
+			PROGRAM_BINARY
+		}programT;
+
+		typedef std::list < Program * > ProgramList;
+		typedef std::list < Kernel * > KernelList;
+
+	public:
+		Program(Context * context, cl_uint count, const char ** strings, 
+			const size_t * lengths, programT type);
+
+		~Program();	
+
+	public:
+
+		//!validate context
+		bool isValidContext(Context * context);
+
+		//! check if devices are valid
+		bool setupDevices(cl_uint num_devices, const cl_device_id * device_list);
+
+		//! build program
+		void build(const char * options,
+			void (CL_CALLBACK * pfn_notify)(cl_program, void *),
+			void * user_data);
+
+		//! get info
+		void getInfo(cl_program_info param_name,
+			size_t param_value_size,
+			void * param_value,
+			size_t * param_value_size_ret);
+	
+		//! create kernels
+		Kernel * createKernel(const char * kernelName);	
+
+		//! remove kernel
+		void removeKernel(Kernel * kernel);
 
 	private:
 		//! program id
 		static unsigned int _id;
 
-	public:
-		Program(const std::string & source, Context * context);
 
-		~Program();	
+	private:
+		typedef enum {
+			STATUS_UNBUILT,
+			STATUS_COMPILED,
+			STATUS_EXECUTABLE
+		}statusT;
 
-	public:
-		std::string name;
-	
-		//! ptx modules associated with device id	
-		std::map <Device *, std::string> ptxModule;
 
-		//! ptx code associated with device id
-		std::map <Device *, std::string> ptxCode;
-		
-		//! source code of program
-		std::string source;
+		typedef struct {
+			//program build status
+			statusT _status;
 
-		//! kernels
-		KernelList kernels;
+			//binary code, could be compiled, library, or executable
+			std::string _binary;
 
-		//! get build status
-		bool built;
+			//module name used by ocelot
+			std::string _moduleName;
+
+			//ir module used by ocelot
+			ir::Module * _module;
+		}deviceBuiltInfoT;
+
+
+		//type
+		programT _type;
+
+		//name		
+		std::string _name;
 
 		//! associated context
-		Context * context;
+		Context * _context;
+
+		//! setup devices
+		Device::DeviceList _buildDevices;
+
+		//! source code of program
+		std::string _source;
+
+		//! kernels
+		KernelList _kernels;
+
+		//!built information for devices
+		std::map <Device *, deviceBuiltInfoT> _deviceBuiltInfo;
+
+	private:
+		//! load ptx through backdoor
+		std::string _loadBackDoor();
+
+		//! check if built for a device
+		bool _isBuiltOnDevice(Device * device);
+
+		//! check if built for a device
+		bool _isAllBuilt();
+
+		//! check if module is declared on a device
+		bool _hasModuleOnDevice(Device * device, std::string moduleName);
+
+		//! check if binary is loaded on a device
+		bool _hasBinaryOnDevice(Device * device);
+
+		//! build program on a device
+		void _buildOnDevice(Device * device, std::string backdoorBinary = "");
+
+		//! get binary sizes
+		char * _getBinarySizes(size_t & bufferLen);
+
+		//! get binaries
+		char * _getBinaries(size_t & bufferLen);
+
+		//! check if all module has the kernel
+		bool _hasKernelAll(const char * kernelName);
 
 	};
 

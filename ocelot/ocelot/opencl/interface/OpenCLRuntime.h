@@ -134,8 +134,8 @@ namespace opencl {
 		//void _memcpy(void* dst, const void* src, size_t count, 
 		//	enum openclMemcpyKind kind);
 		/*! \brief Report a memory error and throw an exception */
-		void _memoryError(const void* address, size_t count, 
-			const std::string& function = "");		
+		//void _memoryError(const void* address, size_t count, 
+		//	const std::string& function = "");		
 		/*! \brief Create platform */
 		void _enumeratePlatforms(cl_uint num_entries, 
 			    cl_platform_id * platforms, 
@@ -195,7 +195,7 @@ namespace opencl {
 		//KernelList _kernels;
 
 		//! List of Memory objects
-		MemoryObjectList _memories;
+		//MemoryObjectList _memories;
 
 		//! List of command queues;
 		CommandQueueList _queues;

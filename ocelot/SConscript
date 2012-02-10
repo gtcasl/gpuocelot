@@ -221,6 +221,8 @@ tests.append(('TestCudaTexture3D', \
 	'ocelot/cuda/test/textures/texture3D.cu', 'full'))
 tests.append(('TestCudaTextureArray', \
 	'ocelot/cuda/test/textures/textureArray.cu', 'full'))
+tests.append(('TestCudaTextureCube', \
+	'ocelot/cuda/test/textures/textureCube.cu', 'full'))
 tests.append(('TestFunctionCall', \
 	'ocelot/cuda/test/functions/simpleFunc.cu', 'full'))
 tests.append(('TestIndirectFunctionCall', \

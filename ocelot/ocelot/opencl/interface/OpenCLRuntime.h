@@ -55,13 +55,13 @@ namespace opencl {
 
 	/*!	\brief Set of thread ids */
 
-	typedef std::map< unsigned int, char * > PointerMap;
-	typedef std::map< unsigned int, size_t > SizeMap;
+//	typedef std::map< unsigned int, char * > PointerMap;
+//	typedef std::map< unsigned int, size_t > SizeMap;
 
 	typedef Device::DeviceList DeviceList;
 	typedef std::list< MemoryObject * > MemoryObjectList;
-	typedef Program::KernelList KernelList;
-	typedef Program::ProgramList ProgramList;
+//	typedef Program::KernelList KernelList;
+//	typedef Program::ProgramList ProgramList;
 	typedef std::list< Context * > ContextList;
 	typedef std::list< CommandQueue * > CommandQueueList;
 //
@@ -151,19 +151,19 @@ namespace opencl {
 		//! \brief releases mutex
 		void _unlock();
 		//! \brief sets the last error state for the OpenCLRuntime object
-		cl_int _setLastError(cl_int result);
+		//cl_int _setLastError(cl_int result);
 		//! \brief Bind the current thread to a device context
-		Context& _bind();
+		//Context& _bind();
 		//! \brief Unbind the current thread
-		void _unbind();
+		//void _unbind();
 		//! \brief Lock the mutex and bind the the thread
-		void _acquire();
+		//void _acquire();
 		/*! \brief Unbind the thread and unlock the mutex */
-		void _release();
+		//void _release();
 		//! \brief gets the current device for the current thread
 		//executive::Device& _getDevice();
 		//! \brief returns an Ocelot-formatted error message
-		std::string _formatError(const std::string & message);
+		//std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
 		Context * _createContext(Platform *, cl_uint, const cl_device_id *);
 		// Load module and register it with devices
@@ -173,7 +173,7 @@ namespace opencl {
 		// Load all modules and register them with all devices
 		//void _registerAllModules(Device *);
 		// Map kernel parameters for device
-		void _mapKernelParameters(Kernel & kernel, Device *);
+		//void _mapKernelParameters(Kernel & kernel, Device *);
 
 	private:
 		//! locking object for opencl runtime
@@ -300,21 +300,21 @@ namespace opencl {
 //		virtual void addPTXPass(transforms::Pass &pass);
 //		virtual void removePTXPass(transforms::Pass &pass);
 //		virtual void clearPTXPasses();
-		virtual void limitWorkerThreads( unsigned int limit = 1024 );
-		virtual void registerPTXModule(std::istream& stream, 
-			const std::string& name);
+//		virtual void limitWorkerThreads( unsigned int limit = 1024 );
+//		virtual void registerPTXModule(std::istream& stream, 
+//			const std::string& name);
 //		virtual void registerTexture(const void* texref,
 //			const std::string& moduleName,
 //			const std::string& textureName, bool normalize);
-		virtual void clearErrors();
-		virtual void reset();
-		virtual ocelot::PointerMap contextSwitch( 
-			unsigned int destinationDevice, unsigned int sourceDevice);
-		virtual void unregisterModule(const std::string& name);
+//		virtual void clearErrors();
+//		virtual void reset();
+//		virtual ocelot::PointerMap contextSwitch( 
+//			unsigned int destinationDevice, unsigned int sourceDevice);
+//		virtual void unregisterModule(const std::string& name);
 //		virtual void launch(const std::string& moduleName, 
 //			const std::string& kernelName);
-		virtual void setOptimizationLevel(
-			translator::Translator::OptimizationLevel l);
+//		virtual void setOptimizationLevel(
+//			translator::Translator::OptimizationLevel l);
 //		virtual void registerExternalFunction(const std::string& name,
 //			void* function);
 //		virtual void removeExternalFunction(const std::string& name);

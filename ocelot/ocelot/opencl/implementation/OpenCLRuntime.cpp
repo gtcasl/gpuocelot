@@ -192,6 +192,8 @@ executive::Device& opencl::OpenCLRuntime::_getDevice() {
 	return *((executive::Device *)_selectedDevice);
 }
 */
+
+/*
 std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
 	std::string result = "==Ocelot== ";
 	for(std::string::const_iterator mi = message.begin(); 
@@ -202,7 +204,7 @@ std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
 		}
 	}
 	return result;
-}
+}*/
 
 #if 0
 void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, Device * device) {
@@ -243,10 +245,6 @@ void opencl::OpenCLRuntime::_registerAllModules(Device * device) {
 }
 #endif
 
-void opencl::OpenCLRuntime::_mapKernelParameters(Kernel & kernel, Device * device) {
-
-
-}
 ////////////////////////////////////////////////////////////////////////////////
 
 opencl::OpenCLRuntime::OpenCLRuntime() : /*_inExecute(false),*/
@@ -311,7 +309,7 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
+#if 0
 void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
 	_lock();
@@ -353,7 +351,7 @@ void opencl::OpenCLRuntime::clearPTXPasses() {
 	_passes.clear();
 	_unlock();
 }
-*/
+
 void opencl::OpenCLRuntime::limitWorkerThreads(unsigned int limit) {
 	_lock();
 	Device::limitWorkerThreadForAll(limit);
@@ -393,7 +391,7 @@ void opencl::OpenCLRuntime::registerPTXModule(std::istream& ptx,
 #endif
 }
 
-/*
+
 void opencl::OpenCLRuntime::registerTexture(const void* texref,
 	const std::string& moduleName,
 	const std::string& textureName, bool normalize) {
@@ -406,7 +404,7 @@ void opencl::OpenCLRuntime::registerTexture(const void* texref,
 	
 	_unlock();
 }
-*/
+
 
 void opencl::OpenCLRuntime::clearErrors() {
 #if 0
@@ -614,6 +612,7 @@ void opencl::OpenCLRuntime::setOptimizationLevel(
 
 	_unlock();
 }
+#endif
 /*
 void opencl::OpenCLRuntime::registerExternalFunction(const std::string& name,
 	void* function) {

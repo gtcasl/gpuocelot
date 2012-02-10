@@ -9189,7 +9189,50 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							context.PC, instr);
 				}
 				break;
-
+			case ir::PTXInstruction::_cube:
+				{
+					if (texture.size.z != 6) {
+						throw RuntimeException(
+							"Invalid texture dimensions. Must have depth of 6.", context.PC, instr);
+					}
+					if (instr.type == ir::PTXOperand::f32) {
+						switch (instr.d.type) {
+							case ir::PTXOperand::f32:
+							{
+								assert(instr.c.array.size()==4);
+								assert(instr.d.array.size()==4);
+								PTXF32 c0 = getRegAsF32(threadID, instr.c.array[0].reg);
+								PTXF32 c1 = getRegAsF32(threadID, instr.c.array[1].reg);
+								PTXF32 c2 = getRegAsF32(threadID, instr.c.array[2].reg);
+								
+								PTXF32 d0 = tex::sampleCube<0,PTXF32>(texture, c0, c1, c2);
+								PTXF32 d1 = tex::sampleCube<1,PTXF32>(texture, c0, c1, c2);
+								PTXF32 d2 = tex::sampleCube<2,PTXF32>(texture, c0, c1, c2);
+								PTXF32 d3 = tex::sampleCube<3,PTXF32>(texture, c0, c1, c2);
+								if (traceEvents) {
+									tex::addresses(texture, c0, c1, c2,	currentEvent.memory_addresses);
+								}
+								setRegAsF32(threadID, instr.d.array[0].reg, d0);
+								setRegAsF32(threadID, instr.d.array[1].reg, d1);
+								setRegAsF32(threadID, instr.d.array[2].reg, d2);
+								setRegAsF32(threadID, instr.d.array[3].reg, d3);
+							}
+							break;
+						case ir::PTXOperand::u32:	// fall through for now
+						case ir::PTXOperand::s32:	// fall through for now
+						default:
+							throw RuntimeException(
+								"invalid texture destination type", 
+								context.PC, instr);
+						}
+					}
+					else {
+						throw RuntimeException(
+							"invalid texture source type", 
+							context.PC, instr);
+					}
+				}
+				break;
 			default:
 				throw RuntimeException("invalid texture geometry", 
 					context.PC, instr);

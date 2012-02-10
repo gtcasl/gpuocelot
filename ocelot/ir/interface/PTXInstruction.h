@@ -278,6 +278,10 @@ namespace ir {
 			_1d = 1,
 			_2d = 2,
 			_3d = 3,
+			_a1d = 4,
+			_a2d = 5,
+			_cube = 6,
+			_acube = 7,
 			Geometry_Invalid
 		};
 

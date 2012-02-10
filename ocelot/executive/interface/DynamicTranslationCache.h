@@ -90,7 +90,7 @@ namespace executive {
 		class TranslatedKernel {			
 		public:
 			TranslatedKernel(DynamicMulticoreKernel *_kernel);
-			
+			~TranslatedKernel();
 		public:
 		
 			//! \brief 

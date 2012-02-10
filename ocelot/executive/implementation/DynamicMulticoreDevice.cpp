@@ -56,7 +56,17 @@ executive::DynamicMulticoreDevice::DynamicMulticoreDevice(int _flags): EmulatorD
 }
 
 executive::DynamicMulticoreDevice::~DynamicMulticoreDevice() {
-
+	report("~DynamicMulticoreDevice()");
+	
+	for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+		for (DynamicMulticoreKernelMap::iterator k_it = mod_it->second.kernels.begin();
+			k_it != mod_it->second.kernels.end(); ++k_it) {
+			
+			delete k_it->second;
+		}
+		mod_it->second.kernels.clear();
+	}
+	modules.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

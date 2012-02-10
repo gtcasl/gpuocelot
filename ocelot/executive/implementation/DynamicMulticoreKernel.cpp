@@ -77,6 +77,8 @@ _kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory
 }
 
 executive::DynamicMulticoreKernel::~DynamicMulticoreKernel() {
+	report("~DynamicMulticoreKernel()");
+	
 	delete[] _argumentMemory;
 	delete[] _constantMemory;
 	

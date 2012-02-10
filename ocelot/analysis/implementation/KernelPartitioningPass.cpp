@@ -31,14 +31,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_EMIT_SUBKERNEL_PTX 1
+#define REPORT_EMIT_SUBKERNEL_PTX 0
 #define REPORT_EMIT_SOURCE_PTXKERNEL 0
 
 #define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define EMIT_PARTITIONED_KERNELGRAPH 1					// emits to .dot text files in directory
+#define EMIT_PARTITIONED_KERNELGRAPH 0					// emits to .dot text files in directory
 #define EMIT_KERNELGRAPH_ORIGINAL_PTX 1					// if 1, shows PTX for original basic blocks
 #define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 1		// enables replacing actual instructions in handler blocks
 
@@ -49,7 +49,10 @@ static ir::PTXInstruction *getTerminator(ir::BasicBlock::Pointer block) {
 }
 
 static bool doesBarrierTerminateBlock(ir::BasicBlock::Pointer block) {
-	return static_cast<ir::PTXInstruction*>(block->instructions.back())->opcode == ir::PTXInstruction::Bar;
+	if (block->instructions.size()) {
+		return static_cast<ir::PTXInstruction*>(block->instructions.back())->opcode == ir::PTXInstruction::Bar;
+	}
+	return false;
 }
 			
 ////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -173,6 +176,9 @@ analysis::KernelPartitioningPass::KernelGraph::~KernelGraph() {
 	if (_sourceKernelDfg) {
 		delete _sourceKernelDfg;
 	}
+	for (SubkernelMap::iterator sk_it = subkernels.begin(); sk_it != subkernels.end(); ++sk_it) {
+		sk_it->second.finish();
+	}	
 	subkernels.clear();
 }
 
@@ -778,6 +784,13 @@ analysis::KernelPartitioningPass::Subkernel::Subkernel(SubkernelId _id): id(_id)
 analysis::KernelPartitioningPass::Subkernel::Subkernel() {
 }
 
+analysis::KernelPartitioningPass::Subkernel::~Subkernel() {
+}
+
+void analysis::KernelPartitioningPass::Subkernel::finish() {
+	delete subkernel;
+	subkernel = 0;
+}
 
 analysis::KernelPartitioningPass::ExternalEdgeVector::const_iterator
 	analysis::KernelPartitioningPass::Subkernel::getEntryEdge(SubkernelId entryId) const {
@@ -810,7 +823,7 @@ void analysis::KernelPartitioningPass::Subkernel::createHandlers(
 	
 	_createExternalHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	
-	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX
+	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX && REPORT_INTERMEDIATE_PTX
 	report("subkernel->write");
 	subkernel->write(std::cout);
 	#endif
@@ -825,6 +838,7 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	ss << "_subkernel_" << source->name << "_" << id;
 	
 	subkernel = new ir::PTXKernel(ss.str(), false, source->module);
+	
 	for (ir::Kernel::ParameterVector::const_iterator arg_it = source->arguments.begin();
 		arg_it != source->arguments.end(); ++arg_it) {
 		
@@ -968,6 +982,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 		
 		bool isBarrierExit = doesBarrierTerminateBlock(edge_it->head);
 		
+		report("  examined terminator");
+		
 		if (!isBarrierExit) {
 			if (blockMapping.find(edge_it->head) == blockMapping.end()) {
 				assert(0 && "Failed to find predecessor block in mapping");
@@ -976,6 +992,8 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeExternalEdges(
 				report("  failed to find successor block '" << edge_it->tail->label << "' in mapping");
 				assert(0 && "Failed to find successor block in mapping");
 			}
+		
+			report("  instantiating internal edge");
 		
 			ir::BasicBlock::Edge internalEdge(blockMapping[edge_it->head], 
 				blockMapping[edge_it->tail], edge_it->type);

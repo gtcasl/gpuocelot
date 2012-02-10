@@ -67,10 +67,10 @@
 #define REPORT_LLVM_MASTER 0							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
-#define REPORT_TRANSLATION_OPERATIONS 1		// translation events
+#define REPORT_TRANSLATION_OPERATIONS 0		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
@@ -113,7 +113,20 @@ executive::DynamicTranslationCache::DynamicTranslationCache(DynamicExecutionMana
 }
 
 executive::DynamicTranslationCache::~DynamicTranslationCache() {
-
+	report("Destructing!");
+	
+	translationCache.clear();
+	
+	for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+		report(" deleting module " << mod_it->first);
+		for (TranslatedKernelNameMap::iterator kernel_it = mod_it->second.kernels.begin();
+			kernel_it != mod_it->second.kernels.end(); ++kernel_it) {
+			TranslatedKernel *kernel = kernel_it->second;
+			report(" deleting TranslatedKernel: 0x" << (void *)kernel);
+			delete kernel;
+		}
+	}
+	modules.clear();
 }
 
 executive::DynamicTranslationCache::Translation *
@@ -160,7 +173,7 @@ void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *
 		module.kernels[kernel->name] = translatedKernel;
 				
 		_translateKernel(*translatedKernel);
-		report("  registered new kernel");
+		report("  registered new TranslatedKernel 0x" << (void *)translatedKernel);
 	}
 	else {
 		// do nothing.
@@ -191,6 +204,25 @@ executive::DynamicTranslationCache::TranslatedKernel::TranslatedKernel(DynamicMu
 	llvmModule(0), kernel(_kernel), metadata(0), localMemorySize(0), sharedMemorySize(0) {
 	
 	llvmModule = new llvm::Module(kernel->name.c_str(), llvm::getGlobalContext());
+}
+
+executive::DynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
+	report("~TranslatedKernel()");
+	
+	for (TranslatedSubkernelMap::iterator sk_it = subkernels.begin(); sk_it != subkernels.end();
+		++sk_it ) {
+	
+		for (WarpTranslationMap::iterator trans_it = sk_it->second.translations.begin(); 
+			trans_it != sk_it->second.translations.end(); ++trans_it) {
+		
+			delete trans_it->second;
+		}
+		sk_it->second.translations.clear();
+	}
+	subkernels.clear();
+	
+	delete static_cast<executive::MetaData*>(metadata);
+	delete llvmModule;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

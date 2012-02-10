@@ -70,6 +70,7 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 LLVMState::StateWrapper::~StateWrapper()
 {
 	// no need to delete anything, llvm will handle it for us
+	delete _module;
 }
 
 LLVMState::StateWrapper LLVMState::_wrapper;

@@ -41,7 +41,7 @@ __global__ void kernel(float *out, int width) {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char **arg) {
-	int width = 64, layers = 6;
+	int width = 16, layers = 6;
 
 	float *in_data_host, *out_data_host;
 	float *out_data_gpu;

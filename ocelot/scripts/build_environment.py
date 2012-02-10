@@ -487,7 +487,7 @@ def Environment():
 	
 	# CUDA builder
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action=cuda_exe_path + '/nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
+		action=cuda_exe_path + '/nvcc --use_fast_math -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})
@@ -495,7 +495,7 @@ def Environment():
   # CUDA builder
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action= nvccPath + 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
+		action= nvccPath + 'nvcc --use_fast_math -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})

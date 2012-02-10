@@ -17,7 +17,7 @@
 namespace executive
 {
 
-
+class Device;
 
 /*! \brief A class contains the state for executing a kernel */
 class LLVMContext
@@ -77,7 +77,9 @@ public:
 	unsigned int argumentSize;
 	unsigned int constantSize;
 	unsigned int warpSize;
-	unsigned int subkernels;  
+	unsigned int subkernels;
+	
+	executive::Device *device;
 };
 
 }

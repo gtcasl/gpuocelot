@@ -933,6 +933,7 @@ static executive::DynamicMulticoreExecutive::Metadata* generateMetadata(
 	
 	metadata->kernel = &kernel;
 	metadata->warpSize = warpSize;
+	metadata->device = 0;
 	
 	return metadata;
 }
@@ -1261,6 +1262,7 @@ executive::DynamicTranslationCache::Translation *
 	
 	Translation *translation = new Translation;
 	translation->metadata = subkernel.metadata;
+	static_cast<executive::MetaData*>(translation->metadata)->device = device;
 	
 	#ifdef HAVE_LLVM
 	try {

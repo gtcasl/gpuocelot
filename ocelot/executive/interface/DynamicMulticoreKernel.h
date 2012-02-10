@@ -63,7 +63,7 @@ namespace executive {
 		SubkernelIdRange getSubkernelIdRange() const;
 	
 	private:
-	
+		void _analyzePTX();
 		void _allocateConstantMemory();
 		void _allocateArgumentMemory();
 		void _allocateMemory();

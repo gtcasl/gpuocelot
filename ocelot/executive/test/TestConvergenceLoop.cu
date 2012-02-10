@@ -177,14 +177,14 @@ static int testReduction() {
 int main( int argc, char** argv )
 {
 	int errors = 0;
-	/*
+
 	if (!errors) {
 		errors += testConvergenceWithLoop();
 	}
 	if (!errors) {
 		errors += testLoopEarlyExit();
 	}
-	*/
+
 	if (!errors) {
 		errors += testReduction();
 	}

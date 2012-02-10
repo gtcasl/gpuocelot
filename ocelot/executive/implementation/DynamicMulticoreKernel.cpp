@@ -7,6 +7,7 @@
 
 // C++ includes
 #include <cstring>
+#include <algorithm>
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
@@ -71,6 +72,7 @@ _kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory
 		(analysis::KernelPartitioningPass::PartitioningHeuristic)
 			api::OcelotConfiguration::get().executive.partitioningHeuristic);
 	
+	_analyzePTX();
 	mapArgumentOffsets();
 }
 
@@ -83,6 +85,18 @@ executive::DynamicMulticoreKernel::~DynamicMulticoreKernel() {
 	}
 }
 
+void executive::DynamicMulticoreKernel::_analyzePTX() {
+	size_t computedStaticSharedMem = 0;
+	for (ir::Kernel::LocalMap::const_iterator local_it = _ptxKernel->locals.begin();
+		local_it != _ptxKernel->locals.end(); ++local_it) {
+	
+		if (local_it->second.space == ir::PTXInstruction::Shared) {
+			computedStaticSharedMem += local_it->second.getSize();
+		}
+	}
+	_sharedMemorySize = (computedStaticSharedMem > _sharedMemorySize ? 
+		computedStaticSharedMem : _sharedMemorySize);
+}
 
 analysis::KernelPartitioningPass::KernelGraph *executive::DynamicMulticoreKernel::kernelGraph() const {
 	return _kernelGraph;
@@ -141,6 +155,7 @@ void executive::DynamicMulticoreKernel::setExternSharedMemorySize(unsigned int b
 void executive::DynamicMulticoreKernel::setWorkerThreads(unsigned int workerThreadLimit) {
 
 }
+
 	
 /*! \brief Indicate that the kernels arguments have been updated */
 void executive::DynamicMulticoreKernel::updateArgumentMemory() {

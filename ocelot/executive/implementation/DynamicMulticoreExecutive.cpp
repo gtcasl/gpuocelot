@@ -28,6 +28,7 @@
 
 #define REPORT_BASE 0
 
+#define REPORT_CTA_OPERATIONS 1						// called O(n), where n is the number of CTAs launched
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
@@ -100,8 +101,7 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	executive::DynamicMulticoreKernel &_kernel, size_t _sharedMemorySize
 ):
 	kernel(&_kernel) 
-{
-	
+{	
 	// allocate memory for Cooperative Thread array
 	localMemorySize = _kernel.kernelGraph()->localMemorySize();
 	localMemory = new char[localMemorySize * _kernel.blockDim().size()];
@@ -116,22 +116,23 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	
 	contexts = new LLVMContext[kernel->blockDim().size()];
 	
-	report("DynamicMulticoreExecutve('" << _kernel.name << "', shared mem size: " << sharedMemorySize);
-	report("  localMemorySize: " << localMemorySize);
-	report("  paramMemorySize: " << parameterMemorySize);
+	reportE(REPORT_CTA_OPERATIONS, "DynamicMulticoreExecutve('" << _kernel.name 
+		<< "', shared mem size: " << sharedMemorySize);
+	reportE(REPORT_CTA_OPERATIONS, "  localMemorySize: " << localMemorySize);
+	reportE(REPORT_CTA_OPERATIONS, "  paramMemorySize: " << parameterMemorySize);
 	
-	report(" contexts = " << (void *)contexts);
-	report(" localMemory = " << (void *)localMemory);
-	report(" sharedMemory = " << (void *)sharedMemory);
-	report(" parameterMemory = " << (void *)parameterMemory);
+	reportE(REPORT_CTA_OPERATIONS, " contexts = " << (void *)contexts);
+	reportE(REPORT_CTA_OPERATIONS, " localMemory = " << (void *)localMemory << " (" << localMemorySize << " bytes");
+	reportE(REPORT_CTA_OPERATIONS, " sharedMemory = " << (void *)sharedMemory << " (" << sharedMemorySize << " bytes");
+	reportE(REPORT_CTA_OPERATIONS, " parameterMemory = " << (void *)parameterMemory << " (" << parameterMemorySize << " bytes");
 }
 
 executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
 
-	report(" contexts = " << (void *)contexts);
-	report(" localMemory = " << (void *)localMemory);
-	report(" sharedMemory = " << (void *)sharedMemory);
-	report(" parameterMemory = " << (void *)parameterMemory);
+	reportE(REPORT_CTA_OPERATIONS, " contexts = " << (void *)contexts);
+	reportE(REPORT_CTA_OPERATIONS, " localMemory = " << (void *)localMemory);
+	reportE(REPORT_CTA_OPERATIONS, " sharedMemory = " << (void *)sharedMemory);
+	reportE(REPORT_CTA_OPERATIONS, " parameterMemory = " << (void *)parameterMemory);
 
 	delete [] contexts;
 	delete [] localMemory;
@@ -156,7 +157,8 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 	
 	std::memset(localMemory, 0, localMemorySize * blockDim.size());
 	
-	report("DynamicMulticoreExecutive::_initializeThreadContexts(blockId = " << blockId << ") - blockDim = " << blockDim);
+	report("DynamicMulticoreExecutive::_initializeThreadContexts(blockId = " 
+		<< blockId << ") - blockDim = " << blockDim);
 	for (int i = 0; i < blockDim.size(); i++) {
 		contexts[i].tid = {i % blockDim.x, (i / blockDim.x) % blockDim.y, i / (blockDim.x * blockDim.y)};
 		
@@ -180,8 +182,9 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 }
 
 void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
-	report("DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y << ") kernel: '"
-		<< kernel->name << "' for CTA size " << kernel->blockDim().size() << " threads");
+	reportE(REPORT_SCHEDULE_OPERATIONS, 
+		"DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y << ") kernel: '"
+			<< kernel->name << "' for CTA size " << kernel->blockDim().size() << " threads");
 
 	_initializeThreadContexts(block);
 	
@@ -194,7 +197,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	int maxIterations = 0;
 	
 #if REPORT_LOCAL_MEMORY && REPORT_BASE
-	reportE(REPORT_SCHEDULE_OPERATIONS, "Parameter memory: ");
+	reportE(REPORT_CTA_OPERATIONS, "Parameter memory: ");
 	_emitParameterMemory(&contexts[0]);
 #endif
 	
@@ -220,9 +223,9 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			int warpSize = 1;
 			unsigned int specialization = 0;
 			
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  encoded resume point: " << encodedSubkernel);
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  encoded resume point: 0x" << std::hex << encodedSubkernel << std::dec);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  subkernel: " << subkernelId);
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  entry: " << entryId);
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  entry: 0x" << std::hex << entryId << std::dec);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  mapped subkernel ID: " << subkernelId);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  fetching translation (warp size: " << warpSize << ")");
 		
@@ -245,22 +248,26 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 #endif
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  thread 0 exited with code "
-				<< _getResumeStatus(&contexts[tid]) << " and resume point: " 
-				<< _getResumePoint(&contexts[tid]));
+				<< analysis::KernelPartitioningPass::toString(_getResumeStatus(&contexts[tid])) 
+				<< " and resume point: 0x" << std::hex << _getResumePoint(&contexts[tid]) << std::dec);
 	
 			//   update contexts
 			if (_getResumeStatus(&contexts[tid]) == analysis::KernelPartitioningPass::Thread_barrier) {
 				++tid;
+				reportE(REPORT_SCHEDULE_OPERATIONS, "   advancing to next thread: " << tid);
 			}
 			else {
 				// continue executing [for now, more sophisticated scheduler shortly]
+				reportE(REPORT_SCHEDULE_OPERATIONS, "   executing same thread: " << tid);
 			}
 		}
 		else {
+			reportE(REPORT_SCHEDULE_OPERATIONS, "   thread " << tid << " exiting");
 			tid ++;
 			++exitingThreads;
 			if (exitingThreads == kernel->blockDim().size()) {
 				executing = false;
+				reportE(REPORT_SCHEDULE_OPERATIONS, "   CTA exiting");
 			}
 		}
 		

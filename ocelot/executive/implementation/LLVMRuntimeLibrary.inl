@@ -316,7 +316,7 @@ extern "C"
 		#endif
 		#endif
 	}
-
+	
 	void __ocelot_debug_instruction( executive::LLVMContext* context, 
 		ir::PTXU64 _instruction )
 	{
@@ -495,9 +495,9 @@ extern "C"
 		void* address = (void*)_address;
 		MetaData* state = (MetaData*) context->metadata;
 		
-		#if 0
+		#if 1
 		
-		if( !state->device->checkMemoryAccess( address, bytes ) )
+		if(state->device && !state->device->checkMemoryAccess( address, bytes ) )
 		{
 			unsigned int thread = context->tid.x 
 				+ context->ntid.x * context->tid.y 
@@ -522,6 +522,7 @@ extern "C"
 				<< "\n\n";
 			assertM(false, "Aborting execution.");
 		}
+		assert(state->device);
 		
 		#endif
 		

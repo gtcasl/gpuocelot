@@ -97,7 +97,6 @@ opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
 		deviceList.push_back(devices[i]);
 	}
 	Context * c = new Context(platform, deviceList);
-	_contexts.push_back(c);    	
 
 	return c;
 }
@@ -811,7 +810,7 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	cl_int err = CL_SUCCESS;
 
 	try {
-		if(std::find(_contexts.begin(), _contexts.end(), context) == _contexts.end())
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
 			throw CL_INVALID_CONTEXT;
 		
 		queue = new CommandQueue(context, device, properties);
@@ -972,7 +971,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	cl_int err = CL_SUCCESS;
 
 	try {
-		if(find(_contexts.begin(), _contexts.end(), context) == _contexts.end())
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
 			throw CL_INVALID_CONTEXT;
 
 		buffer = new BufferObject(context, flags, host_ptr, size);

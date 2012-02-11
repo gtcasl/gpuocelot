@@ -10,26 +10,39 @@
 #endif
 
 
-opencl::Context::Context(Platform * p, DeviceList & devices): 
-	Object(OBJTYPE_CONTEXT), platform(p) {
+opencl::Context::Context(Platform * p, Device::DeviceList & devices): 
+	Object(OBJTYPE_CONTEXT), _platform(p) {
 
-	for(DeviceList::iterator d = devices.begin();
+	for(Device::DeviceList::iterator d = devices.begin();
 		d != devices.end(); d++) {
-		this->validDevices.push_back(*d);
+		this->_validDevices.push_back(*d);
 		(*d)->retain();
 	}
 
-	platform->retain();
+	_platform->retain();
 }
 
 opencl::Context::~Context() {
-	for(std::list< Device * >::iterator d = validDevices.begin();
-		d != validDevices.end(); d++) {
+	for(Device::DeviceList::iterator d = _validDevices.begin();
+		d != _validDevices.end(); d++) {
 		if((*d)->release())
 			delete (*d);
 	}
 
-	if(platform->release())
-		delete platform;
+	if(_platform->release())
+		delete _platform;
+}
+
+opencl::Device::DeviceList & opencl::Context::getValidDevices() {
+	return _validDevices;
+}
+
+bool opencl::Context::isValidDevice(Device * device) {
+
+	if(find(_validDevices.begin(), _validDevices.end(), device) 
+		== _validDevices.end())
+		return false;
+	
+	return true;
 }
 

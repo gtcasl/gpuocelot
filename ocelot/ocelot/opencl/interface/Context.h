@@ -22,35 +22,33 @@ namespace opencl {
 	/*! Host thread OpenCL context consists of these */
 	class Context : public Object{	
 	
-		public:
+	public:
+		typedef std::list< Context * > ContextList;
 
-		typedef std::list< MemoryObject * > MemoryObjectList;
-		typedef Device::DeviceList DeviceList;
-		typedef std::list< CommandQueue * > QueueList;
-		typedef std::list< Program * > ProgramList;
+	public:
+		Context(Platform * platform, Device::DeviceList & devices);
+		~Context();
 
+	public:
+		//! Get all valid devices
+		Device::DeviceList & getValidDevices();
 
+		//! check if valid device
+		bool isValidDevice(Device * device);
+
+	private:
 		//! platform
-		Platform * platform;
+		Platform * _platform;
 	
 		//! set of valid device indices
-		DeviceList validDevices;
-
-		//! set of valid buffer objects
-		MemoryObjectList validMemories;
-
-		//! set of valid command queues
-		QueueList validQueues;
-	
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector persistentTraceGenerators;
+		Device::DeviceList _validDevices;
 
 		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector nextTraceGenerators;
+		//trace::TraceGeneratorVector persistentTraceGenerators;
+
+		//! set of trace generators to be inserted into emulated kernels
+		//trace::TraceGeneratorVector nextTraceGenerators;
 			
-	public:
-		Context(Platform * platform, DeviceList & devices);
-		~Context();
 
 	};
 

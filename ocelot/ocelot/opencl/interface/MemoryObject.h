@@ -18,6 +18,9 @@ namespace opencl {
 	/*! \brief class defining memory object in opencl */
 	class MemoryObject : public Object{
 	public:
+		typedef std::list< MemoryObject * > MemoryObjectList;
+
+	public:
 		MemoryObject(Context * context, cl_mem_object_type type, 
 			cl_mem_flags flags, void * host_ptr);
 		~MemoryObject();

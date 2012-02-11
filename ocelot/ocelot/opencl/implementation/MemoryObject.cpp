@@ -35,8 +35,10 @@ opencl::MemoryObject::~MemoryObject() {
 
 void opencl::MemoryObject::allocate() {
 
-	for(Device::DeviceList::iterator device = _context->validDevices.begin();
-		device != _context->validDevices.end(); device++) {
+	Device::DeviceList & validDevices = _context->getValidDevices();
+	
+	for(Device::DeviceList::iterator device = validDevices.begin();
+		device != validDevices.end(); device++) {
 
 		if(isAllocatedOnDevice(*device))
 			continue;
@@ -76,8 +78,6 @@ bool opencl::MemoryObject::isValidContext(Context * context) {
 opencl::BufferObject::BufferObject(Context * context, cl_mem_flags flags, 
 	void * host_ptr, size_t size)
 	:MemoryObject(context, CL_MEM_OBJECT_BUFFER, flags, host_ptr), _size(size) {
-
-	context->validMemories.push_back(this);
 
 	if(size == 0)
 		throw CL_INVALID_BUFFER_SIZE;

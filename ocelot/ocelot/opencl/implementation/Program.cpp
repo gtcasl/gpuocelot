@@ -119,12 +119,13 @@ char * opencl::Program::_getBinarySizes(size_t & bufferLen) {
 	size_t entries;
 
 	if(_type == PROGRAM_SOURCE) {
-		entries = _context->validDevices.size();
+		Device::DeviceList & validDevices = _context->getValidDevices();
+		entries = validDevices.size();
 		sizes = new char[entries * sizeof(size_t)];
 	
 		size_t i = 0;
-		for(Device::DeviceList::iterator device = _context->validDevices.begin();
-				device != _context->validDevices.end(); device++) {
+		for(Device::DeviceList::iterator device = validDevices.begin();
+				device != validDevices.end(); device++) {
 		
 			if(_deviceBuiltInfo.find(*device) != _deviceBuiltInfo.end())
 				((size_t *)sizes)[i] = _deviceBuiltInfo[*device]._binary.size();
@@ -158,12 +159,13 @@ char * opencl::Program::_getBinaries(size_t & bufferLen) {
 	size_t entries;
 
 	if(_type == PROGRAM_SOURCE) {
-		entries = _context->validDevices.size();
+		Device::DeviceList & validDevices = _context->getValidDevices();
+		entries = validDevices.size();
 		binaries = new char[entries * sizeof(unsigned char *)];
 	
 		size_t i = 0;
-		for(Device::DeviceList::iterator device = _context->validDevices.begin();
-				device != _context->validDevices.end(); device++) {
+		for(Device::DeviceList::iterator device = validDevices.begin();
+				device != validDevices.end(); device++) {
 		
 			if(_deviceBuiltInfo.find(*device) != _deviceBuiltInfo.end())
 				((const char **)binaries)[i] = _deviceBuiltInfo[*device]._binary.c_str();
@@ -255,14 +257,12 @@ bool opencl::Program::setupDevices(cl_uint num_devices, const cl_device_id * dev
 	_buildDevices.clear();
 
 	if(num_devices == 0) { //build on all devices
-		_buildDevices = _context->validDevices;
+		_buildDevices = _context->getValidDevices();
 		return true;
 	}
-	
+
 	for(cl_uint i = 0; i < num_devices; i++) {
-		if(std::find(_context->validDevices.begin(), 
-			_context->validDevices.end(),
-			(Device *)device_list[i]) == _context->validDevices.end()) {//Not found
+		if(!_context->isValidDevice((Device *)device_list[i])) {//Not found
 			_buildDevices.clear();
 			return false;
 		}

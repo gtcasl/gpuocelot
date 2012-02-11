@@ -18,6 +18,9 @@ namespace opencl {
 	/*! \brief class defining command queue in opencl */
 	class CommandQueue : public Object {
 	public:
+		typedef std::list< CommandQueue *> QueueList;
+		
+	public:
 		CommandQueue(Context * context, 
 			Device * device, 
 			cl_command_queue_properties properties);

@@ -27,7 +27,6 @@ namespace opencl {
 	public:
 		Context * context() ;
 		Device * device() ;
-		cl_command_queue_properties properties() ;
 
 	private:
 		Context * _context;

@@ -10,6 +10,22 @@ opencl::CommandQueue::CommandQueue(Context * context,
 
 	_context->retain();
 	_device->retain();
+
+	if(std::find(context->validDevices.begin(), context->validDevices.end(), device) 
+		== context->validDevices.end())//Not found
+		throw CL_INVALID_DEVICE;
+
+	if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
+					CL_QUEUE_PROFILING_ENABLE))
+		throw CL_INVALID_VALUE;
+	
+	if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
+		||(properties & CL_QUEUE_PROFILING_ENABLE)) {
+		assertM(false, "unimplemented queue properties");
+		throw CL_UNIMPLEMENTED;
+	}
+
+	context->validQueues.push_back(this);
 }
 
 opencl::CommandQueue::~CommandQueue() {
@@ -26,9 +42,5 @@ opencl::Context * opencl::CommandQueue::context() {
 
 opencl::Device * opencl::CommandQueue::device() {
 	return _device;
-}
-
-cl_command_queue_properties opencl::CommandQueue::properties() {
-	return _properties;
 }
 

@@ -814,28 +814,7 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 		if(std::find(_contexts.begin(), _contexts.end(), context) == _contexts.end())
 			throw CL_INVALID_CONTEXT;
 		
-		if(std::find(context->validDevices.begin(), context->validDevices.end(), device) 
-			== context->validDevices.end())//Not found
-			throw CL_INVALID_DEVICE;
-	
-		if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
-						CL_QUEUE_PROFILING_ENABLE))
-			throw CL_INVALID_VALUE;
-		
-		if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
-			||(properties & CL_QUEUE_PROFILING_ENABLE)) {
-			assertM(false, "unimplemented queue properties");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		try {
-			queue = new CommandQueue(context, device, properties);
-			_queues.push_back(queue);
-		}
-		catch(...) {
-			throw CL_OUT_OF_HOST_MEMORY;
-		}
-		context->validQueues.push_back(queue);
+		queue = new CommandQueue(context, device, properties);
 		
 	}
 	catch(cl_int exception) {
@@ -1028,7 +1007,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 
 	try {
 		
-		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
 			throw CL_INVALID_COMMAND_QUEUE;
 
 		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
@@ -1081,7 +1060,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 
 	try {
 
-		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
 			throw CL_INVALID_COMMAND_QUEUE;
 
 		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
@@ -1160,7 +1139,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	_lock();
 
 	try {
-		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
 			throw CL_INVALID_COMMAND_QUEUE;
 
 		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))

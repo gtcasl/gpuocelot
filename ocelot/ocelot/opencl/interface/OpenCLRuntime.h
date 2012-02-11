@@ -59,7 +59,7 @@ namespace opencl {
 //	typedef std::map< unsigned int, size_t > SizeMap;
 
 	typedef std::list< Context * > ContextList;
-	typedef std::list< CommandQueue * > CommandQueueList;
+//	typedef std::list< CommandQueue * > CommandQueueList;
 //
 //	class RegisteredTexture
 //	{
@@ -198,7 +198,7 @@ namespace opencl {
 		//MemoryObjectList _memories;
 
 		//! List of command queues;
-		CommandQueueList _queues;
+		//CommandQueueList _queues;
 		
 		//! maps texture symbols to module-textures
 		//RegisteredTextureMap _textures;

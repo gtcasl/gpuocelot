@@ -54,6 +54,7 @@ void opencl::Kernel::setArg(cl_uint arg_index, size_t arg_size, const void * arg
 	char * paramVal = new char[arg_size];
 	memcpy(paramVal, arg_value, arg_size);
 	_parameterPointers[arg_index] = paramVal;
+
 }
 
 void opencl::Kernel::mapParametersOnDevice(Device * device) {
@@ -117,10 +118,10 @@ void opencl::Kernel::mapParametersOnDevice(Device * device) {
 				throw CL_INVALID_KERNEL_ARGS;
 
 			MemoryObject * mem = *(MemoryObject **)pointer;
-			if(mem->allocations.find(device) == mem->allocations.end())
+			if(!mem->isAllocatedOnDevice(device))
 				throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-			void * addr = mem->allocations[device];
+			void * addr = mem->getPtrOnDevice(device);
 			memcpy(_parameterBlock + offset, &addr, argSize);
 		}
 		else { //non-memory argument

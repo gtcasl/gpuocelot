@@ -58,10 +58,6 @@ namespace opencl {
 //	typedef std::map< unsigned int, char * > PointerMap;
 //	typedef std::map< unsigned int, size_t > SizeMap;
 
-	typedef Device::DeviceList DeviceList;
-	typedef std::list< MemoryObject * > MemoryObjectList;
-//	typedef Program::KernelList KernelList;
-//	typedef Program::ProgramList ProgramList;
 	typedef std::list< Context * > ContextList;
 	typedef std::list< CommandQueue * > CommandQueueList;
 //
@@ -129,7 +125,11 @@ namespace opencl {
 	////////////////////////////////////////////////////////////////////////////
 	/*! OpenCL runtime context */
 	class OpenCLRuntime: public OpenCLRuntimeInterface {
+
+
 	private:
+		typedef Device::DeviceList DeviceList;
+
 		/*! \brief Memory copy */
 		//void _memcpy(void* dst, const void* src, size_t count, 
 		//	enum openclMemcpyKind kind);

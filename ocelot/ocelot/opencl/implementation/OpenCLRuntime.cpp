@@ -996,50 +996,9 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		if(find(_contexts.begin(), _contexts.end(), context) == _contexts.end())
 			throw CL_INVALID_CONTEXT;
 
-		if((flags & CL_MEM_READ_ONLY) 
-			&& ((flags & CL_MEM_READ_WRITE) || (flags & CL_MEM_WRITE_ONLY)))
-			throw CL_INVALID_VALUE;
-		if((flags & CL_MEM_WRITE_ONLY) 
-			&& ((flags & CL_MEM_READ_WRITE) || (flags & CL_MEM_READ_ONLY)))
-			throw CL_INVALID_VALUE;
+		buffer = new BufferObject(context, flags, host_ptr, size);
 
-		if((flags & CL_MEM_ALLOC_HOST_PTR) && (flags & CL_MEM_COPY_HOST_PTR))
-			throw CL_INVALID_VALUE;
-		
-		if(size == 0)
-			throw CL_INVALID_BUFFER_SIZE;
-
-		if((!host_ptr && ((flags & CL_MEM_USE_HOST_PTR) || (flags & CL_MEM_COPY_HOST_PTR)))
-			|| (host_ptr && !(flags & CL_MEM_USE_HOST_PTR) && !(flags & CL_MEM_COPY_HOST_PTR)))
-			throw CL_INVALID_HOST_PTR;
-
-		if(host_ptr) {
-			assertM(false, "unsuported host_ptr");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		std::map< Device *, void * > allocations;
-		for(DeviceList::iterator device = context->validDevices.begin();
-			device != context->validDevices.end(); device++) {
-			try {
-				void * allocation =  (*device)->allocate(size);
-				if(allocation == NULL) throw;
-				allocations.insert(std::make_pair(*device, allocation));
-				report("clCreateBuffer() return address = " <<  allocation << ", size = " << size);
-			}
-			catch(...) {
-				throw CL_OUT_OF_RESOURCES;
-			}
-
-		}
-
-		try {
-			buffer = new BufferObject(allocations, context, flags, size);
-		}
-		catch(...) {
-			throw CL_OUT_OF_HOST_MEMORY;
-		}
-		context->validMemories.push_back(buffer);
+		buffer->allocate();
 
 	}
 	catch(cl_int exception) {
@@ -1072,20 +1031,11 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(!buffer->isValidObject(Object::OBJTYPE_MEMORY))
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
 			throw CL_INVALID_MEM_OBJECT;
 
-		if(buffer->type() != CL_MEM_OBJECT_BUFFER)
-			throw CL_INVALID_MEM_OBJECT;
-
-		if(command_queue->context() != buffer->context())
+		if(!buffer->isValidContext(command_queue->context()))
 			throw CL_INVALID_CONTEXT;
-
-		if(offset >= buffer->size() || cb + offset > buffer->size())
-			throw CL_INVALID_VALUE;
-		
-		if(ptr == NULL)
-			throw CL_INVALID_VALUE;
 
 		if(event_wait_list == NULL && num_events_in_wait_list > 0)
 			throw CL_INVALID_EVENT_WAIT_LIST;
@@ -1103,19 +1053,8 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 			throw CL_UNIMPLEMENTED;
 		}
 
-		if(blocking_read == false) {
-			assertM(false, "unblocking read is not supported!");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		std::map<Device *, void *> & allocations = buffer->allocations;
-		Device * device = command_queue->device();
-		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
-			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
-
-		void * allocation = allocations.find(device)->second;
-		if(!device->read(allocation, ptr, offset, cb))
-			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+		((BufferObject *)buffer)->readOnDevice(command_queue->device(), blocking_read,
+			offset, cb, ptr);
 
 	}
 	catch(cl_int exception) {
@@ -1145,17 +1084,11 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		if(std::find(_queues.begin(), _queues.end(), command_queue) == _queues.end())
 			throw CL_INVALID_COMMAND_QUEUE;
 
-		if(!buffer->isValidObject(Object::OBJTYPE_MEMORY))
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
 			throw CL_INVALID_MEM_OBJECT;
 
-		if(command_queue->context() != buffer->context())
+		if(!buffer->isValidContext(command_queue->context()))
 			throw CL_INVALID_CONTEXT;
-
-		if(offset >= buffer->size() || cb + offset > buffer->size())
-			throw CL_INVALID_VALUE;
-		
-		if(ptr == NULL)
-			throw CL_INVALID_VALUE;
 
 		if(event_wait_list == NULL && num_events_in_wait_list > 0)
 			throw CL_INVALID_EVENT_WAIT_LIST;
@@ -1173,20 +1106,8 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 			throw CL_UNIMPLEMENTED;
 		}
 
-		if(blocking_write == false) {
-			assertM(false, "unblocking write is not supported!");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		std::map<Device *, void *> & allocations = buffer->allocations;
-		Device * device = command_queue->device();
-		if(allocations.find(device) == allocations.end() || allocations.find(device)->second == NULL)
-			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
-
-		void * allocation = allocations.find(device)->second;
-
-		if(!device->write(allocation, ptr, offset, cb))
-			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+		((BufferObject *)buffer)->writeOnDevice(command_queue->device(),
+			blocking_write, offset, cb, ptr);
 
 	}
 	catch(cl_int exception) {

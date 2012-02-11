@@ -18,31 +18,56 @@ namespace opencl {
 	/*! \brief class defining memory object in opencl */
 	class MemoryObject : public Object{
 	public:
-		MemoryObject(std::map< Device *, void * > & addrs, 
-			Context * context, cl_mem_object_type type, cl_mem_flags flags);
+		MemoryObject(Context * context, cl_mem_object_type type, 
+			cl_mem_flags flags, void * host_ptr);
 		~MemoryObject();
 
 	public:
-		Context * context() const;
-		const cl_mem_object_type type() const;
-		const cl_mem_flags flags() const;
+		//! get allocation size
 		const virtual size_t size() const = 0;
-		std::map< Device *, void * > allocations; //allocations on device
 
-	private:
+		//! allocate resouces on devices
+		void allocate();
+
+		//! check if allocated on device
+		bool isAllocatedOnDevice(Device * device);
+
+		//! get allocated ptr on device
+		void * getPtrOnDevice(Device * device);
+
+		//! check if valid memory obejct
+		bool isValidMemoryObject(cl_mem_object_type type);
+
+		//! check if valid context
+		bool isValidContext(Context * context);
+
+	protected:
 		Context * _context;
 		const cl_mem_object_type _type;
 		const cl_mem_flags _flags;
+		void * _hostPtr;
+
+	private:
+		std::map< Device *, void * > _allocations; //allocations on device
+
 	};
 
 	/*! \breif class defining buffer object in opencl */
 	class BufferObject: public MemoryObject {
 	public:
-		BufferObject(std::map< Device *, void * > & addrs, 
-			Context * context, const cl_mem_flags flags, size_t size);
+		BufferObject(Context * context, const cl_mem_flags flags, void * host_ptr, size_t size);
 
 	public:
+		//! get allocation size
 		const size_t size() const;
+
+		//! read on device
+		void readOnDevice(Device * device, cl_bool blockingRead,
+        	size_t offset, size_t cb, void * ptr);
+
+		//! write on device
+		void writeOnDevice(Device * device, cl_bool blockingWrite,
+        	size_t offset, size_t cb, const void * ptr);
 
 	private:
 		size_t _size;	

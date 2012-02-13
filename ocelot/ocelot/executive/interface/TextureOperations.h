@@ -556,6 +556,199 @@ namespace executive
 			return d;
 		}
 		
+		template <typename T> T fabs(T t) {
+			if (t < 0) return -t;
+			return t;
+		}
+		template <typename T> T signum(T t) {
+			if (t < 0) return -1;
+			if (t > 0) return 1;
+			return 0;
+		}
+		
+		template<unsigned int dim, typename D>
+		D sampleCube(const ir::Texture& texture, float b0, float b1, float b2) {
+			D d = 0;
+			ir::PTXF32 b[3] = {b0,b1,b2};
+			ir::PTXB64 mask;
+			unsigned int shift;
+
+			getShiftAndMask<dim>(shift, mask, texture);
+				
+			// find which is largest in magnitude
+			float magnitudes[3] = {fabs(b[0]), fabs(b[1]), fabs(b[2])};
+			float signs[3] = {signum(b[0]), signum(b[1]), signum(b[2])};
+			int maxDim = 0;
+			for (int i = 1; i < 3; i++) {
+				if (magnitudes[i] > magnitudes[maxDim]) {
+					maxDim = i;
+				}
+			}
+			int textureIndex = maxDim*2 + (signs[maxDim] < 0 ? 1 : 0);
+			float layerCoords[3] = {0, 0};
+			layerCoords[0] = magnitudes[maxDim];
+			switch (textureIndex) {
+			case 0:
+				layerCoords[1] = -b[2];
+				layerCoords[2] = -b[1];
+				break;
+			case 1:
+				layerCoords[1] = b[2];
+				layerCoords[2] = -b[1];
+			break;
+			case 2:
+				layerCoords[1] = b[0];
+				layerCoords[2] = b[2];
+			break;
+			case 3:
+				layerCoords[1] = b[0];
+				layerCoords[2] = -b[2];
+			break;
+			case 4:
+				layerCoords[1] = b[0];
+				layerCoords[2] = -b[1];
+			break;
+			case 5:
+				layerCoords[1] = -b[0];
+				layerCoords[2] = -b[1];
+			break;
+			default:
+			break;
+			}
+			b[0] = (layerCoords[1] / layerCoords[0] + 1.0f) / 2.0f;
+			b[1] = (layerCoords[2] / layerCoords[0] + 1.0f) / 2.0f;
+			
+			if (texture.normalize) {
+				b[0] = b[0] * texture.size.x;
+				b[1] = b[1] * texture.size.y;
+			}
+			
+			if (texture.interpolation == ir::Texture::Nearest) {
+				ir::PTXF64 index[2] = { (ir::PTXF64)b[0], (ir::PTXF64)b[1]};
+				unsigned int windex[2];
+				windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
+				windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
+				
+				switch (texture.type) {
+					case ir::Texture::Unsigned:
+					{
+						ir::PTXU32 result = channelRead<ir::PTXU32>(texture, 
+							shift, mask, 
+							windex[0] + windex[1]*texture.size.x + texture.size.x*texture.size.y*textureIndex);
+						d = result;
+						break;
+					}
+					case ir::Texture::Signed:
+					{
+						ir::PTXS32 result = channelRead<ir::PTXS32>(texture, 
+							shift, mask, 
+							windex[0] + windex[1]*texture.size.x + texture.size.x*texture.size.y*textureIndex);
+						d = result;
+						break;
+					}
+					case ir::Texture::Float:
+					{
+						ir::PTXF32 result = channelReadF32(texture, 
+							shift, mask, 
+							windex[0] + windex[1]*texture.size.x + texture.size.x*texture.size.y*textureIndex);
+
+						d = result;
+						break;
+					}
+					default:
+						assert("Invalid texture data type" == 0);
+				}
+			}
+			else if (texture.interpolation == ir::Texture::Linear) {
+				b[0] -= 0.5f;
+				b[1] -= 0.5f;
+				
+				ir::PTXF64 low[2] = {floor(b[0]), floor(b[1])};
+				ir::PTXF64 high[2] = {floor(b[0] + 1), floor(b[1] + 1)};
+				unsigned int wlow[3];
+				unsigned int whigh[3];
+				wlow[0] = wrap(low[0], texture.size.x, texture.addressMode[0]);
+				wlow[1] = wrap(low[1], texture.size.y, texture.addressMode[1]);
+				whigh[0] = wrap(high[0], texture.size.x, texture.addressMode[0]);
+				whigh[1] = wrap(high[1], texture.size.y, texture.addressMode[1]);
+				switch (texture.type) {
+					case ir::Texture::Unsigned:
+					{
+						ir::PTXF64 result = channelRead<ir::PTXU32>(texture, 
+							shift, mask, wlow[0] 
+							+ texture.size.x * wlow[1]) * (high[0] - b[0]) 
+							* (high[1] - b[1]);
+						result += channelRead<ir::PTXU32>(texture, 
+							shift, mask, whigh[0] 
+							+ texture.size.x * whigh[1]) * (b[0] - low[0]) 
+							* (b[1] - low[1]);
+						result += channelRead<ir::PTXU32>(texture, 
+							shift, mask, wlow[0] 
+							+ texture.size.x * whigh[1]) * (high[0] - b[0]) 
+							* (b[1] - low[1]);
+						result += channelRead<ir::PTXU32>(texture, 
+							shift, mask, whigh[0] 
+							+ texture.size.x * wlow[1]) * (b[0] - low[0]) 
+							* (high[1] - b[1]);
+						d = result;
+						break;
+					}
+					case ir::Texture::Signed:
+					{
+						ir::PTXF64 result = channelRead<ir::PTXS32>(texture, 
+							shift, mask, wlow[0] 
+							+ texture.size.x * wlow[1]) * (high[0] - b[0]) 
+							* (high[1] - b[1]);
+						result += channelRead<ir::PTXS32>(texture, 
+							shift, mask, whigh[0] 
+							+ texture.size.x * whigh[1]) * (b[0] - low[0]) 
+							* (b[1] - low[1]);
+						result += channelRead<ir::PTXS32>(texture, 
+							shift, mask, wlow[0] 
+							+ texture.size.x * whigh[1]) * (high[0] - b[0]) 
+							* (b[1] - low[1]);
+						result += channelRead<ir::PTXS32>(texture, 
+							shift, mask, high[0] 
+							+ texture.size.x * low[1]) * (b[0] - low[0]) 
+							* (high[1] - b[1]);
+						d = result;
+						break;
+					}
+					case ir::Texture::Float:
+					{
+						ir::PTXF32 result = channelReadF32(texture, 
+							shift, mask, wlow[0] 
+							+ texture.size.x * wlow[1]) * (high[0] - b[0]) 
+							* (high[1] - b[1]);
+						result += channelReadF32(texture, shift, mask, whigh[0] 
+							+ texture.size.x * whigh[1]) * (b[0] - low[0]) 
+							* (b[1] - low[1]);
+						result += channelReadF32(texture, shift, mask, wlow[0] 
+							+ texture.size.x * whigh[1]) * (high[0] - b[0]) 
+							* (b[1] - low[1]);
+						result += channelReadF32(texture, shift, mask, whigh[0] 
+							+ texture.size.x * wlow[1]) * (b[0] - low[0]) 
+							* (high[1] - b[1]);
+						d = result;
+						break;
+					}
+					default:
+						assert("Invalid texture data type" == 0);
+				}
+			}
+			else {
+				assert(0 && "invalid texture interpolation mode");
+			}
+			
+			if( texture.normalizedFloat )
+			{
+				ir::PTXF32 f = ( d + 0.0 ) / (mask + 1);
+				d = hydrazine::bit_cast< D >( f );
+			}
+	
+			return d;
+		}
+		
 		void addresses( const ir::Texture& texture, ir::PTXF64 b0,
 			trace::TraceEvent::U64Vector& );
 		void addresses( const ir::Texture& texture, ir::PTXF64 b0,

@@ -972,15 +972,14 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3DArray(struct cudaArray** arrayPtr,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	size_t size = extent.width * extent.height * extent.depth * ( desc->x 
-		+ desc->y + desc->z + desc->w ) / 8;
+	size_t size = extent.width * extent.height * extent.depth * (
+		desc->x + desc->y + desc->z + desc->w ) / 8;
 
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocate(size);
 		*arrayPtr = (struct cudaArray*)allocation->pointer();
-		_dimensions[allocation->pointer()] = Dimension(extent.width, 
-			extent.height, extent.depth, *desc);
+		_dimensions[allocation->pointer()] = Dimension(extent.width, extent.height, extent.depth, *desc);
 		result = cudaSuccess;
 	}
 	catch(hydrazine::Exception&) {

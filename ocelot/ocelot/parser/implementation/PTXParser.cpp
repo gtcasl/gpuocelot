@@ -2575,6 +2575,10 @@ namespace parser
 			case TOKEN_1D: return ir::PTXInstruction::_1d; break;
 			case TOKEN_2D: return ir::PTXInstruction::_2d; break;
 			case TOKEN_3D: return ir::PTXInstruction::_3d; break;
+			case TOKEN_A1D: return ir::PTXInstruction::_a1d; break;
+			case TOKEN_A2D: return ir::PTXInstruction::_a2d; break;
+			case TOKEN_CUBE: return ir::PTXInstruction::_cube; break;
+			case TOKEN_ACUBE: return ir::PTXInstruction::_acube; break;
 			default: break;
 		}
 		

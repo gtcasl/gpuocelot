@@ -257,6 +257,10 @@ std::string ir::PTXInstruction::toString( Geometry geometry ) {
 		case _1d: return "1d"; break;
 		case _2d: return "2d"; break;
 		case _3d: return "3d"; break;
+		case _a1d: return "a1d"; break;
+		case _a2d: return "a2d"; break;
+		case _cube: return "cube"; break;
+		case _acube: return "acube"; break;		
 		default: break;
 	}
 	return "";

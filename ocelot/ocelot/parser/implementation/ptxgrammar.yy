@@ -109,7 +109,7 @@
 %token<value> TOKEN_MIN TOKEN_MAX TOKEN_DEC TOKEN_INC TOKEN_ADD TOKEN_CAS
 %token<value> TOKEN_EXCH
 
-%token<value> TOKEN_1D TOKEN_2D TOKEN_3D
+%token<value> TOKEN_1D TOKEN_2D TOKEN_3D TOKEN_A1D TOKEN_A2D TOKEN_CUBE TOKEN_ACUBE
 
 %token<value> TOKEN_CA TOKEN_WB TOKEN_CG TOKEN_CS TOKEN_LU TOKEN_CV TOKEN_WT
 
@@ -1410,7 +1410,7 @@ st : OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' arrayOperand ';'
 	state.instruction( $<text>1, $<value>3 );
 };
 
-geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D;
+geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D | TOKEN_A1D | TOKEN_A2D | TOKEN_CUBE | TOKEN_ACUBE;
 
 geometry : geometryId
 {

@@ -22,32 +22,6 @@ namespace executive {
 		typedef analysis::KernelPartitioningPass::ThreadExitType ThreadExitType;
 		typedef executive::MetaData Metadata;
 		
-		/*!
-			\brief per kernel data structure accessible to the translation
-		*/
-		/*
-		class Metadata {
-		public:
-			Metadata();
-			~Metadata();
-			
-		public:		
-			unsigned int sharedSize;
-			unsigned int localSize;
-			unsigned int parameterSize;
-			unsigned int argumentSize;
-			unsigned int constantSize;
-			unsigned int warpSize;
-			
-		public:
-			const ir::PTXKernel* kernel;
-			
-			SubkernelId	nextEntryId;
-			
-			executive::ExecutableKernel::TextureVector textures;
-		};
-		*/
-		
 	public:
 		DynamicMulticoreExecutive(executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
 		~DynamicMulticoreExecutive();

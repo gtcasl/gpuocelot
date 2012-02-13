@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Print out information when executing atomic operations 
 #define REPORT_ATOMIC_OPERATIONS 0
@@ -577,8 +577,8 @@ extern "C"
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
 				<< instruction( state->kernel->module, statement ) << "'\n";
-			std::cerr << "Shared memory address " 
-				<< _address << " is " << (end - allocationEnd)
+			std::cerr << "Shared memory address 0x" 
+				<< std::hex << _address << std::dec << " is " << (end - allocationEnd)
 				<< " bytes beyond the shared memory block of " 
 				<< state->sharedSize << " bytes.\n";
 			std::cout << "\tNear: "

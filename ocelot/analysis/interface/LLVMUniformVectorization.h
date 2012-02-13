@@ -177,6 +177,8 @@ namespace analysis
 			
 			void _enumerateEntries();
 			
+			void _debugReporting();
+			
 		protected:
 		
 			void _transformWarpSynchronous();

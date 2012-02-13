@@ -26,13 +26,13 @@ namespace opencl {
 		
 		virtual ~OpenCLRuntimeInterface();
 
-	public:
+//	public:
 		//! \brief gets the Ocelot runtime object
-		const ocelot::OcelotRuntime & ocelot() const;
+//		const ocelot::OcelotRuntime & ocelot() const;
 
-	protected:
+//	protected:
 		//! \brief Ocelot runtime object containing state related to Ocelot
-		ocelot::OcelotRuntime ocelotRuntime;
+//		ocelot::OcelotRuntime ocelotRuntime;
 		
 	public:
 		//! \brief Now just for test

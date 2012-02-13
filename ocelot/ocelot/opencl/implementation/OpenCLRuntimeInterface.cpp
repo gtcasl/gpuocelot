@@ -37,8 +37,8 @@ opencl::OpenCLRuntimeInterface * opencl::OpenCLRuntimeInterface::get() {
 			opencl::OpenCLRuntimeInterface::instance = new OpenCLRuntime;
 
 			//Handle configuration later, now don't bother
-			opencl::OpenCLRuntimeInterface::instance->ocelotRuntime.configure(
-				api::OcelotConfiguration::get());
+			//opencl::OpenCLRuntimeInterface::instance->ocelotRuntime.configure(
+			//	api::OcelotConfiguration::get());
 			std::atexit(destroyInstance);
 		}
 		else {

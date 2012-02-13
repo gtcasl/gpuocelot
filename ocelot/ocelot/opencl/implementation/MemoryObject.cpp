@@ -89,21 +89,7 @@ const size_t opencl::BufferObject::size() const {
 }
 
 void opencl::BufferObject::readOnDevice(Device * device, 
-	cl_bool blockingRead, size_t offset, size_t cb, void * ptr) {
-
-	if(offset >= _size || cb + offset > _size)
-		throw CL_INVALID_VALUE;
-	
-	if(ptr == NULL)
-		throw CL_INVALID_VALUE;
-
-	if(blockingRead == false) {
-		assertM(false, "unblocking read is not supported!");
-		throw CL_UNIMPLEMENTED;
-	}
-
-	if(!isAllocatedOnDevice(device))
-		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+	size_t offset, size_t cb, void * ptr) {
 
 	void * devicePtr = getPtrOnDevice(device);
 	if(!device->read(devicePtr, ptr, offset, cb))

@@ -5,16 +5,21 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Object.h>
 
+#undef REPORT_BASE
+#define REPORT_BASE 0
+
 std::list<opencl::Object *> opencl::Object::_objList = std::list< Object * >();
 
 opencl::Object::Object(objT type):
 	_objType(type), _references(1) {
 
+	report("Creating object " << this);
 	_objList.push_back(this);
 
 }
 
 opencl::Object::~Object() {
+	report("Delete object " << this);
 	std::list< Object * >::iterator it = 
 		std::find(_objList.begin(), _objList.end(), this);
 
@@ -23,7 +28,6 @@ opencl::Object::~Object() {
 	_objList.erase(it);
 
 }
-
 
 bool opencl::Object::isValidObject(objT type) {
 	std::list< Object * >::iterator it = 

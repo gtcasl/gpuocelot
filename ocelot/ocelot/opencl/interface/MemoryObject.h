@@ -65,7 +65,7 @@ namespace opencl {
 		const size_t size() const;
 
 		//! read on device
-		void readOnDevice(Device * device, cl_bool blockingRead,
+		void readOnDevice(Device * device,
         	size_t offset, size_t cb, void * ptr);
 
 		//! write on device

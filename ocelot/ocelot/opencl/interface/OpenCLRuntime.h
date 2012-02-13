@@ -49,6 +49,9 @@ struct _cl_mem : public opencl::MemoryObject {
 struct _cl_device_id : public opencl::Device {
 };
 
+struct _cl_event : public opencl::Event {
+};
+
 namespace transforms { class Pass; }
 
 namespace opencl {

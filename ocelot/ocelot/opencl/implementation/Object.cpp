@@ -6,7 +6,7 @@
 #include <ocelot/opencl/interface/Object.h>
 
 #undef REPORT_BASE
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 std::list<opencl::Object *> opencl::Object::_objList = std::list< Object * >();
 

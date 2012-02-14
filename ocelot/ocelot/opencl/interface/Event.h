@@ -27,7 +27,7 @@ namespace opencl {
 		~Event();
 
 	public:
-		void release();
+		virtual void release() = 0;
 
 		//! get type
 		cl_command_type type();
@@ -67,6 +67,7 @@ namespace opencl {
 		~ReadBufferEvent();
 
 	public:
+		void release();
 		void execute(Device * device);
 
 

@@ -55,11 +55,6 @@ opencl::Event::~Event() {
 }
 
 
-void opencl::Event::release() {
-	if(Object::release())
-		delete this;
-}
-
 
 cl_command_type opencl::Event::type() {
 	return _type;
@@ -109,6 +104,11 @@ opencl::ReadBufferEvent::ReadBufferEvent(CommandQueue * commandQueue,
 opencl::ReadBufferEvent::~ReadBufferEvent() {
 
 	_buffer->release();
+}
+
+void opencl::ReadBufferEvent::release() {
+if(Object::release())
+	delete this;
 }
 
 void opencl::ReadBufferEvent::execute(Device * device) {

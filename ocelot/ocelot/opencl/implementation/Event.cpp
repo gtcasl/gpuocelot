@@ -43,18 +43,23 @@ opencl::Event::~Event() {
 
 	report("Delete event " << this);
 
-	if(_commandQueue && _commandQueue->release())
-		delete _commandQueue;
+	if(_commandQueue)
+		_commandQueue->release();
 
-	if(_context->release())
-		delete _context;
+	_context->release();
 
 	for(EventList::iterator event = _waitList.begin(); 
 		event != _waitList.end(); event++) {
-		if((*event)->release())
-			delete *event;
+		(*event)->release();
 	}
 }
+
+
+void opencl::Event::release() {
+	if(Object::release())
+		delete this;
+}
+
 
 cl_command_type opencl::Event::type() {
 	return _type;
@@ -96,10 +101,14 @@ opencl::ReadBufferEvent::ReadBufferEvent(CommandQueue * commandQueue,
 	if(!buffer->isAllocatedOnDevice(commandQueue->device()))
 		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
+	buffer->retain();
+
 	commandQueue->queueEvent(this, blockingRead);
 }
 
 opencl::ReadBufferEvent::~ReadBufferEvent() {
+
+	_buffer->release();
 }
 
 void opencl::ReadBufferEvent::execute(Device * device) {

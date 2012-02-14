@@ -29,6 +29,8 @@ namespace opencl {
 		~Kernel();
 
 	public:
+		void release();
+
 		//validate context
 		bool isValidContext(Context * context);
 

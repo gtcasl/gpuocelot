@@ -20,20 +20,18 @@ void opencl::QueueThread::_executeEvent(Event * e) {
 
 		report("  event '" << e << "' failed.");
 		e->setStatus(exception);
-		e->release();
 		return;
 	}
 	catch(...) {
 		report("  event '" << e << "' failed.");
 		e->setStatus(CL_OUT_OF_RESOURCES);
-		e->release();
 		return;
 	}
 
 	report("  event '" << e << "' finished.");
 
 	e->setStatus(CL_COMPLETE);
-	e->release();
+
 
 }
 
@@ -113,7 +111,66 @@ void opencl::QueueThread::execute() {
 	threadSend(message);
 }
 
+void opencl::CommandQueue::_submitEvents() {
 
+	for(EventList::iterator e = _eventsQueue.begin();
+		e != _eventsQueue.end(); e++) {
+		//Temporary submit strategy: Get first queued but not submitted event
+		if((*e)->hasStatus(CL_QUEUED)) {
+			report("Submit event " << (*e) << " in queue " << this);
+
+			(*e)->setStatus(CL_SUBMITTED);
+			_thread->sendEvent(*e);
+
+			break;
+		}
+	}
+}
+
+void opencl::CommandQueue::_clearEvent(Event * event) {
+	assert(event->isCompleted());
+	EventList::iterator e = find(_eventsQueue.begin(),
+		_eventsQueue.end(), event);
+	assert(e != _eventsQueue.end());
+	_eventsQueue.erase(e);
+	event->release();
+}
+
+void opencl::CommandQueue::_clearCompletedEvents() {
+	for(EventList::iterator e = _eventsQueue.begin();
+		e != _eventsQueue.end(); e++) {
+		//clear completed events
+		if((*e)->isCompleted()) { 
+			(*e)->release();
+			e = (--_eventsQueue.erase(e));
+		}
+	}
+}
+
+bool opencl::CommandQueue::_isAllSubmitted() {
+	for(EventList::iterator e = _eventsQueue.begin();
+		e != _eventsQueue.end(); e++) {
+		if((*e)->hasStatus(CL_QUEUED))
+			return false;
+	}
+	return true;
+}
+
+bool opencl::CommandQueue::_isAllCompleted() {
+	for(EventList::iterator e = _eventsQueue.begin();
+		e != _eventsQueue.end(); e++) {
+		if(!(*e)->isCompleted())
+			return false;
+	}
+	return true;
+}
+
+void opencl::CommandQueue::_killThread() {
+	if(_thread) {
+		delete _thread;
+		_thread = NULL;
+	}
+}
 opencl::CommandQueue::CommandQueue(Context * context, 
 	Device * device, 
 	cl_command_queue_properties properties)
@@ -147,11 +204,14 @@ opencl::CommandQueue::~CommandQueue() {
 	if(_thread)
 		delete _thread;
 
-	if(_context->release())
-		delete _context;
+	_context->release();
 
-	if(_device->release())
-		delete _device;
+	_device->release();
+}
+
+void opencl::CommandQueue::release() {
+	if(Object::release())
+		delete this;
 }
 
 void opencl::CommandQueue::killAllQueueThreads() {
@@ -160,7 +220,7 @@ void opencl::CommandQueue::killAllQueueThreads() {
 	for(std::list< Object * >::iterator it = _objList.begin();
 		it != _objList.end(); it++) {
 		if((*it)->isValidObject(OBJTYPE_COMMANDQUEUE))
-			((CommandQueue *)(*it))->killThread();
+			((CommandQueue *)(*it))->_killThread();
 	}
 }
 
@@ -179,34 +239,41 @@ void opencl::CommandQueue::queueEvent(Event * event, cl_bool blocking) {
 	_eventsQueue.push_back(event);
 	event->setStatus(CL_QUEUED);
 
-	submitEvents();
+	_clearCompletedEvents();
+	_submitEvents();
 
 	if(blocking) {
 		report(" Blocking event " << event);
-		while(!event->hasStatus(CL_SUBMITTED))
-			submitEvents();
+		flushEvents();
 
 		while(!event->isCompleted());
+
+		_clearEvent(event);
 
 		report(" Blocking event " << event << " end ");
 	}
 }
 
-void opencl::CommandQueue::submitEvents() {
+void opencl::CommandQueue::flushEvents() {
 
-	//now in-order only
-	Event * e = _eventsQueue.front();
-	report("Submit event " << e << " in queue " << this);
+	//submit all events in the queue
+	report("Flush events for command queue " << this);
 
-	e->setStatus(CL_SUBMITTED);
-	_thread->sendEvent(e);
+	_clearCompletedEvents();
 
-	_eventsQueue.pop_front();
+	while(!_isAllSubmitted())
+		_submitEvents();
 }
 
-void opencl::CommandQueue::killThread() {
-	if(_thread) {
-		delete _thread;
-		_thread = NULL;
-	}
+void opencl::CommandQueue::finishEvents() {
+
+	report("Finish events for command queue " << this);
+
+	flushEvents();
+
+	while(!_isAllCompleted());
+
+	_clearCompletedEvents();
 }
+
+

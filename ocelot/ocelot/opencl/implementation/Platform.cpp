@@ -14,6 +14,11 @@ opencl::Platform::Platform(): Object(OBJTYPE_PLATFORM),
 opencl::Platform::~Platform() {
 }
 	
+void opencl::Platform::release() {
+	if(Object::release())
+		delete this;
+}
+
 void opencl::Platform::getInfo(cl_platform_info param_name,
 	size_t param_value_size,
     void * param_value,

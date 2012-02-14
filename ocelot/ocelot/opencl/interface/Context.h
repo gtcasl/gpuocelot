@@ -30,6 +30,8 @@ namespace opencl {
 		~Context();
 
 	public:
+		void release();
+
 		//! Get all valid devices
 		Device::DeviceList & getValidDevices();
 

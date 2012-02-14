@@ -802,6 +802,29 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	return (cl_context)(ctx);
 }
 
+cl_int opencl::OpenCLRuntime::clReleaseContext(cl_context context) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
+			throw CL_INVALID_CONTEXT;
+
+		context->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
+}
+
 cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context, 
 	cl_device_id device, 
 	cl_command_queue_properties properties,
@@ -829,6 +852,29 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 		*errcode_ret = err;
 	_unlock();
 	return (cl_command_queue)queue;
+}
+
+cl_int opencl::OpenCLRuntime::clReleaseCommandQueue(cl_command_queue command_queue) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		command_queue->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
 }
 
 cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
@@ -863,6 +909,29 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	_unlock();
 
 	return (cl_program)program;
+}
+
+cl_int opencl::OpenCLRuntime::clReleaseProgram(cl_program program) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))
+			throw CL_INVALID_PROGRAM;
+
+		program->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
 }
 
 cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
@@ -963,6 +1032,29 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	return (cl_kernel)kernel;
 }
 
+cl_int opencl::OpenCLRuntime::clReleaseKernel(cl_kernel kernel) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
+			throw CL_INVALID_KERNEL;
+
+		kernel->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
+}
+
 cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	cl_mem_flags flags,
 	size_t size,
@@ -993,6 +1085,29 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 		*errcode_ret = err;
 	_unlock();
 	return (cl_mem)buffer;
+}
+
+cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
+			throw CL_INVALID_MEM_OBJECT;
+
+		memobj->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
 }
 
 cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue,
@@ -1155,3 +1270,73 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	_unlock();
 	return result;
 }
+
+cl_int opencl::OpenCLRuntime::clReleaseEvent(cl_event event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!event->isValidObject(Object::OBJTYPE_EVENT))
+			throw CL_INVALID_EVENT;
+
+		event->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
+}
+
+
+cl_int opencl::OpenCLRuntime::clFlush(cl_command_queue command_queue) {
+	cl_int result = CL_SUCCESS;
+	
+	_lock();
+
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		command_queue->flushEvents();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clFinish(cl_command_queue command_queue) {
+	cl_int result = CL_SUCCESS;
+	
+	_lock();
+
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		command_queue->finishEvents();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
+

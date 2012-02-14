@@ -26,6 +26,8 @@ namespace opencl {
 		~MemoryObject();
 
 	public:
+		void release();
+
 		//! get allocation size
 		const virtual size_t size() const = 0;
 

@@ -30,8 +30,7 @@ opencl::Device::Device(executive::Device * d,
 
 opencl::Device::~Device() {
 
-	if(_platform->release())
-		delete _platform;
+	_platform->release();
 
 	delete _exeDevice;
 
@@ -41,6 +40,12 @@ opencl::Device::~Device() {
 	_deviceList.erase(it);
 
 }
+
+void opencl::Device::release() {
+	if(Object::release())
+		delete this;
+}
+
 
 void opencl::Device::createDevices(Platform * platform, deviceT device, 
 	unsigned int flags, int computeCapability, int workerThreadLimit ) {

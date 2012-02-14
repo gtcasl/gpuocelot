@@ -25,12 +25,15 @@ opencl::Context::Context(Platform * p, Device::DeviceList & devices):
 opencl::Context::~Context() {
 	for(Device::DeviceList::iterator d = _validDevices.begin();
 		d != _validDevices.end(); d++) {
-		if((*d)->release())
-			delete (*d);
+		(*d)->release();
 	}
 
-	if(_platform->release())
-		delete _platform;
+	_platform->release();
+}
+
+void opencl::Context::release() {
+	if(Object::release())
+		delete this;
 }
 
 opencl::Device::DeviceList & opencl::Context::getValidDevices() {

@@ -29,8 +29,12 @@ opencl::MemoryObject::MemoryObject(Context * context, cl_mem_object_type type,
 }
 
 opencl::MemoryObject::~MemoryObject() {
-	if(_context->release())
-		delete _context;
+	_context->release();
+}
+
+void opencl::MemoryObject::release() {
+	if(Object::release())
+		delete this;
 }
 
 void opencl::MemoryObject::allocate() {

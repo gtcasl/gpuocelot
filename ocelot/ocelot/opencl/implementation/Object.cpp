@@ -6,7 +6,7 @@
 #include <ocelot/opencl/interface/Object.h>
 
 #undef REPORT_BASE
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 std::list<opencl::Object *> opencl::Object::_objList = std::list< Object * >();
 
@@ -41,8 +41,11 @@ bool opencl::Object::isValidObject(objT type) {
 
 void opencl::Object::retain() {
 	_references++;
+	report("Object " << this << " retain, reference count " << _references);
 }
 
 bool opencl::Object::release() {
-	return (--_references == 0);
+	_references--;
+	report("Object " << this << " release, reference count " << _references);
+	return (_references == 0);
 }

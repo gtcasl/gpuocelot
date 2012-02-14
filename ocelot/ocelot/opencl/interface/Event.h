@@ -27,6 +27,8 @@ namespace opencl {
 		~Event();
 
 	public:
+		void release();
+
 		//! get type
 		cl_command_type type();
 		

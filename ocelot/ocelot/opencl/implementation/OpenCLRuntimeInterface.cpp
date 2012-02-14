@@ -103,12 +103,22 @@ cl_context opencl::OpenCLRuntimeInterface::clCreateContext(const cl_context_prop
 	return NULL;
 }
 
+cl_int opencl::OpenCLRuntimeInterface::clReleaseContext(cl_context context) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
 cl_command_queue opencl::OpenCLRuntimeInterface::clCreateCommandQueue(cl_context context, 
 	cl_device_id device, 
 	cl_command_queue_properties properties,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
 	return NULL;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clReleaseCommandQueue(cl_command_queue command_queue) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
 }
 
 cl_program opencl::OpenCLRuntimeInterface::clCreateProgramWithSource(cl_context context,
@@ -118,6 +128,11 @@ cl_program opencl::OpenCLRuntimeInterface::clCreateProgramWithSource(cl_context 
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
 	return NULL;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clReleaseProgram(cl_program program) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
 }
 
 cl_int opencl::OpenCLRuntimeInterface::clBuildProgram(cl_program program,
@@ -146,6 +161,11 @@ cl_kernel opencl::OpenCLRuntimeInterface::clCreateKernel(cl_program program,
 	return NULL;
 }
 
+cl_int opencl::OpenCLRuntimeInterface::clReleaseKernel(cl_kernel kernel) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
 cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
 	cl_mem_flags flags,
 	size_t size,
@@ -153,6 +173,11 @@ cl_mem opencl::OpenCLRuntimeInterface::clCreateBuffer(cl_context context,
 	cl_int * errcode_ret) {
 	assertM(false, "unimplemented");
 	return NULL;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clReleaseMemObject(cl_mem memobj) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
 }
 
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueReadBuffer(cl_command_queue command_queue,
@@ -198,6 +223,21 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueNDRangeKernel(cl_command_queue c
 	cl_uint num_events_in_wait_list,
 	const cl_event * event_wait_list,
 	cl_event * event){
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clReleaseEvent(cl_event event) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clFlush(cl_command_queue command_queue) {
+	assertM(false, "unimplemented");
+	return CL_UNIMPLEMENTED;
+}
+
+cl_int opencl::OpenCLRuntimeInterface::clFinish(cl_command_queue command_queue) {
 	assertM(false, "unimplemented");
 	return CL_UNIMPLEMENTED;
 }

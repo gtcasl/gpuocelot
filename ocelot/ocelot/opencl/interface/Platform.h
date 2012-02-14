@@ -14,6 +14,10 @@ namespace opencl {
 		Platform();
 		~Platform();
 
+	public:
+
+		void release();
+
 		//Get info
 		void getInfo(cl_platform_info param_name,
 			size_t param_value_size,

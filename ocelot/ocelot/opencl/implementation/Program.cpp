@@ -244,8 +244,12 @@ opencl::Program::~Program() {
 		delete it->second._module;
 	}
 
-	if(_context->release())
-		delete _context;
+	_context->release();
+}
+
+void opencl::Program::release() {
+	if(Object::release())
+		delete this;
 }
 
 bool opencl::Program::isValidContext(Context * context) {

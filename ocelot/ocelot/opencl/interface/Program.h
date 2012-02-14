@@ -36,6 +36,8 @@ namespace opencl {
 
 	public:
 
+		void release();
+
 		//!validate context
 		bool isValidContext(Context * context);
 

@@ -60,15 +60,18 @@ namespace opencl {
 				    void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
 				    void * user_data,
 				    cl_int * errcode_ret);
+		virtual cl_int clReleaseContext(cl_context context);
 		virtual cl_command_queue clCreateCommandQueue(cl_context context, 
 				    cl_device_id device, 
 				    cl_command_queue_properties properties,
 				    cl_int * errcode_ret);
+		virtual cl_int clReleaseCommandQueue(cl_command_queue command_queue);
 		virtual cl_program clCreateProgramWithSource(cl_context context,
 					cl_uint count,
 					const char ** strings,
 					const size_t * lengths,
 					cl_int * errcode_ret);
+		virtual cl_int clReleaseProgram(cl_program program);
 		virtual cl_int clBuildProgram(cl_program program,
 					cl_uint num_devices,
 					const cl_device_id * device_list,
@@ -83,11 +86,13 @@ namespace opencl {
 		virtual cl_kernel clCreateKernel(cl_program program,
 					const char * kernel_name,
 					cl_int * errcode_ret);
+		virtual cl_int clReleaseKernel(cl_kernel kernel);
 		virtual cl_mem clCreateBuffer(cl_context context,
 					cl_mem_flags flags,
 					size_t size,
 					void * host_ptr,
 					cl_int * errcode_ret);
+		virtual cl_int clReleaseMemObject(cl_mem memobj);
 		virtual cl_int clEnqueueReadBuffer(cl_command_queue command_queue,
 					cl_mem buffer,
 					cl_bool blocking_read,
@@ -119,7 +124,9 @@ namespace opencl {
 					cl_uint num_events_in_wait_list,
 					const cl_event * event_wait_list,
 					cl_event * event);
-
+		virtual cl_int clReleaseEvent(cl_event event);
+		virtual cl_int clFlush(cl_command_queue command_queue);
+		virtual cl_int clFinish(cl_command_queue command_queue);
 
 
 	};

@@ -31,6 +31,8 @@ namespace opencl {
 		~Device();
 
 	public:
+		void release();
+
 		//Create a specific device
 		static void createDevices(Platform * platform, deviceT device, 
 			unsigned int flags, int compuateCapability, int workerThreadLimit = 0);

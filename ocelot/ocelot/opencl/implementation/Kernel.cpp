@@ -32,9 +32,13 @@ opencl::Kernel::~Kernel()
 
 	_program->removeKernel(this);
 
-	if(_program->release())
-		delete _program;
+	_program->release();
 
+}
+
+void opencl::Kernel::release() {
+	if(Object::release())
+		delete this;
 }
 
 bool opencl::Kernel::isValidContext(Context * context) {

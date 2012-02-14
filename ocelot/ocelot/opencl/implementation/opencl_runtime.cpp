@@ -67,8 +67,7 @@ clRetainContext(cl_context /* context */);
 
 cl_int
 clReleaseContext(cl_context context) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clReleaseContext(context);
 }
 
 cl_int
@@ -92,8 +91,7 @@ clRetainCommandQueue(cl_command_queue /* command_queue */);
 
 cl_int
 clReleaseCommandQueue(cl_command_queue command_queue) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clReleaseCommandQueue(command_queue);
 }
 
 cl_int
@@ -166,8 +164,7 @@ clRetainMemObject(cl_mem /* memobj */);
 
 cl_int
 clReleaseMemObject(cl_mem memobj) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clReleaseMemObject(memobj);
 }
 
 cl_int
@@ -242,8 +239,7 @@ clRetainProgram(cl_program /* program */);
 
 cl_int
 clReleaseProgram(cl_program program) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clReleaseProgram(program);
 }
 
 cl_int
@@ -295,8 +291,7 @@ clRetainKernel(cl_kernel    /* kernel */);
 
 cl_int
 clReleaseKernel(cl_kernel   kernel) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clReleaseKernel(kernel);
 }
 
 cl_int
@@ -342,7 +337,9 @@ cl_int
 clRetainEvent(cl_event /* event */);
 
 cl_int
-clReleaseEvent(cl_event /* event */);
+clReleaseEvent(cl_event event) {
+	return opencl::OpenCLRuntimeInterface::get()->clReleaseEvent(event);
+}
 
 cl_int
 clSetUserEventStatus(cl_event   /* event */,
@@ -364,12 +361,13 @@ clGetEventProfilingInfo(cl_event            /* event */,
                                 
 /* Flush and Finish APIs */
 cl_int
-clFlush(cl_command_queue /* command_queue */);
+clFlush(cl_command_queue command_queue) {
+	return opencl::OpenCLRuntimeInterface::get()->clFlush(command_queue);
+}
 
 cl_int
 clFinish(cl_command_queue command_queue) {
-	printf("Calling Ocelot OpenCL Runtime API!\n");
-	return CL_SUCCESS;
+	return opencl::OpenCLRuntimeInterface::get()->clFinish(command_queue);
 }
 
 /* Enqueued Commands APIs */

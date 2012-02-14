@@ -78,6 +78,8 @@ namespace opencl {
 		~CommandQueue();	
 
 	public:
+		void release();
+
 		//Kill all alive queue thread
 		static void killAllQueueThreads();
 
@@ -87,11 +89,11 @@ namespace opencl {
 		//! enqueue event
 		void queueEvent(Event * event, cl_bool blocking);
 
-		//! submit ready events
-		void submitEvents();
+		//! flush events
+		void flushEvents();
 
-		//! kill queue thread
-		void killThread();
+		//! finish events
+		void finishEvents();
 
 	private:
 		Context * _context;
@@ -99,6 +101,27 @@ namespace opencl {
 		cl_command_queue_properties _properties;
 		QueueThread * _thread;
 		EventList _eventsQueue;
+
+	private:
+		//! submit ready events
+		void _submitEvents();
+
+		//! clear one completed event
+		void _clearEvent(Event * event);
+
+		//! remove and release completed events
+		void _clearCompletedEvents();
+
+		//! check if all events are submitted
+		bool _isAllSubmitted();
+
+		//! check if all events are completed
+		bool _isAllCompleted();
+
+		//! kill queue thread
+		void _killThread();
+
+
 	};
 
 }

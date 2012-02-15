@@ -61,6 +61,8 @@ namespace executive {
 		analysis::KernelPartitioningPass::KernelGraph *kernelGraph() const;
 		
 		SubkernelIdRange getSubkernelIdRange() const;
+		
+		char *constantMemory() const { return _constantMemory; }
 	
 	private:
 		void _analyzePTX();

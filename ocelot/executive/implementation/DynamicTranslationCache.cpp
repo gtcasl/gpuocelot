@@ -69,14 +69,14 @@
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
-#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
 #define ALWAYS_REPORT_BROKEN_LLVM 1
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -154,6 +154,9 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 		
 		reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
 	}
+	#if REPORT_BASE && REPORT_TRANSLATION_OPERATIONS
+	reportNTE(REPORT_TRANSLATION_OPERATIONS, " obtained Translation: " << (void *)translation);
+	#endif
 	
 	return translation;
 }
@@ -1301,6 +1304,8 @@ executive::DynamicTranslationCache::Translation *
 	Translation *translation = new Translation;
 	translation->metadata = subkernel.metadata;
 	static_cast<executive::MetaData*>(translation->metadata)->device = device;
+	
+	reportNTE(REPORT_TRANSLATION_OPERATIONS, "new Translation: " << (void *)translation);
 	
 	#ifdef HAVE_LLVM
 	try {

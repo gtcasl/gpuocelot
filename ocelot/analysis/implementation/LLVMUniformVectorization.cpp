@@ -88,6 +88,12 @@ std::string String(llvm::Value *value) {
 	value->print(os);
 	return str;
 }
+std::string String(llvm::Function *func) {
+	std::string str;
+	llvm::raw_string_ostream os(str);
+	func->print(os);
+	return str;
+}
 std::string String(llvm::Type *value) {
 	std::string str;
 	llvm::raw_string_ostream os(str);
@@ -120,7 +126,6 @@ analysis::LLVMUniformVectorization::~LLVMUniformVectorization() {
 
 }
 
-
 bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_m) {
 	M = &_m;
 	return false;
@@ -142,7 +147,6 @@ llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 	return llvm::PT_Function;
 }
 
-
 llvm::LLVMContext & analysis::LLVMUniformVectorization::Translation::context() const {
 	return function->getContext();
 }
@@ -159,9 +163,8 @@ llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt1
 	return llvm::ConstantInt::get(llvm::Type::getInt16Ty(context()), n);
 }
 
-
 llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt64(size_t n) const {
-	return llvm::ConstantInt::get(llvm::Type::getTyInt(64), n);
+	return llvm::ConstantInt::get(getTyInt(64), n);
 }
 
 static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 

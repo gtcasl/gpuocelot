@@ -26,7 +26,9 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REPORT_BASE 0
 
 #define REPORT_CTA_OPERATIONS 1						// called O(n), where n is the number of CTAs launched
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
@@ -152,6 +154,10 @@ std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
 	return out;
 }
 
+namespace llvm { class Value; class Function; }
+std::string String(llvm::Value *);
+std::string String(llvm::Function *);
+
 void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::Dim3 &blockId) {
 
 	const ir::Dim3 blockDim = kernel->blockDim();
@@ -175,6 +181,7 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 		contexts[i].argument = parameterMemory;
 		contexts[i].globallyScopedLocal = 0;
 		contexts[i].externalSharedSize = 0;
+		contexts[i].constant = kernel->constantMemory();
 		
 		_setResumePoint(&contexts[i], startingSubkernel);
 		_setResumeStatus(&contexts[i], analysis::KernelPartitioningPass::Thread_entry);
@@ -233,6 +240,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  entry: 0x" << std::hex << entryId << std::dec);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  mapped subkernel ID: " << subkernelId);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  fetching translation (warp size: " << warpSize << ")");
+			
 		
 #if REPORT_BASE
 			std::cout << std::flush;
@@ -243,6 +251,11 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 					subkernelId, specialization);
 		
 			assert(translation);
+			
+			if (encodedSubkernel == 0x80001) {
+				reportE(REPORT_SCHEDULE_OPERATIONS, "It's broken:");
+				reportE(REPORT_SCHEDULE_OPERATIONS, String(translation->llvmFunction));
+			}
 	
 			_setResumeStatus(&contexts[tid], analysis::KernelPartitioningPass::Thread_exit);
 			contexts[tid].metadata = (char *)translation->metadata;

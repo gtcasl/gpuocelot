@@ -202,7 +202,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	_emitParameterMemory(&contexts[0]);
 #endif
 	
-	
 	report(" localMemory = " << (void *)localMemory);
 	report(" sharedMemory = " << (void *)sharedMemory);
 	report(" parameterMemory = " << (void *)parameterMemory);
@@ -235,6 +234,10 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  mapped subkernel ID: " << subkernelId);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  fetching translation (warp size: " << warpSize << ")");
 		
+#if REPORT_BASE
+			std::cout << std::flush;
+#endif
+			
 			DynamicTranslationCache::Translation *translation =
 				DynamicExecutionManager::get().translationCache.getOrInsertTranslation(warpSize, 
 					subkernelId, specialization);
@@ -245,7 +248,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			contexts[tid].metadata = (char *)translation->metadata;
 			static_cast<executive::MetaData*>(translation->metadata)->sharedSize = sharedMemorySize;
 				
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel " << translation->name());
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  executing subkernel ");
 			
 			translation->execute(warp);
 			

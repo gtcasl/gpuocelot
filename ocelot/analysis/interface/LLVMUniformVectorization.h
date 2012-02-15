@@ -153,6 +153,7 @@ namespace analysis
 			llvm::IntegerType *getTyInt(int n) const;
 			llvm::ConstantInt *getConstInt32(int n) const;
 			llvm::ConstantInt *getConstInt16(short n) const;
+			llvm::ConstantInt *getConstInt64(size_t n) const;
 		
 		protected:
 		

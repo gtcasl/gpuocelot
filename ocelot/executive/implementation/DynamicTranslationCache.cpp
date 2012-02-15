@@ -64,13 +64,13 @@
 #define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 0
 
-#define REPORT_LLVM_MASTER 0							// master toggle for reporting LLVM kernels
+#define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
-#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
-#define REPORT_TRANSLATION_OPERATIONS 0		// translation events
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
@@ -135,7 +135,8 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, " DynamicTranslationCache::getOrInsertTranslation(ws: " << warpSize 
 		<< ", skId: " << subkernelId << ", specialization = " << specialization << ")");
-		
+
+	
 	Translation *translation = 0;
 		
 	TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
@@ -232,17 +233,14 @@ executive::DynamicTranslationCache::Translation::Translation(llvm::Function *_ll
 
 }
 
-
-void *returnSiteStopAddress;
+void walkCallStack();
 
 void executive::DynamicTranslationCache::Translation::execute(LLVMContext **contexts) const {
 	assert(function);
 	
-	returnSiteStopAddress = &&returnSite;
-	report("  execute() - returnSite = " << (void *)returnSiteStopAddress);
+	reportE(REPORT_SCHEDULE_OPERATIONS, " executing native function");
+
 	function(contexts[0]);
-returnSite:
-	assert(function);
 }
 
 std::string executive::DynamicTranslationCache::Translation::name() const {
@@ -1327,12 +1325,27 @@ executive::DynamicTranslationCache::Translation *
 		translation->function = hydrazine::bit_cast<DynamicTranslationCache::ExecutableFunction>(
 			executive::LLVMState::jit()->getPointerToFunction(translation->llvmFunction));
 
+		if (translation->function) {
+			reportE(REPORT_TRANSLATION_OPERATIONS, "  JIT-compiled function: " << translation->llvmFunction->getName().str());
+			reportE(REPORT_TRANSLATION_OPERATIONS, "   calling convention: " << (int)translation->llvmFunction->getCallingConv());
+		}
 		
 #if REPORT_LLVM_MASTER
-		std::string llvmText;
-		llvm::raw_string_ostream llvmStream(llvmText);
-		translation->llvmFunction->print(llvmStream);
-		subkernel.subkernelPtx->write(std::cout);
+		{
+			std::string llvmText;
+			llvm::raw_string_ostream llvmStream(llvmText);
+			translation->llvmFunction->print(llvmStream);
+			std::ofstream file(translation->llvmFunction->getName().str() + ".ll");
+			
+			for (llvm::Function::iterator bb_it = translation->llvmFunction->begin();
+				bb_it != translation->llvmFunction->end(); ++bb_it) {
+				
+				void *ptr = executive::LLVMState::jit()->getPointerToBasicBlock(&*bb_it);
+				file << "[" << bb_it->getName().str() << "] = " << ptr << std::endl;
+			}
+			
+			file << llvmText;
+		}
 #endif
 		
 		report("  updating translation cache data structures");

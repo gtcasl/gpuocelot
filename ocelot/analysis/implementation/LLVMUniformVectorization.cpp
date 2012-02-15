@@ -11,6 +11,7 @@
 #include <map>
 #include <list>
 #include <set>
+#include <execinfo.h>
 
 // boost includes
 #include <boost/lexical_cast.hpp>
@@ -42,7 +43,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_FINAL_SUBKERNEL 0
 
@@ -51,7 +52,10 @@
 // Inserted LLVM debugging procedures for debugging execution faults
 //
 
-#define INSERT_DEBUG_REPORTING 1
+#define INSERT_DEBUG_REPORTING 0
+#define DEBUG_REPORT_BLOCKS 1
+#define DEBUG_REPORT_STORES 0
+#define DEBUG_REPORT_RETURNS 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,6 +157,11 @@ llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt3
 
 llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt16(short n) const {
 	return llvm::ConstantInt::get(llvm::Type::getInt16Ty(context()), n);
+}
+
+
+llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt64(size_t n) const {
+	return llvm::ConstantInt::get(llvm::Type::getTyInt(64), n);
 }
 
 static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
@@ -1020,50 +1029,29 @@ void analysis::LLVMUniformVectorization::Translation::_eliminateUnusedVectorPack
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-extern void *returnSiteStopAddress;
-
-void callStackWalker( ) {
-	void *startAddress = (void *)0xdeadbeef;
-
-	report("callStackWalker[" << (void *)&callStackWalker << " ] - stopAddress = " << returnSiteStopAddress);
-	void *ptr = (void *)&startAddress;
-	size_t depth = 0;
-	size_t diff;
-	do { 
-		if (depth) {
-			ptr = (void *)((char *)ptr + sizeof(void*));
-		}
-
-		if ((char *)returnSiteStopAddress > (char *)*(void **)ptr) {
-			diff = (char *)returnSiteStopAddress - (char *)*(void **)ptr;
-		}
-		else {
-			diff = (char *)*(void **)ptr - (char *)returnSiteStopAddress;
-		}
-
-		std::cout << "<depth " << depth << ">  [" << ptr << "] = 0x" 
-			<< std::hex << *(size_t *)ptr << std::dec << std::endl;
-			
-		++depth;
-		
-	} while ((diff) > 64);
-	report("done (diff = " << diff << ")");
+void walkCallStack() {
+	void *entries[32] = {0};
+	report("walkCallStack()");
+	int addresses = backtrace(entries, 32);
+	char **symbols = backtrace_symbols(entries, addresses);
+	for (int i = 0; i < addresses; i++ ){
+		std::cout << "    [" << i << "]: " << symbols[i] << std::endl;
+	}
+	report("  done");
 }
 
 /*!
 
 */
-extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, int type) {
-	void *ptr = (void *)0xfee1b00b5;
-	
+extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, int type, size_t vptr) {
+	bool printNameOnly = false;
 	switch (type) {
 		case 0: std::cout << " value[" << index << "] = " << value; break;
 		case 1: std::cout << " store(" << index << "): [" << (void *)value << "] = " << value1;  break;
 		case 2: std::cout << " store(" << index << "): [" << (void *)value << "] = <type unknown>"; break;
 		case 3: {
 			std::cout << " returning (" << index << ")\n";
-			
-			callStackWalker();
+			// walkCallStack();
 		}
 		break;
 		case 4: std::cout << " store(" << index << "): [" << (void *)value << "] = " <<
@@ -1075,18 +1063,29 @@ extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, 
 		break;
 		case 6: {
 			std::cout << " entering (" << index << ")\n";
-			
-			callStackWalker();
 		}
 		break;
-		case 7:
-		{
-			std::cout << " invalid " << ptr << "\n";
+		case 7: {
+			std::cout << " block(" << index << ")\n";
+			printNameOnly = true;
 		}
 		break;
 		default:
 			std::cout << " unknown(" << index << ", " << value << ", " << value1 << ", " << type << ")";
 	}
+	if (vptr) {
+		llvm::Value *value = (llvm::Value *)(void *)vptr;
+		if (printNameOnly) {
+			std::cout << "  block: " << value->getName().str() << std::endl;
+		}
+		else {
+			std::cout << "  value: " << String(value) << std::endl;
+		}
+	}
+	
+	std::cout << "  call stack:" << std::endl;
+		
+	walkCallStack();
 	std::cout << std::endl;
 }
 
@@ -1099,6 +1098,7 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	params.push_back(getTyInt(64));
 	params.push_back(getTyInt(64));
 	params.push_back(getTyInt(32));
+	params.push_back(getTyInt(64));
 	llvm::FunctionType *funcType = 
 		llvm::FunctionType::get(llvm::Type::getVoidTy(context()), llvm::ArrayRef<llvm::Type*>(params), false);
 	
@@ -1110,15 +1110,25 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	size_t index = 0;
 	
 	report("  store instructions");
+	std::vector< llvm::BasicBlock *> basicBlocks;
 	std::vector< llvm::StoreInst *> storeInstructions;
 	std::vector< llvm::ReturnInst *> returnInstructions;
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+	
+		if (DEBUG_REPORT_BLOCKS) {
+			basicBlocks.push_back(&*bb_it);
+		}
+	
 		for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
 			if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(&*inst_it)) {
-				storeInstructions.push_back(storeInst);
+				if (DEBUG_REPORT_STORES) {
+					storeInstructions.push_back(storeInst);
+				}
 			}
 			else if (auto retInst = llvm::dyn_cast<llvm::ReturnInst>(&*inst_it)) {
-				returnInstructions.push_back(retInst);
+				if (DEBUG_REPORT_RETURNS) {
+					returnInstructions.push_back(retInst);
+				}
 			}
 		}
 	}
@@ -1129,8 +1139,24 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0));	// value
 		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0)); // value1
 		args.push_back(getConstInt32(6));	// type
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0)); // llvm value-pointer
 		llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
 			"", &*function->begin()->begin());
+		++index;
+		assert(call && "failed to insert call instruction");
+	}
+	
+	for (std::vector< llvm::BasicBlock *>::iterator bb_it = basicBlocks.begin(); 
+		bb_it != basicBlocks.end(); ++bb_it) {
+		
+		std::vector< llvm::Value *> args;
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), index));	// index
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0));	// value
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0)); // value1
+		args.push_back(getConstInt32(7));	// type
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0)); // llvm value-pointer
+		llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
+			"", (*bb_it)->getFirstNonPHI());
 		++index;
 		assert(call && "failed to insert call instruction");
 	}
@@ -1174,6 +1200,8 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 		args.push_back(cast);	// value
 		args.push_back(operand); // value1
 		args.push_back(type);	// type
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 
+			(size_t)(void *)storeInst)); // llvm value-pointer
 		llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
 			"", storeInst);
 		++index;
@@ -1189,9 +1217,12 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0));	// value
 		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 0)); // value1
 		args.push_back(getConstInt32(3));	// type
+		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 
+			(size_t)(void *)retInst)); // llvm value-pointer
 		llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
 			"", retInst);
 		++index;
+		
 		assert(call && "failed to insert call instruction");
 	}
 }

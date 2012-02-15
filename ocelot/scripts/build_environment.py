@@ -354,7 +354,18 @@ def fixPath(path):
 		return path.replace('\\', '\\\\')
 	else:
 		return path
- 
+
+
+import collections
+
+def flatten(l):
+	for el in l:
+		if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+			for sub in flatten(el):
+				yield sub
+		else:
+			yield el
+
 def defineConfigFlags(env):
 	
 	include_path = os.path.join(env['INSTALL_PATH'], "include")
@@ -363,7 +374,7 @@ def defineConfigFlags(env):
 
 	configFlags = env['CXXFLAGS'] + " ".join( 
 		["%s\"\\\"%s\\\"\"" % x for x in (
-			('-DOCELOT_CXXFLAGS=', env['CXXFLAGS']),
+			('-DOCELOT_CXXFLAGS=', " ".join(flatten(env['CXXFLAGS']))),
 			('-DPACKAGE=', 'ocelot'),
 			('-DVERSION=', env['VERSION']),
 			('-DOCELOT_PREFIX_PATH=', fixPath(env['INSTALL_PATH'])),
@@ -487,7 +498,7 @@ def Environment():
 	
 	# CUDA builder
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action=cuda_exe_path + '/nvcc --use_fast_math -arch=sm_20 $SOURCE -c -o $TARGET',
+		action=cuda_exe_path + '/nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})
@@ -495,7 +506,7 @@ def Environment():
   # CUDA builder
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	env.Append(BUILDERS = {'Cuda': Builder(
-		action= nvccPath + 'nvcc --use_fast_math -arch=sm_20 $SOURCE -c -o $TARGET',
+		action= nvccPath + 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
 		suffix = '.o',
 		src_suffix = '.cu'
 	)})

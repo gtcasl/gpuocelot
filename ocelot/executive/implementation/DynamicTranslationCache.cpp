@@ -59,10 +59,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
-#define REPORT_SOURCE_PTX_KERNELS 0				// PTX prior to transformations
-#define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
-#define REPORT_PTX_SUBKERNELS 0
+#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
+#define REPORT_SOURCE_PTX_KERNELS 1				// PTX prior to transformations
+#define REPORT_PARITIONED_PTX_KERNELS 1		// final output PTX ready to be translated
+#define REPORT_PTX_SUBKERNELS 1
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
@@ -76,7 +76,7 @@
 
 #define ALWAYS_REPORT_BROKEN_LLVM 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1207,7 +1207,7 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 		try {
 			
 			report("   setting up PTX memory references");
-		
+		 
 			// translate global memory references
 			setupPTXMemoryReferences(*subkernelPtx, 
 				(executive::DynamicMulticoreExecutive::Metadata*)translatedKernel.metadata, device);
@@ -1216,6 +1216,13 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 
 			// rewrite call functions with hyperblock exits chained to target functions
 			setupCallTargets(*subkernelPtx, *this);
+			
+			// emit PTX if need be
+#if REPORT_BASE && REPORT_PTX_SUBKERNELS && REPORT_PTX_MASTER
+			reportE(REPORT_PTX_SUBKERNELS, "Subkernel " << subkernelPtx->name << ":");
+			subkernelPtx->write(std::cout);
+			std::cout << std::endl;
+#endif
 	
 			report("  Converting from PTX IR to LLVM IR.");
 			translator::PTXToLLVMTranslator translator(getOptimizationLevel(), 0, true);
@@ -1331,8 +1338,10 @@ executive::DynamicTranslationCache::Translation *
 			executive::LLVMState::jit()->getPointerToFunction(translation->llvmFunction));
 
 		if (translation->function) {
-			reportE(REPORT_TRANSLATION_OPERATIONS, "  JIT-compiled function: " << translation->llvmFunction->getName().str());
-			reportE(REPORT_TRANSLATION_OPERATIONS, "   calling convention: " << (int)translation->llvmFunction->getCallingConv());
+			reportE(REPORT_TRANSLATION_OPERATIONS, "  JIT-compiled function: " 
+				<< translation->llvmFunction->getName().str());
+			reportE(REPORT_TRANSLATION_OPERATIONS, "   calling convention: " 	
+				<< (int)translation->llvmFunction->getCallingConv());
 		}
 		
 #if REPORT_LLVM_MASTER

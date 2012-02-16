@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -1047,6 +1047,8 @@ void PTXToLLVMTranslator::_translateInstructions()
 					= ir::LLVMInstruction::Type::Element;
 				node.operand.type.type = _translate( s->type );
 				
+				report("  source " << s->id << " (s->type: " << ir::PTXOperand::toString(s->type) << ")");
+				
 				p.nodes.push_back( node );
 			}
 
@@ -1058,6 +1060,7 @@ void PTXToLLVMTranslator::_translateInstructions()
 			p.d.type.category = ir::LLVMInstruction::Type::Element;
 			p.d.type.type = _translate( phi->d.type );
 			
+			report("  dest type: " << ir::PTXOperand::toString(phi->d.type));
 			_add( p );
 		}
 
@@ -6665,6 +6668,8 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 	ir::PTXOperand::DataType dType, const ir::LLVMInstruction::Operand& a, 
 	ir::PTXOperand::DataType aType, int modifier )
 {
+	report("   converting: " << ir::PTXOperand::toString(aType) << " to " << ir::PTXOperand::toString(dType));
+
 	switch( aType )
 	{
 		case ir::PTXOperand::s8:

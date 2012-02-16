@@ -15,7 +15,7 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/translator/interface/Translator.h>
-#include <ocelot/analysis/interface/PTXInstrumentor.h>
+#include <ocelot/instrumentation/interface/PTXInstrumentor.h>
 
 namespace cuda {
 	/*!
@@ -407,11 +407,11 @@ namespace cuda {
 		virtual void clearTraceGenerators();
 
         /*! \brief Adds an instrumentor for the next kernel invocation */
-        virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
+        virtual void addInstrumentor( instrumentation::PTXInstrumentor& instrumentor);
         /*! \brief Clear all instrumentors */
 		virtual void clearInstrumentors();
         /*! \brief Retrieves the kernel profile from online instrumentation */
-        virtual analysis::KernelProfile kernelProfile();
+        virtual instrumentation::KernelProfile kernelProfile();
 
 		/*! \brief Adds a PTX->PTX pass for the next *Module load* */
 		virtual void addPTXPass(transforms::Pass &pass);

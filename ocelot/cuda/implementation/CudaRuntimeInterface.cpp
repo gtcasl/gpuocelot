@@ -72,11 +72,11 @@ void cuda::CudaRuntimeInterface::clearTraceGenerators() {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::addInstrumentor( analysis::PTXInstrumentor& instrumentor) {
+void cuda::CudaRuntimeInterface::addInstrumentor( instrumentation::PTXInstrumentor& instrumentor) {
 	assert(0 && "unimplemented");
 }
 
-analysis::KernelProfile cuda::CudaRuntimeInterface::kernelProfile() {
+instrumentation::KernelProfile cuda::CudaRuntimeInterface::kernelProfile() {
 	assert(0 && "unimplemented");
 }
 			

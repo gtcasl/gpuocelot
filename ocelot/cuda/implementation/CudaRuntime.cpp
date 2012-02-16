@@ -3443,7 +3443,7 @@ void cuda::CudaRuntime::clearTraceGenerators() {
 	_unlock();
 }
 
-void cuda::CudaRuntime::addInstrumentor( analysis::PTXInstrumentor& instrumentor) {
+void cuda::CudaRuntime::addInstrumentor( instrumentation::PTXInstrumentor& instrumentor) {
 
 	_lock();
 	
@@ -3453,7 +3453,7 @@ void cuda::CudaRuntime::addInstrumentor( analysis::PTXInstrumentor& instrumentor
 	_unlock();
 }
 
-analysis::KernelProfile cuda::CudaRuntime::kernelProfile() {
+instrumentation::KernelProfile cuda::CudaRuntime::kernelProfile() {
     return _getCurrentThread().instrumentors.front()->kernelProfile();
 }
 

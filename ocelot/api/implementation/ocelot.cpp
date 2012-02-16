@@ -28,7 +28,7 @@ namespace ocelot
 		get()->clearTraceGenerators( );
 	}
 
-    void addInstrumentor( analysis::PTXInstrumentor& instrumentor)
+    void addInstrumentor( instrumentation::PTXInstrumentor& instrumentor)
 	{
 		get()->addInstrumentor(instrumentor);
 	}
@@ -38,7 +38,7 @@ namespace ocelot
 		get()->clearInstrumentors( );
 	}
 
-    analysis::KernelProfile kernelProfile() {
+    instrumentation::KernelProfile kernelProfile() {
         return get()->kernelProfile();
     }
 

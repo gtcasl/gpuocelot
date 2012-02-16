@@ -90,7 +90,7 @@ namespace cuda {
 		SizeVector parameterSizes;
 		
 		//! set of instrumentors to be inserted into kernels
-        analysis::PTXInstrumentorVector instrumentors;
+        instrumentation::PTXInstrumentorVector instrumentors;
 		
 	public:
 		HostThreadContext();
@@ -188,7 +188,7 @@ namespace cuda {
 	typedef std::map< std::string, ir::Module > ModuleMap;
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
-	typedef analysis::PTXInstrumentorVector PTXInstrumentorVector;
+	typedef instrumentation::PTXInstrumentorVector PTXInstrumentorVector;
 
 	/*! \brief List of worker threads */
 	typedef std::vector<CudaWorkerThread> ThreadVector;
@@ -620,9 +620,9 @@ namespace cuda {
 			bool persistent = false );
 		virtual void clearTraceGenerators();
 		
-		virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
+		virtual void addInstrumentor( instrumentation::PTXInstrumentor& instrumentor);
 		virtual void clearInstrumentors();
-        virtual analysis::KernelProfile kernelProfile(); 
+        virtual instrumentation::KernelProfile kernelProfile(); 
 
 		virtual void addPTXPass(transforms::Pass &pass);
 		virtual void removePTXPass(transforms::Pass &pass);

@@ -5,6 +5,7 @@
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/instrumentation/interface/InstrumentationConfiguration.h>
 
 #include <ocelot/executive/interface/ReconvergenceMechanism.h>
 

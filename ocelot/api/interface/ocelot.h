@@ -17,7 +17,7 @@ namespace trace
 	class TraceGenerator;
 }
 
-namespace analysis 
+namespace instrumentation 
 {
     class PTXInstrumentor;
     class KernelProfile;
@@ -50,10 +50,10 @@ namespace ocelot
 		\param safe Make this a thread safe call*/
 	void clearTraceGenerators();
 
-    void addInstrumentor(analysis::PTXInstrumentor& instrumentor);
+    void addInstrumentor(instrumentation::PTXInstrumentor& instrumentor);
     void clearInstrumentors();
 
-    analysis::KernelProfile kernelProfile();
+    instrumentation::KernelProfile kernelProfile();
 		
 	/*! \brief Adds a PTX->PTX pass active for the next *Module load*
 	

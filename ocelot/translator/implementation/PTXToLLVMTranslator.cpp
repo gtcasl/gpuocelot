@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace translator
 {
@@ -2559,27 +2559,37 @@ void PTXToLLVMTranslator::_translateCos( const ir::PTXInstruction& i )
 
 void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 {
+	report("_translateCvt()");
 	ir::LLVMInstruction::Operand destination;
 	ir::LLVMInstruction::Operand source = _translate( i.a );
 	
 	if( _translate( i.d.type ) != _translate( i.type ) )
 	{
+		report("- new register of type: " << ir::PTXOperand::toString(i.type));
 		destination.name = _tempRegister();
 		destination.type.category = ir::LLVMInstruction::Type::Element;
 		destination.type.type = _translate( i.type );
 	}
 	else
 	{
+		report("- _translate(" << i.d.toString() << ")");
 		destination = _translate( i.d );
 	}
 
+	report("- converting");
 	_convert( destination, i.type, source, i.a.type, i.modifier );
+
+	report("- determining: _translate( i.d.type ) != _translate( i.type ) ??");
 
 	if( _translate( i.d.type ) != _translate( i.type ) )
 	{
-		_bitcast( _translate( i.d ), destination, 
-			ir::PTXOperand::isSigned( i.type ) );
+		report("- bitcasting result operands [i.type = " << ir::PTXOperand::toString(i.type) 
+			<< ", i.d.type = " << ir::PTXOperand::toString(i.d.type) << "]");
+			
+		// this step shouldn't be necessary
+		_bitcast( _translate( i.d ), destination, ir::PTXOperand::isSigned( i.type ) );
 	}
+
 }
 
 void PTXToLLVMTranslator::_translateCvta( const ir::PTXInstruction& i )
@@ -6587,15 +6597,16 @@ void PTXToLLVMTranslator::_bitcast( const ir::PTXOperand& d,
 }
 
 void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d, 
-	const ir::LLVMInstruction::Operand& a, bool isSigned )
+	const ir::LLVMInstruction::Operand& a, bool isSigned)
 {
 	if( ir::LLVMInstruction::bits( d.type.type ) 
-		== ir::LLVMInstruction::bits( a.type.type ) )
+		== ir::LLVMInstruction::bits( a.type.type ))
 	{
 		ir::LLVMBitcast cast;
 		cast.d = d;
 		cast.a = a;
 	
+		report("  _add(" << cast.toString() << ")");
 		_add( cast );
 	}
 	else
@@ -6607,7 +6618,11 @@ void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d,
 		temp.type.type = ir::LLVMInstruction::getIntOfSize( 
 			ir::LLVMInstruction::bits( a.type.type ) );
 		
+		report("   recursive _bitcast(temp: " << temp.toString() << ", a: " << a.toString());
 		_bitcast( temp, a );
+		
+		report("   bits(d.type.type) = " << ir::LLVMInstruction::bits( d.type.type ));
+		report("   bits(a.type.type) = " << ir::LLVMInstruction::bits( a.type.type ));
 		
 		if( ir::LLVMInstruction::bits( d.type.type ) 
 			< ir::LLVMInstruction::bits( a.type.type ) )
@@ -6621,6 +6636,7 @@ void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d,
 			
 			truncate.a = temp;
 			
+			report("  _add(" << truncate.toString() << ")");
 			_add( truncate );
 			
 			temp = truncate.d;
@@ -6637,7 +6653,8 @@ void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d,
 					ir::LLVMInstruction::bits( d.type.type ) );
 			
 				extend.a = temp;
-			
+				
+				report("  _add(" << extend.toString() << ")");
 				_add( extend );
 			
 				temp = extend.d;				
@@ -6652,7 +6669,8 @@ void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d,
 					ir::LLVMInstruction::bits( d.type.type ) );
 			
 				extend.a = temp;
-			
+					
+				report("  _add(" << extend.toString() << ")");
 				_add( extend );
 			
 				temp = extend.d;				
@@ -6660,15 +6678,15 @@ void PTXToLLVMTranslator::_bitcast( const ir::LLVMInstruction::Operand& d,
 
 		}
 		
+		report("  recursive _bitcast(d: " << d.toString() << ", temp: " << temp.toString() << ")");
 		_bitcast( d, temp );
 	}
 }
 	
 void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d, 
 	ir::PTXOperand::DataType dType, const ir::LLVMInstruction::Operand& a, 
-	ir::PTXOperand::DataType aType, int modifier )
+	ir::PTXOperand::DataType aType, int modifier)
 {
-	report("   converting: " << ir::PTXOperand::toString(aType) << " to " << ir::PTXOperand::toString(dType));
 
 	switch( aType )
 	{

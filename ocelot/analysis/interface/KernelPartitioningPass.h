@@ -254,6 +254,11 @@ namespace analysis {
 			
 			void runOnKernel(ir::PTXKernel &ptxKernel);
 		};
+		
+		class StrictTypeTransformation {
+		public:
+			void runOnKernel(ir::PTXKernel &ptxKernel);
+		};
 	
 	public:
 		KernelPartitioningPass();

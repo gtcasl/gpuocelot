@@ -174,11 +174,11 @@ protected:
 	void _bitcast( const ir::PTXInstruction& i );
 	void _bitcast( const ir::PTXOperand& d, const ir::PTXOperand& s );
 	void _bitcast( const ir::LLVMInstruction::Operand& d, 
-		const ir::LLVMInstruction::Operand& s, bool isSigned = false );
+		const ir::LLVMInstruction::Operand& s, bool isSigned = false);
 	void _convert( const ir::LLVMInstruction::Operand& d, 
 		ir::PTXOperand::DataType dType, 
 		const ir::LLVMInstruction::Operand& s, 
-		ir::PTXOperand::DataType sType, int modifier = 0 );
+		ir::PTXOperand::DataType sType, int modifier = 0);
 	void _flushToZero( const ir::LLVMInstruction::Operand& d, 
 		const ir::LLVMInstruction::Operand& a );
 	void _saturate( const ir::LLVMInstruction::Operand& d, 

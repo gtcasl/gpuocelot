@@ -478,12 +478,18 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	case LLVMExecutableKernel::ReturnCall:
 	{
 		nextFunction      = stack.returned();
-		context.local     = stack.localMemory();
-		context.parameter = stack.parameterMemory();
-		context.argument  = stack.argumentMemory();
+		if (nextFunction != 0xffffffff) {
+			context.local     = stack.localMemory();
+			context.parameter = stack.parameterMemory();
+			context.argument  = stack.argumentMemory();
 
-		report("     hit return, saving thread context at resume point "
-			<< nextFunction << ", popping stack.");
+			report("     hit return, saving thread context at resume point "
+				<< nextFunction << ", popping stack.");
+		}
+		else {
+			report("     hit return on empty call stack. Thread exiting.");
+			return true;
+		}
 	}
 	break;
 	}

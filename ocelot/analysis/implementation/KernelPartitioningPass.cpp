@@ -38,7 +38,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define EMIT_PARTITIONED_KERNELGRAPH 1					// emits to .dot text files in directory
+#define EMIT_PARTITIONED_KERNELGRAPH 0					// emits to .dot text files in directory
 #define EMIT_KERNELGRAPH_ORIGINAL_PTX 0					// if 1, shows PTX for original basic blocks
 #define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 1		// enables replacing actual instructions in handler blocks
 
@@ -70,6 +70,9 @@ analysis::KernelPartitioningPass::KernelGraph *
 		PartitioningHeuristic _h) {
 	
 	report("KernelPartitioningPass::runOnFunction(" << ptxKernel.name << ")");
+	
+	StrictTypeTransformation strictTypePass;
+	strictTypePass.runOnKernel(ptxKernel);
 	
 	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
 	barrierPass.runOnKernel(ptxKernel);
@@ -141,6 +144,34 @@ void analysis::KernelPartitioningPass::BarrierPartitioning::runOnKernel(ir::PTXK
 		}
 	}
 	report("  encountered " << barrierCount << " barriers");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void analysis::KernelPartitioningPass::StrictTypeTransformation::runOnKernel(ir::PTXKernel &ptxKernel) {
+
+	ir::PTXKernel::RegisterVector registers = ptxKernel.getReferencedRegisters();
+	
+	ir::ControlFlowGraph *kernelCfg = ptxKernel.cfg();
+
+	report("StrictTypeTransformation::runOnKernel(" << ptxKernel.name << ")");
+	for (ir::ControlFlowGraph::iterator bb_it = kernelCfg->begin(); 
+		bb_it != kernelCfg->end(); ++bb_it) {
+
+		unsigned int n = 0;
+		for (ir::BasicBlock::InstructionList::iterator inst_it = (bb_it)->instructions.begin();
+			inst_it != (bb_it)->instructions.end(); ++inst_it, n++) {
+			ir::PTXInstruction *inst = static_cast<ir::PTXInstruction *>(*inst_it);
+			
+			if (inst->d.addressMode == ir::PTXOperand::Register && 
+				ir::PTXOperand::bytes(inst->d.type) !=  ir::PTXOperand::bytes(inst->type) &&
+				inst->d.type != ir::PTXOperand::pred) {
+				report("  " << inst->toString() << "; // d.type = " << ir::PTXOperand::toString(inst->d.type) 
+					<< ", inst->type = " << ir::PTXOperand::toString(inst->type));
+				inst->d.type = inst->type;
+			}			
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

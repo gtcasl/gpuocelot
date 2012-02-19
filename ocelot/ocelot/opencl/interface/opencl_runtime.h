@@ -1,7 +1,7 @@
 /*! 
 	\file opencl_runtime.h
     \author Jin Wang <jin.wang@gatech.edu>
-    \brief Definition of OpenCL Runtime API
+    \brief include all necessary CL headers
     \date 28 Sep 2011
 */
 

@@ -1,3 +1,12 @@
+/*!	
+	\file Context.h
+	\author Jin Wang <jin.wang@gatech.edu>
+	\brief defines OpenCL runtime context interface
+	\date 03 Feb 2012
+*/
+
+
+
 #ifndef OCELOT_OPENCL_CONTEXT_H_INCLUDED
 #define OCELOT_OPENCL_CONTEXT_H_INCLUDED
 
@@ -19,23 +28,31 @@ namespace opencl {
 	class Program;
 	class CommandQueue;
 
-	/*! Host thread OpenCL context consists of these */
+	/*! \brief OpenCL context consists of these */
 	class Context : public Object{	
 	
 	public:
+		/*! \brief type of context list */
 		typedef std::list< Context * > ContextList;
 
 	public:
+		/*! \brief constructor */
 		Context(Platform * platform, Device::DeviceList & devices);
+
+		/*! \brief destructor */
 		~Context();
 
 	public:
+		/*! \brief release context, decrease reference count by 1.
+			if all objects related to the context are deleted. delete
+			context
+		*/
 		void release();
 
-		//! Get all valid devices
+		/*! \brief Get all valid devices associated with the context */
 		Device::DeviceList & getValidDevices();
 
-		//! check if valid device
+		/*! \brief check if this is a valid device for the context */
 		bool isValidDevice(Device * device);
 
 	private:

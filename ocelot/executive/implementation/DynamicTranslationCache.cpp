@@ -16,9 +16,10 @@
 #include <ocelot/executive/interface/LLVMState.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/analysis/interface/Debug.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+//#include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/math.h>
 #include <hydrazine/interface/Casts.h>
@@ -242,6 +243,8 @@ void executive::DynamicTranslationCache::Translation::execute(LLVMContext **cont
 	assert(function);
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, " executing native function");
+
+	reportNested(REPORT_SCHEDULE_OPERATIONS, "correct levels of nesting?", 4);
 
 	function(contexts[0]);
 }
@@ -1350,13 +1353,6 @@ executive::DynamicTranslationCache::Translation *
 			llvm::raw_string_ostream llvmStream(llvmText);
 			translation->llvmFunction->print(llvmStream);
 			std::ofstream file(translation->llvmFunction->getName().str() + ".ll");
-			
-			for (llvm::Function::iterator bb_it = translation->llvmFunction->begin();
-				bb_it != translation->llvmFunction->end(); ++bb_it) {
-				
-				void *ptr = executive::LLVMState::jit()->getPointerToBasicBlock(&*bb_it);
-				file << "[" << bb_it->getName().str() << "] = " << ptr << std::endl;
-			}
 			
 			file << llvmText;
 		}

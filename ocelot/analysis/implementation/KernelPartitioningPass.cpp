@@ -71,8 +71,8 @@ analysis::KernelPartitioningPass::KernelGraph *
 	
 	report("KernelPartitioningPass::runOnFunction(" << ptxKernel.name << ")");
 	
-	StrictTypeTransformation strictTypePass;
-	strictTypePass.runOnKernel(ptxKernel);
+	//StrictTypeTransformation strictTypePass;
+	//strictTypePass.runOnKernel(ptxKernel);
 	
 	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
 	barrierPass.runOnKernel(ptxKernel);

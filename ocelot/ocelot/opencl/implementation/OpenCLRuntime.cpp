@@ -1,3 +1,10 @@
+/*!	
+	\file OpenCLRuntime.cpp
+	\author Jin Wang <jin.wang@gatech.edu>
+	\brief defines OpenCL runtime
+	\date 28 Sep 2011
+*/
+
 // C standard library includes
 #include <assert.h>
 
@@ -23,17 +30,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// whether OPENCL runtime catches exceptions thrown by Ocelot
-#define CATCH_RUNTIME_EXCEPTIONS 0
-
-// whether verbose error messages are printed
-#define OPENCL_VERBOSE 1
-
 // whether debugging messages are printed
 #define REPORT_BASE 0
 
-// report all ptx modules
-//#define REPORT_ALL_PTX 0
+// report all ptx
+#define REPORT_ALL_PTX 0
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -148,107 +149,10 @@ void opencl::OpenCLRuntime::_unlock() {
 	_mutex.unlock();
 }
 
-/*
-opencl::Context& opencl::OpenCLRuntime::_bind() {
-	_enumerateDevices();
-
-	Context& thread = _createContext();
-
-	if (_devices.empty()) return thread;
-	
-	_selectedDevice = thread.selectedDevice;
-	executive::Device& device = _getDevice();
-
-	assert(!device.selected());
-	device.select();
-	
-	return thread;
-}
-
-void opencl::OpenCLRuntime::_unbind() {
-	executive::Device& device = _getDevice();
-	assert(_createContext().selectedDevice == _selectedDevice);
-	
-	_selectedDevice = NULL;
-	assert(device.selected());
-	device.unselect();
-}
-
-void opencl::OpenCLRuntime::_acquire() {
-	_lock();
-	_bind();
-	if (_devices.empty()) _unlock();
-}
-
-void opencl::OpenCLRuntime::_release() {
-	_unbind();
-	_unlock();
-}
-*/
-
-/*
-executive::Device& opencl::OpenCLRuntime::_getDevice() {
-	return *((executive::Device *)_selectedDevice);
-}
-*/
-
-/*
-std::string opencl::OpenCLRuntime::_formatError( const std::string& message ) {
-	std::string result = "==Ocelot== ";
-	for(std::string::const_iterator mi = message.begin(); 
-		mi != message.end(); ++mi) {
-		result.push_back(*mi);
-		if(*mi == '\n') {
-			result.append("==Ocelot== ");
-		}
-	}
-	return result;
-}*/
-
-#if 0
-void opencl::OpenCLRuntime::_registerModule(ModuleMap::iterator module, Device * device) {
-	if(module->second.loaded()) return;
-	module->second.loadNow();	
-/*	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
-		texture != _textures.end(); ++texture) {
-		if(texture->second.module != module->first) continue;
-		ir::Texture* tex = module->second.getTexture(texture->second.texture);
-		assert(tex != 0);
-		tex->normalizedFloat = texture->second.norm;
-	}
-	
-	transforms::PassManager manager(&module->second);
-	
-	for(PassSet::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
-	{
-		manager.addPass(**pass);
-	}
-	
-	manager.runOnModule();*/
-	device->load(&module->second);
-	device->setOptimizationLevel(_optimization);
-}
-
-void opencl::OpenCLRuntime::_registerModule(const std::string& name, Device * device) {
-	ModuleMap::iterator module = _modules.find(name);
-	if(module != _modules.end()) {
-		_registerModule(module, device);
-	}
-}
-
-void opencl::OpenCLRuntime::_registerAllModules(Device * device) {
-	for(ModuleMap::iterator module = _modules.begin(); 
-		module != _modules.end(); ++module) {
-		_registerModule(module, device);
-	}
-}
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 
-opencl::OpenCLRuntime::OpenCLRuntime() : /*_inExecute(false),*/
-	_devicesLoaded(false), 
-	/*_selectedDevice(NULL), _nextSymbol(1),*/ _computeCapability(2), _flags(0), 
+opencl::OpenCLRuntime::OpenCLRuntime() :
+	_devicesLoaded(false), _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 }
@@ -877,6 +781,62 @@ cl_int opencl::OpenCLRuntime::clReleaseCommandQueue(cl_command_queue command_que
 
 }
 
+cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
+	cl_mem_flags flags,
+	size_t size,
+	void * host_ptr,
+	cl_int * errcode_ret) {
+
+	BufferObject * buffer = NULL;
+	_lock();
+	cl_int err = CL_SUCCESS;
+
+	try {
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
+			throw CL_INVALID_CONTEXT;
+
+		buffer = new BufferObject(context, flags, host_ptr, size);
+
+		buffer->allocate();
+
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	if(errcode_ret)
+		*errcode_ret = err;
+	_unlock();
+	return (cl_mem)buffer;
+}
+
+cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
+			throw CL_INVALID_MEM_OBJECT;
+
+		memobj->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
+}
+
+
 cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	cl_uint count,
 	const char ** strings,
@@ -1055,47 +1015,20 @@ cl_int opencl::OpenCLRuntime::clReleaseKernel(cl_kernel kernel) {
 
 }
 
-cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
-	cl_mem_flags flags,
-	size_t size,
-	void * host_ptr,
-	cl_int * errcode_ret) {
-
-	BufferObject * buffer = NULL;
-	_lock();
-	cl_int err = CL_SUCCESS;
-
-	try {
-		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
-			throw CL_INVALID_CONTEXT;
-
-		buffer = new BufferObject(context, flags, host_ptr, size);
-
-		buffer->allocate();
-
-	}
-	catch(cl_int exception) {
-		err = exception;
-	}
-	catch(...) {
-		err = CL_OUT_OF_HOST_MEMORY;
-	}
-
-	if(errcode_ret)
-		*errcode_ret = err;
-	_unlock();
-	return (cl_mem)buffer;
-}
-
-cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
+cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
+	cl_uint arg_index,
+	size_t arg_size,
+	const void * arg_value) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
-	try {
-		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
-			throw CL_INVALID_MEM_OBJECT;
 
-		memobj->release();
+	try {
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
+			throw CL_INVALID_KERNEL;
+
+		kernel->setArg(arg_index, arg_size, arg_value);	
+		
 	}
 	catch(cl_int exception) {
 		result = exception;
@@ -1105,9 +1038,7 @@ cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
 	}
 
 	_unlock();
-
 	return result;
-
 }
 
 cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue,
@@ -1198,32 +1129,6 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	catch(...) {
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
-	_unlock();
-	return result;
-}
-
-cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
-	cl_uint arg_index,
-	size_t arg_size,
-	const void * arg_value) {
-	cl_int result = CL_SUCCESS;
-
-	_lock();
-
-	try {
-		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
-			throw CL_INVALID_KERNEL;
-
-		kernel->setArg(arg_index, arg_size, arg_value);	
-		
-	}
-	catch(cl_int exception) {
-		result = exception;
-	}
-	catch(...) {
-		result = CL_OUT_OF_HOST_MEMORY;
-	}
-
 	_unlock();
 	return result;
 }

@@ -4,6 +4,7 @@
 // C++ libs
 #include <string>
 #include <list>
+#include <algorithm>
 
 // Ocelot libs
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>

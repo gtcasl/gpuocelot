@@ -135,8 +135,6 @@ void opencl::OpenCLRuntime::_enumerateDevices(cl_platform_id platform,
 		
 	}
 
-	if (Device::getDevices(platform, device_type, num_entries, devices, num_devices) == 0)
-		throw CL_DEVICE_NOT_FOUND;
 }
 
 //! acquires mutex and locks the runtime
@@ -612,13 +610,12 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 	
-		if(device_type < CL_DEVICE_TYPE_CPU || device_type > CL_DEVICE_TYPE_ALL)
-			throw CL_INVALID_DEVICE_TYPE;
-		
 		if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
 			throw CL_INVALID_VALUE;
  
 		_enumerateDevices(platform, device_type, num_entries, devices, num_devices);
+	
+		Device::getDevices(platform, device_type, num_entries, devices, num_devices);
 			
 	}
 	catch(cl_int exception) {

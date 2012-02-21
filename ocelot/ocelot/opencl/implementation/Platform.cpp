@@ -1,3 +1,10 @@
+/*!	
+	\file Platform.cpp
+	\author Jin Wang <jin.wang@gatech.edu>
+	\brief defines OpenCL runtime platform
+	\date 05 Feb 2012
+*/
+
 // C standard library includes
 
 // C++ standard library includes
@@ -7,8 +14,11 @@
 
 opencl::Platform::Platform(): Object(OBJTYPE_PLATFORM),
 	_profile("FULL_PROFILE"), _version("1.2"),
-	_name("Ocelot OpenCL"), _vendor("Gatch CASL"),
-	_extensions("cl_khr_gl_sharing") {
+	_name("Ocelot OpenCL"), _vendor("OCELOT"),
+	_extensions("cl_khr_global_int32_base_atomics \
+cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics \
+cl_khr_local_int32_extended_atomics cl_khr_byte_addressable_store \
+cl_khr_fp64 cl_khr_gl_sharing cl_khr_gl_event") {
 }
 
 opencl::Platform::~Platform() {

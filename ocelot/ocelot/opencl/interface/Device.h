@@ -26,19 +26,19 @@ namespace opencl {
 		}deviceT;
 
 	public:
-		Device(executive::Device * device, 
-			cl_device_type type, Platform *p);
+		Device(executive::Device * device, cl_device_type type, 
+			Platform *p, std::string & vendor, 
+			Device * parentDevice, cl_device_partition_property * partitionProp,
+			size_t partitionSize);
 		~Device();
 
 	public:
-		void release();
-
 		//Create a specific device
 		static void createDevices(Platform * platform, deviceT device, 
 			unsigned int flags, int compuateCapability, int workerThreadLimit = 0);
 
 		//Get devices of one specific type
-		static cl_uint getDevices(cl_platform_id platform, cl_device_type type, cl_uint num_entries,
+		static void getDevices(cl_platform_id platform, cl_device_type type, cl_uint num_entries,
 		    cl_device_id * devices, cl_uint * num_devices);
 
 		//Set limit worker thread
@@ -51,6 +51,8 @@ namespace opencl {
 		static void setOptimizationLevelForAll(translator::Translator::OptimizationLevel l);
 
 	public:
+		void release();
+
 		//Get info
 		void getInfo(cl_device_info param_name,
 		    size_t param_value_size,
@@ -107,6 +109,9 @@ namespace opencl {
 
 		//vendor id, use device count id instead
 		cl_uint _vendorId;
+
+		//vendor name
+		std::string _vendor;
 		
 		//Associated platform
 		Platform * _platform;
@@ -114,13 +119,23 @@ namespace opencl {
 		//A semi-colon separated list of built-in kernels
 		std::string _builtInKernels;
 
+		//Parent device for a subdevice
+		Device * _parentDevice;
+
+		//device partition properties
+		cl_device_partition_property * _partitionProp;
+
+		//device parition properties size (including terminator 0)
+		size_t _partitionPropSize;
+
 		//Compare Platform
 		const bool _hasPlatform(cl_platform_id platform) const;
 
 		//Compare device type
-		const bool _isType(const cl_device_type type) const;
+		const bool _isType(cl_device_type type) const;
 
-
+		//If valid device type
+		static const bool _isValidType(const cl_device_type type);
 
 	};
 }

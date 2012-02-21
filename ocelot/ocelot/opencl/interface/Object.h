@@ -44,7 +44,6 @@ protected:
 		//Object list
 		static std::list < Object * > _objList;
 
-private:
 		//Object type
 		const objT _objType;
 

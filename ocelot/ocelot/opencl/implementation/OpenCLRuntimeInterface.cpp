@@ -1,3 +1,10 @@
+/*!	
+	\file OpenCLRuntimeInterface.cpp
+	\author Jin Wang <jin.wang@gatech.edu>
+	\brief defines OpenCL runtime abstract interface
+	\date 28 Sep 2011
+*/
+
 // C std lib includes
 #include <assert.h>
 

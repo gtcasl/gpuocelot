@@ -265,7 +265,7 @@ namespace opencl {
 					void (CL_CALLBACK *     pfn_notify)(const char *, const void *, size_t, void *),
 					void *                        user_data,
 					cl_int *                      errcode_ret);
-//		virtual cl_int clRetainContext(cl_context context);
+		virtual cl_int clRetainContext(cl_context context);
 		virtual cl_int clReleaseContext(cl_context context);
 //		virtual cl_int clGetContextInfo(cl_context         context,
 //                 cl_context_info    param_name,

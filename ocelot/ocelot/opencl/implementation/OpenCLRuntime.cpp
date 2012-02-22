@@ -782,6 +782,28 @@ cl_context opencl::OpenCLRuntime::clCreateContextFromType(const cl_context_prope
 
 }
 
+cl_int opencl::OpenCLRuntime::clRetainContext(cl_context context) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
+			throw CL_INVALID_CONTEXT;
+
+		context->retain();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+}
+
 cl_int opencl::OpenCLRuntime::clReleaseContext(cl_context context) {
 	cl_int result = CL_SUCCESS;
 

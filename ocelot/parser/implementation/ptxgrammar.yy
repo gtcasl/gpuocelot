@@ -1215,7 +1215,10 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1 );
 };
 
-cacheLevel: TOKEN_L1 | TOKEN_L2;
+cacheLevel: TOKEN_L1 | TOKEN_L2
+{
+	state.cacheLevel( $<value>1 );
+};
 
 prefetchModifier : addressSpace
 {

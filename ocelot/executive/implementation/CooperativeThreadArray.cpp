@@ -496,6 +496,10 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				eval_Pmevent(context, instr); break;
 			case PTXInstruction::Popc:
 				eval_Popc(context, instr); break;
+			case PTXInstruction::Prefetch:
+				eval_Prefetch(context, instr); break;
+			case PTXInstruction::Prefetchu:
+				eval_Prefetchu(context, instr); break;
 			case PTXInstruction::Prmt:
 				eval_Prmt(context, instr); break;
 			case PTXInstruction::Rcp:
@@ -6172,6 +6176,72 @@ void executive::CooperativeThreadArray::eval_Prmt(CTAContext &context,
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}
+}
+
+void executive::eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr) {
+	
+	if (traceEvents) {
+		currentEvent.memory_size = elementSize;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) {
+				continue;
+			}
+
+			const char *source = 0;
+
+			switch (instr.a.addressMode) {
+				case PTXOperand::Indirect:
+					source += getRegAsU64(threadID, instr.a.reg);
+					break;
+				case PTXOperand::Address:
+				case PTXOperand::Immediate:
+					source += instr.a.imm_uint;
+					break;
+				default:
+					throw RuntimeException(
+						"unsupported address mode for source operand", 
+						context.PC, instr);
+			}
+
+			source += instr.a.offset;
+			currentEvent.memory_addresses.push_back((ir::PTXU64)source);
+		}
+	}
+	
+	trace();
+}
+
+void executive::eval_Prefetchu(CTAContext &context, const ir::PTXInstruction &instr) {
+	
+	if (traceEvents) {
+		currentEvent.memory_size = elementSize;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) {
+				continue;
+			}
+
+			const char *source = 0;
+
+			switch (instr.a.addressMode) {
+				case PTXOperand::Indirect:
+					source += getRegAsU64(threadID, instr.a.reg);
+					break;
+				case PTXOperand::Address:
+				case PTXOperand::Immediate:
+					source += instr.a.imm_uint;
+					break;
+				default:
+					throw RuntimeException(
+						"unsupported address mode for source operand", 
+						context.PC, instr);
+			}
+
+			source += instr.a.offset;
+			currentEvent.memory_addresses.push_back((ir::PTXU64)source);
+		}
+	}
+	
+	trace();
 }
 
 /*!

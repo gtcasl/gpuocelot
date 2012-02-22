@@ -311,6 +311,7 @@ namespace ir {
 		
 	public:
 		static std::string toString( Level );
+		static std::string toString(CacheLevel cache);
 		static std::string toString( PermuteMode );
 		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );

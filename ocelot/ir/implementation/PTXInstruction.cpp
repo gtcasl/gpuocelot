@@ -18,6 +18,15 @@ std::string ir::PTXInstruction::toString( Level l ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString(CacheLevel cache) {
+	switch (cache) {
+		L1: return "L1";
+		L2: return "L2";
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::toString( PermuteMode m ) {
 	switch( m ) {
 		case ForwardFourExtract:  return "f4e"; break;
@@ -2232,6 +2241,13 @@ std::string ir::PTXInstruction::toString() const {
 		case Popc: {
 			return guard() + "popc." + PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
+		}
+		case Prefetch: {
+			return guard() + "prefetch." + PTXOperand::toString(addressSpace) + "." + 
+				PTXInstruction::toString(cacheLevel) + " " + d.toString();
+		}
+		case Prefetchu: {
+			return guard() + "prefetchu.L1 " + d.toString();
 		}
 		case Prmt: {
 			std::string result = guard() + "prmt." 

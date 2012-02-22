@@ -12,7 +12,7 @@ bool opencl::Device::_loaded = false;
 cl_uint opencl::Device::_deviceCount = 0;
 
 const bool opencl::Device::_hasPlatform(cl_platform_id platform) const {
-	return ((Platform *)platform == _platform);
+	return (platform == NULL || (Platform *)platform == _platform);
 }
 
 const bool opencl::Device::_isType(cl_device_type type) const {

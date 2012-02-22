@@ -135,11 +135,7 @@ namespace opencl {
 			    cl_platform_id * platforms, 
 			    cl_uint * num_platforms);
 		/*! \brief Create devices if they do not already exist */
-		void _enumerateDevices(cl_platform_id platform,    
-			cl_device_type device_type, 
-		    cl_uint num_entries,
-	    	cl_device_id * devices,
-    		cl_uint * num_devices);
+		void _enumerateDevices(cl_platform_id platform);
 		//! \brief acquires mutex and locks the runtime
 		void _lock();
 		//! \brief releases mutex
@@ -264,11 +260,11 @@ namespace opencl {
 				    void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
 				    void * user_data,
 				    cl_int * errcode_ret);
-//		virtual cl_context clCreateContextFromType(const cl_context_properties * properties,
-//					cl_device_type                device_type,
-//					void (CL_CALLBACK *     pfn_notify)(const char *, const void *, size_t, void *),
-//					void *                        user_data,
-//					cl_int *                      errcode_ret);
+		virtual cl_context clCreateContextFromType(const cl_context_properties * properties,
+					cl_device_type                device_type,
+					void (CL_CALLBACK *     pfn_notify)(const char *, const void *, size_t, void *),
+					void *                        user_data,
+					cl_int *                      errcode_ret);
 //		virtual cl_int clRetainContext(cl_context context);
 		virtual cl_int clReleaseContext(cl_context context);
 //		virtual cl_int clGetContextInfo(cl_context         context,

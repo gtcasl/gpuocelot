@@ -102,11 +102,7 @@ opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
 	return c;
 }
 
-void opencl::OpenCLRuntime::_enumerateDevices(cl_platform_id platform,
-    cl_device_type device_type, 
-    cl_uint num_entries,
-    cl_device_id * devices,
-    cl_uint * num_devices) {
+void opencl::OpenCLRuntime::_enumerateDevices(cl_platform_id platform) {
 	if(!_devicesLoaded) {
 		report("Creating devices.");
 		if(config::get().executive.enableNVIDIA) {
@@ -613,7 +609,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 		if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
 			throw CL_INVALID_VALUE;
  
-		_enumerateDevices(platform, device_type, num_entries, devices, num_devices);
+		_enumerateDevices(platform);
 	
 		Device::getDevices(platform, device_type, num_entries, devices, num_devices);
 			
@@ -701,8 +697,11 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	Context * ctx = NULL;
 
 	try {
-		if(properties && properties[0] && (properties[0] != CL_CONTEXT_PLATFORM 
-			|| properties[2] != 0 /*properties terminates with 0*/ ))
+		if(properties == NULL)
+			throw CL_INVALID_PROPERTY;
+
+		if(properties[0] != CL_CONTEXT_PLATFORM 
+			|| properties[2] != 0 /*properties terminates with 0*/ )
 			throw CL_INVALID_PROPERTY;
 		
 		if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
@@ -730,6 +729,57 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	if(errcode_ret)
 		*errcode_ret = err;
 	return (cl_context)(ctx);
+}
+
+cl_context opencl::OpenCLRuntime::clCreateContextFromType(const cl_context_properties * properties,
+	cl_device_type                device_type,
+	void (CL_CALLBACK *     pfn_notify)(const char *, const void *, size_t, void *),
+	void *                        user_data,
+	cl_int *                      errcode_ret) {
+
+	_lock();
+	cl_int err = CL_SUCCESS;
+
+	Context * ctx = NULL;
+
+	try {
+		if(properties == NULL)
+			throw CL_INVALID_PROPERTY;
+
+		if(properties[0] != CL_CONTEXT_PLATFORM 
+			|| properties[2] != 0 /*properties terminates with 0*/ )
+			throw CL_INVALID_PROPERTY;
+		
+		if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
+			throw CL_INVALID_PLATFORM;
+
+		if(pfn_notify == 0 && user_data != 0)
+			throw CL_INVALID_VALUE;
+		if(pfn_notify) {
+			assertM(false, "call_back function unsupported\n");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		cl_uint deviceNum;
+		Device::getDevices(NULL, device_type, 0, NULL, &deviceNum);
+		cl_device_id * devices = new cl_device_id[deviceNum];
+		Device::getDevices(NULL, device_type, deviceNum, devices, NULL);	
+	
+		ctx = _createContext((Platform *)properties[1], deviceNum, devices);
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	if(errcode_ret)
+		*errcode_ret = err;
+	return (cl_context)(ctx);
+
 }
 
 cl_int opencl::OpenCLRuntime::clReleaseContext(cl_context context) {

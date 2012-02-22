@@ -196,6 +196,12 @@ namespace ir {
 			CacheOperation_Invalid
 		};
 		
+		enum CacheLevel {
+			L1,
+			L2,
+			CacheLevel_invalid
+		};
+		
 		enum ClampOperation {
 			TrapOOB,
 			Clamp,

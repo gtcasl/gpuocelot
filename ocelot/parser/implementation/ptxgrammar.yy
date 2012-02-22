@@ -65,6 +65,7 @@
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
 %token<text> OPCODE_BFI OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
+%token<text> OPCODE_PREFETCH OPCODE_PREFETCU
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -1212,6 +1213,27 @@ membarSpace : membarSpaceType
 membar : OPCODE_MEMBAR membarSpace ';'
 {
 	state.instruction( $<text>1 );
+};
+
+cacheLevel: TOKEN_L1 | TOKEN_L2;
+
+prefetchModifier : addressSpace
+{
+};
+
+prefetchdModifier : /* empty string */
+{
+	state.noAddressSpace();	
+};
+
+prefetch : OPCODE_PREFETCH prefetchModifier cacheLevel '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1, $<value>3 );
+};
+
+prefetchu : OPCODE_PREFETCHU TOKEN_L1 '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1, $<value>3 );
 };
 
 movIndexedOperand : identifier '[' TOKEN_DECIMAL_CONSTANT ']'

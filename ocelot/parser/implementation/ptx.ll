@@ -182,6 +182,10 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return OPCODE_POPC; }
 "prmt"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_PRMT; }
+"prefetch"                      { sstrcpy( yylval->text, yytext, 1024 ); \
+                                  return OPCODE_PREFETCH; }
+"prefetchu"                     { sstrcpy( yylval->text, yytext, 1024 ); \
+                                  return OPCODE_PREFETCHU; }
 "rcp"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RCP; }
 "red"                           { sstrcpy( yylval->text, yytext, 1024 ); \

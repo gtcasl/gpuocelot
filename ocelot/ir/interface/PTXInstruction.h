@@ -455,6 +455,9 @@ namespace ir {
 			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
+			
+			/*! cache level */
+			CacheLevel cacheLevel;
 		};
 		
 		/*! Geometry if this is a texture or surface instruction */

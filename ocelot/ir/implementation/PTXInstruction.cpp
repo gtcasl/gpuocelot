@@ -20,8 +20,8 @@ std::string ir::PTXInstruction::toString( Level l ) {
 
 std::string ir::PTXInstruction::toString(CacheLevel cache) {
 	switch (cache) {
-		L1: return "L1";
-		L2: return "L2";
+		case L1: return "L1";
+		case L2: return "L2";
 		default: break;
 	}
 	return "";
@@ -2243,7 +2243,7 @@ std::string ir::PTXInstruction::toString() const {
 				+ d.toString() + ", " + a.toString();
 		}
 		case Prefetch: {
-			return guard() + "prefetch." + PTXOperand::toString(addressSpace) + "." + 
+			return guard() + "prefetch." + toString(addressSpace) + "." + 
 				PTXInstruction::toString(cacheLevel) + " " + d.toString();
 		}
 		case Prefetchu: {

@@ -6178,10 +6178,10 @@ void executive::CooperativeThreadArray::eval_Prmt(CTAContext &context,
 	}
 }
 
-void executive::eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr) {
 	
 	if (traceEvents) {
-		currentEvent.memory_size = elementSize;
+		currentEvent.memory_size = 4;
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) {
 				continue;
@@ -6211,10 +6211,10 @@ void executive::eval_Prefetch(CTAContext &context, const ir::PTXInstruction &ins
 	trace();
 }
 
-void executive::eval_Prefetchu(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Prefetchu(CTAContext &context, const ir::PTXInstruction &instr) {
 	
 	if (traceEvents) {
-		currentEvent.memory_size = elementSize;
+		currentEvent.memory_size = 4;
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) {
 				continue;

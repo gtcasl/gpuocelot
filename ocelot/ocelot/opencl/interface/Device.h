@@ -28,8 +28,7 @@ namespace opencl {
 	public:
 		Device(executive::Device * device, cl_device_type type, 
 			Platform *p, std::string & vendor, 
-			Device * parentDevice, cl_device_partition_property * partitionProp,
-			size_t partitionSize);
+			Device * parentDevice, const cl_device_partition_property * partitionProp);
 		~Device();
 
 	public:
@@ -90,6 +89,10 @@ namespace opencl {
 		//Write memory
 		bool write(void * dest, const void * host, size_t offset, size_t size);
 
+		//create sub devices
+		void createSubDevices(const cl_device_partition_property * properties,
+			cl_uint num_devices, cl_device_id * out_devices, cl_uint * num_devices_ret);
+
 	private:
 
 		//Avaialbe device list
@@ -138,7 +141,7 @@ namespace opencl {
 		static const bool _isValidType(const cl_device_type type);
 
 	};
-}
 
+}
 
 #endif

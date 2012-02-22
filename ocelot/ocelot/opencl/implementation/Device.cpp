@@ -30,21 +30,32 @@ const bool opencl::Device::_isValidType(const cl_device_type type) {
 
 opencl::Device::Device(executive::Device * d, cl_device_type type, 
 	Platform * p, std::string & vendor, 
-	Device * parentDevice, cl_device_partition_property * partitionProp,
-	size_t partitionPropSize):
+	Device * parentDevice, const cl_device_partition_property * partitionProp):
 	Object(OBJTYPE_DEVICE),
 	_exeDevice(d), _type(type), _vendorId(_deviceCount++), _vendor(vendor),
 	_platform(p), _builtInKernels(""), _parentDevice(parentDevice),
-	_partitionProp(partitionProp), _partitionPropSize(partitionPropSize) {
+	_partitionProp(NULL), _partitionPropSize(0) {
 
 	_platform->retain();
+
+	if(_parentDevice != NULL) { //sub device
+		_parentDevice->retain();
+		_partitionProp = new cl_device_partition_property[3];
+		memcpy(_partitionProp, partitionProp, 3*sizeof(cl_device_partition_property));
+		_partitionPropSize = 3;
+	}
 }
 
 opencl::Device::~Device() {
 
 	_platform->release();
 
-	delete _exeDevice;
+	if(_parentDevice != NULL) { //sub device
+		delete[] _partitionProp;
+		_parentDevice->release();
+	}
+	else
+		delete _exeDevice;
 
 	DeviceList::iterator it = std::find(_deviceList.begin(), _deviceList.end(), this);
 	assert(it != _deviceList.end());
@@ -117,7 +128,7 @@ void opencl::Device::createDevices(Platform * platform, deviceT device,
 	}
 	
 	for(size_t i = 0; i < d.size(); i++)
-		_deviceList.push_back(new Device(d[i], type, platform, vendor, NULL, NULL, 0));
+		_deviceList.push_back(new Device(d[i], type, platform, vendor, NULL, NULL));
 }
 
 void opencl::Device::getDevices(cl_platform_id platform, cl_device_type type, cl_uint num_entries,
@@ -224,7 +235,7 @@ do { \
 			break;
 
 		case CL_DEVICE_MAX_COMPUTE_UNITS:
-			ASSIGN_INFO(cl_uint, (cl_uint)prop.multiprocessorCount * 48); //fermi	
+			ASSIGN_INFO(cl_uint, (cl_uint)prop.multiprocessorCount * 32); //fermi 2.0	
 			break;
 
 		case CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS:
@@ -514,8 +525,7 @@ cl_khr_fp64 cl_khr_gl_sharing cl_khr_gl_event");
 			break;
 
 		default:
-			assertM(false, "Device info unimplemented!\n");
-			throw CL_UNIMPLEMENTED;
+			throw CL_INVALID_VALUE;
 			break;
 	}
 
@@ -612,4 +622,35 @@ bool opencl::Device::write(void * dest, const void * host, size_t offset, size_t
 
 	return true;
 }
+
+void opencl::Device::createSubDevices(const cl_device_partition_property * properties,
+			cl_uint num_devices, cl_device_id * out_devices, cl_uint * num_devices_ret) {
+
+	//only support partition equally for 1 subdevice
+	if(properties == NULL)
+		throw CL_INVALID_VALUE;
+
+	
+	cl_uint maxUnits;
+	getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &maxUnits, NULL);
+
+	if(properties[0] != CL_DEVICE_PARTITION_EQUALLY || properties[2] != 0)
+		throw CL_INVALID_VALUE;
+
+	if(properties[1] != maxUnits)
+		throw CL_DEVICE_PARTITION_FAILED;
+
+	if(out_devices != NULL && num_devices != 1)
+		throw CL_INVALID_VALUE;
+
+
+	if(out_devices != NULL)
+		*out_devices = (cl_device_id) new Device(_exeDevice, _type, 
+			_platform, _vendor, this, properties);
+
+	if(num_devices_ret != NULL)
+		*num_devices_ret = 1;	
+
+}
+
 

@@ -251,11 +251,11 @@ namespace opencl {
 				    size_t param_value_size,
 					void * param_value,
 				    size_t * param_value_size_ret);
-//		virtual cl_int clCreateSubDevices(cl_device_id in_device,
-//					const cl_device_partition_property * properties,
-//					cl_uint num_devices,
-//					cl_device_id * out_devices,
-//					cl_uint * num_devices_ret);
+		virtual cl_int clCreateSubDevices(cl_device_id in_device,
+					const cl_device_partition_property * properties,
+					cl_uint num_devices,
+					cl_device_id * out_devices,
+					cl_uint * num_devices_ret);
 
 		//Context APIs
 		virtual cl_context clCreateContext(const cl_context_properties * properties,

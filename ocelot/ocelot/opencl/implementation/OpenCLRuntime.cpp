@@ -659,6 +659,35 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 	return result;
 }
 
+cl_int opencl::OpenCLRuntime::clCreateSubDevices(cl_device_id in_device,
+					const cl_device_partition_property * properties,
+					cl_uint num_devices,
+					cl_device_id * out_devices,
+					cl_uint * num_devices_ret) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+
+	try {
+		if(!in_device->isValidObject(Object::OBJTYPE_DEVICE))
+			throw CL_INVALID_DEVICE;
+
+		if(out_devices == NULL && num_devices_ret == NULL)
+			throw CL_INVALID_VALUE;
+
+		in_device->createSubDevices(properties, num_devices, out_devices, num_devices_ret);
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
+
 cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * properties,
 	cl_uint num_devices,
 	const cl_device_id * devices,

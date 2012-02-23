@@ -1289,7 +1289,7 @@ cacheLevel : TOKEN_L1 | TOKEN_L2
 	state.cacheLevel( $<value>1 );
 };
 
-prefetch : OPCODE_PREFETCH cacheLevel addressSpace '[' memoryOperand ']' ';'
+prefetch : OPCODE_PREFETCH addressSpace cacheLevel '[' memoryOperand ']' ';'
 {
 	state.instruction( $<text>1 );
 };

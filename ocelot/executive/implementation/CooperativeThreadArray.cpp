@@ -392,6 +392,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	
 	report("CooperativeThreadArray::execute called");
 	report("  block is " << block.x << ", " << block.y << ", " << block.z);
+	report("  traceEvents: " << traceEvents);
+	
 	reportE(REPORT_STATIC_INSTRUCTIONS, "Running " << kernel->toString());
 
 	do {
@@ -6179,6 +6181,7 @@ void executive::CooperativeThreadArray::eval_Prmt(CTAContext &context,
 }
 
 void executive::CooperativeThreadArray::eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr) {
+	report(instr.toString());
 	
 	if (traceEvents) {
 		currentEvent.memory_size = 4;
@@ -6189,13 +6192,13 @@ void executive::CooperativeThreadArray::eval_Prefetch(CTAContext &context, const
 
 			const char *source = 0;
 
-			switch (instr.a.addressMode) {
+			switch (instr.d.addressMode) {
 				case PTXOperand::Indirect:
-					source += getRegAsU64(threadID, instr.a.reg);
+					source += getRegAsU64(threadID, instr.d.reg);
 					break;
 				case PTXOperand::Address:
 				case PTXOperand::Immediate:
-					source += instr.a.imm_uint;
+					source += instr.d.imm_uint;
 					break;
 				default:
 					throw RuntimeException(
@@ -6222,13 +6225,13 @@ void executive::CooperativeThreadArray::eval_Prefetchu(CTAContext &context, cons
 
 			const char *source = 0;
 
-			switch (instr.a.addressMode) {
+			switch (instr.d.addressMode) {
 				case PTXOperand::Indirect:
-					source += getRegAsU64(threadID, instr.a.reg);
+					source += getRegAsU64(threadID, instr.d.reg);
 					break;
 				case PTXOperand::Address:
 				case PTXOperand::Immediate:
-					source += instr.a.imm_uint;
+					source += instr.d.imm_uint;
 					break;
 				default:
 					throw RuntimeException(

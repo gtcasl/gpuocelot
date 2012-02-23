@@ -2311,6 +2311,8 @@ namespace parser
 		if( string == "not" ) return ir::PTXInstruction::Not;
 		if( string == "pmevent" ) return ir::PTXInstruction::Pmevent;
 		if( string == "popc" ) return ir::PTXInstruction::Popc;
+		if( string == "prefetch" ) return ir::PTXInstruction::Prefetch;
+		if( string == "prefetchu" ) return ir::PTXInstruction::Prefetchu;
 		if( string == "prmt" ) return ir::PTXInstruction::Prmt;
 		if( string == "or" ) return ir::PTXInstruction::Or;
 		if( string == "rcp" ) return ir::PTXInstruction::Rcp;

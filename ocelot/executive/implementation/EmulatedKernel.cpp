@@ -101,6 +101,8 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 
 	_gridDim = ir::Dim3(width, height, depth);	
 	
+	report("_generators.size() " << _generators.size());
+	
 	// notify trace generator(s)
 	initializeTraceGenerators();
 

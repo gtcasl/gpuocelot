@@ -63,8 +63,10 @@ bool ExecutableKernel::executable() const
 
 void ExecutableKernel::traceEvent(const trace::TraceEvent & event) const
 {
+	report("traceEvent()  - generators.size: " << _generators.size());
 	for(TraceGeneratorVector::const_iterator generator = _generators.begin(); 
 		generator != _generators.end(); ++generator) {
+		report("  generator = " << (void *)*generator);
 		(*generator)->event(event);
 	}
 }
@@ -173,7 +175,8 @@ void ExecutableKernel::removeTraceGenerator(
 }
 
 void ExecutableKernel::initializeTraceGenerators() {
-
+	report("initializeTraceGenerators().size = " << _generators.size());
+	
 	// notify trace generator(s)
 	for (TraceGeneratorVector::iterator it = _generators.begin(); 
 		it != _generators.end(); ++it) {

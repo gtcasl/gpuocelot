@@ -64,7 +64,7 @@
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
-%token<text> OPCODE_BFI OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
+%token<text> OPCODE_BFI OPCODE_BFE OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
 %token<text> OPCODE_PREFETCH OPCODE_PREFETCHU
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
@@ -110,7 +110,7 @@
 %token<value> TOKEN_MIN TOKEN_MAX TOKEN_DEC TOKEN_INC TOKEN_ADD TOKEN_CAS
 %token<value> TOKEN_EXCH
 
-%token<value> TOKEN_1D TOKEN_2D TOKEN_3D
+%token<value> TOKEN_1D TOKEN_2D TOKEN_3D TOKEN_A1D TOKEN_A2D TOKEN_CUBE TOKEN_ACUBE
 
 %token<value> TOKEN_CA TOKEN_WB TOKEN_CG TOKEN_CS TOKEN_LU TOKEN_CV TOKEN_WT
 
@@ -647,7 +647,8 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_SUQ | OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT
 	| OPCODE_VOTE | OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA
 	| OPCODE_PMEVENT | OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV
-	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4;
+	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4
+	| OPCODE_PREFETCH | OPCODE_PREFETCHU;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -679,7 +680,7 @@ returnType : parameter dataTypeId optionalIdentifier
 
 returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
-returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
+returnTypeList : '(' returnTypeListBody ')' | '(' ')' | /* empty string */;
 
 argumentType : parameter dataTypeId optionalIdentifier
 {
@@ -813,10 +814,10 @@ intRounding : intRoundingToken
 optionalFloatRounding : floatRounding | /* empty string */;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
-	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
+	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
 	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
-	| pmevent | popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
+	| pmevent | popc | prmt | prefetch | prefetchu | rcpSqrtInstruction | red | ret | sad | selp | set
 	| setp | slct | st | suld | suq | sured | sust | testp | tex | tld4 | trap
 	| txq | vote;
 
@@ -904,6 +905,11 @@ callArgumentList : callArgumentList ',' callOperand;
 optionalPrototypeName : ',' '(' callArgumentList ')' ',' identifier
 {
 	state.callPrototypeName( $<text>6 );
+};
+
+optionalPrototypeName : ',' '(' ')' ',' identifier
+{
+	state.callPrototypeName( $<text>5 );
 };
 
 optionalPrototypeName : ',' identifier
@@ -1005,6 +1011,11 @@ shiftAmount : /* empty string */
 	state.shiftAmount( false );
 };
 
+bfe : OPCODE_BFE dataType operand ',' operand ',' operand 
+	',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2 );
+};
 bfi : OPCODE_BFI dataType operand ',' operand ',' operand 
 	',' operand ',' operand ';'
 {
@@ -1060,7 +1071,6 @@ cvtRoundingModifier : intRoundingModifier | floatRoundingModifier;
 cvtModifier : cvtRoundingModifier optionalFtz sat;
 cvtModifier : cvtRoundingModifier optionalFtz;
 cvtModifier : optionalFtz sat;
-cvtModifier : sat optionalFtz;
 cvtModifier : optionalFtz;
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
@@ -1215,30 +1225,6 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1 );
 };
 
-cacheLevel: TOKEN_L1 | TOKEN_L2
-{
-	state.cacheLevel( $<value>1 );
-};
-
-prefetchModifier : addressSpace
-{
-};
-
-prefetchdModifier : /* empty string */
-{
-	state.noAddressSpace();	
-};
-
-prefetch : OPCODE_PREFETCH prefetchModifier cacheLevel '[' memoryOperand ']' ';'
-{
-	state.instruction( $<text>1, $<value>3 );
-};
-
-prefetchu : OPCODE_PREFETCHU TOKEN_L1 '[' memoryOperand ']' ';'
-{
-	state.instruction( $<text>1, $<value>3 );
-};
-
 movIndexedOperand : identifier '[' TOKEN_DECIMAL_CONSTANT ']'
 {
 	state.indexedOperand( $<text>1, @1, $<value>3 );
@@ -1296,6 +1282,21 @@ permuteMode : permuteModeType
 permuteMode : /* empty string */
 {
 	state.defaultPermute();
+};
+
+cacheLevel : TOKEN_L1 | TOKEN_L2
+{
+	state.cacheLevel( $<value>1 );
+};
+
+prefetch : OPCODE_PREFETCH cacheLevel addressSpace '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1 );
+};
+
+prefetchu : OPCODE_PREFETCHU cacheLevel '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1 );
 };
 
 prmt : OPCODE_PRMT dataType permuteMode operand ',' operand 
@@ -1426,7 +1427,7 @@ st : OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' arrayOperand ';'
 	state.instruction( $<text>1, $<value>3 );
 };
 
-geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D;
+geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D | TOKEN_A1D | TOKEN_A2D | TOKEN_CUBE | TOKEN_ACUBE;
 
 geometry : geometryId
 {

@@ -116,6 +116,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return OPCODE_BAR; }
 "bfi"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFI; }
+"bfe"                           { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BFE; }
 "bfind"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFIND; }
 "bra"                           { sstrcpy( yylval->text, yytext, 1024 ); \
@@ -177,15 +179,17 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
 "or"                            { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_OR; }
 "pmevent"                       { sstrcpy( yylval->text, yytext, 1024 ); \
-                                    return OPCODE_PMEVENT; }
-"popc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
-                                    return OPCODE_POPC; }
-"prmt"                          { sstrcpy( yylval->text, yytext, 1024 ); \
-                                    return OPCODE_PRMT; }
+                                    return OPCODE_PMEVENT; }                          
+
 "prefetch"                      { sstrcpy( yylval->text, yytext, 1024 ); \
                                   return OPCODE_PREFETCH; }
 "prefetchu"                     { sstrcpy( yylval->text, yytext, 1024 ); \
                                   return OPCODE_PREFETCHU; }
+
+"popc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_POPC; }
+"prmt"                          { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_PRMT; }
 "rcp"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RCP; }
 "red"                           { sstrcpy( yylval->text, yytext, 1024 ); \
@@ -414,6 +418,10 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
 ".1d"                           { yylval->value = TOKEN_1D; return TOKEN_1D; }
 ".2d"                           { yylval->value = TOKEN_2D; return TOKEN_2D; }
 ".3d"                           { yylval->value = TOKEN_3D; return TOKEN_3D; }
+".a1d"                          { yylval->value = TOKEN_A1D; return TOKEN_A1D; }
+".a2d"                          { yylval->value = TOKEN_A2D; return TOKEN_A2D; }
+".cube"                         { yylval->value = TOKEN_CUBE; return TOKEN_CUBE; }
+".acube"                        { yylval->value = TOKEN_ACUBE; return TOKEN_ACUBE; }
 
 ".p"                           	{ yylval->value = TOKEN_P; return TOKEN_P; }
 

@@ -1231,6 +1231,34 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Prefetch: {
+			if (!(cacheLevel == L1 || cacheLevel == L2)) {
+				return "cache level must be L1 or L2";
+			}
+			if (!(addressSpace == Local || addressSpace == Global)) {
+				return "address space must be .local or .global, not " + toString(addressSpace);
+			}
+			if (!(d.addressMode == PTXOperand::Indirect || d.addressMode == PTXOperand::Address ||
+				d.addressMode == PTXOperand::Immediate)) {
+				
+				return "address mode of destination operand must be Indirect, Address, or Immediate. Not " +
+					PTXOperand::toString(d.addressMode);
+			}
+		}
+		break;
+		case Prefetchu: {
+		
+			if (!(cacheLevel == L1)) {
+				return "cache level must be L1, not " + toString(cacheLevel);
+			}
+			if (!(d.addressMode == PTXOperand::Indirect || d.addressMode == PTXOperand::Address ||
+				d.addressMode == PTXOperand::Immediate)) {
+				
+				return "address mode of destination operand must be Indirect, Address, or Immediate. Not " +
+					PTXOperand::toString(d.addressMode);
+			}
+		}
+		break;
 		case Prmt: {
 			if( type != PTXOperand::b32 ) {
 				return "invalid instruction type " 
@@ -2244,10 +2272,10 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Prefetch: {
 			return guard() + "prefetch." + toString(addressSpace) + "." + 
-				PTXInstruction::toString(cacheLevel) + " " + d.toString();
+				PTXInstruction::toString(cacheLevel) + " [" + d.toString() + "]";
 		}
 		case Prefetchu: {
-			return guard() + "prefetchu.L1 " + d.toString();
+			return guard() + "prefetchu.L1 [" + d.toString() + "]";
 		}
 		case Prmt: {
 			std::string result = guard() + "prmt." 

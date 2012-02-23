@@ -131,7 +131,8 @@ void analysis::KernelPartitioningPass::BarrierPartitioning::runOnKernel(ir::PTXK
 				if (n + 1 < (unsigned int)(bb_it)->instructions.size()) {
 				
 					std::string label = (bb_it)->label + "_bar";
-					ir::ControlFlowGraph::iterator block = kernelCfg->split_block(bb_it, n+1, 
+					// ir::ControlFlowGraph::iterator block = 
+					kernelCfg->split_block(bb_it, n+1, 
 						ir::BasicBlock::Edge::FallThrough, label);
 					++barrierCount;
 					break;
@@ -1164,7 +1165,8 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		// restore live values
 		RegisterSet aliveValues = cfgToDfg[edge_it->sourceEdge.head]->aliveOut();
 		auto handlerDfgBlock = subkernelCfgToDfg[edge_it->handler];
-		auto frontierDfgBlock = cfgToDfg[edge_it->frontierBlock];
+		// auto frontierDfgBlock = 
+		cfgToDfg[edge_it->frontierBlock];
 		
 		report("    OUT-edge: " << edge_it->frontierBlock->label << " -> " << edge_it->handler->label
 			<< " (" << aliveValues.size() << " live values");

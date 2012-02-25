@@ -38,7 +38,7 @@
 	optimizations: {
 		subkernelSize: 1000,
 		simplifyCFG: true,
-		hoistSpecialValues: true
+		hoistSpecialValues: false
 	},
 	checkpoint: {
 		enabled: false,

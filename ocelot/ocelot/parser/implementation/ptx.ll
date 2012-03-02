@@ -602,11 +602,6 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
 /******************************************************************************/
 /* USER CODE                                                                  */
 
-int yywrap() 
-{
-	return 1;
-}
-
 long long unsigned int binaryToUint( const std::string& string )
 {
 	return hydrazine::binaryToUint( string );

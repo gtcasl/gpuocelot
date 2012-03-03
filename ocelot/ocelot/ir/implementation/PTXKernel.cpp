@@ -182,7 +182,8 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 				
 				if( d.type != ir::PTXOperand::pred )
 				{
-					if( d.array.empty() )
+					if( d.array.empty() &&
+						d.addressMode != ir::PTXOperand::ArgumentList )
 					{
 						if( encountered.insert( d.reg ).second )
 						{
@@ -214,7 +215,7 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 						}
 					}
 				}
-				else
+				else if( d.addressMode != ir::PTXOperand::ArgumentList )
 				{
 					if( d.condition == ir::PTXOperand::Pred
 						|| d.condition == ir::PTXOperand::InvPred )

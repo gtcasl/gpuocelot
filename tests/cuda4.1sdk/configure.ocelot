@@ -7,7 +7,7 @@
 			checkInitialization: false
 		},
 		raceDetector: {
-			enabled: true,
+			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
@@ -26,14 +26,14 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
-		asynchronousKernelLaunch: false,
+		devices: [ "dynamic" ],
+		partitioningHeuristic: "maximum",
 		port: 2011,
 		host: "127.0.0.1",
-		optimizationLevel: none,
+		optimizationLevel: memory,
 		workerThreadLimit: 1,
 		reconvergenceMechanism: "ipdom",
-		warpSize: 1
+		warpSize: 4
 	},
 	optimizations: {
 		subkernelSize: 1000
@@ -45,4 +45,3 @@
 		suffix: ".checkpoint"
 	}
 }
-

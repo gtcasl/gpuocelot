@@ -280,6 +280,9 @@ T* BodySystemCUDA<T>::getArray(BodyArray array)
             cutilSafeCall(cudaGraphicsResourceGetMappedPointer((void**)&ddata, &bytes, pgres));
         }
 
+				{
+					std::cout << "cudaMemcpy(host = " << (void *)hdata << ", gpu = " << (void *)ddata << " device-to-host)" << std::endl;
+				}
         cutilSafeCall(cudaMemcpy(hdata, ddata, 
                                  m_numBodies*4*sizeof(T), cudaMemcpyDeviceToHost));
 

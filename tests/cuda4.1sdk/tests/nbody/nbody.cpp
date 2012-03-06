@@ -390,10 +390,11 @@ private:
             T tolerance = 0.0005f;
             for (int i = 0; i < numBodies; i++)
             {
-                if (fabs(cpuPos[i] - cudaPos[i]) > tolerance)
+//                if (((i + 1) % 4) && fabs(cpuPos[i] - cudaPos[i]) > tolerance)
+                if (((i + 1) % 4) && fabs(cpuPos[i] - cudaPos[i]) > tolerance)
                 {
                     passed = false;
-                    shrLog("Error: (host)%f != (device)%f\n", cpuPos[i], cudaPos[i]);
+                    shrLog("Error: element %d: (host)%f != (device)%f\n", i, cpuPos[i], cudaPos[i]);
                 }
             }
         }

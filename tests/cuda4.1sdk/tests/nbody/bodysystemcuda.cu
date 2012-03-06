@@ -253,6 +253,7 @@ integrateBodies(typename vec4<T>::Type* newPos,
         position.x += velocity.x * deltaTime;
         position.y += velocity.y * deltaTime;
         position.z += velocity.z * deltaTime;
+        position.w = 1.0f;
 
         // store new position and velocity
         newPos[deviceOffset + index] = position;

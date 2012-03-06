@@ -50,14 +50,18 @@ executive::DynamicExecutionManager::~DynamicExecutionManager() {
 void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKernel &kernel, 
 	size_t sharedMemorySize) {
 	
-	report("DynamicExecutionManager::launch()");
+	report("DynamicExecutionManager::launch() - dynamic sharedMemorySize = " << sharedMemorySize);
 
 	translationCache.loadModule(kernel.module, static_cast<executive::DynamicMulticoreDevice*>(kernel.device));
 	
 	// make the kernel graph available to the dynamic translation cache if need be
 	translationCache.registerKernel(&kernel);
+	sharedMemorySize += kernel.totalSharedMemorySize();
 	
 	// start executing
+	report("  sharedMemorySize() = " << kernel.sharedMemorySize());
+	report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
+	report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
 	
 	DynamicMulticoreExecutive executive(kernel, sharedMemorySize);
 	

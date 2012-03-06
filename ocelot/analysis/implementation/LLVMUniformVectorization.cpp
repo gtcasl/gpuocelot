@@ -506,6 +506,8 @@ void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() 
 	
 	report("_hoistDeclarationBlocks()");
 	
+	std::vector<llvm::BasicBlock *> killBlocks;
+	
 	for (int i = 0; initializerBlocks[i]; i++) {
 		llvm::BasicBlock *block = 0;
 		std::vector< llvm::Instruction * > instructions;
@@ -521,18 +523,35 @@ void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() 
 	
 		if (block) {
 			report("  hoisting declarations in " << block->getName().str());
+			
 			for (std::vector< llvm::Instruction * >::iterator inst_it = instructions.begin(); 
 				inst_it != instructions.end(); ++inst_it) {
-				if (!llvm::TerminatorInst::classof(*inst_it)) {
+				llvm::TerminatorInst *termInst = llvm::dyn_cast<llvm::TerminatorInst>(*inst_it);
+				if (termInst) {
+					bool found = false;
+					for (int j = 0; initializerBlocks[j]; ++j) {
+						if (termInst->getSuccessor(0)->getName().str() == initializerBlocks[j]) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						schedulerEntryBlock.defaultEntry = termInst->getSuccessor(0);
+					}
+					termInst->eraseFromParent();
+				}
+				else {
 					llvm::Instruction *inst = *inst_it;
 					inst->removeFromParent();
 					inst->insertAfter(&schedulerEntryBlock.block->back());
 				}
-			}
-			assert(block->getTerminator()->getNumSuccessors() && "block has no successors");
-			schedulerEntryBlock.defaultEntry = block->getTerminator()->getSuccessor(0);
-			block->eraseFromParent();
+			}	
+			killBlocks.push_back(block);
 		}
+	}
+	report("  deleting " << killBlocks.size() << " blocks");
+	for (auto kill_it = killBlocks.begin(); kill_it != killBlocks.end(); ++kill_it) {
+		(*kill_it)->eraseFromParent();
 	}
 }
 

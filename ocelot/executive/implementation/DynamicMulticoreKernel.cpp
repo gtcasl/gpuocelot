@@ -88,6 +88,7 @@ executive::DynamicMulticoreKernel::~DynamicMulticoreKernel() {
 }
 
 void executive::DynamicMulticoreKernel::_analyzePTX() {
+
 	size_t computedStaticSharedMem = 0;
 	for (ir::Kernel::LocalMap::const_iterator local_it = _ptxKernel->locals.begin();
 		local_it != _ptxKernel->locals.end(); ++local_it) {
@@ -96,6 +97,16 @@ void executive::DynamicMulticoreKernel::_analyzePTX() {
 			computedStaticSharedMem += local_it->second.getSize();
 		}
 	}
+	
+	// also visit module
+	for (ir::Module::GlobalMap::const_iterator global_it = _ptxKernel->module->globals().begin();
+		global_it != _ptxKernel->module->globals().end(); ++global_it ) {
+		if (global_it->second.space() == ir::PTXInstruction::Shared) {
+			size_t bytes = global_it->second.statement.bytes();
+			_sharedMemorySize += bytes;
+		}
+	}
+	
 	_sharedMemorySize = (computedStaticSharedMem > _sharedMemorySize ? 
 		computedStaticSharedMem : _sharedMemorySize);
 }

@@ -31,7 +31,7 @@
 #define REPORT_BASE 0
 
 #define REPORT_CTA_OPERATIONS 1						// called O(n), where n is the number of CTAs launched
-#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +265,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			
 			translation->execute(warp);
 			
-			report("exited");
+			reportE(REPORT_SCHEDULE_OPERATIONS, "exited");
 			
 #if REPORT_LOCAL_MEMORY  && REPORT_BASE
 			reportE(REPORT_SCHEDULE_OPERATIONS, "Local memory: ");

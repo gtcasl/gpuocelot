@@ -72,6 +72,7 @@
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
+#define REPORT_LLVM_WRITE_SOURCE 0				// saves LLVM source to disk
 
 #define REPORT_TRANSLATIONS 0
 
@@ -1347,7 +1348,7 @@ executive::DynamicTranslationCache::Translation *
 				<< (int)translation->llvmFunction->getCallingConv());
 		}
 		
-#if REPORT_LLVM_MASTER
+#if REPORT_LLVM_MASTER && REPORT_LLVM_WRITE_SOURCE
 		{
 			std::string llvmText;
 			llvm::raw_string_ostream llvmStream(llvmText);

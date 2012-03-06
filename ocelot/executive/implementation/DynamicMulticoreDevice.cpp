@@ -27,6 +27,7 @@
 #endif
 
 #define REPORT_DEVICE_CALLS 0
+#define REPORT_DEVICE_ALLOCATIONS 0
 
 #define REPORT_BASE 0
 
@@ -176,6 +177,18 @@ void executive::DynamicMulticoreDevice::launch(
 	executableKernel->updateMemory();
 	executableKernel->setExternSharedMemorySize(sharedMemory);
 	executableKernel->setExternalFunctionSet(*externals);
+
+#if REPORT_DEVICE_ALLOCATIONS && REPORT_BASE
+	for (AllocationMap::iterator alloc_it = _allocations.begin(); 
+		alloc_it != _allocations.end(); 
+		++alloc_it ) {
+		
+		MemoryAllocation *allocation = alloc_it->second;
+		report("  " << allocation->pointer() << " - " 
+			<< (void *)((char *)allocation->pointer() + allocation->size() - 1) 
+			<<  " [size: " << allocation->size() << " bytes ]");
+	}
+#endif
 
 	for(trace::TraceGeneratorVector::const_iterator 
 		gen = traceGenerators.begin(); 

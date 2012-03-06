@@ -53,9 +53,9 @@
 //
 
 #define INSERT_DEBUG_REPORTING 0
-#define DEBUG_REPORT_BLOCKS 1
-#define DEBUG_REPORT_STORES 0
-#define DEBUG_REPORT_RETURNS 1
+#define DEBUG_REPORT_BLOCKS 0
+#define DEBUG_REPORT_STORES 1
+#define DEBUG_REPORT_RETURNS 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1067,20 +1067,29 @@ void walkCallStack() {
 */
 extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, int type, size_t vptr) {
 	bool printNameOnly = false;
+	
+	bool trustPointers = false;
+
+	std::cout << "[debug " << type << "]";
+	
 	switch (type) {
 		case 0: std::cout << " value[" << index << "] = " << value; break;
 		case 1: std::cout << " store(" << index << "): [" << (void *)value << "] = " << value1;  break;
 		case 2: std::cout << " store(" << index << "): [" << (void *)value << "] = <type unknown>"; break;
 		case 3: {
 			std::cout << " returning (" << index << ")\n";
-			// walkCallStack();
 		}
 		break;
 		case 4: std::cout << " store(" << index << "): [" << (void *)value << "] = " <<
 			hydrazine::bit_cast<double>(value1) << " <float>";  break;
 		case 5: {
-			llvm::Type *llvmType = hydrazine::bit_cast<llvm::Type *>(value1);
-			std::cout << " store(" << index << "): [" << (void *)value << "] (type: " << String(llvmType) << ")";
+			if (true) {
+				llvm::Type *llvmType = hydrazine::bit_cast<llvm::Type *>(value1);
+				std::cout << " store(" << index << "): [" << (void *)value << "] (type: " << String(llvmType) << ")";
+			}
+			else {
+				std::cout << " store(" << index << "): [" << (void *)value << "]";
+			}
 		}
 		break;
 		case 6: {
@@ -1092,10 +1101,19 @@ extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, 
 			printNameOnly = true;
 		}
 		break;
+		case 8: {	// vector store
+			float *vecPtr = (float *)value;
+			std::cout << " store(" << index << "): [" << (void *)value << "] = < ";
+			for (size_t i = 0; i < value1; i++) {
+				std::cout << (i ? ", " : "") << vecPtr[i];
+			}
+			std::cout << " >";
+		}
+		break;
 		default:
 			std::cout << " unknown(" << index << ", " << value << ", " << value1 << ", " << type << ")";
 	}
-	if (vptr) {
+	if (vptr && trustPointers) {
 		llvm::Value *value = (llvm::Value *)(void *)vptr;
 		if (printNameOnly) {
 			std::cout << "  block: " << value->getName().str() << std::endl;
@@ -1104,10 +1122,6 @@ extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, 
 			std::cout << "  value: " << String(value) << std::endl;
 		}
 	}
-	
-	std::cout << "  call stack:" << std::endl;
-		
-	walkCallStack();
 	std::cout << std::endl;
 }
 
@@ -1186,6 +1200,7 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	for (std::vector< llvm::StoreInst *>::iterator inst_it = storeInstructions.begin();
 		inst_it != storeInstructions.end(); ++inst_it) {
 		llvm::StoreInst *storeInst = *inst_it;
+		bool moveBack = false;
 		
 		// store instruction
 	
@@ -1211,6 +1226,14 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 				"bitcast", storeInst);
 			type = getConstInt32(4);
 		}
+		else if (llvm::VectorType *vectorType = llvm::dyn_cast<llvm::VectorType>(valueType)) {
+			// vector stores			
+			cast = llvm::CastInst::CreatePointerCast(
+				storeInst->getPointerOperand(), llvm::Type::getInt64Ty(context()), "", storeInst);
+			operand = getConstInt64(vectorType->getNumElements());
+			type = getConstInt32(8);
+			moveBack = true;
+		}
 		else {
 			size_t ptr = hydrazine::bit_cast<size_t>(valueType);
 			operand = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), ptr);
@@ -1227,6 +1250,10 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 		llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
 			"", storeInst);
 		++index;
+		if (moveBack) {
+			call->removeFromParent();
+			call->insertAfter(storeInst);
+		}
 	
 		assert(call && "failed to insert call instruction");
 	}

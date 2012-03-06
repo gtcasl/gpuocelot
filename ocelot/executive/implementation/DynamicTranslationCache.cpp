@@ -72,7 +72,7 @@
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
-#define REPORT_LLVM_WRITE_SOURCE 0				// saves LLVM source to disk
+#define REPORT_LLVM_WRITE_SOURCE 1				// saves LLVM source to disk
 
 #define REPORT_TRANSLATIONS 0
 

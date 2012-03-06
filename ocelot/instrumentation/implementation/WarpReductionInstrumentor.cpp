@@ -141,10 +141,10 @@ namespace instrumentation
                             memTransactions += info[i * entries];
                             dynamicWarps += info[i * entries + 1];
                         }
-                    
+
                         *out << "Dynamic Warps Executing Global Memory Operations: " << dynamicWarps << "\n";
-                        *out << "Memory Transactions: " << memTransactions << "\n\n";              
-                        *out << "Memory Efficiency: " << ((double)dynamicWarps/(double)memTransactions) * 100 << "%\n\n";
+                        *out << "Memory Transactions: " << ((double)memTransactions/2) << "\n\n";              
+                        *out << "Memory Efficiency: " << ((double)dynamicWarps/((double)memTransactions/2)) * 100 << "%\n\n";
                         
                         _profile.data.memory_efficiency = ((double)dynamicWarps/(double)memTransactions) * 100 ;
                     }

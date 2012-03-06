@@ -109,7 +109,7 @@ namespace transforms
 
         inst.opcode = ir::PTXInstruction::Mov;
                  
-        inst.d.identifier = "uniqueCount";
+        inst.d.identifier = "uniqueCountTotal";
              
         inst.d.type = type;          
         inst.d.addressMode = ir::PTXOperand::Register;
@@ -120,19 +120,6 @@ namespace transforms
         stmt.instruction = inst;
         statements.push_back(stmt);    
         
-        inst.opcode = ir::PTXInstruction::Mov;
-                     
-        inst.d.identifier = "i";
-             
-        inst.d.type = type;          
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.a.addressMode = ir::PTXOperand::Immediate;
-        inst.a.type = type;
-        inst.a.imm_int = 0;
-
-        stmt.instruction = inst;
-        statements.push_back(stmt);   
-
         inst.pg.condition = ir::PTXOperand::PT;
         inst.pg.identifier.clear();
         
@@ -170,6 +157,33 @@ namespace transforms
 
             inst.modifier = ir::PTXInstruction::Modifier_invalid;
 
+            inst.opcode = ir::PTXInstruction::Mov;
+                     
+            inst.d.identifier = "i";
+                 
+            inst.d.type = type;          
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.a.addressMode = ir::PTXOperand::Immediate;
+            inst.a.type = type;
+            inst.a.imm_int = 0;
+
+            stmt.instruction = inst;
+            statements.push_back(stmt);   
+        
+            inst.opcode = ir::PTXInstruction::Mov;
+                 
+            inst.d.identifier = "uniqueCount";
+                 
+            inst.d.type = type;          
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.a.addressMode = ir::PTXOperand::Immediate;
+            inst.a.type = type;
+            inst.a.imm_int = 0;
+
+            stmt.instruction = inst;
+            statements.push_back(stmt);    
+
+
             inst.pg.condition = ir::PTXOperand::PT;
             inst.pg.identifier.clear();
 
@@ -206,6 +220,35 @@ namespace transforms
 
             inst.pg.condition = ir::PTXOperand::PT;
             inst.pg.identifier.clear();
+
+        }
+        else 
+        {
+            inst.opcode = ir::PTXInstruction::Mov;
+                     
+            inst.d.identifier = "i";
+                 
+            inst.d.type = type;          
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.a.addressMode = ir::PTXOperand::Immediate;
+            inst.a.type = type;
+            inst.a.imm_int = 0;
+
+            stmt.instruction = inst;
+            statements.push_back(stmt);   
+
+            inst.opcode = ir::PTXInstruction::Mov;
+                 
+            inst.d.identifier = "uniqueCount";
+                 
+            inst.d.type = type;          
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.a.addressMode = ir::PTXOperand::Immediate;
+            inst.a.type = type;
+            inst.a.imm_int = 0;
+
+            stmt.instruction = inst;
+            statements.push_back(stmt);    
 
         }
 
@@ -287,27 +330,33 @@ namespace transforms
         inst.a.imm_int = 0;
 
         stmt.instruction = inst;
-        statements.push_back(stmt);     
-           
-        //mov.s32 %rb1, %bitmask;
-        inst.opcode = ir::PTXInstruction::Mov;
-        inst.type = ir::PTXOperand::s32;
-        inst.d.type = ir::PTXOperand::s32;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = "rb1";
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "bitmask";
+        statements.push_back(stmt);    
 
-        stmt.instruction = inst;
-        statements.push_back(stmt);
+        if(overHalfWarp)
+        {
 
+            inst.opcode = ir::PTXInstruction::Add;
+            inst.d.type = inst.a.type = inst.b.type = type;
+            inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
+            inst.d.identifier = "i_offset";
+            inst.a.identifier = "i";
+            inst.b.identifier = "offset";
+
+            stmt.instruction = inst;
+            statements.push_back(stmt);
+        }
+ 
+      
         //cvt.u32.u64
         inst.opcode = ir::PTXInstruction::Cvt;  
         inst.type = ir::PTXOperand::u32;
         inst.d.type = ir::PTXOperand::u32;
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.identifier = "i_b32";
-        inst.a.identifier = "i";
+        if(overHalfWarp)
+            inst.a.identifier = "i_offset";
+        else
+            inst.a.identifier = "i";
         inst.a.type = type;
 
         stmt.instruction = inst;
@@ -395,20 +444,6 @@ namespace transforms
         statements.push_back(stmt);
 
         inst.comparisonOperator = ir::PTXInstruction::CmpOp_Invalid;
-
-        if(overHalfWarp)
-        {
-
-            inst.opcode = ir::PTXInstruction::Add;
-            inst.d.type = inst.a.type = inst.b.type = type;
-            inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
-            inst.d.identifier = "i_offset";
-            inst.a.identifier = "i";
-            inst.b.identifier = "offset";
-
-            stmt.instruction = inst;
-            statements.push_back(stmt);
-        }
 
         inst.opcode = ir::PTXInstruction::Mad;     
            
@@ -778,6 +813,17 @@ namespace transforms
             stmt.instruction = inst;
             statements.push_back(stmt);
 
+            inst.opcode = ir::PTXInstruction::Add;
+            inst.d.type = inst.a.type = inst.b.type = type;
+            inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
+            inst.d.identifier = "uniqueCountTotal";
+            inst.a.identifier = "uniqueCountTotal";
+            inst.b.identifier = "uniqueCount";
+
+            stmt.instruction = inst;
+            statements.push_back(stmt);
+
+    
             inst.opcode = ir::PTXInstruction::Bra;
             inst.d.addressMode = ir::PTXOperand::Label;
             inst.d.identifier = BEGIN_HALF_WARP_LOOP;
@@ -798,7 +844,7 @@ namespace transforms
         inst.d.type = type;
         inst.d.offset = 0;
 
-        inst.a.identifier = "uniqueCount";
+        inst.a.identifier = "uniqueCountTotal";
         inst.a.addressMode = ir::PTXOperand::Register;
 
         stmt.instruction = inst;

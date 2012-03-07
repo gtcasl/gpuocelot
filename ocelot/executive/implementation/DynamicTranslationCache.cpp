@@ -72,13 +72,17 @@
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
-#define REPORT_LLVM_WRITE_SOURCE 1				// saves LLVM source to disk
+#define REPORT_LLVM_WRITE_SOURCE 0				// saves LLVM source to disk
 
 #define REPORT_TRANSLATIONS 0
 
 #define ALWAYS_REPORT_BROKEN_LLVM 1
 
 #define REPORT_BASE 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REQUIRE_VERIFY_MODULE	0					// if 1, verifies LLVM modules after translation
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1209,7 +1213,7 @@ static void cloneAndOptimizeTranslation(
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
 	std::string verifyError;
 	
-	if (false && 
+	if (REQUIRE_VERIFY_MODULE && 
 		llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &verifyError)) {
 	
 		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
@@ -1234,7 +1238,7 @@ static void cloneAndOptimizeTranslation(
 			+ translatedKernel.kernel->name + " : \"" + verifyError + "\"");
 	}
 	else {
-		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
+		reportE(REPORT_TRANSLATION_OPERATIONS, " skipped module verification");
 	}
 
 	report("performed transformations");

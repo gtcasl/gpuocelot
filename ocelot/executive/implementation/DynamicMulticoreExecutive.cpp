@@ -64,6 +64,7 @@ void executive::DynamicMulticoreExecutive::_setResumeStatus(const executive::LLV
 	*(executive::DynamicMulticoreExecutive::ThreadExitType *)(ptr + 4) = status;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void executive::DynamicMulticoreExecutive::_emitThreadLocalMemory(const LLVMContext *context) {
 	for (size_t offset = 0; offset < localMemorySize; offset += 4) {
@@ -97,6 +98,19 @@ void executive::DynamicMulticoreExecutive::_emitParameterMemory(const LLVMContex
 	}
 }
 
+std::ostream & operator<<(std::ostream &out, const executive::LLVMContext::Dimension &dim) {
+	out << "(" << dim.x << ", " << dim.y << ", " << dim.z << ")";
+	return out;
+}
+std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
+	out << "(" << dim.x << ", " << dim.y << ", " << dim.z << ")";
+	return out;
+}
+
+namespace llvm { class Value; class Function; }
+std::string String(llvm::Value *);
+std::string String(llvm::Function *);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
@@ -117,6 +131,8 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	_kernel.getArgumentBlock((unsigned char *)parameterMemory, parameterMemorySize);
 	
 	contexts = new LLVMContext[kernel->blockDim().size()];
+	
+	DynamicExecutionManager::get().translationCache.getTranslationVector(translationVector);
 	
 	reportE(REPORT_CTA_OPERATIONS, "DynamicMulticoreExecutve('" << _kernel.name 
 		<< "', shared mem size: " << sharedMemorySize);
@@ -145,18 +161,6 @@ executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
 	delete [] parameterMemory;
 }
 
-std::ostream & operator<<(std::ostream &out, const executive::LLVMContext::Dimension &dim) {
-	out << "(" << dim.x << ", " << dim.y << ", " << dim.z << ")";
-	return out;
-}
-std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
-	out << "(" << dim.x << ", " << dim.y << ", " << dim.z << ")";
-	return out;
-}
-
-namespace llvm { class Value; class Function; }
-std::string String(llvm::Value *);
-std::string String(llvm::Function *);
 
 void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::Dim3 &blockId) {
 
@@ -189,6 +193,25 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 	report("  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
 }
 
+const executive::DynamicMulticoreExecutive::Translation *
+	executive::DynamicMulticoreExecutive::_getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
+	unsigned int specialization) {
+
+	int Log2WarpSize(int warpSize);
+		
+	int lgwarpsize = Log2WarpSize(warpsize);
+	const Translation *translation = translationVector[lgwarpsize][subkernel];
+	
+	if (!translation) {
+		translation = DynamicExecutionManager::get().translationCache.getOrInsertTranslation(warpsize, 
+			subkernel, specialization);
+		translationVector[lgwarpsize][subkernel] = translation;
+		assert(translation && "Failed to fetch translation from translation cache");
+	}
+	
+	return translation;
+}
+
 void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	reportE(REPORT_SCHEDULE_OPERATIONS, 
 		"DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y << ") kernel: '"
@@ -198,6 +221,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	
 	int tid = 0;
 	
+	int blockDimSize = kernel->blockDim().size();
 	bool executing = true;
 	int exitingThreads = 0;
 	int iterations = 0;
@@ -241,21 +265,7 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  mapped subkernel ID: " << subkernelId);
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  fetching translation (warp size: " << warpSize << ")");
 			
-		
-#if REPORT_BASE
-			std::cout << std::flush;
-#endif
-			
-			DynamicTranslationCache::Translation *translation =
-				DynamicExecutionManager::get().translationCache.getOrInsertTranslation(warpSize, 
-					subkernelId, specialization);
-		
-			assert(translation);
-			
-			if (encodedSubkernel == 0x80001) {
-				reportE(REPORT_SCHEDULE_OPERATIONS, "It's broken:");
-				reportE(REPORT_SCHEDULE_OPERATIONS, String(translation->llvmFunction));
-			}
+			const Translation *translation = _getOrInsertTranslation(warpSize, subkernelId, specialization);
 	
 			_setResumeStatus(&contexts[tid], analysis::KernelPartitioningPass::Thread_exit);
 			contexts[tid].metadata = (char *)translation->metadata;
@@ -267,46 +277,43 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "exited");
 			
-#if REPORT_LOCAL_MEMORY  && REPORT_BASE
-			reportE(REPORT_SCHEDULE_OPERATIONS, "Local memory: ");
-			_emitThreadLocalMemory(warp[0]);
-#endif
-			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  thread 0 exited with code "
 				<< analysis::KernelPartitioningPass::toString(_getResumeStatus(&contexts[tid])) 
 				<< " and resume point: 0x" << std::hex << _getResumePoint(&contexts[tid]) << std::dec);
 	
+			#if 1
 			//   update contexts
 			if (_getResumeStatus(&contexts[tid]) == analysis::KernelPartitioningPass::Thread_barrier) {
 				++tid;
 				reportE(REPORT_SCHEDULE_OPERATIONS, "   advancing to next thread: " << tid);
 			}
 			else {
-				// continue executing [for now, more sophisticated scheduler shortly]
 				reportE(REPORT_SCHEDULE_OPERATIONS, "   executing same thread: " << tid);
 			}
+			#else
+			// always move to the next thread
+			++tid;
+			#endif
 		}
 		else {
 			reportE(REPORT_SCHEDULE_OPERATIONS, "   thread " << tid << " exiting");
 			tid ++;
 			++exitingThreads;
-			if (exitingThreads == kernel->blockDim().size()) {
+			if (exitingThreads >= blockDimSize) {
 				executing = false;
 				reportE(REPORT_SCHEDULE_OPERATIONS, "   CTA exiting");
 			}
 		}
 		
-		if (tid >= kernel->blockDim().size()) {
+		if (tid >= blockDimSize) {
 			tid = 0;
 		}
 	
 	} while (executing);
 
-	report("completed DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y  
+	report("completed DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y 
 		<< ") kernel: '" << kernel->name << "'");
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

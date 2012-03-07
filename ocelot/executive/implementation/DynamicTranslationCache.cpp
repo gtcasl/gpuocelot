@@ -109,6 +109,8 @@ static translator::Translator::OptimizationLevel getOptimizationLevel() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
 executive::DynamicTranslationCache::DynamicTranslationCache(DynamicExecutionManager *_manager):
 	executionManager(_manager) {
 
@@ -134,7 +136,7 @@ executive::DynamicTranslationCache::~DynamicTranslationCache() {
 	modules.clear();
 }
 
-static int Log2WarpSize(int warpSize) {
+int Log2WarpSize(int warpSize) {
 	switch (warpSize) {
 		case 1: return 0;
 		case 2: return 1;
@@ -158,8 +160,9 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 
 	Translation *translation = 0;
 
-	pthread_mutex_lock(&mutex);
+	_lock();
 		
+		/*
 	int lgWarpsize = Log2WarpSize(warpSize);
 	assert(lgWarpsize >= 0 && lgWarpsize < (int)translationVector.size());
 
@@ -168,6 +171,7 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 		
 		report(" hit translation vector");
 	}
+	*/
 	
 	if (!translation) {
 		TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
@@ -185,10 +189,9 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 		
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
 		}
-		translationVector[lgWarpsize][subkernelId] = translation;
+		//translationVector[lgWarpsize][subkernelId] = translation;
 	}
-	
-	pthread_mutex_unlock(&mutex);
+	_unlock();
 	
 	#if REPORT_BASE && REPORT_TRANSLATION_OPERATIONS
 	reportNTE(REPORT_TRANSLATION_OPERATIONS, " obtained Translation: " << (void *)translation);
@@ -249,6 +252,22 @@ bool executive::DynamicTranslationCache::loadModule(const ir::Module *module,
 	}
 	
 	return false;
+}
+
+void executive::DynamicTranslationCache::_lock() {
+	pthread_mutex_lock(&mutex);
+}
+
+void executive::DynamicTranslationCache::_unlock() {
+	pthread_mutex_unlock(&mutex);
+}
+		
+void executive::DynamicTranslationCache::getTranslationVector(
+	executive::DynamicTranslationCache::WarpTranslationVector &vec) {
+	
+	_lock();
+	vec = translationVector;
+	_unlock();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

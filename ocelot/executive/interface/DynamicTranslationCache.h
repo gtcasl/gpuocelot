@@ -16,7 +16,7 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
-#include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
+//#include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 
@@ -67,7 +67,7 @@ namespace executive {
 		typedef std::map< SubkernelId, WarpTranslationMap> TranslationCacheMap;
 		
 		//! vectors are faster to access
-		typedef std::vector< Translation * > TranslationVector;
+		typedef std::vector< const Translation * > TranslationVector;
 		typedef std::vector< TranslationVector > WarpTranslationVector;
 		
 		class TranslatedSubkernel {
@@ -148,6 +148,8 @@ namespace executive {
 		//! \brief loads a module into the translation cache
 		bool loadModule(const ir::Module *module, DynamicMulticoreDevice *device);
 		
+		void getTranslationVector(WarpTranslationVector &vec);
+		
 		/*!
 			\brief gets the translation corresponding to a particular warp size
 		*/
@@ -160,6 +162,9 @@ namespace executive {
 		
 		Translation *_specializeTranslation(TranslatedKernel &kernel, SubkernelId subkernelId, 
 			OptimizationLevel optimizationLevel, int warpSize, unsigned int specialization = 0);
+		
+		void _lock();
+		void _unlock();
 		
 	protected:
 	

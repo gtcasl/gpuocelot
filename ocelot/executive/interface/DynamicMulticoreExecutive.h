@@ -13,6 +13,7 @@
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/executive/interface/LLVMContext.h>
+#include <ocelot/executive/interface/DynamicTranslationCache.h>
 
 namespace executive {
 
@@ -21,6 +22,7 @@ namespace executive {
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::ThreadExitType ThreadExitType;
 		typedef executive::MetaData Metadata;
+		typedef executive::DynamicTranslationCache::Translation Translation;
 		
 	public:
 		DynamicMulticoreExecutive(const executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
@@ -40,7 +42,12 @@ namespace executive {
 		void _emitThreadLocalMemory(const LLVMContext *context);
 		void _emitParameterMemory(const LLVMContext *context);
 			
+		const Translation *_getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
+			unsigned int specialization = 0);
+			
 	protected:
+		
+		DynamicTranslationCache::WarpTranslationVector translationVector;
 	
 		const DynamicMulticoreKernel *kernel;
 		

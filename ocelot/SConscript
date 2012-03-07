@@ -42,12 +42,8 @@ def MapSource(env, source):
 try:
 	Import('env')
 except:
-	try:
-		exec open("../scripts/which.py")
-		prefix = '../'
-	except:
-		exec open("scripts/which.py")
-		prefix = './'
+	exec open("../scripts/which.py")
+	prefix = '../'
 	exec open(prefix + "scripts/build_environment.py")
 	env = Environment()
   

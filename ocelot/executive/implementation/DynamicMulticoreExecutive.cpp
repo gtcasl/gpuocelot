@@ -100,7 +100,7 @@ void executive::DynamicMulticoreExecutive::_emitParameterMemory(const LLVMContex
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
-	executive::DynamicMulticoreKernel &_kernel, size_t _sharedMemorySize
+	const executive::DynamicMulticoreKernel &_kernel, size_t _sharedMemorySize
 ):
 	kernel(&_kernel) 
 {	

@@ -112,6 +112,9 @@ static translator::Translator::OptimizationLevel getOptimizationLevel() {
 executive::DynamicTranslationCache::DynamicTranslationCache(DynamicExecutionManager *_manager):
 	executionManager(_manager) {
 
+	pthread_mutex_init(&mutex, 0);
+
+	translationVector.resize(api::OcelotConfiguration::get().executive.warpSize);
 }
 
 executive::DynamicTranslationCache::~DynamicTranslationCache() {
@@ -131,6 +134,21 @@ executive::DynamicTranslationCache::~DynamicTranslationCache() {
 	modules.clear();
 }
 
+static int Log2WarpSize(int warpSize) {
+	switch (warpSize) {
+		case 1: return 0;
+		case 2: return 1;
+		case 4: return 2;
+		case 8: return 3;
+		case 16: return 4;
+		case 32: return 5;
+		case 64: return 6;
+		default:
+		break;
+	}
+	return -1;
+}
+
 executive::DynamicTranslationCache::Translation *
 executive::DynamicTranslationCache::getOrInsertTranslation(
 	int warpSize, SubkernelId subkernelId, unsigned int specialization) {
@@ -138,24 +156,40 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 	reportE(REPORT_SCHEDULE_OPERATIONS, " DynamicTranslationCache::getOrInsertTranslation(ws: " << warpSize 
 		<< ", skId: " << subkernelId << ", specialization = " << specialization << ")");
 
-	
 	Translation *translation = 0;
+
+	pthread_mutex_lock(&mutex);
 		
-	TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
-	if (translation_it != translationCache.end()) {
-		WarpTranslationMap::iterator warp_it = translation_it->second.find(warpSize);
-		if (warp_it != translation_it->second.end()) {
-			translation = warp_it->second;
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  found in translation cache");
-		}
+	int lgWarpsize = Log2WarpSize(warpSize);
+	assert(lgWarpsize >= 0 && lgWarpsize < (int)translationVector.size());
+
+	if (translationVector[lgWarpsize][subkernelId]) {
+		translation = translationVector[lgWarpsize][subkernelId];
+		
+		report(" hit translation vector");
 	}
 	
-	if (!translation) {	
-		translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
-			getOptimizationLevel(), warpSize, specialization);
+	if (!translation) {
+		TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
+		if (translation_it != translationCache.end()) {
+			WarpTranslationMap::iterator warp_it = translation_it->second.find(warpSize);
+			if (warp_it != translation_it->second.end()) {
+				translation = warp_it->second;
+				reportE(REPORT_SCHEDULE_OPERATIONS, "  found in translation cache");
+			}
+		}
+	
+		if (!translation) {	
+			translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
+				getOptimizationLevel(), warpSize, specialization);
 		
-		reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
+		}
+		translationVector[lgWarpsize][subkernelId] = translation;
 	}
+	
+	pthread_mutex_unlock(&mutex);
+	
 	#if REPORT_BASE && REPORT_TRANSLATION_OPERATIONS
 	reportNTE(REPORT_TRANSLATION_OPERATIONS, " obtained Translation: " << (void *)translation);
 	#endif
@@ -179,6 +213,19 @@ void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *
 		module.kernels[kernel->name] = translatedKernel;
 				
 		_translateKernel(*translatedKernel);
+		
+		report("Resizing translation vectors");
+		
+		// resize vectors
+		SubkernelIdPair subkernelIdRange = translatedKernel->getSubkernelRange();
+		if (translationVector[0].size() <= subkernelIdRange.second) {
+			for (size_t lgws = 0; lgws < translationVector.size(); ++lgws) {
+				translationVector[lgws].resize(subkernelIdRange.second + 1, 0);
+				
+				report("  resized translationVector[" << lgws << "] to size " << translationVector[lgws].size());
+			}
+		}
+		
 		report("  registered new TranslatedKernel 0x" << (void *)translatedKernel);
 	}
 	else {
@@ -229,6 +276,30 @@ executive::DynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
 	
 	delete static_cast<executive::MetaData*>(metadata);
 	delete llvmModule;
+}
+
+executive::DynamicTranslationCache::SubkernelIdPair
+	executive::DynamicTranslationCache::TranslatedKernel::getSubkernelRange() const {
+
+	SubkernelIdPair range;
+	for (TranslatedSubkernelMap::const_iterator sk_it = subkernels.begin(); sk_it != subkernels.end();
+		++sk_it ) {
+	
+		if (sk_it == subkernels.begin()) {
+			range.first = sk_it->first;
+			range.second = sk_it->first;
+		}
+		else {
+			if (range.first > sk_it->first) {
+				range.first = sk_it->first;
+			}
+			if (range.second < sk_it->first) {
+				range.second = sk_it->first;
+			}
+		}
+	}
+	
+	return range;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

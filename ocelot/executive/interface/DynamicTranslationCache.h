@@ -10,6 +10,7 @@
 
 // C++ includes
 #include <map>
+#include <pthread.h>
 
 // Ocelot includes
 #include <ocelot/ir/interface/Module.h>
@@ -34,6 +35,7 @@ namespace executive {
 		typedef translator::Translator::OptimizationLevel OptimizationLevel;
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
+		typedef std::pair< SubkernelId, SubkernelId > SubkernelIdPair;
 		
 		typedef void (*ExecutableFunction)(LLVMContext *);
 	
@@ -64,6 +66,10 @@ namespace executive {
 		typedef std::map< SubkernelId, Translation *> TranslationMap;
 		typedef std::map< SubkernelId, WarpTranslationMap> TranslationCacheMap;
 		
+		//! vectors are faster to access
+		typedef std::vector< Translation * > TranslationVector;
+		typedef std::vector< TranslationVector > WarpTranslationVector;
+		
 		class TranslatedSubkernel {
 		public:
 		
@@ -91,6 +97,9 @@ namespace executive {
 		public:
 			TranslatedKernel(DynamicMulticoreKernel *_kernel);
 			~TranslatedKernel();
+			
+			SubkernelIdPair getSubkernelRange() const;
+			
 		public:
 		
 			//! \brief 
@@ -166,7 +175,14 @@ namespace executive {
 		//! \brief 
 		SubkernelParentMap subkernelsToKernel;
 	
+		//! \brief caches translations
 		TranslationCacheMap translationCache;
+		
+		//! \brief vector for constant-time accesses
+		WarpTranslationVector translationVector;
+		
+		//! \brief mutex for calling getOrInsertTranslation
+		pthread_mutex_t mutex;
 	};
 
 }

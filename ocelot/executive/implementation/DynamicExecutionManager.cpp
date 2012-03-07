@@ -5,7 +5,11 @@
 	\brief singleton instance of dynamic execution manager for multicore CPU backend
 */
 
+// C++ and other libraries
+#include <pthread.h>
+
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/DynamicMulticoreDevice.h>
 #include <ocelot/executive/interface/DynamicExecutionManager.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
@@ -47,6 +51,31 @@ executive::DynamicExecutionManager::~DynamicExecutionManager() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+typedef struct {
+	size_t sharedMemorySize;
+	int threadId;
+	int pitch;
+	executive::DynamicMulticoreKernel *kernel;
+} WorkerThreadArgs;
+
+static void * executionManagerWorkerThread(void *args) {
+	
+	const WorkerThreadArgs *arguments = static_cast<const WorkerThreadArgs *>(args);
+	
+	int gridDimy = arguments->kernel->gridDim().y;
+	int gridDimx = arguments->kernel->gridDim().x;
+	
+	if (arguments->threadId < gridDimx * gridDimy) {
+		// start executing	
+		executive::DynamicMulticoreExecutive executive(*arguments->kernel, arguments->sharedMemorySize);
+		for (int blockId = arguments->threadId; blockId < gridDimx * gridDimy; blockId += arguments->pitch) {
+			executive.execute(ir::Dim3(blockId % gridDimx, blockId / gridDimx, 0));
+		}
+	}
+	
+	return 0;
+}
+
 void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKernel &kernel, 
 	size_t sharedMemorySize) {
 	
@@ -58,18 +87,47 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	translationCache.registerKernel(&kernel);
 	sharedMemorySize += kernel.totalSharedMemorySize();
 	
-	// start executing
-	report("  sharedMemorySize() = " << kernel.sharedMemorySize());
-	report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
-	report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
+	int workerThreads = api::OcelotConfiguration::get().executive.workerThreadLimit;
+	const int MaxThreadCount = 8;
+	assert(workerThreads <= MaxThreadCount && "Too many worker threads");
 	
-	DynamicMulticoreExecutive executive(kernel, sharedMemorySize);
+	report(" launching grid " << kernel.gridDim().x << " x " << kernel.gridDim().y 
+		<< " on " << workerThreads << " threads");
 	
-	for (int blockIdy = 0; blockIdy < kernel.gridDim().y; blockIdy++) {
-		for (int blockIdx = 0; blockIdx < kernel.gridDim().x; blockIdx++) {
-			report("Executing block " << blockIdx << ", " << blockIdy);
+	if (workerThreads == 1) {
+	
+		// start executing
+		report("  sharedMemorySize() = " << kernel.sharedMemorySize());
+		report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
+		report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
+	
+		DynamicMulticoreExecutive executive(kernel, sharedMemorySize);
+	
+		for (int blockIdy = 0; blockIdy < kernel.gridDim().y; blockIdy++) {
+			for (int blockIdx = 0; blockIdx < kernel.gridDim().x; blockIdx++) {
+				report("Executing block " << blockIdx << ", " << blockIdy);
 			
-			executive.execute(ir::Dim3(blockIdx, blockIdy, 1));
+				executive.execute(ir::Dim3(blockIdx, blockIdy, 1));
+			}
+		}
+	}
+	else {
+		
+		WorkerThreadArgs arguments[MaxThreadCount];
+		pthread_t threads[MaxThreadCount];
+		
+		for (int i = 0; i < workerThreads; i++) {
+			arguments[i].sharedMemorySize = sharedMemorySize;
+			arguments[i].kernel = &kernel;
+			arguments[i].pitch = workerThreads;
+			arguments[i].threadId = i;
+			int ret = pthread_create(&threads[i], 0, executionManagerWorkerThread, &arguments[i]);
+			assert(!ret && "Failed to create worker thread");
+		}
+		
+		for (int i = 0; i < workerThreads; i++) {
+			void *valuePtr = 0;
+			pthread_join(threads[i], &valuePtr);
 		}
 	}
 }

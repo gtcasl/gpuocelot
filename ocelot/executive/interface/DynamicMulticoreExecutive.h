@@ -23,7 +23,7 @@ namespace executive {
 		typedef executive::MetaData Metadata;
 		
 	public:
-		DynamicMulticoreExecutive(executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
+		DynamicMulticoreExecutive(const executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
 		~DynamicMulticoreExecutive();
 		
 		void execute(const ir::Dim3 &block);
@@ -42,7 +42,7 @@ namespace executive {
 			
 	protected:
 	
-		DynamicMulticoreKernel *kernel;
+		const DynamicMulticoreKernel *kernel;
 		
 		char *localMemory;
 		size_t localMemorySize;

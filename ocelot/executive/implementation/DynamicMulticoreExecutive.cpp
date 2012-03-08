@@ -30,8 +30,8 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_CTA_OPERATIONS 1						// called O(n), where n is the number of CTAs launched
-#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_CTA_OPERATIONS 0						// called O(n), where n is the number of CTAs launched
+#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 	
 	std::memset(localMemory, 0, localMemorySize * blockDim.size());
 	
-	report("DynamicMulticoreExecutive::_initializeThreadContexts(blockId = " 
+	reportE(REPORT_CTA_OPERATIONS, "DynamicMulticoreExecutive::_initializeThreadContexts(blockId = " 
 		<< blockId << ") - blockDim = " << blockDim);
 	for (int i = 0; i < blockDim.size(); i++) {
 		contexts[i].tid = {i % blockDim.x, (i / blockDim.x) % blockDim.y, i / (blockDim.x * blockDim.y)};
@@ -190,7 +190,7 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 		_setResumePoint(&contexts[i], startingSubkernel);
 		_setResumeStatus(&contexts[i], analysis::KernelPartitioningPass::Thread_entry);
 	}
-	report("  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
+	reportE(REPORT_CTA_OPERATIONS, "  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
 }
 
 const executive::DynamicMulticoreExecutive::Translation *
@@ -219,6 +219,20 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 
 	_initializeThreadContexts(block);
 	
+#if REPORT_LOCAL_MEMORY && REPORT_BASE
+	reportE(REPORT_CTA_OPERATIONS, "Parameter memory: ");
+	_emitParameterMemory(&contexts[0]);
+#endif
+	
+	report(" executing block: " << block.x << ", " << block.y);
+	
+	//_executeDefault(block);
+	_executeIterateSubkernelBarriers(block);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void executive::DynamicMulticoreExecutive::_executeDefault(const ir::Dim3 &block) {
 	int tid = 0;
 	
 	int blockDimSize = kernel->blockDim().size();
@@ -227,15 +241,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	int iterations = 0;
 	
 	int maxIterations = 0;
-	
-#if REPORT_LOCAL_MEMORY && REPORT_BASE
-	reportE(REPORT_CTA_OPERATIONS, "Parameter memory: ");
-	_emitParameterMemory(&contexts[0]);
-#endif
-	
-	report(" localMemory = " << (void *)localMemory);
-	report(" sharedMemory = " << (void *)sharedMemory);
-	report(" parameterMemory = " << (void *)parameterMemory);
 	
 	do {
 		if (maxIterations && ++iterations >= maxIterations) {
@@ -281,7 +286,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 				<< analysis::KernelPartitioningPass::toString(_getResumeStatus(&contexts[tid])) 
 				<< " and resume point: 0x" << std::hex << _getResumePoint(&contexts[tid]) << std::dec);
 	
-			#if 1
 			//   update contexts
 			if (_getResumeStatus(&contexts[tid]) == analysis::KernelPartitioningPass::Thread_barrier) {
 				++tid;
@@ -290,10 +294,6 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			else {
 				reportE(REPORT_SCHEDULE_OPERATIONS, "   executing same thread: " << tid);
 			}
-			#else
-			// always move to the next thread
-			++tid;
-			#endif
 		}
 		else {
 			reportE(REPORT_SCHEDULE_OPERATIONS, "   thread " << tid << " exiting");
@@ -313,6 +313,94 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 
 	report("completed DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y 
 		<< ") kernel: '" << kernel->name << "'");
+}
+
+
+void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(const ir::Dim3 &block) {
+	
+	bool executing = true;
+	int blockDimSize = kernel->blockDim().size();
+	
+	do {
+		int exitedThreads = 0;
+		int barrierThreads = 0;
+		
+		do {
+		
+			for (int tid = 0; tid < blockDimSize; ) {
+				ThreadExitType status = _getResumeStatus(&contexts[tid]);
+				if (status != analysis::KernelPartitioningPass::Thread_exit &&
+					status != analysis::KernelPartitioningPass::Thread_barrier) {
+			
+					int warpsize = 1;
+					
+					SubkernelId warpEntryId = _getResumePoint(&contexts[tid]);
+					for (int w = 1; tid + w < blockDimSize; ++w) {
+						if (_getResumePoint(&contexts[tid + w]) == warpEntryId &&
+							_getResumeStatus(&contexts[tid + w]) == status) {
+							++warpsize;
+						}
+						else {
+							break;
+						}
+					}
+			
+					reportE(REPORT_SCHEDULE_OPERATIONS, "warp: tid " << tid << " of size " << warpsize 
+						<< " threads [subkernel " << std::hex << "0x" << warpEntryId << std::dec << "]");
+
+					_executeWarp(&contexts[tid], warpsize);
+				
+					for (int i = 0; i < warpsize; i++) {
+						if (_getResumeStatus(&contexts[tid + i]) == analysis::KernelPartitioningPass::Thread_barrier) {
+							++barrierThreads;
+						}
+					}
+				
+					tid += warpsize;
+				}
+				else {
+					++tid;
+				}
+			}
+			
+		} while (barrierThreads && barrierThreads < blockDimSize);
+		
+		for (int tid = 0; tid < blockDimSize; tid++) {
+			ThreadExitType status = _getResumeStatus(&contexts[tid]);
+			if (status == analysis::KernelPartitioningPass::Thread_exit) {
+				++exitedThreads;
+			}
+			else if (status == analysis::KernelPartitioningPass::Thread_barrier) {
+				_setResumeStatus(&contexts[tid], analysis::KernelPartitioningPass::Thread_entry);
+			}
+		}
+		if (exitedThreads >= blockDimSize) {
+			executing = false;
+		}
+	} while (executing);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, size_t threads) {
+
+	//   execute subkernel
+	SubkernelId encodedSubkernel = _getResumePoint(&_contexts[0]);
+	SubkernelId subkernelId = analysis::KernelPartitioningPass::ExternalEdge::getSubkernelId(encodedSubkernel);
+	int warpSize = 1;
+	unsigned int specialization = 0;
+	
+	const Translation *translation = _getOrInsertTranslation(warpSize, subkernelId, specialization);
+
+	static_cast<executive::MetaData*>(translation->metadata)->sharedSize = sharedMemorySize;
+	
+	for (size_t t = 0; t < threads; t++) {
+		LLVMContext *warp[1] = { &_contexts[t] };
+		warp[0]->metadata = (char *)translation->metadata;
+		_setResumeStatus(warp[0], analysis::KernelPartitioningPass::Thread_exit);
+		
+		translation->execute(warp);
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

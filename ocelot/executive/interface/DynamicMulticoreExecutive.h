@@ -29,6 +29,13 @@ namespace executive {
 		~DynamicMulticoreExecutive();
 		
 		void execute(const ir::Dim3 &block);
+		
+	protected:
+	
+	
+		void _executeDefault(const ir::Dim3 &block);
+		void _executeIterateSubkernelBarriers(const ir::Dim3 &block);
+		void _executeWarp(LLVMContext *contexts, size_t threads);
 	
 	protected:
 		

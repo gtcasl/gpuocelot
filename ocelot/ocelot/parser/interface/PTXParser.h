@@ -263,6 +263,7 @@ namespace parser
 					void convertD( int token, YYLTYPE& location );
 					void barrierOperation( int token, YYLTYPE & location);
 					void cacheOperation(int token );
+					void cacheLevel(int token );
 					void clampOperation(int token);
 					void formatMode(int token);
 					void surfaceQuery(int token);
@@ -312,6 +313,7 @@ namespace parser
 			static ir::PTXInstruction::CmpOp tokenToCmpOp( int );
 			static ir::PTXInstruction::BarrierOperation tokenToBarrierOp(int);
 			static ir::PTXInstruction::CacheOperation tokenToCacheOperation(int);
+			static ir::PTXInstruction::CacheLevel tokenToCacheLevel(int);
 			static ir::PTXInstruction::ClampOperation tokenToClampOperation(int);
 			static ir::PTXInstruction::FormatMode tokenToFormatMode(int);
 			static ir::PTXInstruction::SurfaceQuery tokenToSurfaceQuery(int);

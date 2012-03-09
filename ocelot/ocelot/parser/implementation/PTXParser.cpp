@@ -1956,6 +1956,10 @@ namespace parser
 		statement.instruction.cacheOperation = tokenToCacheOperation(token);
 	}
 	
+	void PTXParser::State::cacheLevel(int token ) {
+		statement.instruction.cacheLevel = tokenToCacheLevel(token);
+	}
+	
 	void PTXParser::State::clampOperation(int token) {
 		statement.instruction.clamp = tokenToClampOperation(token);
 	}
@@ -2483,6 +2487,15 @@ namespace parser
 			default: break;
 		}
 		return ir::PTXInstruction::CacheOperation_Invalid;
+	}
+	
+	ir::PTXInstruction::CacheLevel PTXParser::tokenToCacheLevel(int token) {
+		switch (token) {
+			case TOKEN_L1: return ir::PTXInstruction::L1;
+			case TOKEN_L2: return ir::PTXInstruction::L2;
+			default: break;
+		}
+		return ir::PTXInstruction::CacheLevel_invalid;
 	}
 	
 	ir::PTXInstruction::ClampOperation PTXParser::tokenToClampOperation(int token) {

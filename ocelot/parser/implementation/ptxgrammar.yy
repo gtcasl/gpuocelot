@@ -65,6 +65,7 @@
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
 %token<text> OPCODE_BFI OPCODE_BFE OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
+%token<text> OPCODE_PREFETCH OPCODE_PREFETCHU
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -646,7 +647,8 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_SUQ | OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT
 	| OPCODE_VOTE | OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA
 	| OPCODE_PMEVENT | OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV
-	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4;
+	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4
+	| OPCODE_PREFETCH | OPCODE_PREFETCHU;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -815,7 +817,7 @@ instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2
 	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
 	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
-	| pmevent | popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
+	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
 	| setp | slct | st | suld | suq | sured | sust | testp | tex | tld4 | trap
 	| txq | vote;
 
@@ -1280,6 +1282,21 @@ permuteMode : permuteModeType
 permuteMode : /* empty string */
 {
 	state.defaultPermute();
+};
+
+cacheLevel : TOKEN_L1 | TOKEN_L2
+{
+	state.cacheLevel( $<value>1 );
+};
+
+prefetch : OPCODE_PREFETCH addressSpace cacheLevel '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1 );
+};
+
+prefetchu : OPCODE_PREFETCHU cacheLevel '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1 );
 };
 
 prmt : OPCODE_PRMT dataType permuteMode operand ',' operand 

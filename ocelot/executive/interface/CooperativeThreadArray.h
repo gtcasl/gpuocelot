@@ -461,6 +461,8 @@ namespace executive {
 		void eval_Or(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Pmevent(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Popc(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Prefetchu(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Prmt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rcp(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Red(CTAContext &context, const ir::PTXInstruction &instr);

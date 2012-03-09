@@ -5,6 +5,7 @@
 	\brief implements kernel partitioning
 */
 
+// C++ includes
 #include <stdio.h>
 
 // Boost includes
@@ -189,7 +190,6 @@ analysis::KernelPartitioningPass::KernelGraph::KernelGraph(
 	_sourceKernelDfg = new analysis::DataflowGraph;
 	_sourceKernelDfg->analyze(*ptxKernel);
 	
-	size_t spillRegionSize = _computeRegisterOffsets();
 	
 	report(" KernelGraph( partitioning with heuristic " << toString(heuristic) << ")");
 	
@@ -198,8 +198,14 @@ analysis::KernelPartitioningPass::KernelGraph::KernelGraph(
 	_kernel->write(std::cout);
 #endif
 	
+	PartitionVector partitions;
+	_partition(partitions);
+	
+	size_t spillRegionSize = _computeRegisterOffsets(partitions);
+	
 	_createSpillRegion(spillRegionSize);
-	_partition(baseId);
+	_partitionComplete(baseId, partitions);
+	
 	_linkExternalEdges();
 	_createHandlers();
 }
@@ -265,49 +271,41 @@ analysis::KernelPartitioningPass::PartitioningHeuristic
 // - partitionLoops: subkernel contains loop header and body
 
 
-void analysis::KernelPartitioningPass::KernelGraph::_partitionMaximumSize(SubkernelId baseId) {
+void analysis::KernelPartitioningPass::KernelGraph::_partitionMaximumSize(PartitionVector &partitions) {
 
 	report("KernelGraph::_partitionMaximumSize()");
 	
-	Subkernel subkernel(baseId);
-	entrySubkernelId = baseId;
 	
 	// add all blocks to subkernel
 	ir::ControlFlowGraph *cfg = ptxKernel->cfg();
+	BasicBlockSet subkernel;
 	for (ir::ControlFlowGraph::iterator bb_it = cfg->begin(); bb_it != cfg->end(); ++bb_it) {
-		subkernel.sourceBlocks.insert(bb_it);
+		subkernel.insert(bb_it);
 	}
-	
-	subkernel.create(ptxKernel, _sourceKernelDfg, registerOffsets);
-	subkernels.insert(std::make_pair(subkernel.id, subkernel));
+	partitions.push_back(subkernel);
 }
 
-void analysis::KernelPartitioningPass::KernelGraph::_partitionMinimumSize(SubkernelId baseId) {
+void analysis::KernelPartitioningPass::KernelGraph::_partitionMinimumSize(PartitionVector &partitions) {
 
 	report("KernelGraph::_partitionMinimumSize()");
 	
-	// add all blocks to subkernel
+		// add all blocks to subkernel
 	ir::ControlFlowGraph *cfg = ptxKernel->cfg();
 	for (ir::ControlFlowGraph::iterator bb_it = cfg->begin(); bb_it != cfg->end(); ++bb_it) {
 		if (!bb_it->instructions.size()) {
 			continue;
 		}
 		
-		Subkernel subkernel(baseId + subkernels.size());
-		subkernel.sourceBlocks.insert(bb_it);
-		subkernel.create(ptxKernel, _sourceKernelDfg, registerOffsets);
-		subkernels.insert(std::make_pair(subkernel.id, subkernel));
-		
-		if (subkernels.size() == 1) {
-			entrySubkernelId = subkernel.id;
-		}
+		BasicBlockSet subkernel;
+		subkernel.insert(bb_it);
+		partitions.push_back(subkernel);
 	}
 }
 
-void analysis::KernelPartitioningPass::KernelGraph::_partitionMiminumWithBarriers(SubkernelId baseId) {
+void analysis::KernelPartitioningPass::KernelGraph::_partitionMiminumWithBarriers(
+	PartitionVector &partitions) {
 	report("KernelGraph::_partitionMiminumWithBarriers()");
 	
-	std::vector< BasicBlockSet > partitions;
 	BasicBlockSet visited;
 	BasicBlockSet activePartition;
 	
@@ -337,8 +335,55 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionMiminumWithBarrier
 			activePartition.clear();
 		}
 	}
+}
+
+void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(PartitionVector &partitions) {
+	assert(0 && "unimplemented");
+}
+
+/*!
+	\brief constructs a partitioning of the PTX kernel according to some heuristic
+		then uses these to create subkernels
+*/
+void analysis::KernelPartitioningPass::KernelGraph::_partition(PartitionVector &partitions) {
+	//
+	// select partitioning heuristic here
+	//
+	// A partitioning constructs a set of basic-block sets. The edges are then
+	// classified as internal if they do not cross partitions and external if they do.
+	// External edges are further classified as in-edges or out-edges from the perspective
+	// of each subkernel.
+	//
 	
-	for (std::vector< BasicBlockSet >::iterator sk_it = partitions.begin(); 
+	// construct subkernels according to one of several partitioning heuristics	
+	switch (heuristic) {
+		case Partition_maximum:
+			_partitionMaximumSize(partitions);
+			break;
+		case Partition_minimum:
+			_partitionMinimumSize(partitions);
+			break;
+		case Partition_minimumWithBarriers:
+			_partitionMiminumWithBarriers(partitions);
+			break;
+		case Partition_loops:
+			_partitionLoops(partitions);
+			break;
+		default:
+			assert(0 && "invalid partitioning heuristic");
+			break;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+	\brief creates new subkernels based on partitions
+*/
+void analysis::KernelPartitioningPass::KernelGraph::_partitionComplete(SubkernelId baseId, 
+	const PartitionVector &partitions) {
+
+	for (std::vector< BasicBlockSet >::const_iterator sk_it = partitions.begin(); 
 		sk_it != partitions.end();
 		++sk_it) {
 				
@@ -350,44 +395,6 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionMiminumWithBarrier
 		if (subkernels.size() == 1) {
 			entrySubkernelId = subkernel.id;
 		}
-	}
-}
-
-void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(SubkernelId baseId) {
-	assert(0 && "unimplemented");
-}
-
-/*!
-	\brief constructs a partitioning of the PTX kernel according to some heuristic
-		then uses these to create subkernels
-*/
-void analysis::KernelPartitioningPass::KernelGraph::_partition(SubkernelId baseId) {
-	//
-	// select partitioning heuristic here
-	//
-	// A partitioning constructs a set of basic-block sets. The edges are then
-	// classified as internal if they do not cross partitions and external if they do.
-	// External edges are further classified as in-edges or out-edges from the perspective
-	// of each subkernel.
-	//
-	
-	// construct subkernels according to one of several partitioning heuristics
-	switch (heuristic) {
-		case Partition_maximum:
-			_partitionMaximumSize(baseId);
-			break;
-		case Partition_minimum:
-			_partitionMinimumSize(baseId);
-			break;
-		case Partition_minimumWithBarriers:
-			_partitionMiminumWithBarriers(baseId);
-			break;
-		case Partition_loops:
-			_partitionLoops(baseId);
-			break;
-		default:
-			assert(0 && "invalid partitioning heuristic");
-			break;
 	}
 }
 
@@ -513,17 +520,122 @@ analysis::KernelPartitioningPass::SubkernelId
 /*!
 	\brief compute basic mapping
 */
-size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets() {
-	typedef analysis::DataflowGraph::RegisterId RegisterId;
+size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets(
+	const PartitionVector &partitions) {
 	
-	size_t bytes = 0;
-	RegisterId maxRegister = _sourceKernelDfg->maxRegister();
-	for (RegisterId id = 0; id <= maxRegister; id++) {
-		size_t offset = sizeof(int*) * id;
-		registerOffsets[id] = offset;
-		bytes = offset;
+	analysis::DataflowGraph::IteratorMap cfgToDfg = _sourceKernelDfg->getCFGtoDFGMap();
+	
+	RegisterIdSet liveRegisters;
+	
+	for (PartitionVector::const_iterator partition_it = partitions.begin();	
+		partition_it != partitions.end(); ++partition_it) {
+
+		RegisterIdSet subkernelRegisters;
+		
+		for (BasicBlockSet::const_iterator bb_it = partition_it->begin(); bb_it != partition_it->end();
+			++bb_it) {
+			
+			bool externalOut = false;
+			bool externalIn = false;
+			
+			// see if successors are in same partition
+			for (ir::BasicBlock::BlockPointerVector::const_iterator succ_it = (*bb_it)->successors.begin();
+				succ_it != (*bb_it)->successors.end(); ++succ_it) {
+				BasicBlockSet::const_iterator it = partition_it->find(*bb_it);
+				if (it != partition_it->end()) {
+					externalOut = true;
+					break;
+				}
+			}
+			
+			for (ir::BasicBlock::BlockPointerVector::const_iterator succ_it = (*bb_it)->predecessors.begin();
+				succ_it != (*bb_it)->predecessors.end(); ++succ_it) {
+				BasicBlockSet::const_iterator it = partition_it->find(*bb_it);
+				if (it != partition_it->end()) {
+					externalIn = true;
+					break;
+				}
+			}
+			
+			if (externalOut) {		
+				RegisterIdSet aliveValues = _toRegisterIdSet(cfgToDfg[*bb_it]->aliveOut());
+				liveRegisters.insert(aliveValues.begin(), aliveValues.end());
+			}
+			if (externalIn) {		
+				RegisterIdSet aliveValues = _toRegisterIdSet(cfgToDfg[*bb_it]->aliveIn());
+				liveRegisters.insert(aliveValues.begin(), aliveValues.end());
+			}
+		}
+		
+		_filterRegisterUses(subkernelRegisters, *partition_it);
+		
+		liveRegisters.insert(subkernelRegisters.begin(), subkernelRegisters.end());
 	}
+	
+	report("LiveRegisters [count: " << liveRegisters.size() << "]");
+	
+	registerOffsets.clear();
+	size_t bytes = 0;
+	for (RegisterIdSet::const_iterator reg_it = liveRegisters.begin(); 
+		reg_it != liveRegisters.end(); ++reg_it) {
+		registerOffsets[*reg_it] = bytes;
+		bytes += sizeof(int*);
+	}
+
 	return bytes;
+}
+
+analysis::KernelPartitioningPass::RegisterIdSet
+	analysis::KernelPartitioningPass::KernelGraph::_toRegisterIdSet(const RegisterSet &registerSet) {
+
+	RegisterIdSet set;
+	for (RegisterSet::const_iterator reg_it = registerSet.begin(); reg_it != registerSet.end(); 
+		++reg_it) {
+		set.insert(reg_it->id);
+	}
+	return set;
+}
+
+template <typename T>
+static void inplaceSetIntersection(T &result, const T& filter) {
+	for (typename T::iterator it = result.begin(); it != result.end(); ++it) {
+		if (filter.find(*it) == filter.end()) {
+			typename T::iterator kill = it;
+			++it;
+			result.erase(kill);
+		}
+	}
+}
+
+void analysis::KernelPartitioningPass::KernelGraph::_filterRegisterUses(
+	RegisterIdSet &liveRegisterSet, const BasicBlockSet &partition) {
+	
+	RegisterIdSet uses;
+	for (BasicBlockSet::const_iterator bb_it = partition.begin(); bb_it != partition.end(); ++bb_it) {
+		for (ir::BasicBlock::InstructionList::iterator inst_it = (*bb_it )->instructions.begin();
+			inst_it != (*bb_it )->instructions.end(); ++inst_it) {
+			ir::PTXInstruction *instr = static_cast<ir::PTXInstruction*>(*inst_it);
+			
+			ir::PTXOperand ir::PTXInstruction::*operands[] = {
+				&ir::PTXInstruction::pg,
+				&ir::PTXInstruction::pq,
+				&ir::PTXInstruction::d,
+				&ir::PTXInstruction::a,
+				&ir::PTXInstruction::b,
+				&ir::PTXInstruction::c
+			};
+			for (int i = 0; i < 6; i++) {
+				ir::PTXOperand &operand = (instr->*operands[i]);
+				if (operand.addressMode == ir::PTXOperand::Register || 
+					operand.addressMode == ir::PTXOperand::Indirect) {
+					uses.insert(operand.reg);
+				}
+			}
+		}
+	}
+	
+	// intersect liveRegisterSet with uses	
+	inplaceSetIntersection(liveRegisterSet, uses);
 }
 
 size_t analysis::KernelPartitioningPass::KernelGraph::localMemorySize() const {
@@ -1210,7 +1322,8 @@ void analysis::KernelPartitioningPass::Subkernel::_spillLiveValues(
 		}
 
 		report("      alive: " << alive_it->id << " [type: " 
-			<< ir::PTXOperand::toString(alive_it->type) << "]");
+			<< ir::PTXOperand::toString(alive_it->type) << ", offset: " 
+			<< registerOffsets.find(alive_it->id)->second << "]");
 		
 		if (!spilled++) {
 			move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area");

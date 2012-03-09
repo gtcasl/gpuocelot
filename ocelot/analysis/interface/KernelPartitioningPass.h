@@ -25,6 +25,8 @@ namespace analysis {
 		typedef unsigned int SubkernelId;
 		
 		typedef analysis::DataflowGraph::RegisterSet RegisterSet;
+		typedef analysis::DataflowGraph::RegisterId RegisterId;
+		typedef std::set< RegisterId> RegisterIdSet;
 		
 		enum PartitioningHeuristic {
 			Partition_maximum = 0,
@@ -106,6 +108,7 @@ namespace analysis {
 		typedef std::unordered_map< ir::BasicBlock::Pointer, ExternalEdgeVector > ExternalEdgeMap;
 		typedef std::vector< ir::BasicBlock::Edge > EdgeVector;
 		typedef std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> BasicBlockMap;
+		typedef std::vector< BasicBlockSet > PartitionVector;
 		
 		//!
 		class Subkernel {
@@ -208,19 +211,25 @@ namespace analysis {
 			
 		protected:
 		
-			void _partition(SubkernelId baseId);
-			void _linkExternalEdges();
+			void _partition(PartitionVector &partitions);
+
+			size_t _computeRegisterOffsets(const PartitionVector &partitions);			
+			void _partitionComplete(SubkernelId baseId, const PartitionVector &partitions);
 			
+			static RegisterIdSet _toRegisterIdSet(const RegisterSet &set);
+			void _filterRegisterUses(RegisterIdSet &liveRegisterSet, const BasicBlockSet &partition);
+			
+			void _linkExternalEdges();
 			void _createSpillRegion(size_t spillSize);
 			void _createHandlers();
 			
-			size_t _computeRegisterOffsets();
+		protected:
 			
-			void _partitionMaximumSize(SubkernelId baseId);
-			void _partitionMinimumSize(SubkernelId baseId);
-			void _partitionMiminumWithBarriers(SubkernelId baseId);
-			void _partitionLoops(SubkernelId baseId);
-		
+			void _partitionMaximumSize(PartitionVector &partitions);
+			void _partitionMinimumSize(PartitionVector &partitions);
+			void _partitionMiminumWithBarriers(PartitionVector &partitions);
+			void _partitionLoops(PartitionVector &partitions);
+
 		public:
 		
 			SubkernelId getEntrySubkernel() const;

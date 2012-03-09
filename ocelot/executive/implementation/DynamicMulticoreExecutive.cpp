@@ -226,8 +226,8 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	
 	report(" executing block: " << block.x << ", " << block.y);
 	
-	//_executeDefault(block);
-	_executeIterateSubkernelBarriers(block);
+	_executeDefault(block);
+	//_executeIterateSubkernelBarriers(block);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -15,8 +15,8 @@
 #include  <boost/lexical_cast.hpp>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Casts.h>
 
 // Ocelot includes

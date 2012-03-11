@@ -21,8 +21,8 @@
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/interface/FloatingPoint.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/math.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/math.h>
 
 // Standard Library Includes
 #include <cassert>

@@ -9,8 +9,8 @@
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/string.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/string.h>
 
 #include <configure.h>
 

@@ -8,7 +8,7 @@
 	#include <iostream>
 	#include <ocelot/parser/interface/PTXParser.h>
 	#include <ocelot/parser/interface/PTXLexer.h>
-	#include <hydrazine/implementation/debug.h>
+	#include <hydrazine/interface/debug.h>
 	#include <cassert>
 	#include <cstring>
 

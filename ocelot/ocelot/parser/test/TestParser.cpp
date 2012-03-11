@@ -16,10 +16,10 @@
 #include <ocelot/parser/interface/PTXParser.h>
 #include <ocelot/parser/test/TestParser.h>
 
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/macros.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/macros.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Exception.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

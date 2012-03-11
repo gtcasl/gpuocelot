@@ -24,9 +24,9 @@
 
 #include <ocelot/parser/interface/PTXParser.h>
 
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/macros.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/macros.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

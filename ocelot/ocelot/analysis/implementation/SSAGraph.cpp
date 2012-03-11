@@ -11,7 +11,7 @@
 #include <ocelot/analysis/interface/SSAGraph.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <stack>

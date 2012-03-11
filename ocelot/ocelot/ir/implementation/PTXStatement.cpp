@@ -10,7 +10,7 @@
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <cstring>
 #include <stack>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 namespace ir {
 

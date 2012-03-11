@@ -15,9 +15,9 @@
 #include <boost/array.hpp>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/string.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/string.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

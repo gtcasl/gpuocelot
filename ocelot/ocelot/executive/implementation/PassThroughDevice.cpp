@@ -12,8 +12,8 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Exception.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

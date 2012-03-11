@@ -15,9 +15,9 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/macros.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/macros.h>
 
 // Debugging messages
 #ifdef REPORT_BASE
@@ -44,7 +44,8 @@ ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ),
 	_globalLocalMemorySize( 0 ),  _maxThreadsPerBlock( 16384 ),
 	_registerCount( 0 ), _sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
-	_argumentMemorySize( 0 ), _parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
+	_argumentMemorySize( 0 ), _parameterMemorySize( 0 ),
+	_cacheConfiguration(CacheConfigurationDefault)
 {
 	
 }
@@ -115,12 +116,13 @@ unsigned int ExecutableKernel::sharedMemorySize() const
 
 
 /*! \brief sets the cache configuration of the kernele */
-void ExecutableKernel::setCacheConfiguration(ExecutableKernel::CacheConfiguration config) {
+void ExecutableKernel::setCacheConfiguration(CacheConfiguration config) {
 	_cacheConfiguration = config;
 }
 
 /*! \brief sets the cache configuration of the kernele */
-ExecutableKernel::CacheConfiguration ExecutableKernel::getCacheConfiguration() const {
+ExecutableKernel::CacheConfiguration ExecutableKernel::getCacheConfiguration()
+	const {
 	return _cacheConfiguration;
 }
 

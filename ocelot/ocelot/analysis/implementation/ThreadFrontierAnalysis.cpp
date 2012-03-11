@@ -12,7 +12,7 @@
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <stack>

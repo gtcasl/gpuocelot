@@ -14,7 +14,7 @@
 #include <ocelot/executive/interface/Device.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <cstring>

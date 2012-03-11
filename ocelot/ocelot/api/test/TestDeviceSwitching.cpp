@@ -13,8 +13,8 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 #include <hydrazine/interface/Thread.h>
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/debug.h>
 
 #include <vector>
 

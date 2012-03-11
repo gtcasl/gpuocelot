@@ -11,7 +11,7 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -151,7 +151,20 @@ void executive::ReconvergenceIPDOM::eval_Bar(executive::CTAContext &context,
 		report(" Bar called - " << context.active.count() << " of " 
 			<< context.active.size() << " threads active");
 #endif
-		throw RuntimeException("barrier deadlock at: ", context.PC, instr);
+		std::stringstream message;
+		
+		message << "barrier deadlock:\n";
+
+		for(RuntimeStack::const_iterator
+			suspendedContext = runtimeStack.begin();
+			suspendedContext != runtimeStack.end(); ++suspendedContext)
+		{
+			message << "context at: [PC: " << suspendedContext->PC << "] "
+				<< context.kernel->location(suspendedContext->PC) << " "
+				<< suspendedContext->active << "\n";
+		}
+		
+		throw RuntimeException(message.str(), context.PC, instr);
 	}
 }
 
@@ -574,7 +587,20 @@ void executive::ReconvergenceTFSortedStack::eval_Bar(
 		report(" Bar called - " << context.active.count() << " of " 
 			<< context.active.size() << " threads active");
 #endif
-		throw RuntimeException("barrier deadlock at: ", context.PC, instr);
+		std::stringstream message;
+		
+		message << "barrier deadlock:\n";
+
+		for(RuntimeStack::const_iterator
+			suspendedContext = stack.back().begin();
+			suspendedContext != stack.back().end(); ++suspendedContext)
+		{
+			message << "context at: [PC: " << suspendedContext->second.PC
+				<< "] " << context.kernel->location(suspendedContext->second.PC)
+				<< " " << suspendedContext->second.active << "\n";
+		}
+		
+		throw RuntimeException(message.str(), context.PC, instr);
 	}
 }
 

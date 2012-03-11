@@ -11,7 +11,7 @@
 #include <ocelot/executive/interface/LLVMState.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // LLVM Includes
 #include <configure.h>

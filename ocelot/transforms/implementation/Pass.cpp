@@ -12,7 +12,7 @@
 #include <ocelot/transforms/interface/Pass.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 namespace transforms
 {

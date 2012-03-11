@@ -14,10 +14,10 @@
 
 #include <hydrazine/interface/Test.h>
 
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/macros.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/macros.h>
+#include <hydrazine/interface/debug.h>
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
@@ -25,7 +25,7 @@
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <hydrazine/implementation/Timer.h>
+#include <hydrazine/interface/Timer.h>
 
 #include <iostream>
 

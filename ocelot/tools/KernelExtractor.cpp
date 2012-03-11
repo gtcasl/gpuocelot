@@ -33,7 +33,7 @@
 #include <ocelot/util/interface/KernelExtractor.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Casts.h>
 
 #ifdef REPORT_BASE

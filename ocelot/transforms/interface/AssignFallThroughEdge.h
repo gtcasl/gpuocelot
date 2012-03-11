@@ -15,7 +15,7 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #include <set>
 #include <vector>

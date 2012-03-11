@@ -12,9 +12,9 @@
 #include <fstream>
 #include <hydrazine/interface/Test.h>
 
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/macros.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/macros.h>
+#include <hydrazine/interface/debug.h>
 
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>

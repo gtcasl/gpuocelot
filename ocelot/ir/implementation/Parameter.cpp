@@ -5,7 +5,7 @@
 */
 
 #include <ocelot/ir/interface/Parameter.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 std::string ir::Parameter::value( const Parameter& p ) {
 	std::stringstream stream;

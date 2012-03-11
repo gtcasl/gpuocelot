@@ -6,7 +6,7 @@
 */
 
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <sstream>
 
 std::string ir::PTXInstruction::toString( Level l ) {
@@ -405,7 +405,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	pg.type = PTXOperand::pred;
 	barrierOperation = BarSync;
 	carry = None;
-	statementIndex = 0;
+	statementIndex = -1;
 	cc = 0;
 	addressSpace = AddressSpace_Invalid;
 }

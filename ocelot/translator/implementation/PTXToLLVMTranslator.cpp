@@ -20,7 +20,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <climits>

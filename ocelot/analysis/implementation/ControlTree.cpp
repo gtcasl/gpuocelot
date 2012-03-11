@@ -9,8 +9,8 @@
 #include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/string.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/string.h>
+#include <hydrazine/interface/debug.h>
 
 // STL includes
 #include <algorithm>

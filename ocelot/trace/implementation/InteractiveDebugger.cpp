@@ -19,7 +19,7 @@
 #include <ocelot/executive/interface/Device.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Casts.h>
 
 #ifdef REPORT_BASE

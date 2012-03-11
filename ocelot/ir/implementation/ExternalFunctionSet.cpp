@@ -17,8 +17,8 @@
 
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Exception.h>
 
 // LLVM Includes
 #if HAVE_LLVM

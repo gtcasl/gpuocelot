@@ -15,10 +15,10 @@
 #include <cstring>
 
 // Hydrazine includes
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/json.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/json.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Casts.h>
 
 // Boost includes

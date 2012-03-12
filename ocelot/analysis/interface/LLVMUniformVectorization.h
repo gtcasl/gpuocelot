@@ -180,6 +180,8 @@ namespace analysis
 			
 			void _debugReporting();
 			
+			void _debugControlFlowMatrix();
+			
 		protected:
 		
 			void _transformWarpSynchronous();

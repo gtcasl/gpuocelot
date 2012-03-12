@@ -1,0 +1,31 @@
+#/usr/bin/python
+
+import sys
+
+if len(sys.argv) > 1:
+	for arg in sys.argv[1:]:
+		threads = {}
+		f = open(arg, 'r')
+		for line in f:
+			thread, block = [int(x) for x in line.strip("\n").split(',')]
+			if thread in threads.keys():
+				threads[thread].append(block)
+			else:
+				threads[thread] = [block,]
+		f.close()			
+		rowCount = 0
+		done = False
+		threadCount = len(threads.keys())
+		new = open(arg + '.csv', 'w')
+		while not done:
+			done = True
+			row = ['' for t in range(0, threadCount)]
+			for thread in range(0, threadCount):
+				if thread in threads.keys() and len(threads[thread]) > rowCount:
+					done = False
+					row[thread] = threads[thread][rowCount]				
+			if not done:
+				new.write(",".join([str(s) for s in row]) + "\n")
+			rowCount += 1
+		new.close()
+

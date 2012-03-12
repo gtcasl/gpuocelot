@@ -52,10 +52,12 @@
 // Inserted LLVM debugging procedures for debugging execution faults
 //
 
+#define INSERT_DEBUG_CONTROL_FLOW 1
 #define INSERT_DEBUG_REPORTING 0
 #define DEBUG_REPORT_BLOCKS 0
 #define DEBUG_REPORT_STORES 1
 #define DEBUG_REPORT_RETURNS 0
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -248,6 +250,9 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	if (pass->warpSize == 1) {
 #if INSERT_DEBUG_REPORTING
 	_debugReporting();
+#endif
+#if INSERT_DEBUG_CONTROL_FLOW
+	_debugControlFlowMatrix();
 #endif
 	}
 	
@@ -1273,6 +1278,58 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 		++index;
 		
 		assert(call && "failed to insert call instruction");
+	}
+}
+
+
+extern "C" void _ocelot_debug_report_block(int tid, int kernelBlockId) {
+	std::ofstream file("ocelot-debug-block.log", std::ios_base::app);
+	
+	file << tid << "," << kernelBlockId << std::endl;
+}
+
+void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() {
+	std::vector< llvm::Type *> params;
+	params.push_back(getTyInt(32));
+	params.push_back(getTyInt(32));
+	llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(context()), 
+		llvm::ArrayRef<llvm::Type*>(params), false);
+	
+	llvm::Constant *reportFunc = function->getParent()->getOrInsertFunction(
+		"_ocelot_debug_report_block", funcType);
+	
+	std::map< std::string, int > blockIdMap;
+	for (LLVMtoOcelotBlockMap::const_iterator ocelot_it = llvmToOcelotBlockMap.begin();
+		ocelot_it != llvmToOcelotBlockMap.end(); ++ocelot_it) {
+		
+		blockIdMap[ocelot_it->first->getName().str()] = (int)blockIdMap.size();
+	}
+	
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		std::map< std::string, int >::iterator block_it = blockIdMap.find(bb_it->getName().str());
+		if (block_it != blockIdMap.end()) {
+			llvm::Instruction *insert = bb_it->getFirstNonPHI();
+			
+			int tid = 0;
+			llvm::Value *blockDimX = schedulerEntryBlock.threadLocalArguments[tid].blockDim_x;
+			llvm::Value *blockDimY = schedulerEntryBlock.threadLocalArguments[tid].blockDim_y;
+			llvm::Value *tidX = schedulerEntryBlock.threadLocalArguments[tid].threadId_x;
+			llvm::Value *tidY = schedulerEntryBlock.threadLocalArguments[tid].threadId_y;
+			llvm::Value *tidZ = schedulerEntryBlock.threadLocalArguments[tid].threadId_z;
+			
+			llvm::Value *a0 = llvm::BinaryOperator::CreateMul(blockDimX, blockDimY, "", insert);
+			llvm::Value *a1 = llvm::BinaryOperator::CreateMul(a0, tidZ, "", insert);
+			llvm::Value *a2 = llvm::BinaryOperator::CreateMul(blockDimX, tidY, "", insert);
+			llvm::Value *a3 = llvm::BinaryOperator::CreateAdd(a1, a2, "", insert);
+			llvm::Value *threadId = llvm::BinaryOperator::CreateAdd(a3, tidX, "", insert);
+			
+			std::vector< llvm::Value *> args;
+			args.push_back(threadId);
+			args.push_back(getConstInt32(block_it->second));
+			llvm::CallInst *callInst = llvm::CallInst::Create(reportFunc, llvm::ArrayRef<llvm::Value*>(args), 
+				"", insert);
+			assert(callInst);
+		}
 	}
 }
 

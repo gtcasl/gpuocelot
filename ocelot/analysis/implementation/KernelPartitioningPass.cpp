@@ -71,10 +71,7 @@ analysis::KernelPartitioningPass::KernelGraph *
 		PartitioningHeuristic _h) {
 	
 	report("KernelPartitioningPass::runOnFunction(" << ptxKernel.name << ")");
-	
-	//StrictTypeTransformation strictTypePass;
-	//strictTypePass.runOnKernel(ptxKernel);
-	
+		
 	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
 	barrierPass.runOnKernel(ptxKernel);
 	
@@ -573,6 +570,8 @@ size_t analysis::KernelPartitioningPass::KernelGraph::_computeRegisterOffsets(
 	}
 	
 	report("LiveRegisters [count: " << liveRegisters.size() << "]");
+	report("  saved " <<  sizeof(int*)*(_sourceKernelDfg->maxRegister() - liveRegisters.size()) 
+		<< " bytes per thread");
 	
 	registerOffsets.clear();
 	size_t bytes = 0;

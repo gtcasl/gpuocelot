@@ -187,7 +187,6 @@ analysis::KernelPartitioningPass::KernelGraph::KernelGraph(
 	_sourceKernelDfg = new analysis::DataflowGraph;
 	_sourceKernelDfg->analyze(*ptxKernel);
 	
-	
 	report(" KernelGraph( partitioning with heuristic " << toString(heuristic) << ")");
 	
 #if REPORT_BASE && REPORT_EMIT_SOURCE_PTXKERNEL

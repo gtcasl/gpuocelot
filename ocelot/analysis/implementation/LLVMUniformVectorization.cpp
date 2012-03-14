@@ -11,6 +11,10 @@
 #include <map>
 #include <list>
 #include <set>
+#include <algorithm>
+#include <functional>
+
+// System includes
 #include <execinfo.h>
 
 // boost includes
@@ -45,7 +49,7 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_FINAL_SUBKERNEL 0
+#define REPORT_FINAL_SUBKERNEL 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -195,6 +199,8 @@ static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgume
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+#undef REPORT_BASE
+#define REPORT_BASE 1
 
 analysis::LLVMUniformVectorization::Translation::Translation(
 	llvm::Function *f, 
@@ -219,6 +225,9 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	report(" LLVM function:\n" << String(function));
 #endif
 }
+
+#undef REPORT_BASE
+#define REPORT_BASE 0
 
 analysis::LLVMUniformVectorization::Translation::~Translation() {
 
@@ -253,13 +262,14 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 #endif
 #if INSERT_DEBUG_CONTROL_FLOW
 	_debugControlFlowMatrix();
+	
+	
+	
 #endif
 	}
 	
 	report("Scalar Preprocessing step complete");
 }
-
-
 
 void analysis::LLVMUniformVectorization::Translation::_computeLLVMToOcelotBlockMap() {
 
@@ -648,6 +658,22 @@ void analysis::LLVMUniformVectorization::Translation::_promoteGempPointerArithme
 	}
 }
 
+
+void analysis::LLVMUniformVectorization::Translation::_eraseBlock(llvm::BasicBlock *block) {
+	report("Translation::_eraseBlock( " << block->getName().str() << ")");
+	
+	LLVMtoOcelotBlockMap::iterator block_it = llvmToOcelotBlockMap.find(block);
+	if (block_it != llvmToOcelotBlockMap.end()) {
+		OcelotToLLVMBlockMap::iterator ocelot_it = ocelotToLlvmBlockMap.find(block_it->second);
+		if (ocelot_it != ocelotToLlvmBlockMap.end()) {
+			ocelotToLlvmBlockMap.erase(ocelot_it);
+		}
+		llvmToOcelotBlockMap.erase(block_it);
+	}
+			
+	block->eraseFromParent();
+}
+
 void analysis::LLVMUniformVectorization::Translation::_eliminateEmptyBlocks() {
 
 	std::vector< llvm::BasicBlock *> killWithFire;
@@ -665,8 +691,7 @@ void analysis::LLVMUniformVectorization::Translation::_eliminateEmptyBlocks() {
 	}
 	for (std::vector< llvm::BasicBlock *>::iterator bb_it = killWithFire.begin(); 
 		bb_it != killWithFire.end(); ++bb_it ) {
-		report("  eliminating " << (*bb_it)->getName().str());
-		(*bb_it)->eraseFromParent();
+		_eraseBlock(*bb_it);
 	}
 }
 
@@ -1281,55 +1306,118 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	}
 }
 
-
-extern "C" void _ocelot_debug_report_block(int tid, int kernelBlockId) {
-	std::ofstream file("ocelot-debug-block.log", std::ios_base::app);
+extern "C" void _ocelot_debug_report_block(size_t fileHash, int tid, int kernelBlockId) {
+	std::stringstream name;
+	
+	name << "debug-" << std::hex << fileHash << std::dec << ".log";
+	std::ofstream file(name.str().c_str(), std::ios_base::app);
 	
 	file << tid << "," << kernelBlockId << std::endl;
 }
 
+#undef REPORT_BASE
+#define REPORT_BASE 1
+
 void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() {
 	std::vector< llvm::Type *> params;
+	params.push_back(getTyInt(64));
 	params.push_back(getTyInt(32));
 	params.push_back(getTyInt(32));
 	llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(context()), 
 		llvm::ArrayRef<llvm::Type*>(params), false);
 	
+	report("Translation::_debugControlFlowMatrix()");
+	report("  subkernel: " << subkernel->id);
+	report("  kernelGraph entryID: " << pass->kernelGraph->entrySubkernelId);
+	
+	size_t fileHash = std::hash<std::string>()(pass->kernelGraph->ptxKernel->name);
+	
 	llvm::Constant *reportFunc = function->getParent()->getOrInsertFunction(
 		"_ocelot_debug_report_block", funcType);
-	
-	std::map< std::string, int > blockIdMap;
-	for (LLVMtoOcelotBlockMap::const_iterator ocelot_it = llvmToOcelotBlockMap.begin();
-		ocelot_it != llvmToOcelotBlockMap.end(); ++ocelot_it) {
 		
-		blockIdMap[ocelot_it->first->getName().str()] = (int)blockIdMap.size();
+	report("Blocks:");
+	std::vector< std::string > blockLabels;
+	
+	for (ir::ControlFlowGraph::iterator bb_it = pass->kernelGraph->ptxKernel->cfg()->begin();
+		bb_it != pass->kernelGraph->ptxKernel->cfg()->end(); ++bb_it) {
+		
+		std::string label = bb_it->label;
+		
+		if (label.find_first_of("handler") == std::string::npos) {
+			blockLabels.push_back(label);
+		}
+	}
+	std::sort(blockLabels.begin(), blockLabels.end());
+	
+	std::stringstream name;
+	name << "debug-" << std::hex << fileHash << std::dec;
+	std::ofstream file((name.str() + ".log").c_str());
+	
+	{
+		std::ofstream ptxFile((name.str() + ".ptx").c_str());
+		
+		pass->kernelGraph->ptxKernel->write(ptxFile);
+
 	}
 	
+	file << pass->kernelGraph->ptxKernel->name << "," << blockLabels.size() << "\n";
+	
+	std::map< std::string, int > blockIdMap;
+	for (std::vector< std::string >::iterator label_it = blockLabels.begin(); 
+		label_it != blockLabels.end(); ++label_it ) {
+		
+		int index = (int)blockIdMap.size() + 1;
+		file << *label_it << "," << index << std::endl;
+		blockIdMap[*label_it] = index;		
+	}
+	
+	assert(schedulerEntryBlock.threadLocalArguments.size() && "no thread local arguments");
+	
+	llvm::Value *threadId = 0;
+	
+	int unexpected = (subkernel->id * 1000);
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		std::map< std::string, int >::iterator block_it = blockIdMap.find(bb_it->getName().str());
+		int blockId = -unexpected;
+		llvm::Instruction *insert = bb_it->getFirstNonPHI();
 		if (block_it != blockIdMap.end()) {
-			llvm::Instruction *insert = bb_it->getFirstNonPHI();
-			
+			blockId = block_it->second;
+		}
+		else if (&*bb_it == schedulerEntryBlock.block) {
+			insert = bb_it->getTerminator();
+			blockId = 0;
+		}
+		else {
+			++unexpected;
+		}
+		if (bb_it->getName().str() == "exit") {
+			continue;
+		}
+		
+		if (!threadId) {
 			int tid = 0;
 			llvm::Value *blockDimX = schedulerEntryBlock.threadLocalArguments[tid].blockDim_x;
 			llvm::Value *blockDimY = schedulerEntryBlock.threadLocalArguments[tid].blockDim_y;
 			llvm::Value *tidX = schedulerEntryBlock.threadLocalArguments[tid].threadId_x;
 			llvm::Value *tidY = schedulerEntryBlock.threadLocalArguments[tid].threadId_y;
 			llvm::Value *tidZ = schedulerEntryBlock.threadLocalArguments[tid].threadId_z;
-			
+		
+			assert(blockDimX && blockDimY && tidX && tidY && tidZ);
+		
 			llvm::Value *a0 = llvm::BinaryOperator::CreateMul(blockDimX, blockDimY, "", insert);
 			llvm::Value *a1 = llvm::BinaryOperator::CreateMul(a0, tidZ, "", insert);
 			llvm::Value *a2 = llvm::BinaryOperator::CreateMul(blockDimX, tidY, "", insert);
 			llvm::Value *a3 = llvm::BinaryOperator::CreateAdd(a1, a2, "", insert);
-			llvm::Value *threadId = llvm::BinaryOperator::CreateAdd(a3, tidX, "", insert);
-			
-			std::vector< llvm::Value *> args;
-			args.push_back(threadId);
-			args.push_back(getConstInt32(block_it->second));
-			llvm::CallInst *callInst = llvm::CallInst::Create(reportFunc, llvm::ArrayRef<llvm::Value*>(args), 
-				"", insert);
-			assert(callInst);
+			threadId = llvm::BinaryOperator::CreateAdd(a3, tidX, "threadId.t0", insert);
 		}
+		
+		std::vector< llvm::Value *> args;
+		args.push_back(getConstInt64(fileHash));
+		args.push_back(threadId);
+		args.push_back(getConstInt32(blockId));
+		llvm::CallInst *callInst = llvm::CallInst::Create(reportFunc, llvm::ArrayRef<llvm::Value*>(args), 
+			"", insert);
+		assert(callInst);
 	}
 }
 

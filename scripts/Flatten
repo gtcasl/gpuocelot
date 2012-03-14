@@ -6,12 +6,25 @@ if len(sys.argv) > 1:
 	for arg in sys.argv[1:]:
 		threads = {}
 		f = open(arg, 'r')
-		for line in f:
-			thread, block = [int(x) for x in line.strip("\n").split(',')]
-			if thread in threads.keys():
-				threads[thread].append(block)
+		
+		line = f.readline()
+		kernel, blocks = line.strip("\n").split(',')
+		
+		blockMap = {}
+		for bid in range(0, int(blocks)):
+			blockLabel, blockId = f.readline().strip("\n").split(',')
+			blockMap[int(blockId)] = blockLabel
+		while 1:
+			line = f.readline()
+			if not line:
+				break
 			else:
-				threads[thread] = [block,]
+				thread, block = [int(x) for x in line.strip("\n").split(',')]
+				if thread in threads.keys():
+					threads[thread].append(block)
+				else:
+					threads[thread] = [block,]
+				
 		f.close()			
 		rowCount = 0
 		done = False
@@ -23,7 +36,8 @@ if len(sys.argv) > 1:
 			for thread in range(0, threadCount):
 				if thread in threads.keys() and len(threads[thread]) > rowCount:
 					done = False
-					row[thread] = threads[thread][rowCount]				
+					blockId = threads[thread][rowCount]	
+					row[thread] = blockId #blockMap[blockId]	
 			if not done:
 				new.write(",".join([str(s) for s in row]) + "\n")
 			rowCount += 1

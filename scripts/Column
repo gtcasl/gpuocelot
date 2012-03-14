@@ -1,0 +1,29 @@
+import sys
+
+#
+# [[file-name col-0 col-1], []]
+#
+
+if len(sys.argv) > 1:
+	files = eval(sys.argv[1])
+	
+	openFiles = [ open(file[0], 'r') for file in files ]
+	
+	reading = True
+	while reading:
+		select = []
+		reading = False
+		
+		for i,file in enumerate(openFiles):
+			line = file.readline()
+			if line:
+				row = [x for x in line.strip("\n").split(',')]
+				select += [row[x] for x in files[i][1:]]
+				reading = True
+			else:
+				select += ['x' for x in files[i][1:] ]
+		if reading:
+			print ",".join([str(x) for x in select])
+else:
+	print "Usage: python Column \"[[file-0,col-0,...], [file-1,col-0,...], ...]\""
+	

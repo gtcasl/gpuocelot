@@ -315,7 +315,8 @@ void executive::DynamicMulticoreExecutive::_executeDefault(const ir::Dim3 &block
 		<< ") kernel: '" << kernel->name << "'");
 }
 
-
+#undef REPORT_BASE
+#define REPORT_BASE 1
 void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(const ir::Dim3 &block) {
 	
 	bool executing = true;
@@ -379,6 +380,10 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 		}
 	} while (executing);
 }
+
+
+#undef REPORT_BASE
+#define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

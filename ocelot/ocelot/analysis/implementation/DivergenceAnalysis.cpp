@@ -56,21 +56,24 @@ void DivergenceAnalysis::_analyzeDataFlow()
 			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
 				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
 				if (ptxInstruction->a.addressMode == ir::PTXOperand::Special) {
-					if( (ptxInstruction->a.special == ir::PTXOperand::tid)
+					if( (ptxInstruction->a.special == ir::PTXOperand::tid &&
+						ptxInstruction->a.vIndex == ir::PTXOperand::ix)
 						|| (ptxInstruction->a.special
 						== ir::PTXOperand::laneId))
 						divergenceSources.insert(&ptxInstruction->a);
 				}
 
 				if (ptxInstruction->b.addressMode == ir::PTXOperand::Special) {
-					if( (ptxInstruction->a.special == ir::PTXOperand::tid)
+					if( (ptxInstruction->c.special == ir::PTXOperand::tid &&
+						ptxInstruction->c.vIndex == ir::PTXOperand::ix)
 						|| (ptxInstruction->b.special
 						== ir::PTXOperand::laneId))
 						divergenceSources.insert(&ptxInstruction->b);
 				}
 
 				if (ptxInstruction->c.addressMode == ir::PTXOperand::Special) {
-					if( (ptxInstruction->a.special == ir::PTXOperand::tid)
+					if( (ptxInstruction->c.special == ir::PTXOperand::tid &&
+						ptxInstruction->c.vIndex == ir::PTXOperand::ix)
 						|| (ptxInstruction->c.special
 						== ir::PTXOperand::laneId))
 						divergenceSources.insert(&ptxInstruction->c);
@@ -150,17 +153,17 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	DataflowGraph::iterator endBlock = dfg.end();
 
 	/* Post-dominator tree */
-  PostdominatorTree *dtree;
-  dtree = (PostdominatorTree*) (getAnalysis(Type::PostDominatorTreeAnalysis));
+	PostdominatorTree *dtree;
+	dtree = (PostdominatorTree*) (getAnalysis(Type::PostDominatorTreeAnalysis));
 
-  for (; block != endBlock; ++block) {
-    ir::PTXInstruction *ptxInstruction = NULL;
+	for (; block != endBlock; ++block) {
+		ir::PTXInstruction *ptxInstruction = NULL;
 
-    if (block->instructions().size() > 0) {
-      /* Branch instructions can only be the last
-       instruction of a basic block */
-      DataflowGraph::Instruction lastInstruction =
-          *(--block->instructions().end());
+		if (block->instructions().size() > 0) {
+			/* Branch instructions can only be the last
+			instruction of a basic block */
+			DataflowGraph::Instruction lastInstruction =
+			*(--block->instructions().end());
 
 			if (typeid(ir::PTXInstruction) == typeid(*(lastInstruction.i))) {
 				ptxInstruction =
@@ -169,21 +172,23 @@ void DivergenceAnalysis::_analyzeControlFlow()
 				if ((ptxInstruction->opcode == ir::PTXInstruction::Bra)
 					&& (ptxInstruction->uni == false)
 					&& (lastInstruction.s.size() != 0)) {
-        assert(lastInstruction.s.size() == 1);
-        DataflowGraph::iterator postDomBlock =
-            dfg.getCFGtoDFGMap()[dtree->getPostDominator(block->block())];
-        if (postDomBlock != dfg.end()) {
-          BranchInfo newBranch(&(*block), &(*postDomBlock), lastInstruction,
-              _divergGraph);
-          branches.insert(newBranch);
-          }
-        }
-      }
-    }
-  }
-  /* 2) Obtain all branch instructions that depend on a divergent predicate
-   * List of branches that are divergent, so their controlflow
-   influence must be tested */
+					
+					assert(lastInstruction.s.size() == 1);
+					DataflowGraph::iterator postDomBlock =
+						dfg.getCFGtoDFGMap()[
+							dtree->getPostDominator(block->block())];
+					if (postDomBlock != dfg.end()) {
+						BranchInfo newBranch(&(*block), &(*postDomBlock), 
+							lastInstruction, _divergGraph);
+						branches.insert(newBranch);
+					}
+				}
+			}
+		}
+	}
+	/* 2) Obtain all branch instructions that depend on a divergent predicate
+	* List of branches that are divergent, so their controlflow
+	influence must be tested */
 	std::set<BranchInfo> worklist;
 
 	/* Populate the divergent branches set */
@@ -249,8 +254,8 @@ void DivergenceAnalysis::_analyzeControlFlow()
 					_divergentBranches.insert(*divBranch);
 					branches.erase(divBranch);
 					endBranch = branches.end();
-		      branch = branches.begin();
-		      continue;
+					branch = branches.begin();
+					continue;
 				} else {
 					_notDivergentBranches.insert(*branch);
 				}
@@ -258,6 +263,19 @@ void DivergenceAnalysis::_analyzeControlFlow()
 			}
 		}
 	}
+	
+	/* 4) mark all blocks that are post dominators of the entry point as 
+	      not divergent.  
+	*/
+	block = dfg.begin();
+	for (; block != endBlock; ++block) {
+		if(dtree->postDominates(block->block(),
+			_kernel->cfg()->get_entry_block())) {
+
+			_notDivergentBlocks.insert(block);
+		}
+	}
+	
 }
 
 /*! \brief Add a predicate as a predecessor of a variable */
@@ -295,6 +313,8 @@ void DivergenceAnalysis::analyze(ir::IRKernel &k)
 	_divergGraph.clear();
 	_divergentBranches.clear();
 	_notDivergentBranches.clear();
+	_notDivergentBlocks.clear();
+	_kernel = &k;
 
 	DivergenceGraph::node_set predicates;
 	/* 1) Makes data flow analysis that detects divergent variables and blocks
@@ -325,6 +345,12 @@ bool DivergenceAnalysis::isDivBlock(DataflowGraph::iterator &block) const
 	}
 	return isDivBranch(--block->instructions().end());
 }
+
+/*!\brief Tests if all threads enter the block in a convergent state */
+bool DivergenceAnalysis::isEntryDiv( DataflowGraph::iterator &block ) const {
+	return _notDivergentBlocks.count(block) == 0;
+}
+		
 
 /*! \brief Tests if the a instruction is a branch instruction
 	instruction and is possible a divergent instruction (isDivInstruction) */

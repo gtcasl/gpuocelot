@@ -382,7 +382,8 @@ class DataflowGraph : public KernelAnalysis
 			unsigned int index );
 		/*! \brief Insert an instruction into a block 
 			immediately before the element at specified  position*/
-                InstructionVector::iterator insert( iterator block, const ir::Instruction& instruction, 
+        InstructionVector::iterator insert( iterator block,
+                const ir::Instruction& instruction, 
 			InstructionVector::iterator position );
 		/*! \brief Insert an instruction at the end of a block */
 		void insert( iterator block, const ir::Instruction& instruction );

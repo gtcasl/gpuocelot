@@ -30,7 +30,7 @@ namespace ir {
 		typedef std::map<std::string, Local> LocalMap;
 
 	protected:
-	/*! \brief Is this kernel a function? */
+		/*! \brief Is this kernel a function? */
 		bool _function;
 		
 	public:

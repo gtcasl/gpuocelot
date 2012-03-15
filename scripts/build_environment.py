@@ -562,10 +562,15 @@ def Environment():
 
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
-	
+		if platform.system() == 'Darwin':
+			env.AppendUnique(EXTRA_LIBS = ['-lGL'])
+			env.AppendUnique(LIBPATH = ['/usr/X11/lib'])
+
 	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-lrt']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		if platform.system() != 'Darwin':
+			env.AppendUnique(EXTRA_LIBS = ['-lrt'])
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

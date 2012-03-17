@@ -47,6 +47,29 @@ sources = (
 
 libocelotTrace = env.StaticLibrary('ocelotTrace', sources)
 
+#
+#
+#
+
+applicationLibs = ['ocelot', 'boost_serialization-mt', 'z', 'boost_system-mt', 'pthread', libocelotTrace]
+
+#
+#
+#
+applications = [
+	('MemoryTraceAnalyzer', ['traces/implementation/MemoryTraceAnalyzer.cpp',]),
+	('ParallelismTraceAnalyzer', ['traces/implementation/ParallelismTraceAnalyzer.cpp',]),
+	('InstructionTraceAnalyzer', ['traces/implementation/InstructionTraceAnalyzer.cpp',]),
+	('BranchTraceAnalyzer', ['traces/implementation/BranchTraceAnalyzer.cpp',]),
+	('SharedComputationAnalyzer', ['traces/implementation/SharedComputationAnalyzer.cpp',]),
+]
+for application in applications:
+	env.Program(application[0], application[1], LIBS=applicationLibs)
+
+
+#
+#
+#
 if 'install' in COMMAND_LINE_TARGETS:
 	print 'Installing libOcelotTrace'
 	

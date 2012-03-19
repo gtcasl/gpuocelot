@@ -328,7 +328,8 @@ void DivergenceAnalysis::analyze(ir::IRKernel &k)
 
 /*! \brief Tests if a block ends with a divergent branch
 	instruction (isDivBranchInstr) */
-bool DivergenceAnalysis::isDivBlock(DataflowGraph::const_iterator &block) const
+bool DivergenceAnalysis::isDivBlock(
+	const DataflowGraph::const_iterator &block) const
 {
 	if (block->instructions().size() == 0) {
 		return false;
@@ -338,7 +339,7 @@ bool DivergenceAnalysis::isDivBlock(DataflowGraph::const_iterator &block) const
 
 /*! \brief Tests if a block ends with a divergent branch
 	instruction (isDivBranchInstr) */
-bool DivergenceAnalysis::isDivBlock(DataflowGraph::iterator &block) const
+bool DivergenceAnalysis::isDivBlock(const DataflowGraph::iterator &block) const
 {
 	if (block->instructions().size() == 0) {
 		return false;
@@ -347,7 +348,8 @@ bool DivergenceAnalysis::isDivBlock(DataflowGraph::iterator &block) const
 }
 
 /*!\brief Tests if all threads enter the block in a convergent state */
-bool DivergenceAnalysis::isEntryDiv( DataflowGraph::iterator &block ) const {
+bool DivergenceAnalysis::isEntryDiv(
+	const DataflowGraph::iterator &block ) const {
 	return _notDivergentBlocks.count(block) == 0;
 }
 		

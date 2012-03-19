@@ -54,12 +54,12 @@ class DivergenceAnalysis : public KernelAnalysis
 		virtual void analyze( ir::IRKernel& k );
 
 		/*!\brief Tests if a block ends with a divergent branch instruction */
-		bool isDivBlock( DataflowGraph::const_iterator &block ) const;
+		bool isDivBlock( const DataflowGraph::const_iterator &block ) const;
 		/*!\brief Tests if a block ends with a divergent branch instruction */
-		bool isDivBlock( DataflowGraph::iterator &block ) const;
+		bool isDivBlock( const DataflowGraph::iterator &block ) const;
 
 		/*!\brief Tests if all threads enter the block in a convergent state */
-		bool isEntryDiv( DataflowGraph::iterator &block ) const;
+		bool isEntryDiv( const DataflowGraph::iterator &block ) const;
 				
 		/*!\brief Tests if a branch instruction is divergent */
 		bool isDivBranch( const const_instruction_iterator &instruction ) const;

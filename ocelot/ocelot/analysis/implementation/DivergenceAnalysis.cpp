@@ -265,7 +265,7 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	}
 	
 	/* 4) mark all blocks that are post dominators of the entry point as 
-	      not divergent.  
+	      convergent.  
 	*/
 	block = dfg.begin();
 	for (; block != endBlock; ++block) {
@@ -273,6 +273,66 @@ void DivergenceAnalysis::_analyzeControlFlow()
 			_kernel->cfg()->get_entry_block())) {
 
 			_notDivergentBlocks.insert(block);
+		}
+	}
+	
+	/* 4.1) mark all blocks with only convergent predecessors as convergent.  
+	*/
+	
+	bool changed = true;
+	
+	while(changed) {
+		changed = false;
+		
+		block = dfg.begin();
+		for (; block != endBlock; ++block) {
+		
+			if (!isEntryDiv(block)) continue;
+		
+			bool allPredecessorsConvergent = true;
+			
+			for (analysis::DataflowGraph::BlockPointerSet::iterator
+				predecessor = block->predecessors().begin();
+				predecessor != block->predecessors().end(); ++predecessor) {
+				
+				if (isEntryDiv(*predecessor)) {
+					allPredecessorsConvergent = false;
+					break;
+				}
+				
+				if (isDivBlock(*predecessor)) {
+					allPredecessorsConvergent = false;
+					break;
+				}
+			}
+			
+			if (allPredecessorsConvergent) {
+				changed = true;
+				
+				_notDivergentBlocks.insert(block);
+			}
+		}
+	}
+	
+	/* 4.2) mark all blocks with barriers as convergent.  
+	*/
+	block = dfg.begin();
+	for (; block != endBlock; ++block) {
+		ir::PTXInstruction *ptxInstruction = NULL;
+
+		DataflowGraph::InstructionVector::const_iterator
+			ii = block->instructions().begin();
+		DataflowGraph::InstructionVector::const_iterator
+			iiEnd = block->instructions().end();
+		for (; ii != iiEnd; ++ii) {
+			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
+				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
+				
+				if (ptxInstruction->opcode == ir::PTXInstruction::Bar) {
+					_notDivergentBlocks.insert(block);
+					break;
+				}
+			}
 		}
 	}
 	

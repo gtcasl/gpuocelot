@@ -498,8 +498,11 @@ namespace analysis
 
 	void DataflowGraph::analyze(ir::IRKernel& kernel)
 	{
-		_cfg	 = kernel.cfg();
+		_cfg	    = kernel.cfg();
 		_consistent = _cfg->empty();
+		
+		_blocks.clear();
+		_maxRegister = 0;
 		
 		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
 			iterator > BlockMap;

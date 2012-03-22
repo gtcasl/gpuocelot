@@ -49,14 +49,14 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_FINAL_SUBKERNEL 1
+#define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Inserted LLVM debugging procedures for debugging execution faults
 //
 
-#define INSERT_DEBUG_CONTROL_FLOW 1
+#define INSERT_DEBUG_CONTROL_FLOW 0
 #define INSERT_DEBUG_REPORTING 0
 #define DEBUG_REPORT_BLOCKS 0
 #define DEBUG_REPORT_STORES 0
@@ -199,9 +199,6 @@ static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgume
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#undef REPORT_BASE
-#define REPORT_BASE 1
-
 analysis::LLVMUniformVectorization::Translation::Translation(
 	llvm::Function *f, 
 	Subkernel *_subkernel,
@@ -225,9 +222,6 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	report(" LLVM function:\n" << String(function));
 #endif
 }
-
-#undef REPORT_BASE
-#define REPORT_BASE 0
 
 analysis::LLVMUniformVectorization::Translation::~Translation() {
 
@@ -262,9 +256,6 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 #endif
 #if INSERT_DEBUG_CONTROL_FLOW
 	_debugControlFlowMatrix();
-	
-	
-	
 #endif
 	}
 	
@@ -1323,9 +1314,6 @@ extern "C" void _ocelot_debug_report_block(size_t fileHash, int tid, int kernelB
 	file.close();
 	counter++;
 }
-
-#undef REPORT_BASE
-#define REPORT_BASE 0
 
 void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() {
 	std::vector< llvm::Type *> params;

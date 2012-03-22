@@ -32,16 +32,16 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_EMIT_SUBKERNEL_PTX 0
-#define REPORT_EMIT_SOURCE_PTXKERNEL 0
+#define REPORT_EMIT_SUBKERNEL_PTX 1
+#define REPORT_EMIT_SOURCE_PTXKERNEL 1
 
 #define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define EMIT_PARTITIONED_KERNELGRAPH 0					// emits to .dot text files in directory
-#define EMIT_KERNELGRAPH_ORIGINAL_PTX 0					// if 1, shows PTX for original basic blocks
-#define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 1		// enables replacing actual instructions in handler blocks
+#define EMIT_PARTITIONED_KERNELGRAPH 1					// emits to .dot text files in directory
+#define EMIT_KERNELGRAPH_ORIGINAL_PTX 1					// if 1, shows PTX for original basic blocks
+#define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 0		// enables replacing actual instructions in handler blocks
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

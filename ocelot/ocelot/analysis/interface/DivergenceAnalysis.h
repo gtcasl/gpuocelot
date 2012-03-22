@@ -37,6 +37,11 @@ class DivergenceAnalysis : public KernelAnalysis
 		block_set  _notDivergentBlocks;
 		bool _doCFGanalysis;
 
+		/*! \brief Is an operand a function call operand? */
+		bool _isOperandAnArgument( const ir::PTXOperand& operand );
+		/*! \brief Does an operand reference local memory? */
+		bool _doesOperandUseLocalMemory( const ir::PTXOperand& operand );
+
 		/*!\brief Make the initial data-flow analysis */
 		void _analyzeDataFlow();
 		/*!\brief Makes the control-flow analysis, dependent on the results

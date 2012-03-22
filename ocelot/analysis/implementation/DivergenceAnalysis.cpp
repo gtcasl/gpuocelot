@@ -8,11 +8,49 @@
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
 #include <ocelot/analysis/interface/PostdominatorTree.h>
 
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+
 // Standard Library Includes
 #include <cassert>
 
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 namespace analysis
 {
+
+bool DivergenceAnalysis::_isOperandAnArgument( const ir::PTXOperand& operand ) {
+	if (operand.addressMode != ir::PTXOperand::Address) {
+		return false;
+	}
+	
+	return _kernel->getParameter(operand.identifier) != 0;
+}
+
+bool DivergenceAnalysis::_doesOperandUseLocalMemory(
+	const ir::PTXOperand& operand ) {
+	
+	if (operand.addressMode != ir::PTXOperand::Address) {
+		return false;
+	}
+	
+	if (_kernel->locals.count(operand.identifier) != 0) {
+		return true;
+	}
+	
+	const ir::Global* global = _kernel->module->getGlobal(operand.identifier);
+	
+	if (global == 0) {
+		return false;
+	}
+	
+	return global->space() == ir::PTXInstruction::Local;
+}
 
 void DivergenceAnalysis::_analyzeDataFlow()
 {
@@ -29,8 +67,8 @@ void DivergenceAnalysis::_analyzeDataFlow()
 			phiInstruction = block->phis().begin();
 		DataflowGraph::PhiInstructionVector::const_iterator
 			endPhiInstruction = block->phis().end();
-  /* Go over the phi functions and add their dependences to the
-   * dependence graph. */
+        /* Go over the phi functions and add their dependences to the
+         * dependence graph. */
 		for (; phiInstruction != endPhiInstruction; phiInstruction++) {
 			for (DataflowGraph::RegisterVector::const_iterator
 				si = phiInstruction->s.begin();
@@ -47,6 +85,9 @@ void DivergenceAnalysis::_analyzeDataFlow()
 
 			ir::PTXInstruction *ptxInstruction = NULL;
 			bool atom = false;
+			bool functionStackArgument = false;
+			bool localMemoryOperand = false;
+			bool isCall = false;
 
 			std::set<const ir::PTXOperand*> divergenceSources;
 
@@ -79,12 +120,39 @@ void DivergenceAnalysis::_analyzeDataFlow()
 						divergenceSources.insert(&ptxInstruction->c);
 				}
 
-				if(ptxInstruction->opcode == ir::PTXInstruction::Atom){
+				if (ptxInstruction->opcode == ir::PTXInstruction::Atom){
 					atom = true;
+				}
+				
+				if (ptxInstruction->mayHaveAddressableOperand()) {
+					if (_doesOperandUseLocalMemory(ptxInstruction->a)) {
+						localMemoryOperand = true;
+					}
+				}
+				
+				if (ptxInstruction->opcode == ir::PTXInstruction::Call){
+					isCall = true;
 				}
 			}
 
-			/* Second, we link the source operands to the
+			/* Second, if this is a function call, we populate divergenceSources
+			 * with all the source operands that might diverge in a call.
+			 */
+			if (_kernel->function()) {
+				if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
+					ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
+				
+					if (ptxInstruction->mayHaveAddressableOperand()) {
+						if (_isOperandAnArgument(ptxInstruction->a)) {
+							functionStackArgument = true;
+							report(" operand '" << ptxInstruction->a.toString()
+								<< "' is a function call argument.");
+						}
+					}
+				}
+			}
+						
+			/* Third, we link the source operands to the
 			 * destination operands, and check if the destination
 			 * can diverge. This will only happen in case the
 			 * instruction is atomic. */
@@ -117,7 +185,12 @@ void DivergenceAnalysis::_analyzeDataFlow()
 						*destinationReg->pointer);
 				}
 
-				if(atom){
+				if(atom || functionStackArgument ||
+					localMemoryOperand || isCall){
+					
+					report(" destination register '" << *destinationReg->pointer
+						<< "' is a divergence source.");
+					_divergGraph.insertNode(*destinationReg->pointer);
 					_divergGraph.setAsDiv(*destinationReg->pointer);
 				}
 			}
@@ -276,7 +349,29 @@ void DivergenceAnalysis::_analyzeControlFlow()
 		}
 	}
 	
-	/* 4.1) mark all blocks with only convergent predecessors as convergent.  
+	/* 4.1) mark all blocks with barriers as convergent.  
+	*/
+	block = dfg.begin();
+	for (; block != endBlock; ++block) {
+		ir::PTXInstruction *ptxInstruction = NULL;
+
+		DataflowGraph::InstructionVector::const_iterator
+			ii = block->instructions().begin();
+		DataflowGraph::InstructionVector::const_iterator
+			iiEnd = block->instructions().end();
+		for (; ii != iiEnd; ++ii) {
+			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
+				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
+				
+				if (ptxInstruction->opcode == ir::PTXInstruction::Bar) {
+					_notDivergentBlocks.insert(block);
+					break;
+				}
+			}
+		}
+	}
+	
+	/* 4.2) mark all blocks with only convergent predecessors as convergent.  
 	*/
 	
 	bool changed = true;
@@ -295,6 +390,9 @@ void DivergenceAnalysis::_analyzeControlFlow()
 				predecessor = block->predecessors().begin();
 				predecessor != block->predecessors().end(); ++predecessor) {
 				
+				// skip self loops
+				if(*predecessor == block) continue;
+				
 				if (isEntryDiv(*predecessor)) {
 					allPredecessorsConvergent = false;
 					break;
@@ -310,28 +408,6 @@ void DivergenceAnalysis::_analyzeControlFlow()
 				changed = true;
 				
 				_notDivergentBlocks.insert(block);
-			}
-		}
-	}
-	
-	/* 4.2) mark all blocks with barriers as convergent.  
-	*/
-	block = dfg.begin();
-	for (; block != endBlock; ++block) {
-		ir::PTXInstruction *ptxInstruction = NULL;
-
-		DataflowGraph::InstructionVector::const_iterator
-			ii = block->instructions().begin();
-		DataflowGraph::InstructionVector::const_iterator
-			iiEnd = block->instructions().end();
-		for (; ii != iiEnd; ++ii) {
-			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
-				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
-				
-				if (ptxInstruction->opcode == ir::PTXInstruction::Bar) {
-					_notDivergentBlocks.insert(block);
-					break;
-				}
 			}
 		}
 	}

@@ -8,8 +8,15 @@
 // Ocelot Includes
 #include <ocelot/analysis/interface/DivergenceGraph.h>
 
-// Boost Includes
-#include <boost/assign/list_of.hpp>
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 namespace analysis {
 
@@ -40,11 +47,10 @@ void DivergenceGraph::eraseSpecialSource( const ir::PTXOperand* tid ){
 /*!\brief Define a node as being divergent,
 	not depending on it's predecessors */
 void DivergenceGraph::setAsDiv( const node_type &node ){
-	if( nodes.find(node) != nodes.end() ){
-		_upToDate = false;
-		_divergenceSources.insert(node);
-//		nodes.erase(node);
-	}
+	assert( nodes.find(node) != nodes.end() );
+	
+	_upToDate = false;
+	_divergenceSources.insert(node);
 }
 
 /*!\brief Unset a node as being divergent, not depending on it's predecessors */
@@ -140,7 +146,10 @@ bool DivergenceGraph::isDivSource( const node_type &node ) const{
 
 /*!\brief Tests if a special register is source of divergence */
 bool DivergenceGraph::isDivSource( const ir::PTXOperand* srt ) const{
-	return ((srt->addressMode == ir::PTXOperand::Special) && ( (srt->special == ir::PTXOperand::laneId) || (srt->special == ir::PTXOperand::tid)));
+	return ((srt->addressMode == ir::PTXOperand::Special) &&
+		( (srt->special == ir::PTXOperand::laneId) ||
+		(srt->special == ir::PTXOperand::tid &&
+		srt->vIndex == ir::PTXOperand::ix)));
 }
 
 /*!\brief Tests if a special register is present on the graph */
@@ -167,7 +176,10 @@ size_t DivergenceGraph::divNodesCount() const{
  * 4.3) Remove the node from the new divergent list
  */
 void DivergenceGraph::computeDivergence(){
+	report("Computing divergence");
+	
 	if( _upToDate ){
+		report(" already up to date.");
 		return;
 	}
 	/* 1) Clear preview divergent nodes list */
@@ -175,7 +187,7 @@ void DivergenceGraph::computeDivergence(){
 	node_set newDivergenceNodes;
 
 	/* 2) Set all nodes that are directly dependent of a divergent
-		source {tidX, tidY, tidZ and laneid } as divergent */
+		source {tidX and laneid } as divergent */
 	{
 		std::map<const ir::PTXOperand*, node_set>::iterator
 			divergence = _specials.begin();
@@ -202,6 +214,7 @@ void DivergenceGraph::computeDivergence(){
 
 		for( ; divergence != divergenceEnd; divergence++ ){
 			newDivergenceNodes.insert(*divergence);
+			report(" Node " << *divergence << " is a new divergent register.");
 		}
 	}
 

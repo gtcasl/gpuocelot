@@ -28,9 +28,9 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
-#define REPORT_CTA_OPERATIONS 0						// called O(n), where n is the number of CTAs launched
+#define REPORT_CTA_OPERATIONS 1						// called O(n), where n is the number of CTAs launched
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
@@ -383,7 +383,7 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 
 
 #undef REPORT_BASE
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -396,7 +396,7 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 	unsigned int specialization = 0;
 	
 	const Translation *translation = _getOrInsertTranslation(warpSize, subkernelId, specialization);
-
+	
 	static_cast<executive::MetaData*>(translation->metadata)->sharedSize = sharedMemorySize;
 	
 	for (size_t t = 0; t < threads; t++) {

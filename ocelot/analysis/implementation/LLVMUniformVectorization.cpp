@@ -59,7 +59,7 @@
 #define INSERT_DEBUG_CONTROL_FLOW 1
 #define INSERT_DEBUG_REPORTING 0
 #define DEBUG_REPORT_BLOCKS 0
-#define DEBUG_REPORT_STORES 1
+#define DEBUG_REPORT_STORES 0
 #define DEBUG_REPORT_RETURNS 0
 
 
@@ -1307,16 +1307,25 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 }
 
 extern "C" void _ocelot_debug_report_block(size_t fileHash, int tid, int kernelBlockId) {
+
+	static size_t counter = 0;
+
 	std::stringstream name;
 	
 	name << "debug-" << std::hex << fileHash << std::dec << ".log";
 	std::ofstream file(name.str().c_str(), std::ios_base::app);
 	
-	file << tid << "," << kernelBlockId << std::endl;
+	if (file.fail()) {
+		assert(0 && "failed to open file");
+	}
+	
+	file << tid << "," << kernelBlockId << std::flush << std::endl;
+	file.close();
+	counter++;
 }
 
 #undef REPORT_BASE
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() {
 	std::vector< llvm::Type *> params;
@@ -1350,10 +1359,11 @@ void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() 
 	std::sort(blockLabels.begin(), blockLabels.end());
 	
 	std::stringstream name;
-	name << "debug-" << std::hex << fileHash << std::dec;
-	std::ofstream file((name.str() + ".log").c_str());
+	name << "debug-" << std::hex << fileHash << std::dec << "-kernel.log";
+	std::ofstream file(name.str().c_str(), std::ios_base::out | std::ios_base::in);
 	
-	{
+	if (!file.is_open()) {
+		std::ofstream file(name.str().c_str());
 		std::ofstream ptxFile((name.str() + ".ptx").c_str());
 		
 		pass->kernelGraph->ptxKernel->write(ptxFile);
@@ -1385,7 +1395,7 @@ void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() 
 		}
 		else if (&*bb_it == schedulerEntryBlock.block) {
 			insert = bb_it->getTerminator();
-			blockId = 0;
+			blockId = -subkernel->id * 100;
 		}
 		else {
 			++unexpected;

@@ -54,7 +54,8 @@ namespace ir
 			// filter out declarations
 			if (!includeDeclarations && 
 				(statement->type == LLVMStatement::FunctionDeclaration
-					|| (moduleScope && statement->type == LLVMStatement::TypeDeclaration))) {
+					|| (moduleScope && statement->type == LLVMStatement::TypeDeclaration)
+					|| (moduleScope && statement->type == LLVMStatement::VariableDeclaration))) {
 				continue;
 			}
 			if( statement->type == LLVMStatement::Instruction ) {

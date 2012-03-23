@@ -1,0 +1,73 @@
+maximum partitioning heuristic:
+- correct programs:
+	 BandwidthTest, BilateralFilter (slow-ass), BoxFilter, Clock, Eigenvalues,
+	FastWalshTransform, Histogram, MergeSort, MersenneTwister, ScalarProd, SimpleGL, SimpleTexture,
+	SimpleTexture3D, SobolQRNG, SortingNetworks, Template, Transpose, VectorAdd, DwtHaar1D, MonteCarlo,
+	QuasirandomGenerator, RecursiveGaussian, FDTD3d, BinomialOptions, ConvolutionSeparable,
+	ConvolutionTexture, VolumeRender
+
+minimum partitioning heuristic:
+
+- correct:
+	BandwidthTest, Clock, Eigenvalues, FastWaslh, Histogram, MergeSort, MersenneTwister, ScalarProd,
+	SimpleGL, SimpleTExture, SimpleTexture3D, SobolQRNG, SortingNetworks, Template, Transpose, 
+	VectorAdd, DwtHaar1D, MonteCarlo, QuasirandomGenerator, RecursiveGaussian, BinomialOptions,
+	ConvolutionSeparable, VolumeRender
+
+- incorrect:
+	BilateralFilter, BoxFilter, ConvolutionTexture, 
+
+- failed PTX->LLVM translation:
+	FDTD3d, 
+	
+----------------------------------------------------------------------------------------------------
+
+Application			LLVM					Dynamic				Notes
+-------------------------------------------------
+BicubicTexture	incorrect			incorrect			They both fail on only one of four tests.
+BlackScholes		long-running	long-running	Unclear if it finishes or loops infinitely
+Dct8x8					incorrect			incorrect			Fixed: failed to consider module-level variables when computing shared memory size
+Mandelbrot			trans-error		trans-error		Invalid phi node
+MarchingCubes		crash					crash
+
+Nbody						correct				incorrect			correct with maximum partitioning
+
+Reduction				incorrect			incorrect
+Scan						incorrect			incorrect
+SobelFilter			trans-error		trans-error		Invalid type
+ThreadFenceRed	trans-error		trans-error		Invalid type
+
+----------------------------------------------------------------------------------------------------
+
+- incorrect programs: BicubicFilter (last test), Reduction, Scan, Nbody
+
+- infinite looping programs: BlackScholes,
+
+- crashing programs: Dct8x8, LineOfSight, MarchingCubes, 
+
+- compile error: Mandelbrot, SobelFilter, ThreadFenceReduction, 
+
+----------------------------------------------------------------------------------------------------
+
+minimumWithLoops partitioning heuristic:
+- working programs:
+	MergeSort
+	
+- incorrect programs: BicubicFilter (last test), Reduction, Scan, Nbody
+
+- infinite looping programs: BlackScholes,
+
+- crashing programs: Dct8x8, LineOfSight, MarchingCubes, 
+
+- compile error: Mandelbrot, SobelFilter, ThreadFenceReduction, 
+
+----------------------------------------------------------------------------------------------------
+
+minimum partitioning heuristic:
+- working programs:
+	ScalarProd, Eigenvalues, MergeSort,
+
+- failing programs:
+
+----------------------------------------------------------------------------------------------------
+

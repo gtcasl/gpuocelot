@@ -16,7 +16,7 @@
 
 namespace hydrazine {
 
-	static int getNestingDepth(int maxDepth = 0) {
+	int getNestingDepth(int maxDepth = 0) {
 		void *symbols[64] = {0};
 		int symbolCount = backtrace(symbols, 64);
 		if (maxDepth && maxDepth < symbolCount) {

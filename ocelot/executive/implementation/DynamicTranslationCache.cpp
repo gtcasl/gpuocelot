@@ -66,7 +66,7 @@
 #define REPORT_PTX_SUBKERNELS 1
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
+#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
@@ -337,10 +337,6 @@ void walkCallStack();
 void executive::DynamicTranslationCache::Translation::execute(LLVMContext **contexts) const {
 	assert(function);
 	
-	reportE(REPORT_SCHEDULE_OPERATIONS, " executing native function");
-
-	reportNested(REPORT_SCHEDULE_OPERATIONS, "correct levels of nesting?", 4);
-
 	function(contexts[0]);
 }
 
@@ -1248,7 +1244,7 @@ static void linkLLVMModule(llvm::Module& module, const ir::PTXKernel& kernel,
 	executive::Device* device) {
 
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Linking global variables.");
-	
+	executive::LLVMState::jit()->clearAllGlobalMappings();
 	for(ir::Module::GlobalMap::const_iterator global = kernel.module->globals().begin(); 
 		global != kernel.module->globals().end(); ++global) {
 		
@@ -1368,7 +1364,11 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 
 	if (translatedKernel.llvmModule == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "   Parsing kernel failed, dumping code:\n");
-			
+
+		#if REPORT_LLVM_MASTER
+			report("Invalid LLVM module:\n" << moduleText.str());
+		#endif
+
 		std::string m;
 		llvm::raw_string_ostream message(m);
 		message << "LLVM Parser failed: ";

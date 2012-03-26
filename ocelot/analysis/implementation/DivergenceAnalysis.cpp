@@ -340,11 +340,13 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	/* 4) mark all blocks that are post dominators of the entry point as 
 	      convergent.  
 	*/
+	report(" Marking non-divergent blocks.");
 	block = dfg.begin();
 	for (; block != endBlock; ++block) {
 		if(dtree->postDominates(block->block(),
 			_kernel->cfg()->get_entry_block())) {
 
+			report("  " << block->label() << " post-dominates the entry point.");
 			_notDivergentBlocks.insert(block);
 		}
 	}
@@ -364,6 +366,7 @@ void DivergenceAnalysis::_analyzeControlFlow()
 				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
 				
 				if (ptxInstruction->opcode == ir::PTXInstruction::Bar) {
+					report("  " << block->label() << " includes a barrier.");
 					_notDivergentBlocks.insert(block);
 					break;
 				}
@@ -371,7 +374,7 @@ void DivergenceAnalysis::_analyzeControlFlow()
 		}
 	}
 	
-	/* 4.2) mark all blocks with only convergent predecessors as convergent.  
+	/* 4.2.1) mark all blocks with only convergent predecessors as convergent.  
 	*/
 	
 	bool changed = true;
@@ -383,12 +386,17 @@ void DivergenceAnalysis::_analyzeControlFlow()
 		for (; block != endBlock; ++block) {
 		
 			if (!isEntryDiv(block)) continue;
-		
+			
 			bool allPredecessorsConvergent = true;
 			
 			for (analysis::DataflowGraph::BlockPointerSet::iterator
 				predecessor = block->predecessors().begin();
 				predecessor != block->predecessors().end(); ++predecessor) {
+				
+				if (isDivBlock(*predecessor)) {
+					allPredecessorsConvergent = false;
+					break;
+				}
 				
 				// skip self loops
 				if(*predecessor == block) continue;
@@ -397,21 +405,91 @@ void DivergenceAnalysis::_analyzeControlFlow()
 					allPredecessorsConvergent = false;
 					break;
 				}
-				
-				if (isDivBlock(*predecessor)) {
-					allPredecessorsConvergent = false;
-					break;
-				}
 			}
 			
 			if (allPredecessorsConvergent) {
 				changed = true;
+				report("  " << block->label()
+					<< " has only convergent predecessors.");
 				
 				_notDivergentBlocks.insert(block);
 			}
 		}
-	}
 	
+		/* 4.2.2) Mark blocks contained in one-sided divergent
+			hammocks as convergent. */
+		block = dfg.begin();
+		for (; block != endBlock; ++block) {
+			if (isEntryDiv(block))  continue;
+			if (!isDivBlock(block)) continue;
+			
+			report("  examining " << block->label()
+					<< ", it is a source of divergence.");
+				
+			// find the ipdom
+			DataflowGraph::iterator postDomBlock =
+				dfg.getCFGtoDFGMap()[dtree->getPostDominator(block->block())];
+			
+			if (isEntryDiv(postDomBlock)) {
+				changed = true;
+				
+				report("   " << postDomBlock->label()
+					<< " post-dominates a convergent block.");
+				
+				_notDivergentBlocks.insert(postDomBlock);
+			}
+			
+			unsigned int targetsOtherThanIPDOM = 0;
+			
+			for (analysis::DataflowGraph::BlockPointerSet::iterator
+				successor = block->targets().begin();
+				successor != block->targets().end(); ++successor) {
+				if (*successor != postDomBlock) ++targetsOtherThanIPDOM;
+			}
+			
+			if (block->fallthrough() != endBlock) {
+				if (block->fallthrough() != postDomBlock) {
+					++targetsOtherThanIPDOM;
+				}
+			}
+			
+			if (targetsOtherThanIPDOM < 2) {
+				for (analysis::DataflowGraph::BlockPointerSet::iterator
+					successor = block->targets().begin();
+					successor != block->targets().end(); ++successor) {
+					if (*successor != postDomBlock) {
+						if (isEntryDiv(*successor)) {
+							changed = true;
+				
+							report("   " << (*successor)->label()
+								<< " is part of a one-sided "
+								<< "divergent hammock.");
+						
+							_notDivergentBlocks.insert(*successor);
+						}
+					}
+				}
+			
+				if (block->fallthrough() != endBlock) {
+					if (block->fallthrough() != postDomBlock) {
+						if (isEntryDiv(block->fallthrough())) {
+							changed = true;
+				
+							report("   " << block->fallthrough()->label()
+								<< " is part of a one-sided "
+								<< "divergent hammock.");
+							
+							_notDivergentBlocks.insert(block->fallthrough());
+						}
+					}
+				}
+			}
+			else {
+				report("   " << targetsOtherThanIPDOM
+					<< " divergent paths originate here, skipping.");
+			}
+		}
+	}
 }
 
 /*! \brief Add a predicate as a predecessor of a variable */

@@ -64,10 +64,10 @@ worleyTestExternalSharedMemory_LDFLAGS = -static
 ################################################################################
 ## SortingNetwork
 SortingNetwork_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-SortingNetwork_SOURCES = tests/sortingNetworks/bitonicSort.cu.cpp \
-	tests/sortingNetworks/oddEvenMergeSort.cu.cpp \
-	tests/sortingNetworks/main.cpp \
-	tests/sortingNetworks/sortingNetworks_validate.cpp
+SortingNetwork_SOURCES = tests/SortingNetwork/bitonicSort.cu.cpp \
+	tests/SortingNetwork/oddEvenMergeSort.cu.cpp \
+	tests/SortingNetwork/main.cpp \
+	tests/SortingNetwork/sortingNetworks_validate.cpp
 SortingNetwork_LDADD = $(OCELOT_LIBS)
 SortingNetwork_LDFLAGS = -static
 ################################################################################
@@ -356,9 +356,9 @@ nobase_include_HEADERS = sdk/stopwatch_base.h \
 	sdk/bank_checker.h \
 	sdk/stopwatch_linux.h \
 	sdk/cutil_inline.h \
-	tests/sortingNetworks/sortingNetworks_common.h \
+	tests/SortingNetwork/sortingNetworks_common.h \
 	tests/3DFD/reference.h \
-	tests/sortingNetworks/sortingNetworks_common.cuh
+	tests/SortingNetwork/sortingNetworks_common.cuh
 ################################################################################
 
 ################################################################################

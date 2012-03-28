@@ -12,9 +12,13 @@
 #include <boost/lexical_cast.hpp>
 
 // Ocelot includes
+
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
+
+#include <ocelot/analysis/interface/ControlTree.h>
+#include <ocelot/analysis/interface/DominatorTree.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -333,8 +337,131 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionMiminumWithBarrier
 	}
 }
 
+static size_t partitionLoops_totalInstructions(
+	const analysis::KernelPartitioningPass::BasicBlockSet &partition) {
+
+	size_t total = 0;
+	for (analysis::KernelPartitioningPass::BasicBlockSet::const_iterator it = partition.begin();
+		it != partition.end(); ++it) { 
+
+		total += (*it)->instructions.size();
+	}
+	return total;
+}
+
+static void partitionLoops_addHelper(const analysis::ControlTree::Node *node, 
+	analysis::KernelPartitioningPass::PartitionVector &partitionVector, 
+	std::unordered_map< ir::BasicBlock::ConstPointer, ir::BasicBlock::Pointer > & pointerMap,
+	const size_t instructionThreshold) {
+
+	if (!node) {
+		return;
+	}
+
+	switch (node->rtype()) {
+	case analysis::ControlTree::Inst:           // Instructions (e.g. basic block)
+	{
+		const analysis::ControlTree::InstNode *instNode = 
+			static_cast<const analysis::ControlTree::InstNode *>(node);
+		
+		if (!partitionVector.size() || (instructionThreshold && 
+			partitionLoops_totalInstructions(partitionVector.back()) + instNode->insts().size() 
+				> instructionThreshold)) {
+			analysis::KernelPartitioningPass::BasicBlockSet newPartition;
+			
+			newPartition.insert(pointerMap[instNode->bb()]);
+			partitionVector.push_back(newPartition);
+		}
+		else {
+			partitionVector.back().insert(pointerMap[instNode->bb()]);
+		}
+	}
+		break;
+	case analysis::ControlTree::IfThen:         // If-Then
+	{
+		const analysis::ControlTree::IfThenNode *regionNode = 
+			static_cast<const analysis::ControlTree::IfThenNode *>(node);
+		
+		partitionLoops_addHelper(regionNode->cond(), partitionVector, pointerMap, instructionThreshold);
+		partitionLoops_addHelper(regionNode->ifTrue(), partitionVector, pointerMap, instructionThreshold);
+		partitionLoops_addHelper(regionNode->ifFalse(), partitionVector, pointerMap, instructionThreshold);
+	}
+		break;
+	case analysis::ControlTree::Block:          // Block of nodes
+	case analysis::ControlTree::Natural:        // Natural loop with side exits
+	case analysis::ControlTree::While:          // While loop
+	{
+		const analysis::ControlTree::Node *regionNode = node;
+		
+		bool overrideInstructionThreshold = (node->rtype() == analysis::ControlTree::Natural);
+		
+		for (analysis::ControlTree::NodeList::const_iterator child_it = regionNode->children().begin();
+			child_it != regionNode->children().end(); ++child_it) {
+			
+			const analysis::ControlTree::Node *child = *child_it;
+			partitionLoops_addHelper(child, partitionVector, pointerMap, 
+				(overrideInstructionThreshold ? 0 : instructionThreshold));
+		}
+	}
+	case analysis::ControlTree::Invalid:
+	default:
+		break;
+	}
+}
+
 void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(PartitionVector &partitions) {
-	assert(0 && "unimplemented");
+	typedef analysis::ControlTree CT;
+	typedef analysis::ControlTree::Node CTNode;
+	
+	ir::ControlFlowGraph *cfg = ptxKernel->cfg();
+	ir::ControlFlowGraph::BlockPointerVector topological = cfg->topological_sequence();
+	
+	std::unordered_map< ir::BasicBlock::ConstPointer, ir::BasicBlock::Pointer > pointerMap;
+	
+	ir::BasicBlock::ConstPointer const_bb_it = cfg->begin();
+	ir::BasicBlock::Pointer bb_it = cfg->begin();
+	
+	for (; bb_it != cfg->end(); ++bb_it, ++const_bb_it) {
+		// fill out pointer map
+		assert(bb_it->label == const_bb_it->label);
+		pointerMap[const_bb_it] = bb_it;
+	}
+	
+	analysis::ControlTree controlTree(cfg);
+	
+	// start at leaves of control tree, merge children of nodes into partitions as we rise until
+	// each partition reaches some maximum size
+	size_t subkernelSize = 100;
+	partitionLoops_addHelper(controlTree.get_root_node(), partitions, pointerMap, subkernelSize);
+		
+	// emit
+	#if REPORT_BASE
+	report(" partitions: [");
+	for (PartitionVector::iterator partition_it = partitions.begin(); 
+		partition_it != partitions.end(); ++partition_it ) {
+	
+		report(" " << partition_it->size() << " blocks (" 
+			<< partitionLoops_totalInstructions(*partition_it) << " instructions): {");
+		for (BasicBlockSet::iterator bbs_it = partition_it->begin(); 
+			bbs_it != partition_it->end(); ++bbs_it) {
+			report("  " << (*bbs_it)->label);
+		}
+		report(" }");
+	}
+	report("]");
+	#endif
+	
+	// assert entry node is in first partition
+	assert(partitions.size());
+	bool foundEntry = false;
+	for (BasicBlockSet::iterator bb_it = partitions.front().begin();
+		bb_it != partitions.front().end(); ++bb_it) {
+		if ((*bb_it)->label == "entry") {
+			foundEntry = true;
+			break;
+		}
+	}
+	assert(foundEntry && "first partition must contain entry node");
 }
 
 /*!
@@ -1358,6 +1485,8 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 	report("Frontier exit blocks:");
 	
 	analysis::DataflowGraph::IteratorMap subkernelCfgToDfg = subkernelDfg->getCFGtoDFGMap();
+	
+	report("  obtained CFG-to-DFG mapping");
 	
 	for (auto block_it = frontierExitBlocks.begin(); 
 		block_it != frontierExitBlocks.end(); ++block_it) {	

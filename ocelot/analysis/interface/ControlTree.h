@@ -109,6 +109,9 @@ class ControlTree : public Analysis
 
 				/*! /brief Get the instruction list */
 				const InstructionList& insts() const;
+				
+				/*! \brief returns basic block */
+				const CFG::const_iterator bb() const;
 
 			private:
 				/*! \brief Iterator to the basic block in the cfg */

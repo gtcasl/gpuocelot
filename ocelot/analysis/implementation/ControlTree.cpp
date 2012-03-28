@@ -197,6 +197,10 @@ namespace analysis
 	{
 		return _bb->instructions;
 	}
+	
+	const CFG::const_iterator ControlTree::InstNode::bb() const {
+		return _bb;
+	}
 
 	ControlTree::BlockNode::BlockNode(const std::string& label, 
 			const NodeList& children) : Node(label, Block, children)

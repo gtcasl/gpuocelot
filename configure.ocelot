@@ -27,7 +27,7 @@
 	},
 	executive: {
 		devices: [ "dynamic" ],
-		partitioningHeuristic: "minimumWithBarriers",
+		partitioningHeuristic: "loops",
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: basic,

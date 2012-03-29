@@ -23,12 +23,12 @@ from SCons import SConf
 print "Building rules for Parboil Benchmark suite...."
 try:
 	Import('env')
-	import build
+	import builder
 	print " Imported environment from higher level SCons script."
 except:
 	sys.path.append('../../scripts')	
-	import build
-	env = build.InitializeEnvironment(Environment(), Builder)
+	import builder
+	env = builder.InitializeEnvironment(Environment(), Builder)
 	print " Created a new environment."
 	
 	env['TEST_PATH'] = '.'
@@ -74,7 +74,7 @@ specificallyRequiresCublas = ()
 #
 # Construct build rules for all tests
 #
-(bin_path,lib_path,inc_path) = build.getCudaPaths()
+(bin_path,lib_path,inc_path) = builder.getCudaPaths()
 
 env.Append(LIBPATH=[lib_path, '/usr/local/lib'])
 
@@ -91,7 +91,7 @@ for testApplication in testApplications:
 	appIncludePath = ['-I' + env['TEST_PATH'] + '/common/include', '-I' + env['TEST_PATH'] + '/benchmarks/%s/src/cuda/' % (path,),]
 	localEnv.Append(CPPFLAGS=appIncludePath)
 	testApp = localEnv.Program(testApplication[0], 
-		[build.MapSource(env, 
+		[builder.MapSource(env, 
 			"benchmarks/%s/src/cuda/%s" % (path, x), appIncludePath) for x in testApplication[1]], 
 		LIBS=additionalLibs + ['-lglut', '-lGLU', '-locelot', '-lGLEW', libparboil])
 	tests.append(testApp)

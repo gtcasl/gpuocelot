@@ -23,12 +23,12 @@ from SCons import SConf
 print "Building rules for Ocelot CUDA 3.2 SDK...."
 try:
 	Import('env')
-	import build
+	import builder
 	print " Imported environment from higher level SCons script."
 except:
 	sys.path.append('../../scripts')	
-	import build
-	env = build.InitializeEnvironment(Environment(), Builder)
+	import builder
+	env = builder.InitializeEnvironment(Environment(), Builder)
 	print " Created a new environment."
 	
 	env['CUDA_PATH'] = '.'
@@ -149,7 +149,7 @@ for testApplication in testApplications:
 		additionalLibs.append('-lcublas')
 	
 	testApp = env.Program(testApplication[0],
-		[build.MapSource(env, 
+		[builder.MapSource(env, 
 			"tests/%s/%s" % (path, x), 
 			(" ".join(paths) + " -I./" + env['CUDA_PATH'] + "/tests/%s") % (path,)) for x in testApplication[1]], 
 		LIBS=additionalLibs + ['-lglut', libsdk3_2, '-lGLU', '-locelot', '-lGLEW'])

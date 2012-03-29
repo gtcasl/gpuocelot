@@ -7,7 +7,7 @@
 			checkInitialization: false
 		},
 		raceDetector: {
-			enabled: false,
+			enabled: true,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
@@ -26,17 +26,19 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ "dynamic" ],
-		partitioningHeuristic: "maximum",
+		devices: [ emulated ],
+		asynchronousKernelLaunch: true,
 		port: 2011,
 		host: "127.0.0.1",
-		optimizationLevel: memory,
+		optimizationLevel: none,
 		workerThreadLimit: 1,
-		reconvergenceMechanism: "ipdom",
-		warpSize: 4
+		reconvergenceMechanism: "tf-stack",
+		warpSize: 1
 	},
 	optimizations: {
-		subkernelSize: 1000
+		subkernelSize: 1000,
+		simplifyCFG: true,
+		hoistSpecialValues: false
 	},
 	checkpoint: {
 		enabled: false,
@@ -45,3 +47,4 @@
 		suffix: ".checkpoint"
 	}
 }
+

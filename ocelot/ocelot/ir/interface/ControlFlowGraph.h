@@ -318,7 +318,8 @@ public:
 	/*! Returns an ordered sequence of basic blocks such that the entry node 
 		is first and all fall-through edges produce adjacencies
 	*/
-	BlockPointerVector executable_sequence();
+	BlockPointerVector      executable_sequence();
+	ConstBlockPointerVector	executable_sequence() const;
 	
 	/*!	deep copy of ControlFlowGraph */
 	ControlFlowGraph& operator=(const ControlFlowGraph &);

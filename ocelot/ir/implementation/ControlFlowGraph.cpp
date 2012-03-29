@@ -731,6 +731,73 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 	return sequence;
 }
 
+ControlFlowGraph::ConstBlockPointerVector
+	ControlFlowGraph::executable_sequence() const {
+	typedef std::unordered_set<const_iterator> BlockSet;
+	ConstBlockPointerVector sequence;
+	BlockSet unscheduled;
+
+	for(const_iterator i = begin(); i != end(); ++i) {
+		unscheduled.insert(i);
+	}
+
+	report("Getting executable sequence.");
+
+	sequence.push_back(get_entry_block());
+	unscheduled.erase(get_entry_block());
+	report(" added " << get_entry_block()->label);
+
+	while (!unscheduled.empty()) {
+		if (sequence.back()->has_fallthrough_edge()) {
+			const_edge_iterator fallthroughEdge 	
+				= sequence.back()->get_fallthrough_edge();
+			sequence.push_back(fallthroughEdge->tail);
+			unscheduled.erase(fallthroughEdge->tail);
+		}
+		else {
+			// find a new block, favor branch targets over random blocks
+			const_iterator next = *unscheduled.begin();
+			
+			for(const_edge_pointer_iterator
+				edge = sequence.back()->out_edges.begin();
+				edge != sequence.back()->out_edges.end(); ++edge)
+			{
+				if(unscheduled.count((*edge)->tail) != 0)
+				{
+					next = (*edge)->tail;
+				}
+			}
+			
+			// rewind through fallthrough edges to find the beginning of the 
+			// next chain of fall throughs
+			report("  restarting at " << next->label);
+			bool rewinding = true;
+			while (rewinding) {
+				rewinding = false;
+				for (const_edge_pointer_iterator
+					edge = next->in_edges.begin(); 
+					edge != next->in_edges.end(); ++edge) {
+					if ((*edge)->type == Edge::FallThrough) {
+						assertM(unscheduled.count((*edge)->head) != 0, 
+							(*edge)->head->label 
+							<< " has multiple fallthrough branches.");
+						next = (*edge)->head;
+						report("   rewinding to " << next->label );
+						rewinding = true;
+						break;
+					}
+				}
+			}
+			sequence.push_back(next);
+			unscheduled.erase(next);
+		}
+		
+		report(" added " << sequence.back()->label);
+	}
+
+	return sequence;
+}
+
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
 	report("Copying cfg " << &cfg << " to " << this );

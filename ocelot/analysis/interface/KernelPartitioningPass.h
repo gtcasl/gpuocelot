@@ -204,7 +204,8 @@ namespace analysis {
 		
 			KernelGraph(ir::PTXKernel *_kernel, 
 				SubkernelId baseId = 0, 
-				PartitioningHeuristic _h = Partition_minimum);
+				PartitioningHeuristic _h = Partition_minimum,
+				size_t _size = 1000);
 			~KernelGraph();
 		
 			size_t localMemorySize() const;
@@ -256,6 +257,9 @@ namespace analysis {
 			
 			//! \brief identifies the partitioning heuristic to use
 			PartitioningHeuristic heuristic;
+			
+			//! \brief number of instructions per subkernel
+			size_t subkernelSize;
 		};
 		
 		class BarrierPartitioning {
@@ -274,7 +278,7 @@ namespace analysis {
 		~KernelPartitioningPass();
 		
 		KernelGraph *runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId = 0, 
-			PartitioningHeuristic _h = Partition_maximum);
+			PartitioningHeuristic _h = Partition_maximum, size_t subkernelSize = 1000);
 
 	};
 }

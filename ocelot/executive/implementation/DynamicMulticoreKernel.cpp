@@ -70,7 +70,8 @@ _kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory
 	analysis::KernelPartitioningPass partitioningPass;
 	_kernelGraph = partitioningPass.runOnFunction(* const_cast<ir::PTXKernel *>(_ptxKernel), _baseId, 
 		(analysis::KernelPartitioningPass::PartitioningHeuristic)
-			api::OcelotConfiguration::get().executive.partitioningHeuristic);
+			api::OcelotConfiguration::get().executive.partitioningHeuristic,
+		api::OcelotConfiguration::get().optimizations.subkernelSize);
 	
 	_analyzePTX();
 	mapArgumentOffsets();

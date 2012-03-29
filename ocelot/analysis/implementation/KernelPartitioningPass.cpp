@@ -72,14 +72,14 @@ analysis::KernelPartitioningPass::~KernelPartitioningPass() {
 
 analysis::KernelPartitioningPass::KernelGraph *
 	analysis::KernelPartitioningPass::runOnFunction(ir::PTXKernel &ptxKernel, SubkernelId baseId,
-		PartitioningHeuristic _h) {
+		PartitioningHeuristic _h, size_t _size) {
 	
 	report("KernelPartitioningPass::runOnFunction(" << ptxKernel.name << ")");
 		
 	analysis::KernelPartitioningPass::BarrierPartitioning barrierPass;
 	barrierPass.runOnKernel(ptxKernel);
 	
-	KernelGraph *graph = new KernelGraph(&ptxKernel, baseId, _h);
+	KernelGraph *graph = new KernelGraph(&ptxKernel, baseId, _h, _size);
 	
 #if EMIT_PARTITIONED_KERNELGRAPH
 	std::ofstream output(ptxKernel.name + ".dot");
@@ -182,10 +182,12 @@ void analysis::KernelPartitioningPass::StrictTypeTransformation::runOnKernel(ir:
 analysis::KernelPartitioningPass::KernelGraph::KernelGraph(
 	ir::PTXKernel *_kernel, 
 	SubkernelId baseId,
-	PartitioningHeuristic _h)
+	PartitioningHeuristic _h,
+	size_t _size)
 : 
 	ptxKernel(_kernel),
-	heuristic(_h)
+	heuristic(_h),
+	subkernelSize(_size)
 {
 	// data flow analysis
 	_sourceKernelDfg = new analysis::DataflowGraph;
@@ -393,7 +395,14 @@ static void partitionLoops_addHelper(const analysis::ControlTree::Node *node,
 	{
 		const analysis::ControlTree::Node *regionNode = node;
 		
-		bool overrideInstructionThreshold = (node->rtype() == analysis::ControlTree::Natural);
+		bool overrideInstructionThreshold = (node->rtype() == analysis::ControlTree::Natural ||
+			node->rtype() == analysis::ControlTree::While);
+		
+		if (overrideInstructionThreshold &&
+			partitionVector.size() && partitionVector.back().size()) {
+			analysis::KernelPartitioningPass::BasicBlockSet newPartition;
+			partitionVector.push_back(newPartition);
+		}
 		
 		for (analysis::ControlTree::NodeList::const_iterator child_it = regionNode->children().begin();
 			child_it != regionNode->children().end(); ++child_it) {
@@ -431,7 +440,6 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(PartitionVec
 	
 	// start at leaves of control tree, merge children of nodes into partitions as we rise until
 	// each partition reaches some maximum size
-	size_t subkernelSize = 100;
 	partitionLoops_addHelper(controlTree.get_root_node(), partitions, pointerMap, subkernelSize);
 		
 	// emit
@@ -450,6 +458,19 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(PartitionVec
 	}
 	report("]");
 	#endif
+	
+	
+	BasicBlockSet coveredBlocks;
+	for (PartitionVector::iterator partition_it = partitions.begin();
+		partition_it != partitions.end(); ++partition_it) {
+		coveredBlocks.insert(partition_it->begin(), partition_it->end());
+	}
+	for (ir::ControlFlowGraph::BlockPointerVector::iterator bb_it = topological.begin();
+		bb_it != topological.end(); ++bb_it) {
+		if (coveredBlocks.find(*bb_it) == coveredBlocks.end()) {
+			partitions.back().insert(*bb_it);
+		}
+	}
 	
 	// assert entry node is in first partition
 	assert(partitions.size());

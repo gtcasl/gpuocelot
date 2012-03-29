@@ -83,7 +83,8 @@ void trace::BasicBlockCountGenerator::initialize(const executive::ExecutableKern
 	
 	size_t totalThreads = kernel.blockDim().size() * kernel.gridDim().size();
 	basicBlockCounter.clear();
-	for (executive::EmulatedKernel::BlockRangeMap::const_iterator bb_it =  emuKernel.blockPCRange.begin();
+	for (executive::EmulatedKernel::BlockRangeMap::const_iterator
+		bb_it = emuKernel.blockPCRange.begin();
 		bb_it != emuKernel.blockPCRange.end(); ++bb_it) {
 		
 		ThreadCounter emptyCounters(totalThreads, 0);

@@ -4,99 +4,19 @@
 # \date December 13, 2011
 #
 # \brief SConstruct for CUDA 2.3 examples to be used as a model for other tools
+#
 
 import os
-import sys
 
-import inspect
-import platform
-import re
-import subprocess
-
-from SCons import SConf
-
-
-sys.path.append('../scripts')
-import build
-
-
-#
-# libsdk
-#
-env = build.InitializeEnvironment(Environment(), Builder)
-
-sources = [
-	'sdk/stopwatch_linux.cpp',
-	'sdk/cmd_arg_reader.cpp',
-	'sdk/cutil.cpp',
-	'sdk/stopwatch.cpp',
-	'sdk/bank_checker.cpp',
-]
-
-libsdk = env.StaticLibrary('libsdk.a', sources)
-
-# Declare test applications here.
-#
-# (appname, [sources])   -- assumes sources in "tests/{appname}/"
-# (appname, [sources], path)   -- assumes sources in "tests/{path}/"
-#
-testApplications = [
-	('3DFD', ['3dfd.cu',]),
-	('worleyTestExternalSharedMemory', 
-		['worleyTestExternalSharedMemory.cu',]),
-	('SortingNetwork', 
-		['bitonicSort.cu', 'oddEvenMergeSort.cu', 'main.cpp', 'sortingNetworks_validate.cpp']),
-	('vectorAdd', ['vectorAdd.cu',]),
-	('AtomicPerformance', ['atomicsImplementation.cpp', 'atomics.cpp']),
-	('TestMemoryAccesses', ['TestMemoryAccesses.cpp',]),
-	('TestBarriers', ['TestBarriers.cpp',]),
-	('TestCallLatency', ['TestCallLatency.cpp',]),
-	('TestSpecialFunctions', ['TestSpecialFunctions.cpp',]),
-	('TestInstructionThroughput', ['TestInstructionThroughput.cpp',]),
-	('TestThrustArbitraryTransform', ['arbitrary_transformation.cu',], 'thrust_arbitrary_transformation'),
-	('TestThrustBasicVector', ['basic_vector.cu',], 'thrust_basic_vector'),
-	('TestThrustBoundingBox', ['bounding_box.cu',], 'thrust_bounding_box'),
-	('TestThrustBucketSort2D', ['bucket_sort2d.cu',], 'thrust_bucket_sort2d'),
-	('TestThrustConstantIterator', ['constant_iterator.cu',], 'thrust_constant_iterator'),
-	('TestThrustCountingIterator', ['counting_iterator.cu',], 'thrust_counting_iterator'),
-	('TestThrustZipDot', ['dot_products_with_zip.cu',], 'thrust_dot_products_with_zip'),
-	('TestThrustFillCopy', ['fill_copy_sequence.cu',], 'thrust_fill_copy_sequence'),
-	('TestThrustHistogram', ['histogram.cu',], 'thrust_histogram'),
-	('TestThrustMaxAbsDiff', ['max_abs_diff.cu',], 'thrust_max_abs_diff'),
-	('TestThrustMinMax', ['minmax.cu',], 'thrust_minmax'),
-	('TestThrustMode', ['mode.cu',], 'thrust_mode'),
-	('TestThrustNorm', ['norm.cu',], 'thrust_norm'),
-	('TestThrustPaddedGridReduction', ['padded_grid_reduction.cu',], 'thrust_padded_grid_reduction'),
-	('TestThrustSaxpy', ['saxpy.cu',], 'thrust_saxpy'),
-	('TestThrustSort', ['sort.cu',], 'thrust_sort'),
-	('TestThrustAOSSorting', ['sorting_aos_vs_soa.cu',], 'thrust_sorting_aos_vs_soa'),
-	('TestThrustStreamCompact', ['stream_compaction.cu',], 'thrust_stream_compaction'),
-	('TestThrustSum', ['sum.cu',], 'thrust_sum'),
-	('TestThrustTransformIterator', ['transform_iterator.cu',], 'thrust_transform_iterator'),
-	('TestThrustWrapPointer', ['wrap_pointer.cu',], 'thrust_wrap_pointer'),
-	('TestThrustUnwrapPointer', ['unwrap_pointer.cu',], 'thrust_unwrap_pointer'),
-]
-
-#
-# Construct build rules for all tests
-#
-tests = []
-for testApplication in testApplications:
-	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
-	testApp = env.Program(testApplication[0], 
-		[build.MapSource(env, 
-			"tests/%s/%s" % (path, x)) for x in testApplication[1]], 
-		LIBS=['-locelot', libsdk])
-	tests.append(testApp)
-
-
-if 'test' in BUILD_TARGETS:
-	def runAllTests(env, target, source):
-		cmd = "python hydrazine/python/RunRegression.py -t regression/tests.txt -v -l regression/regression.log"
-		print cmd
-		subprocess.call(cmd, shell=True)
-	
-	testCommand = Command('test', tests, runAllTests)
-
+if ARGUMENTS.get('mode', 'release') == 'debug':
+	if not os.path.isdir('.debug_build'):
+		os.mkdir('.debug_build')
+	SConscript('SConscript', variant_dir='.debug_build',   duplicate=0, 
+		exports={'mode':'debug'})
+else:
+	if not os.path.isdir('.release_build'):
+		os.mkdir('.release_build')
+	SConscript('SConscript', variant_dir='.release_build', duplicate=0,
+		exports={'mode':'release'})
 
 

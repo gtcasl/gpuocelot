@@ -27,7 +27,12 @@ static cudaArray *array = NULL;
 #define SharedPitch 384
 #endif
 
-
+__device__ __host__ float absolute(float v)
+{
+	if(v < 0.0f) return -v;
+	
+	return v;
+}
 
 __device__ unsigned char
 ComputeSobel(unsigned char ul, // upper left
@@ -43,7 +48,7 @@ ComputeSobel(unsigned char ul, // upper left
 {
     short Horz = ur + 2*mr + lr - ul - 2*ml - ll;
     short Vert = ul + 2*um + ur - ll - 2*lm - lr;
-    short Sum = (short) (fScale*(abs(Horz)+abs(Vert)));
+    short Sum = (short) (fScale*(absolute(Horz)+absolute(Vert)));
     if ( Sum < 0 ) return 0; else if ( Sum > 0xff ) return 0xff;
     return (unsigned char) Sum;
 }

@@ -1,0 +1,99 @@
+# \file SConstruct
+#
+# \author Andrew Kerr <arkerr@gatech.edu>
+# \date January 30, 2012
+#
+# \brief SConstruct for Parboil applications and other tools
+#
+
+import os
+import sys
+
+import inspect
+import platform
+import re
+import subprocess
+
+from SCons import SConf
+
+#
+#
+## The script begins here
+# try to import an environment first
+print "Building rules for Parboil Benchmark suite...."
+try:
+	Import('env')
+	import build
+	print " Imported environment from higher level SCons script."
+except:
+	sys.path.append('../../scripts')	
+	import build
+	env = build.InitializeEnvironment(Environment(), Builder)
+	print " Created a new environment."
+	
+	env['TEST_PATH'] = '.'
+
+#
+# libsdk
+#
+
+env.Append(CPPFLAGS=['-I' + env['TEST_PATH'] + '/common/include'])
+
+
+sources = [	
+	'common/src/parboil.c','common/src/parboil_cuda.c'
+]
+libparboil = env.StaticLibrary('libparboil.a', sources)
+
+# Declare test applications here.
+#
+# (appname, [sources])   -- assumes sources in "benchmarks/{appname}/src/cuda/"
+# (appname, [sources], path)   -- assumes sources in "benchmarks/{path}/src/cuda/"
+#
+testApplications = [
+	('bfs', ['main.cu',], 'bfs'),
+	('cutcp', ['cutcpu.c','cutoff6overlap.cu','excl.c','main.c','output.c','readatom.c'], 'cutcp'), #
+	('fft',['fft.cu','file.cc'],'fft'),	#
+	('histo', ['histo_final.cu','histo_intermediates.cu','histo_main.cu','histo_prescan.cu','main.cu','util.cu'], 'histo'), #
+	('lbm', ['main.cu'], 'lbm'), #
+	('mm', ['io.cc','main.cu',], 'mm'), # 
+#	('mri-gridding', ['CPU_kernels.c','CUDA_interface.cu','sort.cu','scanLargeArray.cu'], 'mri-gridding'), #-- NO MAIN function
+	('mri-q', ['file.cc','main.cu'], 'mri-q'), #
+	('sad', ['file.c','image.c','largerBlocks.cu','main.cu','sad4.cu',], 'sad'), #
+	('spmv', ['file.cc','gpu_info.cc','main.cu'], 'spmv'), #
+	('stencil', ['file.cc','main.cu'], 'stencil'), #
+	('tpacf', ['args.cc','main.cu','model_io.cc',], 'tpacf'),  #
+]
+
+#
+# Identify applications requiring CUFFT or CUBLAS that lack "FFT" or "BLAS" in their names 
+#
+specificallyRequiresCufft = ()
+specificallyRequiresCublas = ()
+
+#
+# Construct build rules for all tests
+#
+(bin_path,lib_path,inc_path) = build.getCudaPaths()
+
+env.Append(LIBPATH=[lib_path, '/usr/local/lib'])
+
+tests = []
+for testApplication in testApplications:
+	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]
+	additionalLibs = []
+	if "FFT" in testApplication[0] or testApplication[0] in specificallyRequiresCufft:
+		additionalLibs.append('-lcufft')
+	if "BLAS" in testApplication[0] or testApplication[0] in specificallyRequiresCublas:
+		additionalLibs.append('-lcublas')
+		
+	localEnv = env.Clone()
+	appIncludePath = ['-I' + env['TEST_PATH'] + '/common/include', '-I' + env['TEST_PATH'] + '/benchmarks/%s/src/cuda/' % (path,),]
+	localEnv.Append(CPPFLAGS=appIncludePath)
+	testApp = localEnv.Program(testApplication[0], 
+		[build.MapSource(env, 
+			"benchmarks/%s/src/cuda/%s" % (path, x), appIncludePath) for x in testApplication[1]], 
+		LIBS=additionalLibs + ['-lglut', '-lGLU', '-locelot', '-lGLEW', libparboil])
+	tests.append(testApp)
+
+

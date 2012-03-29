@@ -42,18 +42,20 @@ def getCudaPaths():
 
 	return (bin_path,lib_path,inc_path)
 	
-def InitializeEnvironment(env, builder, paths = ['-I./sdk',]):
+def InitializeEnvironment(env, builder):
 
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
 	
-	env.Append(CPPFLAGS=['-Wall', '-O2', '-g', '-I.', '-I' + cuda_inc_path, '-std=c++0x'] + paths)
+	env.Append(CPPFLAGS=['-Wall', '-O2', '-g', '-I.', '-I' + cuda_inc_path, '-std=c++0x'])
+
+	env.Replace(CUDA_PATHS=getCudaPaths())
 
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	for shaderModel in ('10', '11', '12', '13', '20'):
-		options = "-arch=sm_20 $SPECIAL_OPTION"
+		options = "-arch=sm_20 $OPTIONS"
 		env.Append(BUILDERS = {'Cuda' + ('SM' + shaderModel if shaderModel != '20' else ''): builder(
-			action = nvccPath + 'nvcc -I. -I' + cuda_inc_path + ' -I./sdk -I./shared  ' + options + ' $SOURCE -cuda -o $TARGET',
+			action = nvccPath + 'nvcc -I. -I' + cuda_inc_path + ' ' + options + ' $SOURCE -cuda -o $TARGET',
 			suffix = '.cu.cpp',
 			src_suffix = '.cu'
 		)})
@@ -68,8 +70,8 @@ def MapSource(env, source, options=''):
 		builder = {'_sm10.cu': env.CudaSM10, '_sm11.cu': env.CudaSM11, '_sm12.cu': env.CudaSM12, 
 			'_sm13.cu': env.CudaSM13 }
 		if suffix in builder.keys():
-			return (builder[suffix])(source)
+			return (builder[suffix])(source, OPTIONS=options)
 	if source[-3:] == ".cu":
-		return env.Cuda(source, SPECIAL_OPTION=options)
+		return env.Cuda(source, OPTIONS=options)
 	return source
 

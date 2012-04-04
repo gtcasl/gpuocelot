@@ -29,6 +29,7 @@ namespace executive
 			CALresource *cb1, Device* d)
 		: 
 			ExecutableKernel(k, d), 
+			_voteMemorySize(0),
 			_context(context),
 			_event(event),
 			_info(),
@@ -63,10 +64,10 @@ namespace executive
 		report("Allocating registers");
 		registerMap = ir::PTXKernel::assignRegisters( *cfg() );
 
-		// HACK: we need to hard-code the number of hw registers since
-		// registerMap only refers to virtual ptx registers.
-		 _registerCount = 10;
-
+        // HACK: we need to hard-code the number of hw registers since
+        // registerMap only refers to virtual ptx registers
+		//_registerCount = registerMap.size();
+        _registerCount = 10;
 		report(" Allocated " << _registerCount << " registers");
 	}
 
@@ -315,7 +316,7 @@ namespace executive
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
 		CalDriver()->calCtxSetMem(*_context, _cb0Name, _cb0Mem);
 
-		if (parameters.size()) {
+		if (arguments.size()) {
 			CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
 			CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
 			CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
@@ -345,7 +346,7 @@ namespace executive
 		// release memory handles
 		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
 		CalDriver()->calCtxReleaseMem(*_context, _cb0Mem);
-		if (parameters.size()) 
+		if (arguments.size()) 
 			CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
 
 		// unload module
@@ -372,6 +373,17 @@ namespace executive
 		_externSharedMemorySize = bytes;
 	}
 
+	unsigned int ATIExecutableKernel::voteMemorySize() const 
+	{ 
+		return _voteMemorySize; 
+	}
+
+	void ATIExecutableKernel::setVoteMemorySize(unsigned int bytes)
+	{
+		report("Setting vote memory size to " << bytes);
+		_voteMemorySize = bytes;
+	}
+
 	void ATIExecutableKernel::setWorkerThreads(unsigned int workerThreadLimit)
 	{
 		assertM(false, "Not implemented yet");
@@ -390,10 +402,14 @@ namespace executive
 		CalDriver()->calResMap((CALvoid **)&cb1, &pitch, *_cb1Resource, flags);
 
 		int i = 0;
-		ParameterVector::const_iterator it;
-		for (it = arguments.begin(); it != arguments.end(); it++) {
-			unsigned int j;
-			for (j = 0 ; j < it->arrayValues.size() ; j++)
+		for (ParameterVector::const_iterator it = arguments.begin();
+                it != arguments.end(); it++) {
+
+			report("Updating argument " << it->name <<
+					", type " << ir::PTXOperand::toString(it->type) <<
+					", array size " << it->arrayValues.size());
+
+			for (unsigned int j = 0 ; j < it->arrayValues.size() ; j++)
 			{
 				ir::Parameter::ValueType v = it->arrayValues[j];
 
@@ -403,8 +419,7 @@ namespace executive
 						// CUDA pointers are 32-bits
 						assertM(v.val_u64 >> 32 == 0, 
 								"Pointer out of range");
-						cb1[i].x = (v.val_u32 < ATIGPUDevice::Uav0BaseAddr) ? 
-							0 : v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+						cb1[i].x = v.val_u32; 
 						report("cb1[" << i << "] = {" << cb1[i].x << "}");
 						i++;
 						break;
@@ -489,8 +504,7 @@ namespace executive
 
 							operand->addressMode = ir::PTXOperand::Immediate;
 							operand->imm_uint = 
-								(long long unsigned int)allocation->pointer() -
-								ATIGPUDevice::Uav0BaseAddr;
+								(long long unsigned int)allocation->pointer();
 						} else {
 							operand->addressMode = ir::PTXOperand::Immediate;
 							operand->imm_uint = 0;

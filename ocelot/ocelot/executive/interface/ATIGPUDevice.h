@@ -145,8 +145,8 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void** resource, int count,
-				unsigned int streamID);
+			void unmapGraphicsResource(void** resource, int count, 
+                    unsigned int streamID);
 
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module *irModule);
@@ -224,8 +224,6 @@ namespace executive
 			void setOptimizationLevel(translator::Translator::OptimizationLevel 
 				level);
 
-			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
-			static const CALdeviceptr Uav0BaseAddr = 0x1000;
 			/*! \brief uav0 size (150 MB) */
 			static const size_t Uav0Size = 150000000;
 

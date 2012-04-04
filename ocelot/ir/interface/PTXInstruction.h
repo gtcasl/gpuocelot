@@ -196,6 +196,12 @@ namespace ir {
 			CacheOperation_Invalid
 		};
 		
+		enum CacheLevel {
+			L1,
+			L2,
+			CacheLevel_invalid
+		};
+		
 		enum ClampOperation {
 			TrapOOB,
 			Clamp,
@@ -309,6 +315,7 @@ namespace ir {
 		
 	public:
 		static std::string toString( Level );
+		static std::string toString(CacheLevel cache);
 		static std::string toString( PermuteMode );
 		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );
@@ -456,6 +463,9 @@ namespace ir {
 			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
+			
+			/*! cache level */
+			CacheLevel cacheLevel;
 		};
 		
 		/*! Geometry if this is a texture or surface instruction */

@@ -8,7 +8,7 @@
 #include <ocelot/ir/interface/ILOperand.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Boost includes
 #include <boost/lexical_cast.hpp>

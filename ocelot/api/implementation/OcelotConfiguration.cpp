@@ -12,10 +12,10 @@
 #include <ocelot/translator/interface/Translator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/json.h>
+#include <hydrazine/interface/json.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 
 // C stdlib includes
 #include <cassert>

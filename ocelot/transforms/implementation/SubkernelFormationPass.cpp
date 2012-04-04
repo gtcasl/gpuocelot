@@ -25,7 +25,7 @@
 #include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

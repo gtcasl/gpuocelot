@@ -7,7 +7,7 @@
 
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

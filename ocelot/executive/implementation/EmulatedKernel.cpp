@@ -32,7 +32,7 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1149,6 +1149,16 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	assert(module != 0 );
 	assert(PC < instructions.size());
 	unsigned int statement = instructions[PC].statementIndex;
+	
+	while (statement == (unsigned int) -1) {
+		if (PC >= instructions.size()) {
+			statement = 0;
+			break;
+		}
+		
+		statement = instructions[++PC].statementIndex;
+	}
+	
 	ir::Module::StatementVector::const_iterator s_it 
 		= module->statements().begin();
 	std::advance(s_it, statement);

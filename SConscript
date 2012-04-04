@@ -39,8 +39,10 @@ def MapSource(env, source):
 #
 ## The script begins here
 # try to import an environment first
+print "Build rules for Ocelot...."
 try:
 	Import('env')
+	print " Imported environment from higher level SCons script."
 except:
 	exec open("../scripts/which.py")
 	prefix = '../'
@@ -50,6 +52,13 @@ except:
 # on mac we have to tell the linker to link against the C++ library
 if env['PLATFORM'] == "darwin":
 	env.Append(LINKFLAGS = "-lstdc++")
+
+# set the ocelot build root if a higher level script didn't already do it
+if not 'OCELOT_BUILD_ROOT' in env:
+	env.Replace(OCELOT_BUILD_ROOT = env['BUILD_ROOT'])
+
+# include the build directory in case of generated files
+env.AppendUnique(CPPPATH = env['OCELOT_BUILD_ROOT'])
 
 # Create configure.h
 env.AlwaysBuild(env.Command('configure.h', 'configure.h.in', config_h_build))
@@ -133,10 +142,6 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 
-KernelDrawer = env.Program('KernelDrawer', \
-	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
-env.Depends(KernelDrawer, libocelot)
-
 ocelot_server_libs = ['']
 
 if os.name != 'nt':
@@ -150,9 +155,6 @@ env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
-
-CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
-env.Depends(CFG, libocelot)
 
 if enableKernelExtractor and os.name != 'nt':		
 	kernelExtractorSources = [

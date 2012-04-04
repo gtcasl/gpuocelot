@@ -9,9 +9,9 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/parser/interface/PTXParser.h>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/Exception.h>
 
 #include <fstream>
 #include <cassert>

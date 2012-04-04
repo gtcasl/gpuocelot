@@ -20,7 +20,8 @@ namespace analysis
 class DivergenceAnalysis : public KernelAnalysis
 {
 	public:
-		typedef std::set<BranchInfo> branch_set;
+		typedef std::set<BranchInfo>              branch_set;
+		typedef std::unordered_set<DataflowGraph::iterator> block_set;
 		typedef DataflowGraph::InstructionVector::const_iterator
 			const_instruction_iterator;
 
@@ -32,7 +33,14 @@ class DivergenceAnalysis : public KernelAnalysis
 		branch_set _divergentBranches;
 		/*!\brief Set with all not divergent branch instructions of the kernel*/
 		branch_set _notDivergentBranches;
+		/*!\brief Set with all not divergent blocks in the kernel*/
+		block_set  _notDivergentBlocks;
 		bool _doCFGanalysis;
+
+		/*! \brief Is an operand a function call operand? */
+		bool _isOperandAnArgument( const ir::PTXOperand& operand );
+		/*! \brief Does an operand reference local memory? */
+		bool _doesOperandUseLocalMemory( const ir::PTXOperand& operand );
 
 		/*!\brief Make the initial data-flow analysis */
 		void _analyzeDataFlow();
@@ -51,11 +59,13 @@ class DivergenceAnalysis : public KernelAnalysis
 		virtual void analyze( ir::IRKernel& k );
 
 		/*!\brief Tests if a block ends with a divergent branch instruction */
-		bool isDivBlock( DataflowGraph::const_iterator &block ) const;
+		bool isDivBlock( const DataflowGraph::const_iterator &block ) const;
 		/*!\brief Tests if a block ends with a divergent branch instruction */
-		bool isDivBlock( DataflowGraph::iterator &block ) const;
-		/*!\brief Tests if a block ends with a divergent branch instruction */
+		bool isDivBlock( const DataflowGraph::iterator &block ) const;
 
+		/*!\brief Tests if all threads enter the block in a convergent state */
+		bool isEntryDiv( const DataflowGraph::iterator &block ) const;
+				
 		/*!\brief Tests if a branch instruction is divergent */
 		bool isDivBranch( const const_instruction_iterator &instruction ) const;
 		/*!\brief Tests if a instruction uses divergent variables */

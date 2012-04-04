@@ -14,7 +14,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -10,7 +10,7 @@
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

@@ -119,8 +119,8 @@ def getGLEWPaths(env):
 	returns (have_glew,bin_path,lib_path,inc_path)
 	"""
 
-	configure = Configure(env)
-	glew = configure.CheckLib('GLEW')		
+	#configure = Configure(env)
+	glew = True#configure.CheckLib('GLEW')		
 	
 	if not glew:
 		print "Glew disabled: not found"
@@ -503,7 +503,7 @@ def Environment():
 		src_suffix = '.cu'
 	)})
 
-  # CUDA builder
+	# CUDA builder
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	env.Append(BUILDERS = {'Cuda': Builder(
 		action= nvccPath + 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
@@ -516,8 +516,8 @@ def Environment():
 		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
 		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
 	
-	# include the build directory in case of generated files
-	env.Prepend(CPPPATH = env.Dir('.'))
+	# set the build path
+	env.Replace(BUILD_ROOT = str(env.Dir('.')))
 
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
@@ -562,10 +562,15 @@ def Environment():
 
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
-	
+		if platform.system() == 'Darwin':
+			env.AppendUnique(EXTRA_LIBS = ['-lGL'])
+			env.AppendUnique(LIBPATH = ['/usr/X11/lib'])
+
 	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-lrt']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		if platform.system() != 'Darwin':
+			env.AppendUnique(EXTRA_LIBS = ['-lrt'])
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

@@ -14,8 +14,8 @@
 
 // Hydrazine includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 
 // TODO Temporarily. Shouldn't be here
 #include <ocelot/cuda/interface/cuda_runtime.h>

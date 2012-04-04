@@ -180,6 +180,10 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return OPCODE_OR; }
 "pmevent"                       { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_PMEVENT; }
+"prefetch"                      { sstrcpy( yylval->text, yytext, 1024 ); \
+                                  return OPCODE_PREFETCH; }
+"prefetchu"                     { sstrcpy( yylval->text, yytext, 1024 ); \
+                                  return OPCODE_PREFETCHU; }
 "popc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_POPC; }
 "prmt"                          { sstrcpy( yylval->text, yytext, 1024 ); \

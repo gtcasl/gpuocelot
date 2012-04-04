@@ -8,7 +8,7 @@
 #include <ocelot/ir/interface/ILInstruction.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 namespace ir
 {

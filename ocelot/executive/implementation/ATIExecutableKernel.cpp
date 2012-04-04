@@ -23,7 +23,8 @@
 
 namespace executive
 {
-	ATIExecutableKernel::ATIExecutableKernel(ir::Kernel &k, CALcontext *context,
+	ATIExecutableKernel::ATIExecutableKernel(ir::IRKernel &k,
+			CALcontext *context,
 			CALevent *event, CALresource *uav0, CALresource *cb0, 
 			CALresource *cb1, Device* d)
 		: 
@@ -277,7 +278,7 @@ namespace executive
 		delete ilKernel;
 	}
 
-	void ATIExecutableKernel::launchGrid(int width, int height)
+	void ATIExecutableKernel::launchGrid(int width, int height, int depth)
 	{
 		// initialize ABI data
 		cb_t *cb0;
@@ -289,8 +290,10 @@ namespace executive
 		report("Block = " << _blockDim.x << ", " << _blockDim.y << ", " 
 				<< _blockDim.z);
 
-		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
-		cb_t gridDim = {width, height, 1, 0};
+		cb_t blockDim = {(unsigned int)_blockDim.x,
+			(unsigned int)_blockDim.y, (unsigned int)_blockDim.z, 0};
+		cb_t gridDim = {(unsigned int)width, (unsigned int)height,
+			(unsigned int) depth, 0};
 
 		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
 		cb0[0] = blockDim;
@@ -324,8 +327,10 @@ namespace executive
 		CalDriver()->calModuleGetEntry(&func, *_context, _module, "main");
 
 		// invoke kernel
-		CALdomain3D gridBlock = {_blockDim.x, _blockDim.y, _blockDim.z};
-		CALdomain3D gridSize = {width, height, 1};
+		CALdomain3D gridBlock = {(unsigned int)_blockDim.x,
+			(unsigned int)_blockDim.y, (unsigned int)_blockDim.z};
+		CALdomain3D gridSize = {(unsigned int)width, (unsigned int)height,
+			(unsigned int)depth};
 
 		CALprogramGrid pg;
 		pg.func      = func;
@@ -526,14 +531,28 @@ namespace executive
 		ATIExecutableKernel::textureReferences() const
 	{
 		assertM(false, "Not implemented yet");
+		return ExecutableKernel::TextureVector();
 	}
 
-	void ATIExecutableKernel::addTraceGenerator(trace::TraceGenerator* generator)
+	void ATIExecutableKernel::addTraceGenerator(
+		trace::TraceGenerator* generator)
 	{
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIExecutableKernel::removeTraceGenerator(trace::TraceGenerator* generator)
+	void ATIExecutableKernel::removeTraceGenerator(
+		trace::TraceGenerator* generator)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIExecutableKernel::setExternalFunctionSet(
+		const ir::ExternalFunctionSet& s)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIExecutableKernel::clearExternalFunctionSet()
 	{
 		assertM(false, "Not implemented yet");
 	}

@@ -96,6 +96,8 @@ namespace ir
 				break;
 			}
 		}
+		
+		return "";
 	}
 }
 

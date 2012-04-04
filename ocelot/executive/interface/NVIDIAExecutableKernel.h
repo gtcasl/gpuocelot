@@ -16,15 +16,15 @@ namespace executive {
 
 	class NVIDIAExecutableKernel: public executive::ExecutableKernel {
 	public:
-		NVIDIAExecutableKernel( ir::Kernel& kernel, const CUfunction& function, 
-			executive::Device* d = 0 );
+		NVIDIAExecutableKernel( ir::IRKernel& kernel,
+			const CUfunction& function, executive::Device* d = 0 );
 		NVIDIAExecutableKernel();
 		~NVIDIAExecutableKernel();
 	
 		/*!
 			Launch a kernel on a 2D grid
 		*/
-		void launchGrid(int width, int height);
+		void launchGrid(int width, int height, int depth);
 
 		/*!
 			Sets the shape of a kernel
@@ -57,6 +57,12 @@ namespace executive {
 		void addTraceGenerator(trace::TraceGenerator *generator);
 		/*!	removes a trace generator from an EmulatedKernel */
 		void removeTraceGenerator(trace::TraceGenerator *generator);
+
+		/*! sets an external function table for the emulated kernel */
+		void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+
+		/*! clear the external function table for the emulated kernel */
+		void clearExternalFunctionSet();
 		
 		void setWorkerThreads(unsigned int limit);
 		

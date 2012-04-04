@@ -12,7 +12,7 @@
 #include <string>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/cuda_internal.h>
 #include <ocelot/cuda/interface/CudaDriverFrontend.h>
 
 // Hydrazine includes
@@ -44,7 +44,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if REPORT_BASE
-#define trace() { std::cout << " - " << __func__ << "() " << std::endl; }
+#define trace() { std::cout << " - " << __FUNCTION__ << "() " << std::endl; }
 #else
 #define trace()
 #endif
@@ -348,7 +348,6 @@ CUresult FunctionV(cuMemcpyDtoH )(void *dstHost, CUdeviceptr srcDevice,
 	RETURN( CudaApi::get()->cuMemcpyDtoH(dstHost, srcDevice, ByteCount) );
 }
 
-
 // device <-> device memory
 CUresult FunctionV(cuMemcpyDtoD )(CUdeviceptr dstDevice, 
 	CUdeviceptr srcDevice, unsigned int ByteCount ) {
@@ -356,6 +355,11 @@ CUresult FunctionV(cuMemcpyDtoD )(CUdeviceptr dstDevice,
 	RETURN( CudaApi::get()->cuMemcpyDtoD(dstDevice, srcDevice, ByteCount) );
 }
 
+CUresult FunctionV(cuMemcpyHtoH )(void *dstHost, 
+	const void *srcHost, unsigned int ByteCount ) {
+	trace();	
+	RETURN( CudaApi::get()->cuMemcpyHtoH(dstHost, srcHost, ByteCount) );
+}
 
 // device <-> array memory
 CUresult FunctionV(cuMemcpyDtoA )( CUarray dstArray, 
@@ -529,7 +533,6 @@ CUresult FunctionV(cuMemsetD2D32)( CUdeviceptr dstDevice,
 **
 ***********************************/
 
-
 CUresult Function(cuFuncSetBlockShape)(CUfunction hfunc, int x, 
 	int y, int z) {
 	trace();	
@@ -547,7 +550,16 @@ CUresult Function(cuFuncGetAttribute)(int *pi,
 	trace();	
 	RETURN( CudaApi::get()->cuFuncGetAttribute(pi, attrib, hfunc) );
 }
-
+/*
+CUresult Function(cuFuncGetCacheConfig)(CUfunction hfunc, CUfunc_cache *pconfig) {
+	trace();
+	RETURN( CudaApi::get()->cuFuncGetCacheConfig(hfunc, pconfig) );
+}
+*/
+CUresult Function(cuFuncSetCacheConfig)(CUfunction hfunc, CUfunc_cache config) {
+	trace();
+	RETURN( CudaApi::get()->cuFuncSetCacheConfig(hfunc, config) );
+}
 
 /************************************
 **

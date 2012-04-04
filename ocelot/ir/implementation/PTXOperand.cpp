@@ -11,6 +11,7 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 std::string ir::PTXOperand::toString( VectorIndex index ) {
 	switch( index ) {
@@ -19,6 +20,16 @@ std::string ir::PTXOperand::toString( VectorIndex index ) {
 		case iz:   return "z"; break;
 		case iw:   return "w"; break;
 		case iAll: return "";  break;
+	}
+	return "";
+}
+
+
+std::string ir::PTXOperand::toString(Vec index) {
+	switch (index) {
+		case v1: return "v1"; break;
+		case v2: return "v2"; break;
+		case v4: return "v4"; break;
 	}
 	return "";
 }
@@ -41,7 +52,6 @@ std::string ir::PTXOperand::toString( DataType type ) {
 		case f32:  return "f32";  break;
 		case f64:  return "f64";  break;
 		case pred: return "pred"; break;
-		case _: return "_"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -53,7 +63,7 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 		case ntid:         return "%ntid";         break;
 		case laneId:       return "%laneid";       break;
 		case warpId:       return "%warpid";       break;
-		case nwarpId:      return "%nwarpid";       break;
+		case nwarpId:      return "%nwarpid";      break;
 		case warpSize:     return "WARP_SZ";       break;
 		case ctaId:        return "%ctaid";        break;
 		case nctaId:       return "%nctaid";       break;
@@ -110,12 +120,15 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 
 std::string ir::PTXOperand::toString( AddressMode mode ) {
 	switch( mode ) {
-		case Register:  return "Register";  break;
-		case Indirect:  return "Indirect";  break;
-		case Immediate: return "Immediate"; break;
-		case Address:   return "Address";   break;
-		case Label:     return "Label";     break;
-		case Special:   return "Special";   break;
+		case Register:     return "Register";     break;
+		case Indirect:     return "Indirect";     break;
+		case Immediate:    return "Immediate";    break;
+		case Address:      return "Address";      break;
+		case Label:        return "Label";        break;
+		case Special:      return "Special";      break;
+		case BitBucket:    return "BitBucket";    break;
+		case ArgumentList: return "ArgumentList"; break;
+		case FunctionName: return "FunctionName"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -638,29 +651,27 @@ static std::ostream & write(std::ostream &stream, double value) {
 
 std::string ir::PTXOperand::toString() const {
 	
-	if(type == ir::PTXOperand::_ || addressMode == BitBucket ) {
+	if( addressMode == BitBucket ) {
 		return "_";
 	} else if( addressMode == Indirect ) {
 		std::stringstream stream;
-		if( offset < 0 ) {
-			if ( identifier != "" ) {
-				stream << identifier;
-			}
-			else {
-				stream << "%r" << reg;
-			}
-			stream << " + " << ( offset );
-			return stream.str();
-		} else {
-			if ( identifier != "" ) {
-				stream << identifier;
-			}
-			else {
-				stream << "%r" << reg;
-			}
-			stream << " + " << ( offset );
-			return stream.str();
+
+		if ( identifier != "" ) {
+			stream << identifier;
 		}
+		else {
+			stream << "%r" << reg;
+		}
+	
+		if( offset < 0 ) {
+			// The NVIDIA driver does not support 
+			//   '- offset' it needs '+ -offset'
+			stream << " + " << ( offset );
+		} else if ( offset > 0 ) {
+			stream << " + " << ( offset );
+		}
+
+		return stream.str();
 	} else if( addressMode == Address ) {
 		std::stringstream stream;
 		if( offset == 0 ) {
@@ -676,6 +687,7 @@ std::string ir::PTXOperand::toString() const {
 	} else if( addressMode == Immediate ) {
 		std::stringstream stream;
 		switch( type ) {
+			case pred: /* fall through */
 			case s8:  /* fall through */
 			case s16: /* fall through */
 			case s32: /* fall through */
@@ -695,13 +707,27 @@ std::string ir::PTXOperand::toString() const {
 			case f64: {
 				write(stream, imm_float);
 			} break;
-			case pred: /* fall through */
-			default: assertM( false, "Invalid immediate type " 
+			default: 
+				assertM( false, "Invalid immediate type " 
 				+ PTXOperand::toString( type ) ); break;
 		}
 		return stream.str();
 	} else if( addressMode == Special ) {
-		if( vec != v1 || special == clock ) {
+		bool isScalar = true;
+		switch (special) {
+		case tid: // fall through
+		case ntid: // fall through
+		case ctaId: // fall through
+		case nctaId:  // fall through
+		case smId:  // fall through
+		case nsmId:  // fall through
+		case gridId:  // fall through
+			isScalar = false;
+			break;
+		default:
+			isScalar = true;
+		}
+		if( vec != v1 || isScalar) {
 			return toString( special );
 		}
 		else {
@@ -714,7 +740,7 @@ std::string ir::PTXOperand::toString() const {
 		for( Array::const_iterator fi = array.begin(); 
 			fi != array.end(); ++fi ) {
 			result += fi->toString();
-			if( fi != --array.end() ) {
+			if( std::next(fi) != array.end() ) {
 				result += ", ";
 			}
 		}
@@ -766,19 +792,31 @@ std::string ir::PTXOperand::toString() const {
 		}
 	}
 	
-	if( !identifier.empty() ) {
-		return identifier;
+	if (addressMode == Register && array.size()) {
+		std::stringstream stream;
+		stream << "{";
+		for (size_t n = 0; n < array.size(); n++) {
+			stream << (n ? ", " : "") << array[n].toString();
+		}
+		stream << "}";
+		return stream.str();
 	}
 	else {
-		std::stringstream stream;
-		stream << "%r" << reg;
-		return stream.str();
+		if( !identifier.empty() ) {
+			return identifier;
+		}
+		else {
+			std::stringstream stream;
+			stream << "%r" << reg;
+			return stream.str();
+		}
 	}
 }
 
 std::string ir::PTXOperand::registerName() const {
-	assert( addressMode == Indirect || addressMode == Register
-		|| addressMode == BitBucket );
+	assertM( addressMode == Indirect || addressMode == Register
+		|| addressMode == BitBucket, "invalid register address mode "
+	    << toString(addressMode) );
 	
 	if (addressMode == BitBucket) return "_";
 	
@@ -809,6 +847,10 @@ std::string ir::PTXOperand::registerName() const {
 
 unsigned int ir::PTXOperand::bytes() const {
 	return bytes( type ) * vec;
+}
+
+bool ir::PTXOperand::isRegister() const {
+	return addressMode == Register || addressMode == Indirect;
 }
 
 

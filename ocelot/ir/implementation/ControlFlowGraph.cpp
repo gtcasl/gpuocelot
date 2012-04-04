@@ -22,7 +22,7 @@
 
 #define REPORT_BASE 0
 
-#define FAST_RANDOM_LAYOUT 1
+#define FAST_RANDOM_LAYOUT     1
 #define PRESERVE_SOURCE_LAYOUT 2
 
 #define LAYOUT_SCHEME PRESERVE_SOURCE_LAYOUT
@@ -104,7 +104,8 @@ BasicBlock::Edge::Edge(BlockList::iterator h,
 }
 
 BasicBlock::BasicBlock(const std::string& l, Id i, 
-	const InstructionList& is) : label(l), id(i) {
+	const InstructionList& is, const std::string& c) 
+: label(l), comment(c), id(i) {
 	for (InstructionList::const_iterator instruction = is.begin();
 		instruction != is.end(); ++instruction ) {
 		instructions.push_back((*instruction)->clone(true));
@@ -254,10 +255,11 @@ bool ControlFlowGraph::empty() const {
 ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	const BasicBlock& block) {
 	report("Inserting block '" << block.label << "' (" << block.id << ")" );
-	return _blocks.insert(_exit, block);
+	return _blocks.insert(end(), block);
 }
 
-ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block, std::string suffix)
+ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block,
+	std::string suffix)
 {
 	return insert_block(BasicBlock(block->label + "_cloned" + suffix,
 		newId(), block->instructions));
@@ -302,7 +304,8 @@ ControlFlowGraph::edge_iterator
 }
 
 void ControlFlowGraph::remove_edge(edge_iterator edge) {
-	report( "Removed edge from " << edge->head->label 
+	report( "Removed " << toString(edge->type)
+		<< " edge from " << edge->head->label 
 		<< " -> " << edge->tail->label );
 	edge_pointer_iterator out = std::find(edge->head->out_edges.begin(), 
 		edge->head->out_edges.end(), edge);
@@ -466,8 +469,9 @@ void ControlFlowGraph::clear() {
 	}
 	_blocks.clear();
 	_edges.clear();
-	_entry = _blocks.insert(end(), BasicBlock("entry", 0));
-	_exit =  _blocks.insert(end(), BasicBlock("exit", 1));
+	
+	_entry = insert_block(BasicBlock("entry", 0));
+	_exit = insert_block(BasicBlock("exit", 1));
 	_nextId = 2;
 }
 
@@ -729,9 +733,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
-	report( "Copying cfg" );
-	
-	report("\nControlFlowGraph::operator=()");
+	report("Copying cfg " << &cfg << " to " << this );
 	
 	typedef std::unordered_map<const_iterator, iterator> BlockMap;
 	BlockMap block_map;
@@ -750,7 +752,8 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		}
 		else {
 			iterator newBlock = insert_block(
-				BasicBlock(bl_it->label, bl_it->id, bl_it->instructions));
+				BasicBlock(bl_it->label, bl_it->id, bl_it->instructions,
+				bl_it->comment));
 			block_map[bl_it] = newBlock;
 		}
 	}
@@ -763,7 +766,8 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		assert( block_map.count( e_it->head ) );
 		assert( block_map.count( e_it->tail ) );
 		
-		report("\n  " << e_it->head->label << " -> " << e_it->tail->label << " [" << e_it->type << "]");
+		report("\n  " << e_it->head->label << " -> " << e_it->tail->label
+			<< " [" << e_it->type << "]");
 		
 		insert_edge(Edge(block_map[e_it->head], 
 			block_map[e_it->tail], e_it->type));

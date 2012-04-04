@@ -28,7 +28,7 @@ namespace test {
 class TestEmulator: public Test {
 public:
 	ir::Module module;
-	ir::Kernel* rawKernel;	
+	ir::IRKernel* rawKernel;	
 
 public:
 	TestEmulator() {
@@ -433,7 +433,7 @@ public:
 		// launch the kernel
 		try {
 			kernel->setKernelShape(N,1,1);
-			kernel->launchGrid(1,1);
+			kernel->launchGrid(1,1,1);
 			// context.synchronize();
 		}
 		catch (RuntimeException &exp) {

@@ -146,6 +146,18 @@ extern "C"
 		return hydrazine::bitFieldInsert( in, orig, position, length );
 	}
 
+	unsigned int __ocelot_bfe_b32( unsigned int a, unsigned int pos,
+        unsigned int len, bool isSigned )
+	{
+		return hydrazine::bfe( a, pos, len, isSigned );
+	}
+	
+    long long unsigned int __ocelot_bfe_b64( long long unsigned int a, 
+        unsigned int pos, unsigned int len, bool isSigned )
+	{
+		return hydrazine::bfe( a, pos, len, isSigned );
+	}
+
 	unsigned int __ocelot_bfind_b32( unsigned int a, bool shift )
 	{
 		return hydrazine::bfind( a, shift );
@@ -559,7 +571,8 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->shared + state->sharedSize;
+		char* allocationEnd = context->shared + state->sharedSize
+			+ context->externalSharedSize;
 		
 		if( end > allocationEnd )
 		{
@@ -628,9 +641,15 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->local + state->localSize;
+		char* allocationEnd  = context->local + state->localSize;
+		char* globalLocalEnd = context->globallyScopedLocal +
+			state->globalLocalSize;
 		
-		if( end > allocationEnd )
+		bool inLocal = (address < allocationEnd) && (address >= context->local);
+		bool inGlobalLocal = (address < globalLocalEnd) &&
+			(address >= context->globallyScopedLocal);
+		
+		if( !inLocal && !inGlobalLocal )
 		{
 			unsigned int thread = context->tid.x 
 				+ context->ntid.x * context->tid.y 
@@ -718,6 +737,14 @@ extern "C"
 				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
 		}	
+	}
+	
+	void __ocelot_check_generic_memory_access( executive::LLVMContext* context,
+		ir::PTXU64 address, unsigned int bytes, unsigned int statement )
+	{
+		// TODO check this correctly
+		__ocelot_check_global_memory_access( context, address,
+			bytes, statement );
 	}
 		
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 

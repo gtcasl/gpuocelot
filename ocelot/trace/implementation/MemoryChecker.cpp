@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_KERNEL_INSTRUCTIONS 0
 
 namespace trace
@@ -196,9 +196,17 @@ namespace trace
 							continue;
 						}
 					}
-					if( (ir::PTXU64)_kernel->getLocalMemory(thread) <= *address 
-						&& *address < (ir::PTXU64)_kernel->getLocalMemory(thread)
-						+ _local.extent )
+					if( (ir::PTXU64)_kernel->getStackBase(thread) <= *address 
+						&& *address < (ir::PTXU64)_kernel->getStackBase(thread)
+						+ (ir::PTXU64)_kernel->getTotalStackSize(thread))
+					{
+						++address;
+						continue;
+					}
+					if( (ir::PTXU64)_kernel->getGlobalLocalMemory(thread)
+						<= *address && *address
+						< (ir::PTXU64)_kernel->getGlobalLocalMemory(thread)
+						+ _globalLocal.extent )
 					{
 						++address;
 						continue;
@@ -261,11 +269,38 @@ namespace trace
 				}
 				break;
 			}
-			case ir::PTXInstruction::Local: checkLocalAccess( "Local", _dim,
-				_local.base, _local.extent, e, _kernel ); break;
+			case ir::PTXInstruction::Local: 
+			{
+				bool isGlobalLocal =
+					(e.instruction->opcode == ir::PTXInstruction::Ld
+					&& e.instruction->a.isGlobalLocal
+					&& e.instruction->a.addressMode == ir::PTXOperand::Address)
+					|| (e.instruction->opcode == ir::PTXInstruction::St
+					&& e.instruction->d.isGlobalLocal
+					&& e.instruction->d.addressMode == ir::PTXOperand::Address);
+				
+				if( isGlobalLocal )
+				{
+					checkLocalAccess( "GlobalLocal", _dim,
+						_globalLocal.base, _globalLocal.extent,
+						e, _kernel );
+				}
+				else
+				{
+					checkLocalAccess( "Local", _dim,
+						_local.base, _local.extent, e, _kernel );
+				}
+				break;
+			}
 			case ir::PTXInstruction::Param:
 			{
-				if( e.instruction->a.isArgument )
+				bool isArgument =
+					(e.instruction->opcode == ir::PTXInstruction::Ld
+					&& e.instruction->a.isArgument) ||
+					(e.instruction->opcode == ir::PTXInstruction::St
+					&& e.instruction->d.isArgument);
+			
+				if( isArgument )
 				{
 					checkLocalAccess( "Argument", _dim, 
 						0, _kernel->getCurrentFrameArgumentMemorySize(),
@@ -464,7 +499,8 @@ namespace trace
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Loading uninitialized value from " << space << 
-						"address space\n";
+						" address space" << "Near " << _kernel->location( e.PC ) 
+						<< "\n";
 					destStatus = MemoryChecker::NOT_DEFINED;
 				}
 			}
@@ -484,7 +520,8 @@ namespace trace
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Storing uninitialized value to " << space 
-						<< "address space\n";
+						<< " address space near " << "Near " << _kernel->location( e.PC ) 
+						<< "\n";
 				}
 			}
 
@@ -501,7 +538,8 @@ namespace trace
 			{
 				if( inst.pq.addressMode == ir::PTXOperand::Invalid )
 				{
-					destStatus = (destStatus == MemoryChecker::NOT_DEFINED) ? MemoryChecker::INVALID : destStatus;
+					destStatus = (destStatus == MemoryChecker::NOT_DEFINED)
+						? MemoryChecker::INVALID : destStatus;
 					_registerFileShadow.setRegister(inst.pq.reg, destStatus);
 				}
 			} 
@@ -509,7 +547,8 @@ namespace trace
 			{
 				for( unsigned int i=0; i < inst.d.array.size(); i++ )
 				{
-					_registerFileShadow.setRegister(inst.d.array[i].reg+thread*regPerThread, destStatus);
+					_registerFileShadow.setRegister(
+						inst.d.array[i].reg+thread*regPerThread, destStatus);
 				}
 			} else {
 				_registerFileShadow.setRegister(regD, destStatus);
@@ -517,6 +556,7 @@ namespace trace
 			
 			if( destStatus != MemoryChecker::DEFINED )
 			{
+			  
 				report( prefix( thread, _dim, e ) << errorOut.str() << "\n" );
 			}
 			
@@ -600,6 +640,9 @@ namespace trace
 		_local.base = 0;
 		_local.extent = kernel.localMemorySize();
 		
+		_globalLocal.base = 0;
+		_globalLocal.extent = kernel.globalLocalMemorySize();
+		
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 
 		ir::Dim3 blockDim = kernel.blockDim();
@@ -629,11 +672,20 @@ namespace trace
 			_checkValidity( event );
 			if( checkInitialization )
 				_checkInitialized( event );
-		} 
+		}
 		else 
 		{
 			if( checkInitialization )
 				_checkInstructions( event );
+		}
+	}
+
+	void MemoryChecker::postEvent( const TraceEvent& event )
+	{
+		if( event.instruction->opcode == ir::PTXInstruction::Call
+			|| event.instruction->opcode == ir::PTXInstruction::Ret )
+		{
+			_local.extent = _kernel->getCurrentFrameLocalMemorySize();
 		}
 	}
 	

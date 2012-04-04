@@ -153,6 +153,13 @@ cudaError_t  cudaHostGetFlags(unsigned int *pFlags, void *pHost) {
 	return cuda::CudaRuntimeInterface::get()->cudaHostGetFlags(pFlags, pHost);
 }
 
+cudaError_t cudaHostRegister(void *pHost, size_t bytes, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaHostRegister(pHost, bytes, flags);
+}
+
+cudaError_t cudaHostUnregister(void *pHost) {
+	return cuda::CudaRuntimeInterface::get()->cudaHostUnregister(pHost);
+}
 
 
 /*******************************************************************************
@@ -249,6 +256,10 @@ cudaError_t  cudaMemcpyFromSymbolAsync(void *dst, const char *symbol, size_t cou
 
 cudaError_t  cudaMemset(void *devPtr, int value, size_t count) {
 	return cuda::CudaRuntimeInterface::get()->cudaMemset(devPtr, value, count);
+}
+
+cudaError_t cudaMemsetAsync(void *devPtr, int value, size_t count, cudaStream_t stream) {
+	return cudaMemset(devPtr, value, count);
 }
 
 cudaError_t  cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, size_t height) {
@@ -362,6 +373,10 @@ cudaError_t  cudaGetLastError(void) {
 	return cuda::CudaRuntimeInterface::get()->cudaGetLastError();
 }
 
+cudaError_t cudaPeekAtLastError() {
+	return cuda::CudaRuntimeInterface::get()->cudaPeekAtLastError();
+}
+
 #define _CASE(x) case x: return #x;
 
 const char*  cudaGetErrorString(cudaError_t error) {
@@ -462,6 +477,9 @@ cudaError_t  cudaStreamQuery(cudaStream_t stream) {
 	return cuda::CudaRuntimeInterface::get()->cudaStreamQuery(stream);
 }
 
+cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaStreamWaitEvent(stream, event, flags);
+}
 
 /*******************************************************************************
 *                                                                              *
@@ -612,6 +630,30 @@ cudaError_t cudaGraphicsSubResourceGetMappedArray(
 *                                                                              *
 *                                                                              *
 *******************************************************************************/
+
+cudaError_t cudaDeviceReset(void) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceReset();
+}
+
+cudaError_t cudaDeviceSynchronize(void) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSynchronize();
+}
+
+cudaError_t cudaDeviceSetLimit(enum cudaLimit limit, size_t value) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSetLimit(limit, value);
+}
+
+cudaError_t cudaDeviceGetLimit(size_t *pValue, enum cudaLimit limit) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceGetLimit(pValue, limit);
+}
+
+cudaError_t cudaDeviceGetCacheConfig(enum cudaFuncCache *c) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceGetCacheConfig(c);
+}
+
+cudaError_t cudaDeviceSetCacheConfig(enum cudaFuncCache c) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceSetCacheConfig(c);
+}
 
 cudaError_t  cudaThreadExit(void) {
 	return cuda::CudaRuntimeInterface::get()->cudaThreadExit();

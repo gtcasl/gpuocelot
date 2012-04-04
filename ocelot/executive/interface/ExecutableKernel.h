@@ -7,9 +7,10 @@
 #ifndef EXECUTABLE_KERNEL_H_INCLUDED
 #define EXECUTABLE_KERNEL_H_INCLUDED
 
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 namespace executive {
 	class Device;
@@ -21,25 +22,32 @@ namespace trace {
 }
 
 namespace executive {
-	class ExecutableKernel : public ir::Kernel {
+	class ExecutableKernel : public ir::IRKernel {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
 		typedef std::vector< const ir::Texture* > TextureVector;
+		
+		enum CacheConfiguration {
+			CacheConfigurationDefault,
+			CachePreferShared,
+			CachePreferL1,
+			CacheConfiguration_invalid
+		};
 
 	public:
 		executive::Device* device;
 
 	public:
-		ExecutableKernel(const ir::Kernel& k, 
+		ExecutableKernel(const ir::IRKernel& k, 
 			executive::Device* d = 0);
 		ExecutableKernel(executive::Device* d = 0);
 		virtual ~ExecutableKernel();
 	
 		/*!	\brief Determines whether kernel is executable */
-		virtual bool executable();
+		virtual bool executable() const;
 		
 		/*!	\brief Launch a kernel on a 2D grid */
-		virtual void launchGrid(int width, int height)=0;
+		virtual void launchGrid(int width, int height, int depth)=0;
 
 		/*!
 			\brief compute argument offsets for argument data
@@ -71,6 +79,12 @@ namespace executive {
 		/*! \brief Changes the amount of external shared memory */
 		virtual void setExternSharedMemorySize(unsigned int)=0;
 		
+		/*! \brief sets the cache configuration of the kernele */
+		virtual void setCacheConfiguration(CacheConfiguration config);
+		
+		/*! \brief sets the cache configuration of the kernele */
+		virtual CacheConfiguration getCacheConfiguration() const;
+		
 		/*! \brief Sets the max number of pthreads this kernel can use */
 		virtual void setWorkerThreads(unsigned int workerThreadLimit)=0;
 			
@@ -89,16 +103,30 @@ namespace executive {
 		/*!	Notifies all attached TraceGenerators of completion of an event */
 		void tracePostEvent(const trace::TraceEvent & event) const;
 		
+		virtual void setTraceGenerators(const TraceGeneratorVector &traceGenerators);
+		
 		/*!	adds a trace generator to the EmulatedKernel */
-		virtual void addTraceGenerator(trace::TraceGenerator* generator)=0;
+		virtual void addTraceGenerator(trace::TraceGenerator* generator);
 
 		/*!	removes a trace generator from an EmulatedKernel */
-		virtual void removeTraceGenerator(trace::TraceGenerator* generator)=0;
+		virtual void removeTraceGenerator(trace::TraceGenerator* generator);
+
+		/*! sets an external function table for the emulated kernel */
+		virtual void setExternalFunctionSet(
+			const ir::ExternalFunctionSet& s) = 0;
+		
+		/*! clear the external function table for the emulated kernel */
+		virtual void clearExternalFunctionSet() = 0;
+
+		/*! Find an external function */
+		ir::ExternalFunctionSet::ExternalFunction* findExternalFunction(
+			const std::string& name) const;
 
 	public:
 		/*! attribute accessors - things every executable kernel should know */
 		unsigned int constMemorySize() const;
 		unsigned int localMemorySize() const;
+		unsigned int globalLocalMemorySize() const;
 		unsigned int maxThreadsPerBlock() const;
 		unsigned int registerCount() const;
 		unsigned int sharedMemorySize() const;
@@ -108,12 +136,19 @@ namespace executive {
 		unsigned int parameterMemorySize() const;
 		const ir::Dim3& blockDim() const;
 		const ir::Dim3& gridDim() const;
+		
+	protected:
+	
+		void initializeTraceGenerators();
+		void finalizeTraceGenerators();
 
 	protected:
 		/*! \brief Total amount of allocated constant memory size */
 		unsigned int _constMemorySize;
 		/*! \brief Total amount of allocated local memory size */
 		unsigned int _localMemorySize;
+		/*! \brief Total amount of allocated global local memory per thread */
+		unsigned int _globalLocalMemorySize;
 		/*! \brief Maxmimum number of threads launched per block */
 		unsigned int _maxThreadsPerBlock;
 		/*! \brief Number of registered required by each thread */
@@ -132,7 +167,10 @@ namespace executive {
 		ir::Dim3 _gridDim;
 		/*! \brief Attached trace generators */
 		TraceGeneratorVector _generators;
-
+		/*! \brief Registered external functions */
+		const ir::ExternalFunctionSet* _externals;
+		/*! \brief configuration of cache */
+		CacheConfiguration _cacheConfiguration;
 	};
 	
 }

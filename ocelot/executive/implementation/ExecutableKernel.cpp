@@ -30,21 +30,21 @@
 
 namespace executive 
 {
-ExecutableKernel::ExecutableKernel( const ir::Kernel& k, 
-	executive::Device* d ) : ir::Kernel( k ), device( d ), 
-	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
-	_registerCount( 0 ), _sharedMemorySize( 0 ), 
+ExecutableKernel::ExecutableKernel( const ir::IRKernel& k, 
+	executive::Device* d ) : ir::IRKernel( k ), device( d ), 
+	_constMemorySize( 0 ), _localMemorySize( 0 ), _globalLocalMemorySize( 0 ),
+	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _argumentMemorySize( 0 ),
-	_parameterMemorySize( 0 )
+	_parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
 {
 	mapArgumentOffsets();
 }
 
 ExecutableKernel::ExecutableKernel( executive::Device* d ) :
-	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
-	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 
-	_sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
-	_argumentMemorySize( 0 ), _parameterMemorySize( 0 )
+	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ),
+	_globalLocalMemorySize( 0 ),  _maxThreadsPerBlock( 16384 ),
+	_registerCount( 0 ), _sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
+	_argumentMemorySize( 0 ), _parameterMemorySize( 0 ), _cacheConfiguration(CacheConfigurationDefault)
 {
 	
 }
@@ -54,7 +54,7 @@ ExecutableKernel::~ExecutableKernel()
 
 }
 
-bool ExecutableKernel::executable() 
+bool ExecutableKernel::executable() const
 {
 	return true;
 }
@@ -75,6 +75,14 @@ void ExecutableKernel::tracePostEvent(const trace::TraceEvent & event) const
 	}
 }
 
+ir::ExternalFunctionSet::ExternalFunction*
+	ExecutableKernel::findExternalFunction(
+	const std::string& name) const {
+	if(_externals == 0) return 0;
+	
+	return _externals->find(name);
+}
+
 unsigned int ExecutableKernel::constMemorySize() const
 {
 	return _constMemorySize; 
@@ -83,6 +91,11 @@ unsigned int ExecutableKernel::constMemorySize() const
 unsigned int ExecutableKernel::localMemorySize() const
 { 
 	return _localMemorySize; 
+}
+
+unsigned int ExecutableKernel::globalLocalMemorySize() const
+{ 
+	return _globalLocalMemorySize; 
 }
 
 unsigned int ExecutableKernel::maxThreadsPerBlock() const
@@ -98,6 +111,17 @@ unsigned int ExecutableKernel::registerCount() const
 unsigned int ExecutableKernel::sharedMemorySize() const 
 { 
 	return _sharedMemorySize; 
+}
+
+
+/*! \brief sets the cache configuration of the kernele */
+void ExecutableKernel::setCacheConfiguration(ExecutableKernel::CacheConfiguration config) {
+	_cacheConfiguration = config;
+}
+
+/*! \brief sets the cache configuration of the kernele */
+ExecutableKernel::CacheConfiguration ExecutableKernel::getCacheConfiguration() const {
+	return _cacheConfiguration;
 }
 
 unsigned int ExecutableKernel::externSharedMemorySize() const 
@@ -129,6 +153,47 @@ const ir::Dim3& ExecutableKernel::gridDim() const
 {
 	return _gridDim;
 }
+
+
+void ExecutableKernel::setTraceGenerators(const TraceGeneratorVector &traceGenerators) {
+	_generators = traceGenerators;
+}
+
+void ExecutableKernel::addTraceGenerator(
+	trace::TraceGenerator *generator) {
+	_generators.push_back(generator);
+}
+
+void ExecutableKernel::removeTraceGenerator(
+	trace::TraceGenerator *generator) {
+	TraceGeneratorVector temp = std::move(_generators);
+	for (TraceGeneratorVector::iterator gi = temp.begin(); 
+		gi != temp.end(); ++gi) {
+		if (*gi != generator) {
+			_generators.push_back(*gi);
+		}
+	}
+}
+
+void ExecutableKernel::initializeTraceGenerators() {
+	report("ExecutableKernel::initializeTraceGenerators() - " << _generators.size() << " active");
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->initialize(*this);
+	}
+}
+
+void ExecutableKernel::finalizeTraceGenerators() {
+	report("ExecutableKernel::finalizeTraceGenerators()");
+
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->finish();
+	}
+}
+
 
 /*!
 	\brief compute parameter offsets for parameter data

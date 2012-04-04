@@ -16,8 +16,8 @@
 // LLVM Includes
 #include <configure.h>
 
-#ifdef HAVE_LLVM
-#include <llvm/Target/TargetSelect.h>
+#if HAVE_LLVM
+#include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/LLVMContext.h>
@@ -46,7 +46,7 @@ LLVMState::StateWrapper::StateWrapper() : _jit(0), _module(0)
 
 llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 {
-	#ifdef HAVE_LLVM
+	#if HAVE_LLVM
 	if(_jit == 0)
 	{
 		report("Bringing the LLVM JIT-Compiler online.");

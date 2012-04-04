@@ -38,7 +38,7 @@ namespace api {
 			//! \brief suffix for all checkpoint files
 			std::string suffix;
 			
-			//! \brief if existing checkpoints exist, verify allocations match them
+			//! \brief if checkpoints exist, verify allocations match them
 			bool verify;
 		};
 
@@ -151,11 +151,17 @@ namespace api {
 			//! \brief filter enabling remote GPU devices if present
 			bool enableRemote;
 			
+			//! \brief if true, enables asynchronous kernel launches
+			bool asynchronousKernelLaunch;
+			
 			//! \brief The port to connect to an ocelot server for remoting
 			int port;
 
 			//! \brief The hostname of the ocelot server to connect
 			std::string host;
+
+			//! \brief Reconvergence mechanism
+			int reconvergenceMechanism;
 
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit
@@ -172,6 +178,27 @@ namespace api {
 		public:
 			//! \brief The target subkernel size in instructions
 			unsigned int subkernelSize;
+		
+			/*! \brief Enable the structural transform */
+			bool structuralTransform;
+			
+			/*! \brief Enable convert predication to select */
+			bool predicateToSelect;
+			
+			/*! \brief Enable linear scan register allocation pass */
+			bool linearScanAllocation;
+			
+			/*! \brief Enable MIMD thread scheduling pass */
+			bool mimdThreadScheduling;
+			
+			/*! \brief Sync elimination pass */
+			bool syncElimination;	
+			
+			/*! \brief Hoist special values pass */
+			bool hoistSpecialValues;	
+			
+			/*! \brief Simplify control graph pass */
+			bool simplifyCFG;			
 		};
 
 
@@ -187,14 +214,17 @@ namespace api {
 		OcelotConfiguration(const std::string &path);
 
 		//! \brief initializes configuration object from a stream as JSON
-		void initialize(std::istream &stream);
+		void *initialize(std::istream &stream, bool preserve = false);
+		
+		//! \brief parses and returns configuration object if need be
+		void *configuration() const;
 
-        //! \brief gets singleton configuration object or 
-        //	constructs from 'configure.ocelot'
-        static const OcelotConfiguration& get();
+    //! \brief gets singleton configuration object or 
+    //	constructs from 'configure.ocelot'
+    static const OcelotConfiguration& get();
 
-        //! \brief destroys the singleton
-        static void destroy();
+    //! \brief destroys the singleton
+    static void destroy();
 
 	public:
 		//! \brief path to configuration file for reparsing 

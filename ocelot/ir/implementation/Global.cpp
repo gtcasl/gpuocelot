@@ -22,12 +22,12 @@ namespace ir
 		
 	}
 	
-	Global::Global( char* p ) : local(false), pointer(p)
+	Global::Global(char* p) : local(false), pointer(p)
 	{
 	
 	}
 
-	Global::Global( const ir::PTXStatement& s ) : 
+	Global::Global(const ir::PTXStatement& s) : 
 		local(!s.array.values.empty()), statement(s)
 	{
 		if(local) 
@@ -53,7 +53,7 @@ namespace ir
 		}
 	}
 
-	Global::Global( const Global& g ) : local(g.local)
+	Global::Global(const Global& g) : local(g.local)
 	{
 		statement = g.statement;
 		if(local)
@@ -78,7 +78,7 @@ namespace ir
 	
 	Global& Global::operator=(const Global& g)
 	{
-		if( &g != this )
+		if(&g != this)
 		{
 			if(local)
 			{
@@ -101,6 +101,28 @@ namespace ir
 		}
 		return *this;
 	}
+	
+	
+	/*! \brief Get the address space of the global */
+	PTXInstruction::AddressSpace Global::space() const {
+		// todo fix this
+		switch (statement.directive) {
+			case ir::PTXStatement::Local:
+				return PTXInstruction::Local;
+			case ir::PTXStatement::Shared:
+				return PTXInstruction::Shared;
+			case ir::PTXStatement::Global:	// fall through
+			default:
+				break;			
+		}
+		return PTXInstruction::Global;
+	}
+	
+	const std::string& Global::name() const
+	{
+		return statement.name;
+	}
+	
 }
 
 #endif

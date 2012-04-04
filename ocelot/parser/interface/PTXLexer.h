@@ -8,7 +8,7 @@
 #ifndef PTX_LEXER_H_INCLUDED
 #define PTX_LEXER_H_INCLUDED
 
-#include <ptxgrammar.h>
+#include <ptxgrammar.hpp>
 
 namespace parser
 {
@@ -16,9 +16,9 @@ namespace parser
 	class PTXLexer : public ptxFlexLexer
 	{
 		public:
-			YYSTYPE* yylval;
-			int column;
-			int nextColumn;
+			YYSTYPE*     yylval;
+			int          column;
+			int          nextColumn;
 
 		public:
 			PTXLexer( std::istream* arg_yyin = 0, 

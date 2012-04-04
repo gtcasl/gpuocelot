@@ -25,6 +25,7 @@ namespace ir
 			case And:                   return "and";
 			case Break:                 return "break";
 			case Cmov_Logical:          return "cmov_logical";
+			case Cos_Vec:               return "cos_vec";
 			case Div:                   return "div";
 			case Else:                  return "else";
 			case End:                   return "end";
@@ -35,6 +36,7 @@ namespace ir
 			case Fence:                 return "fence";
 			case Ffb_Hi:                return "ffb_hi";
 			case Fma:                   return "fma";
+			case FtoI:                  return "ftoi";
 			case FtoU:                  return "ftou";
 			case Ge:                    return "ge";
 			case Iadd:                  return "iadd";
@@ -66,9 +68,12 @@ namespace ir
 			case Mad:                   return "mad";
 			case Mov:                   return "mov";
 			case Mul:                   return "mul";
+			case Ne:                    return "ne";
 			case Rcp:                   return "rcp";
 			case Round_Nearest:         return "round_nearest";
+			case Round_Neginf:          return "round_neginf";
 			case Rsq_Vec:               return "rsq_vec";
+			case Sin_Vec:               return "sin_vec";
 			case Sub:                   return "sub";
 			case Sqrt_Vec:              return "sqrt_vec";
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(8)";
@@ -93,6 +98,7 @@ namespace ir
 		}
 
 		assertM(false, "Unreachable line");
+		return "";
 	}
 
 	std::string ILInstruction::toString(DataType d)
@@ -106,7 +112,9 @@ namespace ir
 			{
 				assertM(false, "DataType " << d << " not supported");
 			}
-		};
+		}
+		
+		return "";
 	}
 
 	std::string ILInstruction::toString() const
@@ -117,6 +125,7 @@ namespace ir
 	std::string ILInstruction::valid() const
 	{
 		assertM(false, "Not implemented yet");
+		return "";
 	}
 
 	ILUnaryInstruction::ILUnaryInstruction(Opcode op) : ILInstruction(op)
@@ -191,6 +200,15 @@ namespace ir
 
 	ILCmov_Logical::ILCmov_Logical() : ILTrinaryInstruction(Cmov_Logical)
 	{
+	}
+
+	ILCos_Vec::ILCos_Vec() : ILUnaryInstruction(Cos_Vec)
+	{
+	}
+
+	Instruction *ILCos_Vec::clone(bool copy) const
+	{
+		return new ILCos_Vec(*this);
 	}
 
 	Instruction *ILCmov_Logical::clone(bool copy) const
@@ -308,6 +326,15 @@ namespace ir
 	Instruction *ILFma::clone(bool copy) const
 	{
 		return new ILFma(*this);
+	}
+
+	ILFtoI::ILFtoI() : ILUnaryInstruction(FtoI)
+	{
+	}
+
+	Instruction *ILFtoI::clone(bool copy) const
+	{
+		return new ILFtoI(*this);
 	}
 
 	ILFtoU::ILFtoU() : ILUnaryInstruction(FtoU)
@@ -616,6 +643,15 @@ namespace ir
 		return new ILMul(*this);
 	}
 
+	ILNe::ILNe() : ILBinaryInstruction(Ne)
+	{
+	}
+
+	Instruction *ILNe::clone(bool copy) const
+	{
+		return new ILNe(*this);
+	}
+
 	ILRcp::ILRcp() : ILUnaryInstruction(Rcp)
 	{
 	}
@@ -634,6 +670,15 @@ namespace ir
 		return new ILRound_Nearest(*this);
 	}
 
+	ILRound_Neginf::ILRound_Neginf() : ILUnaryInstruction(Round_Neginf)
+	{
+	}
+
+	Instruction *ILRound_Neginf::clone(bool copy) const
+	{
+		return new ILRound_Neginf(*this);
+	}
+
 	ILRsq_Vec::ILRsq_Vec() : ILUnaryInstruction(Rsq_Vec)
 	{
 	}
@@ -641,6 +686,15 @@ namespace ir
 	Instruction *ILRsq_Vec::clone(bool copy) const
 	{
 		return new ILRsq_Vec(*this);
+	}
+
+	ILSin_Vec::ILSin_Vec() : ILUnaryInstruction(Sin_Vec)
+	{
+	}
+
+	Instruction *ILSin_Vec::clone(bool copy) const
+	{
+		return new ILSin_Vec(*this);
 	}
 
 	ILSub::ILSub() : ILBinaryInstruction(Sub)

@@ -66,7 +66,6 @@ namespace ir {
 			b32,
 			b64,
 			pred,
-			_,
 			TypeSpecifier_invalid
 		};
 
@@ -156,6 +155,7 @@ namespace ir {
 
 	public:
 		static std::string toString(VectorIndex);
+		static std::string toString(Vec);
 		static std::string toString(DataType);
 		static std::string toString(SpecialRegister);
 		static std::string toString(AddressMode);
@@ -184,6 +184,7 @@ namespace ir {
 		std::string toString() const;
 		std::string registerName() const;
 		unsigned int bytes() const;
+		bool isRegister() const;
 
 		//! identifier of operand
 		std::string identifier;
@@ -215,6 +216,7 @@ namespace ir {
 			/*! Identifier for register */
 			RegisterType reg;
 			bool isArgument;
+			bool isGlobalLocal;
 			unsigned int sharedMemorySize;
 		};
 		
@@ -231,12 +233,17 @@ namespace ir {
 
 }
 
-namespace std {
-	template<> inline size_t hash<ir::PTXOperand::DataType>::operator()( 
-		ir::PTXOperand::DataType t) const
+namespace std 
+{
+	template<> 
+	struct hash<ir::PTXOperand::DataType>
 	{
-		return (size_t)t;
-	}
+	public:
+		size_t operator()(const ir::PTXOperand::DataType& t) const
+		{
+			return (size_t)t;
+		}
+	};
 }
 
 #endif

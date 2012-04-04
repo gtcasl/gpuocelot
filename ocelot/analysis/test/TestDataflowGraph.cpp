@@ -8,19 +8,25 @@
 #ifndef TEST_DATAFLOW_GRAPH_CPP_INCLUDED
 #define TEST_DATAFLOW_GRAPH_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/analysis/test/TestDataflowGraph.h>
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/Exception.h>
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <ocelot/parser/interface/PTXParser.h>
 
+// Hydrazine Includes
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+
+// Boost Includes
 #include <boost/filesystem.hpp>
+
+// Standard Library Includes
 #include <queue>
 
-#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -81,7 +87,7 @@ namespace test
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
 			{
-				report( " " << instruction->label << ":  " 
+				report( " " << instruction->i->toString() << ":  " 
 					<< hydrazine::toFormattedString( instruction->d.begin(), 
 					instruction->d.end(), Double() ) << " <- " 
 					<< hydrazine::toFormattedString( instruction->s.begin(), 
@@ -94,7 +100,7 @@ namespace test
 					if( !defined.count( *reg ) )
 					{
 						status << "  Register " << *reg->pointer 
-							<< " in instruction " << instruction->label 
+							<< " in instruction " << instruction->i->toString()
 							<< " in block " << block->label() 
 							<< " used uninitialized." << std::endl;
 						return false;
@@ -179,7 +185,7 @@ namespace test
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
 			{
-				report( " " << instruction->label << ":  " 
+				report( " " << instruction->i->toString() << ":  " 
 					<< hydrazine::toFormattedString( instruction->d.begin(), 
 					instruction->d.end(), Double() ) << " <- " 
 					<< hydrazine::toFormattedString( instruction->s.begin(), 
@@ -192,7 +198,7 @@ namespace test
 					if( !defined.count( *reg ) )
 					{
 						status << "  Register " << *reg->pointer 
-							<< " in instruction " << instruction->label 
+							<< " in instruction " << instruction->i->toString() 
 							<< " in " << block->label() 
 							<< " used uninitialized." << std::endl;
 						return false;
@@ -207,7 +213,8 @@ namespace test
 					{
 						status << "  In " << block->label() 
 							<< ", instruction " 
-							<< instruction->label << ", reg " << *reg->pointer
+							<< instruction->i->toString() << ", reg "
+							<< *reg->pointer
 							<< " already defined globally." << std::endl;
 						return false;
 					}
@@ -305,9 +312,12 @@ namespace test
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( 
 					*module.getKernel( ki->first ) );
 				status << "  For Kernel: " << kernel.name << std::endl;
-				ir::PTXKernel::assignRegisters( *kernel.cfg() );
-				kernel.dfg()->compute();
-				if( !_verify( *kernel.dfg() ) )
+				
+				analysis::DataflowGraph dfg;
+				
+				dfg.analyze( kernel );
+					
+				if( !_verify( dfg ) )
 				{
 					return false;
 				}
@@ -349,10 +359,12 @@ namespace test
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( 
 					*module.getKernel( ki->first ) );
 				status << "  For Kernel: " << kernel.name << std::endl;
-				ir::PTXKernel::assignRegisters( *kernel.cfg() );
-				kernel.dfg()->compute();
-				kernel.dfg()->toSsa();
-				if( !_verifySsa( *kernel.dfg() ) )
+				analysis::DataflowGraph dfg;
+				
+				dfg.analyze( kernel );
+				dfg.toSsa();
+				
+				if( !_verifySsa( dfg ) )
 				{
 					return false;
 				}
@@ -394,11 +406,13 @@ namespace test
 				ir::PTXKernel& kernel = static_cast< ir::PTXKernel& >( 
 					*module.getKernel( ki->first ) );
 				status << "  For Kernel: " << kernel.name << std::endl;
-				ir::PTXKernel::assignRegisters( *kernel.cfg() );
-				kernel.dfg()->compute();
-				kernel.dfg()->toSsa();
-				kernel.dfg()->fromSsa();
-				if( !_verify( *kernel.dfg() ) )
+				analysis::DataflowGraph dfg;
+				
+				dfg.analyze( kernel );
+				dfg.toSsa();
+				dfg.fromSsa();
+
+				if( !_verify( dfg ) )
 				{
 					return false;
 				}

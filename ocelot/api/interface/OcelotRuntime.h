@@ -13,6 +13,14 @@
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
 #include <ocelot/trace/interface/InteractiveDebugger.h>
 
+#include <ocelot/transforms/interface/StructuralTransform.h>
+#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
+#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
+#include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
+
 namespace ocelot
 {
 	/*! \brief This is an interface for managing state associated with Ocelot */
@@ -21,6 +29,14 @@ namespace ocelot
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
 		trace::InteractiveDebugger _debugger;
+
+		transforms::StructuralTransform _structuralTransform;
+		transforms::ConvertPredicationToSelectPass _predicationToSelect;
+		transforms::LinearScanRegisterAllocationPass _linearScanAllocation;
+		transforms::MIMDThreadSchedulingPass _mimdThreadScheduling;
+		transforms::SyncEliminationPass _syncElimination;
+		transforms::HoistSpecialValueDefinitionsPass _hoistSpecialValues;
+		transforms::SimplifyControlFlowGraphPass _simplifyCFG;
 		
 		bool _initialized;
 		

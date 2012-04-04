@@ -21,7 +21,7 @@ namespace executive
 	class ExecutableKernel;
 }
 
-namespace executive 
+namespace executive
 {
 	/*! Interface that should be bound to the ptx emulator */
 	class EmulatorDevice : public Device
@@ -51,6 +51,9 @@ namespace executive
 					MemoryAllocation(const ir::Global& global);
 					/*! \brief Construct an external allocaton */
 					MemoryAllocation(void* pointer, size_t size);
+					/*! \brief Construct an external host allocaton */
+					MemoryAllocation(void* pointer, size_t size,
+						unsigned int flags);
 					/*! \brief Desructor */
 					~MemoryAllocation();
 
@@ -203,6 +206,9 @@ namespace executive
 			/*! \brief Make this a host memory allocation */
 			Device::MemoryAllocation* allocateHost(size_t size, 
 				unsigned int flags);
+			/*! \brief Register a host memory allocation */
+			Device::MemoryAllocation* registerHost(void* pointer, size_t size, 
+				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */
@@ -231,7 +237,8 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void** resource, int count, unsigned int streamID);
+			void unmapGraphicsResource(void** resource, int count,
+				unsigned int streamID);
 
 		public:
 			/*! \brief Load a module, must have a unique name */
@@ -267,15 +274,6 @@ namespace executive
 			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
 			void setStream(unsigned int stream);
-			
-		public:
-			/*! \brief Select this device as the current device. 
-				Only one device is allowed to be selected at any time. */
-			void select();
-			/*! \brief is this device selected? */
-			bool selected() const;
-			/*! \brief Deselect this device. */
-			void unselect();
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
@@ -307,7 +305,8 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-				traceGenerators = trace::TraceGeneratorVector());
+				traceGenerators = trace::TraceGeneratorVector(),
+				const ir::ExternalFunctionSet* externals = 0);
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);

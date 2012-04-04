@@ -65,7 +65,8 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-				traceGenerators = trace::TraceGeneratorVector());
+				traceGenerators = trace::TraceGeneratorVector(),
+				const ir::ExternalFunctionSet* externals = 0);
 		
 		public:
 			/*! \brief Limit the worker threads used by this device */

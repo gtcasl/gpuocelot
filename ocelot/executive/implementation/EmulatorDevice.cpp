@@ -17,16 +17,18 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
+#include <hydrazine/interface/SystemCompatibility.h>
+
+#include <configure.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 // OpenGL includes
+#if HAVE_GLEW
 #include <GL/glew.h>
-
-// Linux includes
-#include <sys/sysinfo.h>
+#endif
 
 // Standard library includes
 #include <cstring>
@@ -85,8 +87,17 @@ namespace executive
 	}
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(void* pointer, 
-		size_t size) : Device::MemoryAllocation(false, false), _size(size),
+		size_t size)
+	: Device::MemoryAllocation(false, false), _size(size),
 		_pointer(pointer), _flags(0), _external(true)
+	{
+	
+	}
+
+	EmulatorDevice::MemoryAllocation::MemoryAllocation(void* pointer, 
+		size_t size, unsigned int flags)
+	: Device::MemoryAllocation(false, true), _size(size),
+		_pointer(pointer), _flags(flags), _external(true)
 	{
 	
 	}
@@ -160,12 +171,12 @@ namespace executive
 	void* EmulatorDevice::MemoryAllocation::mappedPointer() const
 	{
 		assert(host());
+		if(_external) return _pointer;
 		return align(_pointer);
 	}
 	
 	void* EmulatorDevice::MemoryAllocation::pointer() const
 	{
-		assert(!host() || (_flags & cudaHostAllocMapped));
 		if(_external) return _pointer;
 		return align(_pointer);
 	}
@@ -236,10 +247,12 @@ namespace executive
 
 		AllocationVector allocations;
 		
+		report("Loading global variables");
 		for(ir::Module::GlobalMap::const_iterator 
 			global = ir->globals().begin(); 
 			global != ir->globals().end(); ++global)
 		{
+			report(" loading global variable '" << global->first << "'");
 			MemoryAllocation* allocation = new MemoryAllocation(global->second);
 			globals.insert(std::make_pair(global->first, 
 				allocation->pointer()));
@@ -296,7 +309,7 @@ namespace executive
 		_properties.addressSpace = 0;
 		std::strcpy(_properties.name, "Ocelot PTX Emulator");
 		
-		_properties.totalMemory = get_avphys_pages() * getpagesize();
+		_properties.totalMemory = hydrazine::getFreePhysicalMemory();
 		_properties.multiprocessorCount = 1;
 		_properties.memcpyOverlap = false;
 		_properties.maxThreadsPerBlock = 1024;
@@ -308,7 +321,7 @@ namespace executive
 		_properties.maxGridSize[2] = 65536;
 		_properties.sharedMemPerBlock = _properties.totalMemory;
 		_properties.totalConstantMemory = _properties.totalMemory;
-		_properties.SIMDWidth = 512;
+		_properties.SIMDWidth = _properties.maxThreadsPerBlock;
 		_properties.memPitch = 1;
 		_properties.regsPerBlock = _properties.totalMemory;
 		_properties.clockRate = 2;
@@ -316,7 +329,15 @@ namespace executive
 		_properties.integrated = 1;
 		_properties.concurrentKernels = 0;
 		_properties.major = 2;
-		_properties.minor = 0;
+		_properties.minor = 1;
+		
+		_properties.integrated = true;
+		_properties.unifiedAddressing = true;
+		_properties.memoryClockRate = 1;
+		_properties.memoryBusWidth = 1;
+		_properties.l2CacheSize = 1;
+		_properties.maxThreadsPerMultiProcessor =
+			_properties.maxThreadsPerBlock;
 	}
 	
 	EmulatorDevice::~EmulatorDevice()
@@ -450,6 +471,15 @@ namespace executive
 			allocation));
 		return allocation;
 	}
+
+	Device::MemoryAllocation* EmulatorDevice::registerHost(void* pointer,
+		size_t size, unsigned int flags)
+	{
+		MemoryAllocation* allocation = new MemoryAllocation(
+			pointer, size, flags);
+		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
+		return allocation;
+	}
 	
 	void EmulatorDevice::free(void* pointer)
 	{
@@ -519,7 +549,7 @@ namespace executive
 		report(" Registering opengl buffer " << buffer 
 			<< " to handle " << handle);
 		_graphics.insert(std::make_pair(handle, OpenGLResource(buffer)));
-		return (void*) handle;
+		return hydrazine::bit_cast<void*>(handle);
 	}
 	
 	void* EmulatorDevice::glRegisterImage(unsigned int image, 
@@ -527,7 +557,7 @@ namespace executive
 	{
 		unsigned int handle = _next++;
 		_graphics.insert(std::make_pair(handle, OpenGLResource(image)));
-		return (void*) handle;
+		return hydrazine::bit_cast<void*>(handle);
 	}
 
 	void EmulatorDevice::unRegisterGraphicsResource(void* resource)
@@ -548,8 +578,11 @@ namespace executive
 		report("mapGraphicsResource(" << resource << ", " 
 			<< count << ", " << stream << ")");
 		
+		#if HAVE_GLEW
+		
 		for (int i = 0; i < count; i++) {
-			unsigned int handle = hydrazine::bit_cast<unsigned int>(resource[i]);
+			unsigned int handle = hydrazine::bit_cast<unsigned int>(
+				resource[i]);
 			GraphicsMap::iterator graphic = _graphics.find(handle);
 			if(graphic == _graphics.end())
 			{
@@ -565,7 +598,8 @@ namespace executive
 			}
 
 			report(" Mapping GL buffer.");
-			graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+			graphic->second.pointer = glMapBuffer(
+				GL_ARRAY_BUFFER, GL_READ_WRITE);
 		
 			if(glGetError() != GL_NO_ERROR)
 			{
@@ -586,7 +620,7 @@ namespace executive
 				
 			_allocations.insert(std::make_pair(graphic->second.pointer, 
 				new MemoryAllocation(graphic->second.pointer, bytes)));
-		
+			
 			report(" Binding GL array buffer back to 0.");
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -595,6 +629,10 @@ namespace executive
 				Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer2.")
 			}
 		}
+		
+		#else
+		assertM(false, "GLEW required for OpenGL support.");
+		#endif
 	}
 
 	void* EmulatorDevice::getPointerToMappedGraphicsResource(size_t& size, 
@@ -614,6 +652,7 @@ namespace executive
 		
 		AllocationMap::const_iterator allocation = _allocations.find(
 			graphic->second.pointer);
+
 		assert(allocation != _allocations.end());
 		
 		size = allocation->second->size();
@@ -633,10 +672,13 @@ namespace executive
 		// we ignore flags
 	}
 
-	void EmulatorDevice::unmapGraphicsResource(void** resource, int count, unsigned int streamID)
+	void EmulatorDevice::unmapGraphicsResource(void** resource, int count,
+		unsigned int streamID)
 	{
+		#if HAVE_GLEW
 		for (int i = 0; i < count; i++) {
-			unsigned int handle = hydrazine::bit_cast<unsigned int>(resource[i]);
+			unsigned int handle = hydrazine::bit_cast<unsigned int>(
+				resource[i]);
 			GraphicsMap::iterator graphic = _graphics.find(handle);
 			if(graphic == _graphics.end())
 			{
@@ -659,7 +701,8 @@ namespace executive
 
 			if(glGetError() != GL_NO_ERROR)
 			{
-				Throw("OpenGL Error in unmapGraphicsResource() - glUnmapBuffer.")
+				Throw("OpenGL Error in "
+					"unmapGraphicsResource() - glUnmapBuffer.")
 			}
 
 			AllocationMap::iterator allocation = _allocations.find(
@@ -678,6 +721,9 @@ namespace executive
 				Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
 			}
 		}
+		#else
+		assertM(false, "GLEW required for OpenGL support.");
+		#endif
 	}
 
 	void EmulatorDevice::load(const ir::Module* module)
@@ -746,7 +792,7 @@ namespace executive
 		{
 			Throw("Invalid event - " << handle);
 		}
-		return true;	
+		return true;
 	}
 	
 	void EmulatorDevice::recordEvent(unsigned int handle, unsigned int sHandle)
@@ -837,28 +883,11 @@ namespace executive
 		// this is a nop, there are FOUR streams (I mean only one stream)
 	}
 	
-	void EmulatorDevice::select()
-	{
-		assert(!selected());
-		_selected = true;
-	}
-	
-	bool EmulatorDevice::selected() const
-	{
-		return _selected;
-	}
-
-	void EmulatorDevice::unselect()
-	{
-		assert(selected());
-		_selected = false;
-	}
-
 	static ir::Texture::Interpolation convert(cudaTextureFilterMode filter)
 	{
 		switch(filter)
 		{
-			case cudaFilterModePoint: return ir::Texture::Nearest;
+			case cudaFilterModePoint:  return ir::Texture::Nearest;
 			case cudaFilterModeLinear: return ir::Texture::Linear;
 		}
 		
@@ -869,7 +898,7 @@ namespace executive
 	{
 		switch(mode)
 		{
-			case cudaAddressModeWrap: return ir::Texture::Wrap;
+			case cudaAddressModeWrap:  return ir::Texture::Wrap;
 			case cudaAddressModeClamp: return ir::Texture::Clamp;
 		}
 		
@@ -931,6 +960,7 @@ namespace executive
 
 	void EmulatorDevice::unbindTexture(const std::string& moduleName, 
 		const std::string& textureName)
+
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())
@@ -963,7 +993,8 @@ namespace executive
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize, 
-		const trace::TraceGeneratorVector& traceGenerators)
+		const trace::TraceGeneratorVector& traceGenerators,
+		const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		report("EmulatorDevice::launch() - " << moduleName << "::" << kernelName);
@@ -1001,12 +1032,14 @@ namespace executive
 				<< properties().name);
 		}
 		
+		kernel->device = this;
 		kernel->setKernelShape(block.x, block.y, block.z);
 		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
 			argumentBlockSize);
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setExternalFunctionSet(*externals);
 	
 		for(trace::TraceGeneratorVector::const_iterator 
 			gen = traceGenerators.begin(); 
@@ -1015,9 +1048,11 @@ namespace executive
 			kernel->addTraceGenerator(*gen);
 		}
 	
+		unselect();
+	
 		try
 		{
-			kernel->launchGrid(grid.x, grid.y);
+			kernel->launchGrid(grid.x, grid.y, grid.z);
 		}
 		catch(...)
 		{
@@ -1030,12 +1065,16 @@ namespace executive
 			throw;
 		}
 		
+		select();
+		
 		for(trace::TraceGeneratorVector::const_iterator 
 			gen = traceGenerators.begin(); 
 			gen != traceGenerators.end(); ++gen) 
 		{
 			kernel->removeTraceGenerator(*gen);
 		}
+		
+		kernel->clearExternalFunctionSet();
 	}
 	
 	cudaFuncAttributes EmulatorDevice::getAttributes(const std::string& path, 
@@ -1091,6 +1130,7 @@ namespace executive
 	{
 		// This is emulation so we probably don't ever want to do optimization
 	}
+
 }
 
 #endif

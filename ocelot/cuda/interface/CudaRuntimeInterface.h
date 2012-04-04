@@ -122,6 +122,9 @@ namespace cuda {
 			Memory - host allocations
 		*/
 
+		virtual cudaError_t cudaHostRegister(void *pHost, size_t bytes, 
+			unsigned int flags);
+		virtual cudaError_t cudaHostUnregister(void *pHost);
 		virtual cudaError_t cudaHostAlloc(void **pHost, size_t bytes, 
 			unsigned int flags);
 		virtual cudaError_t cudaHostGetDevicePointer(void **pDevice, 
@@ -257,6 +260,7 @@ namespace cuda {
 		*/
 
 		virtual cudaError_t cudaGetLastError(void);
+		virtual cudaError_t cudaPeekAtLastError(void);
 
 		/*
 			Kernel launch
@@ -281,6 +285,7 @@ namespace cuda {
 		virtual cudaError_t cudaStreamDestroy(cudaStream_t stream);
 		virtual cudaError_t cudaStreamSynchronize(cudaStream_t stream);
 		virtual cudaError_t cudaStreamQuery(cudaStream_t stream);
+		virtual cudaError_t cudaStreamWaitEvent(cudaStream_t stream, cudaEvent_t event, unsigned int flags);
 
 		/*
 			Event creation
@@ -342,6 +347,20 @@ namespace cuda {
 		virtual cudaError_t cudaSetDoubleForHost(double *d);
 
 		/*
+			Device synchronization
+		*/
+		virtual cudaError_t cudaDeviceReset(void);
+		virtual cudaError_t cudaDeviceSynchronize(void);
+		virtual cudaError_t cudaDeviceSetLimit(enum cudaLimit limit,
+			size_t value);
+		virtual cudaError_t cudaDeviceGetLimit(size_t *pValue,
+			enum cudaLimit limit);
+		virtual cudaError_t cudaDeviceGetCacheConfig(
+			enum cudaFuncCache *pCacheConfig);
+		virtual cudaError_t cudaDeviceSetCacheConfig(
+			enum cudaFuncCache cacheConfig);
+
+		/*
 			Thread synchronization
 		*/
 
@@ -385,17 +404,11 @@ namespace cuda {
 			bool persistent = false );
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
-		/*!
-			\brief Adds a PTX->PTX pass for the next *Module load*
-		*/
-		virtual void addPTXPass(analysis::Pass &pass);
-		/*!
-			\brief removes the specified pass
-		*/
-		virtual void removePTXPass(analysis::Pass &pass);
-		/*!
-			\brief clears all PTX->PTX passes
-		*/
+		/*! \brief Adds a PTX->PTX pass for the next *Module load* */
+		virtual void addPTXPass(transforms::Pass &pass);
+		/*!	\brief removes the specified pass */
+		virtual void removePTXPass(transforms::Pass &pass);
+		/*! \brief clears all PTX->PTX passes */
 		virtual void clearPTXPasses();
 		
 		/*! \brief Sets a limit on the number of host worker threads to launch
@@ -410,6 +423,10 @@ namespace cuda {
 		*/
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		/*! \brief Register a texture with the cuda runtime */
+		virtual void registerTexture(const void* texref,
+			const std::string& moduleName,
+			const std::string& textureName, bool normalize);
 		/*! \brief Clear all errors in the Cuda Runtime */
 		virtual void clearErrors();
 		/*! \brief Reset all CUDA runtime state */
@@ -425,7 +442,14 @@ namespace cuda {
 		/*! \brief Set the optimization level */
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);
+		/*! \brief Register a callable host function with Ocelot 
 
+			This function will be callable as a PTX function.
+		*/
+		virtual void registerExternalFunction(const std::string& name,
+			void* function);
+		/*! \brief Remove a previously registered host function */
+		virtual void removeExternalFunction(const std::string& name);
 	};
 
 }

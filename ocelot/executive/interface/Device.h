@@ -16,10 +16,15 @@
 #include <ocelot/trace/interface/TraceGenerator.h>
 #include <ocelot/translator/interface/Translator.h>
 
+// Boost includes
+#include <boost/thread/thread.hpp>
+
 // forward declarations
 struct cudaChannelFormatDesc;
 struct cudaFuncAttributes;
 struct textureReference;
+
+namespace ir { class ExternalFunctionSet; }
 
 namespace executive 
 {
@@ -79,6 +84,16 @@ namespace executive
 					size_t stackSize;
 					/*! printfFIFOSize */
 					size_t printfFIFOSize;
+					/**< This device shares a unified address with the host */
+					bool unifiedAddressing;          
+					/**< Peak memory clock frequency in kilohertz */
+					int memoryClockRate;
+					/**< Global memory bus width in bits */
+					int memoryBusWidth;
+					/**< Size of L2 cache in bytes */
+					int l2CacheSize;
+					/**< Maximum resident threads per multiprocessor */
+					int maxThreadsPerMultiProcessor;
 			
 			};
 			
@@ -153,6 +168,11 @@ namespace executive
 			};
 
 		protected:
+			/*! \brief The status of each thread that is
+				connected to this device */
+			typedef std::map<boost::thread::id, bool> ThreadMap;
+
+		protected:
 			/*! \brief The properties of this device */
 			Properties _properties;
 			/*! \brief The driver version */
@@ -161,7 +181,13 @@ namespace executive
 			int _runtimeVersion;
 			/*! \brief Device flags */
 			unsigned int _flags;
-
+			
+		protected:
+			/*! \brief Threads that have selected this device */
+			ThreadMap _selected;
+			/*! \brief Locking object for updating selected threads */
+			boost::mutex _mutex;
+			
 		public:
 			/*! \brief Create devices with the selected isa */
 			static DeviceVector createDevices(ir::Instruction::Architecture isa,
@@ -182,6 +208,9 @@ namespace executive
 				const std::string& module, const std::string& name) = 0;
 			/*! \brief Allocate some new dynamic memory on this device */
 			virtual MemoryAllocation* allocate(size_t size) = 0;
+			/*! \brief Register some host memory */
+			virtual MemoryAllocation* registerHost(void* p, size_t size, 
+				unsigned int flags = 0) = 0;
 			/*! \brief Make this a host memory allocation */
 			virtual MemoryAllocation* allocateHost(size_t size, 
 				unsigned int flags = 0) = 0;
@@ -263,11 +292,11 @@ namespace executive
 		public:
 			/*! \brief Select this device as the current device. 
 				Only one device is allowed to be selected at any time. */
-			virtual void select() = 0;
+			virtual void select();
 			/*! \brief is this device selected? */
-			virtual bool selected() const = 0;
+			virtual bool selected();
 			/*! \brief Deselect this device. */
-			virtual void unselect() = 0;
+			virtual void unselect();
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
@@ -305,7 +334,8 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-				traceGenerators = trace::TraceGeneratorVector()) = 0;
+				traceGenerators = trace::TraceGeneratorVector(),
+				const ir::ExternalFunctionSet* externals = 0) = 0;
 			/*! \brief Get the function attributes of a specific kernel */
 			virtual cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel) = 0;

@@ -7,14 +7,17 @@
 #ifndef IR_PTX_KERNEL_H_INCLUDED
 #define IR_PTX_KERNEL_H_INCLUDED
 
-#include <ocelot/ir/interface/Kernel.h>
+// Ocelot Includes
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
-//#include <ocelot/analysis/interface/DivergenceAnalysis.h>
+
+// Forward Declarations
+namespace analysis { class ProgramStructureGraph; }
 
 namespace ir 
 {
 	/*!	A specialization of the kernel class for PTX */
-	class PTXKernel : public Kernel 
+	class PTXKernel : public IRKernel 
 	{
 		public:
 			/*!	\brief Vector of statements */
@@ -34,7 +37,7 @@ namespace ir
 			*/
 			class Prototype {
 			public:
-				typedef std::vector< ir::Parameter > ArgumentVector;
+				typedef std::vector<ir::Parameter> ArgumentVector;
 			
 				enum CallType {
 					Entry,
@@ -44,31 +47,27 @@ namespace ir
 				
 				enum LinkingDirective {
 					Extern,		//!< externally-defined function
-					Visible,	//!< locally defined function visible outside this module
+					Visible,	//!< visible outside this module
 					LinkingDirective_invalid
 				};
 			
 			public:
-				//! \brief 
 				static std::string toString(const LinkingDirective ld);
 				static std::string toString(const CallType ct);
-				
+	
+			public:			
 				Prototype();
 				
-				/*!
-					\brief emits a PTX form of the prototype
-				*/
+				/*! \brief emits a PTX form of the prototype */
 				std::string toString() const;
 				
-				/*!
-					\brief emits a mangled form of the function prototype
-				*/
+				/*! \brief emits a mangled form of the function prototype */
 				std::string getMangledName() const;
 				
+				/*! \brief */
 				void clear();
 
 			public:
-			
 				//! \brief indicates .entry or .func
 				CallType callType;
 			
@@ -125,25 +124,23 @@ namespace ir
 		
 			/*! \brief Assignment operator (deep) */
 			const PTXKernel& operator=(const PTXKernel& k);
-	
+		
 		public:
 			/*! \brief Get the set of all referenced 
 				registers in the instruction set */
 			RegisterVector getReferencedRegisters() const;
+			
+			/*! \brief Get an unused register */
+			PTXOperand::RegisterType getUnusedRegister() const;
+			
+			/*! \brief returns a prototype for this kernel */
+			Prototype getPrototype() const;
 
 		public:
-			/*! \brief Builds the data flow graph within the kernel */
-			virtual analysis::DataflowGraph* dfg();
+			/* \brief Gets the currently selected program structure graph */
+			analysis::ProgramStructureGraph* getProgramStructureGraph();
 
-			/*! \brief Gets the datalow graph */
-			virtual const analysis::DataflowGraph* dfg() const;
-
-			/*! \brief Sets the divergence analysis */
-			virtual analysis::DivergenceAnalysis* div_analy();
-
-			/*! \brief Gets the divergence analysis */
-			virtual const analysis::DivergenceAnalysis* div_analy() const;
-
+		public:
 			/*! \brief renames all the blocks with canonical names */
 			virtual void canonicalBlockLabels(int kernelID=1);
 

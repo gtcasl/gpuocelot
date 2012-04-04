@@ -46,9 +46,13 @@ namespace ir {
 		static std::string value(const Parameter& p);
 
 	public:
-		explicit Parameter(const PTXStatement& statement,
+		Parameter(const PTXStatement& statement,
 			bool arg, bool isReturn = false);
-		Parameter();
+		explicit Parameter(const std::string& s = "",
+			ir::PTXOperand::DataType t = ir::PTXOperand::u64,
+			unsigned int alignment = 0,
+			ir::PTXInstruction::Vec v = ir::PTXOperand::v1,
+			bool argument = false, bool returnArgument = false);
 		~Parameter();
 
 		/*!	Returns the size of a parameter */

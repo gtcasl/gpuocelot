@@ -41,6 +41,8 @@ namespace ir
 			case RegType_Generic_Mem:        return "mem";
 			default: assertM(false, "Invalid register type " << rt);
 		}
+		
+		return "";
 	}
 
 	ILOperand::Dst_Mod::Dst_Mod() :

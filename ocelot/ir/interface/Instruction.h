@@ -21,6 +21,7 @@ namespace ir {
 			SASS, 						// NVIDIA GPU
 			LLVM,						// LLVM to x86
 			CAL,						// AMD Cal
+			VIR,						// Vanaheimr IR
 			Remote,                     // Remote Device
 			x86,
 			x86_64,
@@ -53,9 +54,6 @@ namespace ir {
 		virtual Instruction* clone(bool copy = true) const = 0;
 
 	public:
-		/*! \brief Label that may identify the instruction */
-		std::string label;
-
 		/*!	\brief Indicates ISA of the instruction */
 		Architecture ISA;
 	};

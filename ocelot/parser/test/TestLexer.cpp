@@ -155,7 +155,8 @@ namespace test
 		{
 		
 			status << "First pass did not consume all of the file, the " 
-				<< "following was rejected:\n" << temp.str() << "\n";
+				<< "following was rejected:\n'" << temp.str() << "'\n";
+			status << " remaining characters:" << temp.str().size() << "\n";
 			return false;
 		
 		}

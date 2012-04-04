@@ -31,6 +31,9 @@ namespace executive
 			/*! \brief Changes the amount of external shared memory */
 			void setExternSharedMemorySize(unsigned int bytes);
 
+			/*! \brief Changes the amount of vote memory */
+			void setVoteMemorySize(unsigned int bytes);
+
 			/*! \brief Sets the max number of pthreads this kernel can use */
 			void setWorkerThreads(unsigned int workerThreadLimit);
 
@@ -39,6 +42,8 @@ namespace executive
 
 			/*! \brief Indicate that other memory has been updated */
 			void updateMemory();
+
+			unsigned int voteMemorySize() const;
 
 			/*! \brief Get a vector of all textures references by the kernel */
 			TextureVector textureReferences() const;
@@ -78,6 +83,9 @@ namespace executive
 
 			/*! \brief Create the IL module from the code */
 			void _translateKernel();
+
+			/*! \brief The amount of allocated shared memory for voting */
+			unsigned int _voteMemorySize;
 
 			/*! \brief Type of the constant buffer (cb) */
 			typedef struct { unsigned int x, y, z, w; } cb_t;

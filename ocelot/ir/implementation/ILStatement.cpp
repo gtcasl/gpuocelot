@@ -29,7 +29,7 @@ namespace ir
 	}
 
 	ILStatement::ILStatement(const ILStatement& s) : instruction(0), 
-		type(s.type), operands(s.operands)
+		type(s.type), operands(s.operands), arguments(s.arguments)
 	{
 		if( s.instruction != 0 )
 		{
@@ -56,7 +56,7 @@ namespace ir
 				std::stringstream stream;
 
 				stream << "dcl_cb ";
-				stream << operands[0].toString();
+				stream << operands[0].srcString();
 
 				return stream.str();
 			}
@@ -65,11 +65,12 @@ namespace ir
 				std::stringstream stream;
 
 				stream << "dcl_literal ";
-				stream << operands[0].toString() << ", ";
-				stream << operands[1].toString() << ", ";
-				stream << operands[1].toString() << ", ";
-				stream << operands[1].toString() << ", ";
-				stream << operands[1].toString();
+				stream << operands[0].dstString() << ", ";
+				stream << std::hex;
+				stream << "0x" << arguments[0] << ", ";
+				stream << "0x" << arguments[1] << ", ";
+				stream << "0x" << arguments[2] << ", ";
+				stream << "0x" << arguments[3];
 
 				return stream.str();
 			}
@@ -78,7 +79,7 @@ namespace ir
 				std::stringstream s;
 
 				s << "dcl_lds_id(1) ";
-				s << operands[0].toString();
+				s << arguments[0];
 
 				return s.str();
 			}

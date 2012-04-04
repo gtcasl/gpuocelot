@@ -34,7 +34,7 @@ namespace executive
     ATIGPUDevice::ATIGPUDevice() 
 		: 
 			_allocations(),
-			_uav0AllocPtr(Uav0BaseAddr),
+			_uav0AllocPtr(0),
 			_uav0Resource(0),
 			_cb0Resource(0),
 			_cb1Resource(0),
@@ -298,8 +298,8 @@ namespace executive
 		size_t aSize = AlignUp(size, 4);
 
 		// Check uav0 size limits
-		assertM(_uav0AllocPtr - Uav0BaseAddr + aSize < Uav0Size,
-				"Out of global memory: " << _uav0AllocPtr - Uav0BaseAddr
+		assertM(_uav0AllocPtr + aSize < Uav0Size,
+				"Out of global memory: " << _uav0AllocPtr
 				<< " + " << aSize
 				<< " greater than " << Uav0Size);
 
@@ -310,6 +310,9 @@ namespace executive
 
 		_uav0AllocPtr += aSize;
 
+		report("New allocation of " << size << " bytes at " 
+				<< std::hex << allocation->pointer());
+
 		return allocation;
 	}
 
@@ -317,7 +320,7 @@ namespace executive
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	Device::MemoryAllocation *ATIGPUDevice::registerHost(void* pointer,
@@ -369,14 +372,14 @@ namespace executive
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void *ATIGPUDevice::glRegisterImage(unsigned int image, unsigned int target, 
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void ATIGPUDevice::unRegisterGraphicsResource(void* resource)
@@ -394,7 +397,7 @@ namespace executive
 			void* resource)
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void ATIGPUDevice::setGraphicsResourceFlags(void* resource, 
@@ -422,7 +425,7 @@ namespace executive
 	bool ATIGPUDevice::queryEvent(unsigned int event)
 	{
 		assertM(false, "Not implemented yet");
-		return false;
+        return 0;
 	}
 
 	void ATIGPUDevice::recordEvent(unsigned int event, unsigned int stream)
@@ -444,7 +447,7 @@ namespace executive
 	unsigned int ATIGPUDevice::createStream()
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void ATIGPUDevice::destroyStream(unsigned int stream)
@@ -455,7 +458,7 @@ namespace executive
 	bool ATIGPUDevice::queryStream(unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
-		return false;
+        return 0;
 	}
 
 	void ATIGPUDevice::synchronizeStream(unsigned int stream)
@@ -485,7 +488,7 @@ namespace executive
 		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void ATIGPUDevice::_optimizePTX(Module* m, const std::string& k)
@@ -509,25 +512,22 @@ namespace executive
 			const trace::TraceGeneratorVector& traceGenerators,
 			const ir::ExternalFunctionSet* externals)
 	{
-		ModuleMap::iterator moduleIt = _modules.find(moduleName);
+		ModuleMap::iterator module = _modules.find(moduleName);
 
-		if (moduleIt == _modules.end())
+		if (module == _modules.end())
 		{
 			Throw("Unknown module - " << moduleName);
 		}
 
-		Module* module = moduleIt->second;
-		ExecutableKernel* kernel = module->getKernel(kernelName);
+		ATIExecutableKernel* kernel = 
+			static_cast<ATIExecutableKernel*>(module->second->getKernel(kernelName));
 		
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
 				<< " in module " << moduleName);
 		}
-
-		report("Running PTX optimizations");
-		_optimizePTX(module, kernelName);
-
+	
 		report("Launching " << moduleName << ":" << kernelName);
 
 		if(kernel->sharedMemorySize() + sharedMemory > 
@@ -547,6 +547,7 @@ namespace executive
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setVoteMemorySize(_properties.maxThreadsPerBlock / 32 * 4); 
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 	}
 
@@ -583,7 +584,7 @@ namespace executive
 	unsigned int ATIGPUDevice::getLastError()
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void ATIGPUDevice::synchronize()
@@ -611,25 +612,24 @@ namespace executive
 		: _resource(resource), _basePtr(basePtr), _size(size)
 	{
 		assertM(resource, "Invalid resource");
-		assertM(basePtr, "Invalid device pointer");
 		assertM(size, "Invalid size");
 	}
 
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void *ATIGPUDevice::MemoryAllocation::mappedPointer() const
 	{
 		assertM(false, "Not implemented yet");
-		return 0;
+        return 0;
 	}
 
 	void *ATIGPUDevice::MemoryAllocation::pointer() const
 	{
-		return hydrazine::bit_cast<void*>(_basePtr);
+        return hydrazine::bit_cast<void *>(_basePtr);
 	}
 
 	size_t ATIGPUDevice::MemoryAllocation::size() const
@@ -650,7 +650,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = _basePtr + offset;
 		std::memcpy((char *)data + addr, host, size);
 
 		report("MemoryAllocation::copy("
@@ -675,7 +675,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = _basePtr + offset;
 		std::memcpy(host, (char *)data + addr, size);
 		report("MemoryAllocation::copy("
 				<< "host = " << std::hex << std::showbase << host
@@ -697,7 +697,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = _basePtr + offset;
 		std::memset((char *)data + addr, value, size);
 
 		report("MemoryAllocation::memset("
@@ -725,10 +725,10 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr baseFromAddr = (_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr baseFromAddr = _basePtr;
 		CALdeviceptr fromAddr = baseFromAddr + fromOffset;
 
-		CALdeviceptr baseToAddr = (allocation->_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr baseToAddr = allocation->_basePtr;
 		CALdeviceptr toAddr = baseToAddr + toOffset;
 
 		std::memcpy((char*)data + toAddr, (char *)data + fromAddr, size);
@@ -781,9 +781,9 @@ namespace executive
 
 			// Check uav0 size limits
 			assertM(
-				device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr + aSize 
+				device->_uav0AllocPtr + aSize 
 				< ATIGPUDevice::Uav0Size, "Out of global memory: " 
-				<< device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr
+				<< device->_uav0AllocPtr
 				<< " + " << aSize
 				<< " greater than " << ATIGPUDevice::Uav0Size);
 

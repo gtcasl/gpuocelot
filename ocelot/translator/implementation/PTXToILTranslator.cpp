@@ -23,7 +23,7 @@ namespace translator
 		:
 			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
 			_ilKernel(0),
-			_tempRegisterCount(1000)
+			_temps(_maxRegs)
 	{
 	}
 
@@ -33,7 +33,7 @@ namespace translator
 		return 0;
 	}
 
-	ir::Kernel* PTXToILTranslator::translate(const ExecutableKernel* k)
+	ir::Kernel* PTXToILTranslator::translate(const ATIExecutableKernel* k)
 	{
 		report("Translating kernel " << k->name);
 
@@ -262,6 +262,7 @@ namespace translator
 			case ir::PTXInstruction::Neg:    _translateNeg(i);    break;
 			case ir::PTXInstruction::Not:    _translateNot(i);    break;
 			case ir::PTXInstruction::Or:     _translateOr(i);     break;
+			case ir::PTXInstruction::Popc:   _translatePopc(i);   break;
 			case ir::PTXInstruction::Rcp:    _translateRcp(i);    break;
 			case ir::PTXInstruction::Rem:    _translateRem(i);    break;
 			case ir::PTXInstruction::Rsqrt:  _translateRsqrt(i);  break;
@@ -274,6 +275,7 @@ namespace translator
 			case ir::PTXInstruction::Sqrt:   _translateSqrt(i);   break;
  			case ir::PTXInstruction::St:     _translateSt(i);     break;
 			case ir::PTXInstruction::Sub:    _translateSub(i);    break;
+			case ir::PTXInstruction::Vote:   _translateVote(i);   break;
 			case ir::PTXInstruction::Xor:    _translateXor(i);    break;
 			default:
 			{
@@ -292,14 +294,25 @@ namespace translator
 			case ir::PTXOperand::Indirect:
 			case ir::PTXOperand::BitBucket:
 			{
-				op.addressMode = ir::ILOperand::Register;
-				op.identifier = _translate(o.reg);
-				break;
+				assertM(o.reg < _maxRegs, "Max number of registers exceeded");
+
+				// look-up register table
+				const RegisterMap::const_iterator it = _registers.find(o.reg);
+				if (it != _registers.end()) return it->second;
+
+				// create new il register
+				ir::ILOperand op(ir::ILOperand::RegType_Temp);
+				op.num = _registers.size();
+				op = op.x();
+				_registers.insert(std::make_pair(o.reg, op));
+
+				return op;
 			}
 			case ir::PTXOperand::Immediate:
 			{
 				switch (o.type)
 				{
+					case ir::PTXOperand::s8:
 					case ir::PTXOperand::s32:
 					case ir::PTXOperand::u16:
 					case ir::PTXOperand::u32:
@@ -307,12 +320,14 @@ namespace translator
 					case ir::PTXOperand::b8:
 					{
 						//TODO Need to check for out-of-range literals
-						op = _translateLiteral((int)o.imm_uint);
+						op = _translateLiteral(o.imm_uint);
 						break;
 					}
 					case ir::PTXOperand::f32:
 					{
-						op = _translateLiteral((float)o.imm_float);
+						union { float f; int i; } convert;
+						convert.f = o.imm_float;
+						op = _translateLiteral(convert.i);
 						break;
 					}
 					default:
@@ -324,16 +339,9 @@ namespace translator
 				}
 				break;
 			}
-			case ir::PTXOperand::Address:
-			{
-				op.addressMode = ir::ILOperand::ConstantBuffer;
-				op.identifier = _translateConstantBuffer(o);
-				break;
-			}
 			case ir::PTXOperand::Special:
 			{
-				op.addressMode = ir::ILOperand::Special;
-				op.special = _translate(o.special, o.vIndex);
+				op = _translate(o.special, o.vIndex);
 				break;
 			}
 			default:
@@ -344,6 +352,163 @@ namespace translator
 		}
 
 		return op;
+	}
+
+	ir::ILOperand PTXToILTranslator::_translateArrayDst(
+			const ir::PTXOperand::Array a)
+	{
+		// create new il register with 2/4 components
+		ir::ILOperand op(ir::ILOperand::RegType_Temp);
+		op.num = _registers.size();
+
+		switch (a.size())
+		{
+			case 2: 
+			{
+				_registers.insert(std::make_pair(a[0].reg, op.x()));
+				_registers.insert(std::make_pair(a[1].reg, op.y()));
+				op = op.xy();
+				break;
+			}
+			case 4:
+			{
+				_registers.insert(std::make_pair(a[0].reg, op.x()));
+				_registers.insert(std::make_pair(a[1].reg, op.y()));
+				_registers.insert(std::make_pair(a[2].reg, op.z()));
+				_registers.insert(std::make_pair(a[3].reg, op.w()));
+				break;
+			}
+			default:
+			{
+				assertM(false, "Invalid array size " << a.size());
+				break;
+			}
+		}
+
+		return op;
+	}
+
+	ir::ILOperand PTXToILTranslator::_translateArraySrc(
+			const ir::PTXOperand::Array a)
+	{
+		// create new il register with 2/4 components
+		ir::ILOperand op(ir::ILOperand::RegType_Temp);
+		op.num = _registers.size();
+
+		switch (a.size())
+		{
+			case 2:
+			{
+				// look-up register table
+				const RegisterMap::const_iterator a0 = _registers.find(a[0].reg);
+				const RegisterMap::const_iterator a1 = _registers.find(a[1].reg);
+
+				assert(a0 != _registers.end() && a1 != _registers.end());
+
+				if (a0->second.num == a1->second.num)
+				{
+					op.num = a0->second.num;
+					return op.xy();
+				}
+
+				// x component
+				{
+					ir::ILMov mov;
+					mov.d = op.x();
+					mov.a = a0->second;
+					_add(mov);
+				}
+
+				// y component
+				{
+					ir::ILMov mov;
+					mov.d = op.y();
+					mov.a = a1->second;
+					_add(mov);
+				}
+
+				op = op.xy();
+
+				break;
+			}
+			case 4:
+			{
+				// look-up register table
+				const RegisterMap::const_iterator a0 = _registers.find(a[0].reg);
+				const RegisterMap::const_iterator a1 = _registers.find(a[1].reg);
+				const RegisterMap::const_iterator a2 = _registers.find(a[2].reg);
+				const RegisterMap::const_iterator a3 = _registers.find(a[3].reg);
+
+				assert(a0 != _registers.end() && a1 != _registers.end() &&
+						a2 != _registers.end() && a3 != _registers.end());
+
+				if (a0->second.num == a1->second.num && 
+						a2->second.num == a3->second.num &&
+						a0->second.num == a2->second.num)
+				{
+					op.num = a0->second.num;
+					return op;
+				}
+
+				// x component
+				{
+					ir::ILMov mov;
+					mov.d = op.x();
+					mov.a = a0->second;
+					_add(mov);
+				}
+
+				// y component
+				{
+					ir::ILMov mov;
+					mov.d = op.y();
+					mov.a = a1->second;
+					_add(mov);
+				}
+
+				// z component
+				{
+					ir::ILMov mov;
+					mov.d = op.z();
+					mov.a = a2->second;
+					_add(mov);
+				}
+
+				// w component
+				{
+					ir::ILMov mov;
+					mov.d = op.w();
+					mov.a = a3->second;
+					_add(mov);
+				}
+				break;
+			}
+			default:
+			{
+				assertM(false, "Invalid array size " << a.size());
+				break;
+			}
+		}
+
+		return op;
+	}
+
+	ir::ILOperand PTXToILTranslator::_translateMemMask(unsigned int i)
+	{
+		ir::ILOperand op(ir::ILOperand::RegType_Generic_Mem);
+		op.num = 0;
+
+		switch(i)
+		{
+			case 1: return op.x();
+			case 2: return op.xy();
+			case 4: return op;
+			default:
+			{
+				assertM(false, "Invalid memory mask");
+				break;
+			}
+		}
 	}
 
 	ir::ILInstruction::DataType PTXToILTranslator::_translate(
@@ -365,76 +530,64 @@ namespace translator
 
 	ir::ILOperand PTXToILTranslator::_tempRegister()
 	{
-		std::stringstream stream;
-		stream << "r" << _tempRegisterCount++;
-
-		ir::ILOperand r;
-		r.addressMode = ir::ILOperand::Register;
-		r.identifier = stream.str();
-
-		return r;
+		ir::ILOperand op(ir::ILOperand::RegType_Temp);
+		op.num = _temps++;
+		return op.x();
 	}
 
-	std::string PTXToILTranslator::_translate(
-			const ir::PTXOperand::RegisterType &reg)
+	ir::ILOperand PTXToILTranslator::_translate(
+			const ir::PTXOperand::SpecialRegister &s,
+			const ir::PTXOperand::VectorIndex& d)
 	{
-		assertM(reg < 1000, "Register name " << reg 
-				<< " collides with temp registers");
+		typedef ir::PTXOperand PTXOperand;
+		typedef ir::ILOperand ILOperand;
 
-		std::stringstream stream;
-		stream << "r" << reg;
-		return stream.str();
-	}
-
-	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
-		const ir::PTXOperand::SpecialRegister &s,
-        const ir::PTXOperand::VectorIndex& d)
-	{
-		ir::ILOperand::SpecialRegister sr;
+		ir::ILOperand op;
 
 		switch (s)
 		{
-			case ir::PTXOperand::tid:    
-				switch (d)
-				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+			case PTXOperand::tid:
+			{
+				op.type = ILOperand::RegType_Thread_Id_In_Group;
 				break;
-			case ir::PTXOperand::ntid:   
-				switch (d)
-				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+			}
+			case PTXOperand::ntid:
+			{
+				// Translate to cb0[0]
+				op.num = 0;
+				op.type = ILOperand::RegType_Const_Buf;
+				op.immediate_present = true;
+				op.imm = 0;
 				break;
-			case ir::PTXOperand::ctaId:  
-				switch (d)
-				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+			}
+			case PTXOperand::ctaId:
+			{
+				op.type = ILOperand::RegType_Thread_Group_Id;
 				break;
-			case ir::PTXOperand::nctaId:
-				switch (d)
-				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+			}
+			case PTXOperand::nctaId:
+			{
+				// Translate to cb0[1]
+				op.num = 0;
+				op.type = ILOperand::RegType_Const_Buf;
+				op.immediate_present = true;
+				op.imm = 1;
 				break;
+			}
 			default: assertM(false, "Special Register " << s
 				<< " not supported");
 		}
 
-		return sr;
+		// Translate modifier
+		switch (d)
+		{
+			case PTXOperand::ix: op = op.x(); break;
+			case PTXOperand::iy: op = op.y(); break;
+			case PTXOperand::iz: op = op.z(); break;
+			default: assertM(false, "Invalid vector index " << d);
+		}
+
+		return op;
 	}
 
 	void PTXToILTranslator::_translateAbs(const ir::PTXInstruction &i)
@@ -661,13 +814,13 @@ namespace translator
 						assertM(i.a.offset == 0, 
 								"Atomic Add from offset not supported");
 
-						ir::ILLds_Read_Add_Resource lds_read_add_resource;
+						ir::ILLds_Read_Add_Id lds_read_add_id;
 
-						lds_read_add_resource.d = _translate(i.d).x();
-						lds_read_add_resource.a = _translate(i.a).x();
-						lds_read_add_resource.b = _translate(i.b).x();
+						lds_read_add_id.d = _translate(i.d).x();
+						lds_read_add_id.a = _translate(i.a).x();
+						lds_read_add_id.b = _translate(i.b).x();
 
-						_add(lds_read_add_resource);
+						_add(lds_read_add_id);
 
 						break;
 					}
@@ -744,9 +897,9 @@ namespace translator
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
-						iand.b = _translateLiteral((int)0x0000000F);
+						iand.b = _translateLiteral(0x000000FF);
 						_add(iand);
-						return;
+                        return;
 					}
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::u64:
@@ -776,22 +929,22 @@ namespace translator
 				}
 				break;
 			}
-			case ir::PTXOperand::s64:
-			{
-				switch (i.type)
-				{
-					case ir::PTXOperand::s32:
-					{
+            case ir::PTXOperand::s64:
+            {
+                switch (i.type)
+                {
+                    case ir::PTXOperand::s32:
+                    {
 						// chop (but there are no 64-bit registers in IL)
 						ir::ILMov mov;
 						mov.d = d;
 						mov.a = a;
 						_add(mov);
 						return;
-					}
-					default: break;
-				}
-			}
+                    }
+                    default: break;
+                }
+            }
 			case ir::PTXOperand::u8:
 			{
 				switch (i.type)
@@ -856,7 +1009,7 @@ namespace translator
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
-						iand.b = _translateLiteral((int)0x000000FF);
+						iand.b = _translateLiteral(0x000000FF);
 						_add(iand);
 						return;
 					}
@@ -866,7 +1019,7 @@ namespace translator
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
-						iand.b = _translateLiteral((int)0x0000FFFF);
+						iand.b = _translateLiteral(0x0000FFFF);
 						_add(iand);
 						return;
 					}
@@ -942,8 +1095,7 @@ namespace translator
 						if (i.modifier & ir::PTXInstruction::sat) 
 						{
 							ir::ILMov mov;
-							mov.clamp = ir::ILInstruction::Clamp;
-							mov.d = d;
+							mov.d = d.clamp();
 							mov.a = a;
 							_add(mov);
 							return;
@@ -998,18 +1150,10 @@ namespace translator
 					case ir::PTXOperand::u32:
 					{
 						// sext
-						ir::ILIshl ishl;
-						ishl.d = _translate(i.d);
-						ishl.a = d;
-						ishl.b = _translateLiteral(24);
-						_add(ishl);
-
-						ir::ILIshr ishr;
-						ishr.d = _translate(i.d);
-						ishr.a = _translate(i.d);
-						ishr.b = _translateLiteral(24);
-						_add(ishr);
-
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
 						return;
 					}
 					default: break;
@@ -1029,15 +1173,15 @@ namespace translator
 						_add(mov);
 						return;
 					}
-					case ir::PTXOperand::u64:
-					{
+                    case ir::PTXOperand::u64:
+                    {
 						// sext (but there are no 64-bit registers in IL)
 						ir::ILMov mov;
 						mov.d = _translate(i.d);
 						mov.a = d;
 						_add(mov);
 						return;
-					}
+                    }
 					default: break;
 				}
 				break;
@@ -1290,7 +1434,7 @@ namespace translator
 		// mov r0._y__, r1.x
 		{
 			ir::ILMov mov;
-			mov.d = r0._y__(); mov.a = r1.x();
+			mov.d = r0.y(); mov.a = r1.x();
 			_add(mov);
 		}
 
@@ -1396,19 +1540,61 @@ namespace translator
 		_add(fma);
 	}
 
+	void PTXToILTranslator::_translateLdParam(const ir::PTXInstruction &i)
+	{
+		int bytes  = ir::PTXOperand::bytes(i.type);
+		int bytesA = ir::PTXOperand::bytes(i.a.type);
+
+		// IL registers are 32 bits
+		bytes  = (bytes > 4 ? 4 : bytes);
+		bytesA = (bytesA > 4 ? 4 : bytesA);
+
+		assertM(bytes >= bytesA,
+				"Type mismatch: " << ir::PTXOperand::toString(i.type) << 
+				" != " << ir::PTXOperand::toString(i.a.type));
+
+		assertM(bytes % bytesA == 0,
+				"Type mismatch: " << ir::PTXOperand::toString(i.type) << 
+				" != " << ir::PTXOperand::toString(i.a.type));
+
+		ir::ILOperand temp1 = _tempRegister();
+		ir::ILOperand d = _translate(i.d);
+		for (int b = 0 ; b < bytes / bytesA ; ++b)
+		{
+			if (b == 0)
+			{
+				ir::ILMov mov;
+				mov.a = _translateConstantBuffer(i.a, 0);
+				mov.d = d;
+				_add(mov);
+			}
+			else
+			{
+				ir::ILMov mov;
+				mov.a = _translateConstantBuffer(i.a, b);
+				mov.d = temp1;
+				_add(mov);
+
+				ir::ILIshl ishl;
+				ishl.d = temp1;
+				ishl.a = temp1;
+				ishl.b = _translateLiteral(b * bytesA * 8);
+				_add(ishl);
+
+				ir::ILIadd iadd;
+				iadd.d = d;
+				iadd.a = d;
+				iadd.b = temp1;
+				_add(iadd);
+			}
+		}
+	}
+
 	void PTXToILTranslator::_translateLd(const ir::PTXInstruction &i)
 	{
 		switch (i.addressSpace)
 		{
-			case ir::PTXInstruction::Param:
-			{
-				ir::ILMov mov;
-				mov.a = _translate(i.a);
-				mov.d = _translate(i.d);
-				_add(mov);
-
-				break;
-			}
+			case ir::PTXInstruction::Param: _translateLdParam(i); break;
 			case ir::PTXInstruction::Global:
 			case ir::PTXInstruction::Const:
 			{
@@ -1464,34 +1650,51 @@ namespace translator
 					case ir::PTXOperand::v2:
 					case ir::PTXOperand::v4:
 					{
-						ir::ILOperand temp = _tempRegister();
-						ir::PTXOperand::Array::const_iterator dst;
-						int offset = i.a.offset;
-						for (dst = i.d.array.begin() ;
-								dst != i.d.array.end() ; dst++)
+						if (ir::PTXOperand::bytes(i.type) == 4)
 						{
-							ir::ILIadd iadd;
-							iadd.a = _translate(i.a);
-							iadd.b = _translateLiteral(offset);
-							iadd.d = temp;
-							_add(iadd);
+							ir::ILOperand temp;
 
-							if (ir::PTXOperand::bytes(i.type) == 4)
+							// translate base + offset addressing
+							if (i.a.offset == 0)
 							{
-								ir::ILUav_Raw_Load_Id uav_raw_load_id;
-								uav_raw_load_id.a = temp;
-								uav_raw_load_id.d = _translate(*dst);
-								_add(uav_raw_load_id);
+								temp = _translate(i.a);
 							} else
 							{
+								temp = _tempRegister();
+
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.a);
+								iadd.b = _translateLiteral(i.a.offset);
+								iadd.d = temp;
+								_add(iadd);
+							}
+
+							ir::ILUav_Raw_Load_Id uav_raw_load_id;
+							uav_raw_load_id.a = temp;
+							uav_raw_load_id.d = _translateArrayDst(i.d.array);
+							_add(uav_raw_load_id);
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+							ir::PTXOperand::Array::const_iterator dst;
+							int offset = i.a.offset;
+							for (dst = i.d.array.begin() ;
+									dst != i.d.array.end() ; dst++)
+							{
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.a);
+								iadd.b = _translateLiteral(offset);
+								iadd.d = temp;
+								_add(iadd);
+
 								ir::ILUav_Arena_Load_Id uav_arena_load_id;
 								uav_arena_load_id.a = temp;
 								uav_arena_load_id.d = _translate(*dst);
 								uav_arena_load_id.type = _translate(i.type);
 								_add(uav_arena_load_id);
-							}
 
-							offset += ir::PTXOperand::bytes(i.type);
+								offset += ir::PTXOperand::bytes(i.type);
+							}
 						}
 
 						break;
@@ -1633,7 +1836,7 @@ namespace translator
 			ir::ILIand iand;
 			iand.d = temp2;
 			iand.a = temp3;
-			iand.b = _translateLiteral((int)0xFFFFFFFC);
+			iand.b = _translateLiteral(0xFFFFFFFC);
 			_add(iand);
 		}
 
@@ -1977,13 +2180,21 @@ namespace translator
 		_add(ior);
 	}
 
+	void PTXToILTranslator::_translatePopc(const ir::PTXInstruction &i)
+    {
+        ir::ILIcbits icbits;
+        icbits.d = _translate(i.d);
+        icbits.a = _translate(i.a);
+        _add(icbits);
+    }
+
 	void PTXToILTranslator::_translateRcp(const ir::PTXInstruction &i)
 	{
 		// rcp operates on the fourth (w) component of a
 		ir::ILRcp rcp;
 
 		rcp.d = _translate(i.d);
-		rcp.a = _translate(i.a).xxxx();
+		rcp.a = _translate(i.a).x();
 
 		_add(rcp);
 	}
@@ -2031,7 +2242,7 @@ namespace translator
 		// mov r0._y__, r1.x
 		{
 			ir::ILMov mov;
-			mov.d = r0._y__(); mov.a = r1.x();
+			mov.d = r0.y(); mov.a = r1.x();
 			_add(mov);
 		}
 
@@ -2320,15 +2531,15 @@ namespace translator
 			// TODO Implement multi-valued literals. Otherwise, we need to use
 			// two and's.
 			ir::ILAnd and1;
-			and1.d = r0._y__(); 
+			and1.d = r0.y(); 
 			and1.a = r0.x(); 
-			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			and1.b = _translateLiteral(0x7FFFFFFF);
 			_add(and1);
 
 			ir::ILAnd and2;
-			and2.d = r0.__z_();
+			and2.d = r0.z();
 			and2.a = r0.x();
-			and2.b = _translateLiteral((int)0x7F800000);
+			and2.b = _translateLiteral(0x7F800000);
 			_add(and2);
 		}
 
@@ -2336,7 +2547,7 @@ namespace translator
 		// ieq r0.__z_, r0.z, l1
 		{
 			ir::ILIeq ieq;
-			ieq.d = r0.__z_();
+			ieq.d = r0.z();
 			ieq.a = r0.z();
 			ieq.b = _translateLiteral(0);
 			_add(ieq);
@@ -2347,13 +2558,13 @@ namespace translator
 		// and r0.__z_, r0.z, r0.w
 		{
 			ir::ILIne ine;
-			ine.d = r0.___w();
+			ine.d = r0.w();
 			ine.a = r0.y();
 			ine.b = _translateLiteral(0);
 			_add(ine);
 
 			ir::ILAnd and1;
-			and1.d = r0.__z_();
+			and1.d = r0.z();
 			and1.a = r0.z();
 			and1.b = r0.w();
 			_add(and1);
@@ -2365,19 +2576,19 @@ namespace translator
 		// ior r0.__z_, r0.z, r0.w
 		{
 			ir::ILIlt ilt;
-			ilt.d = r1.x___();
+			ilt.d = r1.x();
 			ilt.a = r0.x();
 			ilt.b = _translateLiteral(0);
 			_add(ilt);
 
 			ir::ILAnd and1;
-			and1.d = r0.___w();
+			and1.d = r0.w();
 			and1.a = r0.w();
 			and1.b = r1.x();
 			_add(and1);
 
 			ir::ILIor ior;
-			ior.d = r0.__z_();
+			ior.d = r0.z();
 			ior.a = r0.z();
 			ior.b = r0.w();
 			_add(ior);
@@ -2388,13 +2599,13 @@ namespace translator
 		// ior r0.__z_, r0.z, r0.y
 		{
 			ir::ILIlt ilt;
-			ilt.d = r0._y__();
-			ilt.a = _translateLiteral((int)0x7F800000);
+			ilt.d = r0.y();
+			ilt.a = _translateLiteral(0x7F800000);
 			ilt.b = r0.y();
 			_add(ilt);
 
 			ir::ILIor ior;
-			ior.d = r0.__z_();
+			ior.d = r0.z();
 			ior.a = r0.z();
 			ior.b = r0.y();
 			_add(ior);
@@ -2412,13 +2623,13 @@ namespace translator
 		//     itof r0.__z_, r0.z
 		{
 			ir::ILAnd and1;
-			and1.d = r0.__z_();
+			and1.d = r0.z();
 			and1.a = r0.x();
-			and1.b = _translateLiteral((int)0x007FFFFF);
+			and1.b = _translateLiteral(0x007FFFFF);
 			_add(and1);
 
 			ir::ILItoF itof;
-			itof.d = r0.__z_();
+			itof.d = r0.z();
 			itof.a = r0.z();
 			_add(itof);
 		}
@@ -2428,15 +2639,15 @@ namespace translator
 		{
 			// TODO Implement multi-valued literals.
 			ir::ILAnd and1;
-			and1.d = r1.x___();
+			and1.d = r1.x();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x7F800000);
+			and1.b = _translateLiteral(0x7F800000);
 			_add(and1);
 
 			ir::ILAnd and2;
-			and2.d = r1._y__();
+			and2.d = r1.y();
 			and2.a = r0.z();
-			and2.b = _translateLiteral((int)0x007FFFFF);
+			and2.b = _translateLiteral(0x007FFFFF);
 			_add(and2);
 		}
 
@@ -2444,9 +2655,9 @@ namespace translator
 		//     ishr r0.__z_, r1.x, l7
 		{
 			ir::ILIshr ishr;
-			ishr.d = r0.__z_();
+			ishr.d = r0.z();
 			ishr.a = r1.x();
-			ishr.b = _translateLiteral((int)0x00000017);
+			ishr.b = _translateLiteral(0x00000017);
 			_add(ishr);
 		}
 
@@ -2454,9 +2665,9 @@ namespace translator
 		//     iadd r0.__z_, r0.z, l8
 		{
 			ir::ILIadd iadd;
-			iadd.d = r0.__z_();
+			iadd.d = r0.z();
 			iadd.a = r0.z();
-			iadd.b = _translateLiteral((int)0x00000018);
+			iadd.b = _translateLiteral(0x00000018);
 			_add(iadd);
 		}
 
@@ -2464,9 +2675,9 @@ namespace translator
 		//     ior r1.x___, r1.y, l9
 		{
 			ir::ILIor ior;
-			ior.d = r1.x___();
+			ior.d = r1.x();
 			ior.a = r1.y();
-			ior.b = _translateLiteral((int)0x00800000);
+			ior.b = _translateLiteral(0x00800000);
 			_add(ior);
 		}
 
@@ -2474,8 +2685,8 @@ namespace translator
 		//     iadd r0.__z_, l10, r0.z_neg(xyzw)
 		{
 			ir::ILIadd iadd;
-			iadd.d = r0.__z_();
-			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.d = r0.z();
+			iadd.a = _translateLiteral(0x00000096);
 			iadd.b = r0.z().neg();
 			_add(iadd);
 		}
@@ -2484,8 +2695,8 @@ namespace translator
 		//     ilt r1._y__, l11, r0.z
 		{
 			ir::ILIlt ilt;
-			ilt.d = r1._y__();
-			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.d = r1.y();
+			ilt.a = _translateLiteral(0x00000017);
 			ilt.b = r0.z();
 			_add(ilt);
 		}
@@ -2494,9 +2705,9 @@ namespace translator
 		//     cmov_logical r0.__z_, r1.y, l12, r0.z
 		{
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r0.__z_();
+			cmov_logical.d = r0.z();
 			cmov_logical.a = r1.y();
-			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.b = _translateLiteral(0x00000018);
 			cmov_logical.c = r0.z();
 			_add(cmov_logical);
 		}
@@ -2507,19 +2718,19 @@ namespace translator
 		//     inegate r0.__z_, r0.z
 		{
 			ir::ILIlt ilt;
-			ilt.d = r1._y__();
+			ilt.d = r1.y();
 			ilt.a = _translateLiteral(0);
 			ilt.b = r0.z();
 			_add(ilt);
 
 			ir::ILIshr ishr;
-			ishr.d = r1.__z_();
+			ishr.d = r1.z();
 			ishr.a = r1.x();
 			ishr.b = r0.z();
 			_add(ishr);
 
 			ir::ILInegate inegate;
-			inegate.d = r0.__z_();
+			inegate.d = r0.z();
 			inegate.a = r0.x();
 			_add(inegate);
 		}
@@ -2531,26 +2742,26 @@ namespace translator
 		//     rsq_vec r0.__z_, r0.z
 		{
 			ir::ILIshl ishl;
-			ishl.d = r0.__z_();
+			ishl.d = r0.z();
 			ishl.a = r0.z();
-			ishl.b = _translateLiteral((int)0x00000017);
+			ishl.b = _translateLiteral(0x00000017);
 			_add(ishl);
 
 			ir::ILIadd iadd;
-			iadd.d = r0.__z_();
+			iadd.d = r0.z();
 			iadd.a = r1.x();
 			iadd.b = r0.z();
 			_add(iadd);
 
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r0.__z_();
+			cmov_logical.d = r0.z();
 			cmov_logical.a = r1.y();
 			cmov_logical.b = r1.z();
 			cmov_logical.c = r0.z();
 			_add(cmov_logical);
 
 			ir::ILRsq_Vec rsq_vec;
-			rsq_vec.d = r0.__z_();
+			rsq_vec.d = r0.z();
 			rsq_vec.a = r0.z();
 			_add(rsq_vec);
 		}
@@ -2560,9 +2771,9 @@ namespace translator
 		//     if_logicalz r1.x
 		{
 			ir::ILAnd and1;
-			and1.d = r1.x___();
+			and1.d = r1.x();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x7F800000);
+			and1.b = _translateLiteral(0x7F800000);
 			_add(and1);
 
 			ir::ILIfLogicalZ if_logicalz;
@@ -2575,13 +2786,13 @@ namespace translator
 		//         itof r1._y__, r1.y
 		{
 			ir::ILAnd and1;
-			and1.d = r1._y__();
+			and1.d = r1.y();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x007FFFFF);
+			and1.b = _translateLiteral(0x007FFFFF);
 			_add(and1);
 
 			ir::ILItoF itof;
-			itof.d = r1._y__();
+			itof.d = r1.y();
 			itof.a = r1.y();
 			_add(itof);
 		}
@@ -2591,15 +2802,15 @@ namespace translator
 		{
 			// TODO Implement multi-valued literals.
 			ir::ILAnd and1;
-			and1.d = r1._y__();
+			and1.d = r1.y();
 			and1.a = r1.y();
-			and1.b = _translateLiteral((int)0x7F800000);
+			and1.b = _translateLiteral(0x7F800000);
 			_add(and1);
 
 			ir::ILAnd and2;
-			and2.d = r1.__z_();
+			and2.d = r1.z();
 			and2.a = r1.y();
-			and2.b = _translateLiteral((int)0x007FFFFF);
+			and2.b = _translateLiteral(0x007FFFFF);
 			_add(and2);
 		}
 
@@ -2607,9 +2818,9 @@ namespace translator
 		//         ishr r1._y__, r1.y, l18
 		{
 			ir::ILIshr ishr;
-			ishr.d = r1._y__();
+			ishr.d = r1.y();
 			ishr.a = r1.y();
-			ishr.b = _translateLiteral((int)0x00000017);
+			ishr.b = _translateLiteral(0x00000017);
 			_add(ishr);
 		}
 
@@ -2617,9 +2828,9 @@ namespace translator
 		//         iadd r1._y__, r1.y, l19
 		{
 			ir::ILIadd iadd;
-			iadd.d = r1._y__();
+			iadd.d = r1.y();
 			iadd.a = r1.y();
-			iadd.b = _translateLiteral((int)0x0000000C);
+			iadd.b = _translateLiteral(0x0000000C);
 			_add(iadd);
 		}
 
@@ -2627,9 +2838,9 @@ namespace translator
 		//         ior r1.__z_, r1.z, l20
 		{
 			ir::ILIor ior;
-			ior.d = r1.__z_();
+			ior.d = r1.z();
 			ior.a = r1.z();
-			ior.b = _translateLiteral((int)0x00800000);
+			ior.b = _translateLiteral(0x00800000);
 			_add(ior);
 		}
 
@@ -2637,8 +2848,8 @@ namespace translator
 		//         iadd r1._y__, l21, r1.y_neg(xyzw)
 		{
 			ir::ILIadd iadd;
-			iadd.d = r1._y__();
-			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.d = r1.y();
+			iadd.a = _translateLiteral(0x00000096);
 			iadd.b = r1.y().neg();
 			_add(iadd);
 		}
@@ -2647,8 +2858,8 @@ namespace translator
 		//         ilt r1.___w, l22, r1.y
 		{
 			ir::ILIlt ilt;
-			ilt.d = r1.___w();
-			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.d = r1.w();
+			ilt.a = _translateLiteral(0x00000017);
 			ilt.b = r1.y();
 			_add(ilt);
 		}
@@ -2657,9 +2868,9 @@ namespace translator
 		//         cmov_logical r1._y__, r1.w, l23, r1.y
 		{
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r1._y__();
+			cmov_logical.d = r1.y();
 			cmov_logical.a = r1.w();
-			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.b = _translateLiteral(0x00000018);
 			cmov_logical.c = r1.y();
 			_add(cmov_logical);
 		}
@@ -2670,19 +2881,19 @@ namespace translator
 		//         inegate r1._y__, r1.y
 		{
 			ir::ILIlt ilt;
-			ilt.d = r1.___w();
+			ilt.d = r1.w();
 			ilt.a = _translateLiteral(0);
 			ilt.b = r1.y();
 			_add(ilt);
 
 			ir::ILIshr ishr;
-			ishr.d = r2.x___();
+			ishr.d = r2.x();
 			ishr.a = r1.z();
 			ishr.b = r1.y();
 			_add(ishr);
 
 			ir::ILInegate inegate;
-			inegate.d = r1._y__();
+			inegate.d = r1.y();
 			inegate.a = r1.y();
 			_add(inegate);
 		}
@@ -2693,19 +2904,19 @@ namespace translator
 		//         cmov_logical r1._y__, r1.w, r2.x, r1.y
 		{
 			ir::ILIshl ishl;
-			ishl.d = r1._y__();
+			ishl.d = r1.y();
 			ishl.a = r1.y();
-			ishl.b = _translateLiteral((int)0x00000017);
+			ishl.b = _translateLiteral(0x00000017);
 			_add(ishl);
 
 			ir::ILIadd iadd;
-			iadd.d = r1._y__();
+			iadd.d = r1.y();
 			iadd.a = r1.z();
 			iadd.b = r1.y();
 			_add(iadd);
 
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r1._y__();
+			cmov_logical.d = r1.y();
 			cmov_logical.a = r1.w();
 			cmov_logical.b = r2.x();
 			cmov_logical.c = r1.y();
@@ -2721,9 +2932,9 @@ namespace translator
 		//         and r0.__z_, r0.z, l26
 		{
 			ir::ILAnd and1;
-			and1.d = r0.__z_();
+			and1.d = r0.z();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			and1.b = _translateLiteral(0x7FFFFFFF);
 			_add(and1);
 		}
 
@@ -2731,9 +2942,9 @@ namespace translator
 		//         ishr r1.x___, r1.x, l27
 		{
 			ir::ILIshr ishr;
-			ishr.d = r1.x___();
+			ishr.d = r1.x();
 			ishr.a = r1.x();
-			ishr.b = _translateLiteral((int)0x00000017);
+			ishr.b = _translateLiteral(0x00000017);
 			_add(ishr);
 		}
 
@@ -2741,9 +2952,9 @@ namespace translator
 		//         iadd r0.__z_, r0.z, l28
 		{
 			ir::ILIadd iadd;
-			iadd.d = r0.__z_();
+			iadd.d = r0.z();
 			iadd.a = r0.z();
-			iadd.b = _translateLiteral((int)0x06000000);
+			iadd.b = _translateLiteral(0x06000000);
 			_add(iadd);
 		}
 
@@ -2751,9 +2962,9 @@ namespace translator
 		//         iadd r1.x___, r1.x, l29
 		{
 			ir::ILIadd iadd;
-			iadd.d = r1.x___();
+			iadd.d = r1.x();
 			iadd.a = r1.x();
-			iadd.b = _translateLiteral((int)0xFFFFFF8D);
+			iadd.b = _translateLiteral(0xFFFFFF8D);
 			_add(iadd);
 		}
 
@@ -2761,8 +2972,8 @@ namespace translator
 		//         ilt r1.x___, l30, r1.x
 		{
 			ir::ILIlt ilt;
-			ilt.d = r1.x___();
-			ilt.a = _translateLiteral((int)0x0000007F);
+			ilt.d = r1.x();
+			ilt.a = _translateLiteral(0x0000007F);
 			ilt.b = r1.x();
 			_add(ilt);
 		}
@@ -2771,9 +2982,9 @@ namespace translator
 		//         cmov_logical r1._y__, r1.x, l31, r0.z
 		{
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r1._y__();
+			cmov_logical.d = r1.y();
 			cmov_logical.a = r1.x();
-			cmov_logical.b = _translateLiteral((int)0x7F800000);
+			cmov_logical.b = _translateLiteral(0x7F800000);
 			cmov_logical.c = r0.z();
 			_add(cmov_logical);
 		}
@@ -2787,9 +2998,9 @@ namespace translator
 		//     cmov_logical r0.__z_, r0.w, l32, r1.y
 		{
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r0.__z_();
+			cmov_logical.d = r0.z();
 			cmov_logical.a = r0.w();
-			cmov_logical.b = _translateLiteral((int)0xFFC00000);
+			cmov_logical.b = _translateLiteral(0xFFC00000);
 			cmov_logical.c = r1.y();
 			_add(cmov_logical);
 		}
@@ -2799,13 +3010,13 @@ namespace translator
 		//     cmov_logical r0.x___, r0.y, r0.w, r0.z
 		{
 			ir::ILIor ior;
-			ior.d = r0.___w();
+			ior.d = r0.w();
 			ior.a = r0.x();
-			ior.b = _translateLiteral((int)0x7FC00000);
+			ior.b = _translateLiteral(0x7FC00000);
 			_add(ior);
 
 			ir::ILCmov_Logical cmov_logical;
-			cmov_logical.d = r0.x___();
+			cmov_logical.d = r0.x();
 			cmov_logical.a = r0.y();
 			cmov_logical.b = r0.w();
 			cmov_logical.c = r0.z();
@@ -2820,7 +3031,7 @@ namespace translator
 		//     rsq_vec r0.x___, r0.x
 		{
 			ir::ILRsq_Vec rsq_vec;
-			rsq_vec.d = r0.x___();
+			rsq_vec.d = r0.x();
 			rsq_vec.a = r0.x();
 			_add(rsq_vec);
 		}
@@ -2977,16 +3188,6 @@ namespace translator
 				_add(eq);
 				break;
 			}
-			case ir::PTXInstruction::Ne: /* fall-thru */
-			case ir::PTXInstruction::Neu:
-			{
-				ir::ILNe ne;
-				ne.d = _translate(i.d);
-				ne.a = _translate(i.a);
-				ne.b = _translate(i.b);
-				_add(ne);
-				break;
-			}
 			case ir::PTXInstruction::Le:
 			{
 				// IL doesn't have le but it has ge so switch a & b operands
@@ -3128,14 +3329,15 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = _translate(i.a);
-								uav_raw_store_id.d = _translate(i.d);
+								uav_raw_store_id.d = _translateMemMask(1);
+								uav_raw_store_id.a = _translate(i.d);
+								uav_raw_store_id.b = _translate(i.a);
 								_add(uav_raw_store_id);
 							} else
 							{
 								ir::ILUav_Arena_Store_Id uav_arena_store_id;
-								uav_arena_store_id.a = _translate(i.a);
-								uav_arena_store_id.d = _translate(i.d);
+								uav_arena_store_id.a = _translate(i.d);
+								uav_arena_store_id.b = _translate(i.a);
 								uav_arena_store_id.type = _translate(i.type);
 								_add(uav_arena_store_id);
 							}
@@ -3152,14 +3354,15 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = _translate(i.a);
-								uav_raw_store_id.d = temp;
+								uav_raw_store_id.d = _translateMemMask(1);
+								uav_raw_store_id.a = temp;
+								uav_raw_store_id.b = _translate(i.a);
 								_add(uav_raw_store_id);
 							} else
 							{
 								ir::ILUav_Arena_Store_Id uav_arena_store_id;
-								uav_arena_store_id.a = _translate(i.a);
-								uav_arena_store_id.d = temp;
+								uav_arena_store_id.a = temp;
+								uav_arena_store_id.b = _translate(i.a);
 								uav_arena_store_id.type = _translate(i.type);
 								_add(uav_arena_store_id);
 							}
@@ -3170,34 +3373,52 @@ namespace translator
 					case ir::PTXOperand::v2:
 					case ir::PTXOperand::v4:
 					{
-						ir::ILOperand temp = _tempRegister();
-						ir::PTXOperand::Array::const_iterator src;
-						int offset = i.d.offset;
-						for (src = i.a.array.begin() ;
-								src != i.a.array.end() ; src++)
+						if (ir::PTXOperand::bytes(i.type) == 4)
 						{
-							ir::ILIadd iadd;
-							iadd.a = _translate(i.d);
-							iadd.b = _translateLiteral(offset);
-							iadd.d = temp;
-							_add(iadd);
+							ir::ILOperand temp;
 
-							if (ir::PTXOperand::bytes(i.type) == 4)
+							// translate base + offset addressing
+							if (i.d.offset == 0)
 							{
-								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = _translate(*src);
-								uav_raw_store_id.d = temp;
-								_add(uav_raw_store_id);
+								temp = _translate(i.d);
 							} else
 							{
-								ir::ILUav_Arena_Store_Id uav_arena_store_id;
-								uav_arena_store_id.a = _translate(*src);
-								uav_arena_store_id.d = temp;
-								uav_arena_store_id.type = _translate(i.type);
-								_add(uav_arena_store_id);
+								temp = _tempRegister();
+
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.d);
+								iadd.b = _translateLiteral(i.d.offset);
+								iadd.d = temp;
+								_add(iadd);
 							}
 
-							offset += ir::PTXOperand::bytes(i.type);
+							ir::ILUav_Raw_Store_Id uav_raw_store_id;
+							uav_raw_store_id.d = _translateMemMask(i.a.array.size());
+							uav_raw_store_id.a = temp;
+							uav_raw_store_id.b = _translateArraySrc(i.a.array);
+							_add(uav_raw_store_id);
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+							ir::PTXOperand::Array::const_iterator src;
+							int offset = i.d.offset;
+							for (src = i.a.array.begin() ;
+									src != i.a.array.end() ; src++)
+							{
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.d);
+								iadd.b = _translateLiteral(offset);
+								iadd.d = temp;
+								_add(iadd);
+
+								ir::ILUav_Arena_Store_Id uav_arena_store_id;
+								uav_arena_store_id.a = temp;
+								uav_arena_store_id.b = _translate(*src);
+								uav_arena_store_id.type = _translate(i.type);
+								_add(uav_arena_store_id);
+
+								offset += ir::PTXOperand::bytes(i.type);
+							}
 						}
 						break;
 					}
@@ -3247,8 +3468,8 @@ namespace translator
 							_add(iadd);
 
 							ir::ILLds_Store_Id lds_store_id;
-							lds_store_id.a = _translate(*src).x();
-							lds_store_id.d = temp;
+							lds_store_id.a = temp;
+							lds_store_id.b = _translate(*src).x();
 							_add(lds_store_id);
 
 							offset += ir::PTXOperand::bytes(i.type);
@@ -3297,8 +3518,8 @@ namespace translator
 		// cmov_logical temp5, temp3Z, temp5, 0xFF00FFFF
 		// cmov_logical temp5, temp3Y, temp5, 0xFFFF00FF
 		// ishl temp2, temp1, temp4
-		// lds_and_resource(1) i.d, temp5
-		// lds_or_resource(1) i.d, temp2
+		// lds_and_id(1) i.d, temp5
+		// lds_or_id(1) i.d, temp2
 
 		assertM(i.a.offset == 0, "St Shared Byte from offset not supported");
 
@@ -3315,7 +3536,7 @@ namespace translator
 		ir::ILAnd iland1;
 		iland1.d = temp1;
 		iland1.a = _translate(i.a);
-		iland1.b = _translateLiteral((int)0x000000FF);
+		iland1.b = _translateLiteral(0x000000FF);
 		_add(iland1);
 
 		// get the two lsb's of the address.
@@ -3345,22 +3566,22 @@ namespace translator
 		ir::ILCmov_Logical cmov_logical1;
 		cmov_logical1.d = temp5;
 		cmov_logical1.a = temp3W;
-		cmov_logical1.b = _translateLiteral((int)0xFFFFFF00);
-		cmov_logical1.c = _translateLiteral((int)0x00FFFFFF);
+		cmov_logical1.b = _translateLiteral(0xFFFFFF00);
+		cmov_logical1.c = _translateLiteral(0x00FFFFFF);
 		_add(cmov_logical1);
 
 		ir::ILCmov_Logical cmov_logical2;
 		cmov_logical2.d = temp5;
 		cmov_logical2.a = temp3Z;
 		cmov_logical2.b = temp5;
-		cmov_logical2.c = _translateLiteral((int)0xFF00FFFF);
+		cmov_logical2.c = _translateLiteral(0xFF00FFFF);
 		_add(cmov_logical2);
 
 		ir::ILCmov_Logical cmov_logical3;
 		cmov_logical3.d = temp5;
 		cmov_logical3.a = temp3Y;
 		cmov_logical3.b = temp5;
-		cmov_logical3.c = _translateLiteral((int)0xFFFF00FF);
+		cmov_logical3.c = _translateLiteral(0xFFFF00FF);
 		_add(cmov_logical3);
 
 		ir::ILIshl ishl;
@@ -3369,15 +3590,15 @@ namespace translator
 		ishl.b = temp4;
 		_add(ishl);
 
-		ir::ILLds_And_Resource lds_and_resource;
-		lds_and_resource.d = _translate(i.d).x();
-		lds_and_resource.a = temp5.x();
-		_add(lds_and_resource);
+		ir::ILLds_And_Id lds_and_id;
+		lds_and_id.a = _translate(i.d).x();
+		lds_and_id.b = temp5.x();
+		_add(lds_and_id);
 
-		ir::ILLds_Or_Resource lds_or_resource;
-		lds_or_resource.d = _translate(i.d).x();
-		lds_or_resource.a = temp2.x();
-		_add(lds_or_resource);
+		ir::ILLds_Or_Id lds_or_id;
+		lds_or_id.a = _translate(i.d).x();
+		lds_or_id.b = temp2.x();
+		_add(lds_or_id);
 	}
 
 	void PTXToILTranslator::_translateStSharedDword(const ir::PTXInstruction& i)
@@ -3385,8 +3606,8 @@ namespace translator
 		if (i.d.offset == 0)
 		{
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a).x();
-			lds_store_id.d = _translate(i.d);
+			lds_store_id.a = _translate(i.d);
+			lds_store_id.b = _translate(i.a).x();
 			_add(lds_store_id);
 		} else
 		{
@@ -3399,8 +3620,8 @@ namespace translator
 			_add(iadd);
 
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a).x();
-			lds_store_id.d = temp;
+			lds_store_id.a = temp;
+			lds_store_id.b = _translate(i.a).x();
 			_add(lds_store_id);
 		}
 	}
@@ -3479,6 +3700,36 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateVote(const ir::PTXInstruction& i)
+    {
+        switch(i.vote)
+        {
+            case ir::PTXInstruction::All:
+            {
+                ir::ILMov mov;
+                mov.a = _translateLiteral(1);
+                mov.d = _translate(i.d);
+                _add(mov);
+                break;
+            }
+            case ir::PTXInstruction::Ballot:
+            {
+                ir::ILMov mov;
+                mov.a = _translateLiteral(0xFFFFFFFF);
+                mov.d = _translate(i.d);
+                _add(mov);
+                break;
+            }
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXInstruction::toString(i.vote)
+						<< " not supported in "
+						<< i.toString());
+			}
+        }
+    }
+
 	void PTXToILTranslator::_translateXor(const ir::PTXInstruction& i)
 	{
 		ir::ILIxor ixor;
@@ -3492,44 +3743,18 @@ namespace translator
 
 	ir::ILOperand PTXToILTranslator::_translateLiteral(int l)
 	{
-		std::stringstream stream;
+		const LiteralMap::const_iterator it = _literals.find(l);
+		if (it != _literals.end()) return it->second;
 
-		const ILiteralMap::const_iterator it = _intLiterals.find(l);
-		if (it != _intLiterals.end()) {
-			stream << it->second;
-		} else {
-			stream << "l" << _intLiterals.size() + _floatLiterals.size();
-			_intLiterals.insert(std::make_pair(l, stream.str()));
-		}
+		ir::ILOperand op(ir::ILOperand::RegType_Literal);
+		op.num = _literals.size();
+		_literals.insert(std::make_pair(l, op));
 
-		ir::ILOperand op;
-		op.addressMode = ir::ILOperand::Literal;
-		op.identifier = stream.str();
-
-		return op;
+		return op.x();
 	}
 
-	ir::ILOperand PTXToILTranslator::_translateLiteral(float l)
-	{
-		std::stringstream stream;
-
-		const FLiteralMap::const_iterator it = _floatLiterals.find(l);
-		if (it != _floatLiterals.end()) {
-			stream << it->second;
-		} else {
-			stream << "l" << _intLiterals.size() + _floatLiterals.size();
-			_floatLiterals.insert(std::make_pair(l, stream.str()));
-		}
-
-		ir::ILOperand op;
-		op.addressMode = ir::ILOperand::Literal;
-		op.identifier = stream.str();
-
-		return op;
-	}
-
-	std::string PTXToILTranslator::_translateConstantBuffer(
-			const ir::PTXOperand o)
+	ir::ILOperand PTXToILTranslator::_translateConstantBuffer(
+			const ir::PTXOperand o, unsigned int offset)
 	{
 		const std::string ident = o.identifier;
 		std::stringstream stream;
@@ -3542,32 +3767,35 @@ namespace translator
 			i += it->arrayValues.size();
 		}
 
-		if (it != _ilKernel->arguments.end()) {
-			stream << "cb1[" << i + o.offset << "]";
-		} else {
-			assertM(false, "Argument " << ident << " not declared");
-		}
+		assertM(it != _ilKernel->arguments.end(), 
+				"Argument " << ident << " not declared");
 
-		return stream.str();
+		ir::ILOperand op(ir::ILOperand::RegType_Const_Buf);
+		op.num = 1;
+		op.immediate_present = true;
+		op.imm = i + o.offset + offset;
+
+		return op.x();
 	}
 
- 	void PTXToILTranslator::_addKernelPrefix(const ExecutableKernel *k)
+ 	void PTXToILTranslator::_addKernelPrefix(const ATIExecutableKernel *k)
  	{
 		report("Adding Kernel Prefix");
 
-		if (_intLiterals.size() > 0) {
-			ILiteralMap::const_iterator it;
-			for (it = _intLiterals.begin() ; it != _intLiterals.end() ; it++) 
+		if (_literals.size() > 0) {
+			LiteralMap::const_iterator it;
+			for (it = _literals.begin() ; it != _literals.end() ; it++) 
 			{
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
-				dcl_literal.operands.resize(2);
-				dcl_literal.operands[0].identifier = it->second;
-				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
+				dcl_literal.operands.resize(1);
+				dcl_literal.operands[0] = it->second;
 
-				dcl_literal.operands[1].imm_int = it->first;
-				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
-				dcl_literal.operands[1].type = ir::ILOperand::I32;
+				dcl_literal.arguments.resize(4);
+				dcl_literal.arguments[0] = it->first;
+				dcl_literal.arguments[1] = it->first;
+				dcl_literal.arguments[2] = it->first;
+				dcl_literal.arguments[3] = it->first;
 
 				_ilKernel->_statements.push_front(dcl_literal);
 
@@ -3575,34 +3803,14 @@ namespace translator
 			}
 		}
 
-		if (_floatLiterals.size() > 0) {
-			FLiteralMap::const_iterator it;
-			for (it = _floatLiterals.begin() ; it != _floatLiterals.end() ; it++) 
-			{
-				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
-
-				dcl_literal.operands.resize(2);
-				dcl_literal.operands[0].identifier = it->second;
-				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
-
-				dcl_literal.operands[1].imm_float = it->first;
-				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
-				dcl_literal.operands[1].type = ir::ILOperand::F32;
-
-				_ilKernel->_statements.push_front(dcl_literal);
-
-				report("Added \'" << dcl_literal.toString() << "\'");
-			}
-		}
-
-		if (_ilKernel->parameters.size() > 0) {
+		if (_ilKernel->arguments.size() > 0) {
 			ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
 
-			std::stringstream stream;
-			stream << "cb1[" << _ilKernel->parameters.size() << "]";
 			dcl_cb1.operands.resize(1);
-			dcl_cb1.operands[0].identifier = stream.str();
-			dcl_cb1.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
+			dcl_cb1.operands[0].num = 1;
+			dcl_cb1.operands[0].type = ir::ILOperand::RegType_Const_Buf;
+			dcl_cb1.operands[0].immediate_present = true;
+			dcl_cb1.operands[0].imm = _ilKernel->arguments.size();
 
 			_ilKernel->_statements.push_front(dcl_cb1);
 
@@ -3611,25 +3819,25 @@ namespace translator
 
 		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
 
-		std::stringstream stream;
-		stream << "cb0[2]";
 		dcl_cb0.operands.resize(1);
-		dcl_cb0.operands[0].identifier = stream.str();
-		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
+		dcl_cb0.operands.resize(1);
+		dcl_cb0.operands[0].num = 0;
+		dcl_cb0.operands[0].type = ir::ILOperand::RegType_Const_Buf;
+		dcl_cb0.operands[0].immediate_present = true;
+		dcl_cb0.operands[0].imm = 2;
 
 		_ilKernel->_statements.push_front(dcl_cb0);
 		report("Added \'" << dcl_cb0.toString() << "\'");
 
 		unsigned int totalSharedMemorySize = k->sharedMemorySize() +
-			k->externSharedMemorySize();
+			k->externSharedMemorySize() + k->voteMemorySize();
+
 		if (totalSharedMemorySize > 0)
 		{
 			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);
 
-			dcl_lds.operands.resize(1);
-			dcl_lds.operands[0].imm_int = totalSharedMemorySize;
-			dcl_lds.operands[0].addressMode = ir::ILOperand::Immediate;
-			dcl_lds.operands[0].type = ir::ILOperand::I32;
+			dcl_lds.arguments.resize(1);
+			dcl_lds.arguments[0] = totalSharedMemorySize;
 
 			_ilKernel->_statements.push_front(dcl_lds);
 		

@@ -18,7 +18,7 @@ import sys
 ################################################################################
 ## Build Ocelot
 def build(options):
-	command = "scons tests -Q "
+	command = "scons -Q "
 
 	if options.clean:
 		command += " -c"

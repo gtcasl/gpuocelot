@@ -227,8 +227,6 @@ tests.append(('TestIndirectFunctionCall', \
 	'ocelot/cuda/test/functions/indirectCall.cu', 'full'))
 tests.append(('TestIndirectFunctionCallOcelot', \
 	'ocelot/cuda/test/functions/indirectCallOcelot.cpp', 'full'))
-tests.append(('TestCalVectorScale', \
-	'ocelot/cal/test/vectorScale.cu', 'full'))
 tests.append(('TestDeviceSwitching', \
 	'ocelot/api/test/TestDeviceSwitching.cpp', 'full'))
 tests.append(('TestExternalFunctions', \

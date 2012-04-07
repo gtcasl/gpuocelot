@@ -932,16 +932,22 @@ std::string testMov_PTX(ir::PTXOperand::DataType type)
 template<typename type>
 void testMov_REF(void* output, void* input)
 {
-	type r0 = getParameter<type>(input, 0);
-
 	if(typeid(bool) == typeid(type))
 	{
-		r0 &= 0x1;
+		char r0 = getParameter<char>(input, 0);
+	
+		char r1 = ((char)r0 & 0x1) == 0 ? 0 : 1;
+
+		setParameter<char>(output, 0, r1);
 	}
+	else
+	{
+		type r0 = getParameter<type>(input, 0);
+	
+		type r1 = r0;
 
-	type r1 = r0;
-
-	setParameter(output, 0, r1);
+		setParameter(output, 0, r1);
+	}
 }
 
 test::TestPTXAssembly::TypeVector testMov_INOUT(
@@ -6425,7 +6431,7 @@ namespace test
 
 		add("TestMov-pred", testMov_REF<bool>,
 			testMov_PTX(ir::PTXOperand::pred), testMov_INOUT(I8),
-			testMov_INOUT(I8), uniformRandom<bool, 1>, 1, 1);
+			testMov_INOUT(I8), uniformRandom<char, 1>, 1, 1);
 		add("TestMov-u16", testMov_REF<unsigned short>,
 			testMov_PTX(ir::PTXOperand::u16), testMov_INOUT(I16),
 			testMov_INOUT(I16), uniformRandom<unsigned short, 1>, 1, 1);

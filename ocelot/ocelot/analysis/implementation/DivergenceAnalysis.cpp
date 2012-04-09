@@ -374,7 +374,8 @@ void DivergenceAnalysis::_analyzeControlFlow()
 		}
 	}
 	
-	/* 4.2.1) mark all blocks with only convergent predecessors as convergent.  
+	/* 4.2.1) mark all blocks with only convergent
+	          predecessors/successors as convergent.  
 	*/
 	
 	bool changed = true;
@@ -408,6 +409,36 @@ void DivergenceAnalysis::_analyzeControlFlow()
 			}
 			
 			if (allPredecessorsConvergent) {
+				changed = true;
+				report("  " << block->label()
+					<< " has only convergent predecessors.");
+				
+				_notDivergentBlocks.insert(block);
+				
+				continue;
+			}
+			
+			bool allSuccessorsConvergent = true;
+			
+			for (analysis::DataflowGraph::BlockPointerSet::iterator
+				successor = block->targets().begin();
+				successor != block->targets().end(); ++successor) {
+				
+				if (isDivBlock(*successor)) {
+					allSuccessorsConvergent = false;
+					break;
+				}
+				
+				// skip self loops
+				if(*successor == block) continue;
+				
+				if (isEntryDiv(*successor)) {
+					allSuccessorsConvergent = false;
+					break;
+				}
+			}
+			
+			if (allSuccessorsConvergent) {
 				changed = true;
 				report("  " << block->label()
 					<< " has only convergent predecessors.");

@@ -57,17 +57,19 @@ using namespace std;
 // These should be exactly matched with the Macsim
 /////////////////////////////////////////////////////////////////////////////////////////////// 
 enum TR_OPCODE_ENUM_  {
-  XED_CATEGORY_INVALID   = 0,
+  XED_CATEGORY_INVALID,
   XED_CATEGORY_3DNOW,
   XED_CATEGORY_AES,
-  XED_CATEGORY_BASE,
+  XED_CATEGORY_AVX,
   XED_CATEGORY_BINARY,
   XED_CATEGORY_BITBYTE,
+  XED_CATEGORY_BROADCAST,
   XED_CATEGORY_CALL,
   XED_CATEGORY_CMOV,
   XED_CATEGORY_COND_BR,
+  XED_CATEGORY_CONVERT,
   XED_CATEGORY_DATAXFER,
-  XED_CATEGORY_DECIMAL   = 10,
+  XED_CATEGORY_DECIMAL,
   XED_CATEGORY_FCMOV,
   XED_CATEGORY_FLAGOP,
   XED_CATEGORY_INTERRUPT,
@@ -77,7 +79,7 @@ enum TR_OPCODE_ENUM_  {
   XED_CATEGORY_MISC,
   XED_CATEGORY_MMX,
   XED_CATEGORY_NOP,
-  XED_CATEGORY_PCLMULQDQ = 20,
+  XED_CATEGORY_PCLMULQDQ,
   XED_CATEGORY_POP,
   XED_CATEGORY_PREFETCH,
   XED_CATEGORY_PUSH,
@@ -87,8 +89,8 @@ enum TR_OPCODE_ENUM_  {
   XED_CATEGORY_SEMAPHORE,
   XED_CATEGORY_SHIFT,
   XED_CATEGORY_SSE,
-  XED_CATEGORY_SSE5      = 30,
   XED_CATEGORY_STRINGOP,
+  XED_CATEGORY_STTNI,
   XED_CATEGORY_SYSCALL,
   XED_CATEGORY_SYSRET,
   XED_CATEGORY_SYSTEM,
@@ -97,7 +99,8 @@ enum TR_OPCODE_ENUM_  {
   XED_CATEGORY_WIDENOP,
   XED_CATEGORY_X87_ALU,
   XED_CATEGORY_XSAVE,
-  TR_MUL                 = 40,
+  XED_CATEGORY_XSAVEOPT,
+  TR_MUL,
   TR_DIV,
   TR_FMUL,
   TR_FDIV,
@@ -107,7 +110,7 @@ enum TR_OPCODE_ENUM_  {
   PREFETCH_T1,
   PREFETCH_T2,
   TR_MEM_LD_LM,
-  TR_MEM_LD_SM           = 50,
+  TR_MEM_LD_SM,
   TR_MEM_LD_GM,
   TR_MEM_ST_LM,
   TR_MEM_ST_SM,
@@ -117,7 +120,7 @@ enum TR_OPCODE_ENUM_  {
   TR_DATA_XFER_GM,
   TR_MEM_LD_CM,
   TR_MEM_LD_TM,
-  TR_MEM_LD_PM           = 60,
+  TR_MEM_LD_PM,
   LD_CM_CA,
   LD_CM_CG,
   LD_CM_CS,
@@ -439,7 +442,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   // get KERNEL_INFO_PATH : get register usage information from the file
   char* kernel_info_path = getenv("KERNEL_INFO_PATH");
   ifstream kernel_info_file;
-  
+
   kernel_info_file.open(kernel_info_path);
 
   string kernel_name;
@@ -477,8 +480,8 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   ///
 
 
-  
-  
+
+
   ///
   /// Since each block is executed in sequential, we open gzFile for current block and
   /// close when it has been terminate. However, since we don't know when exactly a block
@@ -537,7 +540,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
 
   num_warps_per_block = (blockDimX * blockDimY * blockDimZ + (WARP_SIZE - 1)) / WARP_SIZE;
   num_total_warps = num_warps_per_block * gridDimX * gridDimY * gridDimZ;
-  
+
 
   // maximum block calculation
   int max_block = 8;
@@ -553,7 +556,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
     total_register      = 32768;
     shared_mem_allocation_granularity = 128;
   }
-  
+
   // Registers calculation
   int num_register_per_block  = 0;
   int num_register_per_thread = m_kernel_register_map[kernel.name];
@@ -859,7 +862,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     /* source 1 */
     src_count = 0;
     if (ptx_inst->a.addressMode == ir::PTXOperand::Register || 
-         ptx_inst->a.addressMode == ir::PTXOperand::Indirect) { 
+        ptx_inst->a.addressMode == ir::PTXOperand::Indirect) { 
       /* scalar */
       if (ptx_inst->a.vec == ir::PTXOperand::v1) {
         inst_info->src[src_count] = ptx_inst->a.reg;
@@ -967,7 +970,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
     // memory instruction 
     // mov, ld, ldu, st, prefetch, prefetchu, isspacep, cvta, cvt
-    
+
     // load
     // TOCHECK (generic type not in ptx document)
     if (ptx_inst->opcode == ir::PTXInstruction::Ld ||
@@ -1197,7 +1200,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
 
   /////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   // current instruction has been decoded at this point
 
   int cur_warp;
@@ -1411,93 +1414,36 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
           if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
 #endif
-              *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
-                << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
-                << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
-              writeInstToFile(*debug_stream, inst_info);
-#if 0
-            }
-#endif
-#if SINGLE_WARP == 1
-          }
-#endif
-#endif
-          assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
-
-          info = &trace_info[cur_block * num_warps_per_block + cur_warp];
-
-          if ((i == 0 || i == (count - 1)) && count > 1) {
-            // macsim does not use this field, so using it to indicate
-            // whether instruction is first/last instruction in the 
-            // sequence of instructions generated for an uncoalesced 
-            // instruction
-            inst_info->has_immediate = true; 
-          }
-          else {
-            //macsim does not use this field, so using it to indicate
-            //whether instruction is first/last instruction in the 
-            //sequence of instructions generated for an uncoalesced 
-            //instruction
-            inst_info->has_immediate = false;
-          }
-
-          memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
-          info->bytes_accumulated += sizeof(Inst_info);
-          if (info->bytes_accumulated == BUF_SIZE) {
-            int bytes_written;
-            bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
-            if (bytes_written != BUF_SIZE) {
-              std::cerr << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
-                << " bytes written = " <<  bytes_written << "\n";
-              int err;
-              std::cerr << "1. error is " << gzerror(info->trace_stream, &err) << "\n";
-              if (err != Z_ERRNO) {
-                std::cerr << "error code is " << err << "\n";
-              }
-              else {
-                std::cerr << "error is " << strerror(errno) << "\n";
-              }
-
-              exit(-1);
-            }
-
-            info->bytes_accumulated = 0;
-          }
-          info->inst_count++;
-        }
-        memset(mem_access, 0, sizeof(MemAccess) * WARP_SIZE);
-      }
-      else if (branch_inst) {
-        if (ptx_inst->opcode == ir::PTXInstruction::Bra || 
-            ptx_inst->opcode == ir::PTXInstruction::Call ||
-            ptx_inst->opcode == ir::PTXInstruction::Ret) {
-          inst_info->branch_target = (ptx_inst->branchTargetInstruction << 2) + INST_START_ADDR; //check this
-
-          inst_info->ld_vaddr1 = branch_taken_mask;
-          inst_info->st_vaddr = (ptx_inst->reconvergeInstruction << 2) + INST_START_ADDR;
-        }
-        inst_info->actually_taken = branch_taken;
-
-
-#if WRITE_DEBUG == 1
-#if SINGLE_WARP == 1
-        if (saved_cur_warp == -1) {
-          saved_cur_warp = cur_warp;
-        }
-
-
-        if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
-#endif
             *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
               << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
               << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
             writeInstToFile(*debug_stream, inst_info);
+#if 0
+          }
+#endif
 #if SINGLE_WARP == 1
         }
 #endif
 #endif
         assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
+
         info = &trace_info[cur_block * num_warps_per_block + cur_warp];
+
+        if ((i == 0 || i == (count - 1)) && count > 1) {
+          // macsim does not use this field, so using it to indicate
+          // whether instruction is first/last instruction in the 
+          // sequence of instructions generated for an uncoalesced 
+          // instruction
+          inst_info->has_immediate = true; 
+        }
+        else {
+          //macsim does not use this field, so using it to indicate
+          //whether instruction is first/last instruction in the 
+          //sequence of instructions generated for an uncoalesced 
+          //instruction
+          inst_info->has_immediate = false;
+        }
+
         memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
         info->bytes_accumulated += sizeof(Inst_info);
         if (info->bytes_accumulated == BUF_SIZE) {
@@ -1507,7 +1453,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
             std::cerr << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
               << " bytes written = " <<  bytes_written << "\n";
             int err;
-            std::cerr << "2. error is " << gzerror(info->trace_stream, &err) << "\n";
+            std::cerr << "1. error is " << gzerror(info->trace_stream, &err) << "\n";
             if (err != Z_ERRNO) {
               std::cerr << "error code is " << err << "\n";
             }
@@ -1522,60 +1468,117 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         }
         info->inst_count++;
       }
-      else {
+      memset(mem_access, 0, sizeof(MemAccess) * WARP_SIZE);
+    }
+    else if (branch_inst) {
+      if (ptx_inst->opcode == ir::PTXInstruction::Bra || 
+          ptx_inst->opcode == ir::PTXInstruction::Call ||
+          ptx_inst->opcode == ir::PTXInstruction::Ret) {
+        inst_info->branch_target = (ptx_inst->branchTargetInstruction << 2) + INST_START_ADDR; //check this
+
+        inst_info->ld_vaddr1 = branch_taken_mask;
+        inst_info->st_vaddr = (ptx_inst->reconvergeInstruction << 2) + INST_START_ADDR;
+      }
+      inst_info->actually_taken = branch_taken;
+
+
 #if WRITE_DEBUG == 1
 #if SINGLE_WARP == 1
-        if (saved_cur_warp == -1) {
-          saved_cur_warp = cur_warp;
-        }
+      if (saved_cur_warp == -1) {
+        saved_cur_warp = cur_warp;
+      }
 
 
-        if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
+      if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
 #endif
-            *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
-              << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
-              << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
-            writeInstToFile(*debug_stream, inst_info);
+        *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
+          << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
+          << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
+        writeInstToFile(*debug_stream, inst_info);
 #if SINGLE_WARP == 1
-        }
+      }
 #endif
 #endif
-
-
-        assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
-
-        info = &trace_info[cur_block * num_warps_per_block + cur_warp];
-        memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
-        info->bytes_accumulated += sizeof(Inst_info);
-        if (info->bytes_accumulated == BUF_SIZE) {
-          int bytes_written;
-          bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
-          if (bytes_written != BUF_SIZE) {
-            std::cerr 
-              << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
-              << " block " << cur_block
-              << " bytes written = " <<  bytes_written  
-              << " file_name:" << info->trace_name << "\n";
-            int err;
-            std::cerr << "3. error is " << gzerror(info->trace_stream, &err) << "\n";
-            if (err != Z_ERRNO) {
-              std::cerr << "error code is " << err << "\n";
-            }
-            else {
-              std::cerr << "error is " << strerror(errno) << "\n";
-            }
-
-            exit(-1);
+      assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
+      info = &trace_info[cur_block * num_warps_per_block + cur_warp];
+      memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
+      info->bytes_accumulated += sizeof(Inst_info);
+      if (info->bytes_accumulated == BUF_SIZE) {
+        int bytes_written;
+        bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
+        if (bytes_written != BUF_SIZE) {
+          std::cerr << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
+            << " bytes written = " <<  bytes_written << "\n";
+          int err;
+          std::cerr << "2. error is " << gzerror(info->trace_stream, &err) << "\n";
+          if (err != Z_ERRNO) {
+            std::cerr << "error code is " << err << "\n";
+          }
+          else {
+            std::cerr << "error is " << strerror(errno) << "\n";
           }
 
-          info->bytes_accumulated = 0;
+          exit(-1);
         }
-        info->inst_count++;
-      }
-    }
-    cur_warp++;
 
-  } while (pos != boost::dynamic_bitset<>::npos);
+        info->bytes_accumulated = 0;
+      }
+      info->inst_count++;
+    }
+    else {
+#if WRITE_DEBUG == 1
+#if SINGLE_WARP == 1
+      if (saved_cur_warp == -1) {
+        saved_cur_warp = cur_warp;
+      }
+
+
+      if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
+#endif
+        *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
+          << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
+          << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
+        writeInstToFile(*debug_stream, inst_info);
+#if SINGLE_WARP == 1
+      }
+#endif
+#endif
+
+
+      assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
+
+      info = &trace_info[cur_block * num_warps_per_block + cur_warp];
+      memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
+      info->bytes_accumulated += sizeof(Inst_info);
+      if (info->bytes_accumulated == BUF_SIZE) {
+        int bytes_written;
+        bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
+        if (bytes_written != BUF_SIZE) {
+          std::cerr 
+            << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
+            << " block " << cur_block
+            << " bytes written = " <<  bytes_written  
+            << " file_name:" << info->trace_name << "\n";
+          int err;
+          std::cerr << "3. error is " << gzerror(info->trace_stream, &err) << "\n";
+          if (err != Z_ERRNO) {
+            std::cerr << "error code is " << err << "\n";
+          }
+          else {
+            std::cerr << "error is " << strerror(errno) << "\n";
+          }
+
+          exit(-1);
+        }
+
+        info->bytes_accumulated = 0;
+      }
+      info->inst_count++;
+    }
+  }
+  cur_warp++;
+
+} while (pos != boost::dynamic_bitset<>::npos);
 }
 
 

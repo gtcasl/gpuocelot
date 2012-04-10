@@ -24,7 +24,7 @@
 #define WARP_SIZE 32
 
 #define dbg if(0) cerr
-#define WRITE_DEBUG 1
+#define WRITE_DEBUG 0
 
 #if WRITE_DEBUG == 1
 #define SINGLE_WARP 1

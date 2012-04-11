@@ -39,6 +39,9 @@ opencl::Context::Context(const cl_context_properties * properties,
 		devices[i]->retain();
 	}
 
+	_properties = new cl_context_properties[3];
+	memcpy(_properties, properties, 3*sizeof(cl_context_properties));
+
 	_platform->retain();
 }
 
@@ -56,6 +59,9 @@ opencl::Context::Context(const cl_context_properties * properties,
 	if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 	_platform = (Platform *)properties[1];
+
+	_properties = new cl_context_properties[3];
+	memcpy(_properties, properties, 3*sizeof(cl_context_properties));
 
 	cl_uint deviceNum;
 	Device::getDevices((cl_platform_id)_platform, device_type, 0, NULL, &deviceNum);
@@ -80,6 +86,8 @@ opencl::Context::~Context() {
 	}
 
 	_platform->release();
+
+	delete[] _properties;
 }
 
 void opencl::Context::release() {
@@ -104,4 +112,50 @@ void opencl::Context::getInfo(cl_context_info    param_name,
 					size_t             param_value_size,
 					void *             param_value,
 					size_t *           param_value_size_ret) {
+
+	size_t infoLen = 0;
+	cl_uint info;
+	void * ptr = &info;
+	bool needsFree = false;
+
+	switch(param_name) {
+		case CL_CONTEXT_REFERENCE_COUNT:
+			infoLen = sizeof(cl_uint);
+			info = _references;	
+			break;
+
+		case CL_CONTEXT_NUM_DEVICES:
+			infoLen = sizeof(cl_uint);
+			info = _validDevices.size();
+			break;
+
+		case CL_CONTEXT_DEVICES: {
+			infoLen = _validDevices.size() * sizeof(cl_device_id);
+			cl_device_id * devices = new cl_device_id[_validDevices.size()];
+			cl_uint i = 0;
+			for(Device::DeviceList::iterator d = _validDevices.begin();
+				d != _validDevices.end(); d++)
+				devices[i++] = (cl_device_id)(*d); 
+			ptr = (void *) devices;
+			needsFree = true;
+			break;
+		}
+
+		case CL_CONTEXT_PROPERTIES:
+			infoLen = 3 * sizeof(cl_context_properties);
+			ptr = _properties;
+			break;
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+	if(needsFree)
+		delete[] (const unsigned char *)ptr;
 }

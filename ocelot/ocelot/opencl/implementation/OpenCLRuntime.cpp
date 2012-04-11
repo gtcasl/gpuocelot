@@ -957,8 +957,13 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 		if(pfn_notify == NULL && user_data)
 			throw CL_INVALID_VALUE;
 
-		if(options || pfn_notify || user_data) {
-			assertM(false, "unsupported options, pfn_nofify or user_data arguments");
+		if(options && options[0]!=0) {
+			assertM(false, "unspported building options");
+			throw CL_UNIMPLEMENTED;
+		}
+
+		if(pfn_notify || user_data) {
+			assertM(false, "unsupported pfn_nofify or user_data arguments");
 			throw CL_UNIMPLEMENTED;
 		}
 

@@ -384,140 +384,114 @@ void DivergenceAnalysis::_analyzeControlFlow()
 		changed = false;
 		
 		block = dfg.begin();
-		for (; block != endBlock; ++block) {
+		for (; block != endBlock; ++block) {		
 		
 			if (!isEntryDiv(block)) continue;
-			
+		
 			bool allPredecessorsConvergent = true;
-			
+		
 			for (analysis::DataflowGraph::BlockPointerSet::iterator
 				predecessor = block->predecessors().begin();
 				predecessor != block->predecessors().end(); ++predecessor) {
-				
+			
 				if (isDivBlock(*predecessor)) {
 					allPredecessorsConvergent = false;
 					break;
 				}
-				
+			
 				// skip self loops
 				if(*predecessor == block) continue;
-				
+			
 				if (isEntryDiv(*predecessor)) {
 					allPredecessorsConvergent = false;
 					break;
 				}
 			}
-			
+		
 			if (allPredecessorsConvergent) {
 				changed = true;
 				report("  " << block->label()
 					<< " has only convergent predecessors.");
-				
+			
 				_notDivergentBlocks.insert(block);
-				
+			
 				continue;
-			}
-			
-			bool allSuccessorsConvergent = true;
-			
-			for (analysis::DataflowGraph::BlockPointerSet::iterator
-				successor = block->targets().begin();
-				successor != block->targets().end(); ++successor) {
-				
-				if (isDivBlock(*successor)) {
-					allSuccessorsConvergent = false;
-					break;
-				}
-				
-				// skip self loops
-				if(*successor == block) continue;
-				
-				if (isEntryDiv(*successor)) {
-					allSuccessorsConvergent = false;
-					break;
-				}
-			}
-			
-			if (allSuccessorsConvergent) {
-				changed = true;
-				report("  " << block->label()
-					<< " has only convergent predecessors.");
-				
-				_notDivergentBlocks.insert(block);
 			}
 		}
 	
 		/* 4.2.2) Mark blocks contained in one-sided divergent
 			hammocks as convergent. */
-		block = dfg.begin();
-		for (; block != endBlock; ++block) {
-			if (isEntryDiv(block))  continue;
-			if (!isDivBlock(block)) continue;
+		if (_includeConditionalConvergence) {
+			block = dfg.begin();
+			for (; block != endBlock; ++block) {
+				if (isEntryDiv(block))  continue;
+				if (!isDivBlock(block)) continue;
 			
-			report("  examining " << block->label()
-					<< ", it is a source of divergence.");
+				report("  examining " << block->label()
+						<< ", it is a source of divergence.");
 				
-			// find the ipdom
-			DataflowGraph::iterator postDomBlock =
-				dfg.getCFGtoDFGMap()[dtree->getPostDominator(block->block())];
+				// find the ipdom
+				DataflowGraph::iterator postDomBlock =
+					dfg.getCFGtoDFGMap()[dtree->getPostDominator(block->block())];
 			
-			if (isEntryDiv(postDomBlock)) {
-				changed = true;
+				if (isEntryDiv(postDomBlock)) {
+					changed = true;
 				
-				report("   " << postDomBlock->label()
-					<< " post-dominates a convergent block.");
+					report("   " << postDomBlock->label()
+						<< " post-dominates a convergent block.");
 				
-				_notDivergentBlocks.insert(postDomBlock);
-			}
-			
-			unsigned int targetsOtherThanIPDOM = 0;
-			
-			for (analysis::DataflowGraph::BlockPointerSet::iterator
-				successor = block->targets().begin();
-				successor != block->targets().end(); ++successor) {
-				if (*successor != postDomBlock) ++targetsOtherThanIPDOM;
-			}
-			
-			if (block->fallthrough() != endBlock) {
-				if (block->fallthrough() != postDomBlock) {
-					++targetsOtherThanIPDOM;
+					_notDivergentBlocks.insert(postDomBlock);
 				}
-			}
 			
-			if (targetsOtherThanIPDOM < 2) {
+				unsigned int targetsOtherThanIPDOM = 0;
+			
 				for (analysis::DataflowGraph::BlockPointerSet::iterator
 					successor = block->targets().begin();
 					successor != block->targets().end(); ++successor) {
-					if (*successor != postDomBlock) {
-						if (isEntryDiv(*successor)) {
-							changed = true;
-				
-							report("   " << (*successor)->label()
-								<< " is part of a one-sided "
-								<< "divergent hammock.");
-						
-							_notDivergentBlocks.insert(*successor);
-						}
-					}
+					if (*successor != postDomBlock) ++targetsOtherThanIPDOM;
 				}
 			
 				if (block->fallthrough() != endBlock) {
 					if (block->fallthrough() != postDomBlock) {
-						if (isEntryDiv(block->fallthrough())) {
-							changed = true;
+						++targetsOtherThanIPDOM;
+					}
+				}
+			
+				if (targetsOtherThanIPDOM < 2) {
+					for (analysis::DataflowGraph::BlockPointerSet::iterator
+						successor = block->targets().begin();
+						successor != block->targets().end(); ++successor) {
+						if (*successor != postDomBlock) {
+							if (isEntryDiv(*successor)) {
+								changed = true;
 				
-							report("   " << block->fallthrough()->label()
-								<< " is part of a one-sided "
-								<< "divergent hammock.");
+								report("   " << (*successor)->label()
+									<< " is part of a one-sided "
+									<< "divergent hammock.");
+						
+								_notDivergentBlocks.insert(*successor);
+							}
+						}
+					}
+			
+					if (block->fallthrough() != endBlock) {
+						if (block->fallthrough() != postDomBlock) {
+							if (isEntryDiv(block->fallthrough())) {
+								changed = true;
+				
+								report("   " << block->fallthrough()->label()
+									<< " is part of a one-sided "
+									<< "divergent hammock.");
 							
-							_notDivergentBlocks.insert(block->fallthrough());
+								_notDivergentBlocks.insert(block->fallthrough());
+							}
 						}
 					}
 				}
-			}
-			else {
-				report("   " << targetsOtherThanIPDOM
-					<< " divergent paths originate here, skipping.");
+				else {
+					report("   " << targetsOtherThanIPDOM
+						<< " divergent paths originate here, skipping.");
+				}
 			}
 		}
 	}
@@ -534,7 +508,8 @@ void DivergenceAnalysis::_addPredicate(const DataflowGraph::PhiInstruction &phi,
 DivergenceAnalysis::DivergenceAnalysis()
 : KernelAnalysis( Analysis::DivergenceAnalysis, "DivergenceAnalysis",
 	Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment |
-	Analysis::PostDominatorTreeAnalysis)
+	Analysis::PostDominatorTreeAnalysis), _doCFGanalysis(true),
+	_includeConditionalConvergence(false)
 {
 }
 
@@ -675,6 +650,11 @@ const DataflowGraph* DivergenceAnalysis::getDFG() const
 void DivergenceAnalysis::setControlFlowAnalysis(bool doControlFlowAnalysis)
 {
 	_doCFGanalysis = doControlFlowAnalysis;
+}
+
+void DivergenceAnalysis::setConditionalConvergence(bool doIt)
+{
+	_includeConditionalConvergence = doIt;
 }
 
 }

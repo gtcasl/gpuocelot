@@ -155,8 +155,17 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				new analysis::DivergenceAnalysis())).first;
 			
 			analysis->second->setPassManager(manager);
-			allocateNewDataStructures(analyses, k, analysis->second->required, manager);
-			static_cast<analysis::DivergenceAnalysis*>(analysis->second)->analyze(*k);
+			allocateNewDataStructures(analyses, k,
+				analysis->second->required, manager);
+		
+			if(type & analysis::Analysis::ConditionalDivergenceAnalysis)
+			{
+				static_cast<analysis::DivergenceAnalysis*>(
+					analysis->second)->setConditionalConvergence(true);
+			}
+			
+			static_cast<analysis::DivergenceAnalysis*>(
+				analysis->second)->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)

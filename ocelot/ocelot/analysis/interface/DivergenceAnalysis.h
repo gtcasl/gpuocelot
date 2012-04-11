@@ -36,6 +36,7 @@ class DivergenceAnalysis : public KernelAnalysis
 		/*!\brief Set with all not divergent blocks in the kernel*/
 		block_set  _notDivergentBlocks;
 		bool _doCFGanalysis;
+		bool _includeConditionalConvergence;
 
 		/*! \brief Is an operand a function call operand? */
 		bool _isOperandAnArgument( const ir::PTXOperand& operand );
@@ -89,6 +90,10 @@ class DivergenceAnalysis : public KernelAnalysis
             Use it only for experiments.
         */
 		void setControlFlowAnalysis(bool doControlFlowAnalysis);
+        /*! Mark blocks as convergent even if they depend on a divergent branch
+        	as long as doing so does not introduce conflicts.
+        */
+		void setConditionalConvergence(bool includeConditionalConvergence);
 };
 }
 

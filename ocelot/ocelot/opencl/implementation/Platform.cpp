@@ -12,6 +12,36 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Platform.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
+opencl::Platform * opencl::Platform::_platform = NULL;
+
+bool opencl::Platform::_loaded = false;
+
+void opencl::Platform::getPlatforms(cl_uint num_entries, 
+	cl_platform_id * platforms, 
+	cl_uint * num_platforms) {
+
+	if(!_loaded) {
+		report("Create platforms ");
+		_platform = new Platform();
+		_loaded = true;
+	}
+	
+	if(platforms) {
+		for(cl_uint i = 0; i < std::min((cl_uint)1, num_entries); i++)
+			platforms[i] = (cl_platform_id)_platform;
+	}
+
+	if(num_platforms)
+		*num_platforms = 1;
+
+}
+
 opencl::Platform::Platform(): Object(OBJTYPE_PLATFORM),
 	_profile("FULL_PROFILE"), _version("1.2"),
 	_name("Ocelot OpenCL"), _vendor("OCELOT"),

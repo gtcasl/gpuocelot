@@ -16,6 +16,11 @@ namespace opencl {
 
 	public:
 
+		//get available platforms
+		static void getPlatforms(cl_uint num_entries,
+			cl_platform_id * platforms,
+			cl_uint * num_platforms);
+
 		void release();
 
 		//Get info
@@ -26,6 +31,12 @@ namespace opencl {
 
 
 	private:		
+		//available platform
+		static Platform * _platform;
+
+		//platform loaded flag
+		static bool _loaded;	
+
 		//OpenCL profile
 		const std::string _profile;
 

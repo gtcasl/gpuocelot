@@ -8,6 +8,8 @@
 opencl::Device::DeviceList opencl::Device::_deviceList = opencl::Device::DeviceList();
 
 bool opencl::Device::_loaded = false;
+int opencl::Device::_computeCapability = 2;
+unsigned int opencl::Device::_flags = 0;
 
 cl_uint opencl::Device::_deviceCount = 0;
 
@@ -28,6 +30,75 @@ const bool opencl::Device::_isValidType(const cl_device_type type) {
 		| CL_DEVICE_TYPE_ACCELERATOR | CL_DEVICE_TYPE_CUSTOM)) || (type == CL_DEVICE_TYPE_ALL);
 }
 
+void opencl::Device::_enumerateDevices(cl_platform_id platform) {
+
+	cl_device_type type = CL_DEVICE_TYPE_DEFAULT;
+	std::string vendor;
+
+	if(!_loaded) {
+		report("Creating devices.");
+		if(config::get().executive.enableNVIDIA) {
+			executive::DeviceVector	d = executive::Device::createDevices(ir::Instruction::SASS, _flags,
+				_computeCapability);
+			type = CL_DEVICE_TYPE_GPU;
+			vendor = "NVIDIA";
+			report(" - Added " << d.size() << " nvidia gpu devices." );
+		
+			for(size_t i = 0; i < d.size(); i++)
+				_deviceList.push_back(new Device(d[i], type, (Platform *)platform, vendor, NULL, NULL));
+		}
+		if(config::get().executive.enableEmulated) {
+			executive::DeviceVector d = executive::Device::createDevices(ir::Instruction::Emulated, _flags,
+				_computeCapability);
+			type = CL_DEVICE_TYPE_GPU;
+			vendor = "OCELOT";
+			report(" - Added " << d.size() << " emulator devices." );
+		
+			for(size_t i = 0; i < d.size(); i++)
+				_deviceList.push_back(new Device(d[i], type, (Platform *)platform, vendor, NULL, NULL));
+		}
+		if(config::get().executive.enableLLVM) {
+			executive::DeviceVector	d = executive::Device::createDevices(ir::Instruction::LLVM, _flags,
+				_computeCapability);
+			type = CL_DEVICE_TYPE_CPU;
+			vendor = "OCELOT";
+			report(" - Added " << d.size() << " llvm-cpu devices." );
+			if (config::get().executive.workerThreadLimit > 0) {
+				for (executive::DeviceVector::iterator d_it = d.begin();
+					d_it != d.end(); ++d_it) {
+					(*d_it)->limitWorkerThreads(config::get().executive.workerThreadLimit);
+				}
+			}
+		
+			for(size_t i = 0; i < d.size(); i++)
+				_deviceList.push_back(new Device(d[i], type, (Platform *)platform, vendor, NULL, NULL));
+		}
+		if(config::get().executive.enableAMD) {
+			executive::DeviceVector	d =	executive::Device::createDevices(ir::Instruction::CAL, _flags,
+					_computeCapability);
+			type = CL_DEVICE_TYPE_GPU;
+			vendor = "AMD";
+			report(" - Added " << d.size() << " amd gpu devices." );
+		
+			for(size_t i = 0; i < d.size(); i++)
+				_deviceList.push_back(new Device(d[i], type, (Platform *)platform, vendor, NULL, NULL));
+		}
+		if(config::get().executive.enableRemote) {
+			executive::DeviceVector	d = executive::Device::createDevices(ir::Instruction::Remote, _flags,
+					_computeCapability);
+			type = CL_DEVICE_TYPE_GPU;
+			vendor = "OCELOT";
+			report(" - Added " << d.size() << " remote devices." );
+		
+			for(size_t i = 0; i < d.size(); i++)
+				_deviceList.push_back(new Device(d[i], type, (Platform *)platform, vendor, NULL, NULL));
+		}
+		
+		_loaded = true;
+		
+	}
+
+}
 opencl::Device::Device(executive::Device * d, cl_device_type type, 
 	Platform * p, std::string & vendor, 
 	Device * parentDevice, const cl_device_partition_property * partitionProp):
@@ -70,81 +141,21 @@ void opencl::Device::release() {
 }
 
 
-void opencl::Device::createDevices(Platform * platform, deviceT device, 
-	unsigned int flags, int computeCapability, int workerThreadLimit ) {
-
-	executive::DeviceVector d;
-	cl_device_type type= CL_DEVICE_TYPE_DEFAULT;
-	std::string vendor = "OCELOT";
-
-	switch(device) {
-		case DEVICE_NVIDIA_GPU:
-			d = executive::Device::createDevices(ir::Instruction::SASS, flags,
-				computeCapability);
-			type = CL_DEVICE_TYPE_GPU;
-			vendor = "NVIDIA";
-			report(" - Added " << d.size() << " nvidia gpu devices." );
-			break;
-
-		case DEVICE_EMULATED:
-			d = executive::Device::createDevices(ir::Instruction::Emulated, flags,
-				computeCapability);
-			type = CL_DEVICE_TYPE_GPU;
-			vendor = "OCELOT";
-			report(" - Added " << d.size() << " emulator devices." );
-			break;
-
-		case DEVICE_MULTICORE_CPU:
-			d = executive::Device::createDevices(ir::Instruction::LLVM, flags,
-				computeCapability);
-			type = CL_DEVICE_TYPE_CPU;
-			vendor = "OCELOT";
-			report(" - Added " << d.size() << " llvm-cpu devices." );
-
-			if (workerThreadLimit > 0) {
-				for (executive::DeviceVector::iterator d_it = d.begin();
-					d_it != d.end(); ++d_it) {
-					(*d_it)->limitWorkerThreads(workerThreadLimit);
-				}
-			}
-			break;
-
-		case DEVICE_AMD_GPU:
-			d =	executive::Device::createDevices(ir::Instruction::CAL, flags,
-					computeCapability);
-			type = CL_DEVICE_TYPE_GPU;
-			vendor = "AMD";
-			report(" - Added " << d.size() << " amd gpu devices." );
-			break;
-
-		case DEVICE_REMOTE:
-			d =
-				executive::Device::createDevices(ir::Instruction::Remote, flags,
-					computeCapability);
-			type = CL_DEVICE_TYPE_GPU;
-			vendor = "OCELOT";
-			report(" - Added " << d.size() << " remote devices." );
-			break;
-	}
-	
-	for(size_t i = 0; i < d.size(); i++)
-		_deviceList.push_back(new Device(d[i], type, platform, vendor, NULL, NULL));
-}
-
 void opencl::Device::getDevices(cl_platform_id platform, cl_device_type type, cl_uint num_entries,
 	cl_device_id * devices, cl_uint * num_devices) {
 
 	if(!_isValidType(type))
 		throw CL_INVALID_DEVICE_TYPE;
 
+	_enumerateDevices(platform);
+
 	cl_uint j = 0;
-	if(devices != 0) {
-		for(DeviceList::iterator d = _deviceList.begin(); d != _deviceList.end(); d++) {
-			if((*d)->_isType(type) && (*d)->_hasPlatform(platform)) {
-				if(j < num_entries)
-					devices[j] = (cl_device_id)(*d);
-				j++;
-			}
+	for(DeviceList::iterator d = _deviceList.begin(); d != _deviceList.end(); d++) {
+		if((*d)->_isType(type) && (*d)->_hasPlatform(platform)) {
+
+			if(devices != 0 && j < num_entries)
+				devices[j] = (cl_device_id)(*d);
+			j++;
 		}
 	}
 

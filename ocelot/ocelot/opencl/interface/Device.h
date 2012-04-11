@@ -15,6 +15,8 @@ namespace opencl {
 	class Device : public Object{
 	public:
 	
+		typedef api::OcelotConfiguration config;
+
 		typedef std::list< Device * > DeviceList;	
 
 		typedef enum {
@@ -32,9 +34,8 @@ namespace opencl {
 		~Device();
 
 	public:
-		//Create a specific device
-		static void createDevices(Platform * platform, deviceT device, 
-			unsigned int flags, int compuateCapability, int workerThreadLimit = 0);
+		//enumerate available devices
+		static void _enumerateDevices(cl_platform_id platform);
 
 		//Get devices of one specific type
 		static void getDevices(cl_platform_id platform, cl_device_type type, cl_uint num_entries,
@@ -100,7 +101,13 @@ namespace opencl {
 
 		//Device loaded flag
 		static bool _loaded;
-
+	
+		//! The minimum supoported compute capability
+		static int _computeCapability;
+		
+		//! The device flags
+		static unsigned int _flags;
+		
 		//Device count
 		static cl_uint _deviceCount;
 

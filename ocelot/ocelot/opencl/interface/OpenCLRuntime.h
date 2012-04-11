@@ -130,21 +130,12 @@ namespace opencl {
 	private:
 		typedef Device::DeviceList DeviceList;
 
-		/*! \brief Create platform */
-		void _enumeratePlatforms(cl_uint num_entries, 
-			    cl_platform_id * platforms, 
-			    cl_uint * num_platforms);
-		/*! \brief Create devices if they do not already exist */
-		void _enumerateDevices(cl_platform_id platform);
 		//! \brief acquires mutex and locks the runtime
 		void _lock();
 		//! \brief releases mutex
 		void _unlock();
 		//! \brief sets the last error state for the OpenCLRuntime object
 		//cl_int _setLastError(cl_int result);
-
-		//! \brief create context 
-		Context * _createContext(Platform *, cl_uint, const cl_device_id *);
 
 	private:
 		//! locking object for opencl runtime
@@ -161,16 +152,7 @@ namespace opencl {
 		
 		//! Registered opengl buffers and mapping to graphics resources
 		//GLBufferMap _buffers;
-		
-		//! Have the devices been loaded?
-		bool _devicesLoaded;
-		
-		//! The minimum supoported compute capability
-		int _computeCapability;
-		
-		//! The device flags
-		unsigned int _flags;
-		
+	
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
 	
@@ -255,11 +237,11 @@ namespace opencl {
 
 		//Context APIs
 		virtual cl_context clCreateContext(const cl_context_properties * properties,
-				    cl_uint num_devices,
-				    const cl_device_id * devices,
-				    void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
-				    void * user_data,
-				    cl_int * errcode_ret);
+					cl_uint num_devices,
+					const cl_device_id * devices,
+					void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
+					void * user_data,
+					cl_int * errcode_ret);
 		virtual cl_context clCreateContextFromType(const cl_context_properties * properties,
 					cl_device_type                device_type,
 					void (CL_CALLBACK *     pfn_notify)(const char *, const void *, size_t, void *),
@@ -267,11 +249,11 @@ namespace opencl {
 					cl_int *                      errcode_ret);
 		virtual cl_int clRetainContext(cl_context context);
 		virtual cl_int clReleaseContext(cl_context context);
-//		virtual cl_int clGetContextInfo(cl_context         context,
-//                 cl_context_info    param_name,
-//                 size_t             param_value_size,
-//                 void *             param_value,
-//                 size_t *           param_value_size_ret);
+		virtual cl_int clGetContextInfo(cl_context         context,
+					cl_context_info    param_name,
+					size_t             param_value_size,
+					void *             param_value,
+					size_t *           param_value_size_ret);
 
 		//Command queue APIs
 		virtual cl_command_queue clCreateCommandQueue(cl_context context, 

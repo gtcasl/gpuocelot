@@ -20,6 +20,7 @@
 #include <ocelot/opencl/interface/CommandQueue.h>
 #include <ocelot/opencl/interface/Program.h>
 #include <ocelot/opencl/interface/Platform.h>
+#include <ocelot/opencl/interface/Device.h>
 #include <ocelot/opencl/interface/Object.h>
 
 namespace opencl {
@@ -37,7 +38,16 @@ namespace opencl {
 
 	public:
 		/*! \brief constructor */
-		Context(Platform * platform, Device::DeviceList & devices);
+		Context(const cl_context_properties * properties,
+			cl_uint num_devices,
+			const cl_device_id * devices,
+			void (CL_CALLBACK * pfn_notify)(const char *, const void *, size_t, void *),
+			void * user_data);
+
+		Context(const cl_context_properties * properties,
+			cl_device_type                device_type,
+			void (CL_CALLBACK *     pfn_notify)(const char *, const void *, size_t, void *),
+			void *                        user_data);
 
 		/*! \brief destructor */
 		~Context();
@@ -55,6 +65,15 @@ namespace opencl {
 		/*! \brief check if this is a valid device for the context */
 		bool isValidDevice(Device * device);
 
+
+
+		/*! \brief get info of context */
+		void getInfo(cl_context_info    param_name,
+					size_t             param_value_size,
+					void *             param_value,
+					size_t *           param_value_size_ret);
+
+
 	private:
 		//! platform
 		Platform * _platform;
@@ -62,12 +81,8 @@ namespace opencl {
 		//! set of valid device indices
 		Device::DeviceList _validDevices;
 
-		//! set of trace generators to be inserted into emulated kernels
-		//trace::TraceGeneratorVector persistentTraceGenerators;
-
-		//! set of trace generators to be inserted into emulated kernels
-		//trace::TraceGeneratorVector nextTraceGenerators;
-			
+		//! properties
+		cl_context_properties * _properties;	
 
 	};
 

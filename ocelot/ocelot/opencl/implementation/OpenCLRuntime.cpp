@@ -68,70 +68,6 @@ size_t opencl::Dimension::pitch() const {
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
-void opencl::OpenCLRuntime::_enumeratePlatforms(cl_uint num_entries, 
-	cl_platform_id * platforms, 
-	cl_uint * num_platforms) {
-	report("Create platforms ");
-	Platform * p = new Platform();
-	
-	if(platforms) {
-		for(cl_uint i = 0; i < std::min((cl_uint)1, num_entries); 
-			i++)
-			platforms[i] = (cl_platform_id)p;
-	}
-
-	if(num_platforms)
-		*num_platforms = 1;
-
-}
-
-opencl::Context * opencl::OpenCLRuntime::_createContext(Platform * platform,
-	cl_uint deviceNum, const cl_device_id * devices) {
-	report("Creating new context ");
-	DeviceList deviceList;
-	for (cl_uint i = 0; i < deviceNum; i++) {
-		if(devices[i] == NULL  	
-			|| !devices[i]->isValidObject(Object::OBJTYPE_DEVICE)) {
-			throw CL_INVALID_DEVICE;
-			break;             	
-		}
-		deviceList.push_back(devices[i]);
-	}
-	Context * c = new Context(platform, deviceList);
-
-	return c;
-}
-
-void opencl::OpenCLRuntime::_enumerateDevices(cl_platform_id platform) {
-	if(!_devicesLoaded) {
-		report("Creating devices.");
-		if(config::get().executive.enableNVIDIA) {
-			Device::createDevices(platform, Device::DEVICE_NVIDIA_GPU,
-				_flags, _computeCapability);
-	
-		}
-		if(config::get().executive.enableEmulated) {
-			Device::createDevices(platform, Device::DEVICE_EMULATED,
-				_flags,_computeCapability);
-		}
-		if(config::get().executive.enableLLVM) {
-			Device::createDevices(platform, Device::DEVICE_MULTICORE_CPU,
-				_flags,_computeCapability, config::get().executive.workerThreadLimit);
-		}
-		if(config::get().executive.enableAMD) {
-			Device::createDevices(platform, Device::DEVICE_AMD_GPU,
-				_flags,_computeCapability);
-		}
-		if(config::get().executive.enableRemote) {
-			Device::createDevices(platform, Device::DEVICE_REMOTE,
-				_flags,_computeCapability);
-		}
-		
-		_devicesLoaded = true;
-		
-	}
-
-}
 
 //! acquires mutex and locks the runtime
 void opencl::OpenCLRuntime::_lock() {
@@ -145,8 +81,7 @@ void opencl::OpenCLRuntime::_unlock() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-opencl::OpenCLRuntime::OpenCLRuntime() :
-	_devicesLoaded(false), _computeCapability(2), _flags(0), 
+opencl::OpenCLRuntime::OpenCLRuntime() :	 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 }
@@ -547,7 +482,7 @@ cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries,
 		if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
 			throw CL_INVALID_VALUE;
 		
-		_enumeratePlatforms(num_entries, platforms, num_platforms);
+		Platform::getPlatforms(num_entries, platforms, num_platforms);
 
 	}
 	catch(cl_int exception) {
@@ -603,14 +538,13 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 	_lock();
 
 	try {
+
 		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
 	
 		if((num_entries == 0 && devices != NULL) || (num_devices == NULL && devices == NULL))
 			throw CL_INVALID_VALUE;
- 
-		_enumerateDevices(platform);
-	
+
 		Device::getDevices(platform, device_type, num_entries, devices, num_devices);
 			
 	}
@@ -700,22 +634,16 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 		if(properties == NULL)
 			throw CL_INVALID_PROPERTY;
 
-		if(properties[0] != CL_CONTEXT_PLATFORM 
-			|| properties[2] != 0 /*properties terminates with 0*/ )
-			throw CL_INVALID_PROPERTY;
-		
-		if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
-			throw CL_INVALID_PLATFORM;
-
 		if(devices == 0 || num_devices == 0
 			|| (pfn_notify == 0 && user_data != 0))
 			throw CL_INVALID_VALUE;
+
 		if(pfn_notify) {
 			assertM(false, "call_back function unsupported\n");
 			throw CL_UNIMPLEMENTED;
 		}
 		
-		ctx = _createContext((Platform *)properties[1], num_devices, devices);
+		ctx = new Context(properties, num_devices, devices, pfn_notify, user_data);
 	}
 	catch(cl_int exception) {
 		err = exception;
@@ -746,13 +674,6 @@ cl_context opencl::OpenCLRuntime::clCreateContextFromType(const cl_context_prope
 		if(properties == NULL)
 			throw CL_INVALID_PROPERTY;
 
-		if(properties[0] != CL_CONTEXT_PLATFORM 
-			|| properties[2] != 0 /*properties terminates with 0*/ )
-			throw CL_INVALID_PROPERTY;
-		
-		if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
-			throw CL_INVALID_PLATFORM;
-
 		if(pfn_notify == 0 && user_data != 0)
 			throw CL_INVALID_VALUE;
 		if(pfn_notify) {
@@ -760,12 +681,8 @@ cl_context opencl::OpenCLRuntime::clCreateContextFromType(const cl_context_prope
 			throw CL_UNIMPLEMENTED;
 		}
 
-		cl_uint deviceNum;
-		Device::getDevices(NULL, device_type, 0, NULL, &deviceNum);
-		cl_device_id * devices = new cl_device_id[deviceNum];
-		Device::getDevices(NULL, device_type, deviceNum, devices, NULL);	
-	
-		ctx = _createContext((Platform *)properties[1], deviceNum, devices);
+
+		ctx = new Context(properties, device_type, pfn_notify, user_data);
 	}
 	catch(cl_int exception) {
 		err = exception;
@@ -826,6 +743,35 @@ cl_int opencl::OpenCLRuntime::clReleaseContext(cl_context context) {
 	return result;
 
 }
+cl_int opencl::OpenCLRuntime::clGetContextInfo(cl_context         context,
+	cl_context_info    param_name,
+	size_t             param_value_size,
+	void *             param_value,
+	size_t *           param_value_size_ret) {
+
+	cl_int result = CL_SUCCESS;
+	_lock();
+	
+	try {
+		
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
+			throw CL_INVALID_PROGRAM;
+
+		context->getInfo(param_name, param_value_size, param_value, param_value_size_ret);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+
+}
+
 
 cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context, 
 	cl_device_id device, 

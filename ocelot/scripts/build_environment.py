@@ -118,9 +118,9 @@ def getGLEWPaths(env):
 
 	returns (have_glew,bin_path,lib_path,inc_path)
 	"""
-
-	#configure = Configure(env)
-	glew = True#configure.CheckLib('GLEW')		
+	
+	configure = Configure(env)
+	glew = configure.CheckLib('GLEW')		
 	
 	if not glew:
 		print "Glew disabled: not found"

@@ -1152,7 +1152,8 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 			throw CL_INVALID_CONTEXT;
 
 
-		new ReadBufferEvent((CommandQueue *)command_queue, (BufferObject *)buffer, 
+		new ReadWriteBufferEvent(CL_COMMAND_READ_BUFFER, 
+			(CommandQueue *)command_queue, (BufferObject *)buffer, 
 			blocking_read, offset, cb, ptr, 
 			num_events_in_wait_list, event_wait_list, event);
 
@@ -1190,24 +1191,10 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		if(!buffer->isValidContext(command_queue->context()))
 			throw CL_INVALID_CONTEXT;
 
-		if(event_wait_list == NULL && num_events_in_wait_list > 0)
-			throw CL_INVALID_EVENT_WAIT_LIST;
-
-		if(event_wait_list && num_events_in_wait_list == 0)
-			throw CL_INVALID_EVENT_WAIT_LIST;
-
-		if(event_wait_list) {
-			assertM(false, "non-null event wait list is no supported!");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		if(event) {
-			assertM(false, "non-null event is not supported!");
-			throw CL_UNIMPLEMENTED;
-		}
-
-		((BufferObject *)buffer)->writeOnDevice(command_queue->device(),
-			blocking_write, offset, cb, ptr);
+		new ReadWriteBufferEvent(CL_COMMAND_WRITE_BUFFER, 
+			(CommandQueue *)command_queue, (BufferObject *)buffer, 
+			blocking_write, offset, cb, (void *)ptr, 
+			num_events_in_wait_list, event_wait_list, event);
 
 	}
 	catch(cl_int exception) {

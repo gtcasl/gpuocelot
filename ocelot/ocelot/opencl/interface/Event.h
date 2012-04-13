@@ -54,29 +54,31 @@ namespace opencl {
 
 	};
 
-	/*! \brief Event for Read Buffer */
-	class ReadBufferEvent : public Event {
+	/*! \brief Event for Read/Write Buffer */
+	class ReadWriteBufferEvent : public Event {
 	public:
-		ReadBufferEvent(CommandQueue * commandQueue, 
+		ReadWriteBufferEvent(cl_command_type type,
+			CommandQueue * commandQueue, 
 			BufferObject * buffer, 
-			cl_bool blockingRead,
+			cl_bool blocking,
 			size_t offset, size_t cb, void * ptr,
 			cl_uint num_events_in_wait_list,
 			const cl_event * event_wait_list,
 			cl_event * event);
-		~ReadBufferEvent();
+		~ReadWriteBufferEvent();
 
 	public:
 		void release();
 		void execute(Device * device);
 
 
-	private:
+	protected:
 		BufferObject * _buffer;
 		size_t _offset;
 		size_t _cb;
 		void * _ptr;
 	};
+
 }
 
 #endif

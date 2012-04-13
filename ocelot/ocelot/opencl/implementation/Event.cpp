@@ -74,14 +74,15 @@ void opencl::Event::setStatus(cl_int status) {
 }
 
 
-opencl::ReadBufferEvent::ReadBufferEvent(CommandQueue * commandQueue,
+opencl::ReadWriteBufferEvent::ReadWriteBufferEvent(cl_command_type type,
+	CommandQueue * commandQueue,
 	BufferObject * buffer,
-	cl_bool blockingRead,
+	cl_bool blocking,
 	size_t offset, size_t cb, void * ptr,
 	cl_uint num_events_in_wait_list,
 	const cl_event * event_wait_list,
 	cl_event * event) :
-	Event(CL_COMMAND_READ_BUFFER, commandQueue, 
+	Event(type, commandQueue, 
 	commandQueue->context(), num_events_in_wait_list,
 	event_wait_list, event),
 	_buffer(buffer), _offset(offset),
@@ -98,20 +99,27 @@ opencl::ReadBufferEvent::ReadBufferEvent(CommandQueue * commandQueue,
 
 	buffer->retain();
 
-	commandQueue->queueEvent(this, blockingRead);
+	commandQueue->queueEvent(this, blocking);
 }
 
-opencl::ReadBufferEvent::~ReadBufferEvent() {
+opencl::ReadWriteBufferEvent::~ReadWriteBufferEvent() {
 
 	_buffer->release();
 }
 
-void opencl::ReadBufferEvent::release() {
+void opencl::ReadWriteBufferEvent::release() {
 if(Object::release())
 	delete this;
 }
 
-void opencl::ReadBufferEvent::execute(Device * device) {
+void opencl::ReadWriteBufferEvent::execute(Device * device) {
 	assertM(device == _commandQueue->device(), "invalid device");
-	_buffer->readOnDevice(device, _offset, _cb, _ptr);
+
+	if(_type == CL_COMMAND_READ_BUFFER)
+		_buffer->readOnDevice(device, _offset, _cb, _ptr);
+	else  if(_type == CL_COMMAND_WRITE_BUFFER)
+		_buffer->writeOnDevice(device, _offset, _cb, _ptr);
+	else
+		assertM(false, "Invalid read/write buffer command");
+
 }

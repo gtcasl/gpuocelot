@@ -71,7 +71,7 @@ namespace opencl {
         	size_t offset, size_t cb, void * ptr);
 
 		//! write on device
-		void writeOnDevice(Device * device, cl_bool blockingWrite,
+		void writeOnDevice(Device * device,
         	size_t offset, size_t cb, const void * ptr);
 
 	private:

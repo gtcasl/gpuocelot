@@ -101,21 +101,7 @@ void opencl::BufferObject::readOnDevice(Device * device,
 }
 
 void opencl::BufferObject::writeOnDevice(Device * device, 
-	cl_bool blockingWrite, size_t offset, size_t cb, const void * ptr) {
-
-	if(offset >= _size || cb + offset > _size)
-		throw CL_INVALID_VALUE;
-	
-	if(ptr == NULL)
-		throw CL_INVALID_VALUE;
-
-	if(blockingWrite == false) {
-		assertM(false, "unblocking write is not supported!");
-		throw CL_UNIMPLEMENTED;
-	}
-
-	if(!isAllocatedOnDevice(device))
-		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+	size_t offset, size_t cb, const void * ptr) {
 
 	void * devicePtr = getPtrOnDevice(device);
 	if(!device->write(devicePtr, ptr, offset, cb))

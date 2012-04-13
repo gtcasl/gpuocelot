@@ -1127,6 +1127,38 @@ cl_int opencl::OpenCLRuntime::clGetKernelWorkGroupInfo(cl_kernel kernel,
 	return result;
 }
 
+cl_int opencl::OpenCLRuntime::clGetEventInfo(cl_event event,
+	cl_event_info    param_name,
+	size_t           param_value_size,
+	void *           param_value,
+	size_t *         param_value_size_ret) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+
+		if(!event->isValidObject(Object::OBJTYPE_EVENT))
+			throw CL_INVALID_EVENT;
+
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+
+		event->getInfo(param_name, param_value_size, param_value, param_value_size_ret);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+
+} 
 
 cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue,
 	cl_mem buffer,

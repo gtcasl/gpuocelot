@@ -413,11 +413,11 @@ namespace opencl {
 		/* Event Object APIs */
 //		virtual cl_int clWaitForEvents(cl_uint num_events,
 //					const cl_event *    event_list);
-//		virtual cl_int clGetEventInfo(cl_event event,
-//					cl_event_info    param_name,
-//					size_t           param_value_size,
-//					void *           param_value,
-//					size_t *         param_value_size_ret); 
+		virtual cl_int clGetEventInfo(cl_event event,
+					cl_event_info    param_name,
+					size_t           param_value_size,
+					void *           param_value,
+					size_t *         param_value_size_ret); 
 //		virtual cl_event clCreateUserEvent(cl_context context,
 //                  cl_int *      errcode_ret); 
 //		virtual cl_int clRetainEvent(cl_event event);

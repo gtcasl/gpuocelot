@@ -73,6 +73,65 @@ void opencl::Event::setStatus(cl_int status) {
 	_status = status;
 }
 
+void opencl::Event::getInfo(cl_event_info    param_name,
+		size_t           param_value_size,
+		void *           param_value,
+		size_t *         param_value_size_ret) {
+
+	union infoUnion {
+		cl_command_queue cl_command_queue_var;
+		cl_context cl_context_var;
+		cl_command_type cl_command_type_var;
+		cl_int cl_int_var;
+	};
+
+	infoUnion info;
+	const void * ptr = &info;
+	size_t infoLen = 0;
+
+#ifndef ASSIGN_INFO
+#define ASSIGN_INFO(field, value) \
+do { \
+	info.field##_var = value; \
+	infoLen = sizeof(field); \
+} while(0)
+#endif
+
+	switch(param_name) {
+		case CL_EVENT_COMMAND_QUEUE:
+			ASSIGN_INFO(cl_command_queue, (cl_command_queue)_commandQueue);
+			break;
+
+		case CL_EVENT_CONTEXT:
+			ASSIGN_INFO(cl_context, (cl_context)_context);
+			break;
+
+		case CL_EVENT_COMMAND_TYPE:
+			ASSIGN_INFO(cl_command_type, _type);
+			break;
+
+		case CL_EVENT_COMMAND_EXECUTION_STATUS:
+			ASSIGN_INFO(cl_int, _status);
+			break;
+
+		default:
+			throw CL_INVALID_VALUE;
+			break;
+			
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+}
+
+
 
 opencl::ReadWriteBufferEvent::ReadWriteBufferEvent(cl_command_type type,
 	CommandQueue * commandQueue,

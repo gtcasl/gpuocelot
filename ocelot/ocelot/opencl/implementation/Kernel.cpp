@@ -13,11 +13,9 @@ bool opencl::Kernel::_isBuiltOnDevice(Device * device) {
 }
 
 size_t opencl::Kernel::_maxWorkGroupSize(Device * device) {
-	executive::ExecutableKernel * kernel = (executive::ExecutableKernel *)
-		_deviceInfo[device]._irKernel;
-	size_t regUsage = (size_t)kernel->registerCount();
-	size_t maxRegUsage = device->regSize();
-	return maxRegUsage/regUsage; 
+	size_t maxSize;
+	device->getInfo(CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &maxSize, NULL);
+	return maxSize; 
 }
 
 opencl::Kernel::Kernel(const std::string &n, 

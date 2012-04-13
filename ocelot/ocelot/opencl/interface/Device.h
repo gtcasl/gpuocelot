@@ -34,9 +34,6 @@ namespace opencl {
 		~Device();
 
 	public:
-		//enumerate available devices
-		static void _enumerateDevices(cl_platform_id platform);
-
 		//Get devices of one specific type
 		static void getDevices(cl_platform_id platform, cl_device_type type, cl_uint num_entries,
 		    cl_device_id * devices, cl_uint * num_devices);
@@ -61,6 +58,12 @@ namespace opencl {
 
 		//Get name
 		const char * name();
+
+		//Get register file size per block
+		const size_t regSize();
+
+		//Compare device type
+		const bool isType(cl_device_type type) const;
 
 		//Load module
 		void load(ir::Module * module);
@@ -139,13 +142,13 @@ namespace opencl {
 		size_t _partitionPropSize;
 
 		//Compare Platform
-		const bool _hasPlatform(cl_platform_id platform) const;
-
-		//Compare device type
-		const bool _isType(cl_device_type type) const;
+		const inline bool _hasPlatform(cl_platform_id platform) const;
 
 		//If valid device type
-		static const bool _isValidType(const cl_device_type type);
+		static inline const bool _isValidType(const cl_device_type type);
+
+		//enumerate available devices
+		static void _enumerateDevices(cl_platform_id platform);
 
 	};
 

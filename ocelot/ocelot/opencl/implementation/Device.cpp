@@ -17,14 +17,6 @@ const bool opencl::Device::_hasPlatform(cl_platform_id platform) const {
 	return (platform == NULL || (Platform *)platform == _platform);
 }
 
-const bool opencl::Device::_isType(cl_device_type type) const {
-
-	if((type & CL_DEVICE_TYPE_DEFAULT) == CL_DEVICE_TYPE_DEFAULT)
-		type |= CL_DEVICE_TYPE_GPU;
-
-	return ((type & _type) == _type);
-}
-
 const bool opencl::Device::_isValidType(const cl_device_type type) {
 	return (type <= (CL_DEVICE_TYPE_DEFAULT | CL_DEVICE_TYPE_CPU | CL_DEVICE_TYPE_GPU
 		| CL_DEVICE_TYPE_ACCELERATOR | CL_DEVICE_TYPE_CUSTOM)) || (type == CL_DEVICE_TYPE_ALL);
@@ -151,7 +143,7 @@ void opencl::Device::getDevices(cl_platform_id platform, cl_device_type type, cl
 
 	cl_uint j = 0;
 	for(DeviceList::iterator d = _deviceList.begin(); d != _deviceList.end(); d++) {
-		if((*d)->_isType(type) && (*d)->_hasPlatform(platform)) {
+		if((*d)->isType(type) && (*d)->_hasPlatform(platform)) {
 
 			if(devices != 0 && j < num_entries)
 				devices[j] = (cl_device_id)(*d);
@@ -223,18 +215,22 @@ void opencl::Device::getInfo(cl_device_info param_name,
 	std::string str;
 	const executive::Device::Properties & prop = _exeDevice->properties();
 
+#ifndef ASSIGN_INFO
 #define ASSIGN_INFO(field, value) \
 do { \
 	info.field##_var = value; \
 	infoLen = sizeof(field); \
 } while(0)
+#endif
 
+#ifndef ASSIGN_STRING
 #define ASSIGN_STRING(value) \
 do { \
 	str = value; \
 	ptr = str.c_str(); \
 	infoLen = str.length() + 1; \
 }while(0)
+#endif
 
 	switch(param_name) {
 		case CL_DEVICE_TYPE:
@@ -260,9 +256,7 @@ do { \
 			break;
 
 		case CL_DEVICE_MAX_WORK_GROUP_SIZE:
-			for(int i = 0; i < 3; i++)
-				info.sizes[i] = (size_t)prop.maxGridSize[i];
-			infoLen = sizeof(size_t[3]); 
+			ASSIGN_INFO(size_t, (size_t)prop.maxThreadsPerBlock);
 			break;
 
 		case CL_DEVICE_PREFERRED_VECTOR_WIDTH_CHAR:
@@ -418,11 +412,11 @@ do { \
 			break;
 
 		case CL_DEVICE_LOCAL_MEM_TYPE:
-			ASSIGN_INFO(cl_device_local_mem_type, CL_GLOBAL);
+			ASSIGN_INFO(cl_device_local_mem_type, CL_LOCAL);
 			break;
 
 		case CL_DEVICE_LOCAL_MEM_SIZE:
-			ASSIGN_INFO(cl_ulong, (cl_uint)prop.totalMemory);
+			ASSIGN_INFO(cl_ulong, (cl_ulong)prop.sharedMemPerBlock);
 			break;
 
 		case CL_DEVICE_ERROR_CORRECTION_SUPPORT:
@@ -553,7 +547,21 @@ cl_khr_fp64 cl_khr_gl_sharing cl_khr_gl_event");
 
 const char * opencl::Device::name() {
 	return _exeDevice->properties().name;
-} 
+}
+
+const size_t opencl::Device::regSize() {
+	return (size_t)_exeDevice->properties().regsPerBlock;
+}
+
+const bool opencl::Device::isType(cl_device_type type) const {
+
+	if((type & CL_DEVICE_TYPE_DEFAULT) == CL_DEVICE_TYPE_DEFAULT)
+		type |= CL_DEVICE_TYPE_GPU;
+
+	return ((type & _type) == _type);
+}
+
+
 
 void opencl::Device::load(ir::Module * module) {
 

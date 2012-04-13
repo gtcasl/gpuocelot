@@ -7,6 +7,7 @@
 #include <set>
 
 // Ocelot libs
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/Program.h>
 #include <ocelot/opencl/interface/Context.h>
@@ -25,7 +26,7 @@ namespace opencl {
 	class Kernel : public Object{
 
 	public:
-		Kernel(const std::string& name, Program * program);
+		Kernel(const std::string& name, Program * program, bool builtIn = false);
 		~Kernel();
 
 	public:
@@ -51,9 +52,19 @@ namespace opencl {
 		//Launch kernel
 		void launchOnDevice(Device * device);
 
+		//Get WorkGroup Info
+		void getWorkGroupInfo(cl_device_id               device,
+				cl_kernel_work_group_info  param_name,
+				size_t                     param_value_size,
+				void *                     param_value,
+				size_t *                   param_value_size_ret);
+
 	private:
 		//! name of kernel
 		const std::string _name;
+
+		//! built-in kernel
+		bool _isBuiltIn;
 
 		//! associated program
 		Program * _program;
@@ -105,6 +116,9 @@ namespace opencl {
 	private:
 		//! check if built on device
 		bool _isBuiltOnDevice(Device * device);
+
+		//! get max work group size
+		size_t _maxWorkGroupSize(Device * device);
 			
 	};
 	

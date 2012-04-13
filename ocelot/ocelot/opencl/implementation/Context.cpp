@@ -145,6 +145,8 @@ void opencl::Context::getInfo(cl_context_info    param_name,
 			infoLen = 3 * sizeof(cl_context_properties);
 			ptr = _properties;
 			break;
+		default:
+			throw CL_INVALID_VALUE;
 	}
 
 	if(param_value && param_value_size < infoLen)

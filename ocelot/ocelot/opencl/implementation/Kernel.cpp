@@ -12,10 +12,17 @@ bool opencl::Kernel::_isBuiltOnDevice(Device * device) {
 	return false;
 }
 
+size_t opencl::Kernel::_maxWorkGroupSize(Device * device) {
+	executive::ExecutableKernel * kernel = (executive::ExecutableKernel *)
+		_deviceInfo[device]._irKernel;
+	size_t regUsage = (size_t)kernel->registerCount();
+	size_t maxRegUsage = device->regSize();
+	return maxRegUsage/regUsage; 
+}
 
 opencl::Kernel::Kernel(const std::string &n, 
-	Program * p): Object(OBJTYPE_KERNEL),
-	_name(n), _program(p) {
+	Program * p, bool builtIn): Object(OBJTYPE_KERNEL),
+	_name(n), _isBuiltIn(builtIn), _program(p) {
 	_parameterBlock = NULL;
 	_program->retain();
 }
@@ -237,5 +244,98 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //	catch(...) {
 //		throw;
 //	}
+}
+
+
+void opencl::Kernel::getWorkGroupInfo(cl_device_id device,
+		cl_kernel_work_group_info  param_name,
+		size_t param_value_size,
+		void * param_value,
+		size_t * param_value_size_ret) {
+
+	Device * d;
+
+	if(device) {
+		if(!_isBuiltOnDevice((Device *) device))
+			throw CL_INVALID_VALUE;
+	
+		d = (Device *)device;
+	}
+	else {
+		if(_deviceInfo.size() > 1)
+			throw CL_INVALID_VALUE;
+			
+		d = (*_deviceInfo.begin()).first;
+	}
+
+	
+	union infoUnion {
+		size_t size_t_var;
+		size_t sizes[3];
+		cl_ulong cl_ulong_var;
+	};
+
+	infoUnion info;
+	const void * ptr = &info;
+	size_t infoLen = 0;
+	executive::ExecutableKernel * kernel = (executive::ExecutableKernel *)_deviceInfo[d]._irKernel;
+#ifndef ASSIGN_INFO
+#define ASSIGN_INFO(field, value) \
+do { \
+	info.field##_var = value; \
+	infoLen = sizeof(field); \
+} while(0)
+#endif
+
+	switch(param_name) {
+		case CL_KERNEL_GLOBAL_WORK_SIZE:
+			if(!d->isType(CL_DEVICE_TYPE_CUSTOM) || !_isBuiltIn)
+				throw CL_INVALID_VALUE;
+			else {
+				assertM(false, "No built-in kernel or custom device supported");
+				throw CL_UNIMPLEMENTED;
+				//currently no built-in kernel and custom device, leave blank
+			} 
+			break;
+
+		case CL_KERNEL_WORK_GROUP_SIZE:
+			ASSIGN_INFO(size_t, _maxWorkGroupSize(d));
+			break;
+
+		case CL_KERNEL_COMPILE_WORK_GROUP_SIZE:
+			std::memset(info.sizes, 0, 3*sizeof(size_t));
+			ptr = info.sizes;
+			infoLen = 3 * sizeof(size_t);
+			break;
+
+		case CL_KERNEL_LOCAL_MEM_SIZE:
+			ASSIGN_INFO(cl_ulong, (cl_ulong)(kernel->totalSharedMemorySize()));
+			break;
+
+		case CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE:
+			ASSIGN_INFO(size_t, 32);
+			break;
+
+		case CL_KERNEL_PRIVATE_MEM_SIZE:
+			ASSIGN_INFO(cl_ulong, (cl_ulong)(kernel->localMemorySize()));
+			break;
+
+		default:
+			throw CL_INVALID_VALUE;
+			break;
+	
+
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+
 }
 

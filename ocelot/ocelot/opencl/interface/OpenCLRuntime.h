@@ -403,12 +403,12 @@ namespace opencl {
 //					size_t          param_value_size,
 //					void *          param_value,
 //					size_t *        param_value_size_ret);
-//		virtual cl_int clGetKernelWorkGroupInfo(cl_kernel kernel,
-//					cl_device_id               device,
-//					cl_kernel_work_group_info  param_name,
-//					size_t                     param_value_size,
-//					void *                     param_value,
-//					size_t *                   param_value_size_ret);
+		virtual cl_int clGetKernelWorkGroupInfo(cl_kernel kernel,
+					cl_device_id               device,
+					cl_kernel_work_group_info  param_name,
+					size_t                     param_value_size,
+					void *                     param_value,
+					size_t *                   param_value_size_ret);
 
 		/* Event Object APIs */
 //		virtual cl_int clWaitForEvents(cl_uint num_events,

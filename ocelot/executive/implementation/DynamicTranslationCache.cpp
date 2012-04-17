@@ -1160,7 +1160,7 @@ static void cloneAndOptimizeTranslation(
 	manager.add(vectorizationPass);
 	
 	report("Overriding optimization level");
-	level = 2;
+	level = 0;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1410,7 +1410,7 @@ executive::DynamicTranslationCache::Translation *
 	translation->metadata = subkernel.metadata;
 	static_cast<executive::MetaData*>(translation->metadata)->device = device;
 	
-	reportNTE(REPORT_TRANSLATION_OPERATIONS, "new Translation: " << (void *)translation);
+	reportNTE(REPORT_TRANSLATION_OPERATIONS, "new Translation");
 	
 	#ifdef HAVE_LLVM
 	try {

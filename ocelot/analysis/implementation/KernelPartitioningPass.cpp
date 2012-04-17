@@ -459,7 +459,6 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionLoops(PartitionVec
 	report("]");
 	#endif
 	
-	
 	BasicBlockSet coveredBlocks;
 	for (PartitionVector::iterator partition_it = partitions.begin();
 		partition_it != partitions.end(); ++partition_it) {

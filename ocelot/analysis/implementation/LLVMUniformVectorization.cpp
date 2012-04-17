@@ -47,9 +47,9 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
-#define REPORT_FINAL_SUBKERNEL 1
+#define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -666,22 +666,32 @@ void analysis::LLVMUniformVectorization::Translation::_eraseBlock(llvm::BasicBlo
 }
 
 void analysis::LLVMUniformVectorization::Translation::_eliminateEmptyBlocks() {
-
+	report("_eliminateEmptyBlocks()");
+	
 	std::vector< llvm::BasicBlock *> killWithFire;
 	llvm::Function::iterator bb_it = function->begin();
 	++bb_it;
 	for (; bb_it != function->end(); ++bb_it) {
 		int count = 0;
-		for (llvm::pred_iterator pred_it = llvm::pred_begin(&*bb_it); pred_it != llvm::pred_end(&*bb_it); ++pred_it) {
+		
+		report("  visiting block: " << bb_it->getName().str());
+		
+		for (llvm::pred_iterator pred_it = llvm::pred_begin(&*bb_it); 
+			pred_it != llvm::pred_end(&*bb_it); ++pred_it) {
 			++count;
 			break;
 		}
 		if (!count) {
+			report("    - no predecessors");
 			killWithFire.push_back(&*bb_it);
 		}
 	}
+	report("Eliminating block with no predecessors: (" << killWithFire.size() << " blocks)");
 	for (std::vector< llvm::BasicBlock *>::iterator bb_it = killWithFire.begin(); 
 		bb_it != killWithFire.end(); ++bb_it ) {
+		report(" block: " << (*bb_it)->getName().str());
+		report("  successors: ");
+		
 		_eraseBlock(*bb_it);
 	}
 }
@@ -1055,6 +1065,7 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_finalizeTranslation() {
+	report("_finalizeTranslation()");
 	_eliminateUnusedVectorPacking();
 }
 
@@ -1421,3 +1432,77 @@ void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+analysis::LLVMUniformVectorization::AffineValue::AffineValue():
+	base(0), offset(0), constant(0) {
+
+}
+
+analysis::LLVMUniformVectorization::AffineValue::AffineValue(llvm::Value *_base, 
+	llvm::Constant *_offset, llvm::Constant *_constant): base(_base), offset(_offset), constant(_constant) {
+
+}
+
+bool analysis::LLVMUniformVectorization::AffineValue::invariant() const {
+	return (constant ? false : true);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+analysis::LLVMUniformVectorization::AffineVarianceAnalysis::AffineVarianceAnalysis(
+	llvm::Function *_function, 
+	const analysis::LLVMUniformVectorization::ThreadLocalArgumentVector &_threadLocal):
+		function(_function), threadLocal(_threadLocal) {
+	
+	_enumerateInvariants();
+	_compute();
+}
+
+analysis::LLVMUniformVectorization::AffineVarianceAnalysis::~AffineVarianceAnalysis() {
+
+}
+
+/*!
+	marks all trivial values that are thread-invariant across the CTA
+*/
+void analysis::LLVMUniformVectorization::AffineVarianceAnalysis::_enumerateInvariants() {
+
+	report("_enumerateInvariants()");
+	
+	// global values
+	report("  global values:");
+	for (llvm::Module::const_global_iterator global_it = function->getParent()->global_begin();
+		global_it != function->getParent()->global_end(); ++global_it) {
+	
+		report("   " << global_it->getName().str());
+		
+		// all load instructions using this are invariant
+		for (llvm::Value::const_use_iterator use_it = global_it->use_begin(); 
+			use_it != global_it->use_end(); ++use_it ) {
+			
+		}
+		invariantSet.insert(&*global_it);
+	}
+	
+	// trivial thread-invariant
+	for (int i = 3; i < 12; i++) {
+		invariantSet.insert((threadLocal[0]).*(ThreadLocalArgumentInstances[i]));
+	}
+	for (int i = 14; i < 17; i++) {
+		invariantSet.insert((threadLocal[0]).*(ThreadLocalArgumentInstances[i]));
+	}
+
+#if REPORT_BASE
+	report("  CTA-invariant values: ");
+	for (ConstValueSet::const_iterator invariant_it = invariantSet.begin(); 
+		invariant_it != invariantSet.end(); ++invariant_it) {
+		report("  " << (*invariant_it)->getName().str());
+	}
+#endif
+}
+
+void analysis::LLVMUniformVectorization::AffineVarianceAnalysis::_compute() {
+
+}
+
+		
+//////////////////////////////////////////////////////////////////////////////////////////////////

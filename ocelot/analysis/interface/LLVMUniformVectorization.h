@@ -46,6 +46,9 @@ namespace analysis
 
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
+		typedef std::set< llvm::Value * > ValueSet;
+		typedef std::set< const llvm::Value * > ConstValueSet;
+		typedef std::vector< llvm::Value *> ValueVector;
 		typedef std::vector< llvm::Instruction *> InstructionVector;
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::Subkernel Subkernel;
@@ -128,6 +131,58 @@ namespace analysis
 			
 			//! \brief
 			ThreadLocalArgumentVector threadLocalArguments;
+		};
+		
+		/*! 
+			\brief set of expressions for which each thread in a warp's value is equal to:
+				base-value + offset + constant * (tid - base-tid)
+		*/
+		class AffineValue {
+		public:
+			AffineValue();
+			AffineValue(llvm::Value *_base, llvm::Constant *offset = 0, llvm::Constant *_constant = 0);
+		
+			//! \brief true if value is thread-invariant across CTA
+			bool invariant() const;
+		
+		public:
+			llvm::Value *base;
+			
+			llvm::Constant *offset;
+			
+			llvm::Constant *constant;
+		};
+		
+		//! \brief maps
+		typedef std::map< llvm::Value *, AffineValue > AffineValueMap;
+		
+		//! \brief computes set of instructions that are affine
+		class AffineVarianceAnalysis {
+		public:
+		
+			AffineVarianceAnalysis(llvm::Function *function, 
+				const ThreadLocalArgumentVector &threadLocalArguments);
+			~AffineVarianceAnalysis();
+			
+		protected:
+		
+			void _enumerateInvariants();
+						
+			void _compute();
+			
+		protected:
+		
+			llvm::Function *function;
+			
+			const ThreadLocalArgumentVector & threadLocal;
+		
+		public:
+		
+			ConstValueSet invariantSet;
+			
+			ValueSet threadId;
+			
+			AffineValueMap affineValues;
 		};
 		
 		/*!

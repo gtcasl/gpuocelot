@@ -1409,6 +1409,12 @@ setp : OPCODE_SETP setpModifier dataType predicatePair ',' operand ','
 	state.instruction( $<text>1, $<value>3 );
 };
 
+setp : OPCODE_SETP dataType setpModifier predicatePair ',' operand ',' 
+	operand ';'
+{
+	state.instruction( $<text>1, $<value>2 );
+};
+
 setp : OPCODE_SETP comparison boolOperator optionalFtz dataType predicatePair 
 	',' operand ',' operand ',' operand ';'
 {

@@ -65,6 +65,9 @@ def build(options):
 ################################################################################
 ## Run Standard Tests
 def runStandardTests(options, directory, name):
+	if not directory in options.test_lists.replace(' ', '').split(','):
+		return True
+	
 	# Run Cuda 2.2 tests
 	command = "cd tests/" + directory + "; hydrazine/python/RunRegression.py -v"
 	
@@ -100,33 +103,34 @@ def runUnitTests(options, buildSucceeded):
 		return False
 	
 	# run Ocelot tests
-	command = "cd ocelot; hydrazine/python/RunRegression.py -v"
+	if 'unit' in options.test_lists.replace(' ', '').split(','):
+		command = "cd ocelot; hydrazine/python/RunRegression.py -v"
 
-	if options.debug:
-		command += " -p ../.debug_build/ocelot"
-		prefix = "debug"
-	else:
-		command += " -p ../.release_build/ocelot"
-		prefix = "release"
+		if options.debug:
+			command += " -p ../.debug_build/ocelot"
+			prefix = "debug"
+		else:
+			command += " -p ../.release_build/ocelot"
+			prefix = "release"
 
-	if options.test_level == 'basic':
-		log = "regression/" + prefix + "-basic.log"
-		command += " -t regression/basic.level"
-	elif options.test_level == 'full':
-		log = "regression/" + prefix + "-full.log"
-		command += " -t regression/full.level"
+		if options.test_level == 'basic':
+			log = "regression/" + prefix + "-basic.log"
+			command += " -t regression/basic.level"
+		elif options.test_level == 'full':
+			log = "regression/" + prefix + "-full.log"
+			command += " -t regression/full.level"
 
-	command += " -l " + log + "; cd .."
+		command += " -l " + log + "; cd .."
 
-	print '\nRunning Ocelot Unit Tests...'
-	status = os.popen(command).read()
-	print status
+		print '\nRunning Ocelot Unit Tests...'
+		status = os.popen(command).read()
+		print status
 
-	# Check for any failing/missing tests
-	if re.search('Failing tests|Non-Existent tests', status):
-		return False
-	elif options.test_level == 'basic':
-		return True
+		# Check for any failing/missing tests
+		if re.search('Failing tests|Non-Existent tests', status):
+			return False
+		elif options.test_level == 'basic':
+			return True
 
 	# Run standard tests
 	if not runStandardTests(options, 'cuda2.2', 'CUDA SDK 2.2'):
@@ -196,6 +200,9 @@ def main():
 	parser.add_option( "--build_deb", \
 		default = False, action = "store_true",
 		help = "Build a .deb package of Ocelot." )
+	parser.add_option( "--test_lists", \
+		default = "unit, cuda2.2, cuda2.3, cuda3.2, cuda4.1sdk, parboil",
+		help = "Comma separated list of tests." )
 	parser.add_option( "--no_llvm", \
 		default = False, action = "store_true", help = "Disable llvm support." )
 	parser.add_option( "-m", "--message", default = "", \

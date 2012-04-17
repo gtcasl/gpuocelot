@@ -2,7 +2,7 @@
 SortingNetwork CUDA_SDK_STYLE
 vectorAdd CUDA_SDK_STYLE
 worleyTestExternalSharedMemory CUDA_SDK_STYLE
-TestAtomics
+AtomicPerformance
 TestMemoryAccesses
 TestSpecialFunctions
 TestInstructionThroughput

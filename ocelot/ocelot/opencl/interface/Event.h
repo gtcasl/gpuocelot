@@ -11,6 +11,7 @@ namespace opencl {
 	class Context;
 	class CommandQueue;
 	class BufferObject;
+	class Kernel;
 
 	/*! \brief opencl event object */
 	class Event : public Object {
@@ -27,7 +28,7 @@ namespace opencl {
 		~Event();
 
 	public:
-		virtual void release() = 0;
+		void release();
 
 		//! get type
 		cl_command_type type();
@@ -74,8 +75,8 @@ namespace opencl {
 		~ReadWriteBufferEvent();
 
 	public:
-		void release();
-		void execute(Device * device);
+		//virtual void release();
+		virtual void execute(Device * device);
 
 
 	protected:
@@ -83,6 +84,31 @@ namespace opencl {
 		size_t _offset;
 		size_t _cb;
 		void * _ptr;
+	};
+
+	/*! \brief Event for Kernel Launch */
+	class KernelEvent : public Event {
+	public:
+		KernelEvent(cl_command_type type,
+			CommandQueue * commandQueue,
+			Kernel * kernel,
+			cl_uint work_dim,
+			const size_t *global_work_offset,
+			const size_t *   global_work_size,
+			const size_t *   local_work_size,
+			cl_uint          num_events_in_wait_list,
+			const cl_event * event_wait_list,
+			cl_event *       event);
+		~KernelEvent();
+
+	public:
+		//virtual void release();
+		virtual void execute(Device * device);
+
+	protected:
+		Kernel * _kernel;
+	
+			
 	};
 
 }

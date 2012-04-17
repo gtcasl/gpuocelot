@@ -54,7 +54,10 @@ opencl::Event::~Event() {
 	}
 }
 
-
+void opencl::Event::release() {
+	if(Object::release())
+		delete this;
+}
 
 cl_command_type opencl::Event::type() {
 	return _type;
@@ -166,11 +169,6 @@ opencl::ReadWriteBufferEvent::~ReadWriteBufferEvent() {
 	_buffer->release();
 }
 
-void opencl::ReadWriteBufferEvent::release() {
-if(Object::release())
-	delete this;
-}
-
 void opencl::ReadWriteBufferEvent::execute(Device * device) {
 	assertM(device == _commandQueue->device(), "invalid device");
 
@@ -182,3 +180,37 @@ void opencl::ReadWriteBufferEvent::execute(Device * device) {
 		assertM(false, "Invalid read/write buffer command");
 
 }
+
+opencl::KernelEvent::KernelEvent(cl_command_type type,
+	CommandQueue * commandQueue,
+	Kernel * kernel,
+	cl_uint work_dim,
+	const size_t *global_work_offset,
+	const size_t *   global_work_size,
+	const size_t *   local_work_size,
+	cl_uint          num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event *       event) :
+	Event(type, commandQueue, 
+	commandQueue->context(), num_events_in_wait_list,
+	event_wait_list, event), _kernel(kernel) {
+
+	kernel->mapParametersOnDevice(commandQueue->device());
+	kernel->setConfiguration(work_dim, global_work_offset, global_work_size, local_work_size);
+	kernel->retain();
+
+	commandQueue->queueEvent(this, false);	
+}
+
+opencl::KernelEvent::~KernelEvent() {
+
+	_kernel->release();
+
+}
+
+void opencl::KernelEvent::execute(Device * device) {
+	assertM(device == _commandQueue->device(), "invalid device");
+	_kernel->launchOnDevice(device);
+}
+
+

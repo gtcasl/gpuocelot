@@ -1261,15 +1261,13 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 
 		if(!kernel->isValidContext(command_queue->context()))
 			throw CL_INVALID_CONTEXT;
-
-		if((event_wait_list == NULL && num_events_in_wait_list > 0) || (event_wait_list && num_events_in_wait_list == 0))
-			throw CL_INVALID_EVENT_WAIT_LIST;
-	
-		kernel->mapParametersOnDevice(command_queue->device());
 		
-		kernel->setConfiguration(work_dim, global_work_offset, global_work_size, local_work_size);	
-
-		kernel->launchOnDevice(command_queue->device());
+		new KernelEvent(CL_COMMAND_NDRANGE_KERNEL,
+			(CommandQueue *)command_queue, (Kernel *)kernel,
+			work_dim, global_work_offset, global_work_size,
+			local_work_size, num_events_in_wait_list, 
+			event_wait_list, event);
+		
 	}
 	catch(cl_int exception) {
 		result = exception;

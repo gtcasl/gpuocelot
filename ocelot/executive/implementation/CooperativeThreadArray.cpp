@@ -2809,7 +2809,14 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 	trace();
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
-		switch (instr.a.type) {
+		
+		ir::PTXOperand::DataType sourceType = instr.a.type;
+		
+		if (instr.a.relaxedType != ir::PTXOperand::TypeSpecifier_invalid) {
+			sourceType = instr.a.relaxedType;
+		}
+		
+		switch (sourceType) {
 			case PTXOperand::b8: // fall through
 			case PTXOperand::u8:
 			{

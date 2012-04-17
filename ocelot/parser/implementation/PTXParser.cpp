@@ -147,6 +147,32 @@ namespace parser
 			}
 		}
 	}
+	
+	PTXParser::State::OperandWrapper*
+		PTXParser::State::_getOperand( const std::string& name )
+	{
+		for( OperandMapStack::reverse_iterator map = operands.rbegin();
+			map != operands.rend(); ++map )
+		{
+			OperandMap::iterator operand = map->find( name );
+			
+			if( operand != map->end() ) return &operand->second;
+		}
+		
+		return 0;
+	}
+	
+	PTXParser::State::OperandWrapper*
+		PTXParser::State::_getOperandInScope( const std::string& name )
+	{
+		assert( !operands.empty() );
+		
+		OperandMap::iterator operand = operands.back().find( name );
+		
+		if( operand != operands.back().end() ) return &operand->second;
+		
+		return 0;
+	}
 
 	static ir::PTXOperand::SpecialRegister envReg( unsigned int i )
 	{
@@ -191,57 +217,57 @@ namespace parser
 
 	void PTXParser::State::addSpecialRegisters()
 	{
-		operands.insert( std::make_pair( "%tid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%tid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::tid, ir::PTXOperand::iAll ) ) ) );
-		operands.insert( std::make_pair( "%ntid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%ntid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::ntid, ir::PTXOperand::iAll ) ) ) );
-		operands.insert( std::make_pair( "%laneid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%laneid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::laneId, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%nwarpid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%nwarpid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nwarpId, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "WARP_SZ", OperandWrapper( 
+		operands.front().insert( std::make_pair( "WARP_SZ", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::warpSize, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%ctaid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%ctaid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::ctaId, ir::PTXOperand::iAll ) ) ) );
-		operands.insert( std::make_pair( "%nctaid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%nctaid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nctaId,
 			ir::PTXOperand::iAll ) ) ) );
-		operands.insert( std::make_pair( "%smid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%smid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::smId, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%nsmid", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%nsmid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nsmId, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%gridId", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%gridId", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::gridId, ir::PTXOperand::ix ) ) ) );
 
-		operands.insert( std::make_pair( "%lanemask_eq", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%lanemask_eq", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::lanemask_eq,
 			ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%lanemask_le", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%lanemask_le", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::lanemask_le,
 			ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%lanemask_lt", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%lanemask_lt", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::lanemask_lt,
 			ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%lanemask_ge", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%lanemask_ge", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::lanemask_ge,
 			ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%lanemask_gt", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%lanemask_gt", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::lanemask_gt,
 			ir::PTXOperand::ix ) ) ) );
 
-		operands.insert( std::make_pair( "%clock", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%clock", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::clock, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%clock64", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%clock64", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::clock64, ir::PTXOperand::ix, 
 			ir::PTXOperand::u64 ) ) ) );
 
-		operands.insert( std::make_pair( "%pm0", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%pm0", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::pm0, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%pm1", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%pm1", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::pm1, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%pm2", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%pm2", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::pm2, ir::PTXOperand::ix ) ) ) );
-		operands.insert( std::make_pair( "%pm3", OperandWrapper( 
+		operands.front().insert( std::make_pair( "%pm3", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::pm3, ir::PTXOperand::ix ) ) ) );
 
 		for( unsigned int i = 0; i < 32; ++i )
@@ -249,8 +275,8 @@ namespace parser
 			std::stringstream stream;
 			stream << "%envreg" << i;
 			
-			operands.insert( std::make_pair( stream.str(), OperandWrapper( 
-				ir::PTXOperand( envReg( i ), ir::PTXOperand::ix, 
+			operands.front().insert( std::make_pair( stream.str(),
+				OperandWrapper( ir::PTXOperand( envReg( i ), ir::PTXOperand::ix, 
 				ir::PTXOperand::b32 ) ) ) );			
 		}
 	}
@@ -649,7 +675,7 @@ namespace parser
 		{
 			statement.array.stride[0] = 0;
 			
-			if( operands.count( statement.name ) != 0 ) 
+			if( _getOperandInScope( statement.name ) != 0 ) 
 			{
 				throw_exception( toString( location, *this ) 
 					<< "Variable name " << statement.name 
@@ -677,15 +703,11 @@ namespace parser
 		
 			operand.identifier = statement.name;
 		
-			operands.insert( std::make_pair( statement.name, 
+			operands.back().insert( std::make_pair( statement.name, 
 				OperandWrapper( operand, 
 				statement.instruction.addressSpace ) ) );
 				
 			operand.array.clear();
-			if( inEntry )
-			{
-				localOperands.back().insert( statement.name );
-			}
 		}
 		
 		for( unsigned int i = 0; i < regs; ++i )
@@ -693,7 +715,7 @@ namespace parser
 			std::stringstream name;
 			name << statement.name << i;
 	
-			if( operands.count( name.str() ) != 0 ) 
+			if( _getOperandInScope( name.str() ) != 0 ) 
 			{
 				throw_exception( toString( location, *this ) 
 					<< "Variable name " << statement.name 
@@ -721,15 +743,11 @@ namespace parser
 				}
 			}
 			
-			operands.insert( std::make_pair( name.str(), 
+			operands.back().insert( std::make_pair( name.str(), 
 				OperandWrapper( operand, 
 				statement.instruction.addressSpace ) ) );
 		
 			operand.array.clear();
-			if( inEntry )
-			{
-				localOperands.back().insert( name.str() );
-			}
 		}
 	}
 
@@ -798,7 +816,7 @@ namespace parser
 			}
 		}
 		
-		if( operands.count( statement.name ) != 0 ) 
+		if( _getOperandInScope( statement.name ) != 0 ) 
 		{
 			throw_exception( toString( one, *this ) 
 				<< "Variable name " << statement.name 
@@ -808,13 +826,8 @@ namespace parser
 
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
-		operands.insert( std::make_pair( statement.name, 
+		operands.back().insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
-	
-		if( inEntry )
-		{
-			localOperands.back().insert( statement.name );
-		}
 	}
 
 	void PTXParser::State::textureDeclaration( int space, 
@@ -826,7 +839,7 @@ namespace parser
 		statement.space = tokenToTextureSpace( space );
 		statement.name = name;
 
-		if( operands.count( statement.name ) != 0 ) 
+		if( _getOperandInScope( statement.name ) != 0 ) 
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Texture reference name " << statement.name 
@@ -836,7 +849,7 @@ namespace parser
 	
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
-		operands.insert( std::make_pair( statement.name, 
+		operands.back().insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
 	}
 
@@ -849,7 +862,7 @@ namespace parser
 		statement.space = tokenToTextureSpace( space );
 		statement.name = name;
 
-		if( operands.count( statement.name ) != 0 ) 
+		if( _getOperandInScope( statement.name ) != 0 ) 
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Texture reference name " << statement.name 
@@ -859,7 +872,7 @@ namespace parser
 	
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
-		operands.insert( std::make_pair( statement.name, 
+		operands.back().insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
 	}
 	
@@ -872,7 +885,7 @@ namespace parser
 		statement.space = tokenToTextureSpace( space );
 		statement.name = name;
 
-		if( operands.count( statement.name ) != 0 ) 
+		if( _getOperandInScope( statement.name ) != 0 ) 
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Texture reference name " << statement.name 
@@ -882,7 +895,7 @@ namespace parser
 	
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
-		operands.insert( std::make_pair( statement.name, 
+		operands.back().insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
 	}
 
@@ -902,7 +915,7 @@ namespace parser
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
 		
-		if( operands.count( statement.name ) != 0 )
+		if( _getOperandInScope( statement.name ) != 0 )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Argument operand " << statement.name 
@@ -910,11 +923,9 @@ namespace parser
 				DuplicateDeclaration );
 		}
 
-		operands.insert( std::make_pair( statement.name, 
+		operands.back().insert( std::make_pair( statement.name, 
 			OperandWrapper( operand, ir::PTXInstruction::Param ) ) );
 		
-		localOperands.back().insert( statement.name );
-
 		if( inReturnList )
 		{
 			prototype.returnTypes.push_back( operand.type );
@@ -943,15 +954,13 @@ namespace parser
 		
 		if( !inEntry )
 		{
-			statement.directive = ir::PTXStatement::StartScope;	
-			statementEnd( location );
 			inEntry = true;
 		}
-		else
-		{	
-			localOperands.push_back( StringSet() );
-		}
 		
+		statement.directive = ir::PTXStatement::StartScope;	
+		statementEnd( location );
+		
+		operands.push_back( OperandMap() );
 		localPrototypes.push_back( StringSet() );
 	}
 	
@@ -960,25 +969,11 @@ namespace parser
 		report( "  Rule: '}'" );
 
 		assert( inEntry );
-		assert( !localOperands.empty() );
+		assert( operands.size() > 1 );
 
-		inEntry = localOperands.size() > 1;
+		statement.directive = ir::PTXStatement::EndScope;	
+		statementEnd( location );
 		
-		if( !inEntry )
-		{
-			statement.directive = ir::PTXStatement::EndScope;	
-			statementEnd( location );
-		}
-		
-		for( StringSet::iterator operand = localOperands.back().begin(); 
-			operand != localOperands.back().end(); ++operand )
-		{
-			report( "   Local variable " << *operand << " went out of scope" );
-			OperandMap::iterator fi = operands.find( *operand );
-			assert( fi != operands.end() );
-			operands.erase( fi );
-		}
-	
 		for( StringSet::iterator prototype = localPrototypes.back().begin(); 
 			prototype != localPrototypes.back().end(); ++prototype )
 		{
@@ -989,8 +984,10 @@ namespace parser
 			prototypes.erase( fi );
 		}
 		
-		localOperands.pop_back();
+		operands.pop_back();
 		localPrototypes.pop_back();
+
+		inEntry = operands.size() > 1;
 	}
 
 	void PTXParser::State::argumentListBegin( YYLTYPE& location )
@@ -1046,7 +1043,7 @@ namespace parser
 		report( "  Rule: .func" );
 		statement.directive = ir::PTXStatement::Func;
 		
-		localOperands.push_back( StringSet() );
+		operands.push_back( OperandMap() );
 		
 		statementEnd( location );
 	}
@@ -1078,19 +1075,9 @@ namespace parser
 					DuplicateDeclaration );
 			}
 
-			assert(!localOperands.empty());
-
-			for( StringSet::iterator operand = localOperands.back().begin(); 
-				operand != localOperands.back().end(); ++operand )
-			{
-				report( "   Local variable " << *operand 
-					<< " went out of scope" );
-				OperandMap::iterator fi = operands.find( *operand );
-				assert( fi != operands.end() );
-				operands.erase( fi );
-			}
+			assert(operands.size() > 1);
 	
-			localOperands.pop_back();
+			operands.pop_back();
 		
 			statement.directive = ir::PTXStatement::EndFuncDec;
 			statementEnd( location );
@@ -1114,7 +1101,7 @@ namespace parser
 		{
 			prototypes.insert( std::make_pair( 
 				prototype.name, prototype ) );
-			operands.insert( std::make_pair( prototype.name, 
+			operands.back().insert( std::make_pair( prototype.name, 
 				ir::PTXOperand( ir::PTXOperand::FunctionName, 
 				ir::PTXOperand::TypeSpecifier_invalid, prototype.name ) ) );
 		}
@@ -1133,7 +1120,7 @@ namespace parser
 	
 		statementEnd( location );
 		
-		localOperands.push_back( StringSet() );
+		operands.push_back( OperandMap() );
 	}	
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )
@@ -1207,14 +1194,9 @@ namespace parser
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
 	
-		operands.insert( std::make_pair( 
+		operands.back().insert( std::make_pair( 
 			statement.name, OperandWrapper( operand, 
 			_toAddressSpace( directive ) ) ) );
-		
-		if( inEntry )
-		{
-			localOperands.back().insert( statement.name );
-		}
 	}
 
 	void PTXParser::State::location( long long int one, long long int two, 
@@ -1253,9 +1235,9 @@ namespace parser
 	
 	void PTXParser::State::labelOperand( const std::string& string )
 	{
-		OperandMap::iterator mode = operands.find( string );
+		OperandWrapper* mode = _getOperand( string );
 		
-		if( mode == operands.end() )
+		if( mode == 0 )
 		{
 			operand.identifier = string;
 			operand.addressMode = ir::PTXOperand::Label;
@@ -1263,11 +1245,12 @@ namespace parser
 		}
 		else
 		{
-			if( mode->second.operand.addressMode == ir::PTXOperand::Address )
+			if( mode->operand.addressMode == ir::PTXOperand::Address )
 			{
-				statement.instruction.addressSpace = mode->second.space;
-			}	
-			operand = mode->second.operand;
+				statement.instruction.addressSpace = mode->space;
+			}
+			
+			operand = mode->operand;
 		}
 	
 		operandVector.push_back( operand );
@@ -1276,61 +1259,61 @@ namespace parser
 	void PTXParser::State::nonLabelOperand( const std::string& string, 
 		YYLTYPE& location, bool invert )
 	{
-		OperandMap::iterator mode = operands.find( string );
+		OperandWrapper* mode = _getOperand( string );
 		
-		if( mode == operands.end() )
+		if( mode == 0 )
 		{
 			throw_exception( toString( location, *this ) << "Operand " 
 				<< string << " not declared in this scope.", NoDeclaration );
 		}
 
-		if( mode->second.operand.addressMode == ir::PTXOperand::Address )
+		if( mode->operand.addressMode == ir::PTXOperand::Address )
 		{
-			statement.instruction.addressSpace = mode->second.space;
-			operand = mode->second.operand;
+			statement.instruction.addressSpace = mode->space;
+			operand = mode->operand;
 		}
-		else if( mode->second.operand.addressMode == ir::PTXOperand::Register
-			|| mode->second.operand.addressMode == ir::PTXOperand::Special )
+		else if( mode->operand.addressMode == ir::PTXOperand::Register
+			|| mode->operand.addressMode == ir::PTXOperand::Special )
 		{
-			if( mode->second.operand.vec != ir::PTXOperand::v1 )
+			if( mode->operand.vec != ir::PTXOperand::v1 )
 			{
 				switch( operand.vIndex )
 				{
 					case ir::PTXOperand::ix:
 					{
-						operand = mode->second.operand.array[ 0 ];
+						operand = mode->operand.array[ 0 ];
 						break;
 					}
 					case ir::PTXOperand::iy:
 					{
-						operand = mode->second.operand.array[ 1 ];
+						operand = mode->operand.array[ 1 ];
 						break;
 					}
 					case ir::PTXOperand::iz:
 					{
-						operand = mode->second.operand.array[ 2 ];
+						operand = mode->operand.array[ 2 ];
 						break;
 					}
 					case ir::PTXOperand::iw:
 					{
-						operand = mode->second.operand.array[ 3 ];
+						operand = mode->operand.array[ 3 ];
 						break;
 					}
 					default:
 					{
-						operand = mode->second.operand;
+						operand = mode->operand;
 						break;
 					}
 				}
 			}
 			else
 			{
-				operand = mode->second.operand;
+				operand = mode->operand;
 			}
 		}
-		else if( mode->second.operand.addressMode 
+		else if( mode->operand.addressMode 
 			== ir::PTXOperand::FunctionName ) {
-			operand = mode->second.operand;
+			operand = mode->operand;
 		}
 		
 		if( invert )
@@ -1386,9 +1369,9 @@ namespace parser
 	void PTXParser::State::indexedOperand( const std::string& name, 
 		YYLTYPE& location, long long int index )
 	{
-		OperandMap::iterator mode = operands.find( name );
+		OperandWrapper* mode = _getOperand( name );
 		
-		if( mode == operands.end() )
+		if( mode == 0 )
 		{
 			throw_exception( toString( location, *this ) << "Operand " 
 				<< name << " not declared in this scope.", NoDeclaration );
@@ -1401,8 +1384,8 @@ namespace parser
 		operand.array.clear();
 
 		operand.offset = (int) index * ir::PTXOperand::bytes(
-			mode->second.operand.type);
-		operand.type = mode->second.operand.type;
+			mode->operand.type);
+		operand.type = mode->operand.type;
 	
 		operandVector.push_back( operand );	
 	}
@@ -1411,16 +1394,16 @@ namespace parser
 	void PTXParser::State::addressableOperand( const std::string& name, 
 		long long int value, YYLTYPE& location, bool invert )
 	{
-		OperandMap::iterator mode = operands.find( name );
+		OperandWrapper* mode = _getOperand( name );
 		
-		if( mode == operands.end() )
+		if( mode == 0 )
 		{
 			throw_exception( toString( location, *this ) << "Operand " 
 				<< name << " not declared in this scope.", NoDeclaration );
 		}
 		else
 		{
-			if( mode->second.operand.addressMode == ir::PTXOperand::Register )
+			if( mode->operand.addressMode == ir::PTXOperand::Register )
 			{
 				operand.addressMode = ir::PTXOperand::Indirect;
 			}
@@ -1428,8 +1411,8 @@ namespace parser
 			{
 				report(" Operand: " << name << " mode: "
 					<< ir::PTXOperand::toString(
-					mode->second.operand.addressMode));
-				operand.addressMode = mode->second.operand.addressMode;
+					mode->operand.addressMode));
+				operand.addressMode = mode->operand.addressMode;
 			}
 		}
 	
@@ -1442,7 +1425,7 @@ namespace parser
 			value = -value;
 		}
 		operand.offset = (int) value;
-		operand.type = mode->second.operand.type;
+		operand.type = mode->operand.type;
 	
 		operandVector.push_back( operand );
 	}
@@ -1453,7 +1436,7 @@ namespace parser
 		
 		report("  Rule: arrayOperand()");
 
-		OperandMap::iterator mode = operands.find( identifiers.front() );
+		OperandWrapper* mode = _getOperand( identifiers.front() );
 	
 		if( identifiers.size() > 4 )
 		{
@@ -1464,7 +1447,7 @@ namespace parser
 				<< "\" has more than 4 elements.", InvalidArray );
 		}
 
-		if( mode == operands.end() )
+		if( mode == 0 )
 		{
 			throw_exception( toString( location, *this ) << "Operand " 
 				<< identifiers.front() << " not declared in this scope.", 
@@ -1472,31 +1455,31 @@ namespace parser
 		}
 		
 		operand.addressMode = ir::PTXOperand::Register;
-		operand.type        = mode->second.operand.type;
+		operand.type        = mode->operand.type;
 	
 		if( identifiers.size() == 1 )
 		{
 			operand.vec = ir::PTXOperand::v1;
 		
-			operand.array.push_back( mode->second.operand );
+			operand.array.push_back( mode->operand );
 			
-			report("    pushing operand " << mode->second.operand.toString());
+			report("    pushing operand " << mode->operand.toString());
 		}
 		else if( identifiers.size() >= 2 )
 		{
 			operand.vec = ir::PTXOperand::v2;
-			operand.array.push_back( mode->second.operand );
+			operand.array.push_back( mode->operand );
 		
-			mode = operands.find( identifiers[1] );
+			mode = _getOperand( identifiers[1] );
 		
-			if( mode == operands.end() )
+			if( mode == 0 )
 			{
 				throw_exception( toString( location, *this ) << "Operand " 
 					<< identifiers[1] << " not declared in this scope.", 
 					NoDeclaration );
 			}
 				
-			operand.array.push_back( mode->second.operand );
+			operand.array.push_back( mode->operand );
 		}
 	
 		if( identifiers.size() == 4 )
@@ -1504,27 +1487,27 @@ namespace parser
 	
 			operand.vec = ir::PTXOperand::v4;
 		
-			mode = operands.find( identifiers[2] );
+			mode = _getOperand( identifiers[2] );
 		
-			if( mode == operands.end() )
+			if( mode == 0 )
 			{
 				throw_exception( toString( location, *this ) << "Operand " 
 					<< identifiers[2] << " not declared in this scope.", 
 					NoDeclaration );
 			}
 		
-			operand.array.push_back( mode->second.operand );
+			operand.array.push_back( mode->operand );
 		
-			mode = operands.find( identifiers[3] );
+			mode = _getOperand( identifiers[3] );
 		
-			if( mode == operands.end() )
+			if( mode == 0 )
 			{
 				throw_exception( toString( location, *this ) << "Operand " 
 					<< identifiers[3] << " not declared in this scope.", 
 					NoDeclaration );
 			}
 
-			operand.array.push_back( mode->second.operand );
+			operand.array.push_back( mode->operand );
 		}
 	
 		operandVector.push_back( operand );
@@ -1541,15 +1524,15 @@ namespace parser
 	{
 		report( "  Rule: PREDICATE_IDENTIFIER : " << name  );
 
-		OperandMap::iterator mode = operands.find( name );
-	
-		if( mode == operands.end() )
+		OperandWrapper* mode = _getOperand( name );
+		
+		if( mode == 0 )
 		{
 			throw_exception( toString( location, *this ) << "Predciate " 
 				<< name << " not declared in this scope.", NoDeclaration );
 		}
 
-		operand = mode->second.operand;
+		operand = mode->operand;
 		if( invert )
 		{
 			operand.condition = ir::PTXOperand::InvPred;
@@ -1559,9 +1542,9 @@ namespace parser
 			operand.condition = ir::PTXOperand::Pred;
 		}
 		
-		if( mode->second.operand.addressMode == ir::PTXOperand::Address )
+		if( mode->operand.addressMode == ir::PTXOperand::Address )
 		{
-			statement.instruction.addressSpace = mode->second.space;
+			statement.instruction.addressSpace = mode->space;
 		}
 		
 		operandVector.push_back( operand );
@@ -1779,9 +1762,9 @@ namespace parser
 		
 		statement.instruction.pg = operandVector[0];
 		
-		OperandMap::iterator operand = operands.find( identifier );
-
-		if( operand == operands.end() )
+		OperandWrapper* operand = _getOperand( identifier );
+		
+		if( operand == 0 )
 		{
 			throw_exception( toString( location, *this )
 				<< "Function call name/operand '" 
@@ -1791,7 +1774,7 @@ namespace parser
 		
 		report( "   name: " << identifier );
 		
-		statement.instruction.a = operand->second.operand;
+		statement.instruction.a = operand->operand;
 	
 		if( statement.instruction.a.addressMode == ir::PTXOperand::Register )
 		{
@@ -1896,7 +1879,7 @@ namespace parser
 				<< " using relaxed conversion rules.", InvalidDataType );
 		}
 	
-		statement.instruction.a.type = tokenToDataType( token );
+		statement.instruction.a.relaxedType = tokenToDataType( token );
 	}
 	
 	void PTXParser::State::cvtaTo()
@@ -2023,10 +2006,9 @@ namespace parser
 		
 		if(identifier != "_")
 		{
-			operands.insert( std::make_pair( identifier, 
+			operands.back().insert( std::make_pair( identifier, 
 				ir::PTXOperand( ir::PTXOperand::FunctionName, 
 				ir::PTXOperand::TypeSpecifier_invalid, identifier ) ) );
-			localOperands.back().insert( identifier );
 		}
 		
 		localPrototypes.back().insert( name );
@@ -2094,6 +2076,8 @@ namespace parser
 		ir::Module::StatementVector::iterator 
 			begin = state.statements.begin();
 		
+		unsigned int depth = 0;
+		
 		for( ir::Module::StatementVector::iterator 
 			statement = state.statements.begin(); 
 			statement != state.statements.end(); ++statement )
@@ -2122,47 +2106,54 @@ namespace parser
 				
 				labels.insert( std::make_pair( statement->name, *statement ) );
 			}
+			else if( statement->directive == ir::PTXStatement::StartScope )
+			{
+				++depth;
+			}
 			else if( statement->directive == ir::PTXStatement::EndScope )
 			{
-				for( ir::Module::StatementVector::iterator 
-					s = begin; s != statement; ++s )
+				if( depth-- == 1 )
 				{
-					if( s->directive == ir::PTXStatement::Instr )
+					for( ir::Module::StatementVector::iterator 
+						s = begin; s != statement; ++s )
 					{
-						ir::PTXOperand* operands[] = { &s->instruction.a, 
-							&s->instruction.b, &s->instruction.c, 
-							&s->instruction.d };
-				
-						for( unsigned int i = 0; i < 4; ++i )
+						if( s->directive == ir::PTXStatement::Instr )
 						{
-							ir::PTXOperand& operand = *operands[ i ];
+							ir::PTXOperand* operands[] = { &s->instruction.a, 
+								&s->instruction.b, &s->instruction.c, 
+								&s->instruction.d };
 				
-							if( operand.addressMode == ir::PTXOperand::Label )
+							for( unsigned int i = 0; i < 4; ++i )
 							{
-								StatementMap::iterator label = 
-									labels.find( operand.identifier );
+								ir::PTXOperand& operand = *operands[ i ];
 				
-								if( label == labels.end() )
+								if( operand.addressMode == ir::PTXOperand::Label )
 								{
-									std::stringstream error;
-									error << state.fileName << " ("  
-										<< s->line << "," << s->column 
-										<< "): Label "
-										<< operand.identifier 
-										<< " not delcared in this scope";
+									StatementMap::iterator label = 
+										labels.find( operand.identifier );
+				
+									if( label == labels.end() )
+									{
+										std::stringstream error;
+										error << state.fileName << " ("  
+											<< s->line << "," << s->column 
+											<< "): Label "
+											<< operand.identifier 
+											<< " not delcared in this scope";
 						
-									Exception exception;
-									exception.message = error.str();
-									exception.error = State::NoLabel;
-									throw exception;
+										Exception exception;
+										exception.message = error.str();
+										exception.error = State::NoLabel;
+										throw exception;
+									}
 								}
 							}
 						}
 					}
-				}
 				
-				labels.clear();
-				begin = statement;
+					labels.clear();
+					begin = statement;
+				}
 			}
 		}	
 	}
@@ -2175,7 +2166,7 @@ namespace parser
 		state.identifiers.clear();
 
 		state.operands.clear();
-		state.localOperands.clear();
+		state.operands.push_back( State::OperandMap() );
 		state.operandVector.clear();
 
 		state.returnOperands = 0;
@@ -2192,7 +2183,7 @@ namespace parser
 		bucket.addressMode = ir::PTXOperand::BitBucket;
 		bucket.vec = ir::PTXOperand::v1;
 		
-		state.operands.insert( std::make_pair( bucket.identifier, 
+		state.operands.back().insert( std::make_pair( bucket.identifier, 
 			State::OperandWrapper( bucket, 
 			ir::PTXInstruction::Global ) ) );
 		
@@ -2203,7 +2194,7 @@ namespace parser
 		pt.condition = ir::PTXOperand::PT;
 		pt.vec = ir::PTXOperand::v1;
 		
-		state.operands.insert( std::make_pair( pt.identifier, 
+		state.operands.back().insert( std::make_pair( pt.identifier, 
 			State::OperandWrapper( pt, 
 			ir::PTXInstruction::Global ) ) );
 		

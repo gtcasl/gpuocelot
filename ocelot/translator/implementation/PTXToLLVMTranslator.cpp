@@ -2608,7 +2608,14 @@ void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 		destination = _translate( i.d );
 	}
 
-	_convert( destination, i.type, source, i.a.type, i.modifier );
+	ir::PTXOperand::DataType sourceType = i.a.type;
+	
+	if( i.a.relaxedType != ir::PTXOperand::TypeSpecifier_invalid )
+	{
+		sourceType = i.a.relaxedType;
+	}
+
+	_convert( destination, i.type, source, sourceType, i.modifier );
 
 	if( _translate( i.d.type ) != _translate( i.type ) )
 	{

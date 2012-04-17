@@ -21,16 +21,46 @@ INFO       /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunct
 INFO       /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching
+INFO     Test completed in 0.0739731788635 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1334622995
+Test time : 0.0124416
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions
-INFO     Test completed in 0.151957988739 seconds
+INFO     Test completed in 0.0839371681213 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -44,8 +74,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1334257828
-Test time : 0.00079298
+Test Seed : 1334622995
+Test time : 0.00143051
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -177,8 +207,27 @@ Zext Instruction Passed
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer -i ../tests/ptx 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals
+INFO     Test completed in 0.0930731296539 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot PTX Emulator 
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall
+INFO     Test completed in 0.0977189540863 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
+INFO     Test completed in 0.0978980064392 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator
-INFO     Test completed in 0.198635101318 seconds
+INFO     Test completed in 0.107975006104 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -188,8 +237,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1334257828
-Test time : 0.0437045
+Test Seed : 1334622995
+Test time : 0.0118399
 
 Status : Test output:
 10 registers
@@ -201,9 +250,15 @@ Full kernel test passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D
+INFO     Test completed in 0.124498128891 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions
-INFO     Test completed in 0.201694011688 seconds
+INFO     Test completed in 0.114496946335 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -213,8 +268,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1334257828
-Test time : 0.00430322
+Test Seed : 1334622995
+Test time : 0.00490117
 
 Status : Test output:
 Accessors test passed.
@@ -229,63 +284,15 @@ pass: predicated Add and Ld isntructions
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching
-INFO     Test completed in 0.216461896896 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1334257828
-Test time : 0.0358965
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall
-INFO     Test completed in 0.221093893051 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
-INFO     Test completed in 0.215394020081 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D
-INFO     Test completed in 0.224713087082 seconds
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence
+INFO     Test completed in 0.101972103119 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser -i ../tests/ptx 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence
-INFO     Test completed in 0.0744388103485 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
-INFO     Test completed in 0.0979630947113 seconds
+INFO     Test completed in 0.0860800743103 seconds
 INFO      It produced the following output:
 Hello CUDA 2
 Pass/Fail : Pass
@@ -299,21 +306,21 @@ Description: A unit test for calling an external host function from PTX 1)
              user defined function from a PTX kernel. 
 
 
-Test Seed : 1334257828
-Test time : 0.0252521
+Test Seed : 1334622995
+Test time : 0.0345469
 
 Status : 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray
-INFO     Test completed in 0.108875989914 seconds
+INFO     Test completed in 0.141484022141 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels
-INFO     Test completed in 0.170149087906 seconds
+INFO     Test completed in 0.122534990311 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -323,8 +330,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1334257828
-Test time : 0.10501
+Test Seed : 1334622995
+Test time : 0.0374646
 
 Status : Test output:
 looping kernel succeeded
@@ -332,15 +339,26 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals
-INFO     Test completed in 0.0651190280914 seconds
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc
+INFO     Test completed in 0.478314161301 seconds
 INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
 Pass/Fail : Pass
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels
-INFO     Test completed in 0.221168041229 seconds
+INFO     Test completed in 0.236660003662 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -351,8 +369,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1334257828
-Test time : 0.145903
+Test Seed : 1334622995
+Test time : 0.152571
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -387,26 +405,8 @@ R = [
 
 
 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc
-INFO     Test completed in 0.300523996353 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
-
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly
-INFO     Test completed in 10.596706152 seconds
+INFO     Test completed in 10.7720410824 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -417,42 +417,42 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1334257828
-Test time : 10.5366
+Test Seed : 1334622995
+Test time : 10.7007
 
-Status : Ran 'TestVectorElements-u32' for 9 iterations.
-Ran 'TestAdd-u16' for 12 iterations.
-Ran 'TestAdd-s16' for 9 iterations.
+Status : Ran 'TestVectorElements-u32' for 4 iterations.
+Ran 'TestAdd-u16' for 6 iterations.
+Ran 'TestAdd-s16' for 6 iterations.
 Ran 'TestAdd-u32' for 8 iterations.
 Ran 'TestAdd-s32' for 8 iterations.
-Ran 'TestAdd-s32-sat' for 9 iterations.
-Ran 'TestAdd-u64' for 11 iterations.
-Ran 'TestAdd-s64' for 13 iterations.
-Ran 'TestSub-u16' for 14 iterations.
-Ran 'TestSub-s16' for 13 iterations.
-Ran 'TestSub-u32' for 14 iterations.
-Ran 'TestSub-s32' for 14 iterations.
-Ran 'TestSub-s32-sat' for 14 iterations.
-Ran 'TestSub-u64' for 14 iterations.
-Ran 'TestSub-s64' for 14 iterations.
-Ran 'TestSub-Carry-s32' for 13 iterations.
-Ran 'TestSub-Carry-u32' for 13 iterations.
-Ran 'TestAdd-Carry-s32' for 12 iterations.
-Ran 'TestAdd-Carry-u32' for 11 iterations.
-Ran 'TestMul-Lo-u16' for 12 iterations.
-Ran 'TestMul-Hi-u16' for 12 iterations.
-Ran 'TestMul-Wide-u16' for 10 iterations.
-Ran 'TestMul-Lo-s16' for 12 iterations.
-Ran 'TestMul-Hi-s16' for 14 iterations.
-Ran 'TestMul-Wide-s16' for 14 iterations.
-Ran 'TestMul-Lo-u32' for 14 iterations.
-Ran 'TestMul-Hi-u32' for 14 iterations.
-Ran 'TestMul-Wide-u32' for 14 iterations.
-Ran 'TestMul-Lo-s32' for 14 iterations.
-Ran 'TestMul-Hi-s32' for 12 iterations.
-Ran 'TestMul-Wide-s32' for 12 iterations.
-Ran 'TestMul-Lo-u64' for 9 iterations.
-Ran 'TestMul-Hi-u64' for 9 iterations.
+Ran 'TestAdd-s32-sat' for 8 iterations.
+Ran 'TestAdd-u64' for 8 iterations.
+Ran 'TestAdd-s64' for 9 iterations.
+Ran 'TestSub-u16' for 8 iterations.
+Ran 'TestSub-s16' for 8 iterations.
+Ran 'TestSub-u32' for 8 iterations.
+Ran 'TestSub-s32' for 8 iterations.
+Ran 'TestSub-s32-sat' for 7 iterations.
+Ran 'TestSub-u64' for 8 iterations.
+Ran 'TestSub-s64' for 8 iterations.
+Ran 'TestSub-Carry-s32' for 7 iterations.
+Ran 'TestSub-Carry-u32' for 7 iterations.
+Ran 'TestAdd-Carry-s32' for 7 iterations.
+Ran 'TestAdd-Carry-u32' for 7 iterations.
+Ran 'TestMul-Lo-u16' for 8 iterations.
+Ran 'TestMul-Hi-u16' for 8 iterations.
+Ran 'TestMul-Wide-u16' for 8 iterations.
+Ran 'TestMul-Lo-s16' for 8 iterations.
+Ran 'TestMul-Hi-s16' for 8 iterations.
+Ran 'TestMul-Wide-s16' for 8 iterations.
+Ran 'TestMul-Lo-u32' for 8 iterations.
+Ran 'TestMul-Hi-u32' for 8 iterations.
+Ran 'TestMul-Wide-u32' for 9 iterations.
+Ran 'TestMul-Lo-s32' for 10 iterations.
+Ran 'TestMul-Hi-s32' for 8 iterations.
+Ran 'TestMul-Wide-s32' for 8 iterations.
+Ran 'TestMul-Lo-u64' for 8 iterations.
+Ran 'TestMul-Hi-u64' for 8 iterations.
 Ran 'TestMul-Lo-s64' for 8 iterations.
 Ran 'TestMul-Hi-s64' for 8 iterations.
 Ran 'TestMad-Lo-u16' for 8 iterations.
@@ -488,378 +488,378 @@ Ran 'TestRem-u16' for 8 iterations.
 Ran 'TestRem-s16' for 8 iterations.
 Ran 'TestRem-u32' for 8 iterations.
 Ran 'TestRem-s32' for 8 iterations.
-Ran 'TestRem-u64' for 7 iterations.
+Ran 'TestRem-u64' for 8 iterations.
 Ran 'TestRem-s64' for 8 iterations.
-Ran 'TestAbs-s16' for 9 iterations.
-Ran 'TestAbs-s32' for 9 iterations.
+Ran 'TestAbs-s16' for 8 iterations.
+Ran 'TestAbs-s32' for 8 iterations.
 Ran 'TestAbs-s64' for 8 iterations.
 Ran 'TestNeg-s16' for 9 iterations.
 Ran 'TestNeg-s32' for 8 iterations.
-Ran 'TestNeg-s64' for 9 iterations.
+Ran 'TestNeg-s64' for 8 iterations.
 Ran 'TestMax-u16' for 8 iterations.
 Ran 'TestMax-u32' for 8 iterations.
 Ran 'TestMax-u64' for 8 iterations.
 Ran 'TestMax-s16' for 8 iterations.
-Ran 'TestMax-s32' for 8 iterations.
+Ran 'TestMax-s32' for 9 iterations.
 Ran 'TestMax-s64' for 8 iterations.
-Ran 'TestMin-u16' for 8 iterations.
-Ran 'TestMin-u32' for 8 iterations.
-Ran 'TestMin-u64' for 8 iterations.
+Ran 'TestMin-u16' for 9 iterations.
+Ran 'TestMin-u32' for 9 iterations.
+Ran 'TestMin-u64' for 9 iterations.
 Ran 'TestMin-s16' for 8 iterations.
 Ran 'TestMin-s32' for 8 iterations.
-Ran 'TestMin-s64' for 8 iterations.
+Ran 'TestMin-s64' for 9 iterations.
 Ran 'TestPopc-b32' for 9 iterations.
 Ran 'TestPopc-b64' for 9 iterations.
 Ran 'TestClz-b32' for 9 iterations.
 Ran 'TestClz-b64' for 9 iterations.
 Ran 'TestBfind-u32' for 9 iterations.
-Ran 'TestBfind-u64' for 8 iterations.
-Ran 'TestBfind-s32' for 9 iterations.
-Ran 'TestBfind-s64' for 9 iterations.
+Ran 'TestBfind-u64' for 9 iterations.
+Ran 'TestBfind-s32' for 8 iterations.
+Ran 'TestBfind-s64' for 8 iterations.
 Ran 'TestBfind-shiftamount-u32' for 8 iterations.
-Ran 'TestBfind-shiftamount-u64' for 9 iterations.
-Ran 'TestBfind-shiftamount-s32' for 9 iterations.
-Ran 'TestBfind-shiftamount-s64' for 9 iterations.
+Ran 'TestBfind-shiftamount-u64' for 8 iterations.
+Ran 'TestBfind-shiftamount-s32' for 8 iterations.
+Ran 'TestBfind-shiftamount-s64' for 8 iterations.
 Ran 'TestBrev-b32' for 8 iterations.
-Ran 'TestBrev-b64' for 9 iterations.
-Ran 'TestBfi-b32' for 8 iterations.
-Ran 'TestBfi-b64' for 8 iterations.
+Ran 'TestBrev-b64' for 8 iterations.
+Ran 'TestBfi-b32' for 7 iterations.
+Ran 'TestBfi-b64' for 7 iterations.
 Ran 'TestPrmt-b32' for 8 iterations.
 Ran 'TestPrmt-f4e-b32' for 8 iterations.
 Ran 'TestPrmt-b4e-b32' for 8 iterations.
 Ran 'TestPrmt-rc8-b32' for 8 iterations.
-Ran 'TestPrmt-ecl-b32' for 8 iterations.
-Ran 'TestPrmt-ecr-b32' for 8 iterations.
+Ran 'TestPrmt-ecl-b32' for 7 iterations.
+Ran 'TestPrmt-ecr-b32' for 6 iterations.
 Ran 'TestPrmt-rc16-b32' for 8 iterations.
 Ran 'TestCall-Uni' for 5 iterations.
-Ran 'TestCall-Nondivergent' for 6 iterations.
+Ran 'TestCall-Nondivergent' for 5 iterations.
 Ran 'TestCall-Divergent' for 5 iterations.
-Ran 'TestCall-Recursive' for 4 iterations.
+Ran 'TestCall-Recursive' for 5 iterations.
 Ran 'TestCall-Indirect' for 3 iterations.
 Ran 'TestFunctionPointerArray' for 3 iterations.
-Ran 'TestTestP-f32-Finite' for 5 iterations.
+Ran 'TestTestP-f32-Finite' for 8 iterations.
 Ran 'TestTestP-f32-Infinite' for 7 iterations.
-Ran 'TestTestP-f32-Number' for 8 iterations.
+Ran 'TestTestP-f32-Number' for 7 iterations.
 Ran 'TestTestP-f32-NotANumber' for 8 iterations.
-Ran 'TestTestP-f32-Normal' for 7 iterations.
-Ran 'TestTestP-f32-SubNormal' for 8 iterations.
-Ran 'TestTestP-f64-Finite' for 8 iterations.
-Ran 'TestTestP-f64-Infinite' for 7 iterations.
+Ran 'TestTestP-f32-Normal' for 8 iterations.
+Ran 'TestTestP-f32-SubNormal' for 7 iterations.
+Ran 'TestTestP-f64-Finite' for 7 iterations.
+Ran 'TestTestP-f64-Infinite' for 8 iterations.
 Ran 'TestTestP-f64-Number' for 8 iterations.
 Ran 'TestTestP-f64-NotANumber' for 8 iterations.
 Ran 'TestTestP-f64-Normal' for 8 iterations.
 Ran 'TestTestP-f64-SubNormal' for 8 iterations.
-Ran 'TestCopysign-f32' for 8 iterations.
-Ran 'TestCopysign-f64' for 8 iterations.
+Ran 'TestCopysign-f32' for 7 iterations.
+Ran 'TestCopysign-f64' for 7 iterations.
 Ran 'TestAdd-f32' for 8 iterations.
 Ran 'TestAdd-f32-sat' for 8 iterations.
 Ran 'TestAdd-f32-ftz' for 8 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 8 iterations.
+Ran 'TestAdd-f32-ftz-sat' for 6 iterations.
 Ran 'TestAdd-f64' for 8 iterations.
-Ran 'TestSub-f32' for 7 iterations.
-Ran 'TestSub-f32-sat' for 8 iterations.
+Ran 'TestSub-f32' for 8 iterations.
+Ran 'TestSub-f32-sat' for 7 iterations.
 Ran 'TestSub-f32-ftz' for 7 iterations.
 Ran 'TestSub-f32-ftz-sat' for 8 iterations.
-Ran 'TestSub-f64' for 8 iterations.
+Ran 'TestSub-f64' for 7 iterations.
 Ran 'TestMul-f32' for 8 iterations.
 Ran 'TestMul-f32-sat' for 8 iterations.
-Ran 'TestMul-f32-ftz' for 7 iterations.
-Ran 'TestMul-f32-ftz-sat' for 7 iterations.
+Ran 'TestMul-f32-ftz' for 8 iterations.
+Ran 'TestMul-f32-ftz-sat' for 8 iterations.
 Ran 'TestMul-f64' for 7 iterations.
-Ran 'TestMad-f32' for 8 iterations.
+Ran 'TestMad-f32' for 7 iterations.
 Ran 'TestMad-f32-sat' for 8 iterations.
-Ran 'TestMad-f32-ftz' for 7 iterations.
+Ran 'TestMad-f32-ftz' for 8 iterations.
 Ran 'TestMad-f32-ftz-sat' for 8 iterations.
 Ran 'TestMad-f64' for 8 iterations.
-Ran 'TestFma-f32' for 8 iterations.
+Ran 'TestFma-f32' for 7 iterations.
 Ran 'TestFma-f32-sat' for 8 iterations.
 Ran 'TestFma-f32-ftz' for 8 iterations.
-Ran 'TestFma-f32-ftz-sat' for 8 iterations.
-Ran 'TestFma-f64' for 7 iterations.
+Ran 'TestFma-f32-ftz-sat' for 7 iterations.
+Ran 'TestFma-f64' for 8 iterations.
 Ran 'TestDiv-f32' for 8 iterations.
 Ran 'TestDiv-f32-ftz' for 8 iterations.
 Ran 'TestDiv-f32-approx' for 8 iterations.
-Ran 'TestDiv-f32-full' for 8 iterations.
+Ran 'TestDiv-f32-full' for 7 iterations.
 Ran 'TestDiv-f32-approx-ftz' for 8 iterations.
 Ran 'TestDiv-f32-full-ftz' for 8 iterations.
 Ran 'TestDiv-f64' for 8 iterations.
 Ran 'TestAbs-f32' for 8 iterations.
-Ran 'TestAbs-f32-ftz' for 12 iterations.
-Ran 'TestAbs-f64' for 14 iterations.
-Ran 'TestNeg-f32' for 14 iterations.
-Ran 'TestNeg-f32-ftz' for 14 iterations.
-Ran 'TestNeg-f64' for 14 iterations.
-Ran 'TestMin-f32' for 14 iterations.
-Ran 'TestMin-f32-ftz' for 14 iterations.
-Ran 'TestMin-f64' for 14 iterations.
-Ran 'TestMax-f32' for 14 iterations.
-Ran 'TestMax-f32-ftz' for 14 iterations.
-Ran 'TestMax-f64' for 13 iterations.
-Ran 'TestRcp-f32' for 14 iterations.
-Ran 'TestRcp-f32-approx' for 14 iterations.
-Ran 'TestRcp-f32-ftz' for 14 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 14 iterations.
-Ran 'TestRcp-f64' for 14 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 13 iterations.
-Ran 'TestSqrt-f32' for 14 iterations.
-Ran 'TestSqrt-f32-approx' for 14 iterations.
-Ran 'TestSqrt-f32-ftz' for 14 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 13 iterations.
-Ran 'TestSqrt-f64' for 13 iterations.
-Ran 'TestRsqrt-f32' for 14 iterations.
-Ran 'TestRsqrt-f32-ftz' for 14 iterations.
-Ran 'TestRsqrt-f64' for 14 iterations.
-Ran 'TestCos-f32' for 13 iterations.
-Ran 'TestCos-f32-ftz' for 13 iterations.
-Ran 'TestSin-f32' for 13 iterations.
-Ran 'TestSin-f32-ftz' for 13 iterations.
-Ran 'TestEx2-f32' for 14 iterations.
-Ran 'TestEx2-f32-ftz' for 14 iterations.
-Ran 'TestLg2-f32' for 14 iterations.
-Ran 'TestLg2-f32-ftz' for 14 iterations.
-Ran 'TestSet-lt-u32-u16' for 12 iterations.
-Ran 'TestSet-lt-s32-u16' for 12 iterations.
-Ran 'TestSet-lt-f32-u16' for 12 iterations.
-Ran 'TestSet-lt-s32-u32' for 12 iterations.
-Ran 'TestSet-lt-s32-u64' for 12 iterations.
-Ran 'TestSet-lt-s32-s16' for 12 iterations.
-Ran 'TestSet-lt-s32-s32' for 12 iterations.
-Ran 'TestSet-lt-s32-s64' for 12 iterations.
-Ran 'TestSet-lt-s32-f32' for 12 iterations.
-Ran 'TestSet-lt-s32-f64' for 12 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 12 iterations.
-Ran 'TestSet-Eq-s32-s32' for 12 iterations.
-Ran 'TestSet-Ne-s32-s32' for 12 iterations.
-Ran 'TestSet-Le-s32-s32' for 12 iterations.
-Ran 'TestSet-Gt-s32-s32' for 12 iterations.
-Ran 'TestSet-Ge-s32-s32' for 12 iterations.
-Ran 'TestSet-Lo-s32-u32' for 12 iterations.
-Ran 'TestSet-Ls-s32-u32' for 12 iterations.
-Ran 'TestSet-Hi-s32-u32' for 12 iterations.
-Ran 'TestSet-Hs-s32-u32' for 12 iterations.
-Ran 'TestSet-Eq-s32-f32' for 12 iterations.
-Ran 'TestSet-Ne-s32-f32' for 12 iterations.
-Ran 'TestSet-Lt-s32-f32' for 12 iterations.
-Ran 'TestSet-Le-s32-f32' for 12 iterations.
-Ran 'TestSet-Gt-s32-f32' for 12 iterations.
-Ran 'TestSet-Ge-s32-f32' for 12 iterations.
-Ran 'TestSet-Lo-s32-u32' for 12 iterations.
-Ran 'TestSet-Ls-s32-u32' for 12 iterations.
-Ran 'TestSet-Hi-s32-u32' for 12 iterations.
-Ran 'TestSet-Hs-s32-u32' for 11 iterations.
-Ran 'TestSet-Equ-s32-f32' for 12 iterations.
-Ran 'TestSet-Neu-s32-f32' for 12 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 12 iterations.
-Ran 'TestSet-Leu-s32-f32' for 12 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 12 iterations.
-Ran 'TestSet-Geu-s32-f32' for 12 iterations.
-Ran 'TestSet-Num-s32-f32' for 12 iterations.
-Ran 'TestSet-Nan-s32-f32' for 12 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 12 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 12 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 12 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 12 iterations.
-Ran 'TestSetP-lt-u16' for 11 iterations.
-Ran 'TestSetP-lt-u32' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq' for 8 iterations.
-Ran 'TestSetP-lt-u64' for 7 iterations.
-Ran 'TestSetP-lt-s16' for 10 iterations.
-Ran 'TestSetP-lt-s32' for 11 iterations.
-Ran 'TestSetP-lt-s64' for 11 iterations.
-Ran 'TestSetP-lt-f32' for 11 iterations.
-Ran 'TestSetP-lt-f64' for 9 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 10 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 10 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 10 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 11 iterations.
-Ran 'TestSelp-u16' for 12 iterations.
-Ran 'TestSelp-u32' for 12 iterations.
-Ran 'TestSelp-u64' for 12 iterations.
-Ran 'TestSelp-s16' for 11 iterations.
-Ran 'TestSelp-s32' for 12 iterations.
-Ran 'TestSelp-s64' for 12 iterations.
-Ran 'TestSelp-f32' for 12 iterations.
-Ran 'TestSelp-f64' for 12 iterations.
-Ran 'TestSlct-u16-s32' for 13 iterations.
-Ran 'TestSlct-u32-s32' for 13 iterations.
-Ran 'TestSlct-u64-s32' for 13 iterations.
-Ran 'TestSlct-s16-s32' for 13 iterations.
-Ran 'TestSlct-s32-s32' for 12 iterations.
-Ran 'TestSlct-s64-s32' for 13 iterations.
-Ran 'TestSlct-f32-s32' for 13 iterations.
-Ran 'TestSlct-f64-s32' for 13 iterations.
-Ran 'TestSlct-u16-f32' for 12 iterations.
-Ran 'TestSlct-u32-f32' for 13 iterations.
-Ran 'TestSlct-u64-f32' for 13 iterations.
-Ran 'TestSlct-s16-f32' for 13 iterations.
-Ran 'TestSlct-s32-f32' for 13 iterations.
-Ran 'TestSlct-s64-f32' for 13 iterations.
-Ran 'TestSlct-f32-f32' for 13 iterations.
-Ran 'TestSlct-f64-f32' for 13 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 13 iterations.
-Ran 'TestAnd-pred' for 10 iterations.
-Ran 'TestAnd-b16' for 12 iterations.
-Ran 'TestAnd-b32' for 11 iterations.
-Ran 'TestAnd-b64' for 12 iterations.
-Ran 'TestOr-pred' for 10 iterations.
-Ran 'TestOr-b16' for 13 iterations.
-Ran 'TestOr-b32' for 14 iterations.
-Ran 'TestOr-b64' for 13 iterations.
-Ran 'TestXor-pred' for 10 iterations.
-Ran 'TestXor-b16' for 13 iterations.
-Ran 'TestXor-b32' for 14 iterations.
-Ran 'TestXor-b64' for 13 iterations.
-Ran 'TestNot-pred' for 11 iterations.
-Ran 'TestNot-b16' for 13 iterations.
-Ran 'TestNot-b32' for 13 iterations.
-Ran 'TestNot-b64' for 14 iterations.
-Ran 'TestCNot-b16' for 13 iterations.
-Ran 'TestCNot-b32' for 13 iterations.
-Ran 'TestCNot-b64' for 13 iterations.
-Ran 'TestShl-b16' for 13 iterations.
-Ran 'TestShl-b32' for 13 iterations.
-Ran 'TestShl-b64' for 13 iterations.
-Ran 'TestShr-u16' for 13 iterations.
-Ran 'TestShr-u32' for 13 iterations.
-Ran 'TestShr-u64' for 13 iterations.
-Ran 'TestShr-s16' for 13 iterations.
-Ran 'TestShr-s32' for 13 iterations.
-Ran 'TestShr-s64' for 13 iterations.
-Ran 'TestMov-pred' for 12 iterations.
-Ran 'TestMov-u16' for 13 iterations.
-Ran 'TestMov-u32' for 14 iterations.
-Ran 'TestMov-u64' for 14 iterations.
-Ran 'TestMov-s16' for 14 iterations.
-Ran 'TestMov-s32' for 14 iterations.
-Ran 'TestMov-s64' for 14 iterations.
-Ran 'TestMov-f32' for 14 iterations.
-Ran 'TestMov-f64' for 14 iterations.
-Ran 'TestMovLabel-global-v1' for 13 iterations.
-Ran 'TestMovLabel-global-v1-index' for 12 iterations.
-Ran 'TestMovLabel-global-v2' for 12 iterations.
-Ran 'TestMovLabel-global-v4' for 12 iterations.
-Ran 'TestMovLabel-local-v1' for 12 iterations.
-Ran 'TestMovLabel-local-v1-index' for 13 iterations.
-Ran 'TestMovLabel-local-v2' for 12 iterations.
-Ran 'TestMovLabel-local-v4' for 12 iterations.
-Ran 'TestMovLabel-shared-v1' for 13 iterations.
-Ran 'TestMovLabel-shared-v1-index' for 12 iterations.
-Ran 'TestMovLabel-shared-v4' for 12 iterations.
-Ran 'TestCvt-u8-u8' for 14 iterations.
-Ran 'TestCvt-u8-u16' for 14 iterations.
-Ran 'TestCvt-u8-u32' for 13 iterations.
-Ran 'TestCvt-u8-u64' for 10 iterations.
-Ran 'TestCvt-u8-s8' for 14 iterations.
-Ran 'TestCvt-u8-s16' for 14 iterations.
-Ran 'TestCvt-u8-s32' for 13 iterations.
-Ran 'TestCvt-u8-s64' for 12 iterations.
-Ran 'TestCvt-u8-f32' for 12 iterations.
-Ran 'TestCvt-u8-f64' for 13 iterations.
-Ran 'TestCvt-u16-u8' for 14 iterations.
-Ran 'TestCvt-u16-u16' for 14 iterations.
-Ran 'TestCvt-u16-u32' for 14 iterations.
-Ran 'TestCvt-u16-u64' for 14 iterations.
-Ran 'TestCvt-u16-s8' for 14 iterations.
-Ran 'TestCvt-u16-s16' for 13 iterations.
-Ran 'TestCvt-u16-s32' for 14 iterations.
-Ran 'TestCvt-u16-s64' for 14 iterations.
-Ran 'TestCvt-u16-f32' for 13 iterations.
-Ran 'TestCvt-u16-f64' for 13 iterations.
-Ran 'TestCvt-u32-u8' for 14 iterations.
-Ran 'TestCvt-u32-u16' for 14 iterations.
-Ran 'TestCvt-u32-u32' for 14 iterations.
-Ran 'TestCvt-u32-u64' for 13 iterations.
-Ran 'TestCvt-u32-s8' for 14 iterations.
-Ran 'TestCvt-u32-s16' for 14 iterations.
-Ran 'TestCvt-u32-s32' for 13 iterations.
-Ran 'TestCvt-u32-s64' for 13 iterations.
-Ran 'TestCvt-u32-f32' for 13 iterations.
-Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 13 iterations.
-Ran 'TestCvt-u32-f32-rmi' for 13 iterations.
-Ran 'TestCvt-u32-f64' for 13 iterations.
-Ran 'TestCvt-u64-u8' for 14 iterations.
-Ran 'TestCvt-u64-u16' for 14 iterations.
-Ran 'TestCvt-u64-u32' for 14 iterations.
-Ran 'TestCvt-u64-u64' for 14 iterations.
-Ran 'TestCvt-u64-s8' for 14 iterations.
-Ran 'TestCvt-u64-s16' for 14 iterations.
-Ran 'TestCvt-u64-s32' for 14 iterations.
-Ran 'TestCvt-u64-s64' for 14 iterations.
-Ran 'TestCvt-u64-f32' for 13 iterations.
-Ran 'TestCvt-u64-f64' for 13 iterations.
-Ran 'TestCvt-s8-u8' for 14 iterations.
-Ran 'TestCvt-s8-u16' for 13 iterations.
-Ran 'TestCvt-s8-u32' for 12 iterations.
-Ran 'TestCvt-s8-u64' for 13 iterations.
-Ran 'TestCvt-s8-s8' for 14 iterations.
-Ran 'TestCvt-s8-s16' for 13 iterations.
-Ran 'TestCvt-s8-s32' for 14 iterations.
-Ran 'TestCvt-s8-s64' for 14 iterations.
-Ran 'TestCvt-s8-f32' for 13 iterations.
-Ran 'TestCvt-s8-f64' for 13 iterations.
-Ran 'TestCvt-s16-u8' for 14 iterations.
-Ran 'TestCvt-s16-u16' for 14 iterations.
-Ran 'TestCvt-s16-u32' for 14 iterations.
-Ran 'TestCvt-s16-u64' for 14 iterations.
-Ran 'TestCvt-s16-s8' for 14 iterations.
-Ran 'TestCvt-s16-s16' for 14 iterations.
-Ran 'TestCvt-s16-s32' for 14 iterations.
-Ran 'TestCvt-s16-s64' for 14 iterations.
-Ran 'TestCvt-s16-f32' for 12 iterations.
-Ran 'TestCvt-s16-f64' for 13 iterations.
-Ran 'TestCvt-s32-u8' for 13 iterations.
-Ran 'TestCvt-s32-u16' for 12 iterations.
-Ran 'TestCvt-s32-u32' for 9 iterations.
-Ran 'TestCvt-s32-u64' for 9 iterations.
-Ran 'TestCvt-s32-s8' for 10 iterations.
-Ran 'TestCvt-s32-s16' for 11 iterations.
+Ran 'TestAbs-f32-ftz' for 8 iterations.
+Ran 'TestAbs-f64' for 8 iterations.
+Ran 'TestNeg-f32' for 8 iterations.
+Ran 'TestNeg-f32-ftz' for 8 iterations.
+Ran 'TestNeg-f64' for 8 iterations.
+Ran 'TestMin-f32' for 8 iterations.
+Ran 'TestMin-f32-ftz' for 8 iterations.
+Ran 'TestMin-f64' for 8 iterations.
+Ran 'TestMax-f32' for 8 iterations.
+Ran 'TestMax-f32-ftz' for 8 iterations.
+Ran 'TestMax-f64' for 8 iterations.
+Ran 'TestRcp-f32' for 8 iterations.
+Ran 'TestRcp-f32-approx' for 8 iterations.
+Ran 'TestRcp-f32-ftz' for 8 iterations.
+Ran 'TestRcp-f32-approx-ftz' for 8 iterations.
+Ran 'TestRcp-f64' for 8 iterations.
+Ran 'TestRcp-f64-approx-ftz' for 8 iterations.
+Ran 'TestSqrt-f32' for 8 iterations.
+Ran 'TestSqrt-f32-approx' for 8 iterations.
+Ran 'TestSqrt-f32-ftz' for 7 iterations.
+Ran 'TestSqrt-f32-approx-ftz' for 8 iterations.
+Ran 'TestSqrt-f64' for 8 iterations.
+Ran 'TestRsqrt-f32' for 8 iterations.
+Ran 'TestRsqrt-f32-ftz' for 8 iterations.
+Ran 'TestRsqrt-f64' for 8 iterations.
+Ran 'TestCos-f32' for 8 iterations.
+Ran 'TestCos-f32-ftz' for 8 iterations.
+Ran 'TestSin-f32' for 7 iterations.
+Ran 'TestSin-f32-ftz' for 7 iterations.
+Ran 'TestEx2-f32' for 8 iterations.
+Ran 'TestEx2-f32-ftz' for 8 iterations.
+Ran 'TestLg2-f32' for 7 iterations.
+Ran 'TestLg2-f32-ftz' for 8 iterations.
+Ran 'TestSet-lt-u32-u16' for 7 iterations.
+Ran 'TestSet-lt-s32-u16' for 7 iterations.
+Ran 'TestSet-lt-f32-u16' for 7 iterations.
+Ran 'TestSet-lt-s32-u32' for 7 iterations.
+Ran 'TestSet-lt-s32-u64' for 7 iterations.
+Ran 'TestSet-lt-s32-s16' for 7 iterations.
+Ran 'TestSet-lt-s32-s32' for 7 iterations.
+Ran 'TestSet-lt-s32-s64' for 7 iterations.
+Ran 'TestSet-lt-s32-f32' for 7 iterations.
+Ran 'TestSet-lt-s32-f64' for 7 iterations.
+Ran 'TestSet-lt-ftz-s32-f32' for 7 iterations.
+Ran 'TestSet-Eq-s32-s32' for 7 iterations.
+Ran 'TestSet-Ne-s32-s32' for 7 iterations.
+Ran 'TestSet-Le-s32-s32' for 7 iterations.
+Ran 'TestSet-Gt-s32-s32' for 7 iterations.
+Ran 'TestSet-Ge-s32-s32' for 7 iterations.
+Ran 'TestSet-Lo-s32-u32' for 7 iterations.
+Ran 'TestSet-Ls-s32-u32' for 7 iterations.
+Ran 'TestSet-Hi-s32-u32' for 7 iterations.
+Ran 'TestSet-Hs-s32-u32' for 7 iterations.
+Ran 'TestSet-Eq-s32-f32' for 7 iterations.
+Ran 'TestSet-Ne-s32-f32' for 7 iterations.
+Ran 'TestSet-Lt-s32-f32' for 7 iterations.
+Ran 'TestSet-Le-s32-f32' for 7 iterations.
+Ran 'TestSet-Gt-s32-f32' for 7 iterations.
+Ran 'TestSet-Ge-s32-f32' for 7 iterations.
+Ran 'TestSet-Lo-s32-u32' for 7 iterations.
+Ran 'TestSet-Ls-s32-u32' for 7 iterations.
+Ran 'TestSet-Hi-s32-u32' for 7 iterations.
+Ran 'TestSet-Hs-s32-u32' for 7 iterations.
+Ran 'TestSet-Equ-s32-f32' for 7 iterations.
+Ran 'TestSet-Neu-s32-f32' for 7 iterations.
+Ran 'TestSet-Ltu-s32-f32' for 7 iterations.
+Ran 'TestSet-Leu-s32-f32' for 7 iterations.
+Ran 'TestSet-Gtu-s32-f32' for 7 iterations.
+Ran 'TestSet-Geu-s32-f32' for 7 iterations.
+Ran 'TestSet-Num-s32-f32' for 7 iterations.
+Ran 'TestSet-Nan-s32-f32' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-And' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-Or' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-Xor' for 7 iterations.
+Ran 'TestSet-Lt-s32-s32-And-Inv' for 7 iterations.
+Ran 'TestSetP-lt-u16' for 6 iterations.
+Ran 'TestSetP-lt-u32' for 6 iterations.
+Ran 'TestSetP-lt-u32-pq' for 6 iterations.
+Ran 'TestSetP-lt-u64' for 6 iterations.
+Ran 'TestSetP-lt-s16' for 6 iterations.
+Ran 'TestSetP-lt-s32' for 7 iterations.
+Ran 'TestSetP-lt-s64' for 5 iterations.
+Ran 'TestSetP-lt-f32' for 5 iterations.
+Ran 'TestSetP-lt-f64' for 6 iterations.
+Ran 'TestSetP-lt-u32-pq-and' for 6 iterations.
+Ran 'TestSetP-lt-u32-pq-or' for 6 iterations.
+Ran 'TestSetP-lt-u32-pq-xor' for 6 iterations.
+Ran 'TestSetP-lt-f32-pq-and-ftz' for 6 iterations.
+Ran 'TestSelp-u16' for 7 iterations.
+Ran 'TestSelp-u32' for 7 iterations.
+Ran 'TestSelp-u64' for 7 iterations.
+Ran 'TestSelp-s16' for 7 iterations.
+Ran 'TestSelp-s32' for 7 iterations.
+Ran 'TestSelp-s64' for 7 iterations.
+Ran 'TestSelp-f32' for 7 iterations.
+Ran 'TestSelp-f64' for 7 iterations.
+Ran 'TestSlct-u16-s32' for 8 iterations.
+Ran 'TestSlct-u32-s32' for 8 iterations.
+Ran 'TestSlct-u64-s32' for 8 iterations.
+Ran 'TestSlct-s16-s32' for 7 iterations.
+Ran 'TestSlct-s32-s32' for 8 iterations.
+Ran 'TestSlct-s64-s32' for 7 iterations.
+Ran 'TestSlct-f32-s32' for 8 iterations.
+Ran 'TestSlct-f64-s32' for 7 iterations.
+Ran 'TestSlct-u16-f32' for 7 iterations.
+Ran 'TestSlct-u32-f32' for 7 iterations.
+Ran 'TestSlct-u64-f32' for 7 iterations.
+Ran 'TestSlct-s16-f32' for 7 iterations.
+Ran 'TestSlct-s32-f32' for 7 iterations.
+Ran 'TestSlct-s64-f32' for 7 iterations.
+Ran 'TestSlct-f32-f32' for 7 iterations.
+Ran 'TestSlct-f64-f32' for 8 iterations.
+Ran 'TestSlct-f32-f32-ftz' for 8 iterations.
+Ran 'TestAnd-pred' for 7 iterations.
+Ran 'TestAnd-b16' for 8 iterations.
+Ran 'TestAnd-b32' for 8 iterations.
+Ran 'TestAnd-b64' for 8 iterations.
+Ran 'TestOr-pred' for 7 iterations.
+Ran 'TestOr-b16' for 8 iterations.
+Ran 'TestOr-b32' for 8 iterations.
+Ran 'TestOr-b64' for 8 iterations.
+Ran 'TestXor-pred' for 7 iterations.
+Ran 'TestXor-b16' for 8 iterations.
+Ran 'TestXor-b32' for 7 iterations.
+Ran 'TestXor-b64' for 8 iterations.
+Ran 'TestNot-pred' for 7 iterations.
+Ran 'TestNot-b16' for 8 iterations.
+Ran 'TestNot-b32' for 8 iterations.
+Ran 'TestNot-b64' for 8 iterations.
+Ran 'TestCNot-b16' for 8 iterations.
+Ran 'TestCNot-b32' for 8 iterations.
+Ran 'TestCNot-b64' for 8 iterations.
+Ran 'TestShl-b16' for 8 iterations.
+Ran 'TestShl-b32' for 8 iterations.
+Ran 'TestShl-b64' for 8 iterations.
+Ran 'TestShr-u16' for 7 iterations.
+Ran 'TestShr-u32' for 7 iterations.
+Ran 'TestShr-u64' for 8 iterations.
+Ran 'TestShr-s16' for 8 iterations.
+Ran 'TestShr-s32' for 8 iterations.
+Ran 'TestShr-s64' for 8 iterations.
+Ran 'TestMov-pred' for 7 iterations.
+Ran 'TestMov-u16' for 8 iterations.
+Ran 'TestMov-u32' for 8 iterations.
+Ran 'TestMov-u64' for 8 iterations.
+Ran 'TestMov-s16' for 8 iterations.
+Ran 'TestMov-s32' for 8 iterations.
+Ran 'TestMov-s64' for 8 iterations.
+Ran 'TestMov-f32' for 8 iterations.
+Ran 'TestMov-f64' for 8 iterations.
+Ran 'TestMovLabel-global-v1' for 7 iterations.
+Ran 'TestMovLabel-global-v1-index' for 7 iterations.
+Ran 'TestMovLabel-global-v2' for 6 iterations.
+Ran 'TestMovLabel-global-v4' for 6 iterations.
+Ran 'TestMovLabel-local-v1' for 7 iterations.
+Ran 'TestMovLabel-local-v1-index' for 7 iterations.
+Ran 'TestMovLabel-local-v2' for 7 iterations.
+Ran 'TestMovLabel-local-v4' for 7 iterations.
+Ran 'TestMovLabel-shared-v1' for 7 iterations.
+Ran 'TestMovLabel-shared-v1-index' for 7 iterations.
+Ran 'TestMovLabel-shared-v4' for 6 iterations.
+Ran 'TestCvt-u8-u8' for 8 iterations.
+Ran 'TestCvt-u8-u16' for 8 iterations.
+Ran 'TestCvt-u8-u32' for 8 iterations.
+Ran 'TestCvt-u8-u64' for 8 iterations.
+Ran 'TestCvt-u8-s8' for 8 iterations.
+Ran 'TestCvt-u8-s16' for 8 iterations.
+Ran 'TestCvt-u8-s32' for 8 iterations.
+Ran 'TestCvt-u8-s64' for 8 iterations.
+Ran 'TestCvt-u8-f32' for 8 iterations.
+Ran 'TestCvt-u8-f64' for 8 iterations.
+Ran 'TestCvt-u16-u8' for 8 iterations.
+Ran 'TestCvt-u16-u16' for 8 iterations.
+Ran 'TestCvt-u16-u32' for 8 iterations.
+Ran 'TestCvt-u16-u64' for 8 iterations.
+Ran 'TestCvt-u16-s8' for 8 iterations.
+Ran 'TestCvt-u16-s16' for 8 iterations.
+Ran 'TestCvt-u16-s32' for 8 iterations.
+Ran 'TestCvt-u16-s64' for 8 iterations.
+Ran 'TestCvt-u16-f32' for 8 iterations.
+Ran 'TestCvt-u16-f64' for 7 iterations.
+Ran 'TestCvt-u32-u8' for 8 iterations.
+Ran 'TestCvt-u32-u16' for 8 iterations.
+Ran 'TestCvt-u32-u32' for 8 iterations.
+Ran 'TestCvt-u32-u64' for 8 iterations.
+Ran 'TestCvt-u32-s8' for 8 iterations.
+Ran 'TestCvt-u32-s16' for 8 iterations.
+Ran 'TestCvt-u32-s32' for 8 iterations.
+Ran 'TestCvt-u32-s64' for 8 iterations.
+Ran 'TestCvt-u32-f32' for 7 iterations.
+Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 8 iterations.
+Ran 'TestCvt-u32-f32-rmi' for 8 iterations.
+Ran 'TestCvt-u32-f64' for 7 iterations.
+Ran 'TestCvt-u64-u8' for 8 iterations.
+Ran 'TestCvt-u64-u16' for 8 iterations.
+Ran 'TestCvt-u64-u32' for 8 iterations.
+Ran 'TestCvt-u64-u64' for 8 iterations.
+Ran 'TestCvt-u64-s8' for 8 iterations.
+Ran 'TestCvt-u64-s16' for 8 iterations.
+Ran 'TestCvt-u64-s32' for 8 iterations.
+Ran 'TestCvt-u64-s64' for 9 iterations.
+Ran 'TestCvt-u64-f32' for 8 iterations.
+Ran 'TestCvt-u64-f64' for 8 iterations.
+Ran 'TestCvt-s8-u8' for 9 iterations.
+Ran 'TestCvt-s8-u16' for 8 iterations.
+Ran 'TestCvt-s8-u32' for 8 iterations.
+Ran 'TestCvt-s8-u64' for 8 iterations.
+Ran 'TestCvt-s8-s8' for 8 iterations.
+Ran 'TestCvt-s8-s16' for 8 iterations.
+Ran 'TestCvt-s8-s32' for 8 iterations.
+Ran 'TestCvt-s8-s64' for 8 iterations.
+Ran 'TestCvt-s8-f32' for 8 iterations.
+Ran 'TestCvt-s8-f64' for 8 iterations.
+Ran 'TestCvt-s16-u8' for 8 iterations.
+Ran 'TestCvt-s16-u16' for 8 iterations.
+Ran 'TestCvt-s16-u32' for 8 iterations.
+Ran 'TestCvt-s16-u64' for 8 iterations.
+Ran 'TestCvt-s16-s8' for 8 iterations.
+Ran 'TestCvt-s16-s16' for 9 iterations.
+Ran 'TestCvt-s16-s32' for 9 iterations.
+Ran 'TestCvt-s16-s64' for 9 iterations.
+Ran 'TestCvt-s16-f32' for 8 iterations.
+Ran 'TestCvt-s16-f64' for 8 iterations.
+Ran 'TestCvt-s32-u8' for 8 iterations.
+Ran 'TestCvt-s32-u16' for 8 iterations.
+Ran 'TestCvt-s32-u32' for 8 iterations.
+Ran 'TestCvt-s32-u64' for 8 iterations.
+Ran 'TestCvt-s32-s8' for 8 iterations.
+Ran 'TestCvt-s32-s16' for 9 iterations.
 Ran 'TestCvt-s32-s32' for 9 iterations.
-Ran 'TestCvt-s32-s64' for 13 iterations.
-Ran 'TestCvt-s32-f32' for 12 iterations.
-Ran 'TestCvt-s32-f64' for 11 iterations.
-Ran 'TestCvt-s64-u8' for 14 iterations.
-Ran 'TestCvt-s64-u16' for 13 iterations.
-Ran 'TestCvt-s64-u32' for 14 iterations.
-Ran 'TestCvt-s64-u64' for 14 iterations.
-Ran 'TestCvt-s64-s8' for 13 iterations.
-Ran 'TestCvt-s64-s16' for 14 iterations.
-Ran 'TestCvt-s64-s32' for 14 iterations.
-Ran 'TestCvt-s64-s64' for 14 iterations.
-Ran 'TestCvt-s64-f32' for 13 iterations.
-Ran 'TestCvt-s64-f64' for 13 iterations.
-Ran 'TestCvt-f32-u8' for 13 iterations.
-Ran 'TestCvt-f32-u16' for 14 iterations.
-Ran 'TestCvt-f32-u32' for 13 iterations.
+Ran 'TestCvt-s32-s64' for 8 iterations.
+Ran 'TestCvt-s32-f32' for 8 iterations.
+Ran 'TestCvt-s32-f64' for 8 iterations.
+Ran 'TestCvt-s64-u8' for 8 iterations.
+Ran 'TestCvt-s64-u16' for 9 iterations.
+Ran 'TestCvt-s64-u32' for 9 iterations.
+Ran 'TestCvt-s64-u64' for 9 iterations.
+Ran 'TestCvt-s64-s8' for 8 iterations.
+Ran 'TestCvt-s64-s16' for 8 iterations.
+Ran 'TestCvt-s64-s32' for 8 iterations.
+Ran 'TestCvt-s64-s64' for 11 iterations.
+Ran 'TestCvt-s64-f32' for 11 iterations.
+Ran 'TestCvt-s64-f64' for 12 iterations.
+Ran 'TestCvt-f32-u8' for 12 iterations.
+Ran 'TestCvt-f32-u16' for 12 iterations.
+Ran 'TestCvt-f32-u32' for 12 iterations.
 Ran 'TestCvt-f32-u64' for 12 iterations.
-Ran 'TestCvt-f32-s8' for 13 iterations.
-Ran 'TestCvt-f32-s16' for 14 iterations.
-Ran 'TestCvt-f32-s32' for 13 iterations.
-Ran 'TestCvt-f32-s64' for 12 iterations.
-Ran 'TestCvt-f32-f32' for 10 iterations.
-Ran 'TestCvt-f32-f32-rz' for 13 iterations.
-Ran 'TestCvt-f32-f64' for 13 iterations.
+Ran 'TestCvt-f32-s8' for 12 iterations.
+Ran 'TestCvt-f32-s16' for 11 iterations.
+Ran 'TestCvt-f32-s32' for 12 iterations.
+Ran 'TestCvt-f32-s64' for 13 iterations.
+Ran 'TestCvt-f32-f32' for 11 iterations.
+Ran 'TestCvt-f32-f32-rz' for 12 iterations.
+Ran 'TestCvt-f32-f64' for 12 iterations.
 Ran 'TestCvt-f64-u8' for 11 iterations.
-Ran 'TestCvt-f64-u16' for 14 iterations.
-Ran 'TestCvt-f64-u32' for 14 iterations.
-Ran 'TestCvt-f64-u64' for 14 iterations.
-Ran 'TestCvt-f64-s8' for 14 iterations.
-Ran 'TestCvt-f64-s16' for 14 iterations.
-Ran 'TestCvt-f64-s32' for 14 iterations.
-Ran 'TestCvt-f64-s64' for 14 iterations.
-Ran 'TestCvt-f64-f32' for 14 iterations.
-Ran 'TestCvt-f64-f64' for 14 iterations.
-Ran 'TestLocalMemory-u8' for 13 iterations.
-Ran 'TestLocalMemory-u8-global' for 13 iterations.
+Ran 'TestCvt-f64-u16' for 12 iterations.
+Ran 'TestCvt-f64-u32' for 10 iterations.
+Ran 'TestCvt-f64-u64' for 12 iterations.
+Ran 'TestCvt-f64-s8' for 10 iterations.
+Ran 'TestCvt-f64-s16' for 8 iterations.
+Ran 'TestCvt-f64-s32' for 8 iterations.
+Ran 'TestCvt-f64-s64' for 8 iterations.
+Ran 'TestCvt-f64-f32' for 8 iterations.
+Ran 'TestCvt-f64-f64' for 8 iterations.
+Ran 'TestLocalMemory-u8' for 9 iterations.
+Ran 'TestLocalMemory-u8-global' for 12 iterations.
 Ran 'TestLocalMemory-u8-scoped' for 10 iterations.
-Ran 'TestLocalMemory-u8-global-scoped' for 8 iterations.
-Ran 'TestCvta-local-u64' for 12 iterations.
-Ran 'TestCvta-global-u64' for 12 iterations.
-Ran 'TestCvta-shared-u64' for 12 iterations.
+Ran 'TestLocalMemory-u8-global-scoped' for 9 iterations.
+Ran 'TestCvta-local-u64' for 11 iterations.
+Ran 'TestCvta-global-u64' for 11 iterations.
+Ran 'TestCvta-shared-u64' for 11 iterations.
 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer
-INFO     Test completed in 14.538008213 seconds
+INFO     Test completed in 16.009125948 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -871,8 +871,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1334257828
-Test time : 14.4588
+Test Seed : 1334622995
+Test time : 15.936
 
 Status : For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Scan): Passed
@@ -1016,11 +1016,13 @@ For file ../tests/ptx/optix/kernel_trace_device0_1.ptx, Test Point 1 (Scan): Pas
 For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/thrust/bfs.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/thrust/histogram_sliced.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/thrust/histogram.ptx, Test Point 1 (Scan): Passed
 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser
-INFO     Test completed in 61.5282330513 seconds
+INFO     Test completed in 66.4293830395 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1033,8 +1035,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1334257828
-Test time : 61.4731
+Test Seed : 1334622995
+Test time : 66.3369
 
 Status : For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Parse): Passed
@@ -1178,11 +1180,13 @@ For file ../tests/ptx/optix/kernel_trace_device0_1.ptx, Test Point 1 (Parse): Pa
 For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/thrust/bfs.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/thrust/histogram_sliced.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/thrust/histogram.ptx, Test Point 1 (Parse): Passed
 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph
-INFO     Test completed in 121.124469995 seconds
+INFO     Test completed in 131.978053808 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1197,8 +1201,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1334257828
-Test time : 120.95
+Test Seed : 1334622995
+Test time : 131.888
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
@@ -3085,6 +3089,197 @@ Status : Testing Generic Dataflow
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c12ProcessLoadsIjLi16ELi4ELi1ELi16ENS4_10NopFunctorIjEEEEiPT_iRiPA128_iPA4_i
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c8ScanPassIjLi24ELi16ELi4ELi2ELi64ELi8ELi3ELi8ELi16ELi132ELi2EEEvPiS6_PA3_AT7__iPNS4_7VecTypeIT_Li2EE4TypeEP4int2SG_SG_i
+ For File: ../tests/ptx/thrust/histogram_sliced.ptx
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+ For File: ../tests/ptx/thrust/histogram.ptx
+  For Kernel: _ZN6thrust6detail10functional8argumentILj2EEC2Ev
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES4_S4_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESA_SA_SA_SA_SA_SA_SA_EENS0_27device_dereference_iterator5applyESC_Lj2EE27do_it_on_the_host_or_deviceERKSB_SC_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj0EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1INS2_IbEEbNS4_IbEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS0_15normal_iteratorINS_10device_ptrIiEEEElNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIyEEPyS3_yNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIyEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj2EEC1Ev
+  For Kernel: _ZN6thrust6detail4consINS_17counting_iteratorIiNS_11use_defaultES3_S3_EENS1_INS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeEEEEC2IKS4_KS8_KS9_SF_SF_SF_SF_SF_SF_SF_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi0ELi4ELi0ENS4_20PreprocessKeyFunctorIiEENS4_10NopFunctorIjEEEEvPbPiPT_SE_PT0_SG_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj4EEC2Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj3EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKbEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC1ERKS5_
+  For Kernel: _ZN6thrust23device_malloc_allocatorIiED2Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi0ELi4ELi0ENS4_20PreprocessKeyFunctorIiEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2INS2_IbEEbNS4_IbEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEcviEv
+  For Kernel: _ZN6thrust6detail4consINS0_15normal_iteratorINS_10device_ptrIiEEEENS1_INS_16reverse_iteratorIS5_EENS_9null_typeEEEEC2IKS5_KS7_KS8_SE_SE_SE_SE_SE_SE_SE_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIjEEPjS3_jNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIjEElEC2ERKS4_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKbEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC2ERKS5_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC2ERKS2_
+  For Kernel: _ZNK6thrust6detail7backend21uniform_decompositionIlEixERKl
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS_17counting_iteratorIiNS_11use_defaultES6_S6_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESC_SC_SC_SC_SC_SC_SC_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISF_EE5valueEE4typeERKSF_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIiEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEC1ES5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIbEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEC1ERKS5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIyEEPyS3_yNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIyEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj4EEEEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_18transform_iteratorINS_6detail7backend4cuda6detail27last_index_in_each_intervalINS4_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESC_SC_EESC_SC_EESD_PllSC_NS_36random_access_universal_iterator_tagElSC_EC2ERKSD_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj1EEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIlNS_11use_defaultES3_S3_EElPllNS_13any_space_tagENS_27random_access_traversal_tagEllEC2ERKl
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINSB_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEES9_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISQ_EE5valueEE4typeERKSQ_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIiEEPiS3_iNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES9_S9_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESF_SF_SF_SF_SF_SF_SF_EEEEjNS1_7generic6detail21binary_search_functorISE_NS_4lessIiEENSJ_3ubfEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj8EEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj5EEEEC2Ev
+  For Kernel: _ZNK6thrust17counting_iteratorIlNS_11use_defaultES1_S1_E11distance_toIlEElRKNS0_IT_S1_S1_S1_EE
+  For Kernel: _ZN6thrust3minImEET_RKS1_S3_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj6EEEEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi3ELi4ELi12ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional8argumentILj0EEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES9_S9_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESF_SF_SF_SF_SF_SF_SF_EEEElNS1_7generic6detail21binary_search_functorISE_NS_4lessIiEENSJ_3ubfEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail4consIRiNS1_IS2_NS_9null_typeEEEEC1IiiKS3_S7_S7_S7_S7_S7_S7_S7_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEC1ERKS5_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust13SrtsScanSpineIvEEvPiS6_i
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEC2ERKS5_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj9EEC1Ev
+  For Kernel: _ZN6thrust10make_tupleINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS2_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEES6_EENS2_17make_tuple_mapperIT_T0_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_E4typeERKSL_RKSM_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj8EEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEENS1_IS6_NS_9null_typeEEEEC1IKSJ_KS6_KSK_SQ_SQ_SQ_SQ_SQ_SQ_SQ_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj9EEEEC2Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS3_27adjacent_difference_closureINS0_15normal_iteratorINS_10device_ptrIiEEEES9_S9_NS_5minusIiEENS1_21uniform_decompositionIlEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj4EEC1Ev
+  For Kernel: _ZNK6thrust17counting_iteratorIiNS_11use_defaultES1_S1_E11distance_toIiEElRKNS0_IT_S1_S1_S1_EE
+  For Kernel: _ZN6thrust10make_tupleINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS5_EEEENS1_17make_tuple_mapperIT_T0_NS_9null_typeESB_SB_SB_SB_SB_SB_SB_E4typeERKS9_RKSA_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIvEEPvS3_vNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagEvlEC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS0_15normal_iteratorINS_10device_ptrIiEEEEjNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEES7_NS_9null_typeESL_SL_SL_SL_SL_SL_SL_EENS0_27device_dereference_iterator5applyESN_Lj2EE27do_it_on_the_host_or_deviceERKSM_SN_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEEC2IbEEPT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi7ELi4ELi28ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEESJ_S6_iNS3_21cuda_device_space_tagESH_NS_16device_referenceIiEESH_EC2ERKSJ_
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEC2ES5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPiEES4_S4_NS_11use_defaultES6_S6_S6_S6_EC1ERKS4_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEiPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEC1ERKi
+  For Kernel: _ZN6thrust6detail4consImNS1_ImNS1_ImNS_9null_typeEEEEEEC1IKmS7_S7_KS2_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEEC1IiEEPT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj1EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIiEEPiS3_iNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj7EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj3EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKiEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC2IiEEPT_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKbEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC1IbEEPT_
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEadEv
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj2EEEEC2Ev
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS7_EENS_9null_typeESA_SA_SA_SA_SA_SA_SA_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SF_T1_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorISB_EENS_9null_typeESE_SE_SE_SE_SE_SE_SE_EEEEjNS0_18swap_pair_elementsEEEEEvT_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEEC2IiEEPT_
+  For Kernel: _ZN6thrust12experimentalplINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEET_RKNS0_15iterator_facadeIS8_T0_T1_T2_T3_T4_T5_EENS8_15difference_typeE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIjEElNS0_23device_generate_functorINS0_12fill_functorIjEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKiEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC2ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEEC1IjEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIbEEPbS3_bNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIbEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIiEEjNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEESJ_S6_iNS3_21cuda_device_space_tagESH_NS_16device_referenceIiEESH_EC1ERKSJ_
+  For Kernel: _ZN6thrust23device_malloc_allocatorIiED1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIiEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEEC1IbEEPT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIyEElNS0_23device_generate_functorINS0_12fill_functorIyEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj5EEC2Ev
+  For Kernel: _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj3EEEEC2Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2INS2_IiEEiNS4_IiEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj5EEEEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj0EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj7EEEEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIbEEPbS3_bNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIbEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEEC2IjEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEES7_S6_iNS3_21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEENS_11use_defaultEEC2ERKS7_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPiEES4_S4_NS_11use_defaultES6_S6_S6_S6_EC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIyEEjNS0_23device_generate_functorINS0_12fill_functorIyEEEEEEEEvT_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEE11dereferenceEv
+  For Kernel: _ZN6thrust6detail4consImNS1_ImNS1_ImNS_9null_typeEEEEEEC2IKmS7_S7_KS2_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES5_S5_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESB_SB_SB_SB_SB_SB_SB_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SG_T1_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust11FlushKernelIvEEvv
+  For Kernel: _ZN6thrust10make_tupleINS_17counting_iteratorIiNS_11use_defaultES2_S2_EENS_6detail15normal_iteratorINS_10device_ptrIiEEEEEENS4_17make_tuple_mapperIT_T0_NS_9null_typeESC_SC_SC_SC_SC_SC_SC_E4typeERKSA_RKSB_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIlNS_11use_defaultES3_S3_EElPllNS_13any_space_tagENS_27random_access_traversal_tagEllEC1ERKl
+  For Kernel: _ZN6thrust3maxIPiEET_RKS2_S4_
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS8_EENS_9null_typeESB_SB_SB_SB_SB_SB_SB_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISE_EE5valueEE4typeERKSE_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_18transform_iteratorINS_6detail7backend4cuda6detail27last_index_in_each_intervalINS4_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESC_SC_EESC_SC_EESD_PllSC_NS_36random_access_universal_iterator_tagElSC_EC1ERKSD_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj6EEC2Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj0EEC2Ev
+  For Kernel: _ZN6thrust6detail4consIiNS1_IRiNS_9null_typeEEEEC1IKiiKS3_S8_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi4ELi4ELi16ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj6EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj8EEEEC2Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEEC2IyEEPT_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEC2ERKS5_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC2Ei
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC1ERKS2_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1INS2_IiEEiNS4_IiEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail10functional8argumentILj6EEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKiEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC1IiEEPT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj7EEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_17counting_iteratorIiNS_11use_defaultES3_S3_EENS1_INS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeEEEEC1IKS4_KS8_KS9_SF_SF_SF_SF_SF_SF_SF_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS6_EENS_9null_typeES9_S9_S9_S9_S9_S9_S9_EENS0_27device_dereference_iterator5applyESB_Lj2EE27do_it_on_the_host_or_deviceERKSA_SB_
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINSA_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESI_SI_EESI_SI_EEEES8_NS_9null_typeESM_SM_SM_SM_SM_SM_SM_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SR_T1_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj2EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj1EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj1EEEEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEENS1_IS6_NS_9null_typeEEEEC2IKSJ_KS6_KSK_SQ_SQ_SQ_SQ_SQ_SQ_SQ_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEES7_S6_iNS3_21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEENS_11use_defaultEEC1ERKS7_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1IvEEPT_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail10functional8argumentILj3EEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIvEEPvS3_vNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagEvlEC1ERKS4_
+  For Kernel: _ZN6thrust21make_reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEENS_16reverse_iteratorIT_EES7_
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEadEv
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEE7advanceEl
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_27last_index_in_each_intervalINS1_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEESC_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EEEElNS0_30device_unary_transform_functorINS_8identityIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust17counting_iteratorIlNS_11use_defaultES1_S1_EC1ERKS2_
+  For Kernel: _ZN6thrust25make_permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS1_7backend4cuda6detail27last_index_in_each_intervalINS7_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESF_SF_EESF_SF_EEEENS_20permutation_iteratorIT_T0_EESJ_SK_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj8EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKbEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC2IbEEPT_
+  For Kernel: _ZN6thrust17counting_iteratorIlNS_11use_defaultES1_S1_EC2ERKS2_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIjEEPjS3_jNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIjEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail4consIRiNS1_IS2_NS_9null_typeEEEEC2IiiKS3_S7_S7_S7_S7_S7_S7_S7_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi3ELi4ELi12ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail16numeric_distanceIlEENS0_18numeric_differenceIT_E4typeES3_S3_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEE11dereferenceEv
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail27adjacent_difference_closureINS0_15normal_iteratorINS_10device_ptrIiEEEES8_S8_NS_5minusIiEENS1_21uniform_decompositionIlEEEclEv
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEEC1IyEEPT_
+  For Kernel: _ZN6thrust6detail4consIiNS1_IRiNS_9null_typeEEEEC2IKiiKS3_S8_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEiPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEC2ERKi
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj9EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj9EEC2Ev
+  For Kernel: _ZN6thrust6detail16numeric_distanceIiEENS0_18numeric_differenceIT_E4typeES3_S3_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj7EEC1Ev
+  For Kernel: _ZN6thrust6detail4consINS0_15normal_iteratorINS_10device_ptrIiEEEENS1_INS_16reverse_iteratorIS5_EENS_9null_typeEEEEC1IKS5_KS7_KS8_SE_SE_SE_SE_SE_SE_SE_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi4ELi4ELi16ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPKiEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust6detail5priorINS0_15normal_iteratorINS_10device_ptrIiEEEEEET_S6_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_27last_index_in_each_intervalINS1_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEESC_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EEEEjNS0_30device_unary_transform_functorINS_8identityIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj4EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj5EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKiEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC1ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2IvEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIbEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZN6thrust3minIPiEET_RKS2_S4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIiEElNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi7ELi4ELi28ENS4_10NopFunctorIjEENS4_21PostprocessKeyFunctorIiEEEEvPbPiPT_SE_PT0_SG_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPKiEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIjEEjNS0_23device_generate_functorINS0_12fill_functorIjEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorISB_EENS_9null_typeESE_SE_SE_SE_SE_SE_SE_EEEElNS0_18swap_pair_elementsEEEEEvT_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC1Ei
+  For Kernel: _ZN6thrust6detail7backend7generic6scalar11upper_boundINS0_15normal_iteratorINS_10device_ptrIiEEEEiNS_4lessIiEEEET_SB_SB_RKT0_T1_
  Test Passed
 Testing SSA Dataflow
  For File: ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
@@ -4971,6 +5166,197 @@ Testing SSA Dataflow
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c12ProcessLoadsIjLi16ELi4ELi1ELi16ENS4_10NopFunctorIjEEEEiPT_iRiPA128_iPA4_i
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c8ScanPassIjLi24ELi16ELi4ELi2ELi64ELi8ELi3ELi8ELi16ELi132ELi2EEEvPiS6_PA3_AT7__iPNS4_7VecTypeIT_Li2EE4TypeEP4int2SG_SG_i
+ For File: ../tests/ptx/thrust/histogram_sliced.ptx
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+ For File: ../tests/ptx/thrust/histogram.ptx
+  For Kernel: _ZN6thrust6detail10functional8argumentILj2EEC2Ev
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES4_S4_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESA_SA_SA_SA_SA_SA_SA_EENS0_27device_dereference_iterator5applyESC_Lj2EE27do_it_on_the_host_or_deviceERKSB_SC_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj0EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1INS2_IbEEbNS4_IbEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS0_15normal_iteratorINS_10device_ptrIiEEEElNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIyEEPyS3_yNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIyEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj2EEC1Ev
+  For Kernel: _ZN6thrust6detail4consINS_17counting_iteratorIiNS_11use_defaultES3_S3_EENS1_INS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeEEEEC2IKS4_KS8_KS9_SF_SF_SF_SF_SF_SF_SF_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi0ELi4ELi0ENS4_20PreprocessKeyFunctorIiEENS4_10NopFunctorIjEEEEvPbPiPT_SE_PT0_SG_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj4EEC2Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj3EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKbEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC1ERKS5_
+  For Kernel: _ZN6thrust23device_malloc_allocatorIiED2Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi0ELi4ELi0ENS4_20PreprocessKeyFunctorIiEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2INS2_IbEEbNS4_IbEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEcviEv
+  For Kernel: _ZN6thrust6detail4consINS0_15normal_iteratorINS_10device_ptrIiEEEENS1_INS_16reverse_iteratorIS5_EENS_9null_typeEEEEC2IKS5_KS7_KS8_SE_SE_SE_SE_SE_SE_SE_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIjEEPjS3_jNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIjEElEC2ERKS4_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKbEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC2ERKS5_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC2ERKS2_
+  For Kernel: _ZNK6thrust6detail7backend21uniform_decompositionIlEixERKl
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS_17counting_iteratorIiNS_11use_defaultES6_S6_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESC_SC_SC_SC_SC_SC_SC_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISF_EE5valueEE4typeERKSF_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIiEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEC1ES5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIbEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEC1ERKS5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIyEEPyS3_yNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIyEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj4EEEEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_18transform_iteratorINS_6detail7backend4cuda6detail27last_index_in_each_intervalINS4_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESC_SC_EESC_SC_EESD_PllSC_NS_36random_access_universal_iterator_tagElSC_EC2ERKSD_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj1EEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIlNS_11use_defaultES3_S3_EElPllNS_13any_space_tagENS_27random_access_traversal_tagEllEC2ERKl
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINSB_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEES9_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISQ_EE5valueEE4typeERKSQ_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIiEEPiS3_iNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES9_S9_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESF_SF_SF_SF_SF_SF_SF_EEEEjNS1_7generic6detail21binary_search_functorISE_NS_4lessIiEENSJ_3ubfEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj8EEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj5EEEEC2Ev
+  For Kernel: _ZNK6thrust17counting_iteratorIlNS_11use_defaultES1_S1_E11distance_toIlEElRKNS0_IT_S1_S1_S1_EE
+  For Kernel: _ZN6thrust3minImEET_RKS1_S3_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj6EEEEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi3ELi4ELi12ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional8argumentILj0EEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES9_S9_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESF_SF_SF_SF_SF_SF_SF_EEEElNS1_7generic6detail21binary_search_functorISE_NS_4lessIiEENSJ_3ubfEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail4consIRiNS1_IS2_NS_9null_typeEEEEC1IiiKS3_S7_S7_S7_S7_S7_S7_S7_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEC1ERKS5_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust13SrtsScanSpineIvEEvPiS6_i
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEC2ERKS5_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj9EEC1Ev
+  For Kernel: _ZN6thrust10make_tupleINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS2_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEES6_EENS2_17make_tuple_mapperIT_T0_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_E4typeERKSL_RKSM_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj8EEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEENS1_IS6_NS_9null_typeEEEEC1IKSJ_KS6_KSK_SQ_SQ_SQ_SQ_SQ_SQ_SQ_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj9EEEEC2Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS3_27adjacent_difference_closureINS0_15normal_iteratorINS_10device_ptrIiEEEES9_S9_NS_5minusIiEENS1_21uniform_decompositionIlEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj4EEC1Ev
+  For Kernel: _ZNK6thrust17counting_iteratorIiNS_11use_defaultES1_S1_E11distance_toIiEElRKNS0_IT_S1_S1_S1_EE
+  For Kernel: _ZN6thrust10make_tupleINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS5_EEEENS1_17make_tuple_mapperIT_T0_NS_9null_typeESB_SB_SB_SB_SB_SB_SB_E4typeERKS9_RKSA_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIvEEPvS3_vNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagEvlEC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS0_15normal_iteratorINS_10device_ptrIiEEEEjNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEES7_NS_9null_typeESL_SL_SL_SL_SL_SL_SL_EENS0_27device_dereference_iterator5applyESN_Lj2EE27do_it_on_the_host_or_deviceERKSM_SN_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEEC2IbEEPT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi7ELi4ELi28ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEESJ_S6_iNS3_21cuda_device_space_tagESH_NS_16device_referenceIiEESH_EC2ERKSJ_
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEC2ES5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPiEES4_S4_NS_11use_defaultES6_S6_S6_S6_EC1ERKS4_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEiPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEC1ERKi
+  For Kernel: _ZN6thrust6detail4consImNS1_ImNS1_ImNS_9null_typeEEEEEEC1IKmS7_S7_KS2_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEEC1IiEEPT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj1EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIiEEPiS3_iNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj7EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj3EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKiEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC2IiEEPT_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKbEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC1IbEEPT_
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEadEv
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj2EEEEC2Ev
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS7_EENS_9null_typeESA_SA_SA_SA_SA_SA_SA_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SF_T1_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorISB_EENS_9null_typeESE_SE_SE_SE_SE_SE_SE_EEEEjNS0_18swap_pair_elementsEEEEEvT_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEEC2IiEEPT_
+  For Kernel: _ZN6thrust12experimentalplINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEET_RKNS0_15iterator_facadeIS8_T0_T1_T2_T3_T4_T5_EENS8_15difference_typeE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIjEElNS0_23device_generate_functorINS0_12fill_functorIjEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKiEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC2ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEEC1IjEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIbEEPbS3_bNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIbEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIiEEjNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEESJ_S6_iNS3_21cuda_device_space_tagESH_NS_16device_referenceIiEESH_EC1ERKSJ_
+  For Kernel: _ZN6thrust23device_malloc_allocatorIiED1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIiEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEEC1IbEEPT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIyEElNS0_23device_generate_functorINS0_12fill_functorIyEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj5EEC2Ev
+  For Kernel: _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj3EEEEC2Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2INS2_IiEEiNS4_IiEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj5EEEEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj0EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj7EEEEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIbEEPbS3_bNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIbEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEEC2IjEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEES7_S6_iNS3_21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEENS_11use_defaultEEC2ERKS7_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPiEES4_S4_NS_11use_defaultES6_S6_S6_S6_EC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIyEEjNS0_23device_generate_functorINS0_12fill_functorIyEEEEEEEEvT_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEE11dereferenceEv
+  For Kernel: _ZN6thrust6detail4consImNS1_ImNS1_ImNS_9null_typeEEEEEEC2IKmS7_S7_KS2_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES5_S5_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESB_SB_SB_SB_SB_SB_SB_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SG_T1_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust11FlushKernelIvEEvv
+  For Kernel: _ZN6thrust10make_tupleINS_17counting_iteratorIiNS_11use_defaultES2_S2_EENS_6detail15normal_iteratorINS_10device_ptrIiEEEEEENS4_17make_tuple_mapperIT_T0_NS_9null_typeESC_SC_SC_SC_SC_SC_SC_E4typeERKSA_RKSB_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIlNS_11use_defaultES3_S3_EElPllNS_13any_space_tagENS_27random_access_traversal_tagEllEC1ERKl
+  For Kernel: _ZN6thrust3maxIPiEET_RKS2_S4_
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS8_EENS_9null_typeESB_SB_SB_SB_SB_SB_SB_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISE_EE5valueEE4typeERKSE_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_18transform_iteratorINS_6detail7backend4cuda6detail27last_index_in_each_intervalINS4_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESC_SC_EESC_SC_EESD_PllSC_NS_36random_access_universal_iterator_tagElSC_EC1ERKSD_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj6EEC2Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj0EEC2Ev
+  For Kernel: _ZN6thrust6detail4consIiNS1_IRiNS_9null_typeEEEEC1IKiiKS3_S8_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi4ELi4ELi16ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj6EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj8EEEEC2Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEEC2IyEEPT_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEC2ERKS5_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC2Ei
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC1ERKS2_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1INS2_IiEEiNS4_IiEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail10functional8argumentILj6EEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKiEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC1IiEEPT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj7EEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_17counting_iteratorIiNS_11use_defaultES3_S3_EENS1_INS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeEEEEC1IKS4_KS8_KS9_SF_SF_SF_SF_SF_SF_SF_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS6_EENS_9null_typeES9_S9_S9_S9_S9_S9_S9_EENS0_27device_dereference_iterator5applyESB_Lj2EE27do_it_on_the_host_or_deviceERKSA_SB_
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINSA_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESI_SI_EESI_SI_EEEES8_NS_9null_typeESM_SM_SM_SM_SM_SM_SM_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SR_T1_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj2EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj1EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj1EEEEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEENS1_IS6_NS_9null_typeEEEEC2IKSJ_KS6_KSK_SQ_SQ_SQ_SQ_SQ_SQ_SQ_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEES7_S6_iNS3_21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEENS_11use_defaultEEC1ERKS7_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1IvEEPT_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail10functional8argumentILj3EEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIvEEPvS3_vNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagEvlEC1ERKS4_
+  For Kernel: _ZN6thrust21make_reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEENS_16reverse_iteratorIT_EES7_
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEadEv
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEE7advanceEl
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_27last_index_in_each_intervalINS1_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEESC_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EEEElNS0_30device_unary_transform_functorINS_8identityIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust17counting_iteratorIlNS_11use_defaultES1_S1_EC1ERKS2_
+  For Kernel: _ZN6thrust25make_permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS1_7backend4cuda6detail27last_index_in_each_intervalINS7_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESF_SF_EESF_SF_EEEENS_20permutation_iteratorIT_T0_EESJ_SK_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj8EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKbEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC2IbEEPT_
+  For Kernel: _ZN6thrust17counting_iteratorIlNS_11use_defaultES1_S1_EC2ERKS2_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIjEEPjS3_jNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIjEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail4consIRiNS1_IS2_NS_9null_typeEEEEC2IiiKS3_S7_S7_S7_S7_S7_S7_S7_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi3ELi4ELi12ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail16numeric_distanceIlEENS0_18numeric_differenceIT_E4typeES3_S3_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEE11dereferenceEv
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail27adjacent_difference_closureINS0_15normal_iteratorINS_10device_ptrIiEEEES8_S8_NS_5minusIiEENS1_21uniform_decompositionIlEEEclEv
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEEC1IyEEPT_
+  For Kernel: _ZN6thrust6detail4consIiNS1_IRiNS_9null_typeEEEEC2IKiiKS3_S8_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEiPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEC2ERKi
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj9EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj9EEC2Ev
+  For Kernel: _ZN6thrust6detail16numeric_distanceIiEENS0_18numeric_differenceIT_E4typeES3_S3_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj7EEC1Ev
+  For Kernel: _ZN6thrust6detail4consINS0_15normal_iteratorINS_10device_ptrIiEEEENS1_INS_16reverse_iteratorIS5_EENS_9null_typeEEEEC1IKS5_KS7_KS8_SE_SE_SE_SE_SE_SE_SE_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi4ELi4ELi16ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPKiEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust6detail5priorINS0_15normal_iteratorINS_10device_ptrIiEEEEEET_S6_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_27last_index_in_each_intervalINS1_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEESC_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EEEEjNS0_30device_unary_transform_functorINS_8identityIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj4EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj5EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKiEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC1ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2IvEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIbEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZN6thrust3minIPiEET_RKS2_S4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIiEElNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi7ELi4ELi28ENS4_10NopFunctorIjEENS4_21PostprocessKeyFunctorIiEEEEvPbPiPT_SE_PT0_SG_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPKiEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIjEEjNS0_23device_generate_functorINS0_12fill_functorIjEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorISB_EENS_9null_typeESE_SE_SE_SE_SE_SE_SE_EEEElNS0_18swap_pair_elementsEEEEEvT_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC1Ei
+  For Kernel: _ZN6thrust6detail7backend7generic6scalar11upper_boundINS0_15normal_iteratorINS_10device_ptrIiEEEEiNS_4lessIiEEEET_SB_SB_RKT0_T1_
  Test Passed
 Testing SSA then back Dataflow
  For File: ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
@@ -6857,12 +7243,203 @@ Testing SSA then back Dataflow
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c12ProcessLoadsIjLi16ELi4ELi1ELi16ENS4_10NopFunctorIjEEEEiPT_iRiPA128_iPA4_i
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c8ScanPassIjLi24ELi16ELi4ELi2ELi64ELi8ELi3ELi8ELi16ELi132ELi2EEEvPiS6_PA3_AT7__iPNS4_7VecTypeIT_Li2EE4TypeEP4int2SG_SG_i
+ For File: ../tests/ptx/thrust/histogram_sliced.ptx
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+ For File: ../tests/ptx/thrust/histogram.ptx
+  For Kernel: _ZN6thrust6detail10functional8argumentILj2EEC2Ev
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES4_S4_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESA_SA_SA_SA_SA_SA_SA_EENS0_27device_dereference_iterator5applyESC_Lj2EE27do_it_on_the_host_or_deviceERKSB_SC_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj0EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1INS2_IbEEbNS4_IbEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS0_15normal_iteratorINS_10device_ptrIiEEEElNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIyEEPyS3_yNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIyEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj2EEC1Ev
+  For Kernel: _ZN6thrust6detail4consINS_17counting_iteratorIiNS_11use_defaultES3_S3_EENS1_INS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeEEEEC2IKS4_KS8_KS9_SF_SF_SF_SF_SF_SF_SF_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi0ELi4ELi0ENS4_20PreprocessKeyFunctorIiEENS4_10NopFunctorIjEEEEvPbPiPT_SE_PT0_SG_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj4EEC2Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj3EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKbEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC1ERKS5_
+  For Kernel: _ZN6thrust23device_malloc_allocatorIiED2Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi0ELi4ELi0ENS4_20PreprocessKeyFunctorIiEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2INS2_IbEEbNS4_IbEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEcviEv
+  For Kernel: _ZN6thrust6detail4consINS0_15normal_iteratorINS_10device_ptrIiEEEENS1_INS_16reverse_iteratorIS5_EENS_9null_typeEEEEC2IKS5_KS7_KS8_SE_SE_SE_SE_SE_SE_SE_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIjEEPjS3_jNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIjEElEC2ERKS4_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKbEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC2ERKS5_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC2ERKS2_
+  For Kernel: _ZNK6thrust6detail7backend21uniform_decompositionIlEixERKl
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS_17counting_iteratorIiNS_11use_defaultES6_S6_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESC_SC_SC_SC_SC_SC_SC_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISF_EE5valueEE4typeERKSF_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIiEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEC1ES5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIbEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEC1ERKS5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIyEEPyS3_yNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIyEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj4EEEEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_18transform_iteratorINS_6detail7backend4cuda6detail27last_index_in_each_intervalINS4_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESC_SC_EESC_SC_EESD_PllSC_NS_36random_access_universal_iterator_tagElSC_EC2ERKSD_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj1EEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIlNS_11use_defaultES3_S3_EElPllNS_13any_space_tagENS_27random_access_traversal_tagEllEC2ERKl
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINSB_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEES9_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISQ_EE5valueEE4typeERKSQ_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIiEEPiS3_iNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES9_S9_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESF_SF_SF_SF_SF_SF_SF_EEEEjNS1_7generic6detail21binary_search_functorISE_NS_4lessIiEENSJ_3ubfEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj8EEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj5EEEEC2Ev
+  For Kernel: _ZNK6thrust17counting_iteratorIlNS_11use_defaultES1_S1_E11distance_toIlEElRKNS0_IT_S1_S1_S1_EE
+  For Kernel: _ZN6thrust3minImEET_RKS1_S3_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj6EEEEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi3ELi4ELi12ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional8argumentILj0EEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES9_S9_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESF_SF_SF_SF_SF_SF_SF_EEEElNS1_7generic6detail21binary_search_functorISE_NS_4lessIiEENSJ_3ubfEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail4consIRiNS1_IS2_NS_9null_typeEEEEC1IiiKS3_S7_S7_S7_S7_S7_S7_S7_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEC1ERKS5_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust13SrtsScanSpineIvEEvPiS6_i
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEC2ERKS5_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj9EEC1Ev
+  For Kernel: _ZN6thrust10make_tupleINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS2_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEES6_EENS2_17make_tuple_mapperIT_T0_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_E4typeERKSL_RKSM_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj8EEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEENS1_IS6_NS_9null_typeEEEEC1IKSJ_KS6_KSK_SQ_SQ_SQ_SQ_SQ_SQ_SQ_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj9EEEEC2Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS3_27adjacent_difference_closureINS0_15normal_iteratorINS_10device_ptrIiEEEES9_S9_NS_5minusIiEENS1_21uniform_decompositionIlEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj4EEC1Ev
+  For Kernel: _ZNK6thrust17counting_iteratorIiNS_11use_defaultES1_S1_E11distance_toIiEElRKNS0_IT_S1_S1_S1_EE
+  For Kernel: _ZN6thrust10make_tupleINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS5_EEEENS1_17make_tuple_mapperIT_T0_NS_9null_typeESB_SB_SB_SB_SB_SB_SB_E4typeERKS9_RKSA_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIvEEPvS3_vNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagEvlEC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS0_15normal_iteratorINS_10device_ptrIiEEEEjNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEES7_NS_9null_typeESL_SL_SL_SL_SL_SL_SL_EENS0_27device_dereference_iterator5applyESN_Lj2EE27do_it_on_the_host_or_deviceERKSM_SN_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEEC2IbEEPT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi7ELi4ELi28ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEESJ_S6_iNS3_21cuda_device_space_tagESH_NS_16device_referenceIiEESH_EC2ERKSJ_
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEC2ES5_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPiEES4_S4_NS_11use_defaultES6_S6_S6_S6_EC1ERKS4_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEiPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEC1ERKi
+  For Kernel: _ZN6thrust6detail4consImNS1_ImNS1_ImNS_9null_typeEEEEEEC1IKmS7_S7_KS2_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEEC1IiEEPT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj1EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIiEEPiS3_iNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj7EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj3EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKiEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC2IiEEPT_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKbEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC1IbEEPT_
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIiEEiNS_10device_ptrIiEEEadEv
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj2EEEEC2Ev
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS7_EENS_9null_typeESA_SA_SA_SA_SA_SA_SA_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SF_T1_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorISB_EENS_9null_typeESE_SE_SE_SE_SE_SE_SE_EEEEjNS0_18swap_pair_elementsEEEEEvT_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEEC2IiEEPT_
+  For Kernel: _ZN6thrust12experimentalplINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEET_RKNS0_15iterator_facadeIS8_T0_T1_T2_T3_T4_T5_EENS8_15difference_typeE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIjEElNS0_23device_generate_functorINS0_12fill_functorIjEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKiEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC2ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEEC1IjEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIbEEPbS3_bNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIbEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIiEEjNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_20permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_7backend4cuda6detail27last_index_in_each_intervalINS9_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESH_SH_EESH_SH_EEEESJ_S6_iNS3_21cuda_device_space_tagESH_NS_16device_referenceIiEESH_EC1ERKSJ_
+  For Kernel: _ZN6thrust23device_malloc_allocatorIiED1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIiEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEEC1IbEEPT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIyEElNS0_23device_generate_functorINS0_12fill_functorIyEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj5EEC2Ev
+  For Kernel: _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj3EEEEC2Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2INS2_IiEEiNS4_IiEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj5EEEEC1Ev
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi5ELi4ELi20ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj0EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj7EEEEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIbEEPbS3_bNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIbEElEC2ERKS4_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIjEEjNS_16device_referenceIjEENS0_21cuda_device_space_tagEEC2IjEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEES7_S6_iNS3_21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEENS_11use_defaultEEC2ERKS7_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPiEES4_S4_NS_11use_defaultES6_S6_S6_S6_EC2ERKS4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIyEEjNS0_23device_generate_functorINS0_12fill_functorIyEEEEEEEEvT_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEE11dereferenceEv
+  For Kernel: _ZN6thrust6detail4consImNS1_ImNS1_ImNS_9null_typeEEEEEEC2IKmS7_S7_KS2_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS_17counting_iteratorIiNS_11use_defaultES5_S5_EENS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeESB_SB_SB_SB_SB_SB_SB_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SG_T1_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust11FlushKernelIvEEvv
+  For Kernel: _ZN6thrust10make_tupleINS_17counting_iteratorIiNS_11use_defaultES2_S2_EENS_6detail15normal_iteratorINS_10device_ptrIiEEEEEENS4_17make_tuple_mapperIT_T0_NS_9null_typeESC_SC_SC_SC_SC_SC_SC_E4typeERKSA_RKSB_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIlNS_11use_defaultES3_S3_EElPllNS_13any_space_tagENS_27random_access_traversal_tagEllEC1ERKl
+  For Kernel: _ZN6thrust3maxIPiEET_RKS2_S4_
+  For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS8_EENS_9null_typeESB_SB_SB_SB_SB_SB_SB_EES2_EENS0_20tuple_meta_transformIT0_T_Xsr6thrust10tuple_sizeISE_EE5valueEE4typeERKSE_T1_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_18transform_iteratorINS_6detail7backend4cuda6detail27last_index_in_each_intervalINS4_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESC_SC_EESC_SC_EESD_PllSC_NS_36random_access_universal_iterator_tagElSC_EC1ERKSD_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj6EEC2Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj0EEC2Ev
+  For Kernel: _ZN6thrust6detail4consIiNS1_IRiNS_9null_typeEEEEC1IKiiKS3_S8_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi4ELi4ELi16ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj6EEEEC2Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj8EEEEC2Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEEC2IyEEPT_
+  For Kernel: _ZN6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEC2ERKS5_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC2Ei
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC1ERKS2_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1INS2_IiEEiNS4_IiEEEERKNS1_IT_T0_T1_S6_EE
+  For Kernel: _ZN6thrust6detail10functional8argumentILj6EEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKiEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC1IiEEPT_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj7EEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_17counting_iteratorIiNS_11use_defaultES3_S3_EENS1_INS0_15normal_iteratorINS_10device_ptrIiEEEENS_9null_typeEEEEC1IKS4_KS8_KS9_SF_SF_SF_SF_SF_SF_SF_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail23tuple_transform_functorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorIS6_EENS_9null_typeES9_S9_S9_S9_S9_S9_S9_EENS0_27device_dereference_iterator5applyESB_Lj2EE27do_it_on_the_host_or_deviceERKSA_SB_
+  For Kernel: _ZN6thrust6detail19tuple_impl_specific14tuple_for_eachINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINSA_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESI_SI_EESI_SI_EEEES8_NS_9null_typeESM_SM_SM_SM_SM_SM_SM_EENS0_16advance_iteratorIlEENS0_21cuda_device_space_tagEEET0_RT_SR_T1_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj2EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj1EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj1EEEEC2Ev
+  For Kernel: _ZN6thrust6detail4consINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS0_7backend4cuda6detail27last_index_in_each_intervalINS8_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESG_SG_EESG_SG_EEEENS1_IS6_NS_9null_typeEEEEC2IKSJ_KS6_KSK_SQ_SQ_SQ_SQ_SQ_SQ_SQ_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEES7_S6_iNS3_21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIiEENS_11use_defaultEEC1ERKS7_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC1IvEEPT_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIiEEiNS_16device_referenceIiEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail10functional8argumentILj3EEC2Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIvEEPvS3_vNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagEvlEC1ERKS4_
+  For Kernel: _ZN6thrust21make_reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEEENS_16reverse_iteratorIT_EES7_
+  For Kernel: _ZNK6thrust6detail14reference_baseINS_16device_referenceIbEEbNS_10device_ptrIbEEEadEv
+  For Kernel: _ZN6thrust16reverse_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEEE7advanceEl
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_27last_index_in_each_intervalINS1_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEESC_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EEEElNS0_30device_unary_transform_functorINS_8identityIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust17counting_iteratorIlNS_11use_defaultES1_S1_EC1ERKS2_
+  For Kernel: _ZN6thrust25make_permutation_iteratorINS_6detail15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS1_7backend4cuda6detail27last_index_in_each_intervalINS7_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESF_SF_EESF_SF_EEEENS_20permutation_iteratorIT_T0_EESJ_SK_
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj8EEEEC1Ev
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIKbEES3_NS_16device_referenceIS3_EENS0_21cuda_device_space_tagEEC2IbEEPT_
+  For Kernel: _ZN6thrust17counting_iteratorIlNS_11use_defaultES1_S1_EC2ERKS2_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIjEEPjS3_jNS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIjEElEC1ERKS4_
+  For Kernel: _ZN6thrust6detail4consIRiNS1_IS2_NS_9null_typeEEEEC2IiiKS3_S7_S7_S7_S7_S7_S7_S7_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi3ELi4ELi12ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail16numeric_distanceIlEENS0_18numeric_differenceIT_E4typeES3_S3_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIbEEbNS_16device_referenceIbEENS0_21cuda_device_space_tagEE11dereferenceEv
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail27adjacent_difference_closureINS0_15normal_iteratorINS_10device_ptrIiEEEES8_S8_NS_5minusIiEENS1_21uniform_decompositionIlEEEclEv
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEEC1IyEEPT_
+  For Kernel: _ZN6thrust6detail4consIiNS1_IRiNS_9null_typeEEEEC2IKiiKS3_S8_S8_S8_S8_S8_S8_S8_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_17counting_iteratorIiNS_11use_defaultES3_S3_EEiPiiNS_13any_space_tagENS_27random_access_traversal_tagEilEC2ERKi
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj9EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj9EEC2Ev
+  For Kernel: _ZN6thrust6detail16numeric_distanceIiEENS0_18numeric_differenceIT_E4typeES3_S3_
+  For Kernel: _ZN6thrust6detail10functional8argumentILj7EEC1Ev
+  For Kernel: _ZN6thrust6detail4consINS0_15normal_iteratorINS_10device_ptrIiEEEENS1_INS_16reverse_iteratorIS5_EENS_9null_typeEEEEC1IKS5_KS7_KS8_SE_SE_SE_SE_SE_SE_SE_EERT_RT0_RT1_RT2_RT3_RT4_RT5_RT6_RT7_RT8_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust15RakingReductionIjNS4_12KeysOnlyTypeELi4ELi4ELi16ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPKiEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC2ERKS5_
+  For Kernel: _ZN6thrust6detail5priorINS0_15normal_iteratorINS_10device_ptrIiEEEEEET_S6_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS_20permutation_iteratorINS0_15normal_iteratorINS_10device_ptrIiEEEENS_18transform_iteratorINS3_27last_index_in_each_intervalINS1_21uniform_decompositionIlEEEENS_17counting_iteratorIlNS_11use_defaultESJ_SJ_EESJ_SJ_EEEESC_NS_9null_typeESN_SN_SN_SN_SN_SN_SN_EEEEjNS0_30device_unary_transform_functorINS_8identityIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi2ELi4ELi8ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust6detail10functional5actorINS1_8argumentILj4EEEEC1Ev
+  For Kernel: _ZN6thrust6detail10functional8argumentILj5EEC1Ev
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_10device_ptrIKiEEPS3_S4_S3_NS_6detail21cuda_device_space_tagENS_27random_access_traversal_tagENS_16device_referenceIS3_EElEC1ERKS5_
+  For Kernel: _ZN6thrust6detail12pointer_baseINS_10device_ptrIvEEvNS_16device_referenceIvEENS0_21cuda_device_space_tagEEC2IvEEPT_
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorINS_10device_ptrIbEEEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZN6thrust3minIPiEET_RKS2_S4_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIiEElNS0_23device_generate_functorINS0_12fill_functorIiEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail11b40c_thrust17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi7ELi4ELi28ENS4_10NopFunctorIjEENS4_21PostprocessKeyFunctorIiEEEEvPbPiPT_SE_PT0_SG_NS4_16CtaDecompositionE
+  For Kernel: _ZN6thrust12experimental16iterator_adaptorINS_6detail15normal_iteratorIPKiEES5_S5_NS_11use_defaultES7_S7_S7_S7_EC1ERKS5_
+  For Kernel: _ZNK6thrust6detail12pointer_baseINS_10device_ptrIyEEyNS_16device_referenceIyEENS0_21cuda_device_space_tagEE3getEv
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_10device_ptrIjEEjNS0_23device_generate_functorINS0_12fill_functorIjEEEEEEEEvT_
+  For Kernel: _ZN6thrust6detail7backend4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIiEEEENS_16reverse_iteratorISB_EENS_9null_typeESE_SE_SE_SE_SE_SE_SE_EEEElNS0_18swap_pair_elementsEEEEEvT_
+  For Kernel: _ZN6thrust17counting_iteratorIiNS_11use_defaultES1_S1_EC1Ei
+  For Kernel: _ZN6thrust6detail7backend7generic6scalar11upper_boundINS0_15normal_iteratorINS_10device_ptrIiEEEEiNS_4lessIiEEEET_SB_SB_RKT0_T1_
  Test Passed
 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator
-INFO     Test completed in 238.550909996 seconds
+INFO     Test completed in 263.858485937 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -6875,8 +7452,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1334257828
-Test time : 238.483
+Test Seed : 1334622995
+Test time : 263.789
 
 Status : For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Translate): Passed
@@ -7020,28 +7597,30 @@ For file ../tests/ptx/optix/kernel_trace_device0_1.ptx, Test Point 1 (Translate)
 For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/thrust/bfs.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/thrust/histogram_sliced.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/thrust/histogram.ptx, Test Point 1 (Translate): Passed
 
 
 
 INFO     
 Passing tests:
- (0.202s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
- (238.551s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
- (0.221s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
- (0.065s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
- (0.074s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
- (121.124s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
- (0.199s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
- (0.152s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
- (0.216s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
- (0.109s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
- (10.597s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
- (0.301s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
- (0.098s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
- (0.215s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
- (61.528s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
- (0.170s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
- (0.225s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
- (14.538s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
- (0.221s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
+ (0.114s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
+ (263.858s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
+ (0.237s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
+ (0.093s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
+ (0.102s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
+ (0.124s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
+ (0.108s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
+ (0.084s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
+ (0.074s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
+ (131.978s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
+ (10.772s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
+ (0.478s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
+ (0.086s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
+ (0.098s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
+ (66.429s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
+ (0.123s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
+ (0.141s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
+ (16.009s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
+ (0.098s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
 

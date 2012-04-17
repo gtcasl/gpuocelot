@@ -568,6 +568,7 @@ ir::PTXOperand::PTXOperand() {
 	identifier = "";
 	addressMode = Invalid;
 	type = PTXOperand::s32;
+	relaxedType = TypeSpecifier_invalid;
 	offset = 0;
 	imm_int = 0;
 	reg = 0;
@@ -575,7 +576,8 @@ ir::PTXOperand::PTXOperand() {
 }
 
 ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i, DataType t) : 
-	addressMode(Special), type(t), vIndex(i), special(r), 
+	addressMode(Special), type(t), relaxedType(TypeSpecifier_invalid),
+	vIndex(i), special(r), 
 	reg(0), vec(i == iAll ? v4 : v1) {
 	std::stringstream name;
 	name << toString(r);
@@ -595,26 +597,30 @@ ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i, DataType t) :
 
 ir::PTXOperand::PTXOperand(const std::string& l) : identifier(l), 
 	addressMode(Label), type(TypeSpecifier_invalid),
+	relaxedType(TypeSpecifier_invalid),
 	offset(0), condition(Pred), reg(0), vec(v1) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, DataType t, RegisterType r, 
-	int o, Vec v) : addressMode(m), type(t), offset(o), condition(Pred),
-	reg(r), vec(v) {
+	int o, Vec v) : addressMode(m), type(t), relaxedType(TypeSpecifier_invalid),
+	offset(o), condition(Pred), reg(r), vec(v) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, DataType t, 
 	const std::string& i, int o, Vec v) : identifier(i), 
-	addressMode(m), type(t), offset(o), condition(Pred), vec(v) {
+	addressMode(m), type(t), relaxedType(TypeSpecifier_invalid), offset(o),
+	condition(Pred), vec(v) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, const std::string& i) : identifier(i),
-	addressMode(m), type(TypeSpecifier_invalid), offset(0), condition(Pred),
+	addressMode(m), type(TypeSpecifier_invalid),
+	relaxedType(TypeSpecifier_invalid), offset(0), condition(Pred),
 	reg(0), vec(v1) {
 }
 
 ir::PTXOperand::PTXOperand(long long unsigned int v, DataType t)
-	: addressMode(Immediate), type(t), offset(0), imm_uint(v), reg(0), vec(v1) {
+	: addressMode(Immediate), type(t), relaxedType(TypeSpecifier_invalid),
+	offset(0), imm_uint(v), reg(0), vec(v1) {
 }
 
 ir::PTXOperand::~PTXOperand() {

@@ -491,9 +491,10 @@ void ir::Module::extractPTXKernels() {
 		endIterator = _statements.end();
 
 	bool inKernel = false;
-	int instructionCount = 0;
-	int kernelInstance = 1;
+	unsigned int instructionCount = 0;
+	unsigned int kernelInstance = 1;
 	bool isFunction = false;
+	unsigned int depth = 0;
 	ir::PTXKernel::Prototype functionPrototype;
 	
 	report("extractPTXKernels()");
@@ -554,28 +555,33 @@ void ir::Module::extractPTXKernels() {
 			break;
 			case PTXStatement::EndScope:
 			{
-				// construct the kernel and push it onto something
+				report("  end scope: '}'");
 				assert(inKernel);
-				inKernel = false;
-				endIterator = ++StatementVector::const_iterator(it);
-				if (instructionCount) {
-					PTXKernel *kernel = new PTXKernel(startIterator, 
-					        endIterator, isFunction);
-					kernel->module = this;
-					_kernels[kernel->name] = (kernel);
-					kernel->canonicalBlockLabels(kernelInstance++);
+				assert(depth != 0);
+				
+				--depth;
+				
+				if (depth == 0) {
+					// construct the kernel and push it onto something
+					inKernel = false;
+					endIterator = ++StatementVector::const_iterator(it);
+					if (instructionCount) {
+						PTXKernel *kernel = new PTXKernel(startIterator, 
+							    endIterator, isFunction);
+						kernel->module = this;
+						_kernels[kernel->name] = (kernel);
+						kernel->canonicalBlockLabels(kernelInstance++);
+					}
 				}
 			}
 			break;
 			case PTXStatement::EndFuncDec:
 			{
+				report("  end func dec:");
+				
 				assert(inKernel);
 				inKernel   = false;
 				isFunction = false;
-				
-			} // fallthrough
-			case PTXStatement::StartScope:
-			{
 				if (prototypeState != PS_NoState &&
 					functionPrototype.callType !=
 					ir::PTXKernel::Prototype::Entry) {
@@ -583,6 +589,21 @@ void ir::Module::extractPTXKernels() {
 						functionPrototype);
 					prototypeState = PS_NoState;
 				}
+				
+			}
+			break;
+			case PTXStatement::StartScope:
+			{
+				report("  start scope: '{'");
+				if (prototypeState != PS_NoState &&
+					functionPrototype.callType !=
+					ir::PTXKernel::Prototype::Entry) {
+					addPrototype(functionPrototype.identifier,
+						functionPrototype);
+					prototypeState = PS_NoState;
+				}
+				
+				++depth;
 			}
 			break;
 			case PTXStatement::Param:
@@ -604,49 +625,62 @@ void ir::Module::extractPTXKernels() {
 				
 				}
 			}
-				break;
+			break;
 				
-		case PTXStatement::Instr:
-			if (inKernel) {
-				instructionCount++;
+			case PTXStatement::Instr:
+			{
+				if (inKernel) {
+					instructionCount++;
+				}
 			}
 			break;
-		case PTXStatement::Const:  // fallthrough
-		case PTXStatement::Global: // fallthrough
-		case PTXStatement::Shared: // fallthrough
-		case PTXStatement::Local:
-			if (!inKernel) {
-				assertM(_globals.count(statement.name) == 0, "Global operand '" 
-					<< statement.name << "' declared more than once." );
+			case PTXStatement::Const:  // fallthrough
+			case PTXStatement::Global: // fallthrough
+			case PTXStatement::Shared: // fallthrough
+			case PTXStatement::Local:
+			{
+				if (!inKernel) {
+					assertM(_globals.count(statement.name) == 0,
+						"Global operand '" 
+						<< statement.name << "' declared more than once." );
 
-				_globals.insert(std::make_pair(statement.name,
-					Global(statement)));
+					_globals.insert(std::make_pair(statement.name,
+						Global(statement)));
+				}
 			}
 			break;
 
-		case PTXStatement::AddressSize:
-			_addressSize = statement.addressSize;
+			case PTXStatement::AddressSize:
+			{
+				_addressSize = statement.addressSize;
+			}
 			break;
 
-		case PTXStatement::Texref:
-			if (!inKernel) {
-				assert(_textures.count(statement.name) == 0);
-				_textures.insert(std::make_pair(statement.name, 
-								Texture(statement.name, Texture::Texref)));
+			case PTXStatement::Texref:
+			{
+				if (!inKernel) {
+					assert(_textures.count(statement.name) == 0);
+					_textures.insert(std::make_pair(statement.name, 
+									Texture(statement.name, Texture::Texref)));
+				}
 			}
 			break;
-		case PTXStatement::Surfref:
-			if (!inKernel) {
-				assert(_textures.count(statement.name) == 0);
-				_textures.insert(std::make_pair(statement.name, 
-                Texture(statement.name, Texture::Surfref)));
+			case PTXStatement::Surfref:
+			{
+				if (!inKernel) {
+					assert(_textures.count(statement.name) == 0);
+					_textures.insert(std::make_pair(statement.name, 
+		            Texture(statement.name, Texture::Surfref)));
+				}
 			}
 			break;
-		case PTXStatement::Samplerref:
-			if (!inKernel) {
-				assert(_textures.count(statement.name) == 0);
-				_textures.insert(std::make_pair(statement.name, 
-								Texture(statement.name, Texture::Samplerref)));
+			case PTXStatement::Samplerref:
+			{
+				if (!inKernel) {
+					assert(_textures.count(statement.name) == 0);
+					_textures.insert(std::make_pair(statement.name, 
+									Texture(statement.name, Texture::Samplerref)));
+				}
 			}
 			break;
 				

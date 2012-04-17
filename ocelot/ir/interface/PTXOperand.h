@@ -50,23 +50,23 @@ namespace ir {
 
 		/*! Type specifiers for instructions */
 		enum DataType {
-			s8 = 0,
+			TypeSpecifier_invalid = 0,
+			s8,
 			s16,
 			s32,
 			s64,
-			u8 = 4,
+			u8,
 			u16,
 			u32,
 			u64,
-			f16 = 8,
+			f16,
 			f32,
 			f64,
 			b8,
 			b16,
 			b32,
 			b64,
-			pred,
-			TypeSpecifier_invalid
+			pred
 		};
 
 		/*!	Special register names */
@@ -194,6 +194,7 @@ namespace ir {
 
 		//! data type for PTX instruction
 		DataType type;
+		DataType relaxedType;
 
 		//!	offset when used with an indirect addressing mode
 		union {

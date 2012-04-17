@@ -757,6 +757,9 @@ cl_int opencl::OpenCLRuntime::clGetContextInfo(cl_context         context,
 		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
 			throw CL_INVALID_PROGRAM;
 
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+
 		context->getInfo(param_name, param_value_size, param_value, param_value_size_ret);
 
 	}
@@ -802,6 +805,28 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	return (cl_command_queue)queue;
 }
 
+cl_int opencl::OpenCLRuntime::clRetainCommandQueue(cl_command_queue command_queue) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		command_queue->retain();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+}
+
 cl_int opencl::OpenCLRuntime::clReleaseCommandQueue(cl_command_queue command_queue) {
 	cl_int result = CL_SUCCESS;
 
@@ -811,6 +836,40 @@ cl_int opencl::OpenCLRuntime::clReleaseCommandQueue(cl_command_queue command_que
 			throw CL_INVALID_COMMAND_QUEUE;
 
 		command_queue->release();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
+}
+
+cl_int opencl::OpenCLRuntime::clGetCommandQueueInfo(cl_command_queue command_queue,
+	cl_command_queue_info param_name,
+	size_t                param_value_size,
+	void *                param_value,
+	size_t *              param_value_size_ret) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+
+		command_queue->getInfo(param_name,
+			param_value_size,
+			param_value,
+			param_value_size_ret);
 	}
 	catch(cl_int exception) {
 		result = exception;
@@ -995,6 +1054,9 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 		
 		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))
 			throw CL_INVALID_PROGRAM;
+
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
 
 		program->getInfo(param_name, param_value_size, param_value, param_value_size_ret);
 

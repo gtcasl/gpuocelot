@@ -260,13 +260,13 @@ namespace opencl {
 				    cl_device_id device, 
 				    cl_command_queue_properties properties,
 				    cl_int * errcode_ret);
-//		virtual cl_int clRetainCommandQueue(cl_command_queue command_queue);
+		virtual cl_int clRetainCommandQueue(cl_command_queue command_queue);
 		virtual cl_int clReleaseCommandQueue(cl_command_queue command_queue);
-//		virtual cl_int clGetCommandQueueInfo(cl_command_queue      command_queue,
-//					cl_command_queue_info param_name,
-//					size_t                param_value_size,
-//					void *                param_value,
-//					size_t *              param_value_size_ret);
+		virtual cl_int clGetCommandQueueInfo(cl_command_queue      command_queue,
+					cl_command_queue_info param_name,
+					size_t                param_value_size,
+					void *                param_value,
+					size_t *              param_value_size_ret);
 
 		//Memory Object APIs
 		virtual cl_mem clCreateBuffer(cl_context context,

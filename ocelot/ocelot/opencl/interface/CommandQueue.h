@@ -95,6 +95,12 @@ namespace opencl {
 		//! finish events
 		void finishEvents();
 
+		//! get command queue information
+		void getInfo(cl_command_queue_info param_name,
+			size_t param_value_size,
+			void * param_value,
+			size_t * param_value_size_ret);
+
 	private:
 		Context * _context;
 		Device * _device;

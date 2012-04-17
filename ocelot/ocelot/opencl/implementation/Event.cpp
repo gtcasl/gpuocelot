@@ -86,6 +86,7 @@ void opencl::Event::getInfo(cl_event_info    param_name,
 		cl_context cl_context_var;
 		cl_command_type cl_command_type_var;
 		cl_int cl_int_var;
+		cl_uint cl_uint_var;
 	};
 
 	infoUnion info;
@@ -115,6 +116,10 @@ do { \
 
 		case CL_EVENT_COMMAND_EXECUTION_STATUS:
 			ASSIGN_INFO(cl_int, _status);
+			break;
+
+		case CL_EVENT_REFERENCE_COUNT:
+			ASSIGN_INFO(cl_uint, _references);
 			break;
 
 		default:

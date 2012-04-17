@@ -276,4 +276,60 @@ void opencl::CommandQueue::finishEvents() {
 	_clearCompletedEvents();
 }
 
+void opencl::CommandQueue::getInfo(cl_command_queue_info param_name,
+	size_t param_value_size,
+	void * param_value,
+	size_t * param_value_size_ret) {
+
+	union infoUnion {
+		cl_context cl_context_var;
+		cl_device_id cl_device_id_var;
+		cl_uint cl_uint_var;
+		cl_command_queue_properties cl_command_queue_properties_var;
+	};
+	
+	infoUnion info;
+	const void * ptr = &info;
+	size_t infoLen = 0;
+
+#ifndef ASSIGN_INFO
+#define ASSIGN_INFO(field, value) \
+do { \
+	info.field##_var = value; \
+	infoLen = sizeof(field); \
+} while(0)
+#endif
+	
+	switch(param_name) {
+		case CL_QUEUE_CONTEXT:
+			ASSIGN_INFO(cl_context, (cl_context)_context);
+			break;
+
+		case CL_QUEUE_DEVICE:
+			ASSIGN_INFO(cl_device_id, (cl_device_id)_device);
+			break;
+
+		case CL_QUEUE_REFERENCE_COUNT:
+			ASSIGN_INFO(cl_uint, _references);
+			break;
+
+		case CL_QUEUE_PROPERTIES:
+			ASSIGN_INFO(cl_command_queue_properties, _properties);
+			break;
+
+		default:
+			throw CL_INVALID_VALUE;
+			break; 
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+}
 

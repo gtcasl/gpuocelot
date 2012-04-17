@@ -841,7 +841,6 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 
 		buffer = new BufferObject(context, flags, host_ptr, size);
 
-		buffer->allocate();
 
 	}
 	catch(cl_int exception) {

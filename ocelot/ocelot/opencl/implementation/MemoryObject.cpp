@@ -20,12 +20,6 @@ opencl::MemoryObject::MemoryObject(Context * context, cl_mem_object_type type,
 	if((!host_ptr && ((flags & CL_MEM_USE_HOST_PTR) || (flags & CL_MEM_COPY_HOST_PTR)))
 		|| (host_ptr && !(flags & CL_MEM_USE_HOST_PTR) && !(flags & CL_MEM_COPY_HOST_PTR)))
 		throw CL_INVALID_HOST_PTR;
-
-	if(host_ptr) {
-		assertM(false, "unsuported host_ptr");
-		throw CL_UNIMPLEMENTED;
-	}
-	
 }
 
 opencl::MemoryObject::~MemoryObject() {
@@ -54,6 +48,12 @@ void opencl::MemoryObject::allocate() {
 		_allocations.insert(std::make_pair(*device, ptr));
 		report("memory object allocate on Device " << *device 
 			<< ", address = " <<  ptr << ", size = " << size());
+
+		//Cache content of host_ptr to device ptr
+		if(_hostPtr) {
+			report("cache host_ptr of buffer object on device ");
+			(*device)->write(ptr, _hostPtr, 0, size());
+		}
 	}
 }
 
@@ -86,6 +86,8 @@ opencl::BufferObject::BufferObject(Context * context, cl_mem_flags flags,
 	if(size == 0)
 		throw CL_INVALID_BUFFER_SIZE;
 
+	allocate();
+
 }
 
 const size_t opencl::BufferObject::size() const {
@@ -98,6 +100,12 @@ void opencl::BufferObject::readOnDevice(Device * device,
 	void * devicePtr = getPtrOnDevice(device);
 	if(!device->read(devicePtr, ptr, offset, cb))
 		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+	//Copy device ptr to host ptr
+	if(_hostPtr)
+		if(!device->read(devicePtr, _hostPtr, offset, cb))
+			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
 }
 
 void opencl::BufferObject::writeOnDevice(Device * device, 
@@ -106,5 +114,9 @@ void opencl::BufferObject::writeOnDevice(Device * device,
 	void * devicePtr = getPtrOnDevice(device);
 	if(!device->write(devicePtr, ptr, offset, cb))
 		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+	//Copy ptr to host ptr
+	if(_hostPtr)
+		std::memcpy(((uint8_t *)_hostPtr) + offset, ptr, cb);
 }
 

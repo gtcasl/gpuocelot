@@ -33,8 +33,8 @@ namespace analysis
 			reg = block->_aliveIn.begin(); 
 			reg != block->_aliveIn.end(); ++reg )
 		{
-			report( "   Mapping alive in register " << reg->id 
-				<< " to " << current );
+			report( "   Mapping alive in register r" << reg->id 
+				<< " to r" << current );
 			b.regs.insert( std::make_pair( *reg, 
 				DataflowGraph::Register( current++, reg->type ) ) );
 		}
@@ -53,8 +53,8 @@ namespace analysis
 			{
 				RegisterMap::iterator mapping = b.regs.find( *reg->pointer );
 				assert( mapping != b.regs.end() );
-				report( "    Mapping source register " << *reg->pointer 
-					<< " to " << mapping->second.id );
+				report( "    Mapping source register r" << *reg->pointer 
+					<< " to r" << mapping->second.id );
 				*reg->pointer = mapping->second.id;
 			}
 			
@@ -65,17 +65,19 @@ namespace analysis
 				RegisterMap::iterator mapping = b.regs.find( *reg->pointer );
 				if( mapping == b.regs.end() )
 				{
-					report( "    Mapping destination register " << *reg->pointer 
-						<< " to " << current );
+					report( "    Mapping destination register r"
+						<< *reg->pointer 
+						<< " to r" << current );
 					mapping = b.regs.insert( std::make_pair( *reg, 
 						DataflowGraph::Register( current++, 
 						reg->type ) ) ).first;
 				}
 				else
 				{
-					report( "   ReMapping destination register " 
+					report( "   ReMapping destination register r" 
 						<< *reg->pointer 
-						<< " from " << mapping->second.id << " to " << current );
+						<< " from r" << mapping->second.id
+						<< " to r" << current );
 					mapping->second.id = current++;
 				}
 				*reg->pointer = mapping->second.id;
@@ -165,6 +167,14 @@ namespace analysis
 				for( IdVector::iterator source = phi->second.begin(); 
 					source != phi->second.end(); ++source )
 				{
+					assertM(
+						ir::PTXOperand::valid(instruction.d.type, source->type),
+						" PHI destination register %r" << instruction.d.id
+						<< " type "
+						<< ir::PTXOperand::toString(instruction.d.type)
+						<< " does not match source register %r" << source->id
+						<< " type "
+						<< ir::PTXOperand::toString(source->type) );
 					instruction.s.push_back( *source );
 				}
 				block->first->_phis.push_back( instruction );

@@ -66,6 +66,7 @@ namespace parser
 					typedef std::vector< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
 						OperandWrapper > OperandMap;
+					typedef std::vector< OperandMap > OperandMapStack;
 					typedef std::vector< ir::PTXOperand > OperandVector;
 					typedef std::unordered_map< std::string, 
 						FunctionPrototype > PrototypeMap;
@@ -103,8 +104,7 @@ namespace parser
 					std::string sectionName;
 					
 					StringList identifiers;
-					OperandMap operands;
-					StringSetStack localOperands;
+					OperandMapStack operands;
 
 					PrototypeMap prototypes;
 					StringSetStack localPrototypes;
@@ -129,6 +129,10 @@ namespace parser
 				
 				private:
 					void _setImmediateTypes();
+				
+					OperandWrapper* _getOperand( const std::string& name );
+					OperandWrapper* _getOperandInScope(
+						const std::string& name );
 				
 				public:
 					void addSpecialRegisters();

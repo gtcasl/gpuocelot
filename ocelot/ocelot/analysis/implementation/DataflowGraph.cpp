@@ -193,7 +193,7 @@ namespace analysis
 
 				_maxRegister = std::max( _maxRegister, 
 					( i.*destinations[ j ] ).reg );
-				if( ir::PTXInstruction::Cvt == i.opcode )
+				if( i.mayHaveRelaxedTypeDestination() )
 				{
 					result.d.push_back( 
 						RegisterPointer( &( i.*destinations[ j ] ).reg, 

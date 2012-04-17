@@ -2162,9 +2162,16 @@ std::string ir::PTXInstruction::toString() const {
 				if( modifier & sat ) {
 					result += "sat.";
 				}
-			}			
+			}
+			
+			PTXOperand::DataType sourceType = a.type;
+	
+			if( a.relaxedType != PTXOperand::TypeSpecifier_invalid ) {
+				sourceType = a.relaxedType;
+			}
+			
 			result += PTXOperand::toString( type ) + "." 
-				+ PTXOperand::toString( a.type ) + " " + d.toString() + ", " 
+				+ PTXOperand::toString( sourceType ) + " " + d.toString() + ", " 
 				+ a.toString();
 			return result;
 		}
@@ -2548,6 +2555,11 @@ bool ir::PTXInstruction::isBranch() const {
 bool ir::PTXInstruction::mayHaveAddressableOperand() const {
 	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
 		|| opcode == Atom || opcode == Ldu;
+}
+
+bool ir::PTXInstruction::mayHaveRelaxedTypeDestination() const {
+	return opcode == Ld || opcode == Cvt
+		|| opcode == Ldu || opcode == SelP;
 }
 
 bool ir::PTXInstruction::hasSideEffects() const {

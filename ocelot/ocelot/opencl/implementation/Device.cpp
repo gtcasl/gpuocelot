@@ -403,6 +403,10 @@ do { \
 			ASSIGN_INFO(cl_uint, 0);
 			break;
 
+		case CL_DEVICE_GLOBAL_MEM_SIZE:
+			ASSIGN_INFO(cl_ulong, (cl_ulong)prop.totalMemory);
+			break;
+
 		case CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE:
 			ASSIGN_INFO(cl_uint, (cl_uint)prop.totalConstantMemory);
 			break;
@@ -528,6 +532,13 @@ cl_khr_fp64 cl_khr_gl_sharing cl_khr_gl_event");
 		case CL_DEVICE_REFERENCE_COUNT:
 			ASSIGN_INFO(cl_uint, (cl_uint)_references);
 			break;
+
+		//deprecated OpenCL 1.1 device info
+		case CL_DEVICE_MIN_DATA_TYPE_ALIGN_SIZE:
+			std::cout << "Warning: deprecated device info CL_DEVICE_MIN_DATA_TYPE_ALIGN_SIZE" << std::endl;
+			ASSIGN_INFO(cl_uint, 4);
+			break;
+			
 
 		default:
 			throw CL_INVALID_VALUE;

@@ -1154,11 +1154,11 @@ static void cloneAndOptimizeTranslation(
 		
 	llvm::FunctionPassManager manager(translatedKernel.llvmModule);
 	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
-	
+
 	analysis::LLVMUniformVectorization *vectorizationPass = new
 		analysis::LLVMUniformVectorization(translatedKernel.kernel->kernelGraph(), subkernelId, warpSize);
 	manager.add(vectorizationPass);
-	
+		
 	report("Overriding optimization level");
 	level = 0;
 

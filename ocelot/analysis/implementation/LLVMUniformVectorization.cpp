@@ -47,7 +47,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_FINAL_SUBKERNEL 0
 
@@ -237,18 +237,19 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 
 	// identify possible entry points
 	_enumerateEntries();
-
+	
 	// construct scheduler entry and load thread-local values
 	_initializeSchedulerEntryBlock();
 
 	// relocate any additional blocks created during translation
 	_hoistDeclarationBlocks();
-
+	
 	// complete scheduler
 	_completeSchedulerEntryBlock();
-	
+		
 	// clean-up step
 	_scalarOptimization();
+	
 	
 	if (pass->warpSize == 1) {
 #if INSERT_DEBUG_REPORTING
@@ -573,6 +574,18 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	
 	llvm::BinaryOperator *resumePoint = llvm::BinaryOperator::Create(llvm::Instruction::And, 
 		encodedResumePoint, getConstInt32(0x0ffff), "resumePoint", schedulerEntryBlock.block);
+	
+	for (EntryMap::const_iterator entry_it = schedulerEntryBlock.entries.begin();
+		llvm::dyn_cast<llvm::PHINode>(&(schedulerEntryBlock.defaultEntry->front())); ++entry_it) {
+		
+		if (entry_it != schedulerEntryBlock.entries.end()) {
+			schedulerEntryBlock.defaultEntry = entry_it->second;
+		}
+		else {
+			assert(0 && "Entry block contains PHI nodes, and we have no acceptable entry handlers");
+			return;
+		}
+	}
 	
 	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(resumePoint, schedulerEntryBlock.defaultEntry, 
 		schedulerEntryBlock.entries.size() + 1, schedulerEntryBlock.block);

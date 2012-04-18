@@ -103,9 +103,6 @@ namespace analysis
 			bool isPackable() const;
 
 			bool isVectorizable() const;
-		
-		private:
-			
 
 		public:
 
@@ -241,6 +238,8 @@ namespace analysis
 		protected:
 		
 			void _transformWarpSynchronous();
+			
+			void _identifyScheduler();
 			
 			void _replicateInstructions();
 			

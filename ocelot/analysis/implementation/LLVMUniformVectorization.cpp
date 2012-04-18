@@ -47,9 +47,9 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
-#define REPORT_FINAL_SUBKERNEL 0
+#define REPORT_FINAL_SUBKERNEL 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -210,10 +210,17 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 {
 	report("Translation(" << f->getName().str() << ") on subkernel with warp size " << pass->warpSize);
 	
+	/*
 	if (pass->warpSize == 1) {
 		_scalarPreprocess();
 	}
 	else {
+		_transformWarpSynchronous();
+	}
+	*/
+	
+	_scalarPreprocess();
+	if (pass->warpSize > 1) {
 		_transformWarpSynchronous();
 	}
 	
@@ -717,6 +724,7 @@ void analysis::LLVMUniformVectorization::Translation::_eliminateEmptyBlocks() {
 void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous() {
 	report("Transform Warp Synchronous begin");
 	if (pass->warpSize > 1) {
+		_identifyScheduler();
 		_packThreadLocal();
 		_replicateInstructions();
 		_resolveDependencies();
@@ -755,8 +763,15 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 }
 
 
+void analysis::LLVMUniformVectorization::Translation::_identifyScheduler() {
+	report("_identifyScheduler()");
+	
+}
+
 void analysis::LLVMUniformVectorization::Translation::_packThreadLocal() {
 	report("  packThreadLocal()");
+	
+	assert(schedulerEntryBlock.block);
 	
 	for (int tid = 1; tid < pass->warpSize; tid++) {
 		ThreadLocalArgument localArgs;
@@ -913,7 +928,9 @@ void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
 
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 	VectorizedInstructionMap::iterator &vec_it) {
-		
+	
+	report("  vectorize()");
+	
 	llvm::Instruction *vectorized = vec_it->second.vector;
 	if (!vectorized) {
 		if (vec_it->second.isVectorizable()) {
@@ -928,8 +945,11 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 			}
 			if (vectorized) {
 				InstructionVector extracted;
-				std::string name = vec_it->first->getName().str() + ".extracted";
+				std::string vectorName = vec_it->first->getName().str() + ".extracted.t";
+				
 				for (int tid = 0; tid < pass->warpSize; tid++) {
+					std::string name = vectorName + boost::lexical_cast<std::string,int>(tid);
+					
 					llvm::Instruction *element = llvm::ExtractElementInst::Create(vec_it->second.vector, 
 						getConstInt32(tid), name, vectorized);
 					element->removeFromParent();
@@ -945,6 +965,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 		}
 		else if (vec_it->second.isPackable()) {
 			vectorized = _vectorizeUnvectorizable(vec_it->first, vec_it);
+			vec_it->second.vector = vectorized;
 		}
 	}
 	return vectorized;
@@ -952,6 +973,13 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeUnvectorizable(
 	llvm::Instruction *inst, VectorizedInstructionMap::iterator &vec_it) {
+	
+	report("  vectorizeUnvectorizable: " << String(inst));
+	report("     replicated:");
+	
+	for (int tid = 0; tid < pass->warpSize; tid++) {
+		report("      [tid: " << tid << "]: " << String(vec_it->second.replicated[tid]));
+	}
 	
 	// pack replicated instructions	
 	llvm::Value *lastInserted = llvm::UndefValue::get(llvm::VectorType::get(
@@ -964,10 +992,18 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		std::stringstream ss;
 		ss << "insert." << element->getName().str() << ".vec";
 		
-		insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
-			idx, ss.str(), inst->getParent());
-		insertInst->removeFromParent();
-		insertInst->insertAfter(vec_it->second.replicated[tid]);
+		if (!tid) {
+			insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
+				idx, ss.str(), inst->getParent());
+			insertInst->removeFromParent();
+			insertInst->insertAfter(vec_it->second.replicated[pass->warpSize - 1]);
+		}
+		else {
+			insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
+				idx, ss.str(), static_cast<llvm::Instruction*>(lastInserted));
+			insertInst->removeFromParent();
+			insertInst->insertAfter(static_cast<llvm::Instruction*>(lastInserted));
+		}
 		lastInserted = insertInst;
 	}
 	
@@ -976,6 +1012,8 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeBinaryOperator(
 	llvm::BinaryOperator *inst, VectorizedInstructionMap::iterator &vec_it) {
+
+	report("  vectorizeBinaryOperator(): " << String(inst));
 
 	llvm::Instruction *op0 = getInstructionAsVectorized(vec_it->first->getOperand(0), inst);
 	llvm::Instruction *op1 = getInstructionAsVectorized(vec_it->first->getOperand(1), inst);

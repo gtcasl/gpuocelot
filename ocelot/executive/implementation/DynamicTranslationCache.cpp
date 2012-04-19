@@ -111,6 +111,10 @@ static translator::Translator::OptimizationLevel getOptimizationLevel() {
 	return (translator::Translator::OptimizationLevel)api::configuration().executive.optimizationLevel;
 }
 
+static bool getVectorizeConvergent() {
+	return api::configuration().optimizations.vectorizeConvergent;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1110,7 +1114,8 @@ static void cloneAndOptimizeTranslation(
 	executive::DynamicTranslationCache::Translation *translation,
 	int warpSize,
 	translator::Translator::OptimizationLevel optimization,
-	unsigned int specialization) {
+	unsigned int specialization,
+	bool vectorizeConvergent) {
 		
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing kernel " << translatedSubkernel.subkernelPtx->name 
 		<< " for warpSize " << warpSize << ", optimziation level " << translator::Translator::toString(optimization)
@@ -1160,7 +1165,8 @@ static void cloneAndOptimizeTranslation(
 	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
 
 	analysis::LLVMUniformVectorization *vectorizationPass = new
-		analysis::LLVMUniformVectorization(translatedKernel.kernel->kernelGraph(), subkernelId, warpSize);
+		analysis::LLVMUniformVectorization(translatedKernel.kernel->kernelGraph(), subkernelId, 
+		warpSize, vectorizeConvergent);
 	manager.add(vectorizationPass);
 		
 	report("Overriding optimization level");
@@ -1423,7 +1429,8 @@ executive::DynamicTranslationCache::Translation *
 	
 		// apply optimizations on the resulting LLVM function
 		cloneAndOptimizeTranslation(translatedKernel, subkernel, subkernelId,
-			translation, warpSize, getOptimizationLevel(), specialization);
+			translation, warpSize, getOptimizationLevel(), specialization, 
+			getVectorizeConvergent());
 		
 		// dynamically compile LLVM to host ISA
 		reportE(REPORT_TRANSLATION_OPERATIONS, " Generating native code.");

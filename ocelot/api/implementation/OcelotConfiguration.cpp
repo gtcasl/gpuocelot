@@ -163,7 +163,8 @@ api::OcelotConfiguration::Optimizations::Optimizations():
 	predicateToSelect(false),
 	linearScanAllocation(false),
 	mimdThreadScheduling(false),
-	syncElimination(false)
+	syncElimination(false),
+	vectorizeConvergent(false)
 {
 
 }
@@ -341,7 +342,10 @@ static void initializeOptimizations(
 		config.parse<bool>("mimdThreadScheduling", false);
 	
 	optimizations.syncElimination =
-		config.parse<bool>("syncElimination", false);			
+		config.parse<bool>("syncElimination", false);
+		
+	optimizations.vectorizeConvergent =
+		config.parse<bool>("vectorizeConvergent", false);
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

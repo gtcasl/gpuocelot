@@ -26,14 +26,8 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.0422039031982 seconds
-INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:937: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0527110099792 seconds
+INFO     Test completed in 0.0297949314117 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -47,8 +41,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1330988158
-Test time : 0.000994682
+Test Seed : 1332005518
+Test time : 0.00101805
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -179,10 +173,195 @@ Zext Instruction Passed
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
+INFO     Test completed in 0.0311751365662 seconds
+INFO      It produced the following output:
+TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1032: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0606391429901 seconds
+INFO     Test completed in 0.0459520816803 seconds
 INFO      It produced the following output:
+(0.020403) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'increment' for CTA size 1 threads
+(0.020441) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.020456) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
+(0.022956) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_increment_1) on subkernel with warp size 1
+(0.023153) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.023167) LLVMUniformVectorization.cpp:1330:   subkernel: 1
+(0.023177) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.023194) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.023483) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_increment_1, ws 1) complete
+(0.023638) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_increment_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 1)
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = inttoptr i64 %r0 to i32*
+  %r1 = load i32* %rt3, align 4
+  %r2 = add i32 %r1, 1
+  %rt4 = inttoptr i64 %r0 to i32*
+  store i32 %r2, i32* %rt4, align 4
+  br label %"$BB_1_0002_exit_handler_to_1_0003"
+
+"$BB_1_0002_exit_handler_to_1_0003":              ; preds = %"$BB_1_0002"
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 -1000)
+  %rt5 = zext i32 4 to i64
+  %rt8 = ptrtoint i8* %localPtr.t0 to i64
+  %rt9 = add i64 %rt5, %rt8
+  %rt10 = inttoptr i64 %rt9 to i32*
+  store i32 8, i32* %rt10, align 4
+  %rt11 = zext i32 0 to i64
+  %rt14 = ptrtoint i8* %localPtr.t0 to i64
+  %rt15 = add i64 %rt11, %rt14
+  %rt16 = inttoptr i64 %rt15 to i32*
+  store i32 131073, i32* %rt16, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002_exit_handler_to_1_0003"
+  ret void
+}
+
+(0.026351) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x20001]
+(0.026516) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_increment_2) on subkernel with warp size 1
+(0.026607) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.026613) LLVMUniformVectorization.cpp:1330:   subkernel: 2
+(0.026618) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.026626) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.026900) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_increment_2, ws 1) complete
+(0.027039) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_increment_2(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0003_entry_handler_from_1_0002" [
+    i32 1, label %"$BB_1_0003_entry_handler_from_1_0002"
+  ]
+
+"$BB_1_0003_entry_handler_from_1_0002":           ; preds = %SchedulerEntry, %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 -2000)
+  br label %"$BB_1_0003"
+
+"$BB_1_0003":                                     ; preds = %"$BB_1_0003_entry_handler_from_1_0002"
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 2)
+  br label %"$BB_1_0003_thread_exit"
+
+"$BB_1_0003_thread_exit":                         ; preds = %"$BB_1_0003"
+  call void @_ocelot_debug_report_block(i64 2114537794123525566, i32 %threadId.t0, i32 -2001)
+  %rt0 = zext i32 4 to i64
+  %rt3 = ptrtoint i8* %localPtr.t0 to i64
+  %rt4 = add i64 %rt0, %rt3
+  %rt5 = inttoptr i64 %rt4 to i32*
+  store i32 6, i32* %rt5, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0003_thread_exit"
+  ret void
+}
+
+(0.029720) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'increment' for CTA size 1 threads
+(0.029738) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.029744) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
+(0.029799) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x20001]
+(0.030507) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'increment' for CTA size 1 threads
+(0.030520) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.030530) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
+(0.030591) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x20001]
 Pass/Fail : Pass
 
 
@@ -200,8 +379,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1330988158
-Test time : 0.0100462
+Test Seed : 1332005518
+Test time : 0.0152767
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -210,14 +389,29 @@ Test Point 3 Passed
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0609970092773 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
+INFO     Test completed in 0.010183095932 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1332005518
+Test time : 2.26498e-05
+
+Status : 
+
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.0568850040436 seconds
+INFO     Test completed in 0.0284869670868 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -227,8 +421,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1330988158
-Test time : 0.000610113
+Test Seed : 1332005518
+Test time : 0.000543594
 
 Status : Test output:
 Accessors test passed.
@@ -244,8 +438,14 @@ pass: predicated Add and Ld isntructions
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
+INFO     Test completed in 0.016932964325 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1032: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.0391960144043 seconds
+INFO     Test completed in 0.0225999355316 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -257,54 +457,431 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1330988158
-Test time : 2.40803e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0525019168854 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1330988158
-Test time : 1.19209e-05
+Test Seed : 1332005518
+Test time : 1.88351e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.0691359043121 seconds
+INFO     Test completed in 0.0582258701324 seconds
 INFO      It produced the following output:
-sequence() - A_gpu = 0x09b1d00
+sequence() - A_gpu = 0x01457d00
+(0.009968) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'sequence' for CTA size 4 threads
+(0.009995) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.010009) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 4 threads [subkernel 0x10000]
+(0.011807) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_sequence_1) on subkernel with warp size 1
+(0.012038) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.012052) LLVMUniformVectorization.cpp:1330:   subkernel: 1
+(0.012060) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.012075) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.012376) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_sequence_1, ws 1) complete
+(0.012516) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_sequence_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 1)
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %r1 = load i32* %rt6, align 4
+  %rt13 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r6 = add i32 %threadId.x.t0, %rt13
+  %r7 = icmp slt i32 %r6, %r1
+  br i1 %r7, label %"$BB_1_0002_exit_handler_to_1_0004", label %"$BB_1_0002_exit_handler_to_1_0003"
+
+"$BB_1_0002_exit_handler_to_1_0003":              ; preds = %"$BB_1_0002"
+  %r8 = phi i64 [ %r0, %"$BB_1_0002" ]
+  %r9 = phi i32 [ %r6, %"$BB_1_0002" ]
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 -1000)
+  %rt14 = zext i32 8 to i64
+  %rt17 = ptrtoint i8* %localPtr.t0 to i64
+  %rt18 = add i64 %rt14, %rt17
+  %rt19 = inttoptr i64 %rt18 to i64*
+  store i64 %r8, i64* %rt19, align 8
+  %rt20 = zext i32 8 to i64
+  %rt21 = add i64 %rt20, 8
+  %rt24 = ptrtoint i8* %localPtr.t0 to i64
+  %rt25 = add i64 %rt21, %rt24
+  %rt26 = inttoptr i64 %rt25 to i32*
+  store i32 %r9, i32* %rt26, align 4
+  %rt27 = zext i32 4 to i64
+  %rt30 = ptrtoint i8* %localPtr.t0 to i64
+  %rt31 = add i64 %rt27, %rt30
+  %rt32 = inttoptr i64 %rt31 to i32*
+  store i32 8, i32* %rt32, align 4
+  %rt33 = zext i32 0 to i64
+  %rt36 = ptrtoint i8* %localPtr.t0 to i64
+  %rt37 = add i64 %rt33, %rt36
+  %rt38 = inttoptr i64 %rt37 to i32*
+  store i32 131073, i32* %rt38, align 4
+  br label %exit
+
+"$BB_1_0002_exit_handler_to_1_0004":              ; preds = %"$BB_1_0002"
+  %r13 = phi i64 [ %r0, %"$BB_1_0002" ]
+  %r14 = phi i32 [ %r6, %"$BB_1_0002" ]
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 -1001)
+  %rt39 = zext i32 8 to i64
+  %rt42 = ptrtoint i8* %localPtr.t0 to i64
+  %rt43 = add i64 %rt39, %rt42
+  %rt44 = inttoptr i64 %rt43 to i64*
+  store i64 %r13, i64* %rt44, align 8
+  %rt45 = zext i32 8 to i64
+  %rt46 = add i64 %rt45, 8
+  %rt49 = ptrtoint i8* %localPtr.t0 to i64
+  %rt50 = add i64 %rt46, %rt49
+  %rt51 = inttoptr i64 %rt50 to i32*
+  store i32 %r14, i32* %rt51, align 4
+  %rt52 = zext i32 4 to i64
+  %rt55 = ptrtoint i8* %localPtr.t0 to i64
+  %rt56 = add i64 %rt52, %rt55
+  %rt57 = inttoptr i64 %rt56 to i32*
+  store i32 8, i32* %rt57, align 4
+  %rt58 = zext i32 0 to i64
+  %rt61 = ptrtoint i8* %localPtr.t0 to i64
+  %rt62 = add i64 %rt58, %rt61
+  %rt63 = inttoptr i64 %rt62 to i32*
+  store i32 196609, i32* %rt63, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002_exit_handler_to_1_0004", %"$BB_1_0002_exit_handler_to_1_0003"
+  ret void
+}
+
+(0.017617) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 4 threads [subkernel 0x30001]
+(0.017833) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_sequence_3) on subkernel with warp size 1
+(0.017971) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.017981) LLVMUniformVectorization.cpp:1330:   subkernel: 3
+(0.017989) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.018000) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.018525) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_sequence_3, ws 1) complete
+(0.018700) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_sequence_3(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0004_entry_handler_from_1_0002" [
+    i32 1, label %"$BB_1_0004_entry_handler_from_1_0002"
+  ]
+
+"$BB_1_0004_entry_handler_from_1_0002":           ; preds = %SchedulerEntry, %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 -3000)
+  %rt0 = zext i32 8 to i64
+  %rt3 = ptrtoint i8* %localPtr.t0 to i64
+  %rt4 = add i64 %rt0, %rt3
+  %rt5 = inttoptr i64 %rt4 to i64*
+  %r1 = load i64* %rt5, align 8
+  %rt6 = zext i32 8 to i64
+  %rt7 = add i64 %rt6, 8
+  %rt10 = ptrtoint i8* %localPtr.t0 to i64
+  %rt11 = add i64 %rt7, %rt10
+  %rt12 = inttoptr i64 %rt11 to i32*
+  %r2 = load i32* %rt12, align 4
+  br label %"$BB_1_0004"
+
+"$BB_1_0004":                                     ; preds = %"$BB_1_0004_entry_handler_from_1_0002"
+  %r3 = phi i64 [ %r1, %"$BB_1_0004_entry_handler_from_1_0002" ]
+  %r4 = phi i32 [ %r2, %"$BB_1_0004_entry_handler_from_1_0002" ]
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 3)
+  %r5 = shl i32 %r4, 1
+  %rt13 = sext i32 %r4 to i64
+  %r6 = mul i64 %rt13, 4
+  %r7 = add i64 %r3, %r6
+  %rt14 = inttoptr i64 %r7 to i32*
+  store i32 %r5, i32* %rt14, align 4
+  br label %"$BB_1_0004_thread_exit"
+
+"$BB_1_0004_thread_exit":                         ; preds = %"$BB_1_0004"
+  call void @_ocelot_debug_report_block(i64 -6181000666011064152, i32 %threadId.t0, i32 -3001)
+  %rt15 = zext i32 4 to i64
+  %rt18 = ptrtoint i8* %localPtr.t0 to i64
+  %rt19 = add i64 %rt15, %rt18
+  %rt20 = inttoptr i64 %rt19 to i32*
+  store i32 6, i32* %rt20, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0004_thread_exit"
+  ret void
+}
+
+(0.033773) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'testShr' for CTA size 4 threads
+(0.033797) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.033809) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 4 threads [subkernel 0x40000]
+(0.034024) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_testShr_4) on subkernel with warp size 1
+(0.034185) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.034199) LLVMUniformVectorization.cpp:1330:   subkernel: 4
+(0.034209) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 4
+(0.034225) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.034640) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_testShr_4, ws 1) complete
+(0.034823) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_testShr_4(%LLVMContext.1* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext.1* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 3435363299845662980, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_4_0002" [
+    i32 1, label %"$BB_4_0002_bar_entry_handler_from_4_0002"
+  ]
+
+"$BB_4_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 3435363299845662980, i32 %threadId.t0, i32 1)
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt9 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r5 = add i32 %threadId.x.t0, %rt9
+  %r6 = shl i32 %r5, 1
+  %rt10 = zext i32 %threadId.x.t0 to i64
+  %r7 = mul i64 %rt10, 4
+  %r9 = add i64 0, %r7
+  %rt13 = ptrtoint i8* %sharedPtr.t0 to i64
+  %rt14 = add i64 %r9, %rt13
+  %rt15 = inttoptr i64 %rt14 to i32*
+  store i32 %r6, i32* %rt15, align 4
+  br label %"$BB_4_0002_exit_handler_to_4_0002_bar"
+
+"$BB_4_0002_exit_handler_to_4_0002_bar":          ; preds = %"$BB_4_0002"
+  %r11 = phi i32 [ %r5, %"$BB_4_0002" ]
+  %r12 = phi i64 [ 0, %"$BB_4_0002" ]
+  %r10 = phi i64 [ %r0, %"$BB_4_0002" ]
+  call void @_ocelot_debug_report_block(i64 3435363299845662980, i32 %threadId.t0, i32 -4000)
+  %rt16 = zext i32 8 to i64
+  %rt19 = ptrtoint i8* %localPtr.t0 to i64
+  %rt20 = add i64 %rt16, %rt19
+  %rt21 = inttoptr i64 %rt20 to i64*
+  store i64 %r10, i64* %rt21, align 8
+  %rt22 = zext i32 8 to i64
+  %rt23 = add i64 %rt22, 8
+  %rt26 = ptrtoint i8* %localPtr.t0 to i64
+  %rt27 = add i64 %rt23, %rt26
+  %rt28 = inttoptr i64 %rt27 to i32*
+  store i32 %r11, i32* %rt28, align 4
+  %rt29 = zext i32 8 to i64
+  %rt30 = add i64 %rt29, 16
+  %rt33 = ptrtoint i8* %localPtr.t0 to i64
+  %rt34 = add i64 %rt30, %rt33
+  %rt35 = inttoptr i64 %rt34 to i64*
+  store i64 %r12, i64* %rt35, align 8
+  %rt36 = zext i32 4 to i64
+  %rt39 = ptrtoint i8* %localPtr.t0 to i64
+  %rt40 = add i64 %rt36, %rt39
+  %rt41 = inttoptr i64 %rt40 to i32*
+  store i32 5, i32* %rt41, align 4
+  %rt42 = zext i32 0 to i64
+  %rt45 = ptrtoint i8* %localPtr.t0 to i64
+  %rt46 = add i64 %rt42, %rt45
+  %rt47 = inttoptr i64 %rt46 to i32*
+  store i32 262145, i32* %rt47, align 4
+  br label %exit
+
+"$BB_4_0002_bar_entry_handler_from_4_0002":       ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 3435363299845662980, i32 %threadId.t0, i32 -4001)
+  %rt48 = zext i32 8 to i64
+  %rt51 = ptrtoint i8* %localPtr.t0 to i64
+  %rt52 = add i64 %rt48, %rt51
+  %rt53 = inttoptr i64 %rt52 to i64*
+  %r17 = load i64* %rt53, align 8
+  %rt54 = zext i32 8 to i64
+  %rt55 = add i64 %rt54, 8
+  %rt58 = ptrtoint i8* %localPtr.t0 to i64
+  %rt59 = add i64 %rt55, %rt58
+  %rt60 = inttoptr i64 %rt59 to i32*
+  %r18 = load i32* %rt60, align 4
+  %rt61 = zext i32 8 to i64
+  %rt62 = add i64 %rt61, 16
+  %rt65 = ptrtoint i8* %localPtr.t0 to i64
+  %rt66 = add i64 %rt62, %rt65
+  %rt67 = inttoptr i64 %rt66 to i64*
+  %r19 = load i64* %rt67, align 8
+  br label %"$BB_4_0002_bar"
+
+"$BB_4_0002_bar":                                 ; preds = %"$BB_4_0002_bar_entry_handler_from_4_0002"
+  %r22 = phi i64 [ %r19, %"$BB_4_0002_bar_entry_handler_from_4_0002" ]
+  %r20 = phi i64 [ %r17, %"$BB_4_0002_bar_entry_handler_from_4_0002" ]
+  %r21 = phi i32 [ %r18, %"$BB_4_0002_bar_entry_handler_from_4_0002" ]
+  call void @_ocelot_debug_report_block(i64 3435363299845662980, i32 %threadId.t0, i32 -4002)
+  %r23 = and i32 %r21, 1
+  %r24 = icmp eq i32 %r23, 0
+  %r26 = xor i32 %threadId.x.t0, 1
+  %rt70 = zext i32 %r26 to i64
+  %r27 = mul i64 %rt70, 4
+  %r28 = add i64 %r22, %r27
+  %r29 = select i1 %r24, i32 13, i32 19
+  %rt73 = ptrtoint i8* %sharedPtr.t0 to i64
+  %rt74 = add i64 %r28, %rt73
+  %rt75 = inttoptr i64 %rt74 to i32*
+  %r30 = load i32* %rt75, align 4
+  %r31 = mul i32 %r29, %r30
+  %rt76 = sext i32 %r21 to i64
+  %r32 = mul i64 %rt76, 4
+  %r33 = add i64 %r20, %r32
+  %rt77 = inttoptr i64 %r33 to i32*
+  store i32 %r31, i32* %rt77, align 4
+  br label %"$BB_4_0002_bar_thread_exit"
+
+"$BB_4_0002_bar_thread_exit":                     ; preds = %"$BB_4_0002_bar"
+  call void @_ocelot_debug_report_block(i64 3435363299845662980, i32 %threadId.t0, i32 -4003)
+  %rt78 = zext i32 4 to i64
+  %rt81 = ptrtoint i8* %localPtr.t0 to i64
+  %rt82 = add i64 %rt78, %rt81
+  %rt83 = inttoptr i64 %rt82 to i32*
+  store i32 6, i32* %rt83, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_4_0002_bar_thread_exit", %"$BB_4_0002_exit_handler_to_4_0002_bar"
+  ret void
+}
+
+(0.043328) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 4 threads [subkernel 0x40001]
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0410690307617 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
+INFO     Test completed in 0.011116027832 seconds
 INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:937: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0575318336487 seconds
-INFO      It produced the following output:
+No CAL devices found
 Pass/Fail : Pass
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.0559668540955 seconds
+INFO     Test completed in 0.0327870845795 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -314,8 +891,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1330988158
-Test time : 0.0128255
+Test Seed : 1332005518
+Test time : 0.0154209
 
 Status : Test output:
 looping kernel succeeded
@@ -324,21 +901,8 @@ matrix vector kernel succeeded
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.046590089798 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0420961380005 seconds
-INFO      It produced the following output:
-TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:937: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.0430009365082 seconds
+INFO     Test completed in 0.00914192199707 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -351,23 +915,21 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1330988158
-Test time : 1.38283e-05
+Test Seed : 1332005518
+Test time : 1.64509e-05
 
 Status : 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0588331222534 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
+INFO     Test completed in 0.0338978767395 seconds
 INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU 
-Pass/Fail : Pass
+TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:1032: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.1298828125 seconds
+INFO     Test completed in 0.0605261325836 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -378,8 +940,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1330988158
-Test time : 0.0684412
+Test Seed : 1332005518
+Test time : 0.0498433
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -414,9 +976,9 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.0625648498535 seconds
+INFO     Test completed in 0.012974023819 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -426,8 +988,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1330988158
-Test time : 0.0034411
+Test Seed : 1332005518
+Test time : 0.00392699
 
 Status : Test output:
 10 registers
@@ -439,9 +1001,219 @@ Full kernel test passed
 
 
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 0.0776019096375 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.0288062095642 seconds
 INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU 
+(0.006421) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'copyFromGlobal' for CTA size 64 threads
+(0.006454) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.006469) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 64 threads [subkernel 0x10000]
+(0.008520) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_copyFromGlobal_1) on subkernel with warp size 1
+(0.008707) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.008720) LLVMUniformVectorization.cpp:1330:   subkernel: 1
+(0.008729) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.008744) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.009142) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_copyFromGlobal_1, ws 1) complete
+(0.009299) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_copyFromGlobal_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 6208061951595483683, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 6208061951595483683, i32 %threadId.t0, i32 1)
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt9 = mul i32 %blockId.x.t0, %blockDim.x.t0
+  %r5 = add i32 %threadId.x.t0, %rt9
+  %r6 = load float* @Pi, align 4
+  %r7 = ashr i32 %r5, 31
+  %r8 = lshr i32 %r7, 25
+  %r9 = add i32 %r5, %r8
+  %r10 = and i32 %r9, -128
+  %r11 = sub i32 %r5, %r10
+  %r12 = sitofp i32 %r11 to float
+  %r13 = fmul float %r6, %r12
+  %rt11 = sext i32 %r5 to i64
+  %r14 = mul i64 %rt11, 4
+  %r15 = add i64 %r0, %r14
+  %rt12 = inttoptr i64 %r15 to float*
+  store float %r13, float* %rt12, align 4
+  br label %"$BB_1_0002_thread_exit"
+
+"$BB_1_0002_thread_exit":                         ; preds = %"$BB_1_0002"
+  call void @_ocelot_debug_report_block(i64 6208061951595483683, i32 %threadId.t0, i32 -1000)
+  %rt13 = zext i32 4 to i64
+  %rt16 = ptrtoint i8* %localPtr.t0 to i64
+  %rt17 = add i64 %rt13, %rt16
+  %rt18 = inttoptr i64 %rt17 to i32*
+  store i32 6, i32* %rt18, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002_thread_exit"
+  ret void
+}
+
+(0.017020) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'copyFromGlobal' for CTA size 64 threads
+(0.017044) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.017056) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 64 threads [subkernel 0x10000]
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
+INFO     Test completed in 0.0406270027161 seconds
+INFO      It produced the following output:
+(0.018579) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'test' for CTA size 1 threads
+(0.018608) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.018621) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
+(0.020517) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel_test_1) on subkernel with warp size 1
+(0.020694) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.020707) LLVMUniformVectorization.cpp:1330:   subkernel: 1
+(0.020715) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.020729) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.021022) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel_test_1, ws 1) complete
+(0.021178) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel_test_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 -439409999022904539, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 -439409999022904539, i32 %threadId.t0, i32 1)
+  %rt0 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt3 = bitcast i8* %rt0 to i64*
+  %r0 = load i64* %rt3, align 8
+  %rt6 = bitcast i8* %argumentPtr.t0 to i64*
+  %r1 = load i64* %rt6, align 8
+  %rt8 = inttoptr i64 %r0 to <4 x i32>*
+  %rt7 = load <4 x i32>* %rt8, align 16
+  %r2 = extractelement <4 x i32> %rt7, i32 0
+  %r3 = extractelement <4 x i32> %rt7, i32 1
+  %r4 = extractelement <4 x i32> %rt7, i32 2
+  %r5 = extractelement <4 x i32> %rt7, i32 3
+  %rt9 = inttoptr i64 %r1 to <4 x i32>*
+  %rt10 = insertelement <4 x i32> zeroinitializer, i32 %r3, i32 0
+  %rt11 = insertelement <4 x i32> %rt10, i32 %r4, i32 1
+  %rt12 = insertelement <4 x i32> %rt11, i32 %r5, i32 2
+  %rt13 = insertelement <4 x i32> %rt12, i32 %r2, i32 3
+  store <4 x i32> %rt13, <4 x i32>* %rt9, align 16
+  br label %"$BB_1_0002_thread_exit"
+
+"$BB_1_0002_thread_exit":                         ; preds = %"$BB_1_0002"
+  call void @_ocelot_debug_report_block(i64 -439409999022904539, i32 %threadId.t0, i32 -1000)
+  %rt14 = zext i32 4 to i64
+  %rt17 = ptrtoint i8* %localPtr.t0 to i64
+  %rt18 = add i64 %rt14, %rt17
+  %rt19 = inttoptr i64 %rt18 to i32*
+  store i32 6, i32* %rt19, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002_thread_exit"
+  ret void
+}
+
+(0.025943) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'test' for CTA size 1 threads
+(0.025962) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.025971) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
+(0.027130) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'test' for CTA size 1 threads
+(0.027143) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.027152) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
+(0.030197) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: 'test' for CTA size 1 threads
+(0.030212) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.030221) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 1 threads [subkernel 0x10000]
 Pass/Fail : Fail
 
 
@@ -451,18 +1223,19 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1330988158
-Test time : 0.0287092
+Test Seed : 1332005518
+Test time : 0.0293651
 
-Status : Ran 'TestVectorElements-u32' for 20 iterations.
- Output parameter 0 (I16) computed value - 0 does not match reference value - 26566
+Status : Ran 'TestVectorElements-u32' for 3 iterations.
+ Output parameter 0 (I16) computed value - -4261 does not match reference value - -22314
   On device - 0 - 'Ocelot Dynamic Multicore CPU'
-Test 'TestAdd-u16' seed '1330988158' failed.
+Test 'TestAdd-u16' seed '1332005518' failed.
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0775089263916 seconds
+INFO     Test completed in 0.04185795784 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -480,7 +1253,7 @@ PASSED
 Pass/Fail : Pass
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.0403599739075 seconds
+INFO     Test completed in 0.00826001167297 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -495,8 +1268,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1330988158
-Test time : 1.62125e-05
+Test Seed : 1332005518
+Test time : 1.4782e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -507,28 +1280,340 @@ Testing SSA then back Dataflow
 
 
 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.261842012405 seconds
+INFO      It produced the following output:
+(0.011617) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute((10.011628, ) 0) kernel: 'DynamicMulticoreExecutive.cpp:218: _Z6kernelPfii DynamicMulticoreExecutive::execute(' for CTA size 0, 256 threads
+0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+((0.0116750.011675) ) DynamicMulticoreExecutive.cpp:227: DynamicMulticoreExecutive.cpp:227:    executing block:  executing block: 0, 10, 
+0
+((0.011693) 0.011693DynamicMulticoreExecutive.cpp:350:  ) DynamicMulticoreExecutive.cpp:350:  warp: tid warp: tid 0 of size 0256 threads [subkernel  of size 0x10010000 threads [subkernel ]0x
+10000]
+(0.013163) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel__Z6kernelPfii_1) on subkernel with warp size 1
+(0.013361) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.013376) LLVMUniformVectorization.cpp:1330:   subkernel: 1
+(0.013385) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.013401) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.013888) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel__Z6kernelPfii_1, ws 1) complete
+(0.014077) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel__Z6kernelPfii_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %integerTexture = alloca i32, i32 4, align 16
+  %floatingPointTexture = alloca float, i32 4, align 16
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 -6902651420521587045, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 -6902651420521587045, i32 %threadId.t0, i32 1)
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %r1 = load i32* %rt6, align 4
+  %rt13 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r6 = add i32 %threadId.x.t0, %rt13
+  %rt20 = mul i32 %blockDim.y.t0, %blockId.y.t0
+  %r10 = add i32 %threadId.y.t0, %rt20
+  %r11 = uitofp i32 %r6 to float
+  %r12 = uitofp i32 %r10 to float
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11, float %r12)
+  %r14 = load float* %floatingPointTexture
+  %rt21 = getelementptr float* %floatingPointTexture, i32 1
+  %r15 = load float* %rt21
+  %rt22 = getelementptr float* %floatingPointTexture, i32 2
+  %r16 = load float* %rt22
+  %rt23 = getelementptr float* %floatingPointTexture, i32 3
+  %r17 = load float* %rt23
+  %rt24 = mul i32 %r10, %r1
+  %r18 = add i32 %r6, %rt24
+  %rt25 = zext i32 %r18 to i64
+  %r19 = mul i64 %rt25, 4
+  %r20 = add i64 %r0, %r19
+  %rt26 = inttoptr i64 %r20 to float*
+  store float %r14, float* %rt26, align 4
+  br label %"$BB_1_0002_thread_exit"
+
+"$BB_1_0002_thread_exit":                         ; preds = %"$BB_1_0002"
+  call void @_ocelot_debug_report_block(i64 -6902651420521587045, i32 %threadId.t0, i32 -1000)
+  %rt27 = zext i32 4 to i64
+  %rt30 = ptrtoint i8* %localPtr.t0 to i64
+  %rt31 = add i64 %rt27, %rt30
+  %rt32 = inttoptr i64 %rt31 to i32*
+  store i32 6, i32* %rt32, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002_thread_exit"
+  ret void
+}
+
+(0.036593) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.036613) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 0
+(0.036621) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.048211) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.048278) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 0
+(0.048293) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.057044) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.057074) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 1
+(0.057085) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.060751) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.060782) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 1
+(0.060794) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.083308) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.083346) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 1
+(0.083372) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.090089) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.090116) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 1
+(0.090130) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.112810) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.112842) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 2
+(0.112856) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.118551) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.118577) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 2
+(0.118589) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.145543) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.145585) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 2
+(0.145600) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.154291) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.154320) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 2
+(0.154334) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.187006) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.187032) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 3
+(0.187047) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.194579) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.194608) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 3
+(0.194622) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.215807) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.215837) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 3
+(0.215852) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.223095) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.223119) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 3
+(0.223132) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+Pass/Fail : Pass
+
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
+INFO     Test completed in 0.202103853226 seconds
+INFO      It produced the following output:
+(0.006473) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.006521) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 0
+(0.006540) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.008815) LLVMUniformVectorization.cpp:214:  Translation(_Z_ocelotTranslated__subkernel__Z6kernelPfii_1) on subkernel with warp size 1
+(0.009050) LLVMUniformVectorization.cpp:1329: Translation::_debugControlFlowMatrix()
+(0.009065) LLVMUniformVectorization.cpp:1330:   subkernel: 1
+(0.009076) LLVMUniformVectorization.cpp:1331:   kernelGraph entryID: 1
+(0.009093) LLVMUniformVectorization.cpp:1338: Blocks:
+(0.009606) LLVMUniformVectorization.cpp:223:  Translation(_Z_ocelotTranslated__subkernel__Z6kernelPfii_1, ws 1) complete
+(0.009796) LLVMUniformVectorization.cpp:225:   LLVM function:
+
+define void @_Z_ocelotTranslated__subkernel__Z6kernelPfii_1(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %integerTexture = alloca i32, i32 4, align 16
+  %floatingPointTexture = alloca float, i32 4, align 16
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = mul i32 %blockDim.x.t0, %blockDim.y.t0
+  %13 = mul i32 %12, %threadId.z.t0
+  %14 = mul i32 %blockDim.x.t0, %threadId.y.t0
+  %15 = add i32 %13, %14
+  %threadId.t0 = add i32 %15, %threadId.x.t0
+  call void @_ocelot_debug_report_block(i64 -6902651420521587045, i32 %threadId.t0, i32 0)
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  call void @_ocelot_debug_report_block(i64 -6902651420521587045, i32 %threadId.t0, i32 1)
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %r0 = load i64* %rt2, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %r1 = load i32* %rt6, align 4
+  %rt13 = mul i32 %blockDim.x.t0, %blockId.x.t0
+  %r6 = add i32 %threadId.x.t0, %rt13
+  %rt20 = mul i32 %blockDim.y.t0, %blockId.y.t0
+  %r10 = add i32 %threadId.y.t0, %rt20
+  %r11 = uitofp i32 %r6 to float
+  %r12 = uitofp i32 %r10 to float
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11, float %r12)
+  %r14 = load float* %floatingPointTexture
+  %rt21 = getelementptr float* %floatingPointTexture, i32 1
+  %r15 = load float* %rt21
+  %rt22 = getelementptr float* %floatingPointTexture, i32 2
+  %r16 = load float* %rt22
+  %rt23 = getelementptr float* %floatingPointTexture, i32 3
+  %r17 = load float* %rt23
+  %rt24 = mul i32 %r10, %r1
+  %r18 = add i32 %r6, %rt24
+  %rt25 = zext i32 %r18 to i64
+  %r19 = mul i64 %rt25, 4
+  %r20 = add i64 %r0, %r19
+  %rt26 = inttoptr i64 %r20 to float*
+  store float %r14, float* %rt26, align 4
+  br label %"$BB_1_0002_thread_exit"
+
+"$BB_1_0002_thread_exit":                         ; preds = %"$BB_1_0002"
+  call void @_ocelot_debug_report_block(i64 -6902651420521587045, i32 %threadId.t0, i32 -1000)
+  %rt27 = zext i32 4 to i64
+  %rt30 = ptrtoint i8* %localPtr.t0 to i64
+  %rt31 = add i64 %rt27, %rt30
+  %rt32 = inttoptr i64 %rt31 to i32*
+  store i32 6, i32* %rt32, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002_thread_exit"
+  ret void
+}
+
+(0.024653) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.024708) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 0
+(0.024724) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.053422) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.053455) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 0
+(0.053469) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.066367) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.066397) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 1
+(0.066410) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.079958) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.079988) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 1
+(0.080002) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.087929) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 0) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.087960) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 0
+(0.087974) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.110121) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.110144) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 1
+(0.110152) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.113945) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.113980) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 2
+(0.113995) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.133790) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 1) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.133815) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 1
+(0.133828) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.145749) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.145783) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 2
+(0.145798) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.151529) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.151553) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 2
+(0.151561) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.160635) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 2) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.160649) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 2
+(0.160656) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.161532) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(1, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.161556) DynamicMulticoreExecutive.cpp:227:   executing block: 1, 3
+(0.161571) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.169998) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(0, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.170012) DynamicMulticoreExecutive.cpp:227:   executing block: 0, 3
+(0.170019) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.177714) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(3, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.177738) DynamicMulticoreExecutive.cpp:227:   executing block: 3, 3
+(0.177752) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+(0.179020) DynamicMulticoreExecutive.cpp:218:  DynamicMulticoreExecutive::execute(2, 3) kernel: '_Z6kernelPfii' for CTA size 256 threads
+(0.179034) DynamicMulticoreExecutive.cpp:227:   executing block: 2, 3
+(0.179041) DynamicMulticoreExecutive.cpp:350:  warp: tid 0 of size 256 threads [subkernel 0x10000]
+Pass/Fail : Pass
+
 INFO     
 Passing tests:
- (0.069s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
- (0.040s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
- (0.130s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
- (0.059s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
- (0.039s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
- (0.078s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
- (0.063s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
- (0.043s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
- (0.057s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
- (0.047s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
- (0.056s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
+ (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
+ (0.262s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
+ (0.008s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
+ (0.061s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
+ (0.029s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
+ (0.202s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
+ (0.023s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
+ (0.010s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.042s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
+ (0.013s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
+ (0.009s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
+ (0.046s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
+ (0.028s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
+ (0.030s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
+ (0.011s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
+ (0.033s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
 
 Failing tests:
- (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.078s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
- (0.042s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
- (0.042s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
+ (0.017s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
+ (0.031s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
+ (0.034s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
 

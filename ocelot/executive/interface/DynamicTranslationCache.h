@@ -60,6 +60,9 @@ namespace executive {
 			
 			//! \brief stores information needed by the translated function and the execution manager
 			void *metadata;
+
+			//! \brief ensures the correct subkernel is being fetched
+			SubkernelId id;
 		};
 		
 		//! maps warp size onto a particular translation instance

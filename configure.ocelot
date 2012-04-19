@@ -36,7 +36,8 @@
 		reconvergenceMechanism: "tf-stack"
 	},
 	optimizations: {
-		subkernelSize: 1000
+		subkernelSize: 1000,
+		vectorizeConvergent: true
 	},
 	checkpoint: {
 		enabled: false,

@@ -52,6 +52,31 @@ namespace analysis {
 		};
 		static std::string toString(const ThreadExitType &code);
 		
+		/*!
+			\brief handles divergent branches within subkernels
+		*/
+		class DivergentBranch {
+		public:
+		
+			DivergentBranch() { }
+			DivergentBranch(ir::BasicBlock::Pointer _source, ir::BasicBlock::Pointer _handler, 
+				ir::BasicBlock::Pointer _true, ir::BasicBlock::Pointer _false):
+				sourceBlock(_source), handler(_handler), ifTrue(_true), ifFalse(_false) { }
+				
+		public:
+			
+			ir::BasicBlock::Pointer sourceBlock;
+		
+			ir::BasicBlock::Pointer handler;
+			
+			ir::BasicBlock::Pointer ifTrue;
+			
+			ir::BasicBlock::Pointer ifFalse;
+		};
+		
+		/*!
+			\brief handles external edges among subkernels
+		*/
 		class ExternalEdge {
 		public:
 		
@@ -66,13 +91,16 @@ namespace analysis {
 			
 		public:
 			ExternalEdge(): entryId(0), exitStatus(Thread_subkernel), flags(0) { }
+			
 			ExternalEdge(const ir::BasicBlock::Edge &edge, 
 				ir::BasicBlock::Pointer _handler,
 				SubkernelId _entryId = 0,
 				ThreadExitType _exit = Thread_subkernel,
 				int _flags = 0): 
 				sourceEdge(edge), handler(_handler), entryId(_entryId), exitStatus(_exit), flags(_flags) { }
-			
+
+		public:
+					
 			static SubkernelId getSubkernelId(SubkernelId entryId) {
 				return (entryId >> 16);
 			}
@@ -135,7 +163,6 @@ namespace analysis {
 			
 			void _partitionBlocksAtBarrier();
 			
-
 			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);			
 			void _analyzeBarriers(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
 			void _analyzeDivergentControlFlow(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);

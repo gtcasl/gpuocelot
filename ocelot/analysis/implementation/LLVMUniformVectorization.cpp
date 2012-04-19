@@ -63,6 +63,12 @@
 #define DEBUG_REPORT_LOADS 0
 #define DEBUG_REPORT_RETURNS 0
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Controls compilation flow
+//
+
+#define ENABLE_COMPILE_TIME_VECTORIZATION 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,8 +128,11 @@ std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst) {
 analysis::LLVMUniformVectorization::LLVMUniformVectorization(
 	KernelGraph *_kernelGraph, 
 	SubkernelId _subkernelId, 
-	int _ws):
-	llvm::FunctionPass(ID), kernelGraph(_kernelGraph), subkernelId(_subkernelId), warpSize(_ws)
+	int _ws,
+	bool _vectorize
+):
+	llvm::FunctionPass(ID), kernelGraph(_kernelGraph), subkernelId(_subkernelId), 
+		warpSize(_ws), vectorizeConvergent(_vectorize)
 {
 	report("LLVMUniformVectorization() on kernel " << kernelGraph->ptxKernel->name);
 }
@@ -744,7 +753,9 @@ void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous(
 		_packThreadLocal();
 		_replicateInstructions();
 		_resolveDependencies();
-		_vectorizeReplicated();
+		if (pass->vectorizeConvergent) {
+			_vectorizeReplicated();
+		}
 	}
 	
 	_finalizeTranslation();
@@ -877,6 +888,54 @@ void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
 			}
 		}
 	}		
+}
+
+/*!
+
+*/
+void analysis::LLVMUniformVectorization::Translation::_divergenceDetection() {
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		llvm::TerminatorInst *terminator = bb_it->getTerminator();
+		
+		if (llvm::BranchInst *branchInst = llvm::dyn_cast<llvm::BranchInst>(terminator)) {
+			if (branchInst->isConditional() && llvm::Instruction::classof(branchInst->getCondition())) {
+				llvm::Instruction *condition = llvm::dyn_cast<llvm::Instruction>(branchInst->getCondition());
+				VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.find(condition);
+				if (vec_it != vectorizedInstructionMap.end()) {
+					
+					llvm::Type *intTy = getTyInt(32);
+					llvm::Instruction *condition = new llvm::ZExtInst(vec_it->second.replicated[0],	
+						intTy, "cond", branchInst->getParent());
+					
+					for (size_t t = 1; t < vec_it->second.replicated.size(); ++t) {
+						llvm::Instruction *ext = new llvm::ZExtInst(vec_it->second.replicated[t], intTy, 
+							"cond", branchInst->getParent());
+						condition = llvm::BinaryOperator::Create(llvm::Instruction::Add, condition,
+							ext, "cmpws", branchInst->getParent());
+					}
+					
+					// create switch statement that branches to two targets or handler
+					llvm::BasicBlock *handler = 0;
+					llvm::BasicBlock *targetTrue = 0;
+					llvm::BasicBlock *targetFalse = 0;
+					
+					assert(handler && targetTrue && targetFalse);
+					
+					llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(condition, handler, 2, branchInst);
+					switchInst->addCase(getConstInt32(0), targetFalse);
+					switchInst->addCase(getConstInt32(pass->warpSize), targetTrue);
+					
+					branchInst->eraseFromParent();
+				}
+				else {
+					assert(0 && "failed to find replicated branch condition");
+				}
+			}
+		}
+		else {
+			// ignore other control flow for now
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

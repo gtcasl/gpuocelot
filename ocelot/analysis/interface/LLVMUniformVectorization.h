@@ -259,6 +259,8 @@ namespace analysis
 			
 			void _removeScalar();
 			
+			void _divergenceDetection();
+			
 			void _vectorizeReplicated();
 			
 			llvm::Instruction *_vectorize(VectorizedInstructionMap::iterator &vec_it);
@@ -307,7 +309,7 @@ namespace analysis
 
 			\param warpSize number of logical threads per warp
 		*/
-		LLVMUniformVectorization(KernelGraph *_kernelGraph, SubkernelId subkernelId, int warpSize = 1);
+		LLVMUniformVectorization(KernelGraph *_kernelGraph, SubkernelId subkernelId, int warpSize = 1, bool vectorize = true);
 		~LLVMUniformVectorization();
 
 	public:
@@ -324,7 +326,7 @@ namespace analysis
 		virtual llvm::PassKind getPassKind() const;
 
 	public:
-		llvm::IntegerType *getTyInt(int n) const;
+		//llvm::IntegerType *getTyInt(int n) const;
 	
 		llvm::ConstantInt *getConstInt32(int n) const;
 		llvm::ConstantInt *getConstInt16(short n) const;
@@ -343,6 +345,9 @@ namespace analysis
 
 		//! \brief number of consecutive threads to pack into a single hardware thread
 		int warpSize;
+		
+		//! \brief controls whether subkernel is vectorized when warpSize > 1
+		bool vectorizeConvergent;
 
 		static char ID;
 	};

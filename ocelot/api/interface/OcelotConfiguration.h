@@ -196,7 +196,10 @@ namespace api {
 			bool mimdThreadScheduling;
 			
 			/*! \brief Sync elimination pass */
-			bool syncElimination;			
+			bool syncElimination;
+			
+			/*! \brief Enables vectorizing of convergent kernels */
+			bool vectorizeConvergent;
 		};
 
 

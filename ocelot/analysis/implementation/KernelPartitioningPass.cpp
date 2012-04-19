@@ -39,7 +39,7 @@
 #define REPORT_EMIT_SUBKERNEL_PTX 0
 #define REPORT_EMIT_SOURCE_PTXKERNEL 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1142,6 +1142,8 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
 	
 	_analyzeExternalEdges(source, internalEdges, blockMapping);
+	
+	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
 }
 
 //! creates external edges for subkernel entries and exits
@@ -1328,6 +1330,40 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeBarriers(
 void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
 	ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping) {
 	report(" _analyzeDivergentControlFlow()");
+	
+	// enumerate blocks with conditional branches
+	std::unordered_set< ir::BasicBlock::Pointer > divergentBlocks;
+	
+	std::unordered_set< ir::BasicBlock::Pointer > frontierBlockSet;
+	for (ExternalEdgeVector::iterator ext_it = outEdges.begin(); 
+		ext_it != outEdges.end(); ++ext_it) {
+	
+		frontierBlockSet.insert(ext_it->frontierBlock);
+	}
+	
+	// collect blocks with conditional terminators
+	ir::ControlFlowGraph *cfg = subkernel->cfg();
+	for (ir::ControlFlowGraph::iterator bb_it = cfg->begin(); bb_it != cfg->end(); ++bb_it) {
+		if (bb_it->instructions.size()) {
+			ir::PTXInstruction *terminator = static_cast<ir::PTXInstruction*>(bb_it->instructions.back());
+			if (terminator->opcode == ir::PTXInstruction::Bra && terminator->pg.type == ir::PTXOperand::pred &&
+				(terminator->pg.condition == ir::PTXOperand::Pred || terminator->pg.condition == ir::PTXOperand::InvPred) &&
+				terminator->pg.addressMode == ir::PTXOperand::Register) {
+	
+				// is it already an external edge? If so, ignore it.
+				if (frontierBlockSet.find(bb_it) == frontierBlockSet.end()) {
+					// if it's potentially divergent and an internal edge, add to list of divergence sites		
+					divergentBlocks.insert(bb_it);
+				}
+			}
+		}
+	}
+	
+	report("  " << divergentBlocks.size() << " divergent blocks");
+	for (auto bb_it = divergentBlocks.begin(); bb_it != divergentBlocks.end(); ++bb_it) {
+		report("   " << (*bb_it)->label);
+
+	}
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(

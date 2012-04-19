@@ -1,8 +1,9 @@
 {
 	ocelot: "ocelot",
 	trace: { 
+		enabled: false,
 		database: "traces/database.trace",
-		memory: true,
+		memory: false,
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false
@@ -15,6 +16,9 @@
 			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
+		},
+		warpSynchronous: {
+			enabled: false	
 		}
 	},
 	cuda: {
@@ -22,12 +26,19 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ "emulated" ],
 		port: 2011,
 		host: "127.0.0.1",
-		optimizationLevel: none,
+		optimizationLevel: full,
 		workerThreadLimit: 1,
-		warpSize: 4
+		warpSize: 1,
+		dynamicWarpFormation: false,
+		threadInvariantElimination: false,
+		yieldOverheadInstrumentation: true,
+		printLLVMModule: false
+	},
+	optimizations: {
+		subkernelSize: 60
 	}
 }
 

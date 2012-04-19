@@ -190,7 +190,7 @@ def main():
 	parser.add_option( "-i", "--install", \
 		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \
-		default = "", help = "build a specific target." )
+		default = "tests ocelot", help = "build a specific target." )
 	parser.add_option( "-w", "--no_werr", \
 		default = False, action = "store_true",
 		help = "don't turn warnings into errors." )
@@ -201,7 +201,7 @@ def main():
 		default = False, action = "store_true",
 		help = "Build a .deb package of Ocelot." )
 	parser.add_option( "--test_lists", \
-		default = "unit, cuda2.2, cuda2.3, cuda3.2, cuda4.1sdk, parboil",
+		default = "unit, cuda2.2, cuda2.3, parboil",
 		help = "Comma separated list of tests." )
 	parser.add_option( "--no_llvm", \
 		default = False, action = "store_true", help = "Disable llvm support." )
@@ -214,7 +214,7 @@ def main():
 		if options.test_level != 'full':
 			print "Full test level required for a submit."
 		options.test_level = 'full'
-		options.build_target = ''
+		options.build_target = 'tests ocelot'
 
 	# Do the build
 	buildSucceeded = build(options)

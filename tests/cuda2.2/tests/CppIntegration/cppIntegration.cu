@@ -49,7 +49,7 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <cppIntegration_kernel.cu>
+#include "cppIntegration_kernel.cu"
 //
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward

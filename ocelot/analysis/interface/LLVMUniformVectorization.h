@@ -39,6 +39,8 @@ namespace llvm {
 	class PHINode;
 	class BasicBlock;
 	class Instruction;
+	class LoadInst;
+	class StoreInst;
 }
 
 namespace analysis
@@ -234,6 +236,10 @@ namespace analysis
 			void _debugReporting();
 			
 			void _debugControlFlowMatrix();
+			
+			void _debugInsertStore(llvm::StoreInst *storeInst, llvm::Constant *func, size_t index);
+			
+			void _debugInsertLoad(llvm::LoadInst *loadInst, llvm::Constant *func, size_t index);
 			
 		protected:
 		

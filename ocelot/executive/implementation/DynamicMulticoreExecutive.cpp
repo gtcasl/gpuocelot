@@ -28,10 +28,10 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_CTA_OPERATIONS 0						// called O(n), where n is the number of CTAs launched
-#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -403,24 +403,21 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 			const Translation *translation = _getOrInsertTranslation(warpSize, subkernelId, specialization);
 	
 			static_cast<executive::MetaData*>(translation->metadata)->sharedSize = sharedMemorySize;
-
-			LLVMContext *warp[2] = { &_contexts[startThread], 0 };
-			warp[0]->metadata = (char *)translation->metadata;
-			_setResumeStatus(warp[0], analysis::KernelPartitioningPass::Thread_exit);
 			
-			if (warpSize > 1) {
-				warp[1] = &_contexts[startThread + 1];
-				warp[1]->metadata = warp[0]->metadata;
-			_setResumeStatus(warp[1], analysis::KernelPartitioningPass::Thread_exit);
-			}
+			LLVMContext *warp = &_contexts[startThread];
 			
+			reportE(REPORT_SCHEDULE_OPERATIONS, "");
+			reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp (size " << warpSize << ") over threads: ");
 			for (int t = 0; t < warpSize; t++) {
-				reportE(REPORT_SCHEDULE_OPERATIONS, " executing thread ID " << warp[t]->tid);
+				warp[t].metadata = (char *)translation->metadata;
+				_setResumeStatus(&warp[t], analysis::KernelPartitioningPass::Thread_exit);
+				
+				reportE(REPORT_SCHEDULE_OPERATIONS, "  " << warp[t].tid);	
 			}
-	
 			translation->execute(warp);
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "");
+			reportE(REPORT_SCHEDULE_OPERATIONS, "finished executing warp");
 		}
 		startThread += warpSize;
 	}

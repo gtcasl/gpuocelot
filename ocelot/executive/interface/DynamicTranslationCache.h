@@ -46,6 +46,7 @@ namespace executive {
 			Translation(llvm::Function *llvmFunction = 0);
 		
 			void execute(LLVMContext **contexts) const;
+			void execute(LLVMContext *contexts) const;
 		
 			std::string name() const;
 		

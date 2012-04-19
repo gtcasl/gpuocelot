@@ -336,8 +336,12 @@ void walkCallStack();
 
 void executive::DynamicTranslationCache::Translation::execute(LLVMContext **contexts) const {
 	assert(function);
-	
 	function(contexts[0]);
+}
+
+void executive::DynamicTranslationCache::Translation::execute(LLVMContext *contexts) const {
+	assert(function);
+	function(contexts);
 }
 
 std::string executive::DynamicTranslationCache::Translation::name() const {

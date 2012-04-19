@@ -47,9 +47,9 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
-#define REPORT_FINAL_SUBKERNEL 1
+#define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -60,6 +60,7 @@
 #define INSERT_DEBUG_REPORTING 0
 #define DEBUG_REPORT_BLOCKS 0
 #define DEBUG_REPORT_STORES 0
+#define DEBUG_REPORT_LOADS 0
 #define DEBUG_REPORT_RETURNS 0
 
 
@@ -222,10 +223,25 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	_scalarPreprocess();
 	if (pass->warpSize > 1) {
 		_transformWarpSynchronous();
+		
+	#if INSERT_DEBUG_REPORTING
+		_debugReporting();
+	#endif
+	#if INSERT_DEBUG_CONTROL_FLOW
+		_debugControlFlowMatrix();
+	#endif
+	
 	}
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
 #if REPORT_BASE && REPORT_FINAL_SUBKERNEL
+
+	report(" Arguments: ");
+	for (llvm::Function::arg_iterator arg_it = function->arg_begin(); 
+		arg_it != function->arg_end(); ++arg_it) {
+		report("  " << String( llvm::dyn_cast<llvm::PointerType>(arg_it->getType())->getElementType()));
+	}
+
 	report(" LLVM function:\n" << String(function));
 #endif
 }
@@ -1151,7 +1167,7 @@ void walkCallStack() {
 extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, int type, size_t vptr) {
 	bool printNameOnly = false;
 	
-	bool trustPointers = false;
+	bool trustPointers = true;
 
 	std::cout << "[debug " << type << "]";
 	
@@ -1191,8 +1207,16 @@ extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, 
 				std::cout << (i ? ", " : "") << vecPtr[i];
 			}
 			std::cout << " >";
-		}
-		break;
+		}break;
+		case 9: {
+			std::cout << " load(" << index << "): " << value1 << " = [" << (void *)value << "]";
+		} break;
+		case 10: {
+			std::cout << " load(" << index << "): " << hydrazine::bit_cast<double>(value1) << " = [" << (void *)value << "]   <float>";
+		} break;
+		case 11: {
+			std::cout << " load(" << index << "): " << (void *)value1 << " = [" << (void *)value << "]";
+		} break;
 		default:
 			std::cout << " unknown(" << index << ", " << value << ", " << value1 << ", " << type << ")";
 	}
@@ -1202,7 +1226,7 @@ extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, 
 			std::cout << "  block: " << value->getName().str() << std::endl;
 		}
 		else {
-			std::cout << "  value: " << String(value) << std::endl;
+			std::cout << "  value: " << String(value);
 		}
 	}
 	std::cout << std::endl;
@@ -1231,6 +1255,7 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	report("  store instructions");
 	std::vector< llvm::BasicBlock *> basicBlocks;
 	std::vector< llvm::StoreInst *> storeInstructions;
+	std::vector< llvm::LoadInst *> loadInstructions;
 	std::vector< llvm::ReturnInst *> returnInstructions;
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 	
@@ -1247,6 +1272,11 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 			else if (auto retInst = llvm::dyn_cast<llvm::ReturnInst>(&*inst_it)) {
 				if (DEBUG_REPORT_RETURNS) {
 					returnInstructions.push_back(retInst);
+				}
+			}
+			else if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(&*inst_it)) {
+				if (DEBUG_REPORT_LOADS){
+					loadInstructions.push_back(loadInst);
 				}
 			}
 		}
@@ -1283,62 +1313,16 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	for (std::vector< llvm::StoreInst *>::iterator inst_it = storeInstructions.begin();
 		inst_it != storeInstructions.end(); ++inst_it) {
 		llvm::StoreInst *storeInst = *inst_it;
-		bool moveBack = false;
 		
-		// store instruction
+		_debugInsertStore(storeInst, func, index);
+	}
 	
-		llvm::Value *cast = llvm::CastInst::CreatePointerCast(storeInst->getPointerOperand(),
-			llvm::Type::getInt64Ty(context()), "ptrToInt", storeInst);
+	report("load instructions");
+	for (std::vector< llvm::LoadInst *>::iterator inst_it = loadInstructions.begin(); 
+		inst_it != loadInstructions.end(); ++inst_it) {
 	
-		llvm::Value *type = getConstInt32(1);
-		llvm::Value *operand = 0;
-		llvm::Type *valueType = storeInst->getValueOperand()->getType();
-		if (llvm::PointerType::classof(valueType)) {
-			operand = llvm::CastInst::CreatePointerCast(storeInst->getValueOperand(),
-				llvm::Type::getInt64Ty(context()), "ptrCast", storeInst);
-		}
-		else if (llvm::IntegerType::classof(valueType)) {
-			operand = llvm::CastInst::CreateIntegerCast(storeInst->getValueOperand(),
-				llvm::Type::getInt64Ty(context()), false, "intCast", storeInst);
-		}
-		else if (valueType->isFloatTy() || valueType->isDoubleTy()) {
-			report("  storing floating point value");
-			operand = llvm::CastInst::CreateFPCast(storeInst->getValueOperand(),
-				llvm::Type::getDoubleTy(context()), "fpCast", storeInst);
-			operand = llvm::CastInst::CreateZExtOrBitCast(operand, llvm::Type::getInt64Ty(context()),
-				"bitcast", storeInst);
-			type = getConstInt32(4);
-		}
-		else if (llvm::VectorType *vectorType = llvm::dyn_cast<llvm::VectorType>(valueType)) {
-			// vector stores			
-			cast = llvm::CastInst::CreatePointerCast(
-				storeInst->getPointerOperand(), llvm::Type::getInt64Ty(context()), "", storeInst);
-			operand = getConstInt64(vectorType->getNumElements());
-			type = getConstInt32(8);
-			moveBack = true;
-		}
-		else {
-			size_t ptr = hydrazine::bit_cast<size_t>(valueType);
-			operand = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), ptr);
-			type = getConstInt32(5);
-		}
-	
-		std::vector< llvm::Value *> args;
-		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), index));	// index
-		args.push_back(cast);	// value
-		args.push_back(operand); // value1
-		args.push_back(type);	// type
-		args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 
-			(size_t)(void *)storeInst)); // llvm value-pointer
-		llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
-			"", storeInst);
-		++index;
-		if (moveBack) {
-			call->removeFromParent();
-			call->insertAfter(storeInst);
-		}
-	
-		assert(call && "failed to insert call instruction");
+		llvm::LoadInst *loadInst = *inst_it;
+		_debugInsertLoad(loadInst, func, index);
 	}
 	for (std::vector< llvm::ReturnInst *>::iterator inst_it = returnInstructions.begin();
 		inst_it != returnInstructions.end(); ++inst_it) {
@@ -1357,6 +1341,138 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 		
 		assert(call && "failed to insert call instruction");
 	}
+}
+
+
+void analysis::LLVMUniformVectorization::Translation::_debugInsertStore(llvm::StoreInst *storeInst, 
+	llvm::Constant *func, size_t index) {
+	bool moveBack = false;
+		
+	// store instruction
+	llvm::Value *cast = llvm::CastInst::CreatePointerCast(storeInst->getPointerOperand(),
+		llvm::Type::getInt64Ty(context()), "ptrToInt", storeInst);
+
+	llvm::Value *type = getConstInt32(1);
+	llvm::Value *operand = 0;
+	llvm::Type *valueType = storeInst->getValueOperand()->getType();
+	if (llvm::PointerType::classof(valueType)) {
+		operand = llvm::CastInst::CreatePointerCast(storeInst->getValueOperand(),
+			llvm::Type::getInt64Ty(context()), "ptrCast", storeInst);
+	}
+	else if (llvm::IntegerType::classof(valueType)) {
+		operand = llvm::CastInst::CreateIntegerCast(storeInst->getValueOperand(),
+			llvm::Type::getInt64Ty(context()), false, "intCast", storeInst);
+	}
+	else if (valueType->isFloatTy() || valueType->isDoubleTy()) {
+		report("  storing floating point value");
+		operand = llvm::CastInst::CreateFPCast(storeInst->getValueOperand(),
+			llvm::Type::getDoubleTy(context()), "fpCast", storeInst);
+		operand = llvm::CastInst::CreateZExtOrBitCast(operand, llvm::Type::getInt64Ty(context()),
+			"bitcast", storeInst);
+		type = getConstInt32(4);
+	}
+	else if (llvm::VectorType *vectorType = llvm::dyn_cast<llvm::VectorType>(valueType)) {
+		// vector stores			
+		cast = llvm::CastInst::CreatePointerCast(
+			storeInst->getPointerOperand(), llvm::Type::getInt64Ty(context()), "", storeInst);
+		operand = getConstInt64(vectorType->getNumElements());
+		type = getConstInt32(8);
+		moveBack = true;
+	}
+	else {
+		size_t ptr = hydrazine::bit_cast<size_t>(valueType);
+		operand = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), ptr);
+		type = getConstInt32(5);
+	}
+
+	std::vector< llvm::Value *> args;
+	args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), index));	// index
+	args.push_back(cast);	// value
+	args.push_back(operand); // value1
+	args.push_back(type);	// type
+	args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 
+		(size_t)(void *)storeInst)); // llvm value-pointer
+	llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
+		"", storeInst);
+	++index;
+	if (moveBack) {
+		call->removeFromParent();
+		call->insertAfter(storeInst);
+	}
+
+	assert(call && "failed to insert call instruction");
+}
+
+void analysis::LLVMUniformVectorization::Translation::_debugInsertLoad(llvm::LoadInst *loadInst, 
+	llvm::Constant *func, size_t index) {
+	
+	llvm::Instruction *addressCast = llvm::CastInst::CreatePointerCast(loadInst->getPointerOperand(),
+		llvm::Type::getInt64Ty(context()), "ptrToInt", loadInst);
+	
+	llvm::Instruction *lastInserted = loadInst;
+	
+	addressCast->removeFromParent();
+	addressCast->insertAfter(lastInserted);
+	lastInserted = addressCast;
+	
+	llvm::Value *loadedValue = loadInst;
+	llvm::Value *type = getConstInt32(9);
+	llvm::Type *valueType = loadInst->getType();
+	if (llvm::PointerType::classof(valueType)) {
+		llvm::Instruction *recentlyInserted = llvm::CastInst::CreatePointerCast(
+			loadInst, llvm::Type::getInt64Ty(context()), "ptrToInt", lastInserted);
+		recentlyInserted->removeFromParent();
+		recentlyInserted->insertAfter(lastInserted);
+		lastInserted = recentlyInserted;
+		loadedValue = recentlyInserted;
+		type = getConstInt32(11);
+	}
+	else if (llvm::IntegerType::classof(valueType)) {
+		llvm::Instruction *recentlyInserted = llvm::CastInst::CreateIntegerCast(loadInst,
+			llvm::Type::getInt64Ty(context()), false, "intCast", lastInserted);
+		
+		recentlyInserted->removeFromParent();
+		recentlyInserted->insertAfter(lastInserted);
+		lastInserted = recentlyInserted;
+		loadedValue = recentlyInserted;
+	}
+	else if (valueType->isFloatTy() || valueType->isDoubleTy()) {
+		type = getConstInt32(10);
+		
+		llvm::Instruction *recentlyInserted = llvm::CastInst::CreateFPCast(loadInst,
+			llvm::Type::getDoubleTy(context()), "fpCast", lastInserted);
+		recentlyInserted->removeFromParent();
+		recentlyInserted->insertAfter(lastInserted);
+		lastInserted = recentlyInserted;
+		
+		recentlyInserted = llvm::CastInst::CreateZExtOrBitCast(recentlyInserted, llvm::Type::getInt64Ty(context()),
+			"bitcast", lastInserted);
+		recentlyInserted->removeFromParent();
+		recentlyInserted->insertAfter(lastInserted);
+		lastInserted = recentlyInserted;
+		
+		loadedValue = recentlyInserted;
+	}
+	else {
+		return;
+	}
+	
+	std::vector< llvm::Value *> args;
+	args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), index));	// index
+	args.push_back(addressCast);	// value
+	args.push_back(loadedValue); // value1
+	args.push_back(type);	// type
+	args.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(context()), 
+		(size_t)(void *)loadInst)); // llvm value-pointer
+		
+	report("  inserting load (" << args.size() << ")");
+	llvm::CallInst *call = llvm::CallInst::Create(func, llvm::ArrayRef<llvm::Value*>(args),
+		"", lastInserted);
+	++index;
+
+	call->removeFromParent();
+	call->insertAfter(lastInserted);
+	lastInserted = call;
 }
 
 extern "C" void _ocelot_debug_report_block(size_t fileHash, int tid, int kernelBlockId) {

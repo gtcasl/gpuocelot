@@ -376,7 +376,7 @@ do { \
 			break;
 
 		case CL_DEVICE_MEM_BASE_ADDR_ALIGN:
-			ASSIGN_INFO(cl_uint, 16*8/*sizeof(long16)*/);
+			ASSIGN_INFO(cl_uint, 16*64/*sizeof(long16)*/);
 			break;
 
 		case CL_DEVICE_SINGLE_FP_CONFIG:

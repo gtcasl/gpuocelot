@@ -915,6 +915,41 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 	return (cl_mem)buffer;
 }
 
+cl_mem opencl::OpenCLRuntime::clCreateSubBuffer(cl_mem buffer,
+	cl_mem_flags             flags ,
+	cl_buffer_create_type    buffer_create_type,
+	const void *             buffer_create_info,
+	cl_int *                 errcode_ret) {
+
+	SubBufferObject * subBuffer = NULL;
+	_lock();
+	cl_int err = CL_SUCCESS;
+
+	try {
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(buffer->isSubBufferObject())
+			throw CL_INVALID_MEM_OBJECT;
+
+		subBuffer = new SubBufferObject((BufferObject *)buffer, 
+			flags, buffer_create_type, buffer_create_info);
+
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	if(errcode_ret)
+		*errcode_ret = err;
+	_unlock();
+	return (cl_mem)subBuffer;
+}
+
+
 cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
 	cl_int result = CL_SUCCESS;
 

@@ -274,11 +274,11 @@ namespace opencl {
 					size_t size,
 					void * host_ptr,
 					cl_int * errcode_ret);
-//		virtual cl_mem clCreateSubBuffer(cl_mem buffer,
-//					cl_mem_flags             flags ,
-//					cl_buffer_create_type    buffer_create_type,
-//					const void *             buffer_create_info,
-//					cl_int *                 errcode_ret);
+		virtual cl_mem clCreateSubBuffer(cl_mem buffer,
+					cl_mem_flags             flags ,
+					cl_buffer_create_type    buffer_create_type,
+					const void *             buffer_create_info,
+					cl_int *                 errcode_ret);
 //		virtual cl_mem clCreateImage(cl_context context,
 //					cl_mem_flags            flags,
 //					const cl_image_format * image_format,

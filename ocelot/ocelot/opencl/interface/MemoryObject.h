@@ -22,17 +22,29 @@ namespace opencl {
 
 	public:
 		MemoryObject(Context * context, cl_mem_object_type type, 
-			cl_mem_flags flags, void * host_ptr);
+			cl_mem_flags flags, void * host_ptr, bool isSubBuffer = false);
 		~MemoryObject();
 
 	public:
 		void release();
+
+		//! get associated context
+		Context * getContext() const;
+
+		//! get flags
+		cl_mem_flags getFlags() const;
+
+		//! get host ptr
+		void * getHostPtr() const;
 
 		//! get allocation size
 		const virtual size_t size() const = 0;
 
 		//! allocate resouces on devices
 		void allocate();
+
+		//! copy from allocatoin of another memory object
+		void allocate(MemoryObject * memObj);
 
 		//! check if allocated on device
 		bool isAllocatedOnDevice(Device * device);
@@ -43,14 +55,21 @@ namespace opencl {
 		//! check if valid memory obejct
 		bool isValidMemoryObject(cl_mem_object_type type);
 
+		//! check if is sub buffer
+		bool isSubBufferObject();
+
 		//! check if valid context
 		bool isValidContext(Context * context);
+
+		//! check if memory offset is aligned
+		bool isOffsetAligned(size_t offset);
 
 	protected:
 		Context * _context;
 		const cl_mem_object_type _type;
-		const cl_mem_flags _flags;
+		cl_mem_flags _flags;
 		void * _hostPtr;
+		bool _isSubBuffer;
 
 	private:
 		std::map< Device *, void * > _allocations; //allocations on device
@@ -77,6 +96,38 @@ namespace opencl {
 	private:
 		size_t _size;	
 	};
+
+	/*! \brief class defining sub buffer object in opencl */
+	class SubBufferObject: public MemoryObject {
+	public:
+		SubBufferObject(BufferObject * buffer, 
+			const cl_mem_flags flags,
+			cl_buffer_create_type buffer_create_type,
+			const void *buffer_create_info);
+		~SubBufferObject();
+
+	public:
+		//! get effective size
+		const size_t size() const;
+
+		//! get associated buffer object
+		BufferObject * getAssociatedBuffer() const;
+
+		//! get offset of associated buffer object
+		const size_t offset() const;
+
+
+	private:
+		//! associated buffer object
+		BufferObject * _buffer;
+
+		//! offset of associated buffer object
+		size_t _origin;
+
+		//! size of subbuffer
+		size_t _size;
+	};
+
 }
 
 #endif

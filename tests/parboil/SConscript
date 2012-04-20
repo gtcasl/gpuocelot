@@ -76,7 +76,8 @@ specificallyRequiresCublas = ()
 #
 (bin_path,lib_path,inc_path) = builder.getCudaPaths()
 
-env.Append(LIBPATH=[lib_path, '/usr/local/lib'])
+env.Append(LIBPATH=[lib_path])
+env.Append(LIBPATH=os.path.join(env['install_path'], 'lib'))
 
 tests = []
 for testApplication in testApplications:

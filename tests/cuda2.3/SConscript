@@ -98,6 +98,8 @@ paths = [ '-I' + env['CUDA_PATH'] + '/shared',
           '-I' + env['CUDA_PATH'] ]
 
 env.Append(CPPFLAGS = paths)
+env.Append(LIBPATH=os.path.join(env['install_path'], 'lib'))
+
 	
 for testApplication in testApplications:
 	path = testApplication[0] if len(testApplication) == 2 else testApplication[2]

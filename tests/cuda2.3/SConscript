@@ -98,7 +98,7 @@ paths = [ '-I' + env['CUDA_PATH'] + '/shared',
           '-I' + env['CUDA_PATH'] ]
 
 env.Append(CPPFLAGS = paths)
-env.Append(CPPFLAGS = os.path.join(env['install_path'], 'include'))
+env.Append(CPPFLAGS = '-I' + os.path.join(env['install_path'], 'include'))
 env.Append(LIBPATH = os.path.join(env['install_path'], 'lib'))
 
 	

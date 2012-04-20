@@ -290,9 +290,11 @@ if 'install' in COMMAND_LINE_TARGETS:
 	if enableKernelExtractor and os.name != 'nt':
 		installed.append(env.Install(os.path.join(env['install_path'], "lib"), KernelExtractorLib))
 
+	scriptDirectory = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
+
 	for header in headers:
 		(directoryPath, headerName) = os.path.split( \
-			os.path.relpath(str(header), prefix))
+			os.path.relpath(str(header), scriptDirectory))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
 

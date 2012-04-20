@@ -22,6 +22,8 @@ testEnv = builder.InitializeEnvironment(Environment(), Builder)
 exec open("../ocelot/scripts/build_environment.py")
 env = Environment()
 
+testEnv.Replace(install_path = env['install_path'])
+
 # create local test environments
 testEnv2_2     = testEnv.Clone()
 testEnv2_3     = testEnv.Clone()

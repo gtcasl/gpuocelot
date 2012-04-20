@@ -144,7 +144,7 @@ bool g_bFBODisplay = false;
 CFrameBufferObject  *g_FrameBufferObject = NULL;
 CheckRender         *g_CheckRender       = NULL;
 
-#define MAX_EPSILON_ERROR 5
+#define MAX_EPSILON_ERROR 20
 
 void AutoQATest()
 {

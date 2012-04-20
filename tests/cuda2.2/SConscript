@@ -132,6 +132,8 @@ specificallyRequiresCublas = ()
 
 env.Append(LIBPATH=[lib_path])
 
+env.Append(LIBPATH=os.path.join(env['install_path'], 'lib'))
+
 tests = []
 
 paths = [ '-I' + env['CUDA_PATH'] + '/shared', 

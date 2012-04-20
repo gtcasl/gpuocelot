@@ -243,14 +243,10 @@ for test in tests:
 	Test = env.Program(test[0], [MapSource(env, test[1])], LIBS=libs)
 	env.Depends(Test, libocelot)
 
-if env['test_level'] != 'none':
-	print 'Adding unit tests to the build...'
-
 level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
 
 for test in tests:
 	if level_map[env['test_level']] >= level_map[test[2]]:
-		print 'Adding test ' + test[0]
 		Default(test[0])
 
 # find all header files in the source tree

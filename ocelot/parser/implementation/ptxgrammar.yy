@@ -514,9 +514,9 @@ functionBodyDefinition : externOrVisible functionBegin
 
 functionBody : functionBodyDefinition openBrace entryStatements closeBrace;
 
-entryName : TOKEN_ENTRY identifier
+entryName : externOrVisible TOKEN_ENTRY identifier
 {
-	state.entry( $<text>2, @1 );
+	state.entry( $<text>3, @1 );
 };
 
 entryDeclaration : entryName argumentList performanceDirectives

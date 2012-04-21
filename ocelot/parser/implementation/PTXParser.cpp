@@ -2696,7 +2696,8 @@ namespace parser
 		{
 			state.addSpecialRegisters();
 			ptx::yyparse( lexer, state );
-			assert( temp.str().empty() );
+			assertM( temp.str().empty(),
+				"Failed to lex all characters, remainder is:\n" << (int)temp.str()[0] );
 		
 			checkLabels();
 		}

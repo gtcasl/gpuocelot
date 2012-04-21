@@ -15,6 +15,9 @@ import time
 from optparse import OptionParser
 import sys
 
+sys.path.append(os.path.abspath('ocelot/scripts'))
+from create_config import ConfigFile
+
 ################################################################################
 ## Build Ocelot
 def build(options):
@@ -63,20 +66,45 @@ def build(options):
 ################################################################################
 
 ################################################################################
+## Safe file remove
+def safeRemove(path):
+	if os.path.isfile(path):
+		os.remove(path)
+################################################################################
+
+################################################################################
+## Create a configure.ocelot file
+def createConfig(directory, config):
+	
+	filePath = os.path.join(directory, 'configure.ocelot')
+	
+	safeRemove(filePath)
+	
+	openFile = open(filePath, 'w')
+	
+	config.write(openFile)
+
+################################################################################
+
+################################################################################
 ## Run Standard Tests
-def runStandardTests(options, directory, name):
+def runStandardTests(options, directory, name, config):
 	if not directory in options.test_lists.replace(' ', '').split(','):
 		return True
+
+	directory = os.path.join("tests", directory)
+
+	createConfig(directory, config)
 	
 	# Run Cuda 2.2 tests
-	command = "cd tests/" + directory + "; hydrazine/python/RunRegression.py -v"
+	command = "cd " + directory + "; hydrazine/python/RunRegression.py -v"
 	
 	if options.debug:
-		command += " -p ../../.debug_build/tests/" + directory
+		command += " -p ../../.debug_build/" + directory
 	else:
-		command += " -p ../../.release_build/tests/" + directory
+		command += " -p ../../.release_build/" + directory
 	
-	command += ' -t regression/tests.txt -l regression/tests.log; cd ..'
+	command += ' -t regression/tests.txt -l regression/tests.log; cd ../..'
 	
 	print '\nRunning ' + name + ' Unit Tests...'
 	status = os.popen(command).read()
@@ -87,6 +115,23 @@ def runStandardTests(options, directory, name):
 		return False
 		
 	return True
+################################################################################
+
+################################################################################
+## Get configurations
+def getConfigs(options):
+	configs = []
+	
+	stripped = options.devices.replace(' ', '')
+	stripped = stripped.replace('[', '')
+	stripped = stripped.replace(']', '')
+	
+	for device in stripped.split(','):
+		config = ConfigFile()
+		config.executive.devices = "[\"" + device + "\"]"
+		configs.append(config)
+	
+	return configs
 ################################################################################
 
 ################################################################################
@@ -101,48 +146,54 @@ def runUnitTests(options, buildSucceeded):
 	if not buildSucceeded:
 		print "Build failed..."
 		return False
-	
-	# run Ocelot tests
-	if 'unit' in options.test_lists.replace(' ', '').split(','):
-		command = "cd ocelot; hydrazine/python/RunRegression.py -v"
+	else:
+		print "Build succeeded..."
 
-		if options.debug:
-			command += " -p ../.debug_build/ocelot"
-			prefix = "debug"
-		else:
-			command += " -p ../.release_build/ocelot"
-			prefix = "release"
+	for config in getConfigs(options):
 
-		if options.test_level == 'basic':
-			log = "regression/" + prefix + "-basic.log"
-			command += " -t regression/basic.level"
-		elif options.test_level == 'full':
-			log = "regression/" + prefix + "-full.log"
-			command += " -t regression/full.level"
+		# run Ocelot tests
+		if 'unit' in options.test_lists.replace(' ', '').split(','):
+			createConfig('ocelot', config)
 
-		command += " -l " + log + "; cd .."
+			command = "cd ocelot; hydrazine/python/RunRegression.py -v"
 
-		print '\nRunning Ocelot Unit Tests...'
-		status = os.popen(command).read()
-		print status
+			if options.debug:
+				command += " -p ../.debug_build/ocelot"
+				prefix = "debug"
+			else:
+				command += " -p ../.release_build/ocelot"
+				prefix = "release"
 
-		# Check for any failing/missing tests
-		if re.search('Failing tests|Non-Existent tests', status):
+			if options.test_level == 'basic':
+				log = "regression/" + prefix + "-basic.log"
+				command += " -t regression/basic.level"
+			elif options.test_level == 'full':
+				log = "regression/" + prefix + "-full.log"
+				command += " -t regression/full.level"
+
+			command += " -l " + log + "; cd .."
+
+			print '\nRunning Ocelot Unit Tests...'
+			status = os.popen(command).read()
+			print status
+
+			# Check for any failing/missing tests
+			if re.search('Failing tests|Non-Existent tests', status):
+				return False
+			elif options.test_level == 'basic':
+				return True
+
+		# Run standard tests
+		if not runStandardTests(options, 'cuda2.2', 'CUDA SDK 2.2', config):
 			return False
-		elif options.test_level == 'basic':
-			return True
-
-	# Run standard tests
-	if not runStandardTests(options, 'cuda2.2', 'CUDA SDK 2.2'):
-		return False
-	if not runStandardTests(options, 'cuda2.3', 'CUDA SDK 2.3'):
-		return False
-	if not runStandardTests(options, 'cuda3.2', 'CUDA SDK 3.2'):
-		return False
-	if not runStandardTests(options, 'parboil', 'Parboil'):
-		return False
-	if not runStandardTests(options, 'cuda4.1sdk', 'CUDA SDK 4.1'):
-		return False
+		if not runStandardTests(options, 'cuda2.3', 'CUDA SDK 2.3', config):
+			return False
+		if not runStandardTests(options, 'cuda3.2', 'CUDA SDK 3.2', config):
+			return False
+		if not runStandardTests(options, 'parboil', 'Parboil', config):
+			return False
+		if not runStandardTests(options, 'cuda4.1sdk', 'CUDA SDK 4.1', config):
+			return False
 	
 	return True
 		
@@ -206,8 +257,10 @@ def main():
 	parser.add_option( "--no_llvm", \
 		default = False, action = "store_true", help = "Disable llvm support." )
 	parser.add_option( "-m", "--message", default = "", \
-		help = "the message describing the changes being committed." )
-	
+		help = "The message describing the changes being committed." )
+	parser.add_option( "-D", "--devices", default = "[emulated]", \
+		help = "A list of Ocelot devices to test [emulated, nvidia, llvm, amd]." )
+		
 	( options, arguments ) = parser.parse_args()
 	
 	if options.submit:

@@ -75,10 +75,10 @@ FOLLOWSYM  [[:alnum:]_$]
 IDENTIFIER ([[:alpha:]]{FOLLOWSYM}*|[_$%]{FOLLOWSYM}+)
 VECTOR_SUFFIX {""}
 
-NEW_LINE ([\n]*)
+NEW_LINE ([\n\r]*)
 TAB [\t]*
 SPACE [ ]*
-WHITESPACE [ \t]*
+WHITESPACE [ \t\r]*
 LABEL ({IDENTIFIER}{WHITESPACE}":")
 
 /******************************************************************************/

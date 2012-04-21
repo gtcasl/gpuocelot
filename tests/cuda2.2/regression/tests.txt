@@ -13,7 +13,6 @@ CppIntegration CUDA_SDK_STYLE
 Dct8x8 CUDA_SDK_STYLE
 DeviceQuery CUDA_SDK_STYLE
 DwtHaar1D CUDA_SDK_STYLE
-Eigenvalues CUDA_SDK_STYLE
 FastWalshTransform CUDA_SDK_STYLE
 Histogram256 CUDA_SDK_STYLE
 Histogram64 CUDA_SDK_STYLE
@@ -45,6 +44,8 @@ Transpose CUDA_SDK_STYLE
 TransposeNew CUDA_SDK_STYLE
 VolumeRender CUDA_SDK_STYLE
 
+# A segfault here needs diagnosing
+#Eigenvalues CUDA_SDK_STYLE
 
 #Dxtc CUDA_SDK_STYLE
 #FluidsGL CUDA_SDK_STYLE

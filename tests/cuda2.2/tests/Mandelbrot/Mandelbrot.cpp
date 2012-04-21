@@ -947,7 +947,7 @@ void runAutoTest(int argc, char **argv)
         renderImage(false);
         cudaMemcpy(g_CheckRender->imageData(), d_dst, (imageW * imageH * sizeof(uchar4)), cudaMemcpyDeviceToHost);
 	    g_CheckRender->savePPM ( sOriginal[0], true, NULL);
-	    if (!g_CheckRender->PPMvsPPM(sOriginal[0], sReference[haveDoubles], MAX_EPSILON, 0.10f)) {
+	    if (!g_CheckRender->PPMvsPPM(sOriginal[0], sReference[haveDoubles], MAX_EPSILON, 0.30f)) {
 		    g_TotalErrors++;
 	    }
     }
@@ -959,7 +959,7 @@ void runAutoTest(int argc, char **argv)
         renderImage(false);
         cudaMemcpy(g_CheckRender->imageData(), d_dst, (imageW * imageH * sizeof(uchar4)), cudaMemcpyDeviceToHost);
 	    g_CheckRender->savePPM ( sOriginal[1], true, NULL);
-	    if (!g_CheckRender->PPMvsPPM(sOriginal[1], sReferenceJulia[haveDoubles], MAX_EPSILON, 0.10f)) {
+	    if (!g_CheckRender->PPMvsPPM(sOriginal[1], sReferenceJulia[haveDoubles], MAX_EPSILON, 0.30f)) {
 		    g_TotalErrors++;
 	    }
     }

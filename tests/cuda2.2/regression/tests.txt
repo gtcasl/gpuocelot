@@ -22,7 +22,6 @@ MatrixMul CUDA_SDK_STYLE
 MersenneTwister CUDA_SDK_STYLE
 MonteCarlo CUDA_SDK_STYLE
 Nbody CUDA_SDK_STYLE
-PostProcessGL CUDA_SDK_STYLE
 QuasirandomGenerator CUDA_SDK_STYLE
 RecursiveGaussian CUDA_SDK_STYLE
 Reduction CUDA_SDK_STYLE
@@ -30,7 +29,6 @@ ScalarProd CUDA_SDK_STYLE
 Scan CUDA_SDK_STYLE
 ScanLargeArray CUDA_SDK_STYLE
 SimpleAtomicIntrinsics CUDA_SDK_STYLE
-SimpleGL CUDA_SDK_STYLE
 SimpleMultiGPU CUDA_SDK_STYLE
 SimpleStreams CUDA_SDK_STYLE
 SimpleTemplates CUDA_SDK_STYLE
@@ -42,7 +40,12 @@ Template CUDA_SDK_STYLE
 ThreadFenceReduction CUDA_SDK_STYLE
 Transpose CUDA_SDK_STYLE
 TransposeNew CUDA_SDK_STYLE
-VolumeRender CUDA_SDK_STYLE
+
+# Programs that need a display can't use jenkins
+#SimpleGL CUDA_SDK_STYLE
+#VolumeRender CUDA_SDK_STYLE
+#PostProcessGL CUDA_SDK_STYLE
+
 
 # A segfault here needs diagnosing
 #Eigenvalues CUDA_SDK_STYLE

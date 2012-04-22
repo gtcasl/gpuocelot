@@ -552,6 +552,7 @@ def Environment():
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
 	env.AppendUnique(LIBPATH = os.path.abspath(os.path.join(env['install_path'], 'lib')))
+	env.AppendUnique(LIBPATH = os.path.abspath('.'))
 	
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=getExtraLibs())

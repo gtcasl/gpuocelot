@@ -19,6 +19,7 @@ import builder
 testEnv = builder.InitializeEnvironment(Environment(), Builder)
 
 # create the ocelot environment
+exec open("../ocelot/scripts/which.py")
 exec open("../ocelot/scripts/build_environment.py")
 env = Environment()
 

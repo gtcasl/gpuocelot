@@ -1142,7 +1142,6 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
 	
 	_analyzeExternalEdges(source, internalEdges, blockMapping);
-	
 	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
 }
 
@@ -1363,21 +1362,91 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
 	for (auto bb_it = divergentBlocks.begin(); bb_it != divergentBlocks.end(); ++bb_it) {
 		report("   " << (*bb_it)->label);
 
-		/*
-		1.) divergent branches with two internal out edges receive an additional handler block
-			according to method described in CGO paper
-			
-		2.) divergent branch with one external out edge
-			- two successors: subkernel exit, uniform-internal-taken
-			- subkernel exit: conditional select for resume point
-		
-		3.) divergent branch with two external out edges
-			- merge successive handlers into single handler
-			- conditional select for resume point
-			
-		*/
+		_createDivergentBranch(*bb_it);
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! \brief performs divergence analysis and creates explicit handlers for divergent branches
+
+1.) divergent branches with two internal out edges receive an additional handler block
+	according to method described in CGO paper
+	
+2.) divergent branch with one external out edge
+	- two successors: subkernel exit, uniform-internal-taken
+	- subkernel exit: conditional select for resume point
+
+3.) divergent branch with two external out edges
+	- merge successive handlers into single handler
+	- conditional select for resume point		
+*/
+void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(ir::BasicBlock::Pointer bb) {
+
+	// create a divergentbranch entry
+	ir::PTXInstruction *terminator = static_cast<ir::PTXInstruction*>(bb->instructions.back());
+	ir::ControlFlowGraph *subkernelCfg = subkernel->cfg();
+	
+	assert(bb->successors.size() == 2);
+	
+	//
+	// classify successors as external or internal
+	//
+	DivergentBranch::Flags divergenceFlags[] = {
+		DivergentBranch::Diverge_true_external,
+		DivergentBranch::Diverge_true_internal,
+		DivergentBranch::Diverge_false_external,
+		DivergentBranch::Diverge_false_internal,
+	};
+	
+	int flags = 0;
+	bool internalEntry = false;
+	for (int i = 0; i < 2; i++) {
+		if (sourceBlocks.find(bb->successors[0]) == sourceBlocks.end()) {
+			flags |= divergenceFlags[i*2];
+		}
+		else {
+			flags |= divergenceFlags[i*2+1];
+			internalEntry = true;
+		}
+	}
+
+	//
+	// Construct handler blocks for the divergent branch
+	//
+	std::string prefix = bb->label + "_to_" + terminator->d.identifier;
+	{
+		ir::BasicBlock handler;
+		handler.label = prefix + "_divergentYield";
+		ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
+	
+		SubkernelId entryId = 0;
+		assert(entryId && "TODO: need to determine entryId");
+
+		ExternalEdge externalEdge(handlerBlock, entryId, Thread_branch, ExternalEdge::F_divergence);
+		ExternalEdgeVector::iterator out = outEdges.insert(outEdges.end(), externalEdge);
+		DivergentBranch divergence(flags, bb, out);
+	
+		divergentBranches.push_back(divergence);
+	}
+	if (internalEntry) {
+		//
+		// the successor requires an additional entry handler
+		//
+		ir::BasicBlock handler;
+		handler.label = prefix + "_divergentEntry";
+		ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
+		
+		SubkernelId entryId = 0;
+		assert(entryId && "TODO: need to assign entryId");
+		
+		ExternalEdge externalEdge(handlerBlock, entryId, bb);
+		DivergentEntry divergentEntry(inEdges.insert(inEdges.end(), externalEdge));
+		divergentEntries.push_back(divergentEntry);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
 	analysis::DataflowGraph::RegisterSet &uses) {
@@ -1417,6 +1486,8 @@ void analysis::KernelPartitioningPass::Subkernel::_determineRegisterUses(
 		}
 	}	
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	create a handler block for each in edge that restores values
@@ -1489,7 +1560,10 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, edge_it->entryId);
 		
 		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
-		frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
+		
+		if (!(edge_it->flags & ExternalEdge::F_divergence)) {
+			frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
+		}
 	}
 
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);

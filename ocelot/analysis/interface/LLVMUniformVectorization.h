@@ -259,7 +259,11 @@ namespace analysis
 			
 			void _removeScalar();
 			
-			void _divergenceDetection();
+			void _divergenceHandling();
+			
+			void _updateDivergentBlock(
+				const analysis::KernelPartitioningPass::DivergentBranch &divergence, 
+				const analysis::KernelPartitioningPass::ExternalEdge &outEdge);
 			
 			void _vectorizeReplicated();
 			

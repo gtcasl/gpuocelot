@@ -893,48 +893,146 @@ void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
 /*!
 
 */
-void analysis::LLVMUniformVectorization::Translation::_divergenceDetection() {
-	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
-		llvm::TerminatorInst *terminator = bb_it->getTerminator();
+void analysis::LLVMUniformVectorization::Translation::_divergenceHandling() {
+	typedef analysis::KernelPartitioningPass::DivergentBranch DivergentBranch;
+	typedef analysis::KernelPartitioningPass::DivergentBranchVector DivergentBranchVector;
+	
+	report("_divergenceHandling()");
+	
+	for (DivergentBranchVector::const_iterator divergence_it = subkernel->divergentBranches.begin();
+	
+		divergence_it != subkernel->divergentBranches.end(); ++divergence_it) {
+		_updateDivergentBlock(*divergence_it, *(divergence_it->outEdge));
+	}
+}
+
+/*!
+	Given a divergent branch entry and a reference to the corresponding out edge,
+	transforms control instructions to point to the out edge according to the type
+	of divergent branch.
+*/
+void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
+	const analysis::KernelPartitioningPass::DivergentBranch &divergence, 
+	const analysis::KernelPartitioningPass::ExternalEdge &outEdge) {
+
+	report("  _updateDivergentBlock(" << divergence.frontierBlock->label << ")");
+	
+	typedef analysis::KernelPartitioningPass::DivergentBranch DivergentBranch; 
+	
+	llvm::BasicBlock *llvmBlock = ocelotToLlvmBlockMap[divergence.frontierBlock];
+	llvm::BasicBlock *handler = ocelotToLlvmBlockMap[outEdge.handler];
 		
-		if (llvm::BranchInst *branchInst = llvm::dyn_cast<llvm::BranchInst>(terminator)) {
-			if (branchInst->isConditional() && llvm::Instruction::classof(branchInst->getCondition())) {
-				llvm::Instruction *condition = llvm::dyn_cast<llvm::Instruction>(branchInst->getCondition());
-				VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.find(condition);
-				if (vec_it != vectorizedInstructionMap.end()) {
+	assert(llvmBlock && "failed to obtain frontier block from Ocelot->LLVM mapping");
+	assert(handler && "failed to obtain handler block from Ocelot->LLVM mapping");
+	
+	llvm::TerminatorInst *terminator = llvmBlock->getTerminator();
+		
+	if (llvm::BranchInst *branchInst = llvm::dyn_cast<llvm::BranchInst>(terminator)) {
+		if (branchInst->isConditional() && llvm::Instruction::classof(branchInst->getCondition())) {
+		
+			llvm::Instruction *condition = llvm::dyn_cast<llvm::Instruction>(branchInst->getCondition());
+			VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.find(condition);
+			if (vec_it != vectorizedInstructionMap.end()) {
+				
+				llvm::BasicBlock *targetTrue = branchInst->getSuccessor(0);
+				llvm::BasicBlock *targetFalse = branchInst->getSuccessor(1);
 					
-					llvm::Type *intTy = getTyInt(32);
-					llvm::Instruction *condition = new llvm::ZExtInst(vec_it->second.replicated[0],	
-						intTy, "cond", branchInst->getParent());
-					
-					for (size_t t = 1; t < vec_it->second.replicated.size(); ++t) {
-						llvm::Instruction *ext = new llvm::ZExtInst(vec_it->second.replicated[t], intTy, 
-							"cond", branchInst->getParent());
-						condition = llvm::BinaryOperator::Create(llvm::Instruction::Add, condition,
-							ext, "cmpws", branchInst->getParent());
-					}
-					
-					// create switch statement that branches to two targets or handler
-					llvm::BasicBlock *handler = 0;
-					llvm::BasicBlock *targetTrue = 0;
-					llvm::BasicBlock *targetFalse = 0;
-					
+				branchInst->eraseFromParent();
+				
+				llvm::Type *intTy = getTyInt(32);
+				llvm::Instruction *condition = new llvm::ZExtInst(vec_it->second.replicated[0],	
+					intTy, "cond", llvmBlock);
+				
+				for (size_t t = 1; t < vec_it->second.replicated.size(); ++t) {
+					llvm::Instruction *ext = new llvm::ZExtInst(vec_it->second.replicated[t], intTy, 
+						"cond", branchInst->getParent());
+					condition = llvm::BinaryOperator::Create(llvm::Instruction::Add, condition,
+						ext, "cmpws", llvmBlock);
+				}
+		
+				llvm::TerminatorInst *terminatorInst = 0;
+				
+				if ((divergence.flags & DivergentBranch::Diverge_true_internal) &&
+					(divergence.flags & DivergentBranch::Diverge_false_internal) && 
+					!(divergence.flags & (~(DivergentBranch::Diverge_true_internal | 
+						DivergentBranch::Diverge_false_internal)))) {
+				
+					// both branch edges are internal
 					assert(handler && targetTrue && targetFalse);
-					
-					llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(condition, handler, 2, branchInst);
+
+					llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(condition, handler, 2, llvmBlock);
 					switchInst->addCase(getConstInt32(0), targetFalse);
 					switchInst->addCase(getConstInt32(pass->warpSize), targetTrue);
 					
-					branchInst->eraseFromParent();
+					terminatorInst = switchInst;
+				}
+				else if ((divergence.flags & DivergentBranch::Diverge_true_external) && 
+					(divergence.flags & DivergentBranch::Diverge_false_internal) && 
+					!(divergence.flags & (~(DivergentBranch::Diverge_true_external | 
+						DivergentBranch::Diverge_false_internal)))) {
+					
+					// true branch edge is external
+					// false branch edge is internal
+					targetTrue = handler;
+					
+					assert(targetTrue && targetFalse && "Failed to detect control instructions");
+					assert(condition && "failed to compute branch condition");
+					
+					// take true branch unless predicate conditions equal zero
+					llvm::CmpInst *cmpInst = new llvm::ICmpInst(*llvmBlock, llvm::ICmpInst::ICMP_EQ, condition, 
+						getConstInt32(0), llvm::Twine("convergent"));
+					llvm::BranchInst *newBranchInst = llvm::BranchInst::Create(targetFalse, targetTrue, 
+						cmpInst, llvmBlock);
+					
+					terminatorInst = newBranchInst;
+				}
+				else if ((divergence.flags & DivergentBranch::Diverge_false_external) && 
+					(divergence.flags & DivergentBranch::Diverge_true_internal) && 
+					!(divergence.flags & (~(DivergentBranch::Diverge_false_external | 
+						DivergentBranch::Diverge_true_internal)))) {
+					
+					// false branch edge is external
+					// true branch edge is internal
+					
+					targetFalse = handler;
+					assert(targetTrue && targetFalse);
+					
+					assert(condition && "failed to compute branch condition");
+					
+					// take true branch if conditions equal warp size
+					llvm::ICmpInst *cmpInst = new llvm::ICmpInst(*llvmBlock, llvm::ICmpInst::ICMP_EQ, condition, 
+						getConstInt32(pass->warpSize), llvm::Twine("convergent"));
+					
+					llvm::BranchInst *newBranchInst = llvm::BranchInst::Create(targetTrue, targetFalse, 
+						cmpInst, llvmBlock);
+					
+					terminatorInst = newBranchInst;
+				}
+				else if ((divergence.flags & DivergentBranch::Diverge_true_external) && 
+					(divergence.flags & DivergentBranch::Diverge_false_external) &&
+					!(divergence.flags & (~(DivergentBranch::Diverge_true_external | 
+						DivergentBranch::Diverge_false_external)))) {
+					
+					// both branch edges are external
+					assert(handler);
+					
+					llvm::BranchInst *newBranchInst = llvm::BranchInst::Create(handler,	llvmBlock);
+					terminatorInst = newBranchInst;
 				}
 				else {
-					assert(0 && "failed to find replicated branch condition");
+					// unexpected divergent branch configuration
+					assert(0 && "unexpected divergent branch type");
 				}
+				assert(terminatorInst && llvmBlock->getTerminator() == terminatorInst);
+			}
+			else {
+				assert(0 && "failed to find replicated branch condition");
 			}
 		}
-		else {
-			// ignore other control flow for now
-		}
+	}
+	else {
+		// ignore other control flow for now
+		assert(0 && "unexpected control flow type");
 	}
 }
 

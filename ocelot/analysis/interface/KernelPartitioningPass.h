@@ -51,38 +51,7 @@ namespace analysis {
 			ThreadExitType_invalid
 		};
 		static std::string toString(const ThreadExitType &code);
-		#if 0
-		/*!
-			\brief handles divergent branches within subkernels
-		*/
-		class DivergentBranch {
-		public:
-			enum Type {
-				Convergent = 0,
-				Divergent_internal_internal,
-				Divergent_internal_external,
-				Divergent_external_external,
-				Invalid;
-			};
-			
-		public:
-		
-			DivergentBranch() { }
-			DivergentBranch(ir::BasicBlock::Pointer _source, ir::BasicBlock::Pointer _handler, 
-				ir::BasicBlock::Pointer _true, ir::BasicBlock::Pointer _false):
-				sourceBlock(_source), handler(_handler), ifTrue(_true), ifFalse(_false) { }
-				
-		public:
-			//! \brief indicates which type of divergent branch this is
-			Type type;
-		
-			//! \brief branch condition value
-			analysis::DataflowGraph::RegisterId condition;
-			
-			//! \brief subkernel yield point
-			ExternalEdgeVector::iterator externalEdge;
-		};
-		#endif
+
 		/*!
 			\brief handles external edges among subkernels
 		*/
@@ -101,12 +70,26 @@ namespace analysis {
 		public:
 			ExternalEdge(): entryId(0), exitStatus(Thread_subkernel), flags(0) { }
 			
+			// Subkernel or barrier yield
 			ExternalEdge(const ir::BasicBlock::Edge &edge, 
 				ir::BasicBlock::Pointer _handler,
 				SubkernelId _entryId = 0,
 				ThreadExitType _exit = Thread_subkernel,
 				int _flags = 0): 
 				sourceEdge(edge), handler(_handler), entryId(_entryId), exitStatus(_exit), flags(_flags) { }
+
+			// Divergence yield
+			ExternalEdge(
+				ir::BasicBlock::Pointer _handler, 
+				SubkernelId _entryId = 0, 
+				ThreadExitType _exit = Thread_branch, 
+				int _flags = 0): handler(_handler), entryId(_entryId), exitStatus(_exit), flags(_flags) { }
+
+			ExternalEdge(
+				ir::BasicBlock::Pointer _handler,
+				SubkernelId _entryId,
+				ir::BasicBlock::Pointer _frontierBlock
+			): handler(_handler), entryId(_entryId), frontierBlock(_frontierBlock) { }
 
 		public:
 					
@@ -147,6 +130,56 @@ namespace analysis {
 		typedef std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> BasicBlockMap;
 		typedef std::vector< BasicBlockSet > PartitionVector;
 		
+		/*!
+			\brief handles divergent branches within subkernels
+		*/
+		class DivergentBranch {
+		public:
+			enum Flags {
+				Diverge_true_internal = 1,
+				Diverge_false_internal = 2,
+				Diverge_true_external = 4,
+				Diverge_false_external = 8,
+			};
+		
+		public:
+			DivergentBranch(): flags(0) {}
+			
+			DivergentBranch(int _flags, ir::BasicBlock::Pointer _frontier, ExternalEdgeVector::iterator _out):
+				flags(_flags), frontierBlock(_frontier), outEdge(_out) { }
+				
+			~DivergentBranch() {}
+				
+		public:
+			//! \brief indicates 
+			int flags;
+			
+			//! \brief kernel basic block which must be transformed to interact with yield handlers
+			ir::BasicBlock::Pointer frontierBlock;
+		
+			//! \brief 
+			ExternalEdgeVector::iterator outEdge;
+		};
+		typedef std::vector< DivergentBranch > DivergentBranchVector;
+		
+		/*!
+			\brief structure storing divergent entries
+		*/
+		class DivergentEntry {
+		public:
+			DivergentEntry() {}
+			
+			DivergentEntry(ExternalEdgeVector::iterator _in): inEdge(_in) { }
+				
+			~DivergentEntry() {}
+			
+		public:
+		
+			//! entry edge
+			ExternalEdgeVector::iterator inEdge;
+		};
+		typedef std::vector< DivergentEntry > DivergentEntryVector;
+		
 		//!
 		class Subkernel {
 		public:
@@ -175,6 +208,7 @@ namespace analysis {
 			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);			
 			void _analyzeBarriers(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
 			void _analyzeDivergentControlFlow(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
+			void _createDivergentBranch(ir::BasicBlock::Pointer bb_it);
 			
 			void _createExternalHandlers(
 				analysis::DataflowGraph *sourceDfg, 
@@ -214,6 +248,12 @@ namespace analysis {
 			
 			// in edges
 			ExternalEdgeVector inEdges;
+			
+			// divergent branches
+			DivergentBranchVector divergentBranches;
+			
+			// divergent entries
+			DivergentEntryVector divergentEntries;
 		};
 		typedef std::map< SubkernelId, Subkernel> SubkernelMap;
 		

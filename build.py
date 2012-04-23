@@ -46,13 +46,11 @@ def build(options):
 
 	command += " install_path=" + options.install_prefix
 
-	if options.build_target != '':
-		if options.debug:
-			command += " .debug_build/"
-		else:
-			command += " .release_build/"
-		command += options.build_target
-		
+	command += " " + options.build_target
+
+	if options.test_level != "none":
+		command += " tests"
+	
 	command += " test_level=" + options.test_level
 	command += " -j" + options.threads
 
@@ -241,7 +239,7 @@ def main():
 	parser.add_option( "-i", "--install", \
 		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \
-		default = "tests ocelot", help = "build a specific target." )
+		default = "ocelot", help = "build a specific target." )
 	parser.add_option( "-w", "--no_werr", \
 		default = False, action = "store_true",
 		help = "don't turn warnings into errors." )

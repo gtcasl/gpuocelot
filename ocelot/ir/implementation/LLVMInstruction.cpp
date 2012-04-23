@@ -314,9 +314,11 @@ namespace ir
 			case Alloca: return "alloca"; break;
 			case And: return "and"; break;
 			case Ashr: return "ashr"; break;
+			case Atomicrmw: return "atomicrmw"; break;
 			case Bitcast: return "bitcast"; break;
 			case Br: return "br"; break;
 			case Call: return "call"; break;
+			case Cmpxchg: return "cmpxchg"; break;
 			case Extractelement: return "extractelement"; break;
 			case Extractvalue: return "extractvalue"; break;
 			case Fadd: return "fadd"; break;
@@ -412,6 +414,26 @@ namespace ir
 			case NoCapture:                 return "nocapture"; break;
 			case Nested:                    return "nest"; break;
 			case InvalidParameterAttribute: return ""; break;
+		}
+		return "";
+	}
+	
+	std::string LLVMInstruction::toString( AtomicOperation operation )
+	{
+		switch( operation )
+		{
+			case AtomicXchg:             return "xchg"; break;
+			case AtomicAdd:              return "add"; break;
+			case AtomicSub:              return "sub"; break;
+			case AtomicAnd:              return "and"; break;
+			case AtomicNand:             return "nand"; break;
+			case AtomicOr:               return "or"; break;
+			case AtomicXor:              return "xor"; break;
+			case AtomicMax:              return "max"; break;
+			case AtomicMin:              return "min"; break;
+			case AtomicUmax:             return "umax"; break;
+			case AtomicUmin:             return "umin"; break;
+			case InvalidAtomicOperation: return ""; break;
 		}
 		return "";
 	}
@@ -533,13 +555,13 @@ namespace ir
 	{
 		switch( bits )
 		{
-			case 1: return I1; break;
-			case 8: return I8; break;
-			case 16: return I16; break;
-			case 32: return I32; break;
-			case 64: return I64; break;
+			case 1:   return I1;   break;
+			case 8:   return I8;   break;
+			case 16:  return I16;  break;
+			case 32:  return I32;  break;
+			case 64:  return I64;  break;
 			case 128: return I128; break;
-			default: break;
+			default:               break;
 		}
 		return InvalidDataType;
 	}
@@ -548,16 +570,16 @@ namespace ir
 	{
 		switch( type )
 		{
-			case I1: return 1; break;
-			case I8: return 8; break;
-			case I16: return 16; break;
-			case F32: /* fall through */
-			case I32: return 32; break;
-			case F64: /* fall through */
-			case I64: return 64; break;
+			case I1:   return 1;   break;
+			case I8:   return 8;   break;
+			case I16:  return 16;  break;
+			case F32:  /* fall through */
+			case I32:  return 32;  break;
+			case F64:  /* fall through */
+			case I64:  return 64;  break;
 			case I128: /* fall through */
 			case F128: return 128; break;
-			default: break;
+			default:               break;
 		}
 		return 0;
 	}
@@ -774,6 +796,39 @@ namespace ir
 	{
 		return new LLVMAshr( *this );
 	}
+	
+	LLVMAtomicrmw::LLVMAtomicrmw() : LLVMBinaryInstruction( Atomicrmw )
+	{
+	
+	}
+	
+	std::string LLVMAtomicrmw::valid() const
+	{
+		if( a.type.category != Type::Pointer )
+		{
+			return "Address must be a pointer";
+		}
+		if( a.type.toString() != ( d.type.toString() + "*" ) )
+		{
+			return "Source " + a.type.toString() 
+				+ " is not a pointer to destination type " + d.type.toString();
+		}
+		
+		return "";
+	}
+	
+	std::string LLVMAtomicrmw::toString() const
+	{
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) + " " 
+			+ LLVMInstruction::toString( operation ) + " " +
+			a.type.toString() + " " + a.toString() + ", " + b.type.toString() +
+			" " + b.toString() + " monotonic";
+	}
+
+	Instruction* LLVMAtomicrmw::clone(bool copy) const
+	{
+		return new LLVMAtomicrmw( *this );
+	}
 
 	LLVMBitcast::LLVMBitcast() : LLVMConversionInstruction( Bitcast )
 	{
@@ -942,6 +997,45 @@ namespace ir
 	Instruction* LLVMCall::clone(bool copy) const
 	{
 		return new LLVMCall( *this );
+	}
+	
+	LLVMCmpxchg::LLVMCmpxchg() : LLVMBinaryInstruction( Cmpxchg )
+	{
+	
+	}
+	
+	std::string LLVMCmpxchg::valid() const
+	{
+		if( a.type.category != Type::Pointer )
+		{
+			return "Address must be a pointer";
+		}
+		if( a.type.toString() != ( d.type.toString() + "*" ) )
+		{
+			return "Source " + a.type.toString() 
+				+ " is not a pointer to destination type " + d.type.toString();
+		}
+		
+		if( b.type.toString() != c.type.toString() )
+		{
+			return "Source " + a.type.toString() 
+				+ " is not a pointer to destination type " + d.type.toString();
+		}
+		
+		return "";
+	}
+	
+	std::string LLVMCmpxchg::toString() const
+	{
+		return d.toString() + " = " + LLVMInstruction::toString( opcode ) +
+			a.type.toString() + " " + a.toString() + ", "  + b.type.toString() +
+			" " + b.toString() + ", "  + b.type.toString() + " " +
+			b.toString() + " monotonic";
+	}
+
+	Instruction* LLVMCmpxchg::clone(bool copy) const
+	{
+		return new LLVMCmpxchg( *this );
 	}
 
 	LLVMExtractelement::LLVMExtractelement() 
@@ -1479,7 +1573,7 @@ namespace ir
 	
 	LLVMMalloc::LLVMMalloc() : LLVMInstruction( Malloc ), alignment( 1 )
 	{
-	
+		
 	}
 
 	std::string LLVMMalloc::toString() const

@@ -1363,6 +1363,19 @@ void analysis::KernelPartitioningPass::Subkernel::_analyzeDivergentControlFlow(
 	for (auto bb_it = divergentBlocks.begin(); bb_it != divergentBlocks.end(); ++bb_it) {
 		report("   " << (*bb_it)->label);
 
+		/*
+		1.) divergent branches with two internal out edges receive an additional handler block
+			according to method described in CGO paper
+			
+		2.) divergent branch with one external out edge
+			- two successors: subkernel exit, uniform-internal-taken
+			- subkernel exit: conditional select for resume point
+		
+		3.) divergent branch with two external out edges
+			- merge successive handlers into single handler
+			- conditional select for resume point
+			
+		*/
 	}
 }
 

@@ -51,11 +51,20 @@ namespace analysis {
 			ThreadExitType_invalid
 		};
 		static std::string toString(const ThreadExitType &code);
-		
+		#if 0
 		/*!
 			\brief handles divergent branches within subkernels
 		*/
 		class DivergentBranch {
+		public:
+			enum Type {
+				Convergent = 0,
+				Divergent_internal_internal,
+				Divergent_internal_external,
+				Divergent_external_external,
+				Invalid;
+			};
+			
 		public:
 		
 			DivergentBranch() { }
@@ -64,16 +73,16 @@ namespace analysis {
 				sourceBlock(_source), handler(_handler), ifTrue(_true), ifFalse(_false) { }
 				
 		public:
-			
-			ir::BasicBlock::Pointer sourceBlock;
+			//! \brief indicates which type of divergent branch this is
+			Type type;
 		
-			ir::BasicBlock::Pointer handler;
+			//! \brief branch condition value
+			analysis::DataflowGraph::RegisterId condition;
 			
-			ir::BasicBlock::Pointer ifTrue;
-			
-			ir::BasicBlock::Pointer ifFalse;
+			//! \brief subkernel yield point
+			ExternalEdgeVector::iterator externalEdge;
 		};
-		
+		#endif
 		/*!
 			\brief handles external edges among subkernels
 		*/

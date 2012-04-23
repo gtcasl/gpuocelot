@@ -65,6 +65,9 @@ protected:
 protected:
 	static ir::LLVMInstruction::DataType _translate( 
 		ir::PTXOperand::DataType type );
+	static ir::LLVMInstruction::AtomicOperation _translate( 
+		ir::PTXInstruction::AtomicOperation operation,
+		ir::PTXOperand::DataType type );
 	static void _doubleWidth( ir::LLVMInstruction::DataType& v );
 	static ir::LLVMInstruction::Comparison _translate( 
 		ir::PTXInstruction::CmpOp, bool isInt, bool isSigned );

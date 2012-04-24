@@ -27,7 +27,7 @@
 	},
 	executive: {
 		devices: [ "dynamic" ],
-		partitioningHeuristic: "loops",
+		partitioningHeuristic: "maximum",
 		workerThreadLimit: 2,
 		warpSize: 4,
 		optimizationLevel: basic,

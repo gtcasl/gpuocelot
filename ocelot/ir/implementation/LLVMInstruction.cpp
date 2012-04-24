@@ -1028,7 +1028,7 @@ namespace ir
 	std::string LLVMCmpxchg::toString() const
 	{
 		return d.toString() + " = " + LLVMInstruction::toString( opcode ) +
-			a.type.toString() + " " + a.toString() + ", "  + b.type.toString() +
+			" " + a.type.toString() + " " + a.toString() + ", "  + b.type.toString() +
 			" " + b.toString() + ", "  + b.type.toString() + " " +
 			b.toString() + " monotonic";
 	}

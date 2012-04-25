@@ -172,6 +172,9 @@ namespace analysis {
 		
 			//! \brief 
 			ExternalEdgeVector::iterator outEdge;
+			
+			//! \brief
+			SubkernelId targetEntryIds[2];
 		};
 		typedef std::vector< DivergentBranch > DivergentBranchVector;
 		

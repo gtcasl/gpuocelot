@@ -1153,7 +1153,7 @@ void analysis::KernelPartitioningPass::Subkernel::_create(ir::PTXKernel *source)
 	std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> blockMapping;
 	
 	_analyzeExternalEdges(source, internalEdges, blockMapping);
-//	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
+	_analyzeDivergentControlFlow(source, internalEdges, blockMapping);
 }
 
 //! creates external edges for subkernel entries and exits
@@ -1620,6 +1620,7 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		if (edge_it->flags & ExternalEdge::F_barrier) {
 			exitStatus = Thread_barrier;
 		}
+		
 		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, edge_it->entryId);
 		
 		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
@@ -1630,6 +1631,39 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 	}
 
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
+}
+
+void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::DataflowGraph::iterator block, 
+	analysis::DataflowGraph *subkernelDfg, ThreadExitType type, SubkernelId target) {
+	
+	report("  creating exit in block " << block->block()->label);
+	
+	ir::PTXInstruction move(ir::PTXInstruction::Mov);
+	move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status");
+	move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+	subkernelDfg->insert(block, move);
+	
+	ir::PTXInstruction store(ir::PTXInstruction::St);
+	store.type = ir::PTXOperand::u32;
+	store.addressSpace = ir::PTXInstruction::Local;
+	store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
+	store.a = ir::PTXOperand(type, ir::PTXOperand::u32);
+	subkernelDfg->insert(block, store);
+	
+	if (type != Thread_exit) {
+		move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point");
+		move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+		subkernelDfg->insert(block, move);
+	
+		store.type = ir::PTXOperand::u32;
+		store.addressSpace = ir::PTXInstruction::Local;
+		store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
+		store.a = ir::PTXOperand(target, ir::PTXOperand::u32);
+		subkernelDfg->insert(block, store);
+	}
+	
+	ir::PTXInstruction exit(ir::PTXInstruction::Exit);
+	subkernelDfg->insert(block, exit);
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_spillLiveValues(
@@ -1751,38 +1785,6 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 	report("end frontier exit blocks:");		
 }
 
-void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::DataflowGraph::iterator block, 
-	analysis::DataflowGraph *subkernelDfg, ThreadExitType type, SubkernelId target) {
-	
-	report("  creating exit in block " << block->block()->label);
-	
-	ir::PTXInstruction move(ir::PTXInstruction::Mov);
-	move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status");
-	move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
-	subkernelDfg->insert(block, move);
-	
-	ir::PTXInstruction store(ir::PTXInstruction::St);
-	store.type = ir::PTXOperand::u32;
-	store.addressSpace = ir::PTXInstruction::Local;
-	store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
-	store.a = ir::PTXOperand(type, ir::PTXOperand::u32);
-	subkernelDfg->insert(block, store);
-	
-	if (type != Thread_exit) {
-		move.a = ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point");
-		move.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
-		subkernelDfg->insert(block, move);
-	
-		store.type = ir::PTXOperand::u32;
-		store.addressSpace = ir::PTXInstruction::Local;
-		store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
-		store.a = ir::PTXOperand(target, ir::PTXOperand::u32);
-		subkernelDfg->insert(block, store);
-	}
-	
-	ir::PTXInstruction exit(ir::PTXInstruction::Exit);
-	subkernelDfg->insert(block, exit);
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

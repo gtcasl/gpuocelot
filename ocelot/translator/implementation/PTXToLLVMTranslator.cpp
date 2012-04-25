@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -2136,8 +2136,12 @@ void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i,
 {
 	ir::LLVMBr branch;
 	
+	report("_translateBra() " << i.toString() << " (targets: " << block.targets().size() << ")");
+	
 	if( block.targets().empty() )
 	{
+		report("  block.targets().empty()");
+		report("    fallthrough: " << block.fallthrough()->label());
 		branch.iftrue = "%" + block.fallthrough()->label();
 	}
 	else

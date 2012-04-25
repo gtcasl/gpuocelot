@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -2608,6 +2608,13 @@ void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 	if( i.a.relaxedType != ir::PTXOperand::TypeSpecifier_invalid )
 	{
 		sourceType = i.a.relaxedType;
+		ir::LLVMInstruction::Operand temp( _tempRegister(), 
+			ir::LLVMInstruction::Type( _translate( sourceType ), 
+			ir::LLVMInstruction::Type::Element ) );
+
+		_bitcast( temp, source );
+
+		source = temp;
 	}
 
 	_convert( destination, i.type, source, sourceType, i.modifier );

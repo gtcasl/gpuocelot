@@ -36,14 +36,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_EMIT_SUBKERNEL_PTX 0
+#define REPORT_EMIT_SUBKERNEL_PTX 1
 #define REPORT_EMIT_SOURCE_PTXKERNEL 0
 
 #define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define EMIT_PARTITIONED_KERNELGRAPH 0					// emits to .dot text files in directory
+#define EMIT_PARTITIONED_KERNELGRAPH 1					// emits to .dot text files in directory
 #define EMIT_KERNELGRAPH_ORIGINAL_PTX 0					// if 1, shows PTX for original basic blocks
 #define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 1		// enables replacing actual instructions in handler blocks
 
@@ -1123,7 +1123,7 @@ void analysis::KernelPartitioningPass::Subkernel::createHandlers(
 	
 	_createExternalHandlers(sourceDfg, &subkernelDfg, registerOffsets);
 	
-	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX && REPORT_INTERMEDIATE_PTX
+	#if REPORT_BASE && REPORT_EMIT_SUBKERNEL_PTX
 	report("subkernel->write");
 	subkernel->write(std::cout);
 	#endif
@@ -1450,14 +1450,24 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 		//
 		// the successor requires an additional entry handler
 		//
-		ir::BasicBlock handler;
-		handler.label = prefix + "_divergentEntry";
-		ir::ControlFlowGraph::iterator handlerBlock = subkernelCfg->insert_block(handler);
 
-		entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 1));
+		ir::BasicBlock handler;
+		handler.label = bb->label + "_to_" + bb->successors[0]->label + "_divergentEntry";
+		ir::ControlFlowGraph::iterator handlerTaken = subkernelCfg->insert_block(handler);
 		
-		ExternalEdge externalEdge(handlerBlock, entryId, bb);
-		DivergentEntry divergentEntry(inEdges.insert(inEdges.end(), externalEdge));
+		handler.label = bb->label + "_to_" + bb->successors[1]->label + "_divergentEntry";
+		ir::ControlFlowGraph::iterator handlerNotTaken = subkernelCfg->insert_block(handler);
+
+		SubkernelId takenEntryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 1));
+		SubkernelId nottakenEntryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 2));
+		
+		ExternalEdge takenInEdge(inverseBlockMapping[bb], bb->successors[0], handlerTaken, takenEntryId);
+		ExternalEdge nottakenInEdge(inverseBlockMapping[bb], bb->successors[1], handlerNotTaken, nottakenEntryId);
+		
+		ExternalEdgePointer ptrTaken = inEdges.insert(inEdges.end(), takenInEdge);
+		ExternalEdgePointer ptrNotTaken = inEdges.insert(inEdges.end(), nottakenInEdge); 
+		
+		DivergentEntry divergentEntry(ptrTaken, ptrNotTaken);
 		divergentEntries.push_back(divergentEntry);
 		
 		report(" adding divergent entry in-edge");
@@ -1467,17 +1477,19 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 	}
 	
 	if (completelyInternal) {
-	
 		ir::ControlFlowGraph::iterator handlerBlock;
 		
 		ir::BasicBlock handler;
 		handler.label = prefix + "_divergentYield";
 		handlerBlock = subkernelCfg->insert_block(handler);
-
-		ExternalEdge externalEdge(handlerBlock, entryId, Thread_branch, ExternalEdge::F_divergence);
+		
+		ExternalEdge externalEdge(inverseBlockMapping[bb], handlerBlock, entryId, 
+			Thread_branch, ExternalEdge::F_divergence);
+			
+		externalEdge.frontierBlock = bb;
 		ExternalEdgeVector::iterator out = outEdges.insert(outEdges.end(), externalEdge);
+		
 		DivergentBranch divergence(flags, bb, out);
-	
 		divergentBranches.push_back(divergence);
 		
 		report(" adding divergent branch out-edge");
@@ -1552,10 +1564,18 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 	for (ExternalEdgeVector::iterator edge_it = inEdges.begin();
 		edge_it != inEdges.end(); ++edge_it) {
 		
-		assert(subkernelCfgToDfg.find(edge_it->handler) != subkernelCfgToDfg.end());
+		report("    in-edge");
+		
+		assert(subkernelCfgToDfg.find(edge_it->handler) != subkernelCfgToDfg.end());		
+		assert(cfgToDfg.find(edge_it->criticalLiveness()) != cfgToDfg.end() && 
+			"failed to find liveness block in DFG");
 		
 		// restore live values
-		RegisterSet aliveValues = cfgToDfg[edge_it->sourceEdge.head]->aliveOut();
+		RegisterSet aliveValues = cfgToDfg[edge_it->criticalLiveness()]->aliveOut();
+				
+		assert(subkernelCfgToDfg.find(edge_it->handler) != subkernelCfgToDfg.end() && 
+			"failed to find handler in subkernel DFG");
+		
 		auto handlerDfgBlock = subkernelCfgToDfg[edge_it->handler];
 		
 		report("    IN-edge: " << edge_it->handler->label << " -> " << edge_it->frontierBlock->label 
@@ -1579,12 +1599,14 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		edge_it != outEdges.end(); ++edge_it) {
 		
 		assert(subkernelCfgToDfg.find(edge_it->handler) != subkernelCfgToDfg.end());
+		assert(cfgToDfg.find(edge_it->criticalLiveness()) != cfgToDfg.end() && 
+			"failed to find critical block in DFG");
+		assert(subkernelCfgToDfg.find(edge_it->handler) != subkernelCfgToDfg.end() && 
+			"failed to find handler in subkernel DFG");
 		
 		// restore live values
-		RegisterSet aliveValues = cfgToDfg[edge_it->sourceEdge.head]->aliveOut();
+		RegisterSet aliveValues = cfgToDfg[edge_it->criticalLiveness()]->aliveOut();
 		auto handlerDfgBlock = subkernelCfgToDfg[edge_it->handler];
-		// auto frontierDfgBlock = 
-		cfgToDfg[edge_it->frontierBlock];
 		
 		report("    OUT-edge: " << edge_it->frontierBlock->label << " -> " << edge_it->handler->label
 			<< " (" << aliveValues.size() << " live values");
@@ -1670,10 +1692,13 @@ void analysis::KernelPartitioningPass::Subkernel::_updateHandlerControlFlow(
 	
 	analysis::DataflowGraph::IteratorMap subkernelCfgToDfg = subkernelDfg->getCFGtoDFGMap();
 	
-	report("  obtained CFG-to-DFG mapping");
+	report("  obtained CFG-to-DFG mapping. Now visiting " << frontierExitBlocks.size() 
+		<< " frontier exit blocks");
 	
 	for (auto block_it = frontierExitBlocks.begin(); 
 		block_it != frontierExitBlocks.end(); ++block_it) {	
+		
+		report("   frontier exit block: " << block_it->first->label);
 	
 		// update control flow instructions
 		ir::PTXInstruction *terminator = static_cast<ir::PTXInstruction *>(

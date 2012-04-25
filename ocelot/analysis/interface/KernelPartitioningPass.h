@@ -80,18 +80,28 @@ namespace analysis {
 
 			// Divergence yield
 			ExternalEdge(
+				ir::BasicBlock::Pointer _source,
 				ir::BasicBlock::Pointer _handler, 
 				SubkernelId _entryId = 0, 
 				ThreadExitType _exit = Thread_branch, 
-				int _flags = 0): handler(_handler), entryId(_entryId), exitStatus(_exit), flags(_flags) { }
+				int _flags = 0): sourceEdge(_source, _source, ir::BasicBlock::Edge::Invalid), 
+					handler(_handler), entryId(_entryId), exitStatus(_exit), flags(_flags) { }
 
 			// Divergent entry
 			ExternalEdge(
+				ir::BasicBlock::Pointer _source,
+				ir::BasicBlock::Pointer _frontierBlock,
 				ir::BasicBlock::Pointer _handler,
 				SubkernelId _entryId,
-				ir::BasicBlock::Pointer _frontierBlock,
 				int _flags = F_divergence
-			): handler(_handler), entryId(_entryId), frontierBlock(_frontierBlock), flags(_flags) { }
+			): 
+			sourceEdge(_source, _source, ir::BasicBlock::Edge::Invalid), 
+				handler(_handler), entryId(_entryId), frontierBlock(_frontierBlock), flags(_flags) { }
+
+			//! \brief returns a block whose aliveOut 
+			ir::BasicBlock::Pointer criticalLiveness() const {
+				return sourceEdge.head;
+			}
 
 		public:
 					
@@ -125,6 +135,7 @@ namespace analysis {
 			int flags;
 		};
 		typedef std::vector<ExternalEdge> ExternalEdgeVector;
+		typedef ExternalEdgeVector::iterator ExternalEdgePointer;
 		typedef std::unordered_set< ir::BasicBlock::Pointer > BasicBlockSet;
 		typedef std::map< analysis::DataflowGraph::RegisterId, size_t> RegisterOffsetMap;
 		typedef std::unordered_map< ir::BasicBlock::Pointer, ExternalEdgeVector > ExternalEdgeMap;
@@ -171,14 +182,17 @@ namespace analysis {
 		public:
 			DivergentEntry() {}
 			
-			DivergentEntry(ExternalEdgeVector::iterator _in): inEdge(_in) { }
-				
+			DivergentEntry(ExternalEdgePointer _takenIn, ExternalEdgePointer _notTakenIn): 
+				takenInEdge(_takenIn), nottakenInEdge(_notTakenIn) {}
+			
 			~DivergentEntry() {}
 			
 		public:
 		
 			//! entry edge
-			ExternalEdgeVector::iterator inEdge;
+			ExternalEdgePointer takenInEdge;
+			
+			ExternalEdgePointer nottakenInEdge;
 		};
 		typedef std::vector< DivergentEntry > DivergentEntryVector;
 		

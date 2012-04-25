@@ -28,10 +28,10 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_CTA_OPERATIONS 0						// called O(n), where n is the number of CTAs launched
-#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
 #define REPORT_LOCAL_MEMORY 0							// display contents of local memory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +196,9 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 const executive::DynamicMulticoreExecutive::Translation *
 	executive::DynamicMulticoreExecutive::_getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
 	unsigned int specialization) {
+
+	reportE(REPORT_SCHEDULE_OPERATIONS, "getOrInsertTranslation(ws: " << warpsize 
+		<< ", subkernel: " << subkernel << ", spec: " << specialization);
 
 	int Log2WarpSize(int warpSize);
 		
@@ -388,15 +391,18 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 	//   execute subkernel
 	SubkernelId encodedSubkernel = _getResumePoint(&_contexts[0]);
 	SubkernelId subkernelId = analysis::KernelPartitioningPass::ExternalEdge::getSubkernelId(encodedSubkernel);
-	int warpSize = 1;
+	unsigned int warpSize = 1;
 	unsigned int specialization = 0;
 	
+	unsigned int maxWarpSize = 1;
+	
 	for (size_t startThread = 0; startThread < threads; ) {
-		if (threads - startThread >= 2) {
-			warpSize = 2;
+	
+		for (warpSize = 1; warpSize <= threads - startThread && warpSize <= maxWarpSize; warpSize <<= 1) {
+			
 		}
-		else {
-			warpSize = 1;
+		if (threads - startThread < warpSize || warpSize > maxWarpSize) {
+			warpSize >>= 1;
 		}
 		
 		{
@@ -408,7 +414,7 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "");
 			reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp (size " << warpSize << ") over threads: ");
-			for (int t = 0; t < warpSize; t++) {
+			for (unsigned int t = 0; t < warpSize; t++) {
 				warp[t].metadata = (char *)translation->metadata;
 				_setResumeStatus(&warp[t], analysis::KernelPartitioningPass::Thread_exit);
 				

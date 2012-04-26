@@ -251,7 +251,7 @@ namespace analysis {
 			void _createScheduler();
 			
 			void _createExit(analysis::DataflowGraph::iterator block, analysis::DataflowGraph *subkernelDfg, 
-				ThreadExitType type, SubkernelId target);
+				ThreadExitType type, const ir::PTXOperand &yieldTarget);
 			
 		public:
 		

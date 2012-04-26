@@ -1470,6 +1470,12 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 		DivergentEntry divergentEntry(ptrTaken, ptrNotTaken);
 		divergentEntries.push_back(divergentEntry);
 		
+		ir::BasicBlock::Edge takenEntryEdge(handlerTaken, bb->successors[0], ir::BasicBlock::Edge::Branch);
+		ir::BasicBlock::Edge nottakenEntryEdge(handlerNotTaken, bb->successors[1], ir::BasicBlock::Edge::Branch);
+		
+		subkernelCfg->insert_edge(takenEntryEdge);
+		subkernelCfg->insert_edge(nottakenEntryEdge);
+		
 		report(" adding divergent entry in-edge");
 	}
 	else {
@@ -1581,8 +1587,7 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		report("    IN-edge: " << edge_it->handler->label << " -> " << edge_it->frontierBlock->label 
 			<< " (" << aliveValues.size() << " live values");
 		
-		edge_it->handler->comment = boost::lexical_cast<std::string>(aliveValues.size()) 
-			+ " live-in values";
+		edge_it->handler->comment = boost::lexical_cast<std::string>(aliveValues.size()) + " live-in values";
 
 		_spillLiveValues(subkernelDfg, handlerDfgBlock, usedRegisters, aliveValues, registerOffsets, true);
 		
@@ -1621,7 +1626,8 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 			exitStatus = Thread_barrier;
 		}
 		
-		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, edge_it->entryId);
+		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, 
+			ir::PTXOperand(edge_it->entryId, ir::PTXOperand::u32));
 		
 		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
 		
@@ -1629,12 +1635,35 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 			frontierExitBlocks[edge_it->frontierBlock].push_back(*edge_it);
 		}
 	}
-
+	
+	for (auto divergence_it = divergentBranches.begin(); divergence_it != divergentBranches.end();
+		++divergence_it) {
+		
+		if (divergence_it->outEdge != outEdges.end()) {
+			report("  it's a real ExternalEdge");
+			report("    flags: " << divergence_it->outEdge->exitStatus);
+		}
+		
+		report("  visiting a divergent branch, looking for DFG for handler block '" << 0 << "'");
+		
+		/*
+		auto handlerDfgBlock = subkernelCfgToDfg[divergence_it->outEdge->handler];
+		
+		ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+		selp.type = ir::PTXOperand::u32;
+		selp.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+		selp.a = ir::PTXOperand(divergence_it->targetEntryIds[0], ir::PTXOperand::u32);
+		selp.b = ir::PTXOperand(divergence_it->targetEntryIds[1], ir::PTXOperand::u32);
+		selp.c = getTerminator(divergence_it->outEdge->sourceEdge.head)->pg;
+		subkernelDfg->insert(handlerDfgBlock, selp, 0);
+		*/
+	}
+	
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
 }
 
 void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::DataflowGraph::iterator block, 
-	analysis::DataflowGraph *subkernelDfg, ThreadExitType type, SubkernelId target) {
+	analysis::DataflowGraph *subkernelDfg, ThreadExitType type, const ir::PTXOperand & target) {
 	
 	report("  creating exit in block " << block->block()->label);
 	
@@ -1658,7 +1687,7 @@ void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::Dataflow
 		store.type = ir::PTXOperand::u32;
 		store.addressSpace = ir::PTXInstruction::Local;
 		store.d = ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move.d.reg, 0);
-		store.a = ir::PTXOperand(target, ir::PTXOperand::u32);
+		store.a = target;
 		subkernelDfg->insert(block, store);
 	}
 	

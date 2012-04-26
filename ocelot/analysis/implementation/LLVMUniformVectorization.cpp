@@ -47,9 +47,10 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
-#define REPORT_FINAL_SUBKERNEL 0
+#define REPORT_INITIAL_SUBKERNEL 0
+#define REPORT_FINAL_SUBKERNEL 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -220,18 +221,16 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 {
 	report("Translation(" << f->getName().str() << ") on subkernel with warp size " << pass->warpSize);
 	
-	/*
-	if (pass->warpSize == 1) {
-		_scalarPreprocess();
-	}
-	else {
-		_transformWarpSynchronous();
-	}
-	*/
-	
+#if REPORT_BASE && REPORT_INITIAL_SUBKERNEL
+	report(" LLVM function before vectorization\n" << String(function));
+#endif
+
 	_scalarPreprocess();
+	
 	if (pass->warpSize > 1) {
 		_transformWarpSynchronous();
+		_divergenceHandling();
+		
 		
 	#if INSERT_DEBUG_REPORTING
 		_debugReporting();
@@ -244,13 +243,6 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
 #if REPORT_BASE && REPORT_FINAL_SUBKERNEL
-
-	report(" Arguments: ");
-	for (llvm::Function::arg_iterator arg_it = function->arg_begin(); 
-		arg_it != function->arg_end(); ++arg_it) {
-		report("  " << String( llvm::dyn_cast<llvm::PointerType>(arg_it->getType())->getElementType()));
-	}
-
 	report(" LLVM function:\n" << String(function));
 #endif
 }
@@ -272,6 +264,11 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	
 	// construct scheduler entry and load thread-local values
 	_initializeSchedulerEntryBlock();
+	
+	/*
+	// push any constants into expressions using them
+	_propagateConstants();
+	*/
 
 	// relocate any additional blocks created during translation
 	_hoistDeclarationBlocks();
@@ -281,7 +278,6 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 		
 	// clean-up step
 	_scalarOptimization();
-	
 	
 	if (pass->warpSize == 1) {
 #if INSERT_DEBUG_REPORTING
@@ -536,6 +532,11 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	}
 }
 
+void analysis::LLVMUniformVectorization::Translation::_propagateConstants() {
+	report("_propagateConstants()");
+	
+}
+
 void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() {
 	const char *initializerBlocks[] = { 
 		"$OcelotRegisterInitializerBlock", 
@@ -636,7 +637,9 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
-	_eliminateEmptyBlocks();
+	if (pass->warpSize == 1) {
+		_eliminateEmptyBlocks();
+	}
 	_basicBlockPasses();
 }
 
@@ -904,6 +907,10 @@ void analysis::LLVMUniformVectorization::Translation::_divergenceHandling() {
 		divergence_it != subkernel->divergentBranches.end(); ++divergence_it) {
 		_updateDivergentBlock(*divergence_it, subkernel->outEdges.at(divergence_it->outEdgeIndex));
 	}
+	
+	report("_divergenceHandling() returning");
+	
+	function->dump();
 }
 
 /*!
@@ -916,6 +923,7 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 	const analysis::KernelPartitioningPass::ExternalEdge &outEdge) {
 
 	report("  _updateDivergentBlock(" << divergence.frontierBlock->label << ")");
+	report("    handler: " << outEdge.handler->label);
 	
 	typedef analysis::KernelPartitioningPass::DivergentBranch DivergentBranch; 
 	
@@ -926,7 +934,28 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 	assert(handler && "failed to obtain handler block from Ocelot->LLVM mapping");
 	
 	llvm::TerminatorInst *terminator = llvmBlock->getTerminator();
-		
+	
+	report("   obtained llvm block for handler and frontier");
+	
+	// remove phi instructions in divergence handler - should only have one predecessor
+	std::vector<llvm::PHINode *> killWithFire;
+	for (llvm::BasicBlock::iterator inst_it = handler->begin(); inst_it != handler->end(); ++inst_it) {
+		if (llvm::PHINode *phiNode = llvm::dyn_cast<llvm::PHINode>(&*inst_it)) {
+			for (unsigned int i = 0; i < phiNode->getNumIncomingValues(); i++) {
+				phiNode->setIncomingBlock(i, schedulerEntryBlock.block);
+			}
+			if (phiNode->getNumIncomingValues() == 1) {
+				if (llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(phiNode->getIncomingValue(0))) {
+					phiNode->replaceAllUsesWith(constant);
+					killWithFire.push_back(phiNode);
+				}
+			}
+		}
+	}
+	for (auto kill_it = killWithFire.begin(); kill_it != killWithFire.end(); ++kill_it) {
+		(*kill_it)->eraseFromParent();
+	}
+	
 	if (llvm::BranchInst *branchInst = llvm::dyn_cast<llvm::BranchInst>(terminator)) {
 		if (branchInst->isConditional() && llvm::Instruction::classof(branchInst->getCondition())) {
 		
@@ -934,9 +963,11 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 			VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.find(condition);
 			if (vec_it != vectorizedInstructionMap.end()) {
 				
+				report("  vectorized condition instruction (" << condition->getName().str() << ")");
+				
 				llvm::BasicBlock *targetTrue = branchInst->getSuccessor(0);
 				llvm::BasicBlock *targetFalse = branchInst->getSuccessor(1);
-					
+				
 				branchInst->eraseFromParent();
 				
 				llvm::Type *intTy = getTyInt(32);
@@ -945,10 +976,31 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 				
 				for (size_t t = 1; t < vec_it->second.replicated.size(); ++t) {
 					llvm::Instruction *ext = new llvm::ZExtInst(vec_it->second.replicated[t], intTy, 
-						"cond", branchInst->getParent());
+						"cond", llvmBlock);
 					condition = llvm::BinaryOperator::Create(llvm::Instruction::Add, condition,
 						ext, "cmpws", llvmBlock);
 				}
+				
+				// find select instruction in handler
+				llvm::SelectInst *selectInst = 0;
+				for (llvm::BasicBlock::iterator inst_it = handler->begin(); 
+					!selectInst && inst_it != handler->end(); ++inst_it ) {
+					
+					selectInst = llvm::dyn_cast<llvm::SelectInst>(&*inst_it);
+				}
+				if (selectInst) {
+					VectorizedInstructionMap::iterator vec_select_it = vectorizedInstructionMap.find(selectInst);
+					if (vec_select_it != vectorizedInstructionMap.end()) {
+						report(" updating select instruction");
+						for (size_t t = 0; t < vec_select_it->second.replicated.size(); ++t) {
+							llvm::dyn_cast<llvm::SelectInst>(vec_select_it->second.replicated[t])->setOperand(
+								0, vec_it->second.replicated[t]);
+						}
+					}
+				}
+				
+		
+				report("    warp-wide reduction of condition yielding: " << String(condition));
 		
 				llvm::TerminatorInst *terminatorInst = 0;
 				

@@ -28,7 +28,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_CTA_OPERATIONS 0						// called O(n), where n is the number of CTAs launched
 #define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
@@ -394,7 +394,7 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 	unsigned int warpSize = 1;
 	unsigned int specialization = 0;
 	
-	unsigned int maxWarpSize = 1;
+	unsigned int maxWarpSize = 2;
 	
 	for (size_t startThread = 0; startThread < threads; ) {
 	

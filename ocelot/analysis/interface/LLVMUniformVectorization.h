@@ -215,6 +215,7 @@ namespace analysis
 			
 			void _scalarPreprocess();
 			
+			void _propagateConstants();
 			void _hoistDeclarationBlocks();
 			void _scalarOptimization();
 			

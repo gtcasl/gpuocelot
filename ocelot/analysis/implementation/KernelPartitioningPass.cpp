@@ -39,7 +39,7 @@
 #define REPORT_EMIT_SUBKERNEL_PTX 1
 #define REPORT_EMIT_SOURCE_PTXKERNEL 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +61,6 @@ static bool doesBarrierTerminateBlock(ir::BasicBlock::Pointer block) {
 }
 			
 ////////////////////////////////////////////////////////////////////////////////////////////////////	
-
 
 analysis::KernelPartitioningPass::KernelPartitioningPass() {
 
@@ -1424,19 +1423,54 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 		DivergentBranch::Diverge_false_internal,
 	};
 	
+	DivergentBranch divergence(0, bb, 0);
+	
+	int successorIndex[] = {0, 1};	// [0] is true target, [1] is false target
+	for (ir::BasicBlock::EdgePointerVector::iterator out_it = bb->out_edges.begin();
+		out_it != bb->out_edges.end(); ++out_it) {
+		
+		if ((*out_it)->type == ir::BasicBlock::Edge::Branch) {
+			successorIndex[0] = (int)(out_it - bb->out_edges.begin());
+		}
+		else {
+			successorIndex[1] = (int)(out_it - bb->out_edges.begin());
+		}
+	}
+	for (int i = 0; i < 2; i++) {
+		if (bb->out_edges.at(successorIndex[i])->tail != bb->successors.at(successorIndex[i])) {
+			std::swap(successorIndex[0], successorIndex[1]);
+		}
+	}
+		
 	int flags = 0;
-	bool internalEntry = false;
 	bool completelyInternal = true;
 	for (int i = 0; i < 2; i++) {
-		if (sourceBlocks.find(inverseBlockMapping[bb->successors[i]]) == sourceBlocks.end()) {
+		if (sourceBlocks.find(inverseBlockMapping[bb->successors[ successorIndex[i] ]]) == sourceBlocks.end()) {
 			flags |= divergenceFlags[i*2];
 			completelyInternal = false;
-			report("  successor(" << i << ") " << bb->successors[i]->label << " NOT in partition");
+			report("  successor(" << i << ") " << bb->successors[successorIndex[i]]->label << " NOT in partition");
 		}
 		else {
 			flags |= divergenceFlags[i*2+1];
-			internalEntry = true;
-			report("  successor(" << i << ") " << bb->successors[i]->label << " in partition");
+			
+			ir::BasicBlock handler;
+			handler.label = bb->label + "_to_" + bb->successors[successorIndex[i]]->label + "_divergentEntry";
+			ir::ControlFlowGraph::iterator handlerTaken = subkernelCfg->insert_block(handler);
+			
+			SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 1));
+		
+			ExternalEdge takenInEdge(inverseBlockMapping[bb], bb->successors[successorIndex[i]], handlerTaken, entryId);
+			inEdges.insert(inEdges.end(), takenInEdge);
+			ir::BasicBlock::Edge takenEntryEdge(handlerTaken, bb->successors[successorIndex[i]], ir::BasicBlock::Edge::Branch);		
+			subkernelCfg->insert_edge(takenEntryEdge);
+		
+			int entryIndex = i;
+			if (terminator->pg.condition == ir::PTXOperand::nPT) {
+				entryIndex = 1 - i;
+			}
+			divergence.targetEntryIds[i] = entryId;
+			
+			report("  successor(" << i << ") " << bb->successors[successorIndex[i]]->label << " in partition");
 		}
 	}
 
@@ -1446,63 +1480,24 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 	std::string prefix = bb->label + "_to_" + terminator->d.identifier;
 	SubkernelId entryId = 0;
 	
-	if (internalEntry) {
-		//
-		// the successor requires an additional entry handler
-		//
-
-		ir::BasicBlock handler;
-		handler.label = bb->label + "_to_" + bb->successors[0]->label + "_divergentEntry";
-		ir::ControlFlowGraph::iterator handlerTaken = subkernelCfg->insert_block(handler);
-		
-		handler.label = bb->label + "_to_" + bb->successors[1]->label + "_divergentEntry";
-		ir::ControlFlowGraph::iterator handlerNotTaken = subkernelCfg->insert_block(handler);
-
-		SubkernelId takenEntryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 1));
-		SubkernelId nottakenEntryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 2));
-		
-		ExternalEdge takenInEdge(inverseBlockMapping[bb], bb->successors[0], handlerTaken, takenEntryId);
-		ExternalEdge nottakenInEdge(inverseBlockMapping[bb], bb->successors[1], handlerNotTaken, nottakenEntryId);
-		
-		ExternalEdgePointer ptrTaken = inEdges.insert(inEdges.end(), takenInEdge);
-		ExternalEdgePointer ptrNotTaken = inEdges.insert(inEdges.end(), nottakenInEdge); 
-		
-		DivergentEntry divergentEntry(ptrTaken, ptrNotTaken);
-		divergentEntries.push_back(divergentEntry);
-		
-		ir::BasicBlock::Edge takenEntryEdge(handlerTaken, bb->successors[0], ir::BasicBlock::Edge::Branch);
-		ir::BasicBlock::Edge nottakenEntryEdge(handlerNotTaken, bb->successors[1], ir::BasicBlock::Edge::Branch);
-		
-		subkernelCfg->insert_edge(takenEntryEdge);
-		subkernelCfg->insert_edge(nottakenEntryEdge);
-		
-		report(" adding divergent entry in-edge");
-	}
-	else {
-		assert(0 && "FAILED to obtain entryId for other subkernel");
-	}
+	ir::ControlFlowGraph::iterator handlerBlock;
 	
-	if (completelyInternal) {
-		ir::ControlFlowGraph::iterator handlerBlock;
+	ir::BasicBlock handler;
+	handler.label = prefix + "_divergentYield";
+	handlerBlock = subkernelCfg->insert_block(handler);
+	
+	ExternalEdge externalEdge(inverseBlockMapping[bb], handlerBlock, entryId, 
+		Thread_branch, ExternalEdge::F_divergence);
 		
-		ir::BasicBlock handler;
-		handler.label = prefix + "_divergentYield";
-		handlerBlock = subkernelCfg->insert_block(handler);
-		
-		ExternalEdge externalEdge(inverseBlockMapping[bb], handlerBlock, entryId, 
-			Thread_branch, ExternalEdge::F_divergence);
-			
-		externalEdge.frontierBlock = bb;
-		ExternalEdgeVector::iterator out = outEdges.insert(outEdges.end(), externalEdge);
-		
-		DivergentBranch divergence(flags, bb, out);
-		divergentBranches.push_back(divergence);
-		
-		report(" adding divergent branch out-edge");
-	}
-	else {
-		assert(0 && "FAILED to merge branch-to-external-edge with existing out-edge");
-	}
+	externalEdge.frontierBlock = bb;
+	outEdges.insert(outEdges.end(), externalEdge);
+	
+	divergence.flags = flags;
+	divergence.outEdgeIndex = outEdges.size() - 1;
+	divergentBranches.push_back(divergence);
+	
+	report(" adding divergent branch out-edge");
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1587,7 +1582,8 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		report("    IN-edge: " << edge_it->handler->label << " -> " << edge_it->frontierBlock->label 
 			<< " (" << aliveValues.size() << " live values");
 		
-		edge_it->handler->comment = boost::lexical_cast<std::string>(aliveValues.size()) + " live-in values";
+		edge_it->handler->comment = boost::lexical_cast<std::string>(aliveValues.size()) + 
+			" live-in values; entry-ID: " + boost::lexical_cast<std::string>(edge_it->entryId);
 
 		_spillLiveValues(subkernelDfg, handlerDfgBlock, usedRegisters, aliveValues, registerOffsets, true);
 		
@@ -1626,8 +1622,42 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 			exitStatus = Thread_barrier;
 		}
 		
-		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, 
-			ir::PTXOperand(edge_it->entryId, ir::PTXOperand::u32));
+		ir::PTXOperand yieldTarget(edge_it->entryId, ir::PTXOperand::u32);
+		size_t edgeIndex = (size_t)(size_t)(edge_it - outEdges.begin());
+		
+		report("is this a divergent handler? edgeIndex " << edgeIndex);
+		
+		for (auto divergence_it = divergentBranches.begin(); divergence_it != divergentBranches.end();
+			++divergence_it) {
+		
+			report("divergent branch [frontier block " << divergence_it->frontierBlock->label << "]");
+			report("  outEdgeIndex: " << divergence_it->outEdgeIndex);
+		
+			if (divergence_it->outEdgeIndex < outEdges.size()) {
+				report("  it's a real ExternalEdge");
+				report("    flags: " << outEdges.at(divergence_it->outEdgeIndex).exitStatus);
+			}
+		
+			if (divergence_it->outEdgeIndex == edgeIndex) {
+				ExternalEdge &outEdge = outEdges.at(divergence_it->outEdgeIndex);
+				auto handlerDfgBlock = subkernelCfgToDfg[outEdge.handler];
+		
+				ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+				selp.type = ir::PTXOperand::u32;
+				selp.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
+				selp.a = ir::PTXOperand(divergence_it->targetEntryIds[0], ir::PTXOperand::u32);
+				selp.b = ir::PTXOperand(divergence_it->targetEntryIds[1], ir::PTXOperand::u32);
+				selp.c = getTerminator(outEdge.sourceEdge.head)->pg;
+				subkernelDfg->insert(handlerDfgBlock, selp, 0);
+				yieldTarget = selp.d;
+				
+				report("  found yield target");
+				
+				break;
+			}
+		}
+	
+		_createExit(handlerDfgBlock, subkernelDfg, exitStatus, yieldTarget);
 		
 		report("  adding " << edge_it->frontierBlock->label << " to frontierExitBlocks");
 		
@@ -1636,28 +1666,7 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		}
 	}
 	
-	for (auto divergence_it = divergentBranches.begin(); divergence_it != divergentBranches.end();
-		++divergence_it) {
-		
-		if (divergence_it->outEdge != outEdges.end()) {
-			report("  it's a real ExternalEdge");
-			report("    flags: " << divergence_it->outEdge->exitStatus);
-		}
-		
-		report("  visiting a divergent branch, looking for DFG for handler block '" << 0 << "'");
-		
-		/*
-		auto handlerDfgBlock = subkernelCfgToDfg[divergence_it->outEdge->handler];
-		
-		ir::PTXInstruction selp(ir::PTXInstruction::SelP);
-		selp.type = ir::PTXOperand::u32;
-		selp.d = ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernelDfg->newRegister());
-		selp.a = ir::PTXOperand(divergence_it->targetEntryIds[0], ir::PTXOperand::u32);
-		selp.b = ir::PTXOperand(divergence_it->targetEntryIds[1], ir::PTXOperand::u32);
-		selp.c = getTerminator(divergence_it->outEdge->sourceEdge.head)->pg;
-		subkernelDfg->insert(handlerDfgBlock, selp, 0);
-		*/
-	}
+	
 	
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
 }

@@ -902,7 +902,7 @@ void analysis::LLVMUniformVectorization::Translation::_divergenceHandling() {
 	for (DivergentBranchVector::const_iterator divergence_it = subkernel->divergentBranches.begin();
 	
 		divergence_it != subkernel->divergentBranches.end(); ++divergence_it) {
-		_updateDivergentBlock(*divergence_it, *(divergence_it->outEdge));
+		_updateDivergentBlock(*divergence_it, subkernel->outEdges.at(divergence_it->outEdgeIndex));
 	}
 }
 

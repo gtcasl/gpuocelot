@@ -158,8 +158,8 @@ namespace analysis {
 		public:
 			DivergentBranch(): flags(0) {}
 			
-			DivergentBranch(int _flags, ir::BasicBlock::Pointer _frontier, ExternalEdgeVector::iterator _out):
-				flags(_flags), frontierBlock(_frontier), outEdge(_out) { }
+			DivergentBranch(int _flags, ir::BasicBlock::Pointer _frontier, size_t index):
+				flags(_flags), frontierBlock(_frontier), outEdgeIndex(index) { }
 				
 			~DivergentBranch() {}
 				
@@ -169,9 +169,9 @@ namespace analysis {
 			
 			//! \brief kernel basic block which must be transformed to interact with yield handlers
 			ir::BasicBlock::Pointer frontierBlock;
-		
-			//! \brief 
-			ExternalEdgeVector::iterator outEdge;
+			
+			//! \brief this is way better
+			size_t outEdgeIndex;
 			
 			//! \brief
 			SubkernelId targetEntryIds[2];

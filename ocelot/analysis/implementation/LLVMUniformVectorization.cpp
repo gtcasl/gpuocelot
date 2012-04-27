@@ -47,7 +47,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_INITIAL_SUBKERNEL 1
 #define REPORT_FINAL_SUBKERNEL 1
@@ -213,6 +213,9 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	pass(_pass)
 {
 	report("Translation(" << f->getName().str() << ") on subkernel with warp size " << pass->warpSize);
+	
+	// some preliminary clean-up
+	_eliminateUselessExits();
 	
 #if REPORT_BASE && REPORT_INITIAL_SUBKERNEL
 	report(" LLVM function before vectorization\n" << String(function));
@@ -639,6 +642,37 @@ void analysis::LLVMUniformVectorization::Translation::_scalarOptimization() {
 void analysis::LLVMUniformVectorization::Translation::_basicBlockPasses() {
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		_eliminateBitcasts(bb_it);
+	}
+}
+
+void analysis::LLVMUniformVectorization::Translation::_eliminateUselessExits() {
+
+	std::vector< llvm::BasicBlock *> killWithFire;
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		
+		if (llvm::ReturnInst::classof(bb_it->getFirstNonPHI())) {
+			if (llvm::pred_begin(&*bb_it) == llvm::pred_end(&*bb_it)) {
+				killWithFire.push_back(&*bb_it);
+			}
+			else {
+				// delete all but the last exit or return
+				std::vector< llvm::Instruction *> killInst;
+				llvm::BasicBlock::iterator next_it;
+				for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+					next_it = inst_it;
+					++next_it;
+					if (next_it != bb_it->end()) {
+						killInst.push_back(&*inst_it);
+					}
+				}
+				for (auto inst_it = killInst.begin(); inst_it != killInst.end(); ++inst_it) {
+					(*inst_it)->eraseFromParent();
+				}
+			}
+		}
+	}
+	for (auto kill_it = killWithFire.begin(); kill_it != killWithFire.end(); ++kill_it) {
+		(*kill_it)->eraseFromParent();
 	}
 }
 

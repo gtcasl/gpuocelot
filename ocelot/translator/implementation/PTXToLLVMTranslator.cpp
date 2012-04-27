@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -2137,6 +2137,12 @@ void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i,
 	ir::LLVMBr branch;
 	
 	report("_translateBra() " << i.toString() << " (targets: " << block.targets().size() << ")");
+	report("  targets: ");
+	for (analysis::DataflowGraph::BlockPointerSet::const_iterator target_it = block.targets().begin();
+		target_it != block.targets().end(); ++target_it) {
+	
+		report("   " << (*target_it)->label());
+	}
 	
 	if( block.targets().empty() )
 	{

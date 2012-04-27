@@ -217,6 +217,7 @@ namespace analysis
 			
 			void _propagateConstants();
 			void _hoistDeclarationBlocks();
+			void _eliminateUselessExits();
 			void _scalarOptimization();
 			
 			void _basicBlockPasses();

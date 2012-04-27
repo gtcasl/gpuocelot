@@ -571,6 +571,10 @@ namespace analysis
 					begin->second->_targets.insert( bi->second );
 					bi->second->_predecessors.insert( begin->second );	
 				}
+				else if ((*ei)->type == ir::ControlFlowGraph::Edge::Dummy) {
+					begin->second->_targets.insert( bi->second );
+					bi->second->_predecessors.insert( begin->second );
+				}
 				else
 				{
 					/* assertM( false, "Got invalid edge type between " 

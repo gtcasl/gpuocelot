@@ -39,7 +39,7 @@
 #define REPORT_EMIT_SUBKERNEL_PTX 1
 #define REPORT_EMIT_SOURCE_PTXKERNEL 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -848,7 +848,8 @@ std::ostream & analysis::KernelPartitioningPass::AnnotatedWriter::write(
 					target = targetEdge_it->handler->label;
 				}
 				out << escape(edge_it->handler->label) << " -> " 
-					<< escape(target) << " [style=bold,label=\"entry id: 0x" << std::hex << edge_it->entryId << std::dec << "\"];";
+					<< escape(target) << " [style=bold,label=\"entry id: 0x" << std::hex << edge_it->entryId 
+					<< std::dec << "\"];";
 			}
 		}
 	}
@@ -1458,9 +1459,11 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 			
 			SubkernelId entryId = ExternalEdge::getEncodedEntry(id, (SubkernelId)(inEdges.size() + 1));
 		
-			ExternalEdge takenInEdge(inverseBlockMapping[bb], bb->successors[successorIndex[i]], handlerTaken, entryId);
+			ExternalEdge takenInEdge(inverseBlockMapping[bb], bb->successors[successorIndex[i]], 
+				handlerTaken, entryId);
 			inEdges.insert(inEdges.end(), takenInEdge);
-			ir::BasicBlock::Edge takenEntryEdge(handlerTaken, bb->successors[successorIndex[i]], ir::BasicBlock::Edge::Branch);		
+			ir::BasicBlock::Edge takenEntryEdge(handlerTaken, bb->successors[successorIndex[i]],
+				ir::BasicBlock::Edge::Branch);		
 			subkernelCfg->insert_edge(takenEntryEdge);
 		
 			int entryIndex = i;

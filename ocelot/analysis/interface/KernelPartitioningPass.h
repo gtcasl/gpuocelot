@@ -142,7 +142,7 @@ namespace analysis {
 		typedef std::vector< ir::BasicBlock::Edge > EdgeVector;
 		typedef std::unordered_map< ir::BasicBlock::Pointer, ir::BasicBlock::Pointer> BasicBlockMap;
 		typedef std::vector< BasicBlockSet > PartitionVector;
-		
+				
 		/*!
 			\brief handles divergent branches within subkernels
 		*/
@@ -224,9 +224,12 @@ namespace analysis {
 			
 			void _partitionBlocksAtBarrier();
 			
-			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);			
-			void _analyzeBarriers(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
-			void _analyzeDivergentControlFlow(ir::PTXKernel *source, EdgeVector &internalEdges, BasicBlockMap &blockMapping);
+			void _analyzeExternalEdges(ir::PTXKernel *source, EdgeVector &internalEdges, 
+				BasicBlockMap &blockMapping);			
+			void _analyzeBarriers(ir::PTXKernel *source, EdgeVector &internalEdges, 
+				BasicBlockMap &blockMapping);
+			void _analyzeDivergentControlFlow(ir::PTXKernel *source, EdgeVector &internalEdges, 
+				BasicBlockMap &blockMapping);
 			
 			//! \param inverseBlockMapping maps subkernel blocks onto blocks from the PTX kernel
 			void _createDivergentBranch(BasicBlockMap &inverseBlockMapping, ir::BasicBlock::Pointer bb_it);

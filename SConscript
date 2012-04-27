@@ -245,6 +245,7 @@ tests.append(('TestConvergence', 'ocelot/executive/test/TestConvergence.cu', 'fu
 tests.append(('TestConvergenceBarrier', 'ocelot/executive/test/TestConvergentBarrier.cu', 'full'))
 tests.append(('TestConvergenceLoop', 'ocelot/executive/test/TestConvergenceLoop.cu', 'full'))
 tests.append(('TestDivergence', 'ocelot/executive/test/TestDivergence.cu', 'full'))
+tests.append(('TestKernelPartitioning', 'ocelot/analysis/test/TestKernelPartitioning.cpp', 'full'))
 
 for test in tests:
 	libs = ocelot_libs

@@ -276,7 +276,6 @@ void analysis::KernelPartitioningPass::KernelGraph::_partitionMaximumSize(Partit
 
 	report("KernelGraph::_partitionMaximumSize()");
 	
-	
 	// add all blocks to subkernel
 	ir::ControlFlowGraph *cfg = ptxKernel->cfg();
 	BasicBlockSet subkernel;
@@ -1566,9 +1565,7 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 	report("  visiting external IN-edges");
 	for (ExternalEdgeVector::iterator edge_it = inEdges.begin();
 		edge_it != inEdges.end(); ++edge_it) {
-		
-		report("    in-edge");
-		
+				
 		assert(subkernelCfgToDfg.find(edge_it->handler) != subkernelCfgToDfg.end());		
 		assert(cfgToDfg.find(edge_it->criticalLiveness()) != cfgToDfg.end() && 
 			"failed to find liveness block in DFG");
@@ -1668,10 +1665,10 @@ void analysis::KernelPartitioningPass::Subkernel::_createExternalHandlers(
 		}
 	}
 	
-	
-	
 	_updateHandlerControlFlow(frontierExitBlocks, subkernelDfg);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void analysis::KernelPartitioningPass::Subkernel::_createExit(analysis::DataflowGraph::iterator block, 
 	analysis::DataflowGraph *subkernelDfg, ThreadExitType type, const ir::PTXOperand & target) {

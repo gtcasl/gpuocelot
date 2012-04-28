@@ -2138,10 +2138,9 @@ void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i,
 	
 	report("_translateBra() " << i.toString() << " (targets: " << block.targets().size() << ")");
 	report("  targets: ");
-	for (analysis::DataflowGraph::BlockPointerSet::const_iterator target_it = block.targets().begin();
-		target_it != block.targets().end(); ++target_it) {
 	
-		report("   " << (*target_it)->label());
+	if (!block.targets().empty()) {
+		report("   " << block.branchTarget()->label());
 	}
 	
 	if( block.targets().empty() )
@@ -2152,7 +2151,7 @@ void PTXToLLVMTranslator::_translateBra( const ir::PTXInstruction& i,
 	}
 	else
 	{
-		branch.iftrue = "%" + (*block.targets().begin())->label();
+		branch.iftrue = "%" + block.branchTarget()->label();
 		if( block.fallthrough() != _dfg->end() )
 		{
 			if( (*block.targets().begin()) != block.fallthrough() )

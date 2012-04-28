@@ -159,6 +159,7 @@ class DataflowGraph : public KernelAnalysis
 		};
 
 		/*! \brief A vector of Block pointers */
+		typedef BlockVector::iterator BlockPointer;
 		typedef std::unordered_set< BlockVector::iterator,
 			BlockVector_Hash > BlockPointerSet;
 		
@@ -192,6 +193,8 @@ class DataflowGraph : public KernelAnalysis
 				BlockVector::iterator _fallthrough;
 				/*! \brief The target blocks */
 				BlockPointerSet _targets;
+				/*! \brief The target blocks connected via dummy edges */
+				BlockPointerSet _dummyTargets;
 				/*! \brief A list of predecessor blocks */
 				BlockPointerSet _predecessors;
 				/*! \brief The type of block */
@@ -234,6 +237,8 @@ class DataflowGraph : public KernelAnalysis
 				RegisterSet& aliveOut();
 				/*! \brief Get the fallthrough block */
 				BlockVector::iterator fallthrough() const;
+				/*! *\brief gets the one and only branch target */
+				const BlockPointer& branchTarget() const;
 				/*! \brief Get a list of target blocks */
 				const BlockPointerSet& targets() const;
 				/*! \brief Get a list of predecessor blocks */

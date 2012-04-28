@@ -373,6 +373,18 @@ namespace analysis
 		return _targets;
 	}
 	
+	const DataflowGraph::BlockPointer &
+		DataflowGraph::Block::branchTarget() const {
+		for (BlockPointerSet::const_iterator block_it = _targets.begin();
+			block_it != _targets.end(); ++block_it) {
+			
+			if (_dummyTargets.find(*block_it) == _dummyTargets.end()) {
+				return *block_it;
+			}
+		}
+		return *_targets.begin();
+	}
+				
 	const DataflowGraph::BlockPointerSet& 
 		DataflowGraph::Block::predecessors() const
 	{
@@ -572,6 +584,10 @@ namespace analysis
 					bi->second->_predecessors.insert( begin->second );	
 				}
 				else if ((*ei)->type == ir::ControlFlowGraph::Edge::Dummy) {
+
+					report( "  dummy edge " << begin->second->label() << " -> "
+						<< bi->second->label() );
+					begin->second->_dummyTargets.insert( bi->second );
 					begin->second->_targets.insert( bi->second );
 					bi->second->_predecessors.insert( begin->second );
 				}

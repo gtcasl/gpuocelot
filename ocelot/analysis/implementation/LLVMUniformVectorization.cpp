@@ -47,10 +47,10 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
-#define REPORT_INITIAL_SUBKERNEL 1
-#define REPORT_FINAL_SUBKERNEL 1
+#define REPORT_INITIAL_SUBKERNEL 0
+#define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -227,7 +227,6 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 		_transformWarpSynchronous();
 		_divergenceHandling();
 		
-		
 	#if INSERT_DEBUG_REPORTING
 		_debugReporting();
 	#endif
@@ -236,6 +235,8 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	#endif
 	
 	}
+	
+	_eliminateEmptyBlocks();
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
 #if REPORT_BASE && REPORT_FINAL_SUBKERNEL
@@ -724,7 +725,6 @@ void analysis::LLVMUniformVectorization::Translation::_promoteGempPointerArithme
 	}
 }
 
-
 void analysis::LLVMUniformVectorization::Translation::_eraseBlock(llvm::BasicBlock *block) {
 	report("Translation::_eraseBlock( " << block->getName().str() << ")");
 	
@@ -751,14 +751,19 @@ void analysis::LLVMUniformVectorization::Translation::_eliminateEmptyBlocks() {
 		
 		report("  visiting block: " << bb_it->getName().str());
 		
+		std::stringstream ss;
+		
 		for (llvm::pred_iterator pred_it = llvm::pred_begin(&*bb_it); 
-			pred_it != llvm::pred_end(&*bb_it); ++pred_it) {
-			++count;
-			break;
+			pred_it != llvm::pred_end(&*bb_it); ++pred_it, ++count) {
+			
+			ss << (count ? ", " : "") << (*pred_it)->getName().str();
 		}
 		if (!count) {
 			report("    - no predecessors");
 			killWithFire.push_back(&*bb_it);
+		}
+		else {
+			report("    - " << count << " predecessors: " << ss.str());
 		}
 	}
 	report("Eliminating block with no predecessors: (" << killWithFire.size() << " blocks)");
@@ -967,7 +972,7 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 	for (llvm::BasicBlock::iterator inst_it = handler->begin(); inst_it != handler->end(); ++inst_it) {
 		if (llvm::PHINode *phiNode = llvm::dyn_cast<llvm::PHINode>(&*inst_it)) {
 			for (unsigned int i = 0; i < phiNode->getNumIncomingValues(); i++) {
-				phiNode->setIncomingBlock(i, schedulerEntryBlock.block);
+				phiNode->setIncomingBlock(i, llvmBlock);
 			}
 			if (phiNode->getNumIncomingValues() == 1) {
 				if (llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(phiNode->getIncomingValue(0))) {

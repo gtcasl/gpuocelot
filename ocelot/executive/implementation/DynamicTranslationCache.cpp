@@ -44,6 +44,7 @@
 #include <llvm/Instructions.h>
 #include <llvm/Support/CFG.h>
 #include <llvm/Support/raw_os_ostream.h>
+#include <llvm/Transforms/Utils/Cloning.h>
 #else
 #error "LLVM MUST BE PRESENT"
 #endif
@@ -66,11 +67,11 @@
 #define REPORT_PTX_SUBKERNELS 1
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
+#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
-#define REPORT_SCHEDULE_OPERATIONS 1			// scheduling events
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
 #define REPORT_LLVM_WRITE_SOURCE 0				// saves LLVM source to disk
 
@@ -83,6 +84,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REQUIRE_VERIFY_MODULE	0					// if 1, verifies LLVM modules after translation
+#define REQUIRE_VERIFY_FUNCTION	1					// if 1, verifies LLVM function after translation
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -169,17 +171,6 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 	Translation *translation = 0;
 
 	_lock();
-		
-		/*
-	int lgWarpsize = Log2WarpSize(warpSize);
-	assert(lgWarpsize >= 0 && lgWarpsize < (int)translationVector.size());
-
-	if (translationVector[lgWarpsize][subkernelId]) {
-		translation = translationVector[lgWarpsize][subkernelId];
-		
-		report(" hit translation vector");
-	}
-	*/
 	
 	if (!translation) {
 		TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
@@ -1149,7 +1140,7 @@ static void cloneAndOptimizeTranslation(
 		ss << "_spec" << specialization;
 	}
 
-	if (warpSize == 1 && specialization == 0) {
+	if (false && (warpSize == 1 && specialization == 0)) {
 		translation->llvmFunction = translatedSubkernel.llvmFunction;
 		report("  translating source subkernel");
 	}
@@ -1222,7 +1213,7 @@ static void cloneAndOptimizeTranslation(
 	if (REQUIRE_VERIFY_MODULE && 
 		llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &verifyError)) {
 	
-		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
+		std::cerr << "verification failed for module containing kernel " << translatedKernel.kernel->name << " : \"" 
 			<< verifyError << "\"" << std::endl;
 			
 #if (REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
@@ -1236,6 +1227,30 @@ static void cloneAndOptimizeTranslation(
 #endif
 
 		assert(0 && "due to broken LLVM module");
+		
+		delete translatedKernel.llvmModule;
+		translatedKernel.llvmModule = 0;
+				
+		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
+			+ translatedKernel.kernel->name + " : \"" + verifyError + "\"");
+	}
+	else if (REQUIRE_VERIFY_FUNCTION &&
+		llvm::verifyFunction(*translation->llvmFunction, llvm::PrintMessageAction)) {
+	
+		std::cerr << "verification failed for translated function for " << translatedKernel.kernel->name << " : \"" 
+			<< verifyError << "\"" << std::endl;
+			
+#if (REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
+		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
+		
+		translation->llvmFunction->dump();
+		
+		std::cerr << "\nerror on subkernel: " << translatedSubkernel.llvmFunction->getName().str() << std::endl;
+		std::cerr << " specialization: " << translation->llvmFunction->getName().str() << std::endl;
+				
+#endif
+
+		assert(0 && "due to broken LLVM translation");
 		
 		delete translatedKernel.llvmModule;
 		translatedKernel.llvmModule = 0;

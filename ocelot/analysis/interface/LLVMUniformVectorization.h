@@ -269,6 +269,8 @@ namespace analysis
 			
 			void _vectorizeReplicated();
 			
+			llvm::Instruction *_getVectorizedInsertPoint(const VectorizedInstruction &vec);
+			
 			llvm::Instruction *_vectorize(VectorizedInstructionMap::iterator &vec_it);
 			
 			llvm::Instruction * _vectorizeBinaryOperator(llvm::BinaryOperator *inst, 

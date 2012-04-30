@@ -27,7 +27,7 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.016948223114 seconds
+INFO     Test completed in 0.0470569133759 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -41,8 +41,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1335567282
-Test time : 0.00100732
+Test Seed : 1335814028
+Test time : 0.00095439
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -174,19 +174,14 @@ Zext Instruction Passed
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.0274219512939 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
+INFO     Test completed in 0.0487010478973 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1027: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.0310552120209 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0358710289001 seconds
+INFO     Test completed in 0.065682888031 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -205,8 +200,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1335567282
-Test time : 0.0182354
+Test Seed : 1335814028
+Test time : 0.0100336
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -215,50 +210,395 @@ Test Point 3 Passed
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.0837638378143 seconds
+INFO      It produced the following output:
+Instruction does not dominate all uses!
+  %r1.t1 = load i32* %rt6.t1, align 4
+  %insert.r1.t1.vec = insertelement <4 x i32> %insert.r1.vec, i32 %r1.t1, i32 1
+Instruction does not dominate all uses!
+  %insert.r1.t1.vec = insertelement <4 x i32> %insert.r1.vec, i32 %r1.t1, i32 1
+  %insert.r1.t2.vec = insertelement <4 x i32> %insert.r1.t1.vec, i32 %r1.t2, i32 2
+Instruction does not dominate all uses!
+  %insert.r1.t2.vec = insertelement <4 x i32> %insert.r1.t1.vec, i32 %r1.t2, i32 2
+  %insert.r1.t3.vec = insertelement <4 x i32> %insert.r1.t2.vec, i32 %r1.t3, i32 3
+Instruction does not dominate all uses!
+  %insert.r1.t3.vec = insertelement <4 x i32> %insert.r1.t2.vec, i32 %r1.t3, i32 3
+  %rt24.vec = mul <4 x i32> %r10.vec, %insert.r1.t3.vec
+Instruction does not dominate all uses!
+  %rt24.vec = mul <4 x i32> %r10.vec, %insert.r1.t3.vec
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t3 = extractelement <4 x i32> %r18.vec, i32 3
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t2 = extractelement <4 x i32> %r18.vec, i32 2
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t1 = extractelement <4 x i32> %r18.vec, i32 1
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t0 = extractelement <4 x i32> %r18.vec, i32 0
+Instruction does not dominate all uses!
+  %r18.extracted.t0 = extractelement <4 x i32> %r18.vec, i32 0
+  %rt25 = zext i32 %r18.extracted.t0 to i64
+Instruction does not dominate all uses!
+  %r18.extracted.t3 = extractelement <4 x i32> %r18.vec, i32 3
+  %rt25.t3 = zext i32 %r18.extracted.t3 to i64
+Instruction does not dominate all uses!
+  %r18.extracted.t2 = extractelement <4 x i32> %r18.vec, i32 2
+  %rt25.t2 = zext i32 %r18.extracted.t2 to i64
+Instruction does not dominate all uses!
+  %r18.extracted.t1 = extractelement <4 x i32> %r18.vec, i32 1
+  %rt25.t1 = zext i32 %r18.extracted.t1 to i64
+Instruction does not dominate all uses!
+  %rt25 = zext i32 %r18.extracted.t0 to i64
+  %r19 = mul i64 %rt25, 4
+Instruction does not dominate all uses!
+  %rt25.t3 = zext i32 %r18.extracted.t3 to i64
+  %r19.t3 = mul i64 %rt25.t3, 4
+Instruction does not dominate all uses!
+  %rt25.t2 = zext i32 %r18.extracted.t2 to i64
+  %r19.t2 = mul i64 %rt25.t2, 4
+Instruction does not dominate all uses!
+  %rt25.t1 = zext i32 %r18.extracted.t1 to i64
+  %r19.t1 = mul i64 %rt25.t1, 4
+Instruction does not dominate all uses!
+  %r19 = mul i64 %rt25, 4
+  %r20 = add i64 %r0, %r19
+Instruction does not dominate all uses!
+  %r19.t3 = mul i64 %rt25.t3, 4
+  %r20.t3 = add i64 %r0.t3, %r19.t3
+Instruction does not dominate all uses!
+  %r19.t2 = mul i64 %rt25.t2, 4
+  %r20.t2 = add i64 %r0.t2, %r19.t2
+Instruction does not dominate all uses!
+  %r19.t1 = mul i64 %rt25.t1, 4
+  %r20.t1 = add i64 %r0.t1, %r19.t1
+Instruction does not dominate all uses!
+  %r20 = add i64 %r0, %r19
+  %rt26 = inttoptr i64 %r20 to float*
+Instruction does not dominate all uses!
+  %r20.t3 = add i64 %r0.t3, %r19.t3
+  %rt26.t3 = inttoptr i64 %r20.t3 to float*
+Instruction does not dominate all uses!
+  %r20.t2 = add i64 %r0.t2, %r19.t2
+  %rt26.t2 = inttoptr i64 %r20.t2 to float*
+Instruction does not dominate all uses!
+  %r20.t1 = add i64 %r0.t1, %r19.t1
+  %rt26.t1 = inttoptr i64 %r20.t1 to float*
+Instruction does not dominate all uses!
+  %rt26 = inttoptr i64 %r20 to float*
+  store float %r14, float* %rt26, align 4
+Instruction does not dominate all uses!
+  %rt26.t3 = inttoptr i64 %r20.t3 to float*
+  store float %r14.t3, float* %rt26.t3, align 4
+Instruction does not dominate all uses!
+  %rt26.t2 = inttoptr i64 %r20.t2 to float*
+  store float %r14.t2, float* %rt26.t2, align 4
+Instruction does not dominate all uses!
+  %rt26.t1 = inttoptr i64 %r20.t1 to float*
+  store float %r14.t1, float* %rt26.t1, align 4
+Broken module found, verification continues.
+verification failed for translated function for _Z6kernelPfii : ""
+LLVMDynamicTranslationCache.cpp:1244:
+
+define internal void @_subkernel__Z6kernelPfii_1_opt1_ws4(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %integerTexture = alloca i32, i32 4, align 16
+  %floatingPointTexture = alloca float, i32 4, align 16
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 0
+  %threadId.x.t1 = load i32* %12
+  %13 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 1
+  %threadId.y.t1 = load i32* %13
+  %14 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 2
+  %threadId.z.t1 = load i32* %14
+  %15 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 0
+  %blockDim.x.t1 = load i32* %15
+  %16 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 1
+  %blockDim.y.t1 = load i32* %16
+  %17 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 2
+  %blockDim.z.t1 = load i32* %17
+  %18 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 0
+  %blockId.x.t1 = load i32* %18
+  %19 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 1
+  %blockId.y.t1 = load i32* %19
+  %20 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 2
+  %blockId.z.t1 = load i32* %20
+  %21 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 0
+  %gridDim.x.t1 = load i32* %21
+  %22 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 1
+  %gridDim.y.t1 = load i32* %22
+  %23 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 2
+  %gridDim.z.t1 = load i32* %23
+  %localPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 4
+  %localPtr.t1 = load i8** %localPtrPtr.t1
+  %sharedPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 5
+  %sharedPtr.t1 = load i8** %sharedPtrPtr.t1
+  %constPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 6
+  %constPtr.t1 = load i8** %constPtrPtr.t1
+  %paramPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 7
+  %paramPtr.t1 = load i8** %paramPtrPtr.t1
+  %argumentPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 8
+  %argumentPtr.t1 = load i8** %argumentPtrPtr.t1
+  %metadataPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 9
+  %metadataPtr.t1 = load i8** %metadataPtrPtr.t1
+  %24 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 0
+  %threadId.x.t2 = load i32* %24
+  %25 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 1
+  %threadId.y.t2 = load i32* %25
+  %26 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 2
+  %threadId.z.t2 = load i32* %26
+  %27 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 0
+  %blockDim.x.t2 = load i32* %27
+  %28 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 1
+  %blockDim.y.t2 = load i32* %28
+  %29 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 2
+  %blockDim.z.t2 = load i32* %29
+  %30 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 0
+  %blockId.x.t2 = load i32* %30
+  %31 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 1
+  %blockId.y.t2 = load i32* %31
+  %32 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 2
+  %blockId.z.t2 = load i32* %32
+  %33 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 0
+  %gridDim.x.t2 = load i32* %33
+  %34 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 1
+  %gridDim.y.t2 = load i32* %34
+  %35 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 2
+  %gridDim.z.t2 = load i32* %35
+  %localPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 4
+  %localPtr.t2 = load i8** %localPtrPtr.t2
+  %sharedPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 5
+  %sharedPtr.t2 = load i8** %sharedPtrPtr.t2
+  %constPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 6
+  %constPtr.t2 = load i8** %constPtrPtr.t2
+  %paramPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 7
+  %paramPtr.t2 = load i8** %paramPtrPtr.t2
+  %argumentPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 8
+  %argumentPtr.t2 = load i8** %argumentPtrPtr.t2
+  %metadataPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 9
+  %metadataPtr.t2 = load i8** %metadataPtrPtr.t2
+  %36 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 0
+  %threadId.x.t3 = load i32* %36
+  %insert.threadId.x.t0.vec = insertelement <4 x i32> undef, i32 %threadId.x.t0, i32 0
+  %insert.threadId.x.t1.vec = insertelement <4 x i32> %insert.threadId.x.t0.vec, i32 %threadId.x.t1, i32 1
+  %insert.threadId.x.t2.vec = insertelement <4 x i32> %insert.threadId.x.t1.vec, i32 %threadId.x.t2, i32 2
+  %insert.threadId.x.t3.vec = insertelement <4 x i32> %insert.threadId.x.t2.vec, i32 %threadId.x.t3, i32 3
+  %37 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 1
+  %threadId.y.t3 = load i32* %37
+  %insert.threadId.y.t0.vec = insertelement <4 x i32> undef, i32 %threadId.y.t0, i32 0
+  %insert.threadId.y.t1.vec = insertelement <4 x i32> %insert.threadId.y.t0.vec, i32 %threadId.y.t1, i32 1
+  %insert.threadId.y.t2.vec = insertelement <4 x i32> %insert.threadId.y.t1.vec, i32 %threadId.y.t2, i32 2
+  %insert.threadId.y.t3.vec = insertelement <4 x i32> %insert.threadId.y.t2.vec, i32 %threadId.y.t3, i32 3
+  %38 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 2
+  %threadId.z.t3 = load i32* %38
+  %39 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 0
+  %blockDim.x.t3 = load i32* %39
+  %insert.blockDim.x.t0.vec = insertelement <4 x i32> undef, i32 %blockDim.x.t0, i32 0
+  %insert.blockDim.x.t1.vec = insertelement <4 x i32> %insert.blockDim.x.t0.vec, i32 %blockDim.x.t1, i32 1
+  %insert.blockDim.x.t2.vec = insertelement <4 x i32> %insert.blockDim.x.t1.vec, i32 %blockDim.x.t2, i32 2
+  %insert.blockDim.x.t3.vec = insertelement <4 x i32> %insert.blockDim.x.t2.vec, i32 %blockDim.x.t3, i32 3
+  %40 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 1
+  %blockDim.y.t3 = load i32* %40
+  %insert.blockDim.y.t0.vec = insertelement <4 x i32> undef, i32 %blockDim.y.t0, i32 0
+  %insert.blockDim.y.t1.vec = insertelement <4 x i32> %insert.blockDim.y.t0.vec, i32 %blockDim.y.t1, i32 1
+  %insert.blockDim.y.t2.vec = insertelement <4 x i32> %insert.blockDim.y.t1.vec, i32 %blockDim.y.t2, i32 2
+  %insert.blockDim.y.t3.vec = insertelement <4 x i32> %insert.blockDim.y.t2.vec, i32 %blockDim.y.t3, i32 3
+  %41 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 2
+  %blockDim.z.t3 = load i32* %41
+  %42 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 0
+  %blockId.x.t3 = load i32* %42
+  %insert.blockId.x.t0.vec = insertelement <4 x i32> undef, i32 %blockId.x.t0, i32 0
+  %insert.blockId.x.t1.vec = insertelement <4 x i32> %insert.blockId.x.t0.vec, i32 %blockId.x.t1, i32 1
+  %insert.blockId.x.t2.vec = insertelement <4 x i32> %insert.blockId.x.t1.vec, i32 %blockId.x.t2, i32 2
+  %insert.blockId.x.t3.vec = insertelement <4 x i32> %insert.blockId.x.t2.vec, i32 %blockId.x.t3, i32 3
+  %43 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 1
+  %blockId.y.t3 = load i32* %43
+  %insert.blockId.y.t0.vec = insertelement <4 x i32> undef, i32 %blockId.y.t0, i32 0
+  %insert.blockId.y.t1.vec = insertelement <4 x i32> %insert.blockId.y.t0.vec, i32 %blockId.y.t1, i32 1
+  %insert.blockId.y.t2.vec = insertelement <4 x i32> %insert.blockId.y.t1.vec, i32 %blockId.y.t2, i32 2
+  %insert.blockId.y.t3.vec = insertelement <4 x i32> %insert.blockId.y.t2.vec, i32 %blockId.y.t3, i32 3
+  %44 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 2
+  %blockId.z.t3 = load i32* %44
+  %45 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 0
+  %gridDim.x.t3 = load i32* %45
+  %46 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 1
+  %gridDim.y.t3 = load i32* %46
+  %47 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 2
+  %gridDim.z.t3 = load i32* %47
+  %localPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 4
+  %localPtr.t3 = load i8** %localPtrPtr.t3
+  %sharedPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 5
+  %sharedPtr.t3 = load i8** %sharedPtrPtr.t3
+  %constPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 6
+  %constPtr.t3 = load i8** %constPtrPtr.t3
+  %paramPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 7
+  %paramPtr.t3 = load i8** %paramPtrPtr.t3
+  %argumentPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 8
+  %argumentPtr.t3 = load i8** %argumentPtrPtr.t3
+  %metadataPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 9
+  %metadataPtr.t3 = load i8** %metadataPtrPtr.t3
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %rt2.t3 = bitcast i8* %argumentPtr.t3 to i64*
+  %rt2.t2 = bitcast i8* %argumentPtr.t2 to i64*
+  %rt2.t1 = bitcast i8* %argumentPtr.t1 to i64*
+  %r0 = load i64* %rt2, align 8
+  %r0.t3 = load i64* %rt2.t3, align 8
+  %r0.t2 = load i64* %rt2.t2, align 8
+  %r0.t1 = load i64* %rt2.t1, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt3.t3 = getelementptr i8* %argumentPtr.t3, i32 8
+  %rt3.t2 = getelementptr i8* %argumentPtr.t2, i32 8
+  %rt3.t1 = getelementptr i8* %argumentPtr.t1, i32 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %rt6.t3 = bitcast i8* %rt3.t3 to i32*
+  %rt6.t2 = bitcast i8* %rt3.t2 to i32*
+  %rt6.t1 = bitcast i8* %rt3.t1 to i32*
+  %r1 = load i32* %rt6, align 4
+  %r1.t3 = load i32* %rt6.t3, align 4
+  %insert.r1.vec = insertelement <4 x i32> undef, i32 %r1, i32 0
+  %insert.r1.t1.vec = insertelement <4 x i32> %insert.r1.vec, i32 %r1.t1, i32 1
+  %insert.r1.t2.vec = insertelement <4 x i32> %insert.r1.t1.vec, i32 %r1.t2, i32 2
+  %insert.r1.t3.vec = insertelement <4 x i32> %insert.r1.t2.vec, i32 %r1.t3, i32 3
+  %r1.t2 = load i32* %rt6.t2, align 4
+  %r1.t1 = load i32* %rt6.t1, align 4
+  %rt13.vec = mul <4 x i32> %insert.blockDim.x.t3.vec, %insert.blockId.x.t3.vec
+  %r6.vec = add <4 x i32> %insert.threadId.x.t3.vec, %rt13.vec
+  %r6.extracted.t3 = extractelement <4 x i32> %r6.vec, i32 3
+  %r6.extracted.t2 = extractelement <4 x i32> %r6.vec, i32 2
+  %r6.extracted.t1 = extractelement <4 x i32> %r6.vec, i32 1
+  %r6.extracted.t0 = extractelement <4 x i32> %r6.vec, i32 0
+  %rt20.vec = mul <4 x i32> %insert.blockDim.y.t3.vec, %insert.blockId.y.t3.vec
+  %r10.vec = add <4 x i32> %insert.threadId.y.t3.vec, %rt20.vec
+  %r10.extracted.t3 = extractelement <4 x i32> %r10.vec, i32 3
+  %r10.extracted.t2 = extractelement <4 x i32> %r10.vec, i32 2
+  %r10.extracted.t1 = extractelement <4 x i32> %r10.vec, i32 1
+  %r10.extracted.t0 = extractelement <4 x i32> %r10.vec, i32 0
+  %r11 = uitofp i32 %r6.extracted.t0 to float
+  %r11.t3 = uitofp i32 %r6.extracted.t3 to float
+  %r11.t2 = uitofp i32 %r6.extracted.t2 to float
+  %r11.t1 = uitofp i32 %r6.extracted.t1 to float
+  %r12 = uitofp i32 %r10.extracted.t0 to float
+  %r12.t3 = uitofp i32 %r10.extracted.t3 to float
+  %r12.t2 = uitofp i32 %r10.extracted.t2 to float
+  %r12.t1 = uitofp i32 %r10.extracted.t1 to float
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11, float %r12)
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11.t3, float %r12.t3)
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11.t2, float %r12.t2)
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11.t1, float %r12.t1)
+  %r14 = load float* %floatingPointTexture
+  %r14.t3 = load float* %floatingPointTexture
+  %r14.t2 = load float* %floatingPointTexture
+  %r14.t1 = load float* %floatingPointTexture
+  %rt21 = getelementptr float* %floatingPointTexture, i32 1
+  %rt21.t3 = getelementptr float* %floatingPointTexture, i32 1
+  %rt21.t2 = getelementptr float* %floatingPointTexture, i32 1
+  %rt21.t1 = getelementptr float* %floatingPointTexture, i32 1
+  %r15 = load float* %rt21
+  %r15.t3 = load float* %rt21.t3
+  %r15.t2 = load float* %rt21.t2
+  %r15.t1 = load float* %rt21.t1
+  %rt22 = getelementptr float* %floatingPointTexture, i32 2
+  %rt22.t3 = getelementptr float* %floatingPointTexture, i32 2
+  %rt22.t2 = getelementptr float* %floatingPointTexture, i32 2
+  %rt22.t1 = getelementptr float* %floatingPointTexture, i32 2
+  %r16 = load float* %rt22
+  %r16.t3 = load float* %rt22.t3
+  %r16.t2 = load float* %rt22.t2
+  %r16.t1 = load float* %rt22.t1
+  %rt23 = getelementptr float* %floatingPointTexture, i32 3
+  %rt23.t3 = getelementptr float* %floatingPointTexture, i32 3
+  %rt23.t2 = getelementptr float* %floatingPointTexture, i32 3
+  %rt23.t1 = getelementptr float* %floatingPointTexture, i32 3
+  %r17 = load float* %rt23
+  %r17.t3 = load float* %rt23.t3
+  %r17.t2 = load float* %rt23.t2
+  %r17.t1 = load float* %rt23.t1
+  %rt24.vec = mul <4 x i32> %r10.vec, %insert.r1.t3.vec
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t3 = extractelement <4 x i32> %r18.vec, i32 3
+  %r18.extracted.t2 = extractelement <4 x i32> %r18.vec, i32 2
+  %r18.extracted.t1 = extractelement <4 x i32> %r18.vec, i32 1
+  %r18.extracted.t0 = extractelement <4 x i32> %r18.vec, i32 0
+  %rt25 = zext i32 %r18.extracted.t0 to i64
+  %rt25.t3 = zext i32 %r18.extracted.t3 to i64
+  %rt25.t2 = zext i32 %r18.extracted.t2 to i64
+  %rt25.t1 = zext i32 %r18.extracted.t1 to i64
+  %r19 = mul i64 %rt25, 4
+  %r19.t3 = mul i64 %rt25.t3, 4
+  %r19.t2 = mul i64 %rt25.t2, 4
+  %r19.t1 = mul i64 %rt25.t1, 4
+  %r20 = add i64 %r0, %r19
+  %r20.t3 = add i64 %r0.t3, %r19.t3
+  %r20.t2 = add i64 %r0.t2, %r19.t2
+  %r20.t1 = add i64 %r0.t1, %r19.t1
+  %rt26 = inttoptr i64 %r20 to float*
+  %rt26.t3 = inttoptr i64 %r20.t3 to float*
+  %rt26.t2 = inttoptr i64 %r20.t2 to float*
+  %rt26.t1 = inttoptr i64 %r20.t1 to float*
+  store float %r14, float* %rt26, align 4
+  store float %r14.t3, float* %rt26.t3, align 4
+  store float %r14.t2, float* %rt26.t2, align 4
+  store float %r14.t1, float* %rt26.t1, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002"
+  ret void
+}
+
+
+error on subkernel: _Z_ocelotTranslated__subkernel__Z6kernelPfii_1
+ specialization: _subkernel__Z6kernelPfii_1_opt1_ws4
+TestCudaTexture2D: ocelot/executive/implementation/DynamicTranslationCache.cpp:1253: void cloneAndOptimizeTranslation(executive::DynamicTranslationCache::TranslatedKernel&, executive::DynamicTranslationCache::TranslatedSubkernel&, executive::DynamicTranslationCache::SubkernelId, executive::DynamicTranslationCache::Translation*, int, translator::Translator::OptimizationLevel, unsigned int, bool): Assertion `0 && "due to broken LLVM translation"' failed.
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.00597786903381 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1335567282
-Test time : 1.93119e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.00809693336487 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1335567282
-Test time : 1.71661e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.0359961986542 seconds
+INFO     Test completed in 0.0502169132233 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -268,8 +608,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1335567282
-Test time : 0.00079298
+Test Seed : 1335814028
+Test time : 0.00063324
 
 Status : Test output:
 Accessors test passed.
@@ -284,34 +624,999 @@ pass: predicated Add and Ld isntructions
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0178978443146 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0356349945068 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1335814028
+Test time : 1.57356e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
+INFO     Test completed in 0.0717790126801 seconds
+INFO      It produced the following output:
+Instruction does not dominate all uses!
+  %r22.t1 = phi i32 [ %r20.t1, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t1, %"$BB_1_0002" ]
+  %insert.r22.t1.vec = insertelement <4 x i32> %insert.r22.vec, i32 %r22.t1, i32 1
+Instruction does not dominate all uses!
+  %insert.r22.t1.vec = insertelement <4 x i32> %insert.r22.vec, i32 %r22.t1, i32 1
+  %insert.r22.t2.vec = insertelement <4 x i32> %insert.r22.t1.vec, i32 %r22.t2, i32 2
+Instruction does not dominate all uses!
+  %insert.r22.t2.vec = insertelement <4 x i32> %insert.r22.t1.vec, i32 %r22.t2, i32 2
+  %insert.r22.t3.vec = insertelement <4 x i32> %insert.r22.t2.vec, i32 %r22.t3, i32 3
+PHI nodes not grouped at top of basic block!
+  %r22.t2 = phi i32 [ %r20.t2, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t2, %"$BB_1_0002" ]
+label %"$BB_1_0004"
+Instruction does not dominate all uses!
+  %insert.r22.t3.vec = insertelement <4 x i32> %insert.r22.t2.vec, i32 %r22.t3, i32 3
+  %r23.vec = shl <4 x i32> %insert.r22.t3.vec, %51
+Instruction does not dominate all uses!
+  %r23.vec = shl <4 x i32> %insert.r22.t3.vec, %51
+  %r23.extracted.t3 = extractelement <4 x i32> %r23.vec, i32 3
+Instruction does not dominate all uses!
+  %r23.vec = shl <4 x i32> %insert.r22.t3.vec, %51
+  %r23.extracted.t2 = extractelement <4 x i32> %r23.vec, i32 2
+Instruction does not dominate all uses!
+  %r23.vec = shl <4 x i32> %insert.r22.t3.vec, %51
+  %r23.extracted.t1 = extractelement <4 x i32> %r23.vec, i32 1
+Instruction does not dominate all uses!
+  %r23.vec = shl <4 x i32> %insert.r22.t3.vec, %51
+  %r23.extracted.t0 = extractelement <4 x i32> %r23.vec, i32 0
+Instruction does not dominate all uses!
+  %r22.t2 = phi i32 [ %r20.t2, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t2, %"$BB_1_0002" ]
+  %rt65.t2 = sext i32 %r22.t2 to i64
+Instruction does not dominate all uses!
+  %rt65.t2 = sext i32 %r22.t2 to i64
+  %r24.t2 = mul i64 %rt65.t2, 4
+Instruction does not dominate all uses!
+  %r24.t2 = mul i64 %rt65.t2, 4
+  %r25.t2 = add i64 %r21.t2, %r24.t2
+Instruction does not dominate all uses!
+  %r25.t2 = add i64 %r21.t2, %r24.t2
+  %rt66.t2 = inttoptr i64 %r25.t2 to i32*
+Instruction does not dominate all uses!
+  %r23.extracted.t0 = extractelement <4 x i32> %r23.vec, i32 0
+  store i32 %r23.extracted.t0, i32* %rt66, align 4
+Instruction does not dominate all uses!
+  %r23.extracted.t3 = extractelement <4 x i32> %r23.vec, i32 3
+  store i32 %r23.extracted.t3, i32* %rt66.t3, align 4
+Instruction does not dominate all uses!
+  %r23.extracted.t2 = extractelement <4 x i32> %r23.vec, i32 2
+  store i32 %r23.extracted.t2, i32* %rt66.t2, align 4
+Instruction does not dominate all uses!
+  %r23.extracted.t1 = extractelement <4 x i32> %r23.vec, i32 1
+  store i32 %r23.extracted.t1, i32* %rt66.t1, align 4
+Broken module found, verification continues.
+sequence() - A_gpu = 0x0cab600
+verification failed for translated function for sequence : ""
+LLVMDynamicTranslationCache.cpp:1244:
+
+define internal void @_subkernel_sequence_1_opt1_ws4(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 0
+  %threadId.x.t1 = load i32* %12
+  %13 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 1
+  %threadId.y.t1 = load i32* %13
+  %14 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 2
+  %threadId.z.t1 = load i32* %14
+  %15 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 0
+  %blockDim.x.t1 = load i32* %15
+  %16 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 1
+  %blockDim.y.t1 = load i32* %16
+  %17 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 2
+  %blockDim.z.t1 = load i32* %17
+  %18 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 0
+  %blockId.x.t1 = load i32* %18
+  %19 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 1
+  %blockId.y.t1 = load i32* %19
+  %20 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 2
+  %blockId.z.t1 = load i32* %20
+  %21 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 0
+  %gridDim.x.t1 = load i32* %21
+  %22 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 1
+  %gridDim.y.t1 = load i32* %22
+  %23 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 2
+  %gridDim.z.t1 = load i32* %23
+  %localPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 4
+  %localPtr.t1 = load i8** %localPtrPtr.t1
+  %sharedPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 5
+  %sharedPtr.t1 = load i8** %sharedPtrPtr.t1
+  %constPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 6
+  %constPtr.t1 = load i8** %constPtrPtr.t1
+  %paramPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 7
+  %paramPtr.t1 = load i8** %paramPtrPtr.t1
+  %argumentPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 8
+  %argumentPtr.t1 = load i8** %argumentPtrPtr.t1
+  %metadataPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 9
+  %metadataPtr.t1 = load i8** %metadataPtrPtr.t1
+  %24 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 0
+  %threadId.x.t2 = load i32* %24
+  %25 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 1
+  %threadId.y.t2 = load i32* %25
+  %26 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 2
+  %threadId.z.t2 = load i32* %26
+  %27 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 0
+  %blockDim.x.t2 = load i32* %27
+  %28 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 1
+  %blockDim.y.t2 = load i32* %28
+  %29 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 2
+  %blockDim.z.t2 = load i32* %29
+  %30 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 0
+  %blockId.x.t2 = load i32* %30
+  %31 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 1
+  %blockId.y.t2 = load i32* %31
+  %32 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 2
+  %blockId.z.t2 = load i32* %32
+  %33 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 0
+  %gridDim.x.t2 = load i32* %33
+  %34 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 1
+  %gridDim.y.t2 = load i32* %34
+  %35 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 2
+  %gridDim.z.t2 = load i32* %35
+  %localPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 4
+  %localPtr.t2 = load i8** %localPtrPtr.t2
+  %sharedPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 5
+  %sharedPtr.t2 = load i8** %sharedPtrPtr.t2
+  %constPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 6
+  %constPtr.t2 = load i8** %constPtrPtr.t2
+  %paramPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 7
+  %paramPtr.t2 = load i8** %paramPtrPtr.t2
+  %argumentPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 8
+  %argumentPtr.t2 = load i8** %argumentPtrPtr.t2
+  %metadataPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 9
+  %metadataPtr.t2 = load i8** %metadataPtrPtr.t2
+  %36 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 0
+  %threadId.x.t3 = load i32* %36
+  %insert.threadId.x.t0.vec = insertelement <4 x i32> undef, i32 %threadId.x.t0, i32 0
+  %insert.threadId.x.t1.vec = insertelement <4 x i32> %insert.threadId.x.t0.vec, i32 %threadId.x.t1, i32 1
+  %insert.threadId.x.t2.vec = insertelement <4 x i32> %insert.threadId.x.t1.vec, i32 %threadId.x.t2, i32 2
+  %insert.threadId.x.t3.vec = insertelement <4 x i32> %insert.threadId.x.t2.vec, i32 %threadId.x.t3, i32 3
+  %37 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 1
+  %threadId.y.t3 = load i32* %37
+  %38 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 2
+  %threadId.z.t3 = load i32* %38
+  %39 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 0
+  %blockDim.x.t3 = load i32* %39
+  %insert.blockDim.x.t0.vec = insertelement <4 x i32> undef, i32 %blockDim.x.t0, i32 0
+  %insert.blockDim.x.t1.vec = insertelement <4 x i32> %insert.blockDim.x.t0.vec, i32 %blockDim.x.t1, i32 1
+  %insert.blockDim.x.t2.vec = insertelement <4 x i32> %insert.blockDim.x.t1.vec, i32 %blockDim.x.t2, i32 2
+  %insert.blockDim.x.t3.vec = insertelement <4 x i32> %insert.blockDim.x.t2.vec, i32 %blockDim.x.t3, i32 3
+  %40 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 1
+  %blockDim.y.t3 = load i32* %40
+  %41 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 2
+  %blockDim.z.t3 = load i32* %41
+  %42 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 0
+  %blockId.x.t3 = load i32* %42
+  %insert.blockId.x.t0.vec = insertelement <4 x i32> undef, i32 %blockId.x.t0, i32 0
+  %insert.blockId.x.t1.vec = insertelement <4 x i32> %insert.blockId.x.t0.vec, i32 %blockId.x.t1, i32 1
+  %insert.blockId.x.t2.vec = insertelement <4 x i32> %insert.blockId.x.t1.vec, i32 %blockId.x.t2, i32 2
+  %insert.blockId.x.t3.vec = insertelement <4 x i32> %insert.blockId.x.t2.vec, i32 %blockId.x.t3, i32 3
+  %43 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 1
+  %blockId.y.t3 = load i32* %43
+  %44 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 2
+  %blockId.z.t3 = load i32* %44
+  %45 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 0
+  %gridDim.x.t3 = load i32* %45
+  %46 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 1
+  %gridDim.y.t3 = load i32* %46
+  %47 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 2
+  %gridDim.z.t3 = load i32* %47
+  %localPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 4
+  %localPtr.t3 = load i8** %localPtrPtr.t3
+  %sharedPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 5
+  %sharedPtr.t3 = load i8** %sharedPtrPtr.t3
+  %constPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 6
+  %constPtr.t3 = load i8** %constPtrPtr.t3
+  %paramPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 7
+  %paramPtr.t3 = load i8** %paramPtrPtr.t3
+  %argumentPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 8
+  %argumentPtr.t3 = load i8** %argumentPtrPtr.t3
+  %metadataPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 9
+  %metadataPtr.t3 = load i8** %metadataPtrPtr.t3
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+    i32 1, label %"$BB_1_0002_to_$BB_1_0004_divergentEntry"
+    i32 2, label %"$BB_1_0002_to_$BB_1_0003_divergentEntry"
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %rt2.t3 = bitcast i8* %argumentPtr.t3 to i64*
+  %rt2.t2 = bitcast i8* %argumentPtr.t2 to i64*
+  %rt2.t1 = bitcast i8* %argumentPtr.t1 to i64*
+  %r0 = load i64* %rt2, align 8
+  %r0.t3 = load i64* %rt2.t3, align 8
+  %r0.t2 = load i64* %rt2.t2, align 8
+  %r0.t1 = load i64* %rt2.t1, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt3.t3 = getelementptr i8* %argumentPtr.t3, i32 8
+  %rt3.t2 = getelementptr i8* %argumentPtr.t2, i32 8
+  %rt3.t1 = getelementptr i8* %argumentPtr.t1, i32 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %rt6.t3 = bitcast i8* %rt3.t3 to i32*
+  %rt6.t2 = bitcast i8* %rt3.t2 to i32*
+  %rt6.t1 = bitcast i8* %rt3.t1 to i32*
+  %r1 = load i32* %rt6, align 4
+  %r1.t3 = load i32* %rt6.t3, align 4
+  %r1.t2 = load i32* %rt6.t2, align 4
+  %r1.t1 = load i32* %rt6.t1, align 4
+  %rt13.vec = mul <4 x i32> %insert.blockDim.x.t3.vec, %insert.blockId.x.t3.vec
+  %r6.vec = add <4 x i32> %insert.threadId.x.t3.vec, %rt13.vec
+  %r6.extracted.t3 = extractelement <4 x i32> %r6.vec, i32 3
+  %r6.extracted.t2 = extractelement <4 x i32> %r6.vec, i32 2
+  %r6.extracted.t1 = extractelement <4 x i32> %r6.vec, i32 1
+  %r6.extracted.t0 = extractelement <4 x i32> %r6.vec, i32 0
+  %r7 = icmp slt i32 %r6.extracted.t0, %r1
+  %r7.t3 = icmp slt i32 %r6.extracted.t3, %r1.t3
+  %r7.t2 = icmp slt i32 %r6.extracted.t2, %r1.t2
+  %r7.t1 = icmp slt i32 %r6.extracted.t1, %r1.t1
+  %cond = zext i1 %r7 to i32
+  %cond1 = zext i1 %r7.t1 to i32
+  %cmpws = add i32 %cond, %cond1
+  %cond2 = zext i1 %r7.t2 to i32
+  %cmpws3 = add i32 %cmpws, %cond2
+  %cond4 = zext i1 %r7.t3 to i32
+  %cmpws5 = add i32 %cmpws3, %cond4
+  switch i32 %cmpws5, label %"$BB_1_0002_to_$BB_1_0004_divergentYield" [
+    i32 0, label %"$BB_1_0003"
+    i32 4, label %"$BB_1_0004"
+  ]
+
+"$BB_1_0003":                                     ; preds = %"$BB_1_0002", %"$BB_1_0002_to_$BB_1_0003_divergentEntry"
+  br label %exit
+
+"$BB_1_0002_to_$BB_1_0004_divergentYield":        ; preds = %"$BB_1_0002"
+  %r8 = phi i64 [ %r0, %"$BB_1_0002" ]
+  %r8.t3 = phi i64 [ %r0.t3, %"$BB_1_0002" ]
+  %r8.t2 = phi i64 [ %r0.t2, %"$BB_1_0002" ]
+  %r8.t1 = phi i64 [ %r0.t1, %"$BB_1_0002" ]
+  %r9 = phi i32 [ %r6.extracted.t0, %"$BB_1_0002" ]
+  %r9.t3 = phi i32 [ %r6.extracted.t3, %"$BB_1_0002" ]
+  %r9.t2 = phi i32 [ %r6.extracted.t2, %"$BB_1_0002" ]
+  %r9.t1 = phi i32 [ %r6.extracted.t1, %"$BB_1_0002" ]
+  %r10 = phi i1 [ %r7, %"$BB_1_0002" ]
+  %r10.t3 = phi i1 [ %r7.t3, %"$BB_1_0002" ]
+  %r10.t2 = phi i1 [ %r7.t2, %"$BB_1_0002" ]
+  %r10.t1 = phi i1 [ %r7.t1, %"$BB_1_0002" ]
+  %r11 = select i1 %r7, i32 65537, i32 65538
+  %r11.t3 = select i1 %r7.t3, i32 65537, i32 65538
+  %r11.t2 = select i1 %r7.t2, i32 65537, i32 65538
+  %r11.t1 = select i1 %r7.t1, i32 65537, i32 65538
+  %rt14 = zext i32 8 to i64
+  %rt14.t3 = zext i32 8 to i64
+  %rt14.t2 = zext i32 8 to i64
+  %rt14.t1 = zext i32 8 to i64
+  %rt17 = ptrtoint i8* %localPtr.t0 to i64
+  %rt17.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt17.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt17.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt18 = add i64 %rt14, %rt17
+  %rt18.t3 = add i64 %rt14.t3, %rt17.t3
+  %rt18.t2 = add i64 %rt14.t2, %rt17.t2
+  %rt18.t1 = add i64 %rt14.t1, %rt17.t1
+  %rt19 = inttoptr i64 %rt18 to i64*
+  %rt19.t3 = inttoptr i64 %rt18.t3 to i64*
+  %rt19.t2 = inttoptr i64 %rt18.t2 to i64*
+  %rt19.t1 = inttoptr i64 %rt18.t1 to i64*
+  store i64 %r8, i64* %rt19, align 8
+  store i64 %r8.t3, i64* %rt19.t3, align 8
+  store i64 %r8.t2, i64* %rt19.t2, align 8
+  store i64 %r8.t1, i64* %rt19.t1, align 8
+  %rt20 = zext i32 8 to i64
+  %rt20.t3 = zext i32 8 to i64
+  %rt20.t2 = zext i32 8 to i64
+  %rt20.t1 = zext i32 8 to i64
+  %rt21 = add i64 %rt20, 8
+  %rt21.t3 = add i64 %rt20.t3, 8
+  %rt21.t2 = add i64 %rt20.t2, 8
+  %rt21.t1 = add i64 %rt20.t1, 8
+  %rt24 = ptrtoint i8* %localPtr.t0 to i64
+  %rt24.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt24.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt24.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt25 = add i64 %rt21, %rt24
+  %rt25.t3 = add i64 %rt21.t3, %rt24.t3
+  %rt25.t2 = add i64 %rt21.t2, %rt24.t2
+  %rt25.t1 = add i64 %rt21.t1, %rt24.t1
+  %rt26 = inttoptr i64 %rt25 to i32*
+  %rt26.t3 = inttoptr i64 %rt25.t3 to i32*
+  %rt26.t2 = inttoptr i64 %rt25.t2 to i32*
+  %rt26.t1 = inttoptr i64 %rt25.t1 to i32*
+  store i32 %r9, i32* %rt26, align 4
+  store i32 %r9.t3, i32* %rt26.t3, align 4
+  store i32 %r9.t2, i32* %rt26.t2, align 4
+  store i32 %r9.t1, i32* %rt26.t1, align 4
+  %rt27 = zext i32 4 to i64
+  %rt27.t3 = zext i32 4 to i64
+  %rt27.t2 = zext i32 4 to i64
+  %rt27.t1 = zext i32 4 to i64
+  %rt30 = ptrtoint i8* %localPtr.t0 to i64
+  %rt30.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt30.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt30.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt31 = add i64 %rt27, %rt30
+  %rt31.t3 = add i64 %rt27.t3, %rt30.t3
+  %rt31.t2 = add i64 %rt27.t2, %rt30.t2
+  %rt31.t1 = add i64 %rt27.t1, %rt30.t1
+  %rt32 = inttoptr i64 %rt31 to i32*
+  %rt32.t3 = inttoptr i64 %rt31.t3 to i32*
+  %rt32.t2 = inttoptr i64 %rt31.t2 to i32*
+  %rt32.t1 = inttoptr i64 %rt31.t1 to i32*
+  store i32 2, i32* %rt32, align 4
+  store i32 2, i32* %rt32.t3, align 4
+  store i32 2, i32* %rt32.t2, align 4
+  store i32 2, i32* %rt32.t1, align 4
+  %rt33 = zext i32 0 to i64
+  %rt33.t3 = zext i32 0 to i64
+  %rt33.t2 = zext i32 0 to i64
+  %rt33.t1 = zext i32 0 to i64
+  %rt36 = ptrtoint i8* %localPtr.t0 to i64
+  %rt36.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt36.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt36.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt37 = add i64 %rt33, %rt36
+  %rt37.t3 = add i64 %rt33.t3, %rt36.t3
+  %rt37.t2 = add i64 %rt33.t2, %rt36.t2
+  %rt37.t1 = add i64 %rt33.t1, %rt36.t1
+  %rt38 = inttoptr i64 %rt37 to i32*
+  %rt38.t3 = inttoptr i64 %rt37.t3 to i32*
+  %rt38.t2 = inttoptr i64 %rt37.t2 to i32*
+  %rt38.t1 = inttoptr i64 %rt37.t1 to i32*
+  store i32 %r11, i32* %rt38, align 4
+  store i32 %r11.t3, i32* %rt38.t3, align 4
+  store i32 %r11.t2, i32* %rt38.t2, align 4
+  store i32 %r11.t1, i32* %rt38.t1, align 4
+  br label %exit
+
+"$BB_1_0002_to_$BB_1_0003_divergentEntry":        ; preds = %SchedulerEntry
+  %rt39 = zext i32 8 to i64
+  %rt39.t3 = zext i32 8 to i64
+  %rt39.t2 = zext i32 8 to i64
+  %rt39.t1 = zext i32 8 to i64
+  %rt42 = ptrtoint i8* %localPtr.t0 to i64
+  %rt42.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt42.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt42.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt43 = add i64 %rt39, %rt42
+  %rt43.t3 = add i64 %rt39.t3, %rt42.t3
+  %rt43.t2 = add i64 %rt39.t2, %rt42.t2
+  %rt43.t1 = add i64 %rt39.t1, %rt42.t1
+  %rt44 = inttoptr i64 %rt43 to i64*
+  %rt44.t3 = inttoptr i64 %rt43.t3 to i64*
+  %rt44.t2 = inttoptr i64 %rt43.t2 to i64*
+  %rt44.t1 = inttoptr i64 %rt43.t1 to i64*
+  %r16 = load i64* %rt44, align 8
+  %r16.t3 = load i64* %rt44.t3, align 8
+  %r16.t2 = load i64* %rt44.t2, align 8
+  %r16.t1 = load i64* %rt44.t1, align 8
+  %rt45 = zext i32 8 to i64
+  %rt45.t3 = zext i32 8 to i64
+  %rt45.t2 = zext i32 8 to i64
+  %rt45.t1 = zext i32 8 to i64
+  %rt46 = add i64 %rt45, 8
+  %rt46.t3 = add i64 %rt45.t3, 8
+  %rt46.t2 = add i64 %rt45.t2, 8
+  %rt46.t1 = add i64 %rt45.t1, 8
+  %rt49 = ptrtoint i8* %localPtr.t0 to i64
+  %rt49.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt49.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt49.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt50 = add i64 %rt46, %rt49
+  %rt50.t3 = add i64 %rt46.t3, %rt49.t3
+  %rt50.t2 = add i64 %rt46.t2, %rt49.t2
+  %rt50.t1 = add i64 %rt46.t1, %rt49.t1
+  %rt51 = inttoptr i64 %rt50 to i32*
+  %rt51.t3 = inttoptr i64 %rt50.t3 to i32*
+  %rt51.t2 = inttoptr i64 %rt50.t2 to i32*
+  %rt51.t1 = inttoptr i64 %rt50.t1 to i32*
+  %r17 = load i32* %rt51, align 4
+  %r17.t3 = load i32* %rt51.t3, align 4
+  %r17.t2 = load i32* %rt51.t2, align 4
+  %r17.t1 = load i32* %rt51.t1, align 4
+  br label %"$BB_1_0003"
+
+"$BB_1_0002_to_$BB_1_0004_divergentEntry":        ; preds = %SchedulerEntry
+  %rt52 = zext i32 8 to i64
+  %rt52.t3 = zext i32 8 to i64
+  %rt52.t2 = zext i32 8 to i64
+  %rt52.t1 = zext i32 8 to i64
+  %rt55 = ptrtoint i8* %localPtr.t0 to i64
+  %rt55.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt55.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt55.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt56 = add i64 %rt52, %rt55
+  %rt56.t3 = add i64 %rt52.t3, %rt55.t3
+  %rt56.t2 = add i64 %rt52.t2, %rt55.t2
+  %rt56.t1 = add i64 %rt52.t1, %rt55.t1
+  %rt57 = inttoptr i64 %rt56 to i64*
+  %rt57.t3 = inttoptr i64 %rt56.t3 to i64*
+  %rt57.t2 = inttoptr i64 %rt56.t2 to i64*
+  %rt57.t1 = inttoptr i64 %rt56.t1 to i64*
+  %r19 = load i64* %rt57, align 8
+  %r19.t3 = load i64* %rt57.t3, align 8
+  %r19.t2 = load i64* %rt57.t2, align 8
+  %r19.t1 = load i64* %rt57.t1, align 8
+  %rt58 = zext i32 8 to i64
+  %rt58.t3 = zext i32 8 to i64
+  %rt58.t2 = zext i32 8 to i64
+  %rt58.t1 = zext i32 8 to i64
+  %rt59 = add i64 %rt58, 8
+  %rt59.t3 = add i64 %rt58.t3, 8
+  %rt59.t2 = add i64 %rt58.t2, 8
+  %rt59.t1 = add i64 %rt58.t1, 8
+  %rt62 = ptrtoint i8* %localPtr.t0 to i64
+  %rt62.t3 = ptrtoint i8* %localPtr.t3 to i64
+  %rt62.t2 = ptrtoint i8* %localPtr.t2 to i64
+  %rt62.t1 = ptrtoint i8* %localPtr.t1 to i64
+  %rt63 = add i64 %rt59, %rt62
+  %rt63.t3 = add i64 %rt59.t3, %rt62.t3
+  %rt63.t2 = add i64 %rt59.t2, %rt62.t2
+  %rt63.t1 = add i64 %rt59.t1, %rt62.t1
+  %rt64 = inttoptr i64 %rt63 to i32*
+  %rt64.t3 = inttoptr i64 %rt63.t3 to i32*
+  %rt64.t2 = inttoptr i64 %rt63.t2 to i32*
+  %rt64.t1 = inttoptr i64 %rt63.t1 to i32*
+  %r20 = load i32* %rt64, align 4
+  %r20.t3 = load i32* %rt64.t3, align 4
+  %r20.t2 = load i32* %rt64.t2, align 4
+  %r20.t1 = load i32* %rt64.t1, align 4
+  br label %"$BB_1_0004"
+
+"$BB_1_0004":                                     ; preds = %"$BB_1_0002", %"$BB_1_0002_to_$BB_1_0004_divergentEntry"
+  %r22 = phi i32 [ %r20, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t0, %"$BB_1_0002" ]
+  %r22.t3 = phi i32 [ %r20.t3, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t3, %"$BB_1_0002" ]
+  %insert.r22.vec = insertelement <4 x i32> undef, i32 %r22, i32 0
+  %insert.r22.t1.vec = insertelement <4 x i32> %insert.r22.vec, i32 %r22.t1, i32 1
+  %insert.r22.t2.vec = insertelement <4 x i32> %insert.r22.t1.vec, i32 %r22.t2, i32 2
+  %insert.r22.t3.vec = insertelement <4 x i32> %insert.r22.t2.vec, i32 %r22.t3, i32 3
+  %r22.t2 = phi i32 [ %r20.t2, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t2, %"$BB_1_0002" ]
+  %r22.t1 = phi i32 [ %r20.t1, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r6.extracted.t1, %"$BB_1_0002" ]
+  %r21 = phi i64 [ %r19, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r0, %"$BB_1_0002" ]
+  %r21.t3 = phi i64 [ %r19.t3, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r0.t3, %"$BB_1_0002" ]
+  %r21.t2 = phi i64 [ %r19.t2, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r0.t2, %"$BB_1_0002" ]
+  %r21.t1 = phi i64 [ %r19.t1, %"$BB_1_0002_to_$BB_1_0004_divergentEntry" ], [ %r0.t1, %"$BB_1_0002" ]
+  %48 = insertelement <4 x i32> undef, i32 1, i32 0
+  %49 = insertelement <4 x i32> %48, i32 1, i32 1
+  %50 = insertelement <4 x i32> %49, i32 1, i32 2
+  %51 = insertelement <4 x i32> %50, i32 1, i32 3
+  %r23.vec = shl <4 x i32> %insert.r22.t3.vec, %51
+  %r23.extracted.t3 = extractelement <4 x i32> %r23.vec, i32 3
+  %r23.extracted.t2 = extractelement <4 x i32> %r23.vec, i32 2
+  %r23.extracted.t1 = extractelement <4 x i32> %r23.vec, i32 1
+  %r23.extracted.t0 = extractelement <4 x i32> %r23.vec, i32 0
+  %rt65 = sext i32 %r22 to i64
+  %rt65.t3 = sext i32 %r22.t3 to i64
+  %rt65.t2 = sext i32 %r22.t2 to i64
+  %rt65.t1 = sext i32 %r22.t1 to i64
+  %r24 = mul i64 %rt65, 4
+  %r24.t3 = mul i64 %rt65.t3, 4
+  %r24.t2 = mul i64 %rt65.t2, 4
+  %r24.t1 = mul i64 %rt65.t1, 4
+  %r25 = add i64 %r21, %r24
+  %r25.t3 = add i64 %r21.t3, %r24.t3
+  %r25.t2 = add i64 %r21.t2, %r24.t2
+  %r25.t1 = add i64 %r21.t1, %r24.t1
+  %rt66 = inttoptr i64 %r25 to i32*
+  %rt66.t3 = inttoptr i64 %r25.t3 to i32*
+  %rt66.t2 = inttoptr i64 %r25.t2 to i32*
+  %rt66.t1 = inttoptr i64 %r25.t1 to i32*
+  store i32 %r23.extracted.t0, i32* %rt66, align 4
+  store i32 %r23.extracted.t3, i32* %rt66.t3, align 4
+  store i32 %r23.extracted.t2, i32* %rt66.t2, align 4
+  store i32 %r23.extracted.t1, i32* %rt66.t1, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0004", %"$BB_1_0002_to_$BB_1_0004_divergentYield", %"$BB_1_0003"
+  ret void
+}
+
+
+error on subkernel: _Z_ocelotTranslated__subkernel_sequence_1
+ specialization: _subkernel_sequence_1_opt1_ws4
+TestCudaSequence: ocelot/executive/implementation/DynamicTranslationCache.cpp:1253: void cloneAndOptimizeTranslation(executive::DynamicTranslationCache::TranslatedKernel&, executive::DynamicTranslationCache::TranslatedSubkernel&, executive::DynamicTranslationCache::SubkernelId, executive::DynamicTranslationCache::Translation*, int, translator::Translator::OptimizationLevel, unsigned int, bool): Assertion `0 && "due to broken LLVM translation"' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
+INFO     Test completed in 0.0432388782501 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1027: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.0364899635315 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
+INFO     Test completed in 0.0579969882965 seconds
 INFO      It produced the following output:
-sequence() - A_gpu = 0x010ed400
 Pass/Fail : Pass
 
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1335814028
+Test time : 1.62125e-05
+
+Status : 
+
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
+INFO     Test completed in 0.0687880516052 seconds
+INFO      It produced the following output:
+Instruction does not dominate all uses!
+  %r1.t1 = load i32* %rt6.t1, align 4
+  %insert.r1.t1.vec = insertelement <4 x i32> %insert.r1.vec, i32 %r1.t1, i32 1
+Instruction does not dominate all uses!
+  %insert.r1.t1.vec = insertelement <4 x i32> %insert.r1.vec, i32 %r1.t1, i32 1
+  %insert.r1.t2.vec = insertelement <4 x i32> %insert.r1.t1.vec, i32 %r1.t2, i32 2
+Instruction does not dominate all uses!
+  %insert.r1.t2.vec = insertelement <4 x i32> %insert.r1.t1.vec, i32 %r1.t2, i32 2
+  %insert.r1.t3.vec = insertelement <4 x i32> %insert.r1.t2.vec, i32 %r1.t3, i32 3
+Instruction does not dominate all uses!
+  %insert.r1.t3.vec = insertelement <4 x i32> %insert.r1.t2.vec, i32 %r1.t3, i32 3
+  %rt24.vec = mul <4 x i32> %r10.vec, %insert.r1.t3.vec
+Instruction does not dominate all uses!
+  %rt24.vec = mul <4 x i32> %r10.vec, %insert.r1.t3.vec
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t3 = extractelement <4 x i32> %r18.vec, i32 3
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t2 = extractelement <4 x i32> %r18.vec, i32 2
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t1 = extractelement <4 x i32> %r18.vec, i32 1
+Instruction does not dominate all uses!
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t0 = extractelement <4 x i32> %r18.vec, i32 0
+Instruction does not dominate all uses!
+  %r18.extracted.t0 = extractelement <4 x i32> %r18.vec, i32 0
+  %rt25 = zext i32 %r18.extracted.t0 to i64
+Instruction does not dominate all uses!
+  %r18.extracted.t3 = extractelement <4 x i32> %r18.vec, i32 3
+  %rt25.t3 = zext i32 %r18.extracted.t3 to i64
+Instruction does not dominate all uses!
+  %r18.extracted.t2 = extractelement <4 x i32> %r18.vec, i32 2
+  %rt25.t2 = zext i32 %r18.extracted.t2 to i64
+Instruction does not dominate all uses!
+  %r18.extracted.t1 = extractelement <4 x i32> %r18.vec, i32 1
+  %rt25.t1 = zext i32 %r18.extracted.t1 to i64
+Instruction does not dominate all uses!
+  %rt25 = zext i32 %r18.extracted.t0 to i64
+  %r19 = mul i64 %rt25, 4
+Instruction does not dominate all uses!
+  %rt25.t3 = zext i32 %r18.extracted.t3 to i64
+  %r19.t3 = mul i64 %rt25.t3, 4
+Instruction does not dominate all uses!
+  %rt25.t2 = zext i32 %r18.extracted.t2 to i64
+  %r19.t2 = mul i64 %rt25.t2, 4
+Instruction does not dominate all uses!
+  %rt25.t1 = zext i32 %r18.extracted.t1 to i64
+  %r19.t1 = mul i64 %rt25.t1, 4
+Instruction does not dominate all uses!
+  %r19 = mul i64 %rt25, 4
+  %r20 = add i64 %r0, %r19
+Instruction does not dominate all uses!
+  %r19.t3 = mul i64 %rt25.t3, 4
+  %r20.t3 = add i64 %r0.t3, %r19.t3
+Instruction does not dominate all uses!
+  %r19.t2 = mul i64 %rt25.t2, 4
+  %r20.t2 = add i64 %r0.t2, %r19.t2
+Instruction does not dominate all uses!
+  %r19.t1 = mul i64 %rt25.t1, 4
+  %r20.t1 = add i64 %r0.t1, %r19.t1
+Instruction does not dominate all uses!
+  %r20 = add i64 %r0, %r19
+  %rt26 = inttoptr i64 %r20 to float*
+Instruction does not dominate all uses!
+  %r20.t3 = add i64 %r0.t3, %r19.t3
+  %rt26.t3 = inttoptr i64 %r20.t3 to float*
+Instruction does not dominate all uses!
+  %r20.t2 = add i64 %r0.t2, %r19.t2
+  %rt26.t2 = inttoptr i64 %r20.t2 to float*
+Instruction does not dominate all uses!
+  %r20.t1 = add i64 %r0.t1, %r19.t1
+  %rt26.t1 = inttoptr i64 %r20.t1 to float*
+Instruction does not dominate all uses!
+  %rt26 = inttoptr i64 %r20 to float*
+  store float %r14, float* %rt26, align 4
+Instruction does not dominate all uses!
+  %rt26.t3 = inttoptr i64 %r20.t3 to float*
+  store float %r14.t3, float* %rt26.t3, align 4
+Instruction does not dominate all uses!
+  %rt26.t2 = inttoptr i64 %r20.t2 to float*
+  store float %r14.t2, float* %rt26.t2, align 4
+Instruction does not dominate all uses!
+  %rt26.t1 = inttoptr i64 %r20.t1 to float*
+  store float %r14.t1, float* %rt26.t1, align 4
+Broken module found, verification continues.
+verification failed for translated function for _Z6kernelPfii : ""
+LLVMDynamicTranslationCache.cpp:1244:
+
+define internal void @_subkernel__Z6kernelPfii_1_opt1_ws4(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %integerTexture = alloca i32, i32 4, align 16
+  %floatingPointTexture = alloca float, i32 4, align 16
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 0
+  %threadId.x.t1 = load i32* %12
+  %13 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 1
+  %threadId.y.t1 = load i32* %13
+  %14 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 2
+  %threadId.z.t1 = load i32* %14
+  %15 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 0
+  %blockDim.x.t1 = load i32* %15
+  %16 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 1
+  %blockDim.y.t1 = load i32* %16
+  %17 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 2
+  %blockDim.z.t1 = load i32* %17
+  %18 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 0
+  %blockId.x.t1 = load i32* %18
+  %19 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 1
+  %blockId.y.t1 = load i32* %19
+  %20 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 2
+  %blockId.z.t1 = load i32* %20
+  %21 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 0
+  %gridDim.x.t1 = load i32* %21
+  %22 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 1
+  %gridDim.y.t1 = load i32* %22
+  %23 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 2
+  %gridDim.z.t1 = load i32* %23
+  %localPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 4
+  %localPtr.t1 = load i8** %localPtrPtr.t1
+  %sharedPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 5
+  %sharedPtr.t1 = load i8** %sharedPtrPtr.t1
+  %constPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 6
+  %constPtr.t1 = load i8** %constPtrPtr.t1
+  %paramPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 7
+  %paramPtr.t1 = load i8** %paramPtrPtr.t1
+  %argumentPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 8
+  %argumentPtr.t1 = load i8** %argumentPtrPtr.t1
+  %metadataPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 9
+  %metadataPtr.t1 = load i8** %metadataPtrPtr.t1
+  %24 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 0
+  %threadId.x.t2 = load i32* %24
+  %25 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 1
+  %threadId.y.t2 = load i32* %25
+  %26 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 2
+  %threadId.z.t2 = load i32* %26
+  %27 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 0
+  %blockDim.x.t2 = load i32* %27
+  %28 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 1
+  %blockDim.y.t2 = load i32* %28
+  %29 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 2
+  %blockDim.z.t2 = load i32* %29
+  %30 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 0
+  %blockId.x.t2 = load i32* %30
+  %31 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 1
+  %blockId.y.t2 = load i32* %31
+  %32 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 2
+  %blockId.z.t2 = load i32* %32
+  %33 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 0
+  %gridDim.x.t2 = load i32* %33
+  %34 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 1
+  %gridDim.y.t2 = load i32* %34
+  %35 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 2
+  %gridDim.z.t2 = load i32* %35
+  %localPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 4
+  %localPtr.t2 = load i8** %localPtrPtr.t2
+  %sharedPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 5
+  %sharedPtr.t2 = load i8** %sharedPtrPtr.t2
+  %constPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 6
+  %constPtr.t2 = load i8** %constPtrPtr.t2
+  %paramPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 7
+  %paramPtr.t2 = load i8** %paramPtrPtr.t2
+  %argumentPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 8
+  %argumentPtr.t2 = load i8** %argumentPtrPtr.t2
+  %metadataPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 9
+  %metadataPtr.t2 = load i8** %metadataPtrPtr.t2
+  %36 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 0
+  %threadId.x.t3 = load i32* %36
+  %insert.threadId.x.t0.vec = insertelement <4 x i32> undef, i32 %threadId.x.t0, i32 0
+  %insert.threadId.x.t1.vec = insertelement <4 x i32> %insert.threadId.x.t0.vec, i32 %threadId.x.t1, i32 1
+  %insert.threadId.x.t2.vec = insertelement <4 x i32> %insert.threadId.x.t1.vec, i32 %threadId.x.t2, i32 2
+  %insert.threadId.x.t3.vec = insertelement <4 x i32> %insert.threadId.x.t2.vec, i32 %threadId.x.t3, i32 3
+  %37 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 1
+  %threadId.y.t3 = load i32* %37
+  %insert.threadId.y.t0.vec = insertelement <4 x i32> undef, i32 %threadId.y.t0, i32 0
+  %insert.threadId.y.t1.vec = insertelement <4 x i32> %insert.threadId.y.t0.vec, i32 %threadId.y.t1, i32 1
+  %insert.threadId.y.t2.vec = insertelement <4 x i32> %insert.threadId.y.t1.vec, i32 %threadId.y.t2, i32 2
+  %insert.threadId.y.t3.vec = insertelement <4 x i32> %insert.threadId.y.t2.vec, i32 %threadId.y.t3, i32 3
+  %38 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 2
+  %threadId.z.t3 = load i32* %38
+  %39 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 0
+  %blockDim.x.t3 = load i32* %39
+  %insert.blockDim.x.t0.vec = insertelement <4 x i32> undef, i32 %blockDim.x.t0, i32 0
+  %insert.blockDim.x.t1.vec = insertelement <4 x i32> %insert.blockDim.x.t0.vec, i32 %blockDim.x.t1, i32 1
+  %insert.blockDim.x.t2.vec = insertelement <4 x i32> %insert.blockDim.x.t1.vec, i32 %blockDim.x.t2, i32 2
+  %insert.blockDim.x.t3.vec = insertelement <4 x i32> %insert.blockDim.x.t2.vec, i32 %blockDim.x.t3, i32 3
+  %40 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 1
+  %blockDim.y.t3 = load i32* %40
+  %insert.blockDim.y.t0.vec = insertelement <4 x i32> undef, i32 %blockDim.y.t0, i32 0
+  %insert.blockDim.y.t1.vec = insertelement <4 x i32> %insert.blockDim.y.t0.vec, i32 %blockDim.y.t1, i32 1
+  %insert.blockDim.y.t2.vec = insertelement <4 x i32> %insert.blockDim.y.t1.vec, i32 %blockDim.y.t2, i32 2
+  %insert.blockDim.y.t3.vec = insertelement <4 x i32> %insert.blockDim.y.t2.vec, i32 %blockDim.y.t3, i32 3
+  %41 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 2
+  %blockDim.z.t3 = load i32* %41
+  %42 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 0
+  %blockId.x.t3 = load i32* %42
+  %insert.blockId.x.t0.vec = insertelement <4 x i32> undef, i32 %blockId.x.t0, i32 0
+  %insert.blockId.x.t1.vec = insertelement <4 x i32> %insert.blockId.x.t0.vec, i32 %blockId.x.t1, i32 1
+  %insert.blockId.x.t2.vec = insertelement <4 x i32> %insert.blockId.x.t1.vec, i32 %blockId.x.t2, i32 2
+  %insert.blockId.x.t3.vec = insertelement <4 x i32> %insert.blockId.x.t2.vec, i32 %blockId.x.t3, i32 3
+  %43 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 1
+  %blockId.y.t3 = load i32* %43
+  %insert.blockId.y.t0.vec = insertelement <4 x i32> undef, i32 %blockId.y.t0, i32 0
+  %insert.blockId.y.t1.vec = insertelement <4 x i32> %insert.blockId.y.t0.vec, i32 %blockId.y.t1, i32 1
+  %insert.blockId.y.t2.vec = insertelement <4 x i32> %insert.blockId.y.t1.vec, i32 %blockId.y.t2, i32 2
+  %insert.blockId.y.t3.vec = insertelement <4 x i32> %insert.blockId.y.t2.vec, i32 %blockId.y.t3, i32 3
+  %44 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 2
+  %blockId.z.t3 = load i32* %44
+  %45 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 0
+  %gridDim.x.t3 = load i32* %45
+  %46 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 1
+  %gridDim.y.t3 = load i32* %46
+  %47 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 2
+  %gridDim.z.t3 = load i32* %47
+  %localPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 4
+  %localPtr.t3 = load i8** %localPtrPtr.t3
+  %sharedPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 5
+  %sharedPtr.t3 = load i8** %sharedPtrPtr.t3
+  %constPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 6
+  %constPtr.t3 = load i8** %constPtrPtr.t3
+  %paramPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 7
+  %paramPtr.t3 = load i8** %paramPtrPtr.t3
+  %argumentPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 8
+  %argumentPtr.t3 = load i8** %argumentPtrPtr.t3
+  %metadataPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 9
+  %metadataPtr.t3 = load i8** %metadataPtrPtr.t3
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %rt2.t3 = bitcast i8* %argumentPtr.t3 to i64*
+  %rt2.t2 = bitcast i8* %argumentPtr.t2 to i64*
+  %rt2.t1 = bitcast i8* %argumentPtr.t1 to i64*
+  %r0 = load i64* %rt2, align 8
+  %r0.t3 = load i64* %rt2.t3, align 8
+  %r0.t2 = load i64* %rt2.t2, align 8
+  %r0.t1 = load i64* %rt2.t1, align 8
+  %rt3 = getelementptr i8* %argumentPtr.t0, i32 8
+  %rt3.t3 = getelementptr i8* %argumentPtr.t3, i32 8
+  %rt3.t2 = getelementptr i8* %argumentPtr.t2, i32 8
+  %rt3.t1 = getelementptr i8* %argumentPtr.t1, i32 8
+  %rt6 = bitcast i8* %rt3 to i32*
+  %rt6.t3 = bitcast i8* %rt3.t3 to i32*
+  %rt6.t2 = bitcast i8* %rt3.t2 to i32*
+  %rt6.t1 = bitcast i8* %rt3.t1 to i32*
+  %r1 = load i32* %rt6, align 4
+  %r1.t3 = load i32* %rt6.t3, align 4
+  %insert.r1.vec = insertelement <4 x i32> undef, i32 %r1, i32 0
+  %insert.r1.t1.vec = insertelement <4 x i32> %insert.r1.vec, i32 %r1.t1, i32 1
+  %insert.r1.t2.vec = insertelement <4 x i32> %insert.r1.t1.vec, i32 %r1.t2, i32 2
+  %insert.r1.t3.vec = insertelement <4 x i32> %insert.r1.t2.vec, i32 %r1.t3, i32 3
+  %r1.t2 = load i32* %rt6.t2, align 4
+  %r1.t1 = load i32* %rt6.t1, align 4
+  %rt13.vec = mul <4 x i32> %insert.blockDim.x.t3.vec, %insert.blockId.x.t3.vec
+  %r6.vec = add <4 x i32> %insert.threadId.x.t3.vec, %rt13.vec
+  %r6.extracted.t3 = extractelement <4 x i32> %r6.vec, i32 3
+  %r6.extracted.t2 = extractelement <4 x i32> %r6.vec, i32 2
+  %r6.extracted.t1 = extractelement <4 x i32> %r6.vec, i32 1
+  %r6.extracted.t0 = extractelement <4 x i32> %r6.vec, i32 0
+  %rt20.vec = mul <4 x i32> %insert.blockDim.y.t3.vec, %insert.blockId.y.t3.vec
+  %r10.vec = add <4 x i32> %insert.threadId.y.t3.vec, %rt20.vec
+  %r10.extracted.t3 = extractelement <4 x i32> %r10.vec, i32 3
+  %r10.extracted.t2 = extractelement <4 x i32> %r10.vec, i32 2
+  %r10.extracted.t1 = extractelement <4 x i32> %r10.vec, i32 1
+  %r10.extracted.t0 = extractelement <4 x i32> %r10.vec, i32 0
+  %r11 = uitofp i32 %r6.extracted.t0 to float
+  %r11.t3 = uitofp i32 %r6.extracted.t3 to float
+  %r11.t2 = uitofp i32 %r6.extracted.t2 to float
+  %r11.t1 = uitofp i32 %r6.extracted.t1 to float
+  %r12 = uitofp i32 %r10.extracted.t0 to float
+  %r12.t3 = uitofp i32 %r10.extracted.t3 to float
+  %r12.t2 = uitofp i32 %r10.extracted.t2 to float
+  %r12.t1 = uitofp i32 %r10.extracted.t1 to float
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11, float %r12)
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11.t3, float %r12.t3)
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11.t2, float %r12.t2)
+  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r11.t1, float %r12.t1)
+  %r14 = load float* %floatingPointTexture
+  %r14.t3 = load float* %floatingPointTexture
+  %r14.t2 = load float* %floatingPointTexture
+  %r14.t1 = load float* %floatingPointTexture
+  %rt21 = getelementptr float* %floatingPointTexture, i32 1
+  %rt21.t3 = getelementptr float* %floatingPointTexture, i32 1
+  %rt21.t2 = getelementptr float* %floatingPointTexture, i32 1
+  %rt21.t1 = getelementptr float* %floatingPointTexture, i32 1
+  %r15 = load float* %rt21
+  %r15.t3 = load float* %rt21.t3
+  %r15.t2 = load float* %rt21.t2
+  %r15.t1 = load float* %rt21.t1
+  %rt22 = getelementptr float* %floatingPointTexture, i32 2
+  %rt22.t3 = getelementptr float* %floatingPointTexture, i32 2
+  %rt22.t2 = getelementptr float* %floatingPointTexture, i32 2
+  %rt22.t1 = getelementptr float* %floatingPointTexture, i32 2
+  %r16 = load float* %rt22
+  %r16.t3 = load float* %rt22.t3
+  %r16.t2 = load float* %rt22.t2
+  %r16.t1 = load float* %rt22.t1
+  %rt23 = getelementptr float* %floatingPointTexture, i32 3
+  %rt23.t3 = getelementptr float* %floatingPointTexture, i32 3
+  %rt23.t2 = getelementptr float* %floatingPointTexture, i32 3
+  %rt23.t1 = getelementptr float* %floatingPointTexture, i32 3
+  %r17 = load float* %rt23
+  %r17.t3 = load float* %rt23.t3
+  %r17.t2 = load float* %rt23.t2
+  %r17.t1 = load float* %rt23.t1
+  %rt24.vec = mul <4 x i32> %r10.vec, %insert.r1.t3.vec
+  %r18.vec = add <4 x i32> %r6.vec, %rt24.vec
+  %r18.extracted.t3 = extractelement <4 x i32> %r18.vec, i32 3
+  %r18.extracted.t2 = extractelement <4 x i32> %r18.vec, i32 2
+  %r18.extracted.t1 = extractelement <4 x i32> %r18.vec, i32 1
+  %r18.extracted.t0 = extractelement <4 x i32> %r18.vec, i32 0
+  %rt25 = zext i32 %r18.extracted.t0 to i64
+  %rt25.t3 = zext i32 %r18.extracted.t3 to i64
+  %rt25.t2 = zext i32 %r18.extracted.t2 to i64
+  %rt25.t1 = zext i32 %r18.extracted.t1 to i64
+  %r19 = mul i64 %rt25, 4
+  %r19.t3 = mul i64 %rt25.t3, 4
+  %r19.t2 = mul i64 %rt25.t2, 4
+  %r19.t1 = mul i64 %rt25.t1, 4
+  %r20 = add i64 %r0, %r19
+  %r20.t3 = add i64 %r0.t3, %r19.t3
+  %r20.t2 = add i64 %r0.t2, %r19.t2
+  %r20.t1 = add i64 %r0.t1, %r19.t1
+  %rt26 = inttoptr i64 %r20 to float*
+  %rt26.t3 = inttoptr i64 %r20.t3 to float*
+  %rt26.t2 = inttoptr i64 %r20.t2 to float*
+  %rt26.t1 = inttoptr i64 %r20.t1 to float*
+  store float %r14, float* %rt26, align 4
+  store float %r14.t3, float* %rt26.t3, align 4
+  store float %r14.t2, float* %rt26.t2, align 4
+  store float %r14.t1, float* %rt26.t1, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002"
+  ret void
+}
+
+
+error on subkernel: _Z_ocelotTranslated__subkernel__Z6kernelPfii_1
+ specialization: _subkernel__Z6kernelPfii_1_opt1_ws4
+TestCudaTextureArray: ocelot/executive/implementation/DynamicTranslationCache.cpp:1253: void cloneAndOptimizeTranslation(executive::DynamicTranslationCache::TranslatedKernel&, executive::DynamicTranslationCache::TranslatedSubkernel&, executive::DynamicTranslationCache::SubkernelId, executive::DynamicTranslationCache::Translation*, int, translator::Translator::OptimizationLevel, unsigned int, bool): Assertion `0 && "due to broken LLVM translation"' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
+INFO     Test completed in 0.0629069805145 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1335814028
+Test time : 0.0125799
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0100409984589 seconds
+INFO     Test completed in 0.0445919036865 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0394988059998 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
+INFO     Test completed in 0.0405540466309 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:1027: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.00896811485291 seconds
+INFO     Test completed in 0.0592799186707 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -324,69 +1629,15 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1335567282
-Test time : 1.62125e-05
+Test Seed : 1335814028
+Test time : 1.23978e-05
 
 Status : 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.0338449478149 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1335567282
-Test time : 0.0151496
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.0132060050964 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1335567282
-Test time : 0.00391102
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0319941043854 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.0694050788879 seconds
+INFO     Test completed in 0.111145973206 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -397,8 +1648,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1335567282
-Test time : 0.0578985
+Test Seed : 1335814028
+Test time : 0.0605173
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -433,9 +1684,361 @@ R = [
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.0814249515533 seconds
+INFO      It produced the following output:
+Instruction does not dominate all uses!
+  %r6.t1 = load float* @Pi, align 4
+  %insert.r6.t1.vec = insertelement <4 x float> %insert.r6.vec, float %r6.t1, i32 1
+Instruction does not dominate all uses!
+  %insert.r6.t1.vec = insertelement <4 x float> %insert.r6.vec, float %r6.t1, i32 1
+  %insert.r6.t2.vec = insertelement <4 x float> %insert.r6.t1.vec, float %r6.t2, i32 2
+Instruction does not dominate all uses!
+  %insert.r6.t2.vec = insertelement <4 x float> %insert.r6.t1.vec, float %r6.t2, i32 2
+  %insert.r6.t3.vec = insertelement <4 x float> %insert.r6.t2.vec, float %r6.t3, i32 3
+Instruction does not dominate all uses!
+  %r12.t1 = sitofp i32 %r11.extracted.t1 to float
+  %insert.r12.t1.vec = insertelement <4 x float> %insert.r12.vec, float %r12.t1, i32 1
+Instruction does not dominate all uses!
+  %insert.r12.t1.vec = insertelement <4 x float> %insert.r12.vec, float %r12.t1, i32 1
+  %insert.r12.t2.vec = insertelement <4 x float> %insert.r12.t1.vec, float %r12.t2, i32 2
+Instruction does not dominate all uses!
+  %insert.r12.t2.vec = insertelement <4 x float> %insert.r12.t1.vec, float %r12.t2, i32 2
+  %insert.r12.t3.vec = insertelement <4 x float> %insert.r12.t2.vec, float %r12.t3, i32 3
+Instruction does not dominate all uses!
+  %insert.r6.t3.vec = insertelement <4 x float> %insert.r6.t2.vec, float %r6.t3, i32 3
+  %r13.vec = fmul <4 x float> %insert.r6.t3.vec, %insert.r12.t3.vec
+Instruction does not dominate all uses!
+  %r13.vec = fmul <4 x float> %insert.r6.t3.vec, %insert.r12.t3.vec
+  %r13.extracted.t3 = extractelement <4 x float> %r13.vec, i32 3
+Instruction does not dominate all uses!
+  %r13.vec = fmul <4 x float> %insert.r6.t3.vec, %insert.r12.t3.vec
+  %r13.extracted.t2 = extractelement <4 x float> %r13.vec, i32 2
+Instruction does not dominate all uses!
+  %r13.vec = fmul <4 x float> %insert.r6.t3.vec, %insert.r12.t3.vec
+  %r13.extracted.t1 = extractelement <4 x float> %r13.vec, i32 1
+Instruction does not dominate all uses!
+  %r13.vec = fmul <4 x float> %insert.r6.t3.vec, %insert.r12.t3.vec
+  %r13.extracted.t0 = extractelement <4 x float> %r13.vec, i32 0
+Instruction does not dominate all uses!
+  %r13.extracted.t0 = extractelement <4 x float> %r13.vec, i32 0
+  store float %r13.extracted.t0, float* %rt12, align 4
+Instruction does not dominate all uses!
+  %r13.extracted.t3 = extractelement <4 x float> %r13.vec, i32 3
+  store float %r13.extracted.t3, float* %rt12.t3, align 4
+Instruction does not dominate all uses!
+  %r13.extracted.t2 = extractelement <4 x float> %r13.vec, i32 2
+  store float %r13.extracted.t2, float* %rt12.t2, align 4
+Instruction does not dominate all uses!
+  %r13.extracted.t1 = extractelement <4 x float> %r13.vec, i32 1
+  store float %r13.extracted.t1, float* %rt12.t1, align 4
+Broken module found, verification continues.
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU 
+verification failed for translated function for copyFromGlobal : ""
+LLVMDynamicTranslationCache.cpp:1244:
+
+define internal void @_subkernel_copyFromGlobal_1_opt1_ws4(%LLVMContext* %__ctaContext) nounwind align 1 {
+SchedulerEntry:
+  %0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 0
+  %threadId.x.t0 = load i32* %0
+  %1 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 1
+  %threadId.y.t0 = load i32* %1
+  %2 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 0, i32 2
+  %threadId.z.t0 = load i32* %2
+  %3 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 0
+  %blockDim.x.t0 = load i32* %3
+  %4 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 1
+  %blockDim.y.t0 = load i32* %4
+  %5 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 1, i32 2
+  %blockDim.z.t0 = load i32* %5
+  %6 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 0
+  %blockId.x.t0 = load i32* %6
+  %7 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 1
+  %blockId.y.t0 = load i32* %7
+  %8 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 2, i32 2
+  %blockId.z.t0 = load i32* %8
+  %9 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 0
+  %gridDim.x.t0 = load i32* %9
+  %10 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 1
+  %gridDim.y.t0 = load i32* %10
+  %11 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 3, i32 2
+  %gridDim.z.t0 = load i32* %11
+  %localPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 4
+  %localPtr.t0 = load i8** %localPtrPtr.t0
+  %sharedPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 5
+  %sharedPtr.t0 = load i8** %sharedPtrPtr.t0
+  %constPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 6
+  %constPtr.t0 = load i8** %constPtrPtr.t0
+  %paramPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 7
+  %paramPtr.t0 = load i8** %paramPtrPtr.t0
+  %argumentPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 8
+  %argumentPtr.t0 = load i8** %argumentPtrPtr.t0
+  %metadataPtrPtr.t0 = getelementptr %LLVMContext* %__ctaContext, i32 0, i32 9
+  %metadataPtr.t0 = load i8** %metadataPtrPtr.t0
+  %bitcast = bitcast i8* %localPtr.t0 to i32*
+  %encodedResumePoint = load i32* %bitcast
+  %resumePoint = and i32 %encodedResumePoint, 65535
+  %12 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 0
+  %threadId.x.t1 = load i32* %12
+  %13 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 1
+  %threadId.y.t1 = load i32* %13
+  %14 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 0, i32 2
+  %threadId.z.t1 = load i32* %14
+  %15 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 0
+  %blockDim.x.t1 = load i32* %15
+  %16 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 1
+  %blockDim.y.t1 = load i32* %16
+  %17 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 1, i32 2
+  %blockDim.z.t1 = load i32* %17
+  %18 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 0
+  %blockId.x.t1 = load i32* %18
+  %19 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 1
+  %blockId.y.t1 = load i32* %19
+  %20 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 2, i32 2
+  %blockId.z.t1 = load i32* %20
+  %21 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 0
+  %gridDim.x.t1 = load i32* %21
+  %22 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 1
+  %gridDim.y.t1 = load i32* %22
+  %23 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 3, i32 2
+  %gridDim.z.t1 = load i32* %23
+  %localPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 4
+  %localPtr.t1 = load i8** %localPtrPtr.t1
+  %sharedPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 5
+  %sharedPtr.t1 = load i8** %sharedPtrPtr.t1
+  %constPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 6
+  %constPtr.t1 = load i8** %constPtrPtr.t1
+  %paramPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 7
+  %paramPtr.t1 = load i8** %paramPtrPtr.t1
+  %argumentPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 8
+  %argumentPtr.t1 = load i8** %argumentPtrPtr.t1
+  %metadataPtrPtr.t1 = getelementptr %LLVMContext* %__ctaContext, i32 1, i32 9
+  %metadataPtr.t1 = load i8** %metadataPtrPtr.t1
+  %24 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 0
+  %threadId.x.t2 = load i32* %24
+  %25 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 1
+  %threadId.y.t2 = load i32* %25
+  %26 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 0, i32 2
+  %threadId.z.t2 = load i32* %26
+  %27 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 0
+  %blockDim.x.t2 = load i32* %27
+  %28 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 1
+  %blockDim.y.t2 = load i32* %28
+  %29 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 1, i32 2
+  %blockDim.z.t2 = load i32* %29
+  %30 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 0
+  %blockId.x.t2 = load i32* %30
+  %31 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 1
+  %blockId.y.t2 = load i32* %31
+  %32 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 2, i32 2
+  %blockId.z.t2 = load i32* %32
+  %33 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 0
+  %gridDim.x.t2 = load i32* %33
+  %34 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 1
+  %gridDim.y.t2 = load i32* %34
+  %35 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 3, i32 2
+  %gridDim.z.t2 = load i32* %35
+  %localPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 4
+  %localPtr.t2 = load i8** %localPtrPtr.t2
+  %sharedPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 5
+  %sharedPtr.t2 = load i8** %sharedPtrPtr.t2
+  %constPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 6
+  %constPtr.t2 = load i8** %constPtrPtr.t2
+  %paramPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 7
+  %paramPtr.t2 = load i8** %paramPtrPtr.t2
+  %argumentPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 8
+  %argumentPtr.t2 = load i8** %argumentPtrPtr.t2
+  %metadataPtrPtr.t2 = getelementptr %LLVMContext* %__ctaContext, i32 2, i32 9
+  %metadataPtr.t2 = load i8** %metadataPtrPtr.t2
+  %36 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 0
+  %threadId.x.t3 = load i32* %36
+  %insert.threadId.x.t0.vec = insertelement <4 x i32> undef, i32 %threadId.x.t0, i32 0
+  %insert.threadId.x.t1.vec = insertelement <4 x i32> %insert.threadId.x.t0.vec, i32 %threadId.x.t1, i32 1
+  %insert.threadId.x.t2.vec = insertelement <4 x i32> %insert.threadId.x.t1.vec, i32 %threadId.x.t2, i32 2
+  %insert.threadId.x.t3.vec = insertelement <4 x i32> %insert.threadId.x.t2.vec, i32 %threadId.x.t3, i32 3
+  %37 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 1
+  %threadId.y.t3 = load i32* %37
+  %38 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 0, i32 2
+  %threadId.z.t3 = load i32* %38
+  %39 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 0
+  %blockDim.x.t3 = load i32* %39
+  %insert.blockDim.x.t0.vec = insertelement <4 x i32> undef, i32 %blockDim.x.t0, i32 0
+  %insert.blockDim.x.t1.vec = insertelement <4 x i32> %insert.blockDim.x.t0.vec, i32 %blockDim.x.t1, i32 1
+  %insert.blockDim.x.t2.vec = insertelement <4 x i32> %insert.blockDim.x.t1.vec, i32 %blockDim.x.t2, i32 2
+  %insert.blockDim.x.t3.vec = insertelement <4 x i32> %insert.blockDim.x.t2.vec, i32 %blockDim.x.t3, i32 3
+  %40 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 1
+  %blockDim.y.t3 = load i32* %40
+  %41 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 1, i32 2
+  %blockDim.z.t3 = load i32* %41
+  %42 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 0
+  %blockId.x.t3 = load i32* %42
+  %insert.blockId.x.t0.vec = insertelement <4 x i32> undef, i32 %blockId.x.t0, i32 0
+  %insert.blockId.x.t1.vec = insertelement <4 x i32> %insert.blockId.x.t0.vec, i32 %blockId.x.t1, i32 1
+  %insert.blockId.x.t2.vec = insertelement <4 x i32> %insert.blockId.x.t1.vec, i32 %blockId.x.t2, i32 2
+  %insert.blockId.x.t3.vec = insertelement <4 x i32> %insert.blockId.x.t2.vec, i32 %blockId.x.t3, i32 3
+  %43 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 1
+  %blockId.y.t3 = load i32* %43
+  %44 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 2, i32 2
+  %blockId.z.t3 = load i32* %44
+  %45 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 0
+  %gridDim.x.t3 = load i32* %45
+  %46 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 1
+  %gridDim.y.t3 = load i32* %46
+  %47 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 3, i32 2
+  %gridDim.z.t3 = load i32* %47
+  %localPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 4
+  %localPtr.t3 = load i8** %localPtrPtr.t3
+  %sharedPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 5
+  %sharedPtr.t3 = load i8** %sharedPtrPtr.t3
+  %constPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 6
+  %constPtr.t3 = load i8** %constPtrPtr.t3
+  %paramPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 7
+  %paramPtr.t3 = load i8** %paramPtrPtr.t3
+  %argumentPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 8
+  %argumentPtr.t3 = load i8** %argumentPtrPtr.t3
+  %metadataPtrPtr.t3 = getelementptr %LLVMContext* %__ctaContext, i32 3, i32 9
+  %metadataPtr.t3 = load i8** %metadataPtrPtr.t3
+  switch i32 %resumePoint, label %"$BB_1_0002" [
+  ]
+
+"$BB_1_0002":                                     ; preds = %SchedulerEntry
+  %rt2 = bitcast i8* %argumentPtr.t0 to i64*
+  %rt2.t3 = bitcast i8* %argumentPtr.t3 to i64*
+  %rt2.t2 = bitcast i8* %argumentPtr.t2 to i64*
+  %rt2.t1 = bitcast i8* %argumentPtr.t1 to i64*
+  %r0 = load i64* %rt2, align 8
+  %r0.t3 = load i64* %rt2.t3, align 8
+  %r0.t2 = load i64* %rt2.t2, align 8
+  %r0.t1 = load i64* %rt2.t1, align 8
+  %rt9.vec = mul <4 x i32> %insert.blockId.x.t3.vec, %insert.blockDim.x.t3.vec
+  %r5.vec = add <4 x i32> %insert.threadId.x.t3.vec, %rt9.vec
+  %r5.extracted.t3 = extractelement <4 x i32> %r5.vec, i32 3
+  %r5.extracted.t2 = extractelement <4 x i32> %r5.vec, i32 2
+  %r5.extracted.t1 = extractelement <4 x i32> %r5.vec, i32 1
+  %r5.extracted.t0 = extractelement <4 x i32> %r5.vec, i32 0
+  %r6 = load float* @Pi, align 4
+  %r6.t3 = load float* @Pi, align 4
+  %insert.r6.vec = insertelement <4 x float> undef, float %r6, i32 0
+  %insert.r6.t1.vec = insertelement <4 x float> %insert.r6.vec, float %r6.t1, i32 1
+  %insert.r6.t2.vec = insertelement <4 x float> %insert.r6.t1.vec, float %r6.t2, i32 2
+  %insert.r6.t3.vec = insertelement <4 x float> %insert.r6.t2.vec, float %r6.t3, i32 3
+  %r6.t2 = load float* @Pi, align 4
+  %r6.t1 = load float* @Pi, align 4
+  %48 = insertelement <4 x i32> undef, i32 31, i32 0
+  %49 = insertelement <4 x i32> %48, i32 31, i32 1
+  %50 = insertelement <4 x i32> %49, i32 31, i32 2
+  %51 = insertelement <4 x i32> %50, i32 31, i32 3
+  %r7.vec = ashr <4 x i32> %r5.vec, %51
+  %52 = insertelement <4 x i32> undef, i32 25, i32 0
+  %53 = insertelement <4 x i32> %52, i32 25, i32 1
+  %54 = insertelement <4 x i32> %53, i32 25, i32 2
+  %55 = insertelement <4 x i32> %54, i32 25, i32 3
+  %r8.vec = lshr <4 x i32> %r7.vec, %55
+  %r9.vec = add <4 x i32> %r5.vec, %r8.vec
+  %56 = insertelement <4 x i32> undef, i32 -128, i32 0
+  %57 = insertelement <4 x i32> %56, i32 -128, i32 1
+  %58 = insertelement <4 x i32> %57, i32 -128, i32 2
+  %59 = insertelement <4 x i32> %58, i32 -128, i32 3
+  %r10.vec = and <4 x i32> %r9.vec, %59
+  %r11.vec = sub <4 x i32> %r5.vec, %r10.vec
+  %r11.extracted.t3 = extractelement <4 x i32> %r11.vec, i32 3
+  %r11.extracted.t2 = extractelement <4 x i32> %r11.vec, i32 2
+  %r11.extracted.t1 = extractelement <4 x i32> %r11.vec, i32 1
+  %r11.extracted.t0 = extractelement <4 x i32> %r11.vec, i32 0
+  %r12 = sitofp i32 %r11.extracted.t0 to float
+  %r12.t3 = sitofp i32 %r11.extracted.t3 to float
+  %insert.r12.vec = insertelement <4 x float> undef, float %r12, i32 0
+  %insert.r12.t1.vec = insertelement <4 x float> %insert.r12.vec, float %r12.t1, i32 1
+  %insert.r12.t2.vec = insertelement <4 x float> %insert.r12.t1.vec, float %r12.t2, i32 2
+  %insert.r12.t3.vec = insertelement <4 x float> %insert.r12.t2.vec, float %r12.t3, i32 3
+  %r12.t2 = sitofp i32 %r11.extracted.t2 to float
+  %r12.t1 = sitofp i32 %r11.extracted.t1 to float
+  %r13.vec = fmul <4 x float> %insert.r6.t3.vec, %insert.r12.t3.vec
+  %r13.extracted.t3 = extractelement <4 x float> %r13.vec, i32 3
+  %r13.extracted.t2 = extractelement <4 x float> %r13.vec, i32 2
+  %r13.extracted.t1 = extractelement <4 x float> %r13.vec, i32 1
+  %r13.extracted.t0 = extractelement <4 x float> %r13.vec, i32 0
+  %rt11 = sext i32 %r5.extracted.t0 to i64
+  %rt11.t3 = sext i32 %r5.extracted.t3 to i64
+  %rt11.t2 = sext i32 %r5.extracted.t2 to i64
+  %rt11.t1 = sext i32 %r5.extracted.t1 to i64
+  %r14 = mul i64 %rt11, 4
+  %r14.t3 = mul i64 %rt11.t3, 4
+  %r14.t2 = mul i64 %rt11.t2, 4
+  %r14.t1 = mul i64 %rt11.t1, 4
+  %r15 = add i64 %r0, %r14
+  %r15.t3 = add i64 %r0.t3, %r14.t3
+  %r15.t2 = add i64 %r0.t2, %r14.t2
+  %r15.t1 = add i64 %r0.t1, %r14.t1
+  %rt12 = inttoptr i64 %r15 to float*
+  %rt12.t3 = inttoptr i64 %r15.t3 to float*
+  %rt12.t2 = inttoptr i64 %r15.t2 to float*
+  %rt12.t1 = inttoptr i64 %r15.t1 to float*
+  store float %r13.extracted.t0, float* %rt12, align 4
+  store float %r13.extracted.t3, float* %rt12.t3, align 4
+  store float %r13.extracted.t2, float* %rt12.t2, align 4
+  store float %r13.extracted.t1, float* %rt12.t1, align 4
+  br label %exit
+
+exit:                                             ; preds = %"$BB_1_0002"
+  ret void
+}
+
+
+error on subkernel: _Z_ocelotTranslated__subkernel_copyFromGlobal_1
+ specialization: _subkernel_copyFromGlobal_1_opt1_ws4
+TestCudaGlobals: ocelot/executive/implementation/DynamicTranslationCache.cpp:1253: void cloneAndOptimizeTranslation(executive::DynamicTranslationCache::TranslatedKernel&, executive::DynamicTranslationCache::TranslatedSubkernel&, executive::DynamicTranslationCache::SubkernelId, executive::DynamicTranslationCache::Translation*, int, translator::Translator::OptimizationLevel, unsigned int, bool): Assertion `0 && "due to broken LLVM translation"' failed.
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
+INFO     Test completed in 0.0528130531311 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1335814028
+Test time : 0.00379729
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
+INFO     Test completed in 0.0828990936279 seconds
+INFO      It produced the following output:
+Pass/Fail : Fail
+
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1335814028
+Test time : 0.0361397
+
+Status : Ran 'TestVectorElements-u32' for 16 iterations.
+ Output parameter 0 (I16) computed value - -27056 does not match reference value - -4279
+  On device - 0 - 'Ocelot Dynamic Multicore CPU'
+Test 'TestAdd-u16' seed '1335814028' failed.
+
+
+
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.00960898399353 seconds
+INFO     Test completed in 0.0457010269165 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -450,8 +2053,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1335567282
-Test time : 2.24113e-05
+Test Seed : 1335814028
+Test time : 1.57356e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -463,7 +2066,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.0417799949646 seconds
+INFO     Test completed in 0.0749449729919 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -480,485 +2083,28 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 10.7389538288 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXAssembly
-
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
-
-
-Test Seed : 1335567282
-Test time : 10.7285
-
-Status : Ran 'TestVectorElements-u32' for 7 iterations.
-Ran 'TestAdd-u16' for 9 iterations.
-Ran 'TestAdd-s16' for 10 iterations.
-Ran 'TestAdd-u32' for 10 iterations.
-Ran 'TestAdd-s32' for 10 iterations.
-Ran 'TestAdd-s32-sat' for 8 iterations.
-Ran 'TestAdd-u64' for 10 iterations.
-Ran 'TestAdd-s64' for 10 iterations.
-Ran 'TestSub-u16' for 10 iterations.
-Ran 'TestSub-s16' for 10 iterations.
-Ran 'TestSub-u32' for 10 iterations.
-Ran 'TestSub-s32' for 10 iterations.
-Ran 'TestSub-s32-sat' for 9 iterations.
-Ran 'TestSub-u64' for 10 iterations.
-Ran 'TestSub-s64' for 10 iterations.
-Ran 'TestSub-Carry-s32' for 7 iterations.
-Ran 'TestSub-Carry-u32' for 7 iterations.
-Ran 'TestAdd-Carry-s32' for 8 iterations.
-Ran 'TestAdd-Carry-u32' for 8 iterations.
-Ran 'TestMul-Lo-u16' for 10 iterations.
-Ran 'TestMul-Hi-u16' for 9 iterations.
-Ran 'TestMul-Wide-u16' for 9 iterations.
-Ran 'TestMul-Lo-s16' for 9 iterations.
-Ran 'TestMul-Hi-s16' for 9 iterations.
-Ran 'TestMul-Wide-s16' for 9 iterations.
-Ran 'TestMul-Lo-u32' for 9 iterations.
-Ran 'TestMul-Hi-u32' for 9 iterations.
-Ran 'TestMul-Wide-u32' for 9 iterations.
-Ran 'TestMul-Lo-s32' for 10 iterations.
-Ran 'TestMul-Hi-s32' for 9 iterations.
-Ran 'TestMul-Wide-s32' for 9 iterations.
-Ran 'TestMul-Lo-u64' for 10 iterations.
-Ran 'TestMul-Hi-u64' for 9 iterations.
-Ran 'TestMul-Lo-s64' for 10 iterations.
-Ran 'TestMul-Hi-s64' for 9 iterations.
-Ran 'TestMad-Lo-u16' for 9 iterations.
-Ran 'TestMad-Hi-u16' for 9 iterations.
-Ran 'TestMad-Wide-u16' for 9 iterations.
-Ran 'TestMad-Lo-s16' for 7 iterations.
-Ran 'TestMad-Hi-s16' for 9 iterations.
-Ran 'TestMad-Wide-s16' for 9 iterations.
-Ran 'TestMad-Lo-u32' for 9 iterations.
-Ran 'TestMad-Hi-u32' for 9 iterations.
-Ran 'TestMad-Wide-u32' for 9 iterations.
-Ran 'TestMad-Lo-s32' for 9 iterations.
-Ran 'TestMad-Hi-s32' for 9 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 8 iterations.
-Ran 'TestMad-Wide-s32' for 9 iterations.
-Ran 'TestMad-Lo-u64' for 9 iterations.
-Ran 'TestMad-Hi-u64' for 9 iterations.
-Ran 'TestMad-Lo-s64' for 9 iterations.
-Ran 'TestMad-Hi-s64' for 9 iterations.
-Ran 'TestSad-u16' for 9 iterations.
-Ran 'TestSad-s16' for 9 iterations.
-Ran 'TestSad-u32' for 9 iterations.
-Ran 'TestSad-s32' for 9 iterations.
-Ran 'TestSad-u64' for 9 iterations.
-Ran 'TestSad-s64' for 9 iterations.
-Ran 'TestDiv-u16' for 10 iterations.
-Ran 'TestDiv-s16' for 10 iterations.
-Ran 'TestDiv-u32' for 7 iterations.
-Ran 'TestDiv-s32' for 10 iterations.
-Ran 'TestDiv-u64' for 10 iterations.
-Ran 'TestDiv-s64' for 10 iterations.
-Ran 'TestRem-u16' for 10 iterations.
-Ran 'TestRem-s16' for 10 iterations.
-Ran 'TestRem-u32' for 10 iterations.
-Ran 'TestRem-s32' for 10 iterations.
-Ran 'TestRem-u64' for 7 iterations.
-Ran 'TestRem-s64' for 10 iterations.
-Ran 'TestAbs-s16' for 9 iterations.
-Ran 'TestAbs-s32' for 9 iterations.
-Ran 'TestAbs-s64' for 9 iterations.
-Ran 'TestNeg-s16' for 10 iterations.
-Ran 'TestNeg-s32' for 9 iterations.
-Ran 'TestNeg-s64' for 10 iterations.
-Ran 'TestMax-u16' for 9 iterations.
-Ran 'TestMax-u32' for 9 iterations.
-Ran 'TestMax-u64' for 9 iterations.
-Ran 'TestMax-s16' for 7 iterations.
-Ran 'TestMax-s32' for 9 iterations.
-Ran 'TestMax-s64' for 9 iterations.
-Ran 'TestMin-u16' for 9 iterations.
-Ran 'TestMin-u32' for 9 iterations.
-Ran 'TestMin-u64' for 9 iterations.
-Ran 'TestMin-s16' for 9 iterations.
-Ran 'TestMin-s32' for 9 iterations.
-Ran 'TestMin-s64' for 9 iterations.
-Ran 'TestPopc-b32' for 10 iterations.
-Ran 'TestPopc-b64' for 9 iterations.
-Ran 'TestClz-b32' for 10 iterations.
-Ran 'TestClz-b64' for 10 iterations.
-Ran 'TestBfind-u32' for 10 iterations.
-Ran 'TestBfind-u64' for 9 iterations.
-Ran 'TestBfind-s32' for 9 iterations.
-Ran 'TestBfind-s64' for 9 iterations.
-Ran 'TestBfind-shiftamount-u32' for 9 iterations.
-Ran 'TestBfind-shiftamount-u64' for 9 iterations.
-Ran 'TestBfind-shiftamount-s32' for 9 iterations.
-Ran 'TestBfind-shiftamount-s64' for 9 iterations.
-Ran 'TestBrev-b32' for 9 iterations.
-Ran 'TestBrev-b64' for 9 iterations.
-Ran 'TestBfi-b32' for 8 iterations.
-Ran 'TestBfi-b64' for 8 iterations.
-Ran 'TestPrmt-b32' for 9 iterations.
-Ran 'TestPrmt-f4e-b32' for 9 iterations.
-Ran 'TestPrmt-b4e-b32' for 9 iterations.
-Ran 'TestPrmt-rc8-b32' for 9 iterations.
-Ran 'TestPrmt-ecl-b32' for 9 iterations.
-Ran 'TestPrmt-ecr-b32' for 9 iterations.
-Ran 'TestPrmt-rc16-b32' for 9 iterations.
-Ran 'TestCall-Uni' for 4 iterations.
-Ran 'TestCall-Nondivergent' for 5 iterations.
-Ran 'TestCall-Divergent' for 4 iterations.
-Ran 'TestCall-Recursive' for 4 iterations.
-Ran 'TestCall-Indirect' for 2 iterations.
-Ran 'TestFunctionPointerArray' for 2 iterations.
-Ran 'TestTestP-f32-Finite' for 9 iterations.
-Ran 'TestTestP-f32-Infinite' for 9 iterations.
-Ran 'TestTestP-f32-Number' for 9 iterations.
-Ran 'TestTestP-f32-NotANumber' for 9 iterations.
-Ran 'TestTestP-f32-Normal' for 8 iterations.
-Ran 'TestTestP-f32-SubNormal' for 8 iterations.
-Ran 'TestTestP-f64-Finite' for 9 iterations.
-Ran 'TestTestP-f64-Infinite' for 9 iterations.
-Ran 'TestTestP-f64-Number' for 9 iterations.
-Ran 'TestTestP-f64-NotANumber' for 9 iterations.
-Ran 'TestTestP-f64-Normal' for 8 iterations.
-Ran 'TestTestP-f64-SubNormal' for 8 iterations.
-Ran 'TestCopysign-f32' for 9 iterations.
-Ran 'TestCopysign-f64' for 9 iterations.
-Ran 'TestAdd-f32' for 9 iterations.
-Ran 'TestAdd-f32-sat' for 8 iterations.
-Ran 'TestAdd-f32-ftz' for 8 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 8 iterations.
-Ran 'TestAdd-f64' for 9 iterations.
-Ran 'TestSub-f32' for 9 iterations.
-Ran 'TestSub-f32-sat' for 8 iterations.
-Ran 'TestSub-f32-ftz' for 8 iterations.
-Ran 'TestSub-f32-ftz-sat' for 8 iterations.
-Ran 'TestSub-f64' for 9 iterations.
-Ran 'TestMul-f32' for 9 iterations.
-Ran 'TestMul-f32-sat' for 8 iterations.
-Ran 'TestMul-f32-ftz' for 7 iterations.
-Ran 'TestMul-f32-ftz-sat' for 7 iterations.
-Ran 'TestMul-f64' for 9 iterations.
-Ran 'TestMad-f32' for 9 iterations.
-Ran 'TestMad-f32-sat' for 8 iterations.
-Ran 'TestMad-f32-ftz' for 7 iterations.
-Ran 'TestMad-f32-ftz-sat' for 7 iterations.
-Ran 'TestMad-f64' for 9 iterations.
-Ran 'TestFma-f32' for 9 iterations.
-Ran 'TestFma-f32-sat' for 8 iterations.
-Ran 'TestFma-f32-ftz' for 7 iterations.
-Ran 'TestFma-f32-ftz-sat' for 7 iterations.
-Ran 'TestFma-f64' for 9 iterations.
-Ran 'TestDiv-f32' for 9 iterations.
-Ran 'TestDiv-f32-ftz' for 7 iterations.
-Ran 'TestDiv-f32-approx' for 9 iterations.
-Ran 'TestDiv-f32-full' for 9 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 7 iterations.
-Ran 'TestDiv-f32-full-ftz' for 7 iterations.
-Ran 'TestDiv-f64' for 9 iterations.
-Ran 'TestAbs-f32' for 9 iterations.
-Ran 'TestAbs-f32-ftz' for 8 iterations.
-Ran 'TestAbs-f64' for 9 iterations.
-Ran 'TestNeg-f32' for 10 iterations.
-Ran 'TestNeg-f32-ftz' for 8 iterations.
-Ran 'TestNeg-f64' for 10 iterations.
-Ran 'TestMin-f32' for 8 iterations.
-Ran 'TestMin-f32-ftz' for 8 iterations.
-Ran 'TestMin-f64' for 8 iterations.
-Ran 'TestMax-f32' for 8 iterations.
-Ran 'TestMax-f32-ftz' for 7 iterations.
-Ran 'TestMax-f64' for 8 iterations.
-Ran 'TestRcp-f32' for 9 iterations.
-Ran 'TestRcp-f32-approx' for 9 iterations.
-Ran 'TestRcp-f32-ftz' for 8 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 8 iterations.
-Ran 'TestRcp-f64' for 9 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 9 iterations.
-Ran 'TestSqrt-f32' for 10 iterations.
-Ran 'TestSqrt-f32-approx' for 8 iterations.
-Ran 'TestSqrt-f32-ftz' for 8 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 8 iterations.
-Ran 'TestSqrt-f64' for 8 iterations.
-Ran 'TestRsqrt-f32' for 5 iterations.
-Ran 'TestRsqrt-f32-ftz' for 8 iterations.
-Ran 'TestRsqrt-f64' for 9 iterations.
-Ran 'TestCos-f32' for 8 iterations.
-Ran 'TestCos-f32-ftz' for 7 iterations.
-Ran 'TestSin-f32' for 8 iterations.
-Ran 'TestSin-f32-ftz' for 7 iterations.
-Ran 'TestEx2-f32' for 9 iterations.
-Ran 'TestEx2-f32-ftz' for 8 iterations.
-Ran 'TestLg2-f32' for 9 iterations.
-Ran 'TestLg2-f32-ftz' for 7 iterations.
-Ran 'TestSet-lt-u32-u16' for 8 iterations.
-Ran 'TestSet-lt-s32-u16' for 8 iterations.
-Ran 'TestSet-lt-f32-u16' for 8 iterations.
-Ran 'TestSet-lt-s32-u32' for 9 iterations.
-Ran 'TestSet-lt-s32-u64' for 9 iterations.
-Ran 'TestSet-lt-s32-s16' for 9 iterations.
-Ran 'TestSet-lt-s32-s32' for 9 iterations.
-Ran 'TestSet-lt-s32-s64' for 9 iterations.
-Ran 'TestSet-lt-s32-f32' for 9 iterations.
-Ran 'TestSet-lt-s32-f64' for 9 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 9 iterations.
-Ran 'TestSet-Eq-s32-s32' for 9 iterations.
-Ran 'TestSet-Ne-s32-s32' for 9 iterations.
-Ran 'TestSet-Le-s32-s32' for 9 iterations.
-Ran 'TestSet-Gt-s32-s32' for 9 iterations.
-Ran 'TestSet-Ge-s32-s32' for 9 iterations.
-Ran 'TestSet-Lo-s32-u32' for 9 iterations.
-Ran 'TestSet-Ls-s32-u32' for 9 iterations.
-Ran 'TestSet-Hi-s32-u32' for 9 iterations.
-Ran 'TestSet-Hs-s32-u32' for 9 iterations.
-Ran 'TestSet-Eq-s32-f32' for 8 iterations.
-Ran 'TestSet-Ne-s32-f32' for 9 iterations.
-Ran 'TestSet-Lt-s32-f32' for 9 iterations.
-Ran 'TestSet-Le-s32-f32' for 9 iterations.
-Ran 'TestSet-Gt-s32-f32' for 8 iterations.
-Ran 'TestSet-Ge-s32-f32' for 8 iterations.
-Ran 'TestSet-Lo-s32-u32' for 9 iterations.
-Ran 'TestSet-Ls-s32-u32' for 9 iterations.
-Ran 'TestSet-Hi-s32-u32' for 9 iterations.
-Ran 'TestSet-Hs-s32-u32' for 9 iterations.
-Ran 'TestSet-Equ-s32-f32' for 9 iterations.
-Ran 'TestSet-Neu-s32-f32' for 8 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 7 iterations.
-Ran 'TestSet-Leu-s32-f32' for 7 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 9 iterations.
-Ran 'TestSet-Geu-s32-f32' for 9 iterations.
-Ran 'TestSet-Num-s32-f32' for 8 iterations.
-Ran 'TestSet-Nan-s32-f32' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 8 iterations.
-Ran 'TestSetP-lt-u16' for 8 iterations.
-Ran 'TestSetP-lt-u32' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq' for 8 iterations.
-Ran 'TestSetP-lt-u64' for 8 iterations.
-Ran 'TestSetP-lt-s16' for 8 iterations.
-Ran 'TestSetP-lt-s32' for 8 iterations.
-Ran 'TestSetP-lt-s64' for 8 iterations.
-Ran 'TestSetP-lt-f32' for 8 iterations.
-Ran 'TestSetP-lt-f64' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 8 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 8 iterations.
-Ran 'TestSelp-u16' for 8 iterations.
-Ran 'TestSelp-u32' for 8 iterations.
-Ran 'TestSelp-u64' for 8 iterations.
-Ran 'TestSelp-s16' for 8 iterations.
-Ran 'TestSelp-s32' for 7 iterations.
-Ran 'TestSelp-s64' for 8 iterations.
-Ran 'TestSelp-f32' for 8 iterations.
-Ran 'TestSelp-f64' for 8 iterations.
-Ran 'TestSlct-u16-s32' for 9 iterations.
-Ran 'TestSlct-u32-s32' for 9 iterations.
-Ran 'TestSlct-u64-s32' for 9 iterations.
-Ran 'TestSlct-s16-s32' for 9 iterations.
-Ran 'TestSlct-s32-s32' for 9 iterations.
-Ran 'TestSlct-s64-s32' for 9 iterations.
-Ran 'TestSlct-f32-s32' for 8 iterations.
-Ran 'TestSlct-f64-s32' for 9 iterations.
-Ran 'TestSlct-u16-f32' for 9 iterations.
-Ran 'TestSlct-u32-f32' for 9 iterations.
-Ran 'TestSlct-u64-f32' for 8 iterations.
-Ran 'TestSlct-s16-f32' for 9 iterations.
-Ran 'TestSlct-s32-f32' for 9 iterations.
-Ran 'TestSlct-s64-f32' for 9 iterations.
-Ran 'TestSlct-f32-f32' for 9 iterations.
-Ran 'TestSlct-f64-f32' for 9 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 9 iterations.
-Ran 'TestAnd-pred' for 8 iterations.
-Ran 'TestAnd-b16' for 9 iterations.
-Ran 'TestAnd-b32' for 9 iterations.
-Ran 'TestAnd-b64' for 9 iterations.
-Ran 'TestOr-pred' for 6 iterations.
-Ran 'TestOr-b16' for 9 iterations.
-Ran 'TestOr-b32' for 9 iterations.
-Ran 'TestOr-b64' for 9 iterations.
-Ran 'TestXor-pred' for 8 iterations.
-Ran 'TestXor-b16' for 9 iterations.
-Ran 'TestXor-b32' for 9 iterations.
-Ran 'TestXor-b64' for 9 iterations.
-Ran 'TestNot-pred' for 9 iterations.
-Ran 'TestNot-b16' for 10 iterations.
-Ran 'TestNot-b32' for 10 iterations.
-Ran 'TestNot-b64' for 10 iterations.
-Ran 'TestCNot-b16' for 9 iterations.
-Ran 'TestCNot-b32' for 9 iterations.
-Ran 'TestCNot-b64' for 9 iterations.
-Ran 'TestShl-b16' for 9 iterations.
-Ran 'TestShl-b32' for 9 iterations.
-Ran 'TestShl-b64' for 9 iterations.
-Ran 'TestShr-u16' for 9 iterations.
-Ran 'TestShr-u32' for 9 iterations.
-Ran 'TestShr-u64' for 9 iterations.
-Ran 'TestShr-s16' for 9 iterations.
-Ran 'TestShr-s32' for 9 iterations.
-Ran 'TestShr-s64' for 9 iterations.
-Ran 'TestMov-pred' for 9 iterations.
-Ran 'TestMov-u16' for 10 iterations.
-Ran 'TestMov-u32' for 10 iterations.
-Ran 'TestMov-u64' for 10 iterations.
-Ran 'TestMov-s16' for 7 iterations.
-Ran 'TestMov-s32' for 10 iterations.
-Ran 'TestMov-s64' for 10 iterations.
-Ran 'TestMov-f32' for 10 iterations.
-Ran 'TestMov-f64' for 10 iterations.
-Ran 'TestMovLabel-global-v1' for 9 iterations.
-Ran 'TestMovLabel-global-v1-index' for 9 iterations.
-Ran 'TestMovLabel-global-v2' for 8 iterations.
-Ran 'TestMovLabel-global-v4' for 8 iterations.
-Ran 'TestMovLabel-local-v1' for 9 iterations.
-Ran 'TestMovLabel-local-v1-index' for 9 iterations.
-Ran 'TestMovLabel-local-v2' for 8 iterations.
-Ran 'TestMovLabel-local-v4' for 8 iterations.
-Ran 'TestMovLabel-shared-v1' for 9 iterations.
-Ran 'TestMovLabel-shared-v1-index' for 9 iterations.
-Ran 'TestMovLabel-shared-v4' for 8 iterations.
-Ran 'TestCvt-u8-u8' for 10 iterations.
-Ran 'TestCvt-u8-u16' for 10 iterations.
-Ran 'TestCvt-u8-u32' for 10 iterations.
-Ran 'TestCvt-u8-u64' for 10 iterations.
-Ran 'TestCvt-u8-s8' for 10 iterations.
-Ran 'TestCvt-u8-s16' for 10 iterations.
-Ran 'TestCvt-u8-s32' for 10 iterations.
-Ran 'TestCvt-u8-s64' for 10 iterations.
-Ran 'TestCvt-u8-f32' for 8 iterations.
-Ran 'TestCvt-u8-f64' for 8 iterations.
-Ran 'TestCvt-u16-u8' for 10 iterations.
-Ran 'TestCvt-u16-u16' for 10 iterations.
-Ran 'TestCvt-u16-u32' for 10 iterations.
-Ran 'TestCvt-u16-u64' for 10 iterations.
-Ran 'TestCvt-u16-s8' for 10 iterations.
-Ran 'TestCvt-u16-s16' for 10 iterations.
-Ran 'TestCvt-u16-s32' for 10 iterations.
-Ran 'TestCvt-u16-s64' for 10 iterations.
-Ran 'TestCvt-u16-f32' for 8 iterations.
-Ran 'TestCvt-u16-f64' for 8 iterations.
-Ran 'TestCvt-u32-u8' for 10 iterations.
-Ran 'TestCvt-u32-u16' for 10 iterations.
-Ran 'TestCvt-u32-u32' for 10 iterations.
-Ran 'TestCvt-u32-u64' for 10 iterations.
-Ran 'TestCvt-u32-s8' for 9 iterations.
-Ran 'TestCvt-u32-s16' for 10 iterations.
-Ran 'TestCvt-u32-s32' for 10 iterations.
-Ran 'TestCvt-u32-s64' for 10 iterations.
-Ran 'TestCvt-u32-f32' for 8 iterations.
-Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 8 iterations.
-Ran 'TestCvt-u32-f32-rmi' for 8 iterations.
-Ran 'TestCvt-u32-f64' for 8 iterations.
-Ran 'TestCvt-u64-u8' for 10 iterations.
-Ran 'TestCvt-u64-u16' for 10 iterations.
-Ran 'TestCvt-u64-u32' for 10 iterations.
-Ran 'TestCvt-u64-u64' for 10 iterations.
-Ran 'TestCvt-u64-s8' for 10 iterations.
-Ran 'TestCvt-u64-s16' for 8 iterations.
-Ran 'TestCvt-u64-s32' for 9 iterations.
-Ran 'TestCvt-u64-s64' for 10 iterations.
-Ran 'TestCvt-u64-f32' for 8 iterations.
-Ran 'TestCvt-u64-f64' for 8 iterations.
-Ran 'TestCvt-s8-u8' for 10 iterations.
-Ran 'TestCvt-s8-u16' for 10 iterations.
-Ran 'TestCvt-s8-u32' for 10 iterations.
-Ran 'TestCvt-s8-u64' for 10 iterations.
-Ran 'TestCvt-s8-s8' for 6 iterations.
-Ran 'TestCvt-s8-s16' for 10 iterations.
-Ran 'TestCvt-s8-s32' for 10 iterations.
-Ran 'TestCvt-s8-s64' for 10 iterations.
-Ran 'TestCvt-s8-f32' for 8 iterations.
-Ran 'TestCvt-s8-f64' for 8 iterations.
-Ran 'TestCvt-s16-u8' for 9 iterations.
-Ran 'TestCvt-s16-u16' for 10 iterations.
-Ran 'TestCvt-s16-u32' for 10 iterations.
-Ran 'TestCvt-s16-u64' for 10 iterations.
-Ran 'TestCvt-s16-s8' for 10 iterations.
-Ran 'TestCvt-s16-s16' for 10 iterations.
-Ran 'TestCvt-s16-s32' for 10 iterations.
-Ran 'TestCvt-s16-s64' for 10 iterations.
-Ran 'TestCvt-s16-f32' for 8 iterations.
-Ran 'TestCvt-s16-f64' for 8 iterations.
-Ran 'TestCvt-s32-u8' for 10 iterations.
-Ran 'TestCvt-s32-u16' for 8 iterations.
-Ran 'TestCvt-s32-u32' for 10 iterations.
-Ran 'TestCvt-s32-u64' for 10 iterations.
-Ran 'TestCvt-s32-s8' for 9 iterations.
-Ran 'TestCvt-s32-s16' for 10 iterations.
-Ran 'TestCvt-s32-s32' for 10 iterations.
-Ran 'TestCvt-s32-s64' for 10 iterations.
-Ran 'TestCvt-s32-f32' for 8 iterations.
-Ran 'TestCvt-s32-f64' for 8 iterations.
-Ran 'TestCvt-s64-u8' for 10 iterations.
-Ran 'TestCvt-s64-u16' for 9 iterations.
-Ran 'TestCvt-s64-u32' for 10 iterations.
-Ran 'TestCvt-s64-u64' for 10 iterations.
-Ran 'TestCvt-s64-s8' for 10 iterations.
-Ran 'TestCvt-s64-s16' for 10 iterations.
-Ran 'TestCvt-s64-s32' for 10 iterations.
-Ran 'TestCvt-s64-s64' for 10 iterations.
-Ran 'TestCvt-s64-f32' for 8 iterations.
-Ran 'TestCvt-s64-f64' for 8 iterations.
-Ran 'TestCvt-f32-u8' for 10 iterations.
-Ran 'TestCvt-f32-u16' for 10 iterations.
-Ran 'TestCvt-f32-u32' for 10 iterations.
-Ran 'TestCvt-f32-u64' for 9 iterations.
-Ran 'TestCvt-f32-s8' for 10 iterations.
-Ran 'TestCvt-f32-s16' for 10 iterations.
-Ran 'TestCvt-f32-s32' for 10 iterations.
-Ran 'TestCvt-f32-s64' for 10 iterations.
-Ran 'TestCvt-f32-f32' for 9 iterations.
-Ran 'TestCvt-f32-f32-rz' for 9 iterations.
-Ran 'TestCvt-f32-f64' for 10 iterations.
-Ran 'TestCvt-f64-u8' for 10 iterations.
-Ran 'TestCvt-f64-u16' for 10 iterations.
-Ran 'TestCvt-f64-u32' for 10 iterations.
-Ran 'TestCvt-f64-u64' for 9 iterations.
-Ran 'TestCvt-f64-s8' for 10 iterations.
-Ran 'TestCvt-f64-s16' for 10 iterations.
-Ran 'TestCvt-f64-s32' for 10 iterations.
-Ran 'TestCvt-f64-s64' for 10 iterations.
-Ran 'TestCvt-f64-f32' for 10 iterations.
-Ran 'TestCvt-f64-f64' for 10 iterations.
-Ran 'TestLocalMemory-u8' for 9 iterations.
-Ran 'TestLocalMemory-u8-global' for 9 iterations.
-Ran 'TestLocalMemory-u8-scoped' for 5 iterations.
-Ran 'TestLocalMemory-u8-global-scoped' for 5 iterations.
-Ran 'TestCvta-local-u64' for 8 iterations.
-Ran 'TestCvta-global-u64' for 9 iterations.
-Ran 'TestCvta-shared-u64' for 9 iterations.
-
-
-
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 179.491132975 seconds
-INFO      It produced the following output:
-
 INFO     
 Passing tests:
- (0.036s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
- (10.739s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Passed
- (0.010s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
- (0.027s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
- (0.039s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Passed
- (0.069s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
- (0.032s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
- (0.018s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
- (0.006s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
- (0.008s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
- (0.042s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
- (0.013s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
- (0.009s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
- (0.017s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
- (0.010s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
- (0.031s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Passed
- (0.034s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
+ (0.046s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
+ (0.111s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
+ (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
+ (0.036s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.075s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
+ (0.053s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
+ (0.059s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
+ (0.066s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
+ (0.050s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
+ (0.047s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
+ (0.045s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
+ (0.063s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
 
 Failing tests:
- (179.491s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
+ (0.072s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Did not complete.
+ (0.084s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Did not complete.
+ (0.043s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.081s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Did not complete.
+ (0.041s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
+ (0.083s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
+ (0.049s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
 

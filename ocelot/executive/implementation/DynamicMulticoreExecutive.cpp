@@ -9,6 +9,7 @@
 #include <iomanip>
 
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicExecutionManager.h>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
@@ -131,6 +132,8 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	_kernel.getArgumentBlock((unsigned char *)parameterMemory, parameterMemorySize);
 	
 	contexts = new LLVMContext[kernel->blockDim().size()];
+	
+	maximumWarpSize = api::OcelotConfiguration::get().executive.warpSize;
 	
 	DynamicExecutionManager::get().translationCache.getTranslationVector(translationVector);
 	
@@ -393,15 +396,13 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 	SubkernelId subkernelId = analysis::KernelPartitioningPass::ExternalEdge::getSubkernelId(encodedSubkernel);
 	unsigned int warpSize = 1;
 	unsigned int specialization = 0;
-	
-	unsigned int maxWarpSize = 2;
-	
+		
 	for (size_t startThread = 0; startThread < threads; ) {
 	
-		for (warpSize = 1; warpSize <= threads - startThread && warpSize <= maxWarpSize; warpSize <<= 1) {
+		for (warpSize = 1; warpSize <= threads - startThread && warpSize <= maximumWarpSize; warpSize <<= 1) {
 			
 		}
-		if (threads - startThread < warpSize || warpSize > maxWarpSize) {
+		if (threads - startThread < warpSize || warpSize > maximumWarpSize) {
 			warpSize >>= 1;
 		}
 		

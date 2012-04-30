@@ -855,7 +855,8 @@ void analysis::LLVMUniformVectorization::Translation::_packThreadLocal() {
 }
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
-
+	report("  _replicateInstruction(" << String(inst) << ")");
+	
 	assert(schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
 	
 	typedef std::vector< std::pair< int, llvm::Instruction * ThreadLocalArgument::*> > OperandVector;
@@ -875,14 +876,20 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 		}
 	}
 	
-	bool updateName = (!llvm::StoreInst::classof(inst));
+	report("   packed operands");
+	
+	bool updateName = (!(llvm::StoreInst::classof(inst) || inst->getType()->isVoidTy()));
 	std::string baseName = inst->getName().str() + ".t";
 	if (updateName) {
 		std::string name = baseName + boost::lexical_cast<std::string, int>(0);
 		//inst->setName(name);
 	}
 	vectorized.replicated.push_back(inst);
+	
+	report("   updated name");
 
+	llvm::Instruction *insertAfter = inst;
+	
 	for (int tid = 1; tid < pass->warpSize; tid++) {
 		std::string name = baseName + boost::lexical_cast<std::string, int>(tid);
 		llvm::Instruction *clone = inst->clone();
@@ -896,7 +903,8 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 			clone->setOperand(op_it->first, operand);
 		}
 		
-		clone->insertAfter(inst);
+		clone->insertAfter(insertAfter);
+		insertAfter = clone;
 		vectorized.replicated.push_back(clone);
 	}
 	vectorizedInstructionMap[inst] = vectorized;
@@ -1120,6 +1128,12 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+llvm::Instruction *analysis::LLVMUniformVectorization::Translation::_getVectorizedInsertPoint(
+	const VectorizedInstruction &vec) {
+	
+	return vec.replicated[pass->warpSize - 1];
+}
+
 /*! \brief given an instruction from the scalar set, get a set of scalar values that are 
 	either replicated scalar instructions from the vectorized set or extracted vector elements */
 analysis::LLVMUniformVectorization::InstructionVector 
@@ -1135,6 +1149,8 @@ analysis::LLVMUniformVectorization::InstructionVector
 llvm::Instruction *
 	analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
 		llvm::Value *value, llvm::Instruction *before) {
+	
+	report("_getInstructionAsVectorized(" << String(value) << ") before " << String(before));
 	
 	llvm::Instruction *vectorizedInstruction = 0;
 	
@@ -1241,26 +1257,35 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		inst->getType(), pass->warpSize));
 	llvm::Instruction *insertInst = 0;
 	
+	bool moveAfter = true;
+	llvm::Instruction *insertPoint = _getVectorizedInsertPoint(vec_it->second);
+	if (llvm::PHINode::classof(insertPoint)) {
+		insertPoint = insertPoint->getParent()->getFirstNonPHI();
+		moveAfter = false;
+	}
+	
+	report("    insert point: " << String(insertPoint));
+	
 	for (int tid = 0; tid < pass->warpSize; tid++) {
 		llvm::ConstantInt *idx = getConstInt32(tid);
 		llvm::Instruction *element = vec_it->second.replicated[tid];
 		std::stringstream ss;
 		ss << "insert." << element->getName().str() << ".vec";
 		
-		if (!tid) {
-			insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
-				idx, ss.str(), inst->getParent());
+		insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
+			idx, ss.str(), insertPoint);
+
+		if (tid || moveAfter) { 
 			insertInst->removeFromParent();
-			insertInst->insertAfter(vec_it->second.replicated[pass->warpSize - 1]);
+			insertInst->insertAfter(static_cast<llvm::Instruction*>(insertPoint));
+			report("    [tid: " << tid << "] " << String(insertInst) << " ; insert after " << String(insertPoint));
 		}
-		else {
-			insertInst = llvm::InsertElementInst::Create(lastInserted, element, 
-				idx, ss.str(), static_cast<llvm::Instruction*>(lastInserted));
-			insertInst->removeFromParent();
-			insertInst->insertAfter(static_cast<llvm::Instruction*>(lastInserted));
-		}
+		
+		insertPoint = insertInst;
 		lastInserted = insertInst;
 	}
+	
+	report("   packed: " << String(insertInst));
 	
 	return insertInst;
 }
@@ -1277,6 +1302,8 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeB
 	ss << inst->getName().str() << ".vec";
 
 	vec_it->second.vector = llvm::BinaryOperator::Create(inst->getOpcode(), op0, op1, ss.str(), inst);
+	vec_it->second.vector->removeFromParent();
+	vec_it->second.vector->insertAfter(inst);
 	
 	return vec_it->second.vector;
 }

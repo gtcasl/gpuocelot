@@ -68,6 +68,8 @@ namespace executive {
 		size_t parameterMemorySize;
 		
 		LLVMContext *contexts;
+		
+		unsigned int maximumWarpSize;
 	};
 
 }

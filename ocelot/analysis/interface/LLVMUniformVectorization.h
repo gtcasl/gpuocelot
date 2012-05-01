@@ -58,6 +58,13 @@ namespace analysis
 		typedef std::map< llvm::BasicBlock *, ir::BasicBlock::Pointer > LLVMtoOcelotBlockMap;
 		typedef std::unordered_map< ir::BasicBlock::Pointer, llvm::BasicBlock * > OcelotToLLVMBlockMap;
 		typedef std::map< SubkernelId, llvm::BasicBlock *> EntryMap;
+		
+		enum ThreadInvariantOptimizations {
+			ThreadInvariant_scalarization = 1,
+			ThreadInvariant_affineMemory = 2,
+			ThreadInvariant_sameCta = 4,
+			ThreadInvariant_consecutiveTids = 8,
+		};
 
 		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
 		class ThreadLocalArgument {
@@ -65,9 +72,9 @@ namespace analysis
 		
 			llvm::Value * context;
 		
-			llvm::Instruction * threadId_x;
-			llvm::Instruction * threadId_y;
-			llvm::Instruction * threadId_z;
+			llvm::Instruction * threadId_x;		// always thread-local
+			llvm::Instruction * threadId_y;		// always thread-local
+			llvm::Instruction * threadId_z;		// always thread-local
 			
 			llvm::Instruction * blockDim_x;
 			llvm::Instruction * blockDim_y;
@@ -81,12 +88,12 @@ namespace analysis
 			llvm::Instruction * gridDim_y;
 			llvm::Instruction * gridDim_z;
 			
-			llvm::Instruction * localPointer;
+			llvm::Instruction * localPointer;		// always thread-local
 			llvm::Instruction * sharedPointer;
 			llvm::Instruction * constantPointer;
-			llvm::Instruction * parameterPointer;
+			llvm::Instruction * parameterPointer;		// always thread-local
 			llvm::Instruction * argumentPointer;
-			llvm::Instruction * globallyScopedLocal;
+			llvm::Instruction * globallyScopedLocal;		// always thread-local
 			llvm::Instruction * externalSharedSize;
 			llvm::Instruction * metadataPointer;
 			
@@ -229,6 +236,9 @@ namespace analysis
 			
 			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
 				llvm::Instruction *before, llvm::BasicBlock *block = 0);
+
+			void _loadThreadLocalInvariant(ThreadLocalArgument &local, int threadId, 
+				llvm::Instruction *before, llvm::BasicBlock *block = 0);
 			
 			void _initializeSchedulerEntryBlock();
 			
@@ -284,6 +294,8 @@ namespace analysis
 			void _finalizeTranslation();
 			
 			void _eliminateUnusedVectorPacking();
+			
+			void _affineVectorMemoryAccesses();
 		
 		protected:
 			
@@ -357,6 +369,9 @@ namespace analysis
 		
 		//! \brief controls whether subkernel is vectorized when warpSize > 1
 		bool vectorizeConvergent;
+		
+		//! \brief flags for performing thread-invariant optimization
+		int threadInvariant;
 
 		static char ID;
 	};

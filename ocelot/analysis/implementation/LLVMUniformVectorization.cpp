@@ -581,6 +581,10 @@ void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() 
 					llvm::Instruction *inst = *inst_it;
 					inst->removeFromParent();
 					inst->insertAfter(&schedulerEntryBlock.block->back());
+					
+					schedulerEntryBlock.threadLocalArguments[0].declarations.push_back(inst);
+					
+					report("   " << String(inst));
 				}
 			}	
 			killBlocks.push_back(block);
@@ -802,6 +806,14 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		if (&*bb_it == schedulerEntryBlock.block) {
+		
+			// replicate declarations
+			for (InstructionVector::iterator inst_it = schedulerEntryBlock.threadLocalArguments[0].declarations.begin();
+				inst_it != schedulerEntryBlock.threadLocalArguments[0].declarations.end(); ++inst_it) {
+			
+				_replicateInstruction(*inst_it);
+			}
+		
 			continue;
 		}
 		else {

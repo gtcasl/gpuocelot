@@ -28,9 +28,9 @@
 	executive: {
 		devices: [ "dynamic" ],
 		partitioningHeuristic: "maximum",
-		workerThreadLimit: 2,
+		workerThreadLimit: 1,
 		warpSize: 4,
-		optimizationLevel: basic,
+		optimizationLevel: none,
 		port: 2011,
 		host: "127.0.0.1",
 		reconvergenceMechanism: "tf-stack"

@@ -44,6 +44,7 @@
 #include <llvm/Instructions.h>
 #include <llvm/Support/CFG.h>
 #include <llvm/Support/raw_os_ostream.h>
+#include <llvm/Support/raw_ostream.h>
 #include <llvm/Transforms/Utils/Cloning.h>
 #else
 #error "LLVM MUST BE PRESENT"
@@ -68,14 +69,10 @@
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
-#define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
-#define REPORT_LLVM_WRITE_SOURCE 0				// saves LLVM source to disk
-
-#define REPORT_TRANSLATIONS 0
 
 #define ALWAYS_REPORT_BROKEN_LLVM 1
 
@@ -183,12 +180,12 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 		}
 	
 		if (!translation) {	
+			reportE(REPORT_SCHEDULE_OPERATIONS, "  Not yet in translation cache. Specializing and JIT compiling... ");
 			translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
 				getOptimizationLevel(), warpSize, specialization);
 		
 			reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
 		}
-		//translationVector[lgWarpsize][subkernelId] = translation;
 	}
 	_unlock();
 	
@@ -1074,7 +1071,7 @@ static executive::DynamicMulticoreExecutive::Metadata* generateMetadata(
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
+#if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_LLVM_VERIFY_FAILURE
 static void identifyPredecessors(std::ostream &out, llvm::Function *function) {
 	out << "Predecessors of function '" << function->getName().str() << "'  ";
 	out << " [entry block: " << function->front().getName().str() << "]\n";
@@ -1159,9 +1156,6 @@ static void cloneAndOptimizeTranslation(
 		analysis::LLVMUniformVectorization(translatedKernel.kernel->kernelGraph(), subkernelId, 
 		warpSize, vectorizeConvergent);
 	manager.add(vectorizationPass);
-		
-	report("Overriding optimization level");
-	level = 0;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1216,7 +1210,7 @@ static void cloneAndOptimizeTranslation(
 		std::cerr << "verification failed for module containing kernel " << translatedKernel.kernel->name << " : \"" 
 			<< verifyError << "\"" << std::endl;
 			
-#if (REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
+#if (REPORT_BASE && REPORT_LLVM_MASTER && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		
 		translatedKernel.llvmModule->dump();
@@ -1240,7 +1234,7 @@ static void cloneAndOptimizeTranslation(
 		std::cerr << "verification failed for translated function for " << translatedKernel.kernel->name << " : \"" 
 			<< verifyError << "\"" << std::endl;
 			
-#if (REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
+#if (REPORT_BASE && REPORT_LLVM_MASTER && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		
 		translation->llvmFunction->dump();
@@ -1468,14 +1462,16 @@ executive::DynamicTranslationCache::Translation *
 				<< (int)translation->llvmFunction->getCallingConv());
 		}
 		
-#if REPORT_LLVM_MASTER && REPORT_LLVM_WRITE_SOURCE
+#if REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
 		{
-			std::string llvmText;
-			llvm::raw_string_ostream llvmStream(llvmText);
-			translation->llvmFunction->print(llvmStream);
-			std::ofstream file(translation->llvmFunction->getName().str() + ".ll");
-			
-			file << llvmText;
+			std::string errorInfo;
+			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + ".ll").c_str(), errorInfo, 0);
+			if (llvmStream.has_error()) {
+				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " << errorInfo);
+			}
+			else {
+				translation->llvmFunction->print(llvmStream);
+			}
 		}
 #endif
 		

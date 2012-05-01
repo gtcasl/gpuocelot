@@ -24,8 +24,6 @@
 #include <llvm/Module.h>
 #include <llvm/PassManager.h>
 
-// toggles uniform control flow warp-synchronous execution or scalar execution (1)
-#define LLVM_UNIFORMCONTROL_WARPSIZE 2
 
 namespace llvm {
 	class Type;
@@ -45,7 +43,9 @@ namespace llvm {
 
 namespace analysis
 {
-
+	/*
+		\brief Performs vectorization and completes subkernel transformations
+	*/
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
 		typedef std::set< llvm::Value * > ValueSet;
@@ -63,7 +63,6 @@ namespace analysis
 		class ThreadLocalArgument {
 		public:
 		
-			
 			llvm::Value * context;
 		
 			llvm::Instruction * threadId_x;
@@ -92,6 +91,8 @@ namespace analysis
 			llvm::Instruction * metadataPointer;
 			
 			llvm::Instruction *ptrThreadDescriptorArray;
+			
+			InstructionVector declarations;
 		};
 		typedef std::vector< ThreadLocalArgument > ThreadLocalArgumentVector;
 

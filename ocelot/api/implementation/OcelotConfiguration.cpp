@@ -16,9 +16,13 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/math.h>
 
 // C stdlib includes
 #include <cassert>
+
+// Boost incldues
+#include <boost/lexical_cast.hpp>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -152,7 +156,7 @@ api::OcelotConfiguration::Executive::Executive():
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
-	warpSize(-1)
+	warpSize(1)
 {
 
 }
@@ -283,7 +287,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.port = config.parse<int>("port", 2011);
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
-	executive.warpSize = config.parse<int>("warpSize", -1);
+	
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];
@@ -320,6 +324,15 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 				executive.enableDynamicMulticore = true;
 			}
 		}
+	}
+	
+	executive.warpSize = config.parse<int>("warpSize", 1);
+	if ((executive.enableDynamicMulticore || executive.enableLLVM) &&
+		!hydrazine::isPowerOfTwo(executive.warpSize)) {
+		int oldWs = executive.warpSize;
+		executive.warpSize = 1;
+		throw hydrazine::Exception("Warp size must be power of two. Encountered " + 
+			boost::lexical_cast<std::string,int>(oldWs) + ". Defaulting to 1.");
 	}
 }
 

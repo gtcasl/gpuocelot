@@ -178,6 +178,9 @@ llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt6
 	return llvm::ConstantInt::get(getTyInt(64), n);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+//! pointers-to-member for class ThreadLocalArgument
 static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
 	ThreadLocalArgumentInstances[] = {
 	
@@ -201,6 +204,35 @@ static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgume
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::metadataPointer,
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::ptrThreadDescriptorArray
 };
+
+//! pointers-to-member for just the address space pointers in class ThreadLocalArgument
+static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
+	*ThreadLocalArgumentPointerInstances = &ThreadLocalArgumentInstances[12];
+
+//! Assuming threads are from the same CTA, indidcates which arguments are thread-variant
+static bool ThreadLocalArgumentVarianceMap[] = {
+	true,		// threadId_x
+	true,		// threadId_y
+	true,		// threadId_z
+	false,	// blockDim_x
+	false,	// blockDim_y
+	false,	// blockDim_z
+	false,	// blockId_x
+	false,	// blockId_y
+	false,	// blockId_z
+	false,	// gridDim_x
+	false,	// gridDim_y
+	false,	// gridDim_z
+	true,		// localPointer
+	false,	// sharedPointer
+	false,	// constantPointer
+	true,		// parameterPointer
+	false,	// argumentPointer
+	false	// metadataPointer
+};
+
+//! Thread variance map for just the address space pointers
+static bool *ThreadLocalArgumentPointerVarianceMap = &ThreadLocalArgumentVarianceMap[12];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -377,25 +409,6 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 			llvm::GetElementPtrInst * &gemp = *inst_it;			
 			ThreadLocalArgument &local = schedulerEntryBlock.threadLocalArguments[0];
 			
-			llvm::Instruction **dim3Instances[] = {
-				&local.threadId_x, &local.threadId_y, &local.threadId_z, 
-				&local.blockDim_x, &local.blockDim_y, &local.blockDim_z, 
-				&local.blockId_x, &local.blockId_y, &local.blockId_z, 
-				&local.gridDim_x, &local.gridDim_y, &local.gridDim_z, 
-			};
-			
-			// scalars
-			llvm::Instruction **ptrInstances[] = {
-				&local.localPointer,
-				&local.sharedPointer,
-				&local.constantPointer,
-				&local.parameterPointer,
-				&local.argumentPointer,
-				&local.globallyScopedLocal,
-				&local.externalSharedSize,
-				&local.metadataPointer,
-			};
-			
 			// match GEMP indices
 			llvm::Instruction *selected = 0;
 			int indices[4];
@@ -408,10 +421,10 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 			}
 			if (indices[1] <= 3) {
 				assert(indices[2] >= 0 && indices[2] < 3);
-				selected = *dim3Instances[indices[1] * 3 + indices[2]];
+				selected = (local.*(ThreadLocalArgumentInstances[indices[1] * 3 + indices[2]]));
 			}
 			else {
-				selected = *ptrInstances[indices[1] - 4];
+				selected = (local.*(ThreadLocalArgumentPointerInstances[indices[1] - 4]));
 			}
 			assert(selected && "failed to identify thread-local argument");
 			
@@ -463,7 +476,8 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 			ind.push_back(getConstInt32(j));
 			ThreadLocalArgumentMemberPointer argument = ThreadLocalArgumentInstances[idx * 3 + j];
 			
-			if (!idx || !sameCta) {
+			if (ThreadLocalArgumentVarianceMap[idx * 3 + j] || !sameCta) {
+			
 				llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
 					llvm::ArrayRef<llvm::Value*>(ind), "", block);
 				if (before) {
@@ -483,21 +497,13 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 		}
 	}
 	
-	bool variantMap[] = {
-		true,		// localPointer
-		false,	// sharedPointer
-		false,	// constantPointer
-		true,		// parameterPointer
-		false,	// argumentPointer
-		false	// metadataPointer
-	};
 	const char *ptrNames[] = {
 		"localPtr", "sharedPtr", "constPtr", "paramPtr", "argumentPtr", "metadataPtr", 
 	};
 	for (int idx = 0; idx < 6; idx++) {
-		ThreadLocalArgumentMemberPointer argument = ThreadLocalArgumentInstances[idx + 12];
+		ThreadLocalArgumentMemberPointer argument = ThreadLocalArgumentPointerInstances[idx];
 		
-		if (variantMap[idx] || !sameCta) {
+		if (ThreadLocalArgumentPointerVarianceMap[idx] || !sameCta) {
 			std::vector< llvm::Value *> ind;
 			ind.push_back(getConstInt32(threadId));
 			ind.push_back(getConstInt32(idx + 4));

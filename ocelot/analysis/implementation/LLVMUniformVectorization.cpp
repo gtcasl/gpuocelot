@@ -437,9 +437,7 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 
 void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	ThreadLocalArgument &local, int threadId, llvm::Instruction *before, llvm::BasicBlock *block) {
-	
-	report("  _loadThreadLocal(thread " << threadId << ")");
-	
+		
 	if (!block) {
 		block = before->getParent();
 	}
@@ -447,36 +445,13 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	report("  Loading thread-local arguments for thread " << threadId);
 	report("  inserting into block " << block->getName().str());
 	
-	llvm::Value *contextArrayBasePointer = &function->getArgumentList().front();
+	bool sameCta = ((pass->threadInvariant & ThreadInvariant_sameCta) && threadId);
+	
+	local.context = &function->getArgumentList().front();
 	std::string threadSuffix = std::string(".t") + boost::lexical_cast<std::string, int>(threadId);
-		
-	if (false) {
-		std::vector< llvm::Value *> idx;
-		idx.push_back(getConstInt32(threadId));
 	
-		llvm::GetElementPtrInst *contextGemp = llvm::GetElementPtrInst::Create(contextArrayBasePointer,
-			llvm::ArrayRef<llvm::Value*>(idx), "contextPtrGemp", block);
-		if (before) { 
-			contextGemp->moveBefore(before);
-		}
+	ThreadLocalArgument * baseThread = (threadId ? &schedulerEntryBlock.threadLocalArguments.at(0) : 0);
 	
-		llvm::LoadInst *loadInst = new llvm::LoadInst(contextGemp, "contextPtr" + threadSuffix, block);
-		if (before) {
-			loadInst->moveBefore(before);
-		}
-		local.context = loadInst;
-	}
-	else {
-		local.context = contextArrayBasePointer;
-	}
-	
-	// load dimensions
-	llvm::Instruction **dim3Instances[] = {
-		&local.threadId_x, &local.threadId_y, &local.threadId_z, 
-		&local.blockDim_x, &local.blockDim_y, &local.blockDim_z, 
-		&local.blockId_x, &local.blockId_y, &local.blockId_z, 
-		&local.gridDim_x, &local.gridDim_y, &local.gridDim_z, 
-	};
 	const char *dim3names[] = { "threadId", "blockDim", "blockId", "gridDim" };
 	const char *dim3suffix[] = {"x", "y", "z"};
 	
@@ -486,101 +461,9 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 			ind.push_back(getConstInt32(threadId));
 			ind.push_back(getConstInt32(idx));
 			ind.push_back(getConstInt32(j));
+			ThreadLocalArgumentMemberPointer argument = ThreadLocalArgumentInstances[idx * 3 + j];
 			
-			llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
-				llvm::ArrayRef<llvm::Value*>(ind), "", block);
-			if (before) {
-				ptr->moveBefore(before);
-			}
-			
-			std::string name = std::string(dim3names[idx]) + "." + dim3suffix[j] + threadSuffix;
-			*(dim3Instances[idx * 3 + j]) = new llvm::LoadInst(ptr, name, block);
-			if (before) {
-				(*(dim3Instances[idx * 3 + j]))->moveBefore(before);
-			}
-		}
-	}
-	
-	// scalars
-	llvm::Instruction **ptrInstances[] = {
-		&local.localPointer,
-		&local.sharedPointer,
-		&local.constantPointer,
-		&local.parameterPointer,
-		&local.argumentPointer,
-		&local.metadataPointer,
-	};
-	const char *ptrNames[] = {
-		"localPtr", "sharedPtr", "constPtr", "paramPtr", "argumentPtr", "metadataPtr", 
-	};
-	for (int idx = 0; idx < 6; idx++) {
-	
-		std::vector< llvm::Value *> ind;
-		ind.push_back(getConstInt32(threadId));
-		ind.push_back(getConstInt32(idx + 4));
-		
-		llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
-			llvm::ArrayRef<llvm::Value*>(ind), std::string(ptrNames[idx]) + "Ptr" + threadSuffix, block);
-		if (before) {
-			ptr->moveBefore(before);
-		}
-		
-		*(ptrInstances[idx]) = new llvm::LoadInst(ptr, ptrNames[idx] + threadSuffix, block);
-		if (before) {
-			(*(ptrInstances[idx]))->moveBefore(before);
-		}
-	}
-}
-
-void analysis::LLVMUniformVectorization::Translation::_loadThreadLocalInvariant(
-	ThreadLocalArgument &local, int threadId, llvm::Instruction *before, llvm::BasicBlock *block) {
-	
-	report("  _loadThreadLocalInvariant(thread " << threadId << ")");
-	assert(threadId && "Expected _loadThreadLocalInvariant() to be called only for threadId != 0");
-	
-	if (!(pass->threadInvariant & ThreadInvariant_sameCta)) {
-		assert(0 && "This pass can only be called with (threadInvariant & ThreadInvariant_sameCta) enabled");
-		return;
-	}
-	
-	if (!block) {
-		block = before->getParent();
-	}
-	
-	report("  Loading thread-local arguments for thread " << threadId);
-	report("  inserting into block " << block->getName().str());
-	
-	llvm::Value *contextArrayBasePointer = &function->getArgumentList().front();
-	std::string threadSuffix = std::string(".t") + boost::lexical_cast<std::string, int>(threadId);
-		
-	local.context = contextArrayBasePointer;
-	
-	ThreadLocalArgument & baseThread = schedulerEntryBlock.threadLocalArguments.at(0);
-	
-	// load dimensions
-	llvm::Instruction **sourceDim3Instances[] = {
-		&local.threadId_x, &local.threadId_y, &local.threadId_z, 
-		&baseThread.blockDim_x, &baseThread.blockDim_y, &baseThread.blockDim_z, 
-		&baseThread.blockId_x, &baseThread.blockId_y, &baseThread.blockId_z, 
-		&baseThread.gridDim_x, &baseThread.gridDim_y, &baseThread.gridDim_z, 
-	};
-	llvm::Instruction **destDim3Instances[] = {
-		&local.threadId_x, &local.threadId_y, &local.threadId_z, 
-		&local.blockDim_x, &local.blockDim_y, &local.blockDim_z, 
-		&local.blockId_x, &local.blockId_y, &local.blockId_z, 
-		&local.gridDim_x, &local.gridDim_y, &local.gridDim_z, 
-	};
-	const char *dim3names[] = { "threadId", "blockDim", "blockId", "gridDim" };
-	const char *dim3suffix[] = {"x", "y", "z"};
-	
-	for (int idx = 0; idx < 4; idx++) {
-		for (int j = 0; j < 3; j++) {
-			std::vector< llvm::Value *> ind;
-			ind.push_back(getConstInt32(threadId));
-			ind.push_back(getConstInt32(idx));
-			ind.push_back(getConstInt32(j));
-			
-			if (!idx) {
+			if (!idx || !sameCta) {
 				llvm::GetElementPtrInst *ptr = llvm::GetElementPtrInst::Create(local.context, 
 					llvm::ArrayRef<llvm::Value*>(ind), "", block);
 				if (before) {
@@ -588,48 +471,33 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocalInvariant(
 				}
 			
 				std::string name = std::string(dim3names[idx]) + "." + dim3suffix[j] + threadSuffix;
-				*(destDim3Instances[idx * 3 + j]) = new llvm::LoadInst(ptr, name, block);
+				(local.*argument) = new llvm::LoadInst(ptr, name, block);
 				if (before) {
-					(*(destDim3Instances[idx * 3 + j]))->moveBefore(before);
+					(local.*argument)->moveBefore(before);
 				}
 			}
 			else {
-				(*(destDim3Instances[idx * 3 + j])) = (*(sourceDim3Instances[idx * 3 + j]));
+				assert(baseThread && "_loadThreadLocal() must be called for threadId=0 first");
+				(local.*argument) = (baseThread->*argument);
 			}
 		}
 	}
 	
-	// scalars
-	llvm::Instruction **sourcePtrInstances[] = {
-		&local.localPointer,
-		&baseThread.sharedPointer,
-		&baseThread.constantPointer,
-		&local.parameterPointer,
-		&baseThread.argumentPointer,
-		&baseThread.metadataPointer,
-	};
-	llvm::Instruction **destPtrInstances[] = {
-		&local.localPointer,
-		&local.sharedPointer,
-		&local.constantPointer,
-		&local.parameterPointer,
-		&local.argumentPointer,
-		&local.metadataPointer,
-	};
 	bool variantMap[] = {
-		true,
-		false,
-		false,
-		true,
-		false,
-		false
+		true,		// localPointer
+		false,	// sharedPointer
+		false,	// constantPointer
+		true,		// parameterPointer
+		false,	// argumentPointer
+		false	// metadataPointer
 	};
 	const char *ptrNames[] = {
 		"localPtr", "sharedPtr", "constPtr", "paramPtr", "argumentPtr", "metadataPtr", 
 	};
 	for (int idx = 0; idx < 6; idx++) {
-	
-		if (variantMap[idx]) {
+		ThreadLocalArgumentMemberPointer argument = ThreadLocalArgumentInstances[idx + 12];
+		
+		if (variantMap[idx] || !sameCta) {
 			std::vector< llvm::Value *> ind;
 			ind.push_back(getConstInt32(threadId));
 			ind.push_back(getConstInt32(idx + 4));
@@ -640,13 +508,14 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocalInvariant(
 				ptr->moveBefore(before);
 			}
 		
-			*(destPtrInstances[idx]) = new llvm::LoadInst(ptr, ptrNames[idx] + threadSuffix, block);
+			(local.*argument) = new llvm::LoadInst(ptr, ptrNames[idx] + threadSuffix, block);
 			if (before) {
-				(*(destPtrInstances[idx]))->moveBefore(before);
+				(local.*argument)->moveBefore(before);
 			}
 		}
 		else {
-			(*(destPtrInstances[idx])) = (*(sourcePtrInstances[idx]));
+			assert(baseThread && "_loadThreadLocal() must be called for threadId=0 first");
+			(local.*argument) = (baseThread->*argument);
 		}
 	}
 }

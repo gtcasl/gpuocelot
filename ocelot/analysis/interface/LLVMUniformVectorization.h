@@ -101,6 +101,7 @@ namespace analysis
 			
 			InstructionVector declarations;
 		};
+		typedef llvm::Instruction * ThreadLocalArgument::* ThreadLocalArgumentMemberPointer;
 		typedef std::vector< ThreadLocalArgument > ThreadLocalArgumentVector;
 
 		/*!
@@ -235,9 +236,6 @@ namespace analysis
 			void _eliminateEmptyBlocks();
 			
 			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
-				llvm::Instruction *before, llvm::BasicBlock *block = 0);
-
-			void _loadThreadLocalInvariant(ThreadLocalArgument &local, int threadId, 
 				llvm::Instruction *before, llvm::BasicBlock *block = 0);
 			
 			void _initializeSchedulerEntryBlock();

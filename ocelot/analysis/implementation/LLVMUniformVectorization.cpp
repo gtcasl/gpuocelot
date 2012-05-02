@@ -266,7 +266,6 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	#if INSERT_DEBUG_CONTROL_FLOW
 		_debugControlFlowMatrix();
 	#endif
-	
 	}
 	
 	_eliminateEmptyBlocks();
@@ -294,11 +293,6 @@ void analysis::LLVMUniformVectorization::Translation::_scalarPreprocess() {
 	
 	// construct scheduler entry and load thread-local values
 	_initializeSchedulerEntryBlock();
-	
-	/*
-	// push any constants into expressions using them
-	_propagateConstants();
-	*/
 
 	// relocate any additional blocks created during translation
 	_hoistDeclarationBlocks();
@@ -1048,7 +1042,6 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 					}
 				}
 				
-		
 				report("    warp-wide reduction of condition yielding: " << String(condition));
 		
 				llvm::TerminatorInst *terminatorInst = 0;
@@ -1176,7 +1169,9 @@ llvm::Instruction *
 				vectorizedInstruction = _vectorize(vec_inst);
 			}
 		}
-		else if (llvm::ExtractElementInst *extractInst = llvm::dyn_cast<llvm::ExtractElementInst>(instruction)) {
+		else if (llvm::ExtractElementInst *extractInst = 
+			llvm::dyn_cast<llvm::ExtractElementInst>(instruction)) {
+			
 			vectorizedInstruction = llvm::dyn_cast<llvm::Instruction>(extractInst->getVectorOperand());
 		}
 		else {
@@ -1221,6 +1216,11 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 			}
 			else if (llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(vec_it->first)) {
 				vectorized = _vectorizeCall(callInst, vec_it);
+			}
+			else if (llvm::dyn_cast<llvm::LoadInst>(vec_it->first) || 
+				llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
+				
+				vectorized = _vectorizeAffineMemory(vec_it->first, vec_it);
 			}
 			else {
 				assert(0 && "unhandled vectorizable instruction");	
@@ -1289,7 +1289,8 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		if (tid || moveAfter) { 
 			insertInst->removeFromParent();
 			insertInst->insertAfter(static_cast<llvm::Instruction*>(insertPoint));
-			report("    [tid: " << tid << "] " << String(insertInst) << " ; insert after " << String(insertPoint));
+			report("    [tid: " << tid << "] " << String(insertInst) << " ; insert after " 
+				<< String(insertPoint));
 		}
 		
 		insertPoint = insertInst;
@@ -1408,12 +1409,55 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*!
-	\brief Visits bundles of loads and stores and, if possible, replaces them with a single
-		vector load
-*/
-void analysis::LLVMUniformVectorization::Translation::_affineVectorMemoryAccesses() {
+bool analysis::LLVMUniformVectorization::Translation::_isAffinePointer(
+	InstructionSet &affineSet, llvm::Instruction *ptr) {
 
+	return false;
+}
+
+static llvm::Value *getPointerOperand(llvm::Instruction *inst) {
+	llvm::Value *ptr = 0;
+	if (llvm::StoreInst *store = llvm::dyn_cast<llvm::StoreInst>(inst)) {
+		ptr = store->getPointerOperand();
+	}
+	else if (llvm::LoadInst *load = llvm::dyn_cast<llvm::LoadInst>(inst)) {
+		ptr = load->getPointerOperand();
+	}
+	return ptr;
+}
+
+llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeAffineMemory(
+	llvm::Instruction *inst, VectorizedInstructionMap::iterator &vec_it) {
+
+	llvm::Value *ptrOperand = getPointerOperand(vec_it->first);
+	assert(ptrOperand && "Vectorizing affine memory operation must be LoadInst or StoreInst");
+	
+	llvm::Instruction *before = vec_it->first;
+	
+	std::string ptrName = "vec." + ptrOperand->getName().str();
+	std::string name = "affine." + vec_it->first->getName().str();
+	
+	llvm::VectorType *vecType = llvm::VectorType::get(vec_it->first->getType(), pass->warpSize);
+	llvm::Instruction *ptrCast = llvm::CastInst::CreatePointerCast(ptrOperand, 
+		vecType, ptrName, before);
+	
+	if (llvm::dyn_cast<llvm::LoadInst>(vec_it->first)) {
+		llvm::LoadInst *vectorized = new llvm::LoadInst(ptrCast, name, before);
+		vec_it->second.vector = vectorized;
+	}
+	else if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
+		llvm::Instruction *vectorizedValueOperand = getInstructionAsVectorized(
+			storeInst->getValueOperand(), inst);
+			
+		llvm::StoreInst *vectorized = new llvm::StoreInst(vectorizedValueOperand, ptrCast, before);
+		vec_it->second.vector = vectorized;
+	}
+	assert(vec_it->second.vector && "Failed to construct vectorized load or store");
+	
+	vec_it->second.vector->removeFromParent();
+	vec_it->second.vector->insertAfter(inst);
+	
+	return vec_it->second.vector;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1499,7 +1543,8 @@ extern "C" void _ocelot_debug_report(size_t index, size_t value, size_t value1, 
 			std::cout << " load(" << index << "): " << value1 << " = [" << (void *)value << "]";
 		} break;
 		case 10: {
-			std::cout << " load(" << index << "): " << hydrazine::bit_cast<double>(value1) << " = [" << (void *)value << "]   <float>";
+			std::cout << " load(" << index << "): " << hydrazine::bit_cast<double>(value1) << " = [" 
+				<< (void *)value << "]   <float>";
 		} break;
 		case 11: {
 			std::cout << " load(" << index << "): " << (void *)value1 << " = [" << (void *)value << "]";
@@ -1530,7 +1575,8 @@ void analysis::LLVMUniformVectorization::Translation::_debugReporting() {
 	params.push_back(getTyInt(32));
 	params.push_back(getTyInt(64));
 	llvm::FunctionType *funcType = 
-		llvm::FunctionType::get(llvm::Type::getVoidTy(context()), llvm::ArrayRef<llvm::Type*>(params), false);
+		llvm::FunctionType::get(llvm::Type::getVoidTy(context()), 
+			llvm::ArrayRef<llvm::Type*>(params), false);
 	
 	llvm::Constant *func = 
 		function->getParent()->getOrInsertFunction("_ocelot_debug_report", funcType);
@@ -1732,8 +1778,8 @@ void analysis::LLVMUniformVectorization::Translation::_debugInsertLoad(llvm::Loa
 		recentlyInserted->insertAfter(lastInserted);
 		lastInserted = recentlyInserted;
 		
-		recentlyInserted = llvm::CastInst::CreateZExtOrBitCast(recentlyInserted, llvm::Type::getInt64Ty(context()),
-			"bitcast", lastInserted);
+		recentlyInserted = llvm::CastInst::CreateZExtOrBitCast(recentlyInserted, 
+			llvm::Type::getInt64Ty(context()), "bitcast", lastInserted);
 		recentlyInserted->removeFromParent();
 		recentlyInserted->insertAfter(lastInserted);
 		lastInserted = recentlyInserted;
@@ -1878,8 +1924,8 @@ void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() 
 		args.push_back(getConstInt64(fileHash));
 		args.push_back(threadId);
 		args.push_back(getConstInt32(blockId));
-		llvm::CallInst *callInst = llvm::CallInst::Create(reportFunc, llvm::ArrayRef<llvm::Value*>(args), 
-			"", insert);
+		llvm::CallInst *callInst = llvm::CallInst::Create(reportFunc, 
+			llvm::ArrayRef<llvm::Value*>(args), "", insert);
 		assert(callInst);
 	}
 }
@@ -1892,7 +1938,8 @@ analysis::LLVMUniformVectorization::AffineValue::AffineValue():
 }
 
 analysis::LLVMUniformVectorization::AffineValue::AffineValue(llvm::Value *_base, 
-	llvm::Constant *_offset, llvm::Constant *_constant): base(_base), offset(_offset), constant(_constant) {
+	llvm::Constant *_offset, llvm::Constant *_constant
+): base(_base), offset(_offset), constant(_constant) {
 
 }
 

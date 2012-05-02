@@ -52,6 +52,7 @@ namespace analysis
 		typedef std::set< const llvm::Value * > ConstValueSet;
 		typedef std::vector< llvm::Value *> ValueVector;
 		typedef std::vector< llvm::Instruction *> InstructionVector;
+		typedef std::set< llvm::Instruction * > InstructionSet;
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::Subkernel Subkernel;
 		typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
@@ -293,7 +294,10 @@ namespace analysis
 			
 			void _eliminateUnusedVectorPacking();
 			
-			void _affineVectorMemoryAccesses();
+			bool _isAffinePointer(InstructionSet &affineSet, llvm::Instruction *ptr);
+			
+			llvm::Instruction * _vectorizeAffineMemory(llvm::Instruction *inst, 
+				VectorizedInstructionMap::iterator &vec_it);
 		
 		protected:
 			
@@ -328,7 +332,8 @@ namespace analysis
 
 			\param warpSize number of logical threads per warp
 		*/
-		LLVMUniformVectorization(KernelGraph *_kernelGraph, SubkernelId subkernelId, int warpSize = 1, bool vectorize = true);
+		LLVMUniformVectorization(KernelGraph *_kernelGraph, SubkernelId subkernelId, 
+			int warpSize = 1, bool vectorize = true);
 		~LLVMUniformVectorization();
 
 	public:

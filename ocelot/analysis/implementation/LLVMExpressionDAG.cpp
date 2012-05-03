@@ -56,6 +56,10 @@ analysis::LLVMExpressionDAG::Expression::Expression(): _type(expression), _value
 
 }
 
+analysis::LLVMExpressionDAG::Expression::Expression(llvm::Value *value, Type type): _type(type), _value(value) {
+
+}
+
 analysis::LLVMExpressionDAG::Expression::~Expression() {
 
 }
@@ -78,6 +82,11 @@ analysis::LLVMExpressionDAG::Instruction::Instruction() {
 
 }
 
+analysis::LLVMExpressionDAG::Instruction::Instruction(llvm::Instruction *inst): 
+	Expression(inst, Expression::instruction) {
+
+}
+
 analysis::LLVMExpressionDAG::Instruction::~Instruction() {
 
 }
@@ -93,6 +102,15 @@ llvm::Instruction *analysis::LLVMExpressionDAG::Instruction::asInstruction() con
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 analysis::LLVMExpressionDAG::Constant::Constant() {
+
+}
+
+analysis::LLVMExpressionDAG::Constant::Constant(llvm::ConstantExpr *expr) {
+
+}
+
+analysis::LLVMExpressionDAG::Constant::Constant(llvm::Constant *constant): 
+	Expression(constant, Expression::constant) {
 
 }
 
@@ -128,6 +146,16 @@ analysis::LLVMExpressionDAG::UnaryExpression::UnaryExpression() {
 
 }
 
+analysis::LLVMExpressionDAG::UnaryExpression::UnaryExpression(llvm::LoadInst *inst):
+	Expression(inst, Expression::unaryExpression), _operator(Load) {
+
+}
+
+analysis::LLVMExpressionDAG::UnaryExpression::UnaryExpression(llvm::UnaryInstruction *inst):
+	Expression(inst, Expression::unaryExpression), _operator(Operator_invalid) {
+
+}
+
 analysis::LLVMExpressionDAG::UnaryExpression::~UnaryExpression() {
 
 }
@@ -145,6 +173,13 @@ bool analysis::LLVMExpressionDAG::UnaryExpression::classof(const Expression *exp
 analysis::LLVMExpressionDAG::BinaryExpression::BinaryExpression() {
 
 }
+
+analysis::LLVMExpressionDAG::BinaryExpression::BinaryExpression(llvm::BinaryOperator *inst):
+	Expression(inst, Expression::binaryExpression), _operator(Operator_invalid)  {
+
+}
+
+//analysis::LLVMExpressionDAG::BinaryExpression::BinaryExpression(llvm::StoreInst *inst);
 
 analysis::LLVMExpressionDAG::BinaryExpression::~BinaryExpression() {
 
@@ -186,29 +221,42 @@ analysis::LLVMExpressionDAG::BinaryExpression *analysis::LLVMExpressionDAG::Affi
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-analysis::LLVMExpressionDAG::LLVMExpressionDAG(llvm::Instruction *_inst) {
+analysis::LLVMExpressionDAG::LLVMExpressionDAG(
+	const LLVMUniformVectorization::ThreadLocalArgument &threadArguments, llvm::Instruction *_inst) {
 
 }
 
-analysis::LLVMExpressionDAG::Expression * analysis::LLVMExpressionDAG::_construct(llvm::Value *_value) {
-	llvm::Expression *expression = 0;
+analysis::LLVMExpressionDAG::Expression * analysis::LLVMExpressionDAG::_construct(
+	const LLVMUniformVectorization::ThreadLocalArgument &threadArguments, llvm::Value *_value) {
+	
+	Expression *expression = 0;
 	if (llvm::ConstantExpr *constExpr = llvm::dyn_cast<llvm::ConstantExpr>(_value)) {
-		expression = new Constant(constExpr);
+		Constant *constantExpression = new Constant(constExpr);
+		expression = constantExpression;
 	}
 	else if (llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(_value)) {
-	
+		Constant *constantValue = new Constant(constant);
+		expression = constantValue;
 	}
 	else if (llvm::BinaryOperator *instruction = llvm::dyn_cast<llvm::BinaryOperator>(_value)) {
-	
+		BinaryExpression *binaryExpression = new BinaryExpression(instruction);
+		expression = binaryExpression;
+	}
+	else if (llvm::LoadInst *load = llvm::dyn_cast<llvm::LoadInst>(_value)) {
+		UnaryExpression *unaryLoad = new UnaryExpression(load);
+		expression = unaryLoad;
 	}
 	else if (llvm::UnaryInstruction *instruction = llvm::dyn_cast<llvm::UnaryInstruction>(_value)) {
-	
+		UnaryExpression *unaryInstruction = new UnaryExpression(instruction);
+		expression = unaryInstruction;
 	}
-	else if (llvm::Instruction *instruction = llvm::dyn_cast<llvm::Instruction>(_value)) {
-	
+	else if (llvm::Instruction *inst = llvm::dyn_cast<llvm::Instruction>(_value)) {
+		Instruction *instruction = new Instruction(inst);
+		
+		expression = instruction;
 	}
 	else {
-	
+		expression = new Expression(_value);
 	}
 	return expression;
 }

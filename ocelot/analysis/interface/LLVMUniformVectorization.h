@@ -105,6 +105,21 @@ namespace analysis
 		typedef llvm::Instruction * ThreadLocalArgument::* ThreadLocalArgumentMemberPointer;
 		typedef std::vector< ThreadLocalArgument > ThreadLocalArgumentVector;
 
+		//! \brief pointer-to-member table for additional indrection on thread-local arguments
+		static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
+			ThreadLocalArgumentInstances[];
+
+		//! \brief pointer to pointer-to-member table offset so first element is localPointer
+		static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
+			*ThreadLocalArgumentPointerInstances;
+	
+		//! \brief table indicating which pointer-to-members are thread-invariant if from same CTA
+		static bool ThreadLocalArgumentVarianceMap[];
+
+		//! \brief pointer to table offset so first element corresponds to localPointer
+		static bool *ThreadLocalArgumentPointerVarianceMap;
+		
+
 		/*!
 			\brief contains replicated and/or vectorized instructions
 		*/
@@ -295,7 +310,7 @@ namespace analysis
 			
 			void _eliminateUnusedVectorPacking();
 			
-			bool _isAffinePointer(InstructionSet &affineSet, llvm::Instruction *ptr);
+			bool _isAffineValue(InstructionSet &affineSet, llvm::Instruction *ptr);
 			
 			llvm::Instruction * _vectorizeAffineMemory(llvm::Instruction *inst, 
 				VectorizedInstructionMap::iterator &vec_it);

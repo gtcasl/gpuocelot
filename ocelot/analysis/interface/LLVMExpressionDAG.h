@@ -13,12 +13,18 @@
 #include <map>
 #include <vector>
 
+// Ocelot includes
+#include <ocelot/analysis/interface/LLVMUniformVectorization.h>
 
+// Forward declarations
 namespace llvm {
 	class Constant;
+	class ConstantExpr;
 	class Value;
 	class Instruction;
-	
+	class LoadInst;
+	class BinaryOperator;
+	class UnaryInstruction;
 }
 
 namespace analysis {
@@ -46,6 +52,7 @@ namespace analysis {
 				expression,
 				constant,
 				threadInvariant,
+				instruction,
 				unaryExpression,
 				binaryExpression,
 				affineExpression,
@@ -54,6 +61,7 @@ namespace analysis {
 			
 		public:
 			Expression();
+			Expression(llvm::Value *value, Type type = expression);
 			~Expression();
 		
 			Type type() const { return _type; }
@@ -73,6 +81,7 @@ namespace analysis {
 		class Instruction: public Expression {
 		public:
 			Instruction();
+			Instruction(llvm::Instruction *inst);
 			~Instruction();
 			
 			static bool classof(const Expression *expression);
@@ -84,12 +93,16 @@ namespace analysis {
 		class Constant: public Expression {
 		public:
 			Constant();
+			Constant(llvm::ConstantExpr *expr);
 			Constant(llvm::Constant *constant);
 			~Constant();
 			
 			static bool classof(const Expression *expression);
 			
 			llvm::Constant *asConstant() const;
+			
+			//! returns true if this is a numerical expression
+			bool isNumerical() const;
 			
 		public:
 		};
@@ -114,11 +127,14 @@ namespace analysis {
 				PointerToInt,
 				FloatToInt,
 				IntToFloat,
+				Load,
 				Operator_invalid
 			};
 		public:
 		
 			UnaryExpression();
+			UnaryExpression(llvm::LoadInst *inst);
+			UnaryExpression(llvm::UnaryInstruction *inst);
 			~UnaryExpression();
 			
 			bool isLinear() const;
@@ -140,12 +156,15 @@ namespace analysis {
 				Mul,
 				ShiftLeft,
 				ShiftRight,
+				Store,
 				Sub,
 				Operator_invalid
 			};
 		public:
 		
 			BinaryExpression();
+			BinaryExpression(llvm::BinaryOperator *inst);
+			BinaryExpression(llvm::StoreInst *inst);
 			~BinaryExpression();
 			
 			static bool classof(const Expression *expression);
@@ -172,17 +191,20 @@ namespace analysis {
 			Constant *constant() const;
 			
 			BinaryExpression *threadExpression() const;
+			
 		protected:
 		
 		};
 	
 	public:
-		LLVMExpressionDAG(llvm::Instruction *_inst);
+		LLVMExpressionDAG(const LLVMUniformVectorization::ThreadLocalArgument &threadArguments, 
+			llvm::Instruction *_inst);
 	
 		const Expression *root() const { return _root; }
 	
 	protected:
-		Expression * _construct(llvm::Value *_value);
+		Expression * _construct(const LLVMUniformVectorization::ThreadLocalArgument &threadArguments,
+			llvm::Value *_value);
 	
 	protected:
 	

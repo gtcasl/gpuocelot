@@ -180,9 +180,11 @@ llvm::ConstantInt *analysis::LLVMUniformVectorization::Translation::getConstInt6
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+namespace analysis {
+
 //! pointers-to-member for class ThreadLocalArgument
-static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
-	ThreadLocalArgumentInstances[] = {
+llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
+	LLVMUniformVectorization::ThreadLocalArgumentInstances[] = {
 	
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::threadId_x, 
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::threadId_y, 
@@ -206,11 +208,11 @@ static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgume
 };
 
 //! pointers-to-member for just the address space pointers in class ThreadLocalArgument
-static llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
-	*ThreadLocalArgumentPointerInstances = &ThreadLocalArgumentInstances[12];
+llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::* 
+	*LLVMUniformVectorization::ThreadLocalArgumentPointerInstances = &ThreadLocalArgumentInstances[12];
 
 //! Assuming threads are from the same CTA, indidcates which arguments are thread-variant
-static bool ThreadLocalArgumentVarianceMap[] = {
+bool LLVMUniformVectorization::ThreadLocalArgumentVarianceMap[] = {
 	true,		// threadId_x
 	true,		// threadId_y
 	true,		// threadId_z
@@ -232,7 +234,10 @@ static bool ThreadLocalArgumentVarianceMap[] = {
 };
 
 //! Thread variance map for just the address space pointers
-static bool *ThreadLocalArgumentPointerVarianceMap = &ThreadLocalArgumentVarianceMap[12];
+bool *LLVMUniformVectorization::ThreadLocalArgumentPointerVarianceMap = 
+	&ThreadLocalArgumentVarianceMap[12];
+
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1408,12 +1413,6 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
-bool analysis::LLVMUniformVectorization::Translation::_isAffinePointer(
-	InstructionSet &affineSet, llvm::Instruction *ptr) {
-
-	return false;
-}
 
 static llvm::Value *getPointerOperand(llvm::Instruction *inst) {
 	llvm::Value *ptr = 0;

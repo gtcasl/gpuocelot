@@ -113,5 +113,10 @@ void SplitBasicBlockPass::finalize()
 
 }
 
+void SplitBasicBlockPass::setMaximumBlockSize(unsigned int s)
+{
+	_maxSize = s;
+}
+
 }
 

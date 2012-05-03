@@ -42,6 +42,9 @@ public:
 	void runOnModule(ir::Module& m);
 
 public:
+	void setExpectedRegionSize(unsigned int s);
+
+public:
 	class ExtractKernelsPass : public KernelPass
 	{
 	public:

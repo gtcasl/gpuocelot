@@ -19,13 +19,36 @@ std::string ir::PTXInstruction::toString( Level l ) {
 }
 
 std::string ir::PTXInstruction::toString(CacheLevel cache) {
-	switch (cache) {
+	switch( cache ) {
 		case L1: return "L1";
 		case L2: return "L2";
 		default: break;
 	}
 	return "";
 }
+
+std::string ir::PTXInstruction::toStringLoad(CacheOperation operation) {
+	switch( operation ) {
+		case Ca: return "ca";
+		case Cg: return "cg";
+		case Cs: return "cs";
+		case Cv: return "cv";
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toStringStore(CacheOperation operation) {
+	switch( operation ) {
+		case Cg: return "cg";
+		case Cs: return "cs";
+		case Wb: return "wb";
+		case Wt: return "wt";
+		default: break;
+	}
+	return "";
+}
+
 
 std::string ir::PTXInstruction::toString( PermuteMode m ) {
 	switch( m ) {
@@ -406,6 +429,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	barrierOperation = BarSync;
 	carry = None;
 	statementIndex = -1;
+	geometry = Geometry_Invalid;
 	cc = 0;
 	addressSpace = AddressSpace_Invalid;
 }
@@ -2224,6 +2248,9 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
+			if( cacheOperation != Ca ) {
+				result += toStringLoad(cacheOperation) + ".";
+			}
 			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
 			}
@@ -2238,6 +2265,9 @@ std::string ir::PTXInstruction::toString() const {
 			std::string result = guard() + "ldu.";
 			if( volatility == Volatile ) {
 				result += "volatile.";
+			}
+			if( cacheOperation != Ca ) {
+				result += toStringLoad(cacheOperation) + ".";
 			}
 			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
@@ -2443,6 +2473,9 @@ std::string ir::PTXInstruction::toString() const {
 			std::string result = guard() + "st.";
 			if( volatility == Volatile ) {
 				result += "volatile.";
+			}
+			if( cacheOperation != Wb ) {
+				result += toStringStore(cacheOperation) + ".";
 			}
 			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";

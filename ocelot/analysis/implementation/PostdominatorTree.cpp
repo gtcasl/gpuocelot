@@ -67,7 +67,7 @@ bool PostdominatorTree::postDominates(ir::ControlFlowGraph::iterator block,
 	}
 	while(endId != nextId && !postDominates);
 	
-	return postDominates;
+	return postDominates || nextId == id;
 }
 
 ir::ControlFlowGraph::iterator PostdominatorTree::getPostDominator(

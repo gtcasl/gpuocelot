@@ -35,6 +35,7 @@ public:
 		StructuralAnalysis            = 0x40,
 		ConditionalDivergenceAnalysis = 0x80,
 		ThreadFrontierAnalysis        = 0x100,
+		LoopAnalysis                  = 0x200,
 	};
 
 public:

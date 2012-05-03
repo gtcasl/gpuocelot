@@ -7,7 +7,12 @@
 #ifndef PTX_OPTIMIZER_H_INCLUDED
 #define PTX_OPTIMIZER_H_INCLUDED
 
+// Standard Library Includes
 #include <string>
+#include <set>
+
+// Forward Declarations
+namespace transforms { class Pass; }
 
 namespace tools
 {
@@ -15,28 +20,7 @@ namespace tools
 	class PTXOptimizer
 	{
 		public:
-			/*! \brief The type of register allocator to use */
-			enum RegisterAllocationType
-			{
-				LinearScan,
-				InvalidRegisterAllocationType
-			};
-			
-			/*! \brief The possible PTX to PTX passes */
-			enum PassType
-			{
-				InvalidPassType         = 0x0,
-				RemoveBarriers          = 0x1,
-				ReverseIfConversion     = 0x2,
-				SubkernelFormation      = 0x4,
-				StructuralTransform     = 0x8,
-				MIMDThreadScheduling    = 0x10,
-				DeadCodeElimination     = 0x20,
-				SplitBasicBlocks        = 0x40,
-				SyncElimination         = 0x80,
-				HoistSpecialDefinitions = 0x100,
-				SimplifyCFG             = 0x200
-			};
+			typedef std::set<std::string> StringSet;
 	
 		public:
 			/*! \brief The input file being optimized */
@@ -46,10 +30,10 @@ namespace tools
 			std::string output;
 			
 			/*! \brief The type of register allocation to perform */
-			RegisterAllocationType registerAllocationType;
+			std::string registerAllocationType;
 			
 			/*! \brief The set of passes to run */
-			int passes;
+			StringSet passes;
 			
 			/*! \brief The number of registers to allocate */
 			unsigned int registerCount;
@@ -68,7 +52,11 @@ namespace tools
 			PTXOptimizer();
 
 			/*! \brief Performs the optimizations */
-			void optimize();			
+			void optimize();	
+			
+		public:
+			/*! \brief Apply options to the pass */
+			void applyOptions( transforms::Pass* pass );
 	};
 }
 

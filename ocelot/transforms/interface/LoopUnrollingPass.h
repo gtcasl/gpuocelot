@@ -1,7 +1,7 @@
-/*! \brief  SplitBasicBlockPass.h
+/*! \brief  LoopUnrollingPass.h
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
-	\date   Friday August 12, 2011
-	\brief  The header file for the SplitBasicBlockPass class.
+	\date   Wednesday May 2, 2012
+	\brief  The header file for the LoopUnrollingPass class.
 */
 
 #pragma once
@@ -13,11 +13,11 @@ namespace transforms
 {
 
 /*! \brief A class for splitting basic blocks larger than a specified size */
-class SplitBasicBlockPass : public KernelPass
+class LoopUnrollingPass : public KernelPass
 {
 public:
-	/*! \brief The constructor sets the block size */
-	SplitBasicBlockPass(unsigned int maxSize = 50);
+	/*! \brief The constructor sets pass type and dependencies */
+	LoopUnrollingPass();
 
 public:
 	/*! \brief Initialize the pass using a specific module */
@@ -26,12 +26,6 @@ public:
 	void runOnKernel(ir::IRKernel& k);		
 	/*! \brief Finalize the pass */
 	void finalize();
-
-public:
-	void setMaximumBlockSize(unsigned int s);
-
-private:
-	unsigned int _maxSize;
 
 };
 

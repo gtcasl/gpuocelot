@@ -80,6 +80,12 @@ void SubkernelFormationPass::runOnModule(ir::Module& m)
 	}
 }
 
+
+void SubkernelFormationPass::setExpectedRegionSize(unsigned int s)
+{
+	_expectedRegionSize = s;
+}
+
 SubkernelFormationPass::ExtractKernelsPass::ExtractKernelsPass(
 	unsigned int regionSize) : 
 	KernelPass(Analysis::DataflowGraphAnalysis, "ExtractKernelsPass"), 

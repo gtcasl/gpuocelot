@@ -342,7 +342,18 @@ api::OcelotConfiguration::OcelotConfiguration(std::istream &stream) {
 api::OcelotConfiguration::OcelotConfiguration(
 	const std::string &_path): path(_path) {
 	std::ifstream file(path.c_str());
-	initialize(file);
+	
+	if(file.is_open())
+	{
+		initialize(file);
+	}
+	else
+	{
+		std::cerr << "==Ocelot== WARNING: Failed to find 'configure.ocelot' "
+			"in current directory, loading defaults.\n" << std::endl;
+		std::cerr << "==Ocelot== INFO: You may consider adding one if you need "
+			"to change the Ocelot target, or runtime options.\n" << std::endl;
+	}
 }
 
 //! \brief parses and returns configuration object

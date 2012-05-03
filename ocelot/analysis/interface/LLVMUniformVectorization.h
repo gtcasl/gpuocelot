@@ -161,9 +161,10 @@ namespace analysis
 			
 			llvm::Constant *constant;
 		};
-		
+				
 		//! \brief maps
 		typedef std::map< llvm::Value *, AffineValue > AffineValueMap;
+		
 		
 		//! \brief computes set of instructions that are affine
 		class AffineVarianceAnalysis {

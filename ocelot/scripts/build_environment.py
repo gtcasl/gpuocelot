@@ -328,7 +328,7 @@ def getVersion(base):
 
 	(svn_info, std_err_data) = process.communicate()
 	
-	match = re.search('Last Changed Rev: ', svn_info)
+	match = re.search('Revision: ', svn_info)
 	revision = 'unknown'
 	if match:
 		end = re.search('\n', svn_info[match.end():])

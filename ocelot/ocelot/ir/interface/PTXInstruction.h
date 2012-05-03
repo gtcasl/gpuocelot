@@ -187,12 +187,12 @@ namespace ir {
 		};
 		
 		enum CacheOperation {
-			Ca,
-			Cg,
-			Cs,
-			Cv,
-			Wb,
-			Wt,
+			Ca = 0,
+			Cv = 1,
+			Cg = 2,
+			Cs = 3,
+			Wb = 0,
+			Wt = 1,
 			CacheOperation_Invalid
 		};
 		
@@ -288,7 +288,7 @@ namespace ir {
 			_a2d = 5,
 			_cube = 6,
 			_acube = 7,
-			Geometry_Invalid
+			Geometry_Invalid = 0
 		};
 
 		enum SurfaceQuery {
@@ -315,7 +315,9 @@ namespace ir {
 		
 	public:
 		static std::string toString( Level );
-		static std::string toString(CacheLevel cache);
+		static std::string toString( CacheLevel cache );
+		static std::string toStringLoad( CacheOperation op );
+		static std::string toStringStore( CacheOperation op );
 		static std::string toString( PermuteMode );
 		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );
@@ -463,16 +465,19 @@ namespace ir {
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;
 			
-			/*! indicates how loads, stores, and prefetches should take place */
-			CacheOperation cacheOperation;
-			
 			/*! cache level */
 			CacheLevel cacheLevel;
 		};
 		
-		/*! Geometry if this is a texture or surface instruction */
-		Geometry geometry;
-
+		union {
+			/*! Geometry if this is a texture or surface instruction */
+			Geometry geometry;
+			
+			/*! indicates how loads, stores, and prefetches should take place */
+			CacheOperation cacheOperation;
+		};
+		
+		
 		union {
 			/*! optionally writes carry-out value to condition code register */
 			CarryFlag carry;

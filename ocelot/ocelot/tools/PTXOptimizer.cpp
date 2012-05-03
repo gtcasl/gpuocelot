@@ -10,17 +10,11 @@
 // Ocelot Includes
 #include <ocelot/tools/PTXOptimizer.h>
 #include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/PassFactory.h>
+
 #include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/transforms/interface/StructuralTransform.h>
-#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/transforms/interface/SubkernelFormationPass.h>
-#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
-#include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
 #include <ocelot/transforms/interface/SplitBasicBlockPass.h>
-#include <ocelot/transforms/interface/SyncEliminationPass.h>
-#include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
-#include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -42,8 +36,7 @@
 
 namespace tools
 {
-	PTXOptimizer::PTXOptimizer() : registerAllocationType( 
-		InvalidRegisterAllocationType ), passes( 0 )
+	PTXOptimizer::PTXOptimizer()
 	{
 	
 	}
@@ -57,76 +50,23 @@ namespace tools
 
 		transforms::PassManager manager( &module );
 
-		if( registerAllocationType == LinearScan )
+		if( registerAllocationType != "none" )
 		{
 			transforms::Pass* pass =
-				new transforms::LinearScanRegisterAllocationPass( 
-				registerCount );
+				transforms::PassFactory::createPass( registerAllocationType );
+			
+			applyOptions( pass );
+			
 			manager.addPass( *pass );
 		}
 
-		if( passes & SubkernelFormation )
-		{
-			transforms::Pass* pass = new transforms::SubkernelFormationPass(
-				subkernelSize );
-			manager.addPass( *pass );
-		}
-		
-		if( passes & RemoveBarriers )
-		{
-			transforms::Pass* pass = new transforms::RemoveBarrierPass;
-			manager.addPass( *pass );
-		}
-
-		if( passes & StructuralTransform )
-		{
-			transforms::Pass* pass = new transforms::StructuralTransform;
-			manager.addPass( *pass );
-		}
-
-		if( passes & ReverseIfConversion )
+		for( auto name : passes )
 		{
 			transforms::Pass* pass =
-				new transforms::ConvertPredicationToSelectPass;
-			manager.addPass( *pass );
-		}
-
-		if( passes & MIMDThreadScheduling )
-		{
-			transforms::Pass* pass = new transforms::MIMDThreadSchedulingPass;
-			manager.addPass( *pass );
-		}
-
-		if( passes & DeadCodeElimination )
-		{
-			transforms::Pass* pass = new transforms::DeadCodeEliminationPass;
-			manager.addPass( *pass );
-		}
-		
-		if( passes & SplitBasicBlocks )
-		{
-			transforms::Pass* pass = new transforms::SplitBasicBlockPass(
-				basicBlockSize );
-			manager.addPass( *pass );
-		}
-		
-		if( passes & SyncElimination )
-		{
-			transforms::Pass* pass = new transforms::SyncEliminationPass;
-			manager.addPass( *pass );
-		}
-		
-		if( passes & HoistSpecialDefinitions )
-		{
-			transforms::Pass* pass =
-				new transforms::HoistSpecialValueDefinitionsPass;
-			manager.addPass( *pass );
-		}
-		
-		if( passes & SimplifyCFG )
-		{
-			transforms::Pass* pass =
-				new transforms::SimplifyControlFlowGraphPass;
+				transforms::PassFactory::createPass( name );
+			
+			applyOptions( pass );
+			
 			manager.addPass( *pass );
 		}
 		
@@ -168,76 +108,48 @@ namespace tools
 			module.getKernel( kernel->first )->cfg()->write( out );
 		}
 	}
-}
-
-static int parsePassTypes( const std::string& passList )
-{
-	int types = tools::PTXOptimizer::InvalidPassType;
 	
-	report("Checking for pass types.");
-	hydrazine::StringVector passes = hydrazine::split( passList, "," );
-	for( hydrazine::StringVector::iterator pass = passes.begin(); 
-		pass != passes.end(); ++pass )
+	void PTXOptimizer::applyOptions( transforms::Pass* pass )
 	{
-		*pass = hydrazine::strip( *pass, " " );
-		report( " Checking option '" << *pass << "'" );
-		if( *pass == "remove-barriers" )
+		transforms::LinearScanRegisterAllocationPass* linearscan = 
+			dynamic_cast<transforms::LinearScanRegisterAllocationPass*>( pass );
+		
+		if( linearscan != nullptr )
 		{
-			report( "  Matched remove-barriers." );
-			types |= tools::PTXOptimizer::RemoveBarriers;
+			linearscan->registers = registerCount;
 		}
-		else if( *pass == "reverse-if-conversion" )
+		
+		transforms::SplitBasicBlockPass* splitblocks = 
+			dynamic_cast<transforms::SplitBasicBlockPass*>( pass );
+		
+		if( splitblocks != nullptr )
 		{
-			report( "  Matched reverse-if-conversion." );
-			types |= tools::PTXOptimizer::ReverseIfConversion;
+			splitblocks->setMaximumBlockSize( basicBlockSize );
 		}
-		else if( *pass == "structural-transform" )
+		
+		transforms::SubkernelFormationPass* subkernel = 
+			dynamic_cast<transforms::SubkernelFormationPass*>( pass );
+		
+		if( subkernel != nullptr )
 		{
-			report( "  Matched structural-transform." );
-			types |= tools::PTXOptimizer::StructuralTransform;
-		}
-		else if( *pass == "subkernel-formation" )
-		{
-			report( "  Matched subkernel-formation." );
-			types |= tools::PTXOptimizer::SubkernelFormation;
-		}
-		else if( *pass == "mimd-threading" )
-		{
-			report( "  Matched mimd-threading." );
-			types |= tools::PTXOptimizer::MIMDThreadScheduling;
-		}
-		else if( *pass == "dead-code-elimination" )
-		{
-			report( "  Matched dead-code-elimination." );
-			types |= tools::PTXOptimizer::DeadCodeElimination;
-		}
-		else if( *pass == "split-blocks" )
-		{
-			report( "  Matched split-blocks." );
-			types |= tools::PTXOptimizer::SplitBasicBlocks;
-		}
-		else if( *pass == "sync-elimination" )
-		{
-			report( "  Matched sync-elimination." );
-			types |= tools::PTXOptimizer::SyncElimination;
-		}
-		else if( *pass == "hoist-special-definitions" )
-		{
-			report( "  Matched hoist-special-definitions." );
-			types |= tools::PTXOptimizer::HoistSpecialDefinitions;
-		}
-		else if( *pass == "simplify-cfg" )
-		{
-			report( "  Matched simplify-cfg." );
-			types |= tools::PTXOptimizer::SimplifyCFG;
-		}
-		else if( !pass->empty() )
-		{
-			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
-				<< "'\n";
+			subkernel->setExpectedRegionSize( subkernelSize );
 		}
 	}
-	return types;
+	
+}
+
+static tools::PTXOptimizer::StringSet parsePassTypes(
+	const std::string& passList )
+{
+	report("Checking for pass types.");
+	hydrazine::StringVector passes = hydrazine::split( passList, "," );
+	
+	for( auto pass = passes.begin(); pass != passes.end(); ++pass )
+	{
+		*pass = hydrazine::strip( *pass, " " );
+	}
+	
+	return tools::PTXOptimizer::StringSet( passes.begin(), passes.end() );
 }
 
 int main( int argc, char** argv )
@@ -245,14 +157,13 @@ int main( int argc, char** argv )
 	hydrazine::ArgumentParser parser( argc, argv );
 	parser.description( "The Ocelot PTX to PTX optimizer." );
 	tools::PTXOptimizer optimizer;
-	std::string allocator;
 	std::string passes;
 	
 	parser.parse( "-i", "--input", optimizer.input, "",
 		"The ptx file to be optimized." );
 	parser.parse( "-o", "--output", optimizer.output, 
 		"_optimized_" + optimizer.input, "The resulting optimized file." );
-	parser.parse( "-a", "--allocator", allocator, "none",
+	parser.parse( "-a", "--allocator", optimizer.registerAllocationType, "none",
 		"The type of register allocator to use (linearscan)." );
 	parser.parse( "-r", "--max-registers", optimizer.registerCount, 32,
 		"The number of registers available for allocation." );
@@ -268,11 +179,6 @@ int main( int argc, char** argv )
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();
-
-	if( allocator == "linearscan" )
-	{
-		optimizer.registerAllocationType = tools::PTXOptimizer::LinearScan;
-	}
 	
 	optimizer.passes = parsePassTypes( passes );
 	

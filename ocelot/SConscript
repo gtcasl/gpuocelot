@@ -235,6 +235,8 @@ tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 tests.append(('TestDriverAPISequence', \
 	'ocelot/cuda/test/driver/sequence.cpp', 'full'))
+tests.append(('TestOptimizations', \
+	'ocelot/transforms/test/TestOptimizations.cpp', 'full', test_libs))
 
 for test in tests:
 	libs = ocelot_libs

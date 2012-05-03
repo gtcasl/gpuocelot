@@ -18,6 +18,7 @@
 #include <ocelot/analysis/interface/PostdominatorTree.h>
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
+#include <ocelot/analysis/interface/LoopAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -203,6 +204,25 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			allocateNewDataStructures(analyses, k,
 				frontierAnalysis->required, manager);
 			frontierAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::LoopAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::LoopAnalysis) == 0)
+		{
+			analysis::LoopAnalysis* loopAnalysis =
+				new analysis::LoopAnalysis;
+			
+			report("   Allocating loop analysis"
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::LoopAnalysis,
+				loopAnalysis));
+			
+			loopAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				loopAnalysis->required, manager);
+			loopAnalysis->analyze(*k);
 		}
 	}
 }

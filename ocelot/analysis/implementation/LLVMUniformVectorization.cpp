@@ -23,6 +23,7 @@
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/analysis/interface/LLVMUniformVectorization.h>
+#include <ocelot/analysis/interface/AffineInstructionSet.h>
 
 // LLVM includes
 #include <llvm/Instructions.h>
@@ -47,7 +48,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_INITIAL_SUBKERNEL 0
 #define REPORT_FINAL_SUBKERNEL 0
@@ -790,6 +791,9 @@ void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous(
 		_packThreadLocal();
 		_replicateInstructions();
 		_resolveDependencies();
+		
+		_affineMemoryAccesses();
+		
 		if (pass->vectorizeConvergent) {
 			_vectorizeReplicated();
 		}
@@ -936,7 +940,7 @@ void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
 					}
 				}
 				else {
-					report("      operand " << i << " not in mapping: " << String(opInst));
+					//report("      operand " << i << " not in mapping: " << String(opInst));
 				}
 			}
 		}
@@ -1413,6 +1417,40 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+void analysis::LLVMUniformVectorization::Translation::_affineMemoryAccesses() {
+	report("_affineMemoryAccesses()");
+	
+	AffineInstructionSet affineInstructions(function, schedulerEntryBlock.threadLocalArguments.at(0));
+	
+	for (VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.begin();
+		vec_it != vectorizedInstructionMap.end(); ++vec_it) {
+	
+		if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
+			if (affineInstructions.isThreadInvariant(storeInst->getPointerOperand())) {
+				report("  " << String(vec_it->first) << " is thread-invariant");
+			}
+			else if (affineInstructions.isAffine(storeInst->getPointerOperand())) {
+				report("  " << String(vec_it->first) << " is affine");
+			}
+		}
+		else if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(vec_it->first)) {
+			if (affineInstructions.isThreadInvariant(loadInst->getPointerOperand())) {
+				report("  " << String(vec_it->first) << " is thread-invariant");
+			}
+			else if (affineInstructions.isAffine(loadInst->getPointerOperand())) {
+				report("  " << String(vec_it->first) << " is affine");
+			}
+		}
+	}
+	
+#if REPORT_BASE
+	report("Results of affine analysis:");
+	affineInstructions.write(std::cout);
+#endif
+
+	report("_affineMemoryAccesses() returning");
+}
 
 static llvm::Value *getPointerOperand(llvm::Instruction *inst) {
 	llvm::Value *ptr = 0;
@@ -1931,78 +1969,3 @@ void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-analysis::LLVMUniformVectorization::AffineValue::AffineValue():
-	base(0), offset(0), constant(0) {
-
-}
-
-analysis::LLVMUniformVectorization::AffineValue::AffineValue(llvm::Value *_base, 
-	llvm::Constant *_offset, llvm::Constant *_constant
-): base(_base), offset(_offset), constant(_constant) {
-
-}
-
-bool analysis::LLVMUniformVectorization::AffineValue::invariant() const {
-	return (constant ? false : true);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-analysis::LLVMUniformVectorization::AffineVarianceAnalysis::AffineVarianceAnalysis(
-	llvm::Function *_function, 
-	const analysis::LLVMUniformVectorization::ThreadLocalArgumentVector &_threadLocal):
-		function(_function), threadLocal(_threadLocal) {
-	
-	_enumerateInvariants();
-	_compute();
-}
-
-analysis::LLVMUniformVectorization::AffineVarianceAnalysis::~AffineVarianceAnalysis() {
-
-}
-
-/*!
-	marks all trivial values that are thread-invariant across the CTA
-*/
-void analysis::LLVMUniformVectorization::AffineVarianceAnalysis::_enumerateInvariants() {
-
-	report("_enumerateInvariants()");
-	
-	// global values
-	report("  global values:");
-	for (llvm::Module::const_global_iterator global_it = function->getParent()->global_begin();
-		global_it != function->getParent()->global_end(); ++global_it) {
-	
-		report("   " << global_it->getName().str());
-		
-		// all load instructions using this are invariant
-		for (llvm::Value::const_use_iterator use_it = global_it->use_begin(); 
-			use_it != global_it->use_end(); ++use_it ) {
-			
-		}
-		invariantSet.insert(&*global_it);
-	}
-	
-	// trivial thread-invariant
-	for (int i = 3; i < 12; i++) {
-		invariantSet.insert((threadLocal[0]).*(ThreadLocalArgumentInstances[i]));
-	}
-	for (int i = 14; i < 17; i++) {
-		invariantSet.insert((threadLocal[0]).*(ThreadLocalArgumentInstances[i]));
-	}
-
-#if REPORT_BASE
-	report("  CTA-invariant values: ");
-	for (ConstValueSet::const_iterator invariant_it = invariantSet.begin(); 
-		invariant_it != invariantSet.end(); ++invariant_it) {
-		report("  " << (*invariant_it)->getName().str());
-	}
-#endif
-}
-
-void analysis::LLVMUniformVectorization::AffineVarianceAnalysis::_compute() {
-
-}
-
-		
-//////////////////////////////////////////////////////////////////////////////////////////////////

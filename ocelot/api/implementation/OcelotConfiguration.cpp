@@ -168,7 +168,8 @@ api::OcelotConfiguration::Optimizations::Optimizations():
 	linearScanAllocation(false),
 	mimdThreadScheduling(false),
 	syncElimination(false),
-	vectorizeConvergent(false)
+	vectorizeConvergent(false),
+	vectorizeAffineMemory(false)
 {
 
 }
@@ -359,6 +360,9 @@ static void initializeOptimizations(
 		
 	optimizations.vectorizeConvergent =
 		config.parse<bool>("vectorizeConvergent", false);
+	
+	optimizations.vectorizeAffineMemory =
+		config.parse<bool>("vectorizeAffineMemory", false);
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

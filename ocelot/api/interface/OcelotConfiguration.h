@@ -200,6 +200,10 @@ namespace api {
 			
 			/*! \brief Enables vectorizing of convergent kernels */
 			bool vectorizeConvergent;
+			
+			/*! \brief enables vectorizing loads and stores if they can be proven to be affine across
+				threads (effectively, contiguous elements to be treated as packed load/store) */
+			bool vectorizeAffineMemory;
 		};
 
 

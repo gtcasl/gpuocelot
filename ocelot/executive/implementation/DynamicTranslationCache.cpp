@@ -112,6 +112,10 @@ static bool getVectorizeConvergent() {
 	return api::configuration().optimizations.vectorizeConvergent;
 }
 
+static bool getVectorizeAffineMemory() {
+	return api::configuration().optimizations.vectorizeAffineMemory;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1101,7 +1105,8 @@ static void cloneAndOptimizeTranslation(
 	int warpSize,
 	translator::Translator::OptimizationLevel optimization,
 	unsigned int specialization,
-	bool vectorizeConvergent) {
+	bool vectorizeConvergent,
+	bool affineMemory) {
 		
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing kernel " << translatedSubkernel.subkernelPtx->name 
 		<< " for warpSize " << warpSize << ", optimziation level " << translator::Translator::toString(optimization)
@@ -1151,8 +1156,15 @@ static void cloneAndOptimizeTranslation(
 	manager.add(new llvm::TargetData(*executive::LLVMState::jit()->getTargetData()));
 
 	analysis::LLVMUniformVectorization *vectorizationPass = new
-		analysis::LLVMUniformVectorization(translatedKernel.kernel->kernelGraph(), subkernelId, 
-		warpSize, vectorizeConvergent);
+		analysis::LLVMUniformVectorization(
+			translatedKernel.kernel->kernelGraph(), 
+			subkernelId, 
+			warpSize, 
+			vectorizeConvergent, 
+			(analysis::LLVMUniformVectorization::ThreadInvariant_scalarization | 
+				analysis::LLVMUniformVectorization::ThreadInvariant_sameCta ), 
+			affineMemory);
+	
 	manager.add(vectorizationPass);
 
 	if (level == 0) {
@@ -1437,7 +1449,7 @@ executive::DynamicTranslationCache::Translation *
 		// apply optimizations on the resulting LLVM function
 		cloneAndOptimizeTranslation(translatedKernel, subkernel, subkernelId,
 			translation, warpSize, getOptimizationLevel(), specialization, 
-			getVectorizeConvergent());
+			getVectorizeConvergent(), getVectorizeAffineMemory());
 		
 		// dynamically compile LLVM to host ISA
 		reportE(REPORT_TRANSLATION_OPERATIONS, " Generating native code.");

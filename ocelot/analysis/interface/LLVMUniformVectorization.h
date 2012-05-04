@@ -313,10 +313,23 @@ namespace analysis
 		/*!
 			\brief vectorizes kernels assuming all control flow is uniform across warps
 
+			\param kernelGraph partitionined PTX kernel
+			\param subkernelId ID of subkernel
 			\param warpSize number of logical threads per warp
+			\param vectorize if true, enables vectorizing replicated instructions where possible
+			\param threadInvariant controls flags related to scalarizing thread-invariant expressions 
+				and affine operators
+			\param affineMemory if true, and if (threadInvariant & (scalarization | sameCta)), 
+				vectorizes affine memory accesses where possible
 		*/
-		LLVMUniformVectorization(KernelGraph *_kernelGraph, SubkernelId subkernelId, 
-			int warpSize = 1, bool vectorize = true);
+		LLVMUniformVectorization(
+			KernelGraph *kernelGraph, 
+			SubkernelId subkernelId, 
+			int warpSize = 1, 
+			bool vectorize = true, 
+			int threadInvariant = (ThreadInvariant_scalarization | ThreadInvariant_sameCta ), 
+			bool affineMemory = false);
+		
 		~LLVMUniformVectorization();
 
 	public:
@@ -358,6 +371,10 @@ namespace analysis
 		
 		//! \brief flags for performing thread-invariant optimization
 		int threadInvariant;
+		
+		//! \brief controls whether to attempt vectorizing affine memory operations
+		bool vectorizeAffineMemory;
+		
 
 		static char ID;
 	};

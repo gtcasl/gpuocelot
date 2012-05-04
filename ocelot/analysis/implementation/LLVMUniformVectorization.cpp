@@ -130,11 +130,15 @@ analysis::LLVMUniformVectorization::LLVMUniformVectorization(
 	KernelGraph *_kernelGraph, 
 	SubkernelId _subkernelId, 
 	int _ws,
-	bool _vectorize
+	bool _vectorize,
+	int _threadInvariant,
+	bool _affineMemory
 ):
 	llvm::FunctionPass(ID), kernelGraph(_kernelGraph), subkernelId(_subkernelId), 
 		warpSize(_ws), vectorizeConvergent(_vectorize), 
-			threadInvariant(ThreadInvariant_scalarization | ThreadInvariant_sameCta )
+			threadInvariant(_threadInvariant),
+			vectorizeAffineMemory(_affineMemory && 
+				(_threadInvariant & (ThreadInvariant_scalarization | ThreadInvariant_sameCta)))
 {
 	report("LLVMUniformVectorization() on kernel " << kernelGraph->ptxKernel->name);
 }
@@ -804,7 +808,9 @@ void analysis::LLVMUniformVectorization::Translation::_transformWarpSynchronous(
 		_replicateInstructions();
 		_resolveDependencies();
 		
-		_affineMemoryAccesses();
+		if (pass->vectorizeAffineMemory) {
+			_affineMemoryAccesses();
+		}
 		
 		if (pass->vectorizeConvergent) {
 			_vectorizeReplicated();
@@ -1517,10 +1523,8 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeA
 	
 	llvm::VectorType *vecType = llvm::VectorType::get(
 		llvm::dyn_cast<llvm::PointerType>(ptrOperand->getType())->getElementType(), pass->warpSize);
-	llvm::PointerType *vecPtrType = llvm::PointerType::get(vecType, 0);
 	
-	reportE(REPORT_VECTORIZING, "  casting ptr " << String(ptrOperand) << "; to vector* type: " 
-		<< String(vecPtrType));
+	llvm::PointerType *vecPtrType = llvm::PointerType::get(vecType, 0);
 	llvm::Instruction *ptrCast = llvm::CastInst::CreatePointerCast(ptrOperand, 
 		vecPtrType, ptrName, before);
 	
@@ -1531,20 +1535,13 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeA
 	else if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
 		llvm::Instruction *vectorizedValueOperand = getInstructionAsVectorized(
 			storeInst->getValueOperand(), inst);
-		
-		reportE(REPORT_VECTORIZING, "  new StoreInst('" << String(vectorizedValueOperand) << "', '" 
-			<< String(ptrCast) << "')");
-		llvm::StoreInst *vectorized = new llvm::StoreInst(vectorizedValueOperand, ptrCast, before);
-		
-		reportE(REPORT_VECTORIZING, "  created");
-		vec_it->second.vector = vectorized;
+		llvm::StoreInst *storeInst = new llvm::StoreInst(vectorizedValueOperand, ptrCast, before);
+		vec_it->second.vector = storeInst;
 	}
 	assert(vec_it->second.vector && "Failed to construct vectorized load or store");
 	
 	vec_it->second.vector->removeFromParent();
 	vec_it->second.vector->insertAfter(inst);
-	
-	reportE(REPORT_VECTORIZING, "  returning: " << String(vec_it->second.vector));
 	return vec_it->second.vector;
 }
 

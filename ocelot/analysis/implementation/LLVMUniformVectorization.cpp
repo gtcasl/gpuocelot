@@ -54,6 +54,10 @@
 #define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REPORT_VECTORIZING 0
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Inserted LLVM debugging procedures for debugging execution faults
 //
@@ -388,7 +392,8 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 	ThreadLocalArgument localArgs;
 	_loadThreadLocal(localArgs, 0, 0, schedulerEntryBlock.block);
 	schedulerEntryBlock.threadLocalArguments.push_back(localArgs);
-		
+	schedulerEntryBlock.threadLocalArguments.at(0).threadIdUses = 0;
+	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		if (&*bb_it == schedulerEntryBlock.block) {
 			continue;
@@ -407,7 +412,7 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 		for (auto inst_it = toVisit.begin(); inst_it != toVisit.end(); ++inst_it) {
 			
 			llvm::GetElementPtrInst * &gemp = *inst_it;			
-			ThreadLocalArgument &local = schedulerEntryBlock.threadLocalArguments[0];
+			ThreadLocalArgument &local = schedulerEntryBlock.threadLocalArguments.at(0);
 			
 			// match GEMP indices
 			llvm::Instruction *selected = 0;
@@ -421,10 +426,15 @@ void analysis::LLVMUniformVectorization::Translation::_initializeSchedulerEntryB
 			}
 			if (indices[1] <= 3) {
 				assert(indices[2] >= 0 && indices[2] < 3);
-				selected = (local.*(ThreadLocalArgumentInstances[indices[1] * 3 + indices[2]]));
+				int idx = indices[1] * 3 + indices[2];
+				if (indices[1] == 0) {
+					local.threadIdUses |= (1 << indices[2]);
+				}
+				selected = (local.*(ThreadLocalArgumentInstances[idx]));
 			}
 			else {
-				selected = (local.*(ThreadLocalArgumentPointerInstances[indices[1] - 4]));
+				int idx = indices[1] - 4;
+				selected = (local.*(ThreadLocalArgumentPointerInstances[idx]));
 			}
 			assert(selected && "failed to identify thread-local argument");
 			
@@ -869,7 +879,7 @@ void analysis::LLVMUniformVectorization::Translation::_packThreadLocal() {
 }
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
-	report("  _replicateInstruction(" << String(inst) << ")");
+	reportE(REPORT_VECTORIZING, "  _replicateInstruction(" << String(inst) << ")");
 	
 	assert(schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
 	
@@ -890,7 +900,7 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 		}
 	}
 	
-	report("   packed operands");
+	reportE(REPORT_VECTORIZING, "   packed operands");
 	
 	bool updateName = (!(llvm::StoreInst::classof(inst) || inst->getType()->isVoidTy()));
 	std::string baseName = inst->getName().str() + ".t";
@@ -900,7 +910,7 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm
 	}
 	vectorized.replicated.push_back(inst);
 	
-	report("   updated name");
+	reportE(REPORT_VECTORIZING, "   updated name");
 
 	llvm::Instruction *insertAfter = inst;
 	
@@ -940,7 +950,7 @@ void analysis::LLVMUniformVectorization::Translation::_resolveDependencies() {
 					}
 				}
 				else {
-					//report("      operand " << i << " not in mapping: " << String(opInst));
+					reportE(REPORT_VECTORIZING, "      operand " << i << " not in mapping: " << String(opInst));
 				}
 			}
 		}
@@ -974,8 +984,8 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 	const analysis::KernelPartitioningPass::DivergentBranch &divergence, 
 	const analysis::KernelPartitioningPass::ExternalEdge &outEdge) {
 
-	report("  _updateDivergentBlock(" << divergence.frontierBlock->label << ")");
-	report("    handler: " << outEdge.handler->label);
+	reportE(REPORT_VECTORIZING, "  _updateDivergentBlock(" << divergence.frontierBlock->label << ")");
+	reportE(REPORT_VECTORIZING, "    handler: " << outEdge.handler->label);
 	
 	typedef analysis::KernelPartitioningPass::DivergentBranch DivergentBranch; 
 	
@@ -1015,7 +1025,8 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 			VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.find(condition);
 			if (vec_it != vectorizedInstructionMap.end()) {
 				
-				report("  vectorized condition instruction (" << condition->getName().str() << ")");
+				reportE(REPORT_VECTORIZING, "  vectorized condition instruction (" 
+					<< condition->getName().str() << ")");
 				
 				llvm::BasicBlock *targetTrue = branchInst->getSuccessor(0);
 				llvm::BasicBlock *targetFalse = branchInst->getSuccessor(1);
@@ -1043,7 +1054,7 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 				if (selectInst) {
 					VectorizedInstructionMap::iterator vec_select_it = vectorizedInstructionMap.find(selectInst);
 					if (vec_select_it != vectorizedInstructionMap.end()) {
-						report(" updating select instruction");
+						reportE(REPORT_VECTORIZING, " updating select instruction");
 						for (size_t t = 0; t < vec_select_it->second.replicated.size(); ++t) {
 							llvm::dyn_cast<llvm::SelectInst>(vec_select_it->second.replicated[t])->setOperand(
 								0, vec_it->second.replicated[t]);
@@ -1051,7 +1062,8 @@ void analysis::LLVMUniformVectorization::Translation::_updateDivergentBlock(
 					}
 				}
 				
-				report("    warp-wide reduction of condition yielding: " << String(condition));
+				reportE(REPORT_VECTORIZING, "    warp-wide reduction of condition yielding: " 
+					<< String(condition));
 		
 				llvm::TerminatorInst *terminatorInst = 0;
 				
@@ -1153,7 +1165,8 @@ analysis::LLVMUniformVectorization::InstructionVector
 	analysis::LLVMUniformVectorization::Translation::getInstructionAsReplicated(
 		llvm::Value *inst, llvm::Instruction *before) {
 	
-	report("  getting instruction " << inst << " as replicated - inserting before " << before);
+	reportE(REPORT_VECTORIZING, "  getting instruction " << inst 
+		<< " as replicated - inserting before " << before);
 	assert(0 && "not yet implemented");
 }
 
@@ -1163,7 +1176,8 @@ llvm::Instruction *
 	analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
 		llvm::Value *value, llvm::Instruction *before) {
 	
-	report("_getInstructionAsVectorized(" << String(value) << ") before " << String(before));
+	reportE(REPORT_VECTORIZING, "_getInstructionAsVectorized(" << String(value) 
+		<< ") before " << String(before));
 	
 	llvm::Instruction *vectorizedInstruction = 0;
 	
@@ -1184,7 +1198,7 @@ llvm::Instruction *
 			vectorizedInstruction = llvm::dyn_cast<llvm::Instruction>(extractInst->getVectorOperand());
 		}
 		else {
-			report("  Instruction not in mapping: " << String(instruction));
+			reportE(REPORT_VECTORIZING, "  Instruction not in mapping: " << String(instruction));
 			assert(0 && "asdf");
 		}
 	}
@@ -1215,7 +1229,7 @@ void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 	VectorizedInstructionMap::iterator &vec_it) {
 	
-	report("  vectorize()");
+	reportE(REPORT_VECTORIZING, "  vectorize()");
 	
 	llvm::Instruction *vectorized = vec_it->second.vector;
 	if (!vectorized) {
@@ -1265,11 +1279,12 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeUnvectorizable(
 	llvm::Instruction *inst, VectorizedInstructionMap::iterator &vec_it) {
 	
-	report("  vectorizeUnvectorizable: " << String(inst));
-	report("     replicated:");
+	reportE(REPORT_VECTORIZING, "  vectorizeUnvectorizable: " << String(inst));
+	reportE(REPORT_VECTORIZING, "     replicated:");
 	
 	for (int tid = 0; tid < pass->warpSize; tid++) {
-		report("      [tid: " << tid << "]: " << String(vec_it->second.replicated[tid]));
+		reportE(REPORT_VECTORIZING, "      [tid: " << tid << "]: " 
+			<< String(vec_it->second.replicated[tid]));
 	}
 	
 	// pack replicated instructions	
@@ -1284,7 +1299,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		moveAfter = false;
 	}
 	
-	report("    insert point: " << String(insertPoint));
+	reportE(REPORT_VECTORIZING, "    insert point: " << String(insertPoint));
 	
 	for (int tid = 0; tid < pass->warpSize; tid++) {
 		llvm::ConstantInt *idx = getConstInt32(tid);
@@ -1298,15 +1313,15 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		if (tid || moveAfter) { 
 			insertInst->removeFromParent();
 			insertInst->insertAfter(static_cast<llvm::Instruction*>(insertPoint));
-			report("    [tid: " << tid << "] " << String(insertInst) << " ; insert after " 
-				<< String(insertPoint));
+			reportE(REPORT_VECTORIZING, "    [tid: " << tid << "] " << String(insertInst) 
+				<< " ; insert after " << String(insertPoint));
 		}
 		
 		insertPoint = insertInst;
 		lastInserted = insertInst;
 	}
 	
-	report("   packed: " << String(insertInst));
+	reportE(REPORT_VECTORIZING, "   packed: " << String(insertInst));
 	
 	return insertInst;
 }
@@ -1314,7 +1329,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeBinaryOperator(
 	llvm::BinaryOperator *inst, VectorizedInstructionMap::iterator &vec_it) {
 
-	report("  vectorizeBinaryOperator(): " << String(inst));
+	reportE(REPORT_VECTORIZING, "  vectorizeBinaryOperator(): " << String(inst));
 
 	llvm::Instruction *op0 = getInstructionAsVectorized(vec_it->first->getOperand(0), inst);
 	llvm::Instruction *op1 = getInstructionAsVectorized(vec_it->first->getOperand(1), inst);
@@ -1337,7 +1352,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 	// it's a call instruction
 	std::string calleeName = callInst->getCalledFunction()->getName().str();
 
-	report(" call instruction: " << calleeName);
+	reportE(REPORT_VECTORIZING, " call instruction: " << calleeName);
 
 	assert(hydrazine::isPowerOfTwo(pass->warpSize) && 
 		"warp size must be power of 2 for vectorizing function calls");
@@ -1368,7 +1383,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 			std::string destName = std::string(str[n+1]) + "." + floatSuffixes[s];
 			funcIntrinsic = function->getParent()->getFunction(destName);
 			if (!funcIntrinsic) {
-				report("creating intrinsic type " << calleeName);
+				reportE(REPORT_VECTORIZING, "creating intrinsic type " << calleeName);
 				llvm::VectorType *vecType = llvm::VectorType::get(callInst->getType(), pass->warpSize);
 				std::vector< llvm::Type *> args;
 				args.push_back(vecType);
@@ -1377,7 +1392,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 					llvm::GlobalValue::ExternalLinkage, destName, function->getParent());
 			}
 			else {
-				report("using existing intrinsic definition ");
+				reportE(REPORT_VECTORIZING, "using existing intrinsic definition ");
 			}
 			assert(funcIntrinsic && "failed to get identified intrinsic");
 			break;
@@ -1427,18 +1442,25 @@ void analysis::LLVMUniformVectorization::Translation::_affineMemoryAccesses() {
 		vec_it != vectorizedInstructionMap.end(); ++vec_it) {
 	
 		if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
+			report(" querying store instruction: " << String(storeInst));
+			
+			/*
 			if (affineInstructions.isThreadInvariant(storeInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is thread-invariant");
 			}
-			else if (affineInstructions.isAffine(storeInst->getPointerOperand())) {
+			*/
+			if (affineInstructions.isAffine(storeInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is affine");
 			}
 		}
 		else if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(vec_it->first)) {
+			report(" querying load instruction: " << String(loadInst));
+			/*
 			if (affineInstructions.isThreadInvariant(loadInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is thread-invariant");
 			}
-			else if (affineInstructions.isAffine(loadInst->getPointerOperand())) {
+			*/
+			if (affineInstructions.isAffine(loadInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is affine");
 			}
 		}

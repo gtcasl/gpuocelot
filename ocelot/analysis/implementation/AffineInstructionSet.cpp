@@ -45,7 +45,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,10 +60,21 @@ analysis::AffineInstructionSet::AffineInstructionSet(
 	const LLVMUniformVectorization::ThreadLocalArgument &threadArguments) {
 
 	// initialize some values to the invariant sets
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; LLVMUniformVectorization::ThreadLocalArgumentInstances[i] !=
+		&analysis::LLVMUniformVectorization::ThreadLocalArgument::ptrThreadDescriptorArray; i++) {
+		
 		if (!LLVMUniformVectorization::ThreadLocalArgumentVarianceMap[i]) {
 			_setInvariant(threadArguments.*(LLVMUniformVectorization::ThreadLocalArgumentInstances[i]));
 		}
+	}
+	
+	if (threadArguments.threadIdUses == 1) {
+		// only threadIdx.x is used
+		report("  threadId.x is only thread ID used");
+		_threadIds.insert(threadArguments.threadId_x);
+	}
+	else {
+		report("  too complex");
 	}
 	
 	// globals
@@ -116,8 +127,21 @@ void analysis::AffineInstructionSet::write(std::ostream &out) const {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+llvm::Value *analysis::AffineInstructionSet::_walk(llvm::Value *value) {
+	bool walking = false;
+	do {
+		llvm::CastInst *cast = llvm::dyn_cast<llvm::CastInst>(value);
+		if (cast && cast->isIntegerCast()) {
+			value = cast->getOperand(0);
+		}
+	} while (walking);
+	return value;
+}
+
 bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
 	report("isThreadInvariant(" << String(value) << ")");
+	
+	value = _walk(value);
 	
 	if (_invariantValues.find(value) != _invariantValues.end()) {
 		return true;
@@ -128,8 +152,14 @@ bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
 	if (_variantValues.find(value) != _variantValues.end()) {
 		return false;
 	}
+	if (_threadIds.find(value) != _threadIds.end()) {
+		return false;
+	}
 	
-	if (llvm::UnaryInstruction *unary = llvm::dyn_cast<llvm::UnaryInstruction>(value)) {
+	if (llvm::dyn_cast<llvm::Constant>(value)) {
+		return _setInvariant(value);
+	}
+	else if (llvm::UnaryInstruction *unary = llvm::dyn_cast<llvm::UnaryInstruction>(value)) {
 		if (llvm::CastInst *cast = llvm::dyn_cast<llvm::CastInst>(unary)) {
 			if (isThreadInvariant(cast->getOperand(0))) {
 				return _setInvariant(cast);
@@ -162,6 +192,8 @@ bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
 bool analysis::AffineInstructionSet::isAffine(llvm::Value *value) {
 	report("isAffine(" << String(value) << ")");
 	
+	value = _walk(value);
+	
 	// memoize results for fast lookups
 	if (_invariantValues.find(value) != _invariantValues.end()) {
 		return true;
@@ -175,11 +207,11 @@ bool analysis::AffineInstructionSet::isAffine(llvm::Value *value) {
 
 	if (llvm::UnaryInstruction *unary = llvm::dyn_cast<llvm::UnaryInstruction>(value)) {
 		if (llvm::CastInst *cast = llvm::dyn_cast<llvm::CastInst>(unary)) {
+			if (isAffine(cast->getOperand(0))) {
+				return _setAffine(cast);
+			}
 			if (isThreadInvariant(cast->getOperand(0))) {
 				return _setInvariant(cast);
-			}
-			else if (isAffine(cast->getOperand(0))) {
-				return _setAffine(cast);
 			}
 		}
 		else if (llvm::LoadInst *load = llvm::dyn_cast<llvm::LoadInst>(unary)) {
@@ -189,10 +221,13 @@ bool analysis::AffineInstructionSet::isAffine(llvm::Value *value) {
 		}
 	}
 	else if (llvm::BinaryOperator *binary = llvm::dyn_cast<llvm::BinaryOperator>(value)) {
+		if (_isBinaryOperatorAffine(binary)) {
+			return true;
+		}
+		
 		if ( isThreadInvariant(binary->getOperand(0)) && isThreadInvariant(binary->getOperand(1))) {
 			return _setInvariant(binary);
 		}
-		return _isBinaryOperatorAffine(binary);
 	}
 	
 	return false;
@@ -209,7 +244,7 @@ bool analysis::AffineInstructionSet::_isBinaryOperatorAffine(llvm::BinaryOperato
 	if (_threadIds.find(binary->getOperand(0)) != _threadIds.end()) {
 		constantExprIndex = 1;
 	}
-	else if (_threadIds.find(binary->getOperand(0)) != _threadIds.end()) {
+	else if (_threadIds.find(binary->getOperand(1)) != _threadIds.end()) {
 		constantExprIndex = 0;
 	}
 	if (constantExprIndex >= 0) {

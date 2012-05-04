@@ -101,6 +101,8 @@ namespace analysis
 			llvm::Instruction *ptrThreadDescriptorArray;
 			
 			InstructionVector declarations;
+			
+			unsigned int threadIdUses;
 		};
 		typedef llvm::Instruction * ThreadLocalArgument::* ThreadLocalArgumentMemberPointer;
 		typedef std::vector< ThreadLocalArgument > ThreadLocalArgumentVector;

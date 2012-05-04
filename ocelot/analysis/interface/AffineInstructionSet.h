@@ -55,6 +55,9 @@ namespace analysis {
 		
 		//! \brief adds a value to the variantValues set and returns false
 		bool _setVariant(llvm::Value *value);
+
+		//! \brief walks up the def-use chain treaing int-to-int casts as transparent
+		llvm::Value *_walk(llvm::Value *value);
 	
 	protected:
 	

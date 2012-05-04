@@ -1253,6 +1253,10 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 				
 				vectorized = _vectorizeAffineMemory(vec_it->first, vec_it);
 			}
+			else if (llvm::SIToFPInst::classof(vec_it->first) || llvm::FPToSIInst::classof(vec_it->first)) {
+			
+				vectorized = _vectorizeFPIntConversion(vec_it->first, vec_it);
+			}
 			else {
 				assert(0 && "unhandled vectorizable instruction");	
 			}
@@ -1426,6 +1430,26 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 	return vecCallInst;
 }
 
+llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeFPIntConversion(
+	llvm::Instruction *inst, VectorizedInstructionMap::iterator &vec_it) {
+	
+	reportE(REPORT_VECTORIZING, "  vectorizeFPIntConversion(): " << String(inst));
+
+	llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
+	llvm::Instruction *op0 = getInstructionAsVectorized(castInst->getOperand(0), inst);
+	llvm::VectorType *vecDestTy = llvm::VectorType::get(castInst->getDestTy(), pass->warpSize);
+		
+	std::stringstream ss;
+	ss << inst->getName().str() << ".vec";
+
+	vec_it->second.vector = llvm::CastInst::Create(castInst->getOpcode(), op0, vecDestTy, ss.str(), inst);
+	
+	vec_it->second.vector->removeFromParent();
+	vec_it->second.vector->insertAfter(inst);
+	
+	return vec_it->second.vector;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1434,11 +1458,22 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isPackable() con
 }
 
 bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable() const {
-	reportE(REPORT_VECTORIZING, "  isVectorizable(" << String(replicated[0]) << ")");
 	
+	llvm::Instruction *base = replicated[0];
+	
+	reportE(REPORT_VECTORIZING, "  isVectorizable(" << String(base) << ")");
+	
+	// vectorizable instructions if marked as affine
 	if (flags == Thread_affine) {
-		if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(replicated[0])) {
+		if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(base)) {
 			llvm::Type *valueType = storeInst->getValueOperand()->getType();
+			if (valueType->isFloatTy() || valueType->isIntegerTy(32) || valueType->isDoubleTy()) {		
+				reportE(REPORT_VECTORIZING, "    vectorizable");
+				return true;
+			}
+		}
+		else if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(base)) {
+			llvm::Type *valueType = loadInst->getType();
 			if (valueType->isFloatTy() || valueType->isIntegerTy(32) || valueType->isDoubleTy()) {		
 				reportE(REPORT_VECTORIZING, "    vectorizable");
 				return true;
@@ -1446,15 +1481,19 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 		}
 	}
 	
-	if (replicated[0]->getType()->isFloatTy() ||
-		replicated[0]->getType()->isDoubleTy() ||
-		replicated[0]->getType()->isIntegerTy(32)) {
+	// vectorizable binary operators and call instructions
+	if (base->getType()->isFloatTy() ||
+		base->getType()->isDoubleTy() ||
+		base->getType()->isIntegerTy(32)) {
 		
-		if (replicated[0]->isBinaryOp() || llvm::CallInst::classof(replicated[0])) {
+		if (base->isBinaryOp() || llvm::FPToSIInst::classof(base) || llvm::SIToFPInst::classof(base) || 
+			llvm::CallInst::classof(base)) {
+			
 			reportE(REPORT_VECTORIZING, "    vectorizable");
 			return true;	
 		}
 	}
+	
 	return false;
 }
 

@@ -268,6 +268,8 @@ namespace analysis
 			llvm::Instruction * _vectorizeCall(llvm::CallInst *inst, 
 				VectorizedInstructionMap::iterator &vec_it);
 			llvm::Instruction * _vectorizeUnvectorizable(llvm::Instruction *inst, 
+				VectorizedInstructionMap::iterator &vec_it);			
+			llvm::Instruction * _vectorizeFPIntConversion(llvm::Instruction *inst, 
 				VectorizedInstructionMap::iterator &vec_it);
 			
 			void _finalizeTranslation();

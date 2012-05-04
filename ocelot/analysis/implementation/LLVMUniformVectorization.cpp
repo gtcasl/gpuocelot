@@ -50,12 +50,14 @@
 
 #define REPORT_BASE 0
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define REPORT_INITIAL_SUBKERNEL 0
 #define REPORT_FINAL_SUBKERNEL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_VECTORIZING 0
+#define REPORT_VECTORIZING 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1250,22 +1252,30 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 			}
 			if (vectorized) {
 				InstructionVector extracted;
-				std::string vectorName = vec_it->first->getName().str() + ".extracted.t";
 				
-				for (int tid = 0; tid < pass->warpSize; tid++) {
-					std::string name = vectorName + boost::lexical_cast<std::string,int>(tid);
+				if (!vectorized->getType()->isVoidTy()) {
+					std::string vectorName = vec_it->first->getName().str() + ".extracted.t";
+					for (int tid = 0; tid < pass->warpSize; tid++) {
+						std::string name = vectorName + boost::lexical_cast<std::string,int>(tid);
 					
-					llvm::Instruction *element = llvm::ExtractElementInst::Create(vec_it->second.vector, 
-						getConstInt32(tid), name, vectorized);
-					element->removeFromParent();
-					element->insertAfter(vectorized);
-					extracted.push_back(element);
+						llvm::Instruction *element = llvm::ExtractElementInst::Create(vec_it->second.vector, 
+							getConstInt32(tid), name, vectorized);
+						element->removeFromParent();
+						element->insertAfter(vectorized);
+						extracted.push_back(element);
+					}
+					for (int tid = 0; tid < pass->warpSize; tid++) {
+						vec_it->second.replicated[tid]->replaceAllUsesWith(extracted[tid]);
+						vec_it->second.replicated[tid]->eraseFromParent();
+					}
+					vec_it->second.replicated = extracted;
 				}
-				for (int tid = 0; tid < pass->warpSize; tid++) {
-					vec_it->second.replicated[tid]->replaceAllUsesWith(extracted[tid]);
-					vec_it->second.replicated[tid]->eraseFromParent();
+				else {
+					for (int tid = 0; tid < pass->warpSize; tid++) {
+						vec_it->second.replicated[tid]->eraseFromParent();
+					}
+					vec_it->second.replicated = extracted;
 				}
-				vec_it->second.replicated = extracted;
 			}
 		}
 		else if (vec_it->second.isPackable()) {
@@ -1313,8 +1323,6 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeU
 		if (tid || moveAfter) { 
 			insertInst->removeFromParent();
 			insertInst->insertAfter(static_cast<llvm::Instruction*>(insertPoint));
-			reportE(REPORT_VECTORIZING, "    [tid: " << tid << "] " << String(insertInst) 
-				<< " ; insert after " << String(insertPoint));
 		}
 		
 		insertPoint = insertInst;
@@ -1420,11 +1428,24 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isPackable() con
 }
 
 bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable() const {
+	reportE(REPORT_VECTORIZING, "  isVectorizable(" << String(replicated[0]) << ")");
+	
+	if (flags == Thread_affine) {
+		if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(replicated[0])) {
+			llvm::Type *valueType = storeInst->getValueOperand()->getType();
+			if (valueType->isFloatTy() || valueType->isIntegerTy(32) || valueType->isDoubleTy()) {		
+				reportE(REPORT_VECTORIZING, "    vectorizable");
+				return true;
+			}
+		}
+	}
+	
 	if (replicated[0]->getType()->isFloatTy() ||
 		replicated[0]->getType()->isDoubleTy() ||
 		replicated[0]->getType()->isIntegerTy(32)) {
 		
 		if (replicated[0]->isBinaryOp() || llvm::CallInst::classof(replicated[0])) {
+			reportE(REPORT_VECTORIZING, "    vectorizable");
 			return true;	
 		}
 	}
@@ -1446,9 +1467,11 @@ void analysis::LLVMUniformVectorization::Translation::_affineMemoryAccesses() {
 			
 			if (affineInstructions.isThreadInvariant(storeInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is thread-invariant");
+				vec_it->second.flags = VectorizedInstruction::Thread_invariant;
 			}
 			else if (affineInstructions.isAffine(storeInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is affine");
+				vec_it->second.flags = VectorizedInstruction::Thread_affine;
 			}
 		}
 		else if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(vec_it->first)) {
@@ -1456,17 +1479,14 @@ void analysis::LLVMUniformVectorization::Translation::_affineMemoryAccesses() {
 
 			if (affineInstructions.isThreadInvariant(loadInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is thread-invariant");
+				vec_it->second.flags = VectorizedInstruction::Thread_invariant;
 			}
 			else if (affineInstructions.isAffine(loadInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is affine");
+				vec_it->second.flags = VectorizedInstruction::Thread_affine;
 			}
 		}
 	}
-	
-#if REPORT_BASE
-	report("Results of affine analysis:");
-	affineInstructions.write(std::cout);
-#endif
 
 	report("_affineMemoryAccesses() returning");
 }
@@ -1485,6 +1505,8 @@ static llvm::Value *getPointerOperand(llvm::Instruction *inst) {
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeAffineMemory(
 	llvm::Instruction *inst, VectorizedInstructionMap::iterator &vec_it) {
 
+	reportE(REPORT_VECTORIZING, "_vectorizeAffineMemory(" << String(inst) << ")");
+
 	llvm::Value *ptrOperand = getPointerOperand(vec_it->first);
 	assert(ptrOperand && "Vectorizing affine memory operation must be LoadInst or StoreInst");
 	
@@ -1493,9 +1515,14 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeA
 	std::string ptrName = "vec." + ptrOperand->getName().str();
 	std::string name = "affine." + vec_it->first->getName().str();
 	
-	llvm::VectorType *vecType = llvm::VectorType::get(vec_it->first->getType(), pass->warpSize);
+	llvm::VectorType *vecType = llvm::VectorType::get(
+		llvm::dyn_cast<llvm::PointerType>(ptrOperand->getType())->getElementType(), pass->warpSize);
+	llvm::PointerType *vecPtrType = llvm::PointerType::get(vecType, 0);
+	
+	reportE(REPORT_VECTORIZING, "  casting ptr " << String(ptrOperand) << "; to vector* type: " 
+		<< String(vecPtrType));
 	llvm::Instruction *ptrCast = llvm::CastInst::CreatePointerCast(ptrOperand, 
-		vecType, ptrName, before);
+		vecPtrType, ptrName, before);
 	
 	if (llvm::dyn_cast<llvm::LoadInst>(vec_it->first)) {
 		llvm::LoadInst *vectorized = new llvm::LoadInst(ptrCast, name, before);
@@ -1504,8 +1531,12 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeA
 	else if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
 		llvm::Instruction *vectorizedValueOperand = getInstructionAsVectorized(
 			storeInst->getValueOperand(), inst);
-			
+		
+		reportE(REPORT_VECTORIZING, "  new StoreInst('" << String(vectorizedValueOperand) << "', '" 
+			<< String(ptrCast) << "')");
 		llvm::StoreInst *vectorized = new llvm::StoreInst(vectorizedValueOperand, ptrCast, before);
+		
+		reportE(REPORT_VECTORIZING, "  created");
 		vec_it->second.vector = vectorized;
 	}
 	assert(vec_it->second.vector && "Failed to construct vectorized load or store");
@@ -1513,6 +1544,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeA
 	vec_it->second.vector->removeFromParent();
 	vec_it->second.vector->insertAfter(inst);
 	
+	reportE(REPORT_VECTORIZING, "  returning: " << String(vec_it->second.vector));
 	return vec_it->second.vector;
 }
 

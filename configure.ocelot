@@ -37,7 +37,7 @@
 	},
 	optimizations: {
 		subkernelSize: 1000,
-		vectorizeConvergent: false
+		vectorizeConvergent: true
 	},
 	checkpoint: {
 		enabled: false,

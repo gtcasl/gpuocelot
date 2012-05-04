@@ -126,10 +126,23 @@ namespace analysis
 		*/
 		class VectorizedInstruction {
 		public:
-			VectorizedInstruction(): vector(0) { }
+			
+			enum Flags {
+				Thread_variant,
+				Thread_invariant,
+				Thread_affine,
+				Flags_invalid
+			};
+			
+		public:
+		
+			//!
+			VectorizedInstruction(): vector(0), flags(Thread_variant) { }
 
+			//! indicates value type can be inserted into a vector
 			bool isPackable() const;
 
+			//! indicates instructon may be replace with a vector equivalent
 			bool isVectorizable() const;
 
 		public:
@@ -139,6 +152,9 @@ namespace analysis
 
 			//! \brief vectorized form of instruction
 			llvm::Instruction *vector;
+			
+			//! \brief provides additional attributes related to vectorization
+			Flags flags;
 		};
 		typedef std::map< llvm::Instruction *, VectorizedInstruction > VectorizedInstructionMap;
 		

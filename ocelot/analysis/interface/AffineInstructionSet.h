@@ -37,15 +37,15 @@ namespace analysis {
 		
 	public:
 	
-		bool isThreadInvariant(llvm::Value *value);
-		bool isAffine(llvm::Value *value);
+		bool isThreadInvariant(llvm::Value *value, int indent = 0);
+		bool isAffine(llvm::Value *value, int indent = 0);
 	
 		void write(std::ostream &out) const;
 	
 	protected:
 		
 		//! \brief more elaborate logic here
-		bool _isBinaryOperatorAffine(llvm::BinaryOperator *binary);
+		bool _isBinaryOperatorAffine(llvm::BinaryOperator *binary, int indent = 0);
 	
 		//! \brief adds a value to the affineValues set and returns true
 		bool _setAffine(llvm::Value *value);

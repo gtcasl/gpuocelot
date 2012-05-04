@@ -48,7 +48,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_INITIAL_SUBKERNEL 0
 #define REPORT_FINAL_SUBKERNEL 0
@@ -1444,23 +1444,20 @@ void analysis::LLVMUniformVectorization::Translation::_affineMemoryAccesses() {
 		if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(vec_it->first)) {
 			report(" querying store instruction: " << String(storeInst));
 			
-			/*
 			if (affineInstructions.isThreadInvariant(storeInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is thread-invariant");
 			}
-			*/
-			if (affineInstructions.isAffine(storeInst->getPointerOperand())) {
+			else if (affineInstructions.isAffine(storeInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is affine");
 			}
 		}
 		else if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(vec_it->first)) {
 			report(" querying load instruction: " << String(loadInst));
-			/*
+
 			if (affineInstructions.isThreadInvariant(loadInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is thread-invariant");
 			}
-			*/
-			if (affineInstructions.isAffine(loadInst->getPointerOperand())) {
+			else if (affineInstructions.isAffine(loadInst->getPointerOperand())) {
 				report("  " << String(vec_it->first) << " is affine");
 			}
 		}

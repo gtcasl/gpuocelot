@@ -45,7 +45,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -131,14 +131,19 @@ llvm::Value *analysis::AffineInstructionSet::_walk(llvm::Value *value) {
 	bool walking = false;
 	do {
 		llvm::CastInst *cast = llvm::dyn_cast<llvm::CastInst>(value);
-		if (cast && cast->isIntegerCast()) {
+		if (cast && (cast->isIntegerCast() || llvm::PtrToIntInst::classof(value)||
+			llvm::IntToPtrInst::classof(value))) {
 			value = cast->getOperand(0);
+			walking = true;
+		}
+		else {
+			walking = false;
 		}
 	} while (walking);
 	return value;
 }
 
-bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
+bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value, int indent) {
 	report("isThreadInvariant(" << String(value) << ")");
 	
 	value = _walk(value);
@@ -161,7 +166,7 @@ bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
 	}
 	else if (llvm::UnaryInstruction *unary = llvm::dyn_cast<llvm::UnaryInstruction>(value)) {
 		if (llvm::CastInst *cast = llvm::dyn_cast<llvm::CastInst>(unary)) {
-			if (isThreadInvariant(cast->getOperand(0))) {
+			if (isThreadInvariant(cast->getOperand(0), indent+1)) {
 				return _setInvariant(cast);
 			}
 			else {
@@ -169,7 +174,7 @@ bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
 			}
 		}
 		else if (llvm::LoadInst *load = llvm::dyn_cast<llvm::LoadInst>(unary)) {
-			if (isThreadInvariant(load->getPointerOperand())) {
+			if (isThreadInvariant(load->getPointerOperand(), indent+1)) {
 				return _setInvariant(load);
 			}
 		}
@@ -189,7 +194,7 @@ bool analysis::AffineInstructionSet::isThreadInvariant(llvm::Value *value) {
 	return false;
 }
 
-bool analysis::AffineInstructionSet::isAffine(llvm::Value *value) {
+bool analysis::AffineInstructionSet::isAffine(llvm::Value *value, int indent) {
 	report("isAffine(" << String(value) << ")");
 	
 	value = _walk(value);
@@ -205,35 +210,16 @@ bool analysis::AffineInstructionSet::isAffine(llvm::Value *value) {
 		return false;
 	}
 
-	if (llvm::UnaryInstruction *unary = llvm::dyn_cast<llvm::UnaryInstruction>(value)) {
-		if (llvm::CastInst *cast = llvm::dyn_cast<llvm::CastInst>(unary)) {
-			if (isAffine(cast->getOperand(0))) {
-				return _setAffine(cast);
-			}
-			if (isThreadInvariant(cast->getOperand(0))) {
-				return _setInvariant(cast);
-			}
-		}
-		else if (llvm::LoadInst *load = llvm::dyn_cast<llvm::LoadInst>(unary)) {
-			if (isThreadInvariant(load->getPointerOperand())) {
-				return _setInvariant(load);
-			}
-		}
-	}
-	else if (llvm::BinaryOperator *binary = llvm::dyn_cast<llvm::BinaryOperator>(value)) {
-		if (_isBinaryOperatorAffine(binary)) {
-			return true;
-		}
-		
-		if ( isThreadInvariant(binary->getOperand(0)) && isThreadInvariant(binary->getOperand(1))) {
-			return _setInvariant(binary);
-		}
+	if (llvm::BinaryOperator *binary = llvm::dyn_cast<llvm::BinaryOperator>(value)) {
+		return _isBinaryOperatorAffine(binary, indent+1);	
 	}
 	
 	return false;
 }
 
-bool analysis::AffineInstructionSet::_isBinaryOperatorAffine(llvm::BinaryOperator *binary) {
+bool analysis::AffineInstructionSet::_isBinaryOperatorAffine(
+	llvm::BinaryOperator *binary, int indent) {
+
 	// tid * sizeof(int) => affine
 	// invariant + affine => affine
 	// invariant + invariant => invariant
@@ -241,10 +227,10 @@ bool analysis::AffineInstructionSet::_isBinaryOperatorAffine(llvm::BinaryOperato
 	report("isBinaryOperatorAffine(" << String(binary) << ")");
 
 	int constantExprIndex = -1;
-	if (_threadIds.find(binary->getOperand(0)) != _threadIds.end()) {
+	if (_threadIds.find(_walk(binary->getOperand(0))) != _threadIds.end()) {
 		constantExprIndex = 1;
 	}
-	else if (_threadIds.find(binary->getOperand(1)) != _threadIds.end()) {
+	else if (_threadIds.find(_walk(binary->getOperand(1))) != _threadIds.end()) {
 		constantExprIndex = 0;
 	}
 	if (constantExprIndex >= 0) {
@@ -261,17 +247,20 @@ bool analysis::AffineInstructionSet::_isBinaryOperatorAffine(llvm::BinaryOperato
 				return _setAffine(binary);
 			}
 		}
-		
-		return _setVariant(binary);
 	}
 
-	if ((isAffine(binary->getOperand(0)) && isThreadInvariant(binary->getOperand(1))) &&
-		(isAffine(binary->getOperand(1)) && isThreadInvariant(binary->getOperand(0))) &&
-		binary->getOpcode() == llvm::Instruction::Add) {
-	
-		return _setAffine(binary);
+	if (binary->getOpcode() == llvm::Instruction::Add) {
+		report("  binary operator, testing for (affine, invariant)");
+		if (isAffine(binary->getOperand(0), indent+1) && isThreadInvariant(binary->getOperand(1), indent+1)) {
+			return _setAffine(binary);
+		}
+		
+		report("  binary operator, testing for (invariant, affine)");
+		if (isAffine(binary->getOperand(1), indent+1) && isThreadInvariant(binary->getOperand(0), indent+1)) {
+			return _setAffine(binary);
+		}
 	}
 	
-	return _setVariant(binary);
+	return false;
 }
 

@@ -55,21 +55,28 @@ namespace parser
 							bool compare( const FunctionPrototype& t );
 							std::string toString() const;
 					};
+					
+					typedef std::unordered_map< std::string, 
+						OperandWrapper > OperandMap;
+					typedef std::unordered_map< std::string, 
+						FunctionPrototype > PrototypeMap;
+			
+					class Context
+					{
+					public:
+						Context();
+					
+					public:
+						OperandMap   operands;
+						PrototypeMap prototypes;
+						unsigned int instructionCount;
+					};
 				
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
-					typedef std::unordered_set< std::string > StringSet;
-					typedef std::vector< StringSet > StringSetStack;
-					typedef std::vector< unsigned int > UintStack;
-					typedef std::vector< unsigned int > DimensionVector;
-					typedef std::vector< double > DoubleVector;
-					typedef std::unordered_map< std::string, 
-						OperandWrapper > OperandMap;
-					typedef std::vector< OperandMap > OperandMapStack;
 					typedef std::vector< ir::PTXOperand > OperandVector;
-					typedef std::unordered_map< std::string, 
-						FunctionPrototype > PrototypeMap;
+					typedef std::vector< Context > ContextStack;
 			
 					enum Error
 					{
@@ -104,10 +111,8 @@ namespace parser
 					std::string sectionName;
 					
 					StringList identifiers;
-					OperandMapStack operands;
-
-					PrototypeMap prototypes;
-					StringSetStack localPrototypes;
+					
+					ContextStack contexts;
 					
 					bool inEntry;
 					bool inArgumentList;
@@ -133,6 +138,7 @@ namespace parser
 					OperandWrapper* _getOperand( const std::string& name );
 					OperandWrapper* _getOperandInScope(
 						const std::string& name );
+					FunctionPrototype* _getPrototype( const std::string& name );
 				
 				public:
 					void addSpecialRegisters();

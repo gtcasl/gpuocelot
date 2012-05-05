@@ -50,7 +50,8 @@ namespace tools
 
 		transforms::PassManager manager( &module );
 
-		if( registerAllocationType != "none" )
+		if( registerAllocationType != "none" &&
+			!registerAllocationType.empty() )
 		{
 			transforms::Pass* pass =
 				transforms::PassFactory::createPass( registerAllocationType );
@@ -62,6 +63,8 @@ namespace tools
 
 		for( auto name : passes )
 		{
+			if( name.empty() ) continue;
+			
 			transforms::Pass* pass =
 				transforms::PassFactory::createPass( name );
 			

@@ -472,7 +472,7 @@ openBrace : '{'
 	state.openBrace( @1 );
 };
 
-closeBrace : '}'
+closeBrace : '}' optionalMetadata
 {
 	state.closeBrace( @1 );
 };

@@ -131,8 +131,10 @@ public:
 	LoopAnalysis();
 	
 public:
+	#ifndef _WIN32
 	LoopAnalysis& operator=(const LoopAnalysis&) = delete;
 	LoopAnalysis(const LoopAnalysis&) = delete;
+	#endif
 	
 public:
 	/*! \brief Run the analysis over a specified kernel */

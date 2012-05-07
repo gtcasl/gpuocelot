@@ -36,6 +36,7 @@ public:
 		ConditionalDivergenceAnalysis = 0x80,
 		ThreadFrontierAnalysis        = 0x100,
 		LoopAnalysis                  = 0x200,
+		ConvergentRegionAnalysis      = 0x400,
 	};
 
 public:

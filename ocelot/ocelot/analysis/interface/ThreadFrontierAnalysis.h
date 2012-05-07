@@ -4,7 +4,7 @@
 	\brief  The header file for the ThreadFrontierAnalysis class.
 
 	Note: This analysis was rewritten to use an edge-covering tree based
-		algorithm for assinging thread priorities, it should be safe
+		algorithm for assigning thread priorities, it should be safe
 		for commercial use now.
 */
 
@@ -27,7 +27,7 @@ namespace analysis
 		2) For each basic block, determine all other possible blocks where
 			stalled threads may be waiting.
 
-	The intersection of this set and a branch target's predecessors need to be
+	The intersection of this set and a branch's target needs to be
 	checked for re-convergence. See more info here [1].
 	
 	[1] - "SIMD Reconvergence at Thread Frontiers" by Diamos et al. 
@@ -35,9 +35,11 @@ namespace analysis
 class ThreadFrontierAnalysis: public KernelAnalysis
 {
 public:
-	typedef ir::ControlFlowGraph::ConstBlockPointerVector BlockVector;
-	typedef ir::ControlFlowGraph::const_iterator          const_iterator;
-	typedef ir::ControlFlowGraph::const_edge_pointer_iterator   const_edge_iterator;
+	typedef ir::ControlFlowGraph CFG;
+
+	typedef CFG::ConstBlockPointerVector                  BlockVector;
+	typedef CFG::const_iterator                           const_iterator;
+	typedef CFG::const_edge_pointer_iterator              const_edge_iterator;
 	typedef unsigned int                                  Priority;
 	typedef std::unordered_map<const_iterator, Priority>  PriorityMap;
 
@@ -53,7 +55,9 @@ public:
 	BlockVector getThreadFrontier(const_iterator block) const;
 	/*! \brief Get the scheduling priorty of a specified block */
 	Priority getPriority(const_iterator block) const;
-
+	/*! \brief Test if a block is in the thread frontier of another block */
+	bool isInThreadFrontier(const_iterator block, const_iterator b) const;
+	
 private:
 	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
 

@@ -2785,7 +2785,7 @@ static ir::PTXF64 toF64(Int value, int modifier) {
 }
 
 template< typename Float >
-static Float round(Float a, int modifier) {
+static Float roundToInt(Float a, int modifier) {
 	Float fd = 0;
 	if (modifier & PTXInstruction::rn) {
 		fd = hydrazine::nearbyintf(a);
@@ -3414,7 +3414,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXU8 d = 0;
 							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
@@ -3433,7 +3433,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXU16 d = 0;
 							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
@@ -3452,7 +3452,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXU32 d = 0;
 							if(fd > UINT_MAX) {
 								d = UINT_MAX;
@@ -3471,7 +3471,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXU64 d = 0;
 							if(fd > ULLONG_MAX) {
 								d = ULLONG_MAX;
@@ -3489,7 +3489,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXS8 d = 0;
 							if(fd > CHAR_MAX) {
 								d = CHAR_MAX;
@@ -3507,7 +3507,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXS16 d = 0;
 							if(fd > SHRT_MAX) {
 								d = SHRT_MAX;
@@ -3525,7 +3525,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXS32 d = 0;
 							if(fd > INT_MAX) {
 								d = INT_MAX;
@@ -3543,7 +3543,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = round(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier);
 							PTXS64 d = 0;
 							if(fd > LLONG_MAX) {
 								d = LLONG_MAX;
@@ -3560,7 +3560,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							a = round(a, instr.modifier);
+							a = toF32(a, instr.modifier);
 							setRegAsF32(threadID, instr.d.reg, 
 								sat(instr.modifier, a));
 						}
@@ -3568,7 +3568,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f64: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							PTXF64 d = round(a, instr.modifier);
+							PTXF64 d = toF64(a, instr.modifier);
 							setRegAsF64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3588,7 +3588,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = round(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier);
 							PTXU8 d = 0;
 							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
@@ -3607,7 +3607,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = round(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier);
 							PTXU16 d = 0;
 							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
@@ -3626,7 +3626,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = round(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier);
 							PTXU32 d = 0;
 							if(fd > UINT_MAX) {
 								d = UINT_MAX;
@@ -3646,7 +3646,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = round(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier);
 							PTXU64 d = 0;
 							if(fd > ULLONG_MAX) {
 								d = ULLONG_MAX;
@@ -3665,7 +3665,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = round(a, instr.modifier);
+							a = roundToInt(a, instr.modifier);
 							PTXS8 d = 0;
 							if(a > CHAR_MAX) {
 								d = CHAR_MAX;
@@ -3683,7 +3683,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = round(a, instr.modifier);
+							a = roundToInt(a, instr.modifier);
 							PTXS16 d = 0;
 							if(a > SHRT_MAX) {
 								d = SHRT_MAX;
@@ -3701,7 +3701,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = round(a, instr.modifier);
+							a = roundToInt(a, instr.modifier);
 							PTXS32 d = 0;
 							if(a > INT_MAX) {
 								d = INT_MAX;
@@ -3719,7 +3719,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = round(a, instr.modifier);
+							a = roundToInt(a, instr.modifier);
 							PTXS64 d = 0;
 							if(a > LLONG_MAX) {
 								d = LLONG_MAX;
@@ -3736,7 +3736,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f32:
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							a = round(a, instr.modifier);
+							a = toF32(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);
@@ -3749,7 +3749,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f64: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							a = round(a, instr.modifier);
+							a = toF64(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);

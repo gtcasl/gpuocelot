@@ -18,6 +18,7 @@
 #include <stack>
 #include <unordered_set>
 #include <set>
+#include <algorithm>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -58,6 +59,15 @@ ThreadFrontierAnalysis::Priority ThreadFrontierAnalysis::getPriority(
 	assert(priority != _priorities.end());
 
 	return priority->second;
+}
+
+bool ThreadFrontierAnalysis::isInThreadFrontier(const_iterator block,
+	const_iterator testedBlock) const
+{
+	BlockVector frontier = getThreadFrontier(block);
+	
+	return std::find(frontier.begin(), frontier.end(), testedBlock) !=
+		frontier.end();
 }
 
 void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)

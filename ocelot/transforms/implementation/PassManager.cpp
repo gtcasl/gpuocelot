@@ -53,7 +53,9 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 	types.push_back(analysis::Analysis::DominatorTreeAnalysis);
 	types.push_back(analysis::Analysis::ControlTreeAnalysis);
 	types.push_back(analysis::Analysis::StructuralAnalysis);
-	types.push_back(analysis::Analysis::ThreadFrontierAnalysis); 
+	types.push_back(analysis::Analysis::ThreadFrontierAnalysis);
+	types.push_back(analysis::Analysis::LoopAnalysis);
+	types.push_back(analysis::Analysis::ConvergentRegionAnalysis);
 	
 	#else
 	TypeVector types = {analysis::Analysis::DivergenceAnalysis,
@@ -62,7 +64,9 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 		analysis::Analysis::DominatorTreeAnalysis,
 		analysis::Analysis::ControlTreeAnalysis,
 		analysis::Analysis::StructuralAnalysis,
-		analysis::Analysis::ThreadFrontierAnalysis
+		analysis::Analysis::ThreadFrontierAnalysis,
+		analysis::Analysis::LoopAnalysis,
+		analysis::Analysis::ConvergentRegionAnalysis
 		};
 	#endif
 	

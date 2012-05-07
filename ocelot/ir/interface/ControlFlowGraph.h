@@ -85,7 +85,7 @@ public:
 	EdgeList::iterator get_edge(BlockList::iterator b);
 	/*! \brief Get the edge connecting to the specified block */
 	EdgeList::const_iterator get_edge(BlockList::const_iterator b) const;
-
+	
 public:
 	/*! \brief Find an in-edge with specific head and tail pointers */
 	EdgePointerVector::iterator find_in_edge(

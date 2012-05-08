@@ -46,6 +46,7 @@
 #include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Transforms/Utils/Cloning.h>
+#include <llvm/Assembly/AssemblyAnnotationWriter.h>
 #else
 #error "LLVM MUST BE PRESENT"
 #endif
@@ -70,6 +71,7 @@
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_MODULE 1		// module containing optimized LLVM assembly 
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 1		// translation events
@@ -1481,6 +1483,24 @@ executive::DynamicTranslationCache::Translation *
 			}
 			else {
 				translation->llvmFunction->print(llvmStream);
+			}
+		}
+#endif
+#if REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_MODULE
+		{
+			class AnnotationWriter: public llvm::AssemblyAnnotationWriter {
+			public:
+				AnnotationWriter() { }
+				virtual ~AnnotationWriter() { }
+			};
+			AnnotationWriter writer;
+			std::string errorInfo;
+			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + "_module.ll").c_str(), errorInfo, 0);
+			if (llvmStream.has_error()) {
+				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " << errorInfo);
+			}
+			else {
+				translation->llvmFunction->getParent()->print(llvmStream, &writer);
 			}
 		}
 #endif

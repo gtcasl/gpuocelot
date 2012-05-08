@@ -85,28 +85,28 @@ public:
 	
 	public:	
 		// Simple loop analysis, any of these may fail for non-canonical loops
-		BlockPointerVector getExitBlocks() const;
+		BlockPointerVector getExitBlocks();
 		
 		/*! \brief If there is a single exit block (outside the loop), get it */
-		block_iterator getExitBlock() const;
+		block_iterator getExitBlock();
 
 		/*! \brief If there is a preheader for this loop, return it.  
 		
 			A loop has a preheader if there is only one edge to the header
 			of the loop from outside of the loop.  
 		*/
-		block_iterator getLoopPreheader() const;
+		block_iterator getLoopPreheader();
 		
 		/*! \brief If there is a single block that branches back to the header,
 					it is the latch.
 		 */
-		block_iterator getLoopLatch() const;
+		block_iterator getLoopLatch();
 		
-		/*! \brief If there is a single predecessors to the header, return it
+		/*! \brief If there is a single predecessor to the header, return it
 		
 			Otherwise return null.
 		*/
-		block_iterator getLoopPredecessor() const;
+		block_iterator getLoopPredecessor();
 	
 	public:
 		LoopVector         subLoops;

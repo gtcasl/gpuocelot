@@ -524,6 +524,8 @@ namespace ir {
 			int reentryPoint;
 			/*! \brief Is this a kernel argument in the parameter space? */
 			bool isArgument;
+			/*! \brief Get or set the active mask */
+			bool getActiveMask;
 		};
 		
 		/*!	The following are used for debugging information at runtime. */

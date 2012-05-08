@@ -378,6 +378,27 @@ namespace std
 			return (size_t)it->id;
 		}
 	};
+	
+	template<> 
+	struct hash<ir::ControlFlowGraph::edge_iterator>
+	{
+	public:
+		size_t operator()(const ir::ControlFlowGraph::edge_iterator& it) const
+		{
+			return (size_t)(it->head->id ^ it->tail->id);
+		}
+	};
+
+	template<> 
+	struct hash<ir::ControlFlowGraph::const_edge_iterator>
+	{
+	public:
+		size_t operator()(
+			const ir::ControlFlowGraph::const_edge_iterator& it) const
+		{
+			return (size_t)(it->head->id ^ it->tail->id);
+		}
+	};
 
 	template<> 
 	struct hash<ir::ControlFlowGraph::InstructionList::iterator>

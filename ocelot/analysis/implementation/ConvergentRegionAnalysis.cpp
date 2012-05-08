@@ -30,7 +30,7 @@ void ConvergentRegionAnalysis::analyze(ir::IRKernel& kernel)
 	for(auto block = kernel.cfg()->begin();
 		block != kernel.cfg()->end(); ++block )
 	{
-		_regions.insert(std::make_pair(block, region));
+		_regions.insert(std::make_pair(block, region++));
 	}
 	
 	/* TODO, create larger regions

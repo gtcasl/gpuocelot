@@ -127,29 +127,87 @@ bool LoopAnalysis::Loop::contains(const Loop* loop) const
     return contains(loop->getParentLoop());
 }
 
-LoopAnalysis::Loop::BlockPointerVector LoopAnalysis::Loop::getExitBlocks() const
+LoopAnalysis::Loop::BlockPointerVector LoopAnalysis::Loop::getExitBlocks()
 {
-	assertM(false, "Not implemented.");
+	BlockPointerVector exitBlocks;
+	
+	for(auto block = block_begin(); block != block_end(); ++block)
+	{
+		for(auto successor : (*block)->successors)
+		{
+			if(std::find(block_begin(), block_end(), successor) == block_end())
+			{
+				exitBlocks.push_back(successor);
+			}
+		}
+	}
+	
+	return exitBlocks;
 }
 
-LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getExitBlock() const
+LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getExitBlock()
 {
-	assertM(false, "Not implemented.");
+	BlockPointerVector exitBlocks = getExitBlocks();
+	
+	if(exitBlocks.size() == 1) return exitBlocks[0];
+	
+	return block_iterator();
 }
 
-LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopPreheader() const
+LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopPreheader()
 {
-	assertM(false, "Not implemented.");
+	block_iterator predecessor = getLoopPredecessor();
+	
+	if(predecessor == block_iterator() || predecessor->out_edges.size() > 1)
+	{
+		return block_iterator();
+	}
+	
+	return predecessor;
 }
 
-LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopLatch() const
+LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopLatch()
 {
-	assertM(false, "Not implemented.");
+	block_iterator header = getHeader();
+
+	block_iterator latch = block_iterator();
+	
+	for(auto successor : header->successors)
+	{
+		if(contains(successor))
+		{
+			if(latch != block_iterator())
+			{
+				return block_iterator();
+			}
+			
+			latch = successor;
+		}
+	}
+
+    return latch;
 }
 
-LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopPredecessor() const
+LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopPredecessor()
 {
-	assertM(false, "Not implemented.");
+	block_iterator predecessor = block_iterator();
+	
+	block_iterator header = getHeader();
+	
+	for(auto successor : header->successors)
+	{
+		if(!contains(successor))
+		{
+			if(predecessor != block_iterator() && predecessor != successor)
+			{
+				return block_iterator();
+			}
+			
+			predecessor = successor;
+		}
+	}
+
+    return predecessor;
 }
 
 LoopAnalysis::LoopAnalysis()

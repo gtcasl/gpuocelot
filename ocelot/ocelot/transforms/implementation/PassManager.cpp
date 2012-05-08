@@ -19,6 +19,7 @@
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
 #include <ocelot/analysis/interface/LoopAnalysis.h>
+#include <ocelot/analysis/interface/ConvergentRegionAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -227,6 +228,25 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			allocateNewDataStructures(analyses, k,
 				loopAnalysis->required, manager);
 			loopAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::ConvergentRegionAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::ConvergentRegionAnalysis) == 0)
+		{
+			analysis::ConvergentRegionAnalysis* regionAnalysis =
+				new analysis::ConvergentRegionAnalysis;
+			
+			report("   Allocating convergent region analysis"
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::ConvergentRegionAnalysis,
+				regionAnalysis));
+			
+			regionAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				regionAnalysis->required, manager);
+			regionAnalysis->analyze(*k);
 		}
 	}
 }

@@ -178,7 +178,8 @@ int main( int argc, char** argv )
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
 		"mimd-threading, dead-code-elimination, split-blocks, "
-		"sync-elimination, hoist-special-definitions, simplify-cfg)" );
+		"sync-elimination, hoist-special-definitions, "
+		"simplify-cfg, loop-unrolling)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

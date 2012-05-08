@@ -20,7 +20,7 @@
 #include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
 #include <ocelot/transforms/interface/LoopUnrollingPass.h>
 #include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
-#include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
+//#include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -78,10 +78,10 @@ Pass* PassFactory::createPass(const std::string& name)
 	{
 		return new transforms::LoopUnrollingPass;
 	}
-	else if( name == "lock-step" )
-	{
-		return new transforms::EnforceLockStepExecutionPass;
-	}
+//	else if( name == "lock-step" )
+//	{
+//		return new transforms::EnforceLockStepExecutionPass;
+//	}
 	else
 	{
 		throw std::runtime_error("Invalid pass name " + name);

@@ -77,7 +77,7 @@ bool LoopAnalysis::Loop::empty() const
 
 unsigned int LoopAnalysis::Loop::getLoopDepth() const
 {
-	if(parent == nullptr) return 0;
+	if(parent == 0) return 0;
 	
 	return parent->getLoopDepth() + 1;
 }
@@ -122,9 +122,9 @@ bool LoopAnalysis::Loop::contains(const_block_iterator block) const
 bool LoopAnalysis::Loop::contains(const Loop* loop) const
 {
 	if(loop == this) return true;
-    if(loop == 0)    return false;
+	if(loop == 0)    return false;
 
-    return contains(loop->getParentLoop());
+	return contains(loop->getParentLoop());
 }
 
 LoopAnalysis::Loop::BlockPointerVector LoopAnalysis::Loop::getExitBlocks()
@@ -133,11 +133,12 @@ LoopAnalysis::Loop::BlockPointerVector LoopAnalysis::Loop::getExitBlocks()
 	
 	for(auto block = block_begin(); block != block_end(); ++block)
 	{
-		for(auto successor : (*block)->successors)
+		for(auto successor = (*block)->successors.begin();
+			successor != (*block)->successors.end(); ++successor)
 		{
-			if(std::find(block_begin(), block_end(), successor) == block_end())
+			if(std::find(block_begin(), block_end(), *successor) == block_end())
 			{
-				exitBlocks.push_back(successor);
+				exitBlocks.push_back(*successor);
 			}
 		}
 	}
@@ -172,16 +173,17 @@ LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopLatch()
 
 	block_iterator latch = block_iterator();
 	
-	for(auto successor : header->successors)
+	for(auto successor = header->successors.begin();
+		successor != header->successors.end(); ++successor)
 	{
-		if(contains(successor))
+		if(contains(*successor))
 		{
 			if(latch != block_iterator())
 			{
 				return block_iterator();
 			}
 			
-			latch = successor;
+			latch = *successor;
 		}
 	}
 
@@ -194,20 +196,21 @@ LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopPredecessor()
 	
 	block_iterator header = getHeader();
 	
-	for(auto successor : header->successors)
+	for(auto successor = header->successors.begin();
+		successor != header->successors.end(); ++successor)
 	{
-		if(!contains(successor))
+		if(!contains(*successor))
 		{
-			if(predecessor != block_iterator() && predecessor != successor)
+			if(predecessor != block_iterator() && predecessor != *successor)
 			{
 				return block_iterator();
 			}
 			
-			predecessor = successor;
+			predecessor = *successor;
 		}
 	}
 
-    return predecessor;
+	return predecessor;
 }
 
 LoopAnalysis::LoopAnalysis()
@@ -223,7 +226,7 @@ void LoopAnalysis::analyze(ir::IRKernel& kernel)
 	
 	analysis::Analysis* dominatorTreeAnalysis =
 		getAnalysis(Analysis::DominatorTreeAnalysis);
-	assert(dominatorTreeAnalysis != nullptr);
+	assert(dominatorTreeAnalysis != 0);
 	
 	analysis::DominatorTree* dominatorTree =
 		static_cast<analysis::DominatorTree*>(dominatorTreeAnalysis);
@@ -326,7 +329,7 @@ bool LoopAnalysis::_tryAddingLoop(ir::ControlFlowGraph::iterator bb,
 					report("     but it is already a loop header that was "
 						"already created, making it a subloop.");
 			
-					assert(subLoop->getParentLoop() != nullptr);
+					assert(subLoop->getParentLoop() != 0);
 					assert(subLoop->getParentLoop() != &*loop);
 					
 					Loop::iterator subLoopIterator = std::find(
@@ -421,7 +424,7 @@ bool LoopAnalysis::_tryAddingLoop(ir::ControlFlowGraph::iterator bb,
 void LoopAnalysis::_moveSiblingLoopInto(Loop* to, Loop* from)
 {
     Loop* toParent = to->getParentLoop();
-    assert(toParent != nullptr &&
+    assert(toParent != 0 &&
     	from->getParentLoop() == toParent && to != from);
 
 	Loop::iterator toIterator = std::find(toParent->subLoops.begin(),
@@ -429,7 +432,7 @@ void LoopAnalysis::_moveSiblingLoopInto(Loop* to, Loop* from)
     assert(toIterator != toParent->subLoops.end());
     
     toParent->subLoops.erase(toIterator);
-    to->parent = nullptr;
+    to->parent = 0;
     
     _insertLoopInto(to, from);
 }

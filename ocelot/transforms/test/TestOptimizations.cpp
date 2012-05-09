@@ -98,11 +98,11 @@ static StringVector enumerateTests(const StringVector& files,
 	
 	tests.reserve(files.size() * passes.size());
 	
-	for(auto file : files)
+	for(auto file = files.begin(); file != files.end(); ++file)
 	{
-		for(auto pass : passes)
+		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 		{
-			tests.push_back(file + "|" + pass);
+			tests.push_back(*file + "|" + *pass);
 		}
 	}
 	

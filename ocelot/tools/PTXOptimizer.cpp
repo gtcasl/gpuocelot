@@ -61,12 +61,12 @@ namespace tools
 			manager.addPass( *pass );
 		}
 
-		for( auto name : passes )
+		for( auto name = passes.begin(); name != passes.end(); ++name )
 		{
-			if( name.empty() ) continue;
+			if( name->empty() ) continue;
 			
 			transforms::Pass* pass =
-				transforms::PassFactory::createPass( name );
+				transforms::PassFactory::createPass( *name );
 			
 			applyOptions( pass );
 			
@@ -117,7 +117,7 @@ namespace tools
 		transforms::LinearScanRegisterAllocationPass* linearscan = 
 			dynamic_cast<transforms::LinearScanRegisterAllocationPass*>( pass );
 		
-		if( linearscan != nullptr )
+		if( linearscan != 0 )
 		{
 			linearscan->registers = registerCount;
 		}

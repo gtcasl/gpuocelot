@@ -175,6 +175,44 @@ namespace analysis
 		};
 		
 		/*!
+			\brief counter structure determining vectorization statistics
+		*/
+		class VectorizationStatistics {
+		public:
+			class Counter {
+			public:
+				Counter(): encountered(0), total(0) { }
+				void clear() { encountered = total = 0; }
+				void count(int enc) { ++total; encountered += enc; }
+				void encounter() { ++encountered; ++total; }
+				void notCounted() { ++total; }
+				double fraction() const { return (double)encountered / (double)total; }
+				void write(std::ostream &out) const;
+			public:
+				size_t encountered;
+				size_t total;
+			};
+			
+			void clear() {
+				integerInstructions.clear();
+				floatInstructions.clear();
+				callInstructions.clear();
+				storeInstructions.clear();
+				loadInstructions.clear();
+			}
+			
+			void write(std::ostream &out) const;
+			void count(VectorizedInstruction &vec);
+			
+		public:
+			Counter integerInstructions;
+			Counter floatInstructions;
+			Counter callInstructions;
+			Counter storeInstructions;
+			Counter loadInstructions;
+		};
+		
+		/*!
 			\brief per-function data structures related to the transformation
 		*/
 		class Translation {
@@ -232,6 +270,8 @@ namespace analysis
 			void _debugInsertStore(llvm::StoreInst *storeInst, llvm::Constant *func, size_t index);
 			
 			void _debugInsertLoad(llvm::LoadInst *loadInst, llvm::Constant *func, size_t index);
+			
+			void _computeVectorizationStatistics(VectorizationStatistics &statistics);
 			
 		protected:
 		
@@ -377,7 +417,7 @@ namespace analysis
 		//! \brief controls whether to attempt vectorizing affine memory operations
 		bool vectorizeAffineMemory;
 		
-
+		//! 
 		static char ID;
 	};
 }

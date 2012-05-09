@@ -58,6 +58,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_VECTORIZING 1
+#define REPORT_VECTORIZATION_STATISTICS 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -289,6 +290,16 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
 #if REPORT_BASE && REPORT_FINAL_SUBKERNEL
 	report(" LLVM function:\n" << String(function));
+#endif
+
+#if REPORT_VECTORIZATION_STATISTICS
+	{
+		VectorizationStatistics statistics;
+		_computeVectorizationStatistics(statistics);
+		std::string name = f->getName().str() + ".vec-statistics";
+		std::ofstream file(name);
+		statistics.write(file);
+	}
 #endif
 }
 
@@ -2054,5 +2065,92 @@ void analysis::LLVMUniformVectorization::Translation::_debugControlFlowMatrix() 
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//! \brief increments the vectorization statistics given an instruction
+void analysis::LLVMUniformVectorization::VectorizationStatistics::count(VectorizedInstruction &vec) {
+	llvm::Instruction *inst = (vec.vector ? vec.vector : vec.replicated.at(0));
+
+	llvm::Type *type = inst->getType();
+	llvm::VectorType *vecType = llvm::dyn_cast<llvm::VectorType>(type);
+	
+	if (llvm::CallInst::classof(inst)) {
+		if (vecType) {
+			callInstructions.encounter();
+		}
+		else {
+			callInstructions.notCounted();
+		}
+	}
+	else if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
+		vecType = llvm::dyn_cast<llvm::VectorType>(storeInst->getValueOperand()->getType());
+		if (vecType) {
+			storeInstructions.encounter();
+		}
+		else {
+			storeInstructions.notCounted();			
+		}
+	}
+	else if (llvm::LoadInst::classof(inst)) {
+		if (vecType) {
+			loadInstructions.encounter();
+		}
+		else {
+			loadInstructions.notCounted();	
+		}
+	}
+	else {
+		bool vectorized = (vecType ? true: false);
+		llvm::Type *element = (vecType ? vecType->getElementType() : type);
+	
+		if (element->isIntegerTy()) {
+			integerInstructions.count(vectorized);
+		}
+		else if (element->isFloatTy()) {
+			floatInstructions.count(vectorized);
+		}
+	}
+}
+
+void analysis::LLVMUniformVectorization::VectorizationStatistics::Counter::write(std::ostream &out) const {
+
+	out << "{\"counted\": " << encountered << ", \"total\": " << total << "}";
+}
+
+void analysis::LLVMUniformVectorization::VectorizationStatistics::write(std::ostream &out) const {
+
+	Counter VectorizationStatistics::* members[] = {
+		&VectorizationStatistics::integerInstructions,
+		&VectorizationStatistics::floatInstructions,
+		&VectorizationStatistics::callInstructions,
+		&VectorizationStatistics::storeInstructions,
+		&VectorizationStatistics::loadInstructions
+	};
+	const char *memberNames[] = {
+		"integer", "float", "call", "store", "load", 0
+	};
+	
+	out << "{\n";
+	for (int i = 0; memberNames[i]; ++i) {
+		const Counter &counter = (this->*(members[i]));
+		out << (i?",\n":"") << "\"" << memberNames[i] << "\": ";
+		counter.write(out);
+	}
+	out << "\n}";
+}
+
+//! \brief visits all vectorized instructions and updates statistics accordingly
+void analysis::LLVMUniformVectorization::Translation::_computeVectorizationStatistics(
+	VectorizationStatistics &statistics) {
+
+	statistics.clear();
+
+	for (VectorizedInstructionMap::iterator vec_it = vectorizedInstructionMap.begin();
+		vec_it != vectorizedInstructionMap.end(); ++vec_it) {
+		
+		statistics.count(vec_it->second);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 

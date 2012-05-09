@@ -11,11 +11,28 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+extern "C" void _subkernel_convergence_1_opt3_ws4(executive::LLVMContext *);
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+typedef executive::DynamicTranslationCache::ExecutableFunction ExecutableFunction;
+class Binaries {
+public:
+
+	static ExecutableFunction get(const std::string &str) {
+		if (str == "_subkernel_convergence_1_opt3_ws4") {
+			return _subkernel_convergence_1_opt3_ws4;
+		}
+		std::cerr << "failed to return function" << std::endl;
+		return 0;
+	}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CTA {
+public:
+	
 public:
 	CTA(const ir::Dim3 &_gridDim, const ir::Dim3 &_blockDim, const ir::Dim3 &_blockId, 
 		size_t localSize, size_t sharedSize, size_t paramSize
@@ -24,14 +41,18 @@ public:
 		parameterMemory(0), parameterMemorySize(paramSize)
 	{
 	
-		int totalThreads = blockDim.size();
+		totalThreads = blockDim.size();
 		contexts = new executive::LLVMContext[totalThreads];
 		localMemory = new char[localMemorySize * totalThreads];
 		sharedMemory = new char[sharedMemorySize];
 		parameterMemory = new char [parameterMemorySize];
+		
+		metadata = new executive::DynamicMulticoreExecutive::Metadata;
+		initializeContexts();
 	};
 	
 	~CTA() {
+		delete metadata;
 		delete [] parameterMemory;
 		delete [] sharedMemory;
 		delete [] localMemory;
@@ -54,15 +75,8 @@ public:
 		setParam(offset, sizeof(float), (void *)&value);
 	}
 	
-	/*!
-	
-	*/
-	void loadFunction(const std::string &object, const std::string &name) {
-	
-	}
-	
-	void execute() {
-		
+	void execute(ExecutableFunction function, int warpSize) {
+		executeWarp(metadata, contexts, totalThreads, warpSize, function);
 	}
 	
 protected:
@@ -73,10 +87,33 @@ protected:
 		char *ptr = context->local;
 		*(executive::DynamicMulticoreExecutive::ThreadExitType *)(ptr + 4) = status;
 	}
+	
+	void initializeContexts() {
+		for (int tid = 0; tid < totalThreads; tid++) {
+			contexts[tid].tid.x = tid;
+			contexts[tid].tid.y = 0;
+			contexts[tid].tid.z = 0;
+			contexts[tid].ntid.x = blockDim.x;
+			contexts[tid].ntid.y = blockDim.y;
+			contexts[tid].ntid.z = blockDim.z;
+			contexts[tid].ctaid.x = blockId.x;
+			contexts[tid].ctaid.y = blockId.y;
+			contexts[tid].ctaid.z = blockId.z;
+			contexts[tid].nctaid.x = gridDim.x;
+			contexts[tid].nctaid.y = gridDim.y;
+			contexts[tid].nctaid.z = gridDim.z;
+			contexts[tid].local = &localMemory[localMemorySize * tid];
+			contexts[tid].shared = sharedMemory;
+			contexts[tid].parameter = parameterMemory;
+			contexts[tid].argument = parameterMemory;
+			contexts[tid].globallyScopedLocal = 0;
+			contexts[tid].metadata = (char *)metadata;
+		}
+	}
 
 	void executeWarp(executive::MetaData *metadata, executive::LLVMContext *contexts, 
 		size_t threads, int warpSize, 
-		executive::DynamicTranslationCache::ExecutableFunction function) {
+		ExecutableFunction function) {
 
 		//   execute subkernel
 		for (size_t startThread = 0; startThread < threads; ) {
@@ -114,9 +151,14 @@ protected:
 	
 	executive::LLVMContext *contexts;
 	int totalThreads;
+	
+	executive::DynamicMulticoreExecutive::Metadata *metadata;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#undef report
+#define report(x) { std::cout << x << std::endl; }
 
 /*!
 
@@ -132,8 +174,6 @@ bool executeTestConvergence() {
 	size_t sharedSize = 0;
 	size_t paramSize = sizeof(float*);
 	
-	CTA cta(grid, block, blockId, localSize, sharedSize, paramSize);
-	
 	float *A_host;
 	size_t bytes = N * sizeof(float);
 	
@@ -142,9 +182,16 @@ bool executeTestConvergence() {
 	for (int i = 0; i < N; i++) {
 		A_host[i] = (float)(i+1);
 	}
+		
+	CTA cta(grid, block, blockId, localSize, sharedSize, paramSize);
 	
 	cta.setParam(0, (void *)A_host);
-	cta.execute();
+	
+	ExecutableFunction function = Binaries::get("_subkernel_convergence_1_opt3_ws4");
+	
+	if (function) {
+		cta.execute(function, 4);
+	}
 	
 	int errors = 0;
 	for (int i = 0; (errors < 5) && i < N; i++) {
@@ -166,6 +213,7 @@ bool executeTestConvergence() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
+	executeTestConvergence();
 	return 0;
 }
 

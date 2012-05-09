@@ -246,13 +246,16 @@ tests.append(('TestConvergenceBarrier', 'ocelot/executive/test/TestConvergentBar
 tests.append(('TestConvergenceLoop', 'ocelot/executive/test/TestConvergenceLoop.cu', 'full'))
 tests.append(('TestDivergence', 'ocelot/executive/test/TestDivergence.cu', 'full'))
 tests.append(('TestKernelPartitioning', 'ocelot/analysis/test/TestKernelPartitioning.cpp', 'full'))
-tests.append(('ExecuteCta', 'ocelot/executive/test/ExecuteCta.cpp', 'full'))
+tests.append(('ExecuteCta', ['ocelot/executive/test/ExecuteCta.cpp', 'ocelot/executive/test/binaries/binary.o'], 'full'))
 
 for test in tests:
 	libs = ocelot_libs
 	if len(test) > 3:
 		libs = libs + test[3]	
-	Test = env.Program(test[0], [MapSource(env, test[1])], LIBS=libs)
+	sources = test[1]
+	if type(sources) is str:
+		sources = [sources,]
+	Test = env.Program(test[0], [MapSource(env, src) for src in sources], LIBS=libs)
 	env.Depends(Test, libocelot)
 
 if env['test_level'] != 'none':

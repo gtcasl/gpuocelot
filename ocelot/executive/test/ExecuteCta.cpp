@@ -289,8 +289,11 @@ bool executeTestConvergence() {
 	
 	cta.setParam(0, (void *)A_host);
 	
+	/*
 	TranslatedFunction function = Binaries::load(
 		"ocelot/executive/test/binaries/_subkernel_convergence_1_opt3_ws4_module.bc", 		"_subkernel_convergence_1_opt3", 4);
+		*/
+	TranslatedFunction function = Binaries::get("_subkernel_convergence_1_opt3", 8);
 	
 	if (function.valid()) {
 		report("  function valid, executing..");

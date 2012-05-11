@@ -17,7 +17,7 @@ extern "C" __global__ void convergence(float *A) {
 }
 
 static void testConvergence() {
-	const int N = 4;
+	const int N = 8;
 	float *A_host, *A_device;
 	size_t bytes = N * sizeof(float);
 	

@@ -4,24 +4,6 @@
 .LCPI0_0:
 	.long	1065353216              # float 1.000000e+00
                                         #  (0x3f800000)
-	.text
-	.globl	_Z_ocelotTranslated__subkernel_convergence_1
-	.align	16, 0x90
-	.type	_Z_ocelotTranslated__subkernel_convergence_1,@function
-_Z_ocelotTranslated__subkernel_convergence_1: # @_Z_ocelotTranslated__subkernel_convergence_1
-# BB#0:                                 # %$BB_1_0002
-	movslq	(%rdi), %rax
-	vcvtsi2ss	%eax, %xmm0, %xmm0
-	vaddss	%xmm0, %xmm0, %xmm0
-	vaddss	.LCPI0_0(%rip), %xmm0, %xmm0
-	movq	80(%rdi), %rcx
-	movq	(%rcx), %rcx
-	vmovss	%xmm0, (%rcx,%rax,4)
-	movq	48(%rdi), %rax
-	movl	$6, 4(%rax)
-	ret
-.Ltmp0:
-	.size	_Z_ocelotTranslated__subkernel_convergence_1, .Ltmp0-_Z_ocelotTranslated__subkernel_convergence_1
 
 	.section	.rodata,"a",@progbits
 	.align	32
@@ -35,6 +17,7 @@ _Z_ocelotTranslated__subkernel_convergence_1: # @_Z_ocelotTranslated__subkernel_
 	.long	1065353216              # float 1.000000e+00
 	.long	1065353216              # float 1.000000e+00
 	.text
+	.globl	_subkernel_convergence_1_opt3_ws8
 	.align	16, 0x90
 	.type	_subkernel_convergence_1_opt3_ws8,@function
 _subkernel_convergence_1_opt3_ws8:      # @_subkernel_convergence_1_opt3_ws8

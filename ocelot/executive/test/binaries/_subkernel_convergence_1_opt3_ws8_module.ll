@@ -222,7 +222,7 @@ declare i16 @llvm.ctlz.i16(i16, i1) nounwind readnone
 
 declare i8 @llvm.ctlz.i8(i8, i1) nounwind readnone
 
-define internal void @_subkernel_convergence_1_opt3_ws8(%LLVMContext* %__ctaContext) nounwind align 1 {
+define void @_subkernel_convergence_1_opt3_ws8(%LLVMContext* %__ctaContext) nounwind align 1 {
 exit:
   %0 = bitcast %LLVMContext* %__ctaContext to i32*
   %threadId.x.t0 = load i32* %0, align 4

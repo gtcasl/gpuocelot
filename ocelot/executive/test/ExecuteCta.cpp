@@ -6,22 +6,43 @@
 */
 
 #include <cmath>
+#include <sstream>
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 extern "C" void _subkernel_convergence_1_opt3_ws4(executive::LLVMContext *);
+extern "C" void _subkernel_convergence_1_opt3_ws8(executive::LLVMContext *);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 typedef executive::DynamicTranslationCache::ExecutableFunction ExecutableFunction;
+
+struct TranslatedFunction {
+	TranslatedFunction(ExecutableFunction _func, int ws): function(_func), warpSize(ws) { }
+	bool valid() const { return function != 0; }
+	
+	ExecutableFunction function;
+	int warpSize;
+};
+
 class Binaries {
 public:
+
+	static TranslatedFunction get(const std::string &base, int warpsize) {
+		std::stringstream ss;
+		ss << base << "_ws" << warpsize;
+		return TranslatedFunction(get(ss.str()), warpsize);
+	}
 
 	static ExecutableFunction get(const std::string &str) {
 		if (str == "_subkernel_convergence_1_opt3_ws4") {
 			return _subkernel_convergence_1_opt3_ws4;
+		}
+		if (str == "_subkernel_convergence_1_opt3_ws8") {
+			std::cout << "warp size of 8" << std::endl;
+			return _subkernel_convergence_1_opt3_ws8;
 		}
 		std::cerr << "failed to return function" << std::endl;
 		return 0;
@@ -77,6 +98,10 @@ public:
 	
 	void execute(ExecutableFunction function, int warpSize) {
 		executeWarp(metadata, contexts, totalThreads, warpSize, function);
+	}
+	
+	void execute(TranslatedFunction function) {
+		execute(function.function, function.warpSize);
 	}
 	
 protected:
@@ -187,10 +212,10 @@ bool executeTestConvergence() {
 	
 	cta.setParam(0, (void *)A_host);
 	
-	ExecutableFunction function = Binaries::get("_subkernel_convergence_1_opt3_ws4");
+	TranslatedFunction function = Binaries::get("_subkernel_convergence_1_opt3", 8);
 	
-	if (function) {
-		cta.execute(function, 4);
+	if (function.valid()) {
+		cta.execute(function);
 	}
 	
 	int errors = 0;

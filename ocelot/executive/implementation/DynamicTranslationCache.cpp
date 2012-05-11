@@ -1477,7 +1477,8 @@ executive::DynamicTranslationCache::Translation *
 #if REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
 		{
 			std::string errorInfo;
-			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + ".ll").c_str(), errorInfo, 0);
+			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + ".ll").c_str(), 
+				errorInfo, 0);
 			if (llvmStream.has_error()) {
 				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " << errorInfo);
 			}
@@ -1495,7 +1496,9 @@ executive::DynamicTranslationCache::Translation *
 			};
 			AnnotationWriter writer;
 			std::string errorInfo;
-			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + "_module.ll").c_str(), errorInfo, 0);
+			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + 
+				"_module.ll").c_str(), errorInfo, 0);
+			
 			if (llvmStream.has_error()) {
 				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " << errorInfo);
 			}

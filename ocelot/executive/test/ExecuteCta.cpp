@@ -3,12 +3,34 @@
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date May 8, 2012
 	\brief stand-alone tool for compiling and executing externally defined functions as a CTA
+	
+	-L/usr/local/lib -lLLVMBitReader -lLLVMSupport -lLLVMCore -lLTO
 */
 
+#include <string>
+#include <memory>
+#include <iostream>
 #include <cmath>
 #include <sstream>
+
+#include <llvm/ExecutionEngine/JIT.h> 
+#include <llvm/Support/system_error.h>
+#include <llvm/Support/MemoryBuffer.h>
+#include <llvm/LLVMContext.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/LLVMContext.h>
+#include <llvm/Module.h>
+#include <llvm/Bitcode/ReaderWriter.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/Support/MemoryBuffer.h>
+#include <llvm/ExecutionEngine/JIT.h>
+
 #include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
+
+#undef report
+#define report(x) { std::cout << x << std::endl; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +51,10 @@ struct TranslatedFunction {
 
 class Binaries {
 public:
+	Binaries(): ee(0) { }
+	~Binaries() { delete ee; }
+	
+	static Binaries &get() { return instance; }
 
 	static TranslatedFunction get(const std::string &base, int warpsize) {
 		std::stringstream ss;
@@ -47,7 +73,60 @@ public:
 		std::cerr << "failed to return function" << std::endl;
 		return 0;
 	}
+	
+	static ExecutableFunction load(const std::string &bcFile, const std::string funcName) {
+
+    llvm::InitializeNativeTarget();
+    llvm::llvm_start_multithreaded();
+    llvm::LLVMContext context;
+    std::string error;
+    
+    llvm::OwningPtr< llvm::MemoryBuffer > result;
+    llvm::MemoryBuffer::getFile(bcFile.c_str(), result);
+    llvm::Module *m = llvm::ParseBitcodeFile(&*result, context, &error);
+
+		if (!m) {
+			std::cerr << "Failed to get module: " << error << std::endl;
+			return 0;
+		}
+    get().ee = llvm::ExecutionEngine::create(m);
+    if (!get().ee) {
+    	std::cerr << "Failed to create execution engine from module." << std::endl;
+    	return 0;
+    }
+
+    llvm::Function* func = get().ee->FindFunctionNamed(funcName.c_str());
+    
+    if (!func) {
+    	std::cerr << "Failed to get function named '" << funcName << "'" << std::endl;
+    	return 0;
+    }
+    
+    report("obtained function " << func->getName().str());
+
+    ExecutableFunction exeFunc =
+    	reinterpret_cast<ExecutableFunction>(get().ee->getPointerToFunction(func));
+    if (!exeFunc) {
+    	std::cerr << "Failed to get pointer to function" << std::endl;
+    	return 0;
+    }
+    else {
+    	report("obtained JIT-compiled function ptr");
+    }
+    return exeFunc;
+	}
+	
+	static TranslatedFunction load(const std::string &bcFile, const std::string funcName, int ws) {
+		std::stringstream ss;
+		ss << funcName << "_ws" << ws;
+		return TranslatedFunction(load(bcFile, ss.str()), ws);
+	}
+	
+protected:
+	llvm::ExecutionEngine *ee;
+	static Binaries instance;
 };
+Binaries Binaries::instance;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -182,8 +261,6 @@ protected:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#undef report
-#define report(x) { std::cout << x << std::endl; }
 
 /*!
 
@@ -212,10 +289,15 @@ bool executeTestConvergence() {
 	
 	cta.setParam(0, (void *)A_host);
 	
-	TranslatedFunction function = Binaries::get("_subkernel_convergence_1_opt3", 8);
+	TranslatedFunction function = Binaries::load(
+		"ocelot/executive/test/binaries/_subkernel_convergence_1_opt3_ws4_module.bc", 		"_subkernel_convergence_1_opt3", 4);
 	
 	if (function.valid()) {
+		report("  function valid, executing..");
 		cta.execute(function);
+	}
+	else {
+		std::cerr << "function invalid, not executing..." << std::endl;
 	}
 	
 	int errors = 0;

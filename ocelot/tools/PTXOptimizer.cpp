@@ -125,7 +125,7 @@ namespace tools
 		transforms::SplitBasicBlockPass* splitblocks = 
 			dynamic_cast<transforms::SplitBasicBlockPass*>( pass );
 		
-		if( splitblocks != nullptr )
+		if( splitblocks != 0 )
 		{
 			splitblocks->setMaximumBlockSize( basicBlockSize );
 		}
@@ -133,7 +133,7 @@ namespace tools
 		transforms::SubkernelFormationPass* subkernel = 
 			dynamic_cast<transforms::SubkernelFormationPass*>( pass );
 		
-		if( subkernel != nullptr )
+		if( subkernel != 0 )
 		{
 			subkernel->setExpectedRegionSize( subkernelSize );
 		}

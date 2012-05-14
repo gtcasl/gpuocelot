@@ -194,6 +194,8 @@ class DataflowGraph : public KernelAnalysis
 				BlockPointerSet _targets;
 				/*! \brief A list of predecessor blocks */
 				BlockPointerSet _predecessors;
+				/*! \brief A list of successors blocks */
+				BlockPointerSet _successors;
 				/*! \brief The type of block */
 				Type _type;
 				/*! \brief Ordered set of phi instructions in the block */
@@ -238,8 +240,12 @@ class DataflowGraph : public KernelAnalysis
 				const BlockPointerSet& targets() const;
 				/*! \brief Get a list of predecessor blocks */
 				const BlockPointerSet& predecessors() const;
+				/*! \brief Get a list of successor blocks */
+				const BlockPointerSet& successors() const;
 				/*! \brief Get a list of target blocks */
 				BlockPointerSet& targets();
+				/*! \brief Get a list of successor blocks */
+				BlockPointerSet& successors();
 				/*! \brief Get a list of predecessor blocks */
 				BlockPointerSet& predecessors();
 				/*! \brief Get the type of the block */
@@ -258,6 +264,8 @@ class DataflowGraph : public KernelAnalysis
 				ir::ControlFlowGraph::BasicBlock::Id id() const;
 				/*! \brief Get a pointer to the underlying block */
 				ir::ControlFlowGraph::iterator block();
+				/*! \brief Get a pointer to the underlying block */
+				ir::ControlFlowGraph::const_iterator block() const;
 
 			public:
 				/*! \brief Determine the block that produced a register */
@@ -290,7 +298,7 @@ class DataflowGraph : public KernelAnalysis
 		typedef BlockPointerVector::reverse_iterator 
 			reverse_pointer_iterator;
 		/*! \brief A map from cfg blocks to dfg equivalents */
-		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
+		typedef std::unordered_map< ir::ControlFlowGraph::const_iterator, 
 			iterator > IteratorMap;
 
 	private:
@@ -389,7 +397,8 @@ class DataflowGraph : public KernelAnalysis
 		void insert( iterator block, const ir::Instruction& instruction );
 		/*! \brief Erase an instruction from a block at the specified
 			position */
-		void erase( iterator block, InstructionVector::iterator position );
+		InstructionVector::iterator erase( iterator block,
+			InstructionVector::iterator position );
 		/*! \brief Erase an instruction from a block at the specified
 			index */
 		void erase( iterator block, unsigned int index );
@@ -431,6 +440,16 @@ namespace std
 	{
 		inline size_t operator()(
 			const analysis::DataflowGraph::iterator& it ) const
+		{
+			return ( size_t )it->id();
+		}
+	};
+	
+	template<>
+	struct hash< analysis::DataflowGraph::const_iterator >
+	{
+		inline size_t operator()(
+			const analysis::DataflowGraph::const_iterator& it ) const
 		{
 			return ( size_t )it->id();
 		}

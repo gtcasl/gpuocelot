@@ -22,10 +22,10 @@
 		tracePath:      "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices:                  ["llvm"],
+		devices:                  ["emulated"],
 		preferredISA:             "nvidia",
 		optimizationLevel:        "full",
-		reconvergenceMechanism:   "tf-stack",
+		reconvergenceMechanism:   "ipdom",
 		defaultDeviceID:          0,
 		required:                 False,
 		asynchronousKernelLaunch: True,

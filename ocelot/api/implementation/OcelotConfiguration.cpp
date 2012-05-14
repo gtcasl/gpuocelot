@@ -252,8 +252,12 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		executive.reconvergenceMechanism
 			= (int)executive::ReconvergenceMechanism::Reconverge_TFSortedStack;
 	}
+	else if (strReconvMech == "tf-sw") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_TFSoftware;
+	}
 	else {
-		report("Unknown reconvergence mechanism - ipdom");
+		report("Unknown reconvergence mechanism - " + strReconvMech);
 	}
 
 	executive.defaultDeviceID = config.parse<int>("defaultDeviceID", 0);
@@ -325,10 +329,14 @@ static void initializeOptimizations(
 		config.parse<bool>("syncElimination", false);	
 	
 	optimizations.hoistSpecialValues =
-		config.parse<bool>("hoistSpecialValues", false);	
+		config.parse<bool>("hoistSpecialValues", false);
 	
 	optimizations.simplifyCFG =
-		config.parse<bool>("simplifyCFG", false);			
+		config.parse<bool>("simplifyCFG", false);
+	
+	optimizations.enforceLockStepExecution =
+		config.parse<bool>("enforceLockStepExecution", false);
+		
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {
@@ -395,6 +403,12 @@ void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) 
 		if (main.find("optimizations")) {
 			initializeOptimizations(optimizations, main["optimizations"]);
 		}
+		
+		if (executive.reconvergenceMechanism
+			== (int)executive::ReconvergenceMechanism::Reconverge_TFSoftware) {
+			optimizations.enforceLockStepExecution = true;
+		}
+		
 		version = main.parse<std::string>("version", 
 			hydrazine::Version().toString());
 		ocelot = main.parse<std::string>("ocelot", "ocelot");

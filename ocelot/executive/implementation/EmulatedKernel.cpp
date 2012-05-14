@@ -28,6 +28,8 @@
 #include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
 #include <ocelot/transforms/interface/ThreadFrontierReconvergencePass.h>
 #include <ocelot/transforms/interface/DefaultLayoutPass.h>
+#include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
+#include <ocelot/transforms/interface/PriorityLayoutPass.h>
 
 #include <ocelot/trace/interface/TraceGenerator.h>
 
@@ -203,7 +205,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::IPDOMReconvergencePass;
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
@@ -214,7 +216,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::DefaultLayoutPass;
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
@@ -225,7 +227,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::ThreadFrontierReconvergencePass(false);
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
@@ -236,13 +238,26 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::ThreadFrontierReconvergencePass(true);
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFSoftware)
+	{
+		transforms::PriorityLayoutPass* layout
+			= new transforms::PriorityLayoutPass();
+
+		manager.addPass(*layout);
+		manager.runOnKernel(*this);
+		
+		instructions = std::move(layout->instructions);
+	}
 	else {
 		assertM(false, "unknown thread reconvergence mechanism - "
-			<< config::get().executive.reconvergenceMechanism);
+			<< ReconvergenceMechanism::toString(
+				(ReconvergenceMechanism::Type)
+				config::get().executive.reconvergenceMechanism));
 	}	
 	
 	manager.destroyPasses();

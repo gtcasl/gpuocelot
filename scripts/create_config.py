@@ -74,7 +74,7 @@ class ExecutiveConfig:
 		self.asynchronousKernelLaunch = True
 		self.port                     = 2011
 		self.host                     = "127.0.0.1"
-		self.reconvergenceMechanism   = "ipdom"
+		self.reconvergenceMechanism   = "tf-sw"
 		self.workerThreadLimit        = 8
 		self.warpSize                 = 1
 

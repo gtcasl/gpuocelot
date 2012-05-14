@@ -157,6 +157,10 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 		== ReconvergenceMechanism::Reconverge_TFSortedStack) {
 		reconvergenceMechanism = new ReconvergenceTFSortedStack(this);
 	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFSoftware) {
+		reconvergenceMechanism = new ReconvergenceTFSoftware(this);
+	}
 	else {
 		assertM(false, "unknown thread reconvergence mechanism - "
 			<< config::get().executive.reconvergenceMechanism);
@@ -557,9 +561,9 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		}
 	
 		postTrace();
-
+		
 		running = reconvergenceMechanism->nextInstruction(
-			getActiveContext(), opcode);
+			getActiveContext(), instr, opcode);
 
 		clock += 4;
 		++counter;
@@ -1428,7 +1432,7 @@ ir::PTXF32 executive::CooperativeThreadArray::operandAsF32(int threadID,
 		case PTXOperand::Register:
 			return getRegAsF32(threadID, op.reg);
 		case PTXOperand::Immediate:
-			return (PTXF32)(op.imm_float);
+			return (PTXF32)(op.imm_single);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
@@ -2581,11 +2585,11 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 
 				CTAContext targetContext(context);
 
-				for (int threadID = 0; threadID != threadCount; ++threadID) {
-					targetContext.active[threadID] = 
-						context.predicated(threadID, jittedInstr);
-				}
-			
+				targetContext.active = context.predicateMask(jittedInstr);
+				
+				reportE(REPORT_CALL, " taken threads - ["
+					<< targetContext.active << "]" );
+		
 				if (targetContext.active.any()) {
 					reportE(REPORT_CALL, 
 						"  call was taken, increasing stack size by (" 
@@ -2785,7 +2789,8 @@ static ir::PTXF64 toF64(Int value, int modifier) {
 }
 
 template< typename Float >
-static Float roundToInt(Float a, int modifier) {
+static Float roundToInt(Float a, int modifier, executive::CTAContext &context, 
+	const PTXInstruction &instr) {
 	Float fd = 0;
 	if (modifier & PTXInstruction::rn) {
 		fd = hydrazine::nearbyintf(a);
@@ -2796,7 +2801,8 @@ static Float roundToInt(Float a, int modifier) {
 	} else if (modifier & PTXInstruction::rp) {
 		fd = ceil(a);
 	} else {
-		fd = a;
+		throw executive::RuntimeException("Rounding mode is required for float "
+			"to int conversions.", context.PC, instr);
 	}
 	return fd;
 }
@@ -3414,7 +3420,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU8 d = 0;
 							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
@@ -3433,7 +3440,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU16 d = 0;
 							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
@@ -3452,7 +3460,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU32 d = 0;
 							if(fd > UINT_MAX) {
 								d = UINT_MAX;
@@ -3471,7 +3480,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU64 d = 0;
 							if(fd > ULLONG_MAX) {
 								d = ULLONG_MAX;
@@ -3489,7 +3499,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS8 d = 0;
 							if(fd > CHAR_MAX) {
 								d = CHAR_MAX;
@@ -3507,7 +3518,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS16 d = 0;
 							if(fd > SHRT_MAX) {
 								d = SHRT_MAX;
@@ -3525,7 +3537,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS32 d = 0;
 							if(fd > INT_MAX) {
 								d = INT_MAX;
@@ -3543,7 +3556,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF32 fd = roundToInt(a, instr.modifier);
+							PTXF32 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS64 d = 0;
 							if(fd > LLONG_MAX) {
 								d = LLONG_MAX;
@@ -3588,7 +3602,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = roundToInt(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU8 d = 0;
 							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
@@ -3607,7 +3622,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = roundToInt(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU16 d = 0;
 							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
@@ -3626,7 +3642,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = roundToInt(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU32 d = 0;
 							if(fd > UINT_MAX) {
 								d = UINT_MAX;
@@ -3646,7 +3663,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXF64 fd = roundToInt(a, instr.modifier);
+							PTXF64 fd = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXU64 d = 0;
 							if(fd > ULLONG_MAX) {
 								d = ULLONG_MAX;
@@ -3665,7 +3683,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = roundToInt(a, instr.modifier);
+							a = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS8 d = 0;
 							if(a > CHAR_MAX) {
 								d = CHAR_MAX;
@@ -3683,7 +3702,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = roundToInt(a, instr.modifier);
+							a = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS16 d = 0;
 							if(a > SHRT_MAX) {
 								d = SHRT_MAX;
@@ -3701,7 +3721,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = roundToInt(a, instr.modifier);
+							a = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS32 d = 0;
 							if(a > INT_MAX) {
 								d = INT_MAX;
@@ -3719,7 +3740,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							a = roundToInt(a, instr.modifier);
+							a = roundToInt(a, instr.modifier,
+								context, instr);
 							PTXS64 d = 0;
 							if(a > LLONG_MAX) {
 								d = LLONG_MAX;
@@ -6612,7 +6634,6 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context,
 		
 		case PTXOperand::s32:	// fall through
 		case PTXOperand::b32:	// fall through
-		case PTXOperand::f32:	// fall through
 		case PTXOperand::u32:
 		{
 			for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -6627,7 +6648,23 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context,
 				setRegAsU32(threadID, instr.d.reg, d);
 			}
 		}
-			break;
+		break;
+		
+		case PTXOperand::f32:
+		{
+			for (int threadID = 0; threadID < threadCount; threadID++) {
+				if (!context.predicated(threadID, instr)) continue;
+				
+				PTXF32 a = operandAsF32(threadID, instr.a),
+					b = operandAsF32(threadID, instr.b);
+				bool c = operandAsPredicate(threadID, instr.c);
+				
+				PTXF32 d = (c ? a : b);
+				
+				setRegAsF32(threadID, instr.d.reg, d);
+			}
+		}
+		break;
 		
 		case PTXOperand::f64:	// fall through
 		case PTXOperand::s64:	// fall through
@@ -9412,92 +9449,8 @@ void executive::CooperativeThreadArray::eval_Txq(CTAContext &context, const ir::
 void executive::CooperativeThreadArray::eval_Vote(CTAContext &context,
 	const PTXInstruction &instr) {
 	trace();
-	
-	if (instr.vote == ir::PTXInstruction::Ballot) {
-		ir::PTXB32 result = 0;
-		for (int threadID = 0; threadID < threadCount; threadID++) {
-			if (!context.predicated(threadID, instr)) continue;
-			bool local = operandAsPredicate(threadID, instr.a);
-			if (instr.a.condition == ir::PTXOperand::InvPred) {
-				local = !local;
-			}
-			
-			ir::PTXB32 b32Local = local ? 0x1 : 0x0;
-			
-			result = result | (b32Local << threadID);
-		}
 
-		for (int threadID = 0; threadID < threadCount; threadID++) {
-			if (!context.predicated(threadID, instr)) continue;
-			setRegAsB32(threadID, instr.d.reg, result);
-		}
-	}
-	else {
-		bool a = true;
-		switch (instr.vote) {
-			case ir::PTXInstruction::All:
-			{
-				for (int threadID = 0; threadID < threadCount; threadID++) {
-					if (!context.predicated(threadID, instr)) continue;
-					bool local = operandAsPredicate(threadID, instr.a);
-					if (instr.a.condition == ir::PTXOperand::InvPred) {
-						local = !local;
-					}
-					if (!local) {
-						a = false;
-						break;
-					}	
-				}
-				break;
-			}
-			case ir::PTXInstruction::Uni:
-			{
-				bool set = false;
-				bool value = false;
-				for (int threadID = 0; threadID < threadCount; threadID++) {
-					if (!context.predicated(threadID, instr)) continue;
-					bool local = operandAsPredicate(threadID, instr.a);
-					if (instr.a.condition == ir::PTXOperand::InvPred) {
-						local = !local;
-					}
-					if (!set) {
-						set = true;
-						value = local;
-					}
-					else {
-						if (value != local) {
-							a = false;
-						}
-					}
-				}
-				break;
-			}
-			case ir::PTXInstruction::Any:
-			{
-				a = false;
-				for (int threadID = 0; threadID < threadCount; threadID++) {
-					if (!context.predicated(threadID, instr)) continue;
-					bool local = operandAsPredicate(threadID, instr.a);
-					if (instr.a.condition == ir::PTXOperand::InvPred) {
-						local = !local;
-					}
-					if (local) {
-						a = true;
-						break;
-					}
-				}
-				break;
-			}
-			default:
-				throw RuntimeException("Invalid vote mode", 
-					context.PC, instr);
-		}
-
-		for (int threadID = 0; threadID < threadCount; threadID++) {
-			if (!context.predicated(threadID, instr)) continue;
-			setRegAsPredicate(threadID, instr.d.reg, a);
-		}
-	}	
+	reconvergenceMechanism->eval_Vote(context, instr);
 }
 
 /*!

@@ -54,6 +54,11 @@ void Pass::invalidateAnalysis(Analysis::Type type)
 	return _manager->invalidateAnalysis(type);
 }
 
+Pass::StringVector Pass::getDependentPasses() const
+{
+	return StringVector();
+}
+
 std::string Pass::toString() const
 {
 	return name;

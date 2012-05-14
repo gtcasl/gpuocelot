@@ -514,6 +514,8 @@ namespace ir {
 			/*! \brief If this is a branch, is a check for re-convergence with
 				threads waiting at the target necessary */
 			bool needsReconvergenceCheck;
+			/*! \brief Broadcast to all threads */
+			bool broadcast;
 		};
 
 		union

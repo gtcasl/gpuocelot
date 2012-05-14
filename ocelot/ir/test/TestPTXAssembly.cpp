@@ -1873,7 +1873,7 @@ std::string testSpecial_PTX(ir::PTXInstruction::Opcode opcode, bool ftz)
 	if(opcode == ir::PTXInstruction::Cos || opcode == ir::PTXInstruction::Sin)
 	{
 		ptx << "\tabs.f32 %f0, %f0;                        \n";
-		ptx << "\tmin.f32 %f0, %f0, 0.8;                   \n";
+		ptx << "\tmin.f32 %f0, %f0, 0f3f4ccccd;            \n";
 	}
 
 	ptx << "\t" << ir::PTXInstruction::toString(opcode) << ".approx";

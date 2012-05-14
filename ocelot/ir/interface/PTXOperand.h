@@ -208,6 +208,7 @@ namespace ir {
 			long long unsigned int imm_uint;
 			long long int imm_int;
 			double imm_float;
+			float  imm_single;
 			PredicateCondition condition;
 			SpecialRegister special;
 			unsigned int localMemorySize;

@@ -525,7 +525,7 @@ namespace parser
 	
 		report( "   Appending " << value << " to single list.");
 		ir::PTXStatement::Data data;
-		data.f64 = value;
+		data.f32 = value;
 		statement.array.values.push_back( data );
 	}
 
@@ -535,7 +535,7 @@ namespace parser
 	
 		report( "   Appending " << value << " to single list.");
 		ir::PTXStatement::Data data;
-		data.f64 = value;
+		data.f32 = value;
 		statement.array.values.push_back( data );	
 	}
 	
@@ -799,18 +799,7 @@ namespace parser
 		statement.name = name;
 		statement.alignment = alignment;
 		statement.type = operand.type;
-	
-		// correct for single precision
-		if( statement.type == ir::PTXOperand::f32 )
-		{
-			for( ir::PTXStatement::ArrayVector::iterator 
-				fi = statement.array.values.begin();
-				fi != statement.array.values.end(); ++fi )
-			{
-				fi->f32 = (float) fi->f64;			
-			}	
-		}
-	
+		
 		if( statement.array.values.size() != 0 )
 		{
 			unsigned int expected = 0;
@@ -1382,8 +1371,9 @@ namespace parser
 	
 	void PTXParser::State::constantOperand( float value )
 	{
+		report("SINGLE_CONSTANT: " << value);
 		operand.addressMode = ir::PTXOperand::Immediate;
-		operand.imm_float = value;
+		operand.imm_single = value;
 		operand.vec = ir::PTXOperand::v1;
 		operand.type = ir::PTXOperand::f32;	
 		operandVector.push_back( operand );
@@ -1391,6 +1381,7 @@ namespace parser
 
 	void PTXParser::State::constantOperand( double value )
 	{
+		report("DOUBLE_CONSTANT: " << value);
 		operand.addressMode = ir::PTXOperand::Immediate;
 		operand.imm_float = value;
 		operand.vec = ir::PTXOperand::v1;

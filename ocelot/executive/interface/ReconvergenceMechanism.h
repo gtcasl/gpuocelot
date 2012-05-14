@@ -35,6 +35,7 @@ public:
 		Reconverge_Barrier,
 		Reconverge_TFGen6,
 		Reconverge_TFSortedStack,
+		Reconverge_TFSoftware,
 		Reconverge_unknown
 	};
 		
@@ -50,13 +51,13 @@ public:
 
 	//! \brief updates the predicate mask of the active context
 	// before instructions execute
-	virtual void evalPredicate(executive::CTAContext &context) = 0;
+	virtual void evalPredicate(CTAContext &context) = 0;
 	
 	/*! 
 		\brief implements branch instruction and updates CTA state
 		\return true on divergent branch
 	*/
-	virtual bool eval_Bra(executive::CTAContext &context, 
+	virtual bool eval_Bra(CTAContext &context, 
 		const ir::PTXInstruction &instr, 
 		const boost::dynamic_bitset<> & branch, 
 		const boost::dynamic_bitset<> & fallthrough) = 0;
@@ -64,35 +65,42 @@ public:
 	/*! 
 		\brief implements a barrier instruction
 	*/
-	virtual void eval_Bar(executive::CTAContext &context,
+	virtual void eval_Bar(CTAContext &context,
 		const ir::PTXInstruction &instr) = 0;
 	
 	/*!
 		\brief implements reconverge instruction
 	*/
-	virtual void eval_Reconverge(executive::CTAContext &context,
+	virtual void eval_Reconverge(CTAContext &context,
 		const ir::PTXInstruction &instr) = 0;
 	
 	/*!
 		\brief implements exit instruction
 	*/
-	virtual void eval_Exit(executive::CTAContext &context,
+	virtual void eval_Exit(CTAContext &context,
 		const ir::PTXInstruction &instr) = 0;
+
+	/*!
+		\brief implements vote instruction
+	*/
+	virtual void eval_Vote(CTAContext &context,
+		const ir::PTXInstruction &instr);
 
 	/*! 
 		\brief updates the active context to the next instruction
 	*/
-	virtual bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction::Opcode &opcode) = 0;
+	virtual bool nextInstruction(CTAContext &context,
+		const ir::PTXInstruction &instr,
+		const ir::PTXInstruction::Opcode &) = 0;
 	
 	//! \brief gets the active context
-	virtual executive::CTAContext& getContext() = 0;
+	virtual CTAContext& getContext() = 0;
 	
 	//! \brief gets the stack size
 	virtual size_t stackSize() const = 0;
 
 	//! \brief push a context
-	virtual void push(executive::CTAContext&) = 0;
+	virtual void push(CTAContext&) = 0;
 
 	//! \brief pop a context
 	virtual void pop() = 0;
@@ -123,23 +131,23 @@ public:
 	~ReconvergenceIPDOM();
 	
 	void initialize();
-	void evalPredicate(executive::CTAContext &context);
-	bool eval_Bra(executive::CTAContext &context, 
+	void evalPredicate(CTAContext &context);
+	bool eval_Bra(CTAContext &context, 
 		const ir::PTXInstruction &instr, 
 		const boost::dynamic_bitset<> & branch, 
 		const boost::dynamic_bitset<> & fallthrough);
-	void eval_Bar(executive::CTAContext &context,
+	void eval_Bar(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Reconverge(executive::CTAContext &context,
+	void eval_Reconverge(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Exit(executive::CTAContext &context,
+	void eval_Exit(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction::Opcode &opcode);
+	bool nextInstruction(CTAContext &context,
+		const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &);
 
-	executive::CTAContext& getContext();
+	CTAContext& getContext();
 	size_t stackSize() const;
-	void push(executive::CTAContext&);
+	void push(CTAContext&);
 	void pop();
 	
 private:
@@ -160,23 +168,23 @@ public:
 	ReconvergenceBarrier(CooperativeThreadArray *cta);
 	
 	void initialize();
-	void evalPredicate(executive::CTAContext &context);
-	bool eval_Bra(executive::CTAContext &context, 
+	void evalPredicate(CTAContext &context);
+	bool eval_Bra(CTAContext &context, 
 		const ir::PTXInstruction &instr, 
 		const boost::dynamic_bitset<> & branch, 
 		const boost::dynamic_bitset<> & fallthrough);
-	void eval_Bar(executive::CTAContext &context,
+	void eval_Bar(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Reconverge(executive::CTAContext &context,
+	void eval_Reconverge(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Exit(executive::CTAContext &context,
+	void eval_Exit(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction::Opcode &opcode);
+	bool nextInstruction(CTAContext &context,
+		const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &);
 
-	executive::CTAContext& getContext();
+	CTAContext& getContext();
 	size_t stackSize() const;
-	void push(executive::CTAContext&);
+	void push(CTAContext&);
 	void pop();
 	
 private:
@@ -196,23 +204,23 @@ public:
 	ReconvergenceTFGen6(CooperativeThreadArray *cta);
 
 	void initialize();
-	void evalPredicate(executive::CTAContext &context);
-	bool eval_Bra(executive::CTAContext &context, 
+	void evalPredicate(CTAContext &context);
+	bool eval_Bra(CTAContext &context, 
 		const ir::PTXInstruction &instr, 
 		const boost::dynamic_bitset<> & branch, 
 		const boost::dynamic_bitset<> & fallthrough);
-	void eval_Bar(executive::CTAContext &context,
+	void eval_Bar(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Reconverge(executive::CTAContext &context,
+	void eval_Reconverge(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Exit(executive::CTAContext &context,
+	void eval_Exit(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction::Opcode &opcode);
+	bool nextInstruction(CTAContext &context,
+		const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &);
 
-	executive::CTAContext& getContext();
+	CTAContext& getContext();
 	size_t stackSize() const;
-	void push(executive::CTAContext&);
+	void push(CTAContext&);
 	void pop();
 	
 private:
@@ -232,23 +240,23 @@ public:
 	~ReconvergenceTFSortedStack();
 
 	void initialize();
-	void evalPredicate(executive::CTAContext &context);
-	bool eval_Bra(executive::CTAContext &context, 
+	void evalPredicate(CTAContext &context);
+	bool eval_Bra(CTAContext &context, 
 		const ir::PTXInstruction &instr, 
 		const boost::dynamic_bitset<> & branch, 
 		const boost::dynamic_bitset<> & fallthrough);
-	void eval_Bar(executive::CTAContext &context,
+	void eval_Bar(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Reconverge(executive::CTAContext &context,
+	void eval_Reconverge(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	void eval_Exit(executive::CTAContext &context,
+	void eval_Exit(CTAContext &context,
 		const ir::PTXInstruction &instr);
-	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction::Opcode &opcode);
+	bool nextInstruction(CTAContext &context,
+		const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &);
 
-	executive::CTAContext& getContext();
+	CTAContext& getContext();
 	size_t stackSize() const;
-	void push(executive::CTAContext&);
+	void push(CTAContext&);
 	void pop();
 
 private:
@@ -258,6 +266,44 @@ private:
 public:
 	StackVector stack;
 	unsigned int reconvergeEvents;
+};
+
+class ReconvergenceTFSoftware: public ReconvergenceMechanism {
+public:
+	ReconvergenceTFSoftware(CooperativeThreadArray *cta);
+	~ReconvergenceTFSoftware();
+
+	void initialize();
+	void evalPredicate(CTAContext &context);
+	bool eval_Bra(CTAContext &context, 
+		const ir::PTXInstruction &instr, 
+		const boost::dynamic_bitset<> & branch, 
+		const boost::dynamic_bitset<> & fallthrough);
+	void eval_Bar(CTAContext &context,
+		const ir::PTXInstruction &instr);
+	void eval_Reconverge(CTAContext &context,
+		const ir::PTXInstruction &instr);
+	void eval_Exit(CTAContext &context,
+		const ir::PTXInstruction &instr);
+	void eval_Vote(CTAContext &context,
+		const ir::PTXInstruction &instr);
+	bool nextInstruction(CTAContext &context,
+		const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &);
+
+	CTAContext& getContext();
+	size_t stackSize() const;
+	void push(CTAContext&);
+	void pop();
+
+public:
+	int warpSize;
+
+private:
+	typedef std::vector<CTAContext> ContextStack; 
+		
+private:
+	ContextStack stack;
+
 };
 }
 

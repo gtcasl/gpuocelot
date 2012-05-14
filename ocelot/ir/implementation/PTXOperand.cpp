@@ -708,7 +708,7 @@ std::string ir::PTXOperand::toString() const {
 			case b64: stream << imm_int; break;
 			case f16: /* fall through */
 			case f32: {
-				write(stream, (float)imm_float);
+				write(stream, imm_single);
 			} break;
 			case f64: {
 				write(stream, imm_float);

@@ -27,15 +27,19 @@ namespace analysis
 		control flow graph such that each node's block is immediately 
 		post-dominated by its parent. Each node is owned by its parent.
 	*/
-	class PostdominatorTree : public Analysis {
+	class PostdominatorTree : public KernelAnalysis {
 	public:
 		typedef std::vector<int> IndexVector;
 		typedef std::vector<IndexVector> IndexArrayVector;
 		
 	public:
-		PostdominatorTree(ir::ControlFlowGraph *cfg);
+		PostdominatorTree();
 		~PostdominatorTree();
-
+	
+	public:
+		void analyze(ir::IRKernel& kernel);
+		
+	public:
 		/*! Writes a representation of the DominatorTree to an output stream */
 		std::ostream& write(std::ostream& out);
 
@@ -73,3 +77,4 @@ namespace analysis
 }
 
 #endif
+

@@ -11,6 +11,7 @@
 // Ocelot Includes
 #include <ocelot/analysis/interface/PostdominatorTree.h>
 #include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/string.h>
@@ -25,14 +26,20 @@
 namespace analysis
 {
 
+PostdominatorTree::PostdominatorTree()
+: KernelAnalysis(Analysis::PostDominatorTreeAnalysis,
+	"PostdominatorTreeAnalysis", Analysis::NoAnalysis) {
+	
+}
+
 PostdominatorTree::~PostdominatorTree() {
 
 }
 
-PostdominatorTree::PostdominatorTree(ir::ControlFlowGraph *c) {
+void PostdominatorTree::analyze(ir::IRKernel& kernel) {
 	// form a vector of the basic blocks in post-order
 	report("Building post-dominator tree.");
-	cfg = c;
+	cfg = kernel.cfg();
 	report(" Starting with post order sequence");
 	// form a vector of the basic blocks in post-order
 	ir::ControlFlowGraph::BlockPointerVector 

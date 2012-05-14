@@ -292,6 +292,9 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	assert( loaded() );
 	report("Writing module (IR) - " << _modulePath << " - to output stream.");
 
+	stream << "/*\n* Ocelot Version : " 
+		<< hydrazine::Version().toString() << "\n*/\n\n";
+		
 	stream << ".version 2.3\n";
 	stream << ".target sm_20\n";
 	stream << ".address_size " << addressSize() << "\n";

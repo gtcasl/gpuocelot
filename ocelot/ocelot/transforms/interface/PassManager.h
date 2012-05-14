@@ -11,6 +11,7 @@
 #include <map>
 #include <unordered_map>
 #include <string>
+#include <vector>
 
 // Forward Declarations
 namespace analysis   { class Analysis; }
@@ -95,12 +96,16 @@ public:
 
 private:
 	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
-	
+	typedef std::vector<Pass*> PassVector;
+
 private:
-	PassMap           _passes;
-	ir::Module*       _module;
-	ir::IRKernel*     _kernel;
-	AnalysisMap*      _analyses;
+	PassVector _schedulePasses();
+
+private:
+	PassMap       _passes;
+	ir::Module*   _module;
+	ir::IRKernel* _kernel;
+	AnalysisMap*  _analyses;
 };
 
 }

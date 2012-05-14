@@ -187,6 +187,11 @@ namespace ocelot
 		{
 			ocelot::addPTXPass(_simplifyCFG);
 		}
+		
+		if (c.optimizations.enforceLockStepExecution)
+		{
+			ocelot::addPTXPass(_enforceLockStepExecution);
+		}
 
 		// add built-in functions
 		registerExternalFunction("malloc",  (void*)(cudaMallocWrapper));

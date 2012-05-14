@@ -1003,7 +1003,7 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate(
 				}
 				case ir::PTXOperand::f32:
 				{
-					op.f32 = (float) o.imm_float;
+					op.f32 = o.imm_single;
 					break;
 				}
 				case ir::PTXOperand::f64:

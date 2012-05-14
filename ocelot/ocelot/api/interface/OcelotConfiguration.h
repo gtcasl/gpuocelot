@@ -198,7 +198,10 @@ namespace api {
 			bool hoistSpecialValues;	
 			
 			/*! \brief Simplify control graph pass */
-			bool simplifyCFG;			
+			bool simplifyCFG;		
+			
+			/*! \brief Enforce lock-step execution pass */
+			bool enforceLockStepExecution;		
 		};
 
 

@@ -7,7 +7,7 @@
 #ifndef PASS_MANAGER_CPP_INCLUDED
 #define PASS_MANAGER_CPP_INCLUDED
 
-//! Ocelot Includes
+// Ocelot Includes
 #include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/transforms/interface/Pass.h>
 
@@ -24,10 +24,13 @@
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
 
-//! Hydrazine Includes
+// Hydrazine Includes
 #include <hydrazine/interface/debug.h>
 
-//! Preprocessor Macros
+// Standard Library Includes
+#include <stdexcept>
+
+// Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -80,7 +83,7 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 			if(structure != analyses.end())
 			{
 				report("   Destroying " << structure->second->name
-					<< " for kernel" << k->name);
+					<< " for kernel " << k->name);
 				delete structure->second;
 				analyses.erase(structure);
 			}
@@ -119,12 +122,17 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 	{
 		if(analyses.count(analysis::Analysis::PostDominatorTreeAnalysis) == 0)
 		{
-			report("   Allocating post-dominator tree for kernel " << k->name);
-			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
-				analysis::Analysis::PostDominatorTreeAnalysis,
-				new analysis::PostdominatorTree(k->cfg()))).first;
+			analysis::PostdominatorTree* pdomTree =
+				new analysis::PostdominatorTree;
 			
-			analysis->second->setPassManager(manager);
+			report("   Allocating post-dominator tree for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::PostDominatorTreeAnalysis, pdomTree));
+			
+			pdomTree->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, pdomTree->required, manager);
+				
+			pdomTree->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::DataflowGraphAnalysis)
@@ -457,6 +465,8 @@ void PassManager::destroyPasses()
 	{
 		delete pass->second;
 	}
+	
+	_passes.clear();
 }
 
 void PassManager::runOnKernel(const std::string& name)
@@ -475,9 +485,11 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 
 	report("Running pass manager on kernel " << kernel.name);
 
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	PassVector passes = _schedulePasses();
+
+	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 	{
-		initializeKernelPass(_module, pass->second);
+		initializeKernelPass(_module, *pass);
 	}
 	
 	AnalysisMap analyses;
@@ -485,19 +497,19 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 	_analyses = &analyses;
 	_kernel = &kernel;
 	
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 	{
-		freeUnusedDataStructures(analyses, &kernel, pass->first);
-		allocateNewDataStructures(analyses, &kernel, pass->first, this);
+		freeUnusedDataStructures(analyses, &kernel, (*pass)->analyses);
+		allocateNewDataStructures(analyses, &kernel, (*pass)->analyses, this);
 		
-		runKernelPass(&kernel, pass->second);
+		runKernelPass(&kernel, *pass);
 	}
 
 	freeUnusedDataStructures(analyses, &kernel, analysis::Analysis::NoAnalysis);
 
-	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 	{
-		finalizeKernelPass(_module, pass->second);
+		finalizeKernelPass(_module, *pass);
 	}
 
 	_analyses = 0;
@@ -514,12 +526,13 @@ void PassManager::runOnModule()
 	
 	AnalysisMapVector kernelAnalyses(_module->kernels().size());
 	
+	PassVector passes = _schedulePasses();
+
 	// Run all module passes first
-	for(PassMap::iterator pass = _passes.begin();
-		pass != _passes.end(); ++pass)
+	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 	{
-		if(pass->second->type == Pass::KernelPass)     continue;
-		if(pass->second->type == Pass::BasicBlockPass) continue;
+		if((*pass)->type == Pass::KernelPass)     continue;
+		if((*pass)->type == Pass::BasicBlockPass) continue;
 		
 		AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
 		for(ir::Module::KernelMap::const_iterator 
@@ -527,10 +540,10 @@ void PassManager::runOnModule()
 			kernel != _module->kernels().end(); ++kernel, ++analyses)
 		{
 			allocateNewDataStructures(*analyses,
-				kernel->second, pass->first, this);
+				kernel->second, (*pass)->analyses, this);
 		}
 		
-		runModulePass(_module, pass->second);
+		runModulePass(_module, *pass);
 	}
 	
 	// Run all kernel and bb passes
@@ -539,36 +552,33 @@ void PassManager::runOnModule()
 		kernel = _module->kernels().begin();
 		kernel != _module->kernels().end(); ++kernel, ++analyses)
 	{
-		for(PassMap::iterator pass = _passes.begin();
-			pass != _passes.end(); ++pass)
+		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 		{
-			initializeKernelPass(_module, pass->second);
+			initializeKernelPass(_module, *pass);
 		}
 		
 		_analyses = &*analyses;
 		_kernel = kernel->second;
 		
-		for(PassMap::iterator pass = _passes.begin();
-			pass != _passes.end(); ++pass)
+		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 		{
-			if(pass->second->type == Pass::ImmutablePass) continue;
-			if(pass->second->type == Pass::ModulePass)    continue;
+			if((*pass)->type == Pass::ImmutablePass) continue;
+			if((*pass)->type == Pass::ModulePass)    continue;
 			
-			freeUnusedDataStructures( *analyses, kernel->second, pass->first);
+			freeUnusedDataStructures( *analyses, kernel->second,
+				(*pass)->analyses);
 			allocateNewDataStructures(*analyses, kernel->second,
-				pass->first, this);
+				(*pass)->analyses, this);
 			
-			
-			runKernelPass(_module, kernel->second, pass->second);
+			runKernelPass(_module, kernel->second, *pass);
 		}
 		
 		freeUnusedDataStructures(*analyses, kernel->second,
 			analysis::Analysis::NoAnalysis);
 
-		for(PassMap::iterator pass = _passes.begin();
-			pass != _passes.end(); ++pass)
+		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
 		{
-			finalizeKernelPass(_module, pass->second);
+			finalizeKernelPass(_module, *pass);
 		}
 		
 		_analyses = 0;
@@ -614,6 +624,60 @@ void PassManager::invalidateAnalysis(int type)
 		delete analysis->second;
 		_analyses->erase(analysis);
 	}
+}
+
+PassManager::PassVector PassManager::_schedulePasses()
+{
+	typedef std::unordered_set<Pass*> PassSet;
+	
+	PassVector scheduled;
+	PassSet unscheduled;
+	
+	for(auto pass = _passes.begin(); pass != _passes.end(); ++pass)
+	{
+		unscheduled.insert(pass->second);
+	}
+	
+	while(!unscheduled.empty())
+	{
+		bool dependenciesSatisfied = false;
+		for(auto pass = unscheduled.begin(); pass != unscheduled.end(); ++pass)
+		{
+			Pass::StringVector dependentPasses = (*pass)->getDependentPasses();
+			
+			dependenciesSatisfied = true;
+			
+			for(auto dependentPass = dependentPasses.begin();
+				dependentPass != dependentPasses.end(); ++dependentPass)
+			{
+				for(auto pass = unscheduled.begin();
+					pass != unscheduled.end(); ++pass)
+				{
+					if(*dependentPass == (*pass)->name)
+					{
+						dependenciesSatisfied = false;
+						break;
+					}
+				}
+				
+				if(!dependenciesSatisfied) break;
+			}
+			
+			if(dependenciesSatisfied)
+			{
+				scheduled.push_back(*pass);
+				unscheduled.erase(pass);
+				break;
+			}
+		}
+		
+		if(!dependenciesSatisfied)
+		{
+			throw std::runtime_error("Passes have circular dependencies!");
+		}
+	}
+	
+	return scheduled;
 }
 
 

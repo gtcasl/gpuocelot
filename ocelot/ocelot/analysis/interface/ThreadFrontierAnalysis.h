@@ -96,6 +96,7 @@ private:
 	void _computeFrontiers(ir::IRKernel& kernel);
 
 	void _visitNode(NodeMap& nodes, node_iterator node);
+	void _breakPriorityTies();
 
 private:
 	PriorityMap _priorities;

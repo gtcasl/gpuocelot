@@ -483,7 +483,6 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 							else {
 								reg = it->second;
 							}
-							a_it->reg = reg;
 							if (a_it->addressMode != PTXOperand::BitBucket
 								&& a_it->identifier != "_") {
 								report( "  [1] Assigning register " 
@@ -495,6 +494,7 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 								report("  [1] " << a_it->registerName() 
 									<< " is a bit bucket");
 							}
+							a_it->reg = reg;
 						}
 					}
 					else if((instr.*operands[i]).addressMode 
@@ -511,11 +511,11 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 						else {
 							reg = it->second;
 						}
-						(instr.*operands[i]).reg = reg;
 						report("  [2] Assigning register " 
 							<< (instr.*operands[i]).registerName() 
 							<< " to " << reg);
 						(instr.*operands[i]).identifier.clear();
+						(instr.*operands[i]).reg = reg;
 					}
 				}
 			}
@@ -527,9 +527,6 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 
 void PTXKernel::write(std::ostream& stream) const 
 {
-	stream << "/*\n* Ocelot Version : " 
-		<< hydrazine::Version().toString() << "\n*/\n";
-
 	std::stringstream strReturnArguments;
 	std::stringstream strArguments;
 	

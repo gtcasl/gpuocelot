@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-// global control for enabling reporting within the emulator
+// global control for enabling reporting within the reconvergence mechanism
 #define REPORT_BASE 0
 
 #define REPORT_BAR 1
@@ -39,6 +39,99 @@ executive::ReconvergenceMechanism::~ReconvergenceMechanism()
 
 }
 
+
+void executive::ReconvergenceMechanism::eval_Vote(CTAContext &context,
+	const ir::PTXInstruction &instr)
+{
+	int threadCount = cta->threadCount;
+	
+	if (instr.vote == ir::PTXInstruction::Ballot) {
+		ir::PTXB32 result = 0;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			bool local = cta->operandAsPredicate(threadID, instr.a);
+			if (instr.a.condition == ir::PTXOperand::InvPred) {
+				local = !local;
+			}
+			
+			ir::PTXB32 b32Local = local ? 0x1 : 0x0;
+			
+			result = result | (b32Local << threadID);
+		}
+
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			cta->setRegAsB32(threadID, instr.d.reg, result);
+		}
+	}
+	else {
+		bool a = true;
+		switch (instr.vote) {
+			case ir::PTXInstruction::All:
+			{
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+					bool local = cta->operandAsPredicate(threadID, instr.a);
+					if (instr.a.condition == ir::PTXOperand::InvPred) {
+						local = !local;
+					}
+					if (!local) {
+						a = false;
+						break;
+					}	
+				}
+				break;
+			}
+			case ir::PTXInstruction::Uni:
+			{
+				bool set = false;
+				bool value = false;
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+					bool local = cta->operandAsPredicate(threadID, instr.a);
+					if (instr.a.condition == ir::PTXOperand::InvPred) {
+						local = !local;
+					}
+					if (!set) {
+						set = true;
+						value = local;
+					}
+					else {
+						if (value != local) {
+							a = false;
+						}
+					}
+				}
+				break;
+			}
+			case ir::PTXInstruction::Any:
+			{
+				a = false;
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+					bool local = cta->operandAsPredicate(threadID, instr.a);
+					if (instr.a.condition == ir::PTXOperand::InvPred) {
+						local = !local;
+					}
+					if (local) {
+						a = true;
+						break;
+					}
+				}
+				break;
+			}
+			default:
+				throw RuntimeException("Invalid vote mode", 
+					context.PC, instr);
+		}
+
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			cta->setRegAsPredicate(threadID, instr.d.reg, a);
+		}
+	}
+}
+
 //! \brief gets a string-representation of the type
 std::string executive::ReconvergenceMechanism::toString(Type type) {
 	switch (type) {
@@ -46,6 +139,7 @@ std::string executive::ReconvergenceMechanism::toString(Type type) {
 	case Reconverge_Barrier: return "barrier";
 	case Reconverge_TFGen6: return "tf-gen6";
 	case Reconverge_TFSortedStack: return "tf-sorted-stack";
+	case Reconverge_TFSoftware: return "tf-software";
 	case Reconverge_unknown:
 	default:
 		break;
@@ -193,7 +287,7 @@ void executive::ReconvergenceIPDOM::eval_Exit(executive::CTAContext &context,
 
 bool executive::ReconvergenceIPDOM::nextInstruction(
 	executive::CTAContext &context, 
-	const ir::PTXInstruction::Opcode &opcode) {
+	const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
 	if (opcode != ir::PTXInstruction::Bra
@@ -314,7 +408,7 @@ void executive::ReconvergenceBarrier::eval_Exit(executive::CTAContext &context,
 
 bool executive::ReconvergenceBarrier::nextInstruction(
 	executive::CTAContext &context, 
-	const ir::PTXInstruction::Opcode &opcode) {
+	const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
 	if (opcode != ir::PTXInstruction::Bra
@@ -456,7 +550,7 @@ void executive::ReconvergenceTFGen6::eval_Exit(executive::CTAContext &context,
 
 bool executive::ReconvergenceTFGen6::nextInstruction(
 	executive::CTAContext &context, 
-	const ir::PTXInstruction::Opcode &opcode) {
+	const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &opcode) {
 	
 	// advance to next instruction if the current instruction wasn't a branch
 	if (opcode != ir::PTXInstruction::Bra
@@ -500,7 +594,6 @@ void executive::ReconvergenceTFGen6::pop() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 executive::ReconvergenceTFSortedStack::ReconvergenceTFSortedStack(
 	CooperativeThreadArray *cta)
 : ReconvergenceMechanism(cta)
@@ -625,7 +718,7 @@ void executive::ReconvergenceTFSortedStack::eval_Exit(
 
 bool executive::ReconvergenceTFSortedStack::nextInstruction(
 	executive::CTAContext &context,
-	const ir::PTXInstruction::Opcode &opcode) {
+	const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
 	if (opcode != ir::PTXInstruction::Bra
@@ -650,6 +743,223 @@ void executive::ReconvergenceTFSortedStack::push(executive::CTAContext& c) {
 }
 
 void executive::ReconvergenceTFSortedStack::pop() {
+	assert(stack.size() > 1);
+	stack.pop_back();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+executive::ReconvergenceTFSoftware::ReconvergenceTFSoftware(
+	CooperativeThreadArray *cta)
+: ReconvergenceMechanism(cta), warpSize(32)
+{
+	type = Reconverge_TFSoftware;
+}
+
+executive::ReconvergenceTFSoftware::~ReconvergenceTFSoftware()
+{
+
+}
+
+void executive::ReconvergenceTFSoftware::initialize() {
+	stack.clear();
+	stack.push_back(CTAContext(cta->kernel, cta));
+}
+
+void executive::ReconvergenceTFSoftware::evalPredicate(
+	executive::CTAContext &context) {
+
+}
+
+bool executive::ReconvergenceTFSoftware::eval_Bra(
+	executive::CTAContext &context, 
+	const ir::PTXInstruction &instr, 
+	const boost::dynamic_bitset<> & branch, 
+	const boost::dynamic_bitset<> & fallthrough) {
+
+	if (branch.any()) {
+		context.PC = instr.branchTargetInstruction;
+	}
+	else if (fallthrough.any()) {
+		context.PC++;
+	}
+	
+	return false;
+}
+
+void executive::ReconvergenceTFSoftware::eval_Bar(
+	executive::CTAContext &context,
+	const ir::PTXInstruction &instr) {
+	if (context.active.count() < context.active.size()) {
+		// deadlock - not all threads reach synchronization barrier
+#if REPORT_BAR
+		report(" Bar called - " << context.active.count() << " of " 
+			<< context.active.size() << " threads active");
+#endif		
+		throw RuntimeException("barrier deadlock", context.PC, instr);
+	}
+}
+
+void executive::ReconvergenceTFSoftware::eval_Reconverge(
+	executive::CTAContext &context, const ir::PTXInstruction &instr) {
+
+	if (instr.getActiveMask) {
+		int warps = (cta->threadCount + warpSize - 1) / warpSize;
+		for(int warp = 0; warp != warps; ++warp) {		
+			int threadStart = warp * warpSize;
+			int threadEnd   = std::min(threadStart + warpSize, cta->threadCount);
+			ir::PTXU64 mask = 0;
+			for (int threadID = threadStart, index = 0;
+				threadID != threadEnd; threadID++, ++index) {
+				if (!context.predicated(threadID, instr)) continue;
+				
+				mask |= 1 << index;
+			}
+			
+			for (int threadID = threadStart; threadID < threadEnd; threadID++) {
+				if (!context.predicated(threadID, instr)) continue;
+				cta->setRegAsU64(threadID, instr.d.reg, mask);
+			}
+		}
+	}
+	else {
+		unsigned int warps = (cta->threadCount + warpSize - 1) / warpSize;
+		
+		for(unsigned int warp = 0; warp != warps; ++warp) {		
+			int threadStart = warp * warpSize;
+			int threadEnd   = std::min(threadStart + warpSize, cta->threadCount);
+			ir::PTXU64 mask = 0;
+			bool maskSet = false;
+			
+			for (int threadID = threadStart, index = 0;
+				threadID != threadEnd; threadID++, ++index) {
+				
+				ir::PTXU64 newMask = cta->operandAsU64(threadID, instr.a);
+				
+				if (maskSet) {
+					if(mask != newMask) {
+						throw RuntimeException("Threads in the same warp tried "
+							"to set the active mask with different values.",
+							context.PC, instr);
+					}
+				}
+				
+				mask = newMask;
+				
+				maskSet = true;
+			}
+			
+			for (int threadID = threadStart, index = 0;
+				threadID != threadEnd; threadID++, ++index) {
+				context.active[threadID] = (mask >> index) & 0x1;
+			}
+		}
+	}
+}
+
+void executive::ReconvergenceTFSoftware::eval_Exit(
+	executive::CTAContext &context, 
+	const ir::PTXInstruction &instr) {
+	if (stack.size() == 1 &&
+		context.active.count() == context.active.size()) {
+		context.running = false;
+	}
+	else {
+		throw RuntimeException("not all threads hit the exit: ",
+			context.PC, instr);
+	}
+}
+
+void executive::ReconvergenceTFSoftware::eval_Vote(
+	executive::CTAContext &context, const ir::PTXInstruction &instr) {
+	
+	if (instr.vote == ir::PTXInstruction::Ballot) {
+		unsigned int warps = (cta->threadCount + warpSize - 1) / warpSize;
+		for(unsigned int warp = 0; warp != warps; ++warp) {
+			ir::PTXB32 result = 0;
+			int threadStart = warp * warpSize;
+			int threadEnd   = std::min(threadStart + warpSize, cta->threadCount);
+			for (int threadID = threadStart, index = 0;
+				threadID != threadEnd; threadID++, ++index) {
+				if (!context.predicated(threadID, instr)) continue;
+				bool local = cta->operandAsPredicate(threadID, instr.a);
+				if (instr.a.condition == ir::PTXOperand::InvPred) {
+					local = !local;
+				}
+				
+				ir::PTXB32 b32Local = local ? 0x1 : 0x0;
+				
+				result = result | (b32Local << index);
+			}
+
+			for (int threadID = threadStart; threadID < threadEnd; threadID++) {
+				if (!context.predicated(threadID, instr)) continue;
+				cta->setRegAsB32(threadID, instr.d.reg, result);
+			}
+		}
+	}
+	else {
+		ReconvergenceMechanism::eval_Vote(context, instr);
+	}
+	
+}
+
+bool executive::ReconvergenceTFSoftware::nextInstruction(
+	executive::CTAContext &context,
+	const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &opcode) {
+
+	// handle broadcasts
+	if (instr.broadcast) {
+		unsigned int warps = (cta->threadCount + warpSize - 1) / warpSize;
+		for(unsigned int warp = 0; warp != warps; ++warp) {
+			ir::PTXB64 result = 0;
+			bool any = false;
+			int threadStart = warp * warpSize;
+			int threadEnd   = std::min(threadStart + warpSize, cta->threadCount);
+			for (int threadID = threadStart, index = 0;
+				threadID != threadEnd; threadID++, ++index) {
+				if (!context.predicated(threadID, instr)) continue;
+				result = cta->getRegAsB64(threadID, instr.d.reg);
+				
+				any = true;
+				break;
+			}
+
+			if (!any) continue;
+
+			report("Broadcasting " << result << " to all threads in r"
+				<< instr.d.reg);
+
+			for (int threadID = threadStart; threadID < threadEnd; threadID++) {
+				cta->setRegAsB64(threadID, instr.d.reg, result);
+			}
+		}
+	}
+
+	// advance to next instruction if the current instruction wasn't a branch
+	if (opcode != ir::PTXInstruction::Bra
+		&& opcode != ir::PTXInstruction::Call
+		&& opcode != ir::PTXInstruction::Ret) {
+		context.PC++;
+	}
+	
+	return context.running;
+}
+
+executive::CTAContext& executive::ReconvergenceTFSoftware::getContext() {
+	return stack.back();
+}
+
+size_t executive::ReconvergenceTFSoftware::stackSize() const {
+	return stack.size();
+}
+
+void executive::ReconvergenceTFSoftware::push(executive::CTAContext& c) {
+	stack.push_back(c);
+}
+
+void executive::ReconvergenceTFSoftware::pop() {
 	assert(stack.size() > 1);
 	stack.pop_back();
 }

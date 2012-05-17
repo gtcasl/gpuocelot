@@ -321,23 +321,25 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 		
 		BlockSet successors;
 		
-		for(auto successor : block->successors())
+		for(auto successor = block->successors().begin();
+			successor != block->successors().end(); ++successor)
 		{
-			if(!visited.insert(successor->block()).second) continue;
+			if(!visited.insert((*successor)->block()).second) continue;
 
 			priorities.insert(std::make_pair(
-				tfAnalysis->getPriority(successor->block()), successor));
-			successors.insert(successor->block());
+				tfAnalysis->getPriority((*successor)->block()), *successor));
+			successors.insert((*successor)->block());
 		}
 		
-		for(auto frontierBlock : frontier)
+		for(auto frontierBlock = frontier.begin();
+			frontierBlock != frontier.end(); ++frontierBlock)
 		{
-			if(!visited.insert(frontierBlock).second) continue;
+			if(!visited.insert(*frontierBlock).second) continue;
 			
-			auto dfgBlock = cfgToDFGMap[frontierBlock];
+			auto dfgBlock = cfgToDFGMap[*frontierBlock];
 			
 			priorities.insert(std::make_pair(
-				tfAnalysis->getPriority(frontierBlock), dfgBlock));
+				tfAnalysis->getPriority(*frontierBlock), dfgBlock));
 		}
 		
 		for(auto entry = priorities.begin();

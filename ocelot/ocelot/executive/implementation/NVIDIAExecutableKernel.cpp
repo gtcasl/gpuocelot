@@ -59,7 +59,8 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	report("  constructed new NVIDIAExecutableKernel");
 }
 
-static CUfunc_cache _translateCacheConfiguration(executive::ExecutableKernel::CacheConfiguration config) {
+static CUfunc_cache _translateCacheConfiguration(
+	executive::ExecutableKernel::CacheConfiguration config) {
 	switch (config) {
 		case executive::ExecutableKernel::CachePreferShared:
 			return CU_FUNC_CACHE_PREFER_SHARED;

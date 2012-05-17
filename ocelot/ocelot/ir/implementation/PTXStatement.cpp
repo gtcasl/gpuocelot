@@ -17,6 +17,7 @@
 // Standard Library Includes
 #include <cstring>
 #include <stack>
+#include <cstdint>
 
 namespace ir {
 

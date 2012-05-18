@@ -267,23 +267,24 @@ void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
 		if(block->block() == k.cfg()->get_exit_block())  continue;
 		
 		report("  for block " << block->label());
-		for(auto successor : block->successors())
+		for(auto successor = block->successors().begin();
+			successor != block->successors().end(); ++successor)
 		{
-			if(successor->block() == k.cfg()->get_entry_block()) continue;
-			if(successor->block() == k.cfg()->get_exit_block())  continue;
+			if((*successor)->block() == k.cfg()->get_entry_block()) continue;
+			if((*successor)->block() == k.cfg()->get_exit_block())  continue;
 			
 			if(tfAnalysis->isInThreadFrontier(
-				block->block(), successor->block()))
+				block->block(), (*successor)->block()))
 			{
-				report("   merging variable with " << successor->label()
+				report("   merging variable with " << (*successor)->label()
 					<< " before entering" );
-				_mergeVariablesBeforeEntering(block, successor);
+				_mergeVariablesBeforeEntering(block, (*successor));
 			}
 			else
 			{
-				report("   assigning variable with " << successor->label()
+				report("   assigning variable with " << (*successor)->label()
 					<< " before entering" );
-				_assignVariableBeforeEntering(block, successor);
+				_assignVariableBeforeEntering(block, (*successor));
 			}
 		}
 	}

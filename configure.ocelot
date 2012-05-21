@@ -29,7 +29,7 @@
 		devices: [ "dynamic" ],
 		partitioningHeuristic: "minimum",
 		workerThreadLimit: 1,
-		warpSize: 8,
+		warpSize: 1,
 		optimizationLevel: full,
 		port: 2011,
 		host: "127.0.0.1",
@@ -37,8 +37,8 @@
 	},
 	optimizations: {
 		subkernelSize: 1000,
-		vectorizeConvergent: true,
-		vectorizeAffineMemory: true,
+		vectorizeConvergent: false,
+		vectorizeAffineMemory: false,
 	},
 	checkpoint: {
 		enabled: false,

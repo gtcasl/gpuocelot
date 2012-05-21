@@ -73,6 +73,13 @@
 #define DEBUG_REPORT_RETURNS 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Minor compiler-inserted optimizations
+//
+
+#define OPT_PREFETCH_LOCAL_MEMORY 1
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 char analysis::LLVMUniformVectorization::ID = 127;
 
@@ -545,11 +552,50 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 			if (before) {
 				(local.*argument)->moveBefore(before);
 			}
+			if (OPT_PREFETCH_LOCAL_MEMORY  && !idx) {
+				_prefetchLocalMemory(local.*argument, 32);
+			}
 		}
 		else {
 			assert(baseThread && "_loadThreadLocal() must be called for threadId=0 first");
 			(local.*argument) = (baseThread->*argument);
 		}
+	}
+}
+
+void analysis::LLVMUniformVectorization::Translation::_prefetchLocalMemory(
+	llvm::Instruction *localPtr, size_t localSize) {
+	
+	// llvm.prefetch(i8 * <addr>, i32 <rw>, i32 <locality>, i32 <cache type>)
+	llvm::Constant *prefetchFn = function->getParent()->getFunction("llvm.prefetch");
+	if (!prefetchFn) {
+		return;
+	}
+	assert(prefetchFn && "Failed to get reference to llvm.prefetch() intrinsic");
+	
+	size_t lineSize = 64;
+	for (size_t offset = 0; offset < localSize; offset += lineSize) {
+		
+		llvm::Instruction *ptr = localPtr;
+		if (offset) {
+			std::vector< llvm::Value *> args;
+			args.push_back(getConstInt32(offset));
+			llvm::Instruction *getPtrInst = llvm::GetElementPtrInst::Create(localPtr, 
+				llvm::ArrayRef<llvm::Value*>(args), "prefetchLocalPtr", localPtr);
+			getPtrInst->removeFromParent();
+			getPtrInst->insertAfter(localPtr);
+			ptr = getPtrInst;
+		}
+		std::vector< llvm::Value *> args;
+		args.push_back(ptr);
+		args.push_back(getConstInt32(1));		// rw: 1 - write
+		args.push_back(getConstInt32(1));		// locality, 0-3
+		args.push_back(getConstInt32(1));		// cache type: 0 - instruction, 1 - data
+		
+		llvm::CallInst *prefetchCall = llvm::CallInst::Create(prefetchFn, 
+			llvm::ArrayRef<llvm::Value*>(args), "", localPtr);
+		prefetchCall->removeFromParent();
+		prefetchCall->insertAfter(localPtr);
 	}
 }
 

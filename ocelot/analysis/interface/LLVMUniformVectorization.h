@@ -256,6 +256,7 @@ namespace analysis
 			
 			void _loadThreadLocal(ThreadLocalArgument &local, int suffix, 
 				llvm::Instruction *before, llvm::BasicBlock *block = 0);
+			void _prefetchLocalMemory(llvm::Instruction *localPtr, size_t localSize);
 			
 			void _initializeSchedulerEntryBlock();
 			

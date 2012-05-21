@@ -196,6 +196,16 @@ void executive::DynamicMulticoreExecutive::_initializeThreadContexts(const ir::D
 	reportE(REPORT_CTA_OPERATIONS, "  startingSubkernel >> 16 = " << (startingSubkernel >> 16));
 }
 
+
+static int Log2WarpSize(int warpSize) {
+	for (int i = 0; i < 32; i++) {
+		if ((1 << i) == warpSize) {
+			return i;
+		}
+	}
+	return 0;
+}
+
 const executive::DynamicMulticoreExecutive::Translation *
 	executive::DynamicMulticoreExecutive::_getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
 	unsigned int specialization) {
@@ -203,7 +213,6 @@ const executive::DynamicMulticoreExecutive::Translation *
 	reportE(REPORT_SCHEDULE_OPERATIONS, "getOrInsertTranslation(ws: " << warpsize 
 		<< ", subkernel: " << subkernel << ", spec: " << specialization);
 
-	int Log2WarpSize(int warpSize);
 		
 	int lgwarpsize = Log2WarpSize(warpsize);
 	const Translation *translation = translationVector[lgwarpsize][subkernel];

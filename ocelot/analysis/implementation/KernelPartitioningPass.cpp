@@ -1443,11 +1443,11 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 	}
 		
 	int flags = 0;
-	bool completelyInternal = true;
+//	bool completelyInternal = true;
 	for (int i = 0; i < 2; i++) {
 		if (sourceBlocks.find(inverseBlockMapping[bb->successors[ successorIndex[i] ]]) == sourceBlocks.end()) {
 			flags |= divergenceFlags[i*2];
-			completelyInternal = false;
+//			completelyInternal = false;
 			report("  successor(" << i << ") " << bb->successors[successorIndex[i]]->label << " NOT in partition");
 		}
 		else {
@@ -1465,11 +1465,12 @@ void analysis::KernelPartitioningPass::Subkernel::_createDivergentBranch(
 			ir::BasicBlock::Edge takenEntryEdge(handlerTaken, bb->successors[successorIndex[i]],
 				ir::BasicBlock::Edge::Branch);		
 			subkernelCfg->insert_edge(takenEntryEdge);
-		
+			/*
 			int entryIndex = i;
 			if (terminator->pg.condition == ir::PTXOperand::nPT) {
 				entryIndex = 1 - i;
 			}
+			*/
 			divergence.targetEntryIds[i] = entryId;
 			
 			report("  successor(" << i << ") " << bb->successors[successorIndex[i]]->label << " in partition");

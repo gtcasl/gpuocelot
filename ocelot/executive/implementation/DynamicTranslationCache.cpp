@@ -63,12 +63,12 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
+#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
 #define REPORT_SOURCE_PTX_KERNELS 1				// PTX prior to transformations
 #define REPORT_PARITIONED_PTX_KERNELS 1		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 1
 
-#define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
+#define REPORT_LLVM_MASTER 0							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_OPTIMIZED_LLVM_MODULE 1		// module containing optimized LLVM assembly 
@@ -1243,8 +1243,6 @@ static void cloneAndOptimizeTranslation(
 	else if (REQUIRE_VERIFY_FUNCTION &&
 		llvm::verifyFunction(*translation->llvmFunction, llvm::PrintMessageAction)) {
 	
-		std::cerr << "verification failed for translated function for " << translatedKernel.kernel->name << " : \"" 
-			<< verifyError << "\"" << std::endl;
 			
 #if (REPORT_BASE && REPORT_LLVM_MASTER && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
@@ -1256,6 +1254,9 @@ static void cloneAndOptimizeTranslation(
 				
 #endif
 
+		std::cerr << "verification failed for translated function for " << translatedKernel.kernel->name << " : \"" 
+			<< verifyError << "\"" << std::endl;
+		
 		assert(0 && "due to broken LLVM translation");
 		
 		delete translatedKernel.llvmModule;
@@ -1353,7 +1354,6 @@ void executive::DynamicTranslationCache::_translateKernel(TranslatedKernel &tran
 			translator::PTXToLLVMTranslator translator(getOptimizationLevel(), 0, true);
 
 			transforms::PassManager manager(const_cast<ir::Module*>(subkernelPtx->module));
-
 			manager.addPass(translator);
 			manager.runOnKernel(*subkernelPtx);
 
@@ -1433,10 +1433,12 @@ executive::DynamicTranslationCache::Translation *
 		int warpSize, 
 		unsigned int specialization) {
 	
-	report("_specializeTranslation()");
-	
+	report("_specializeTranslation(subkernelId = " << subkernelId << ")");
+	report("  accessing translatedKernel: " << translatedKernel.kernel->name);
+	report("  exists? " << (translatedKernel.subkernels.find(subkernelId) != translatedKernel.subkernels.end()));
+		
 	TranslatedSubkernel &subkernel = translatedKernel.subkernels[subkernelId];
-	
+
 	Translation *translation = new Translation;
 	translation->metadata = subkernel.metadata;
 	static_cast<executive::MetaData*>(translation->metadata)->device = device;

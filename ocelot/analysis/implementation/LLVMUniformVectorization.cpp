@@ -53,12 +53,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_INITIAL_SUBKERNEL 0
-#define REPORT_FINAL_SUBKERNEL 0
+#define REPORT_FINAL_SUBKERNEL 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_VECTORIZING 1
-#define REPORT_VECTORIZATION_STATISTICS 1
+#define REPORT_VECTORIZING 0
+#define REPORT_VECTORIZATION_STATISTICS 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -179,6 +179,10 @@ llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 
 llvm::LLVMContext & analysis::LLVMUniformVectorization::Translation::context() const {
 	return function->getContext();
+}
+
+llvm::Type *analysis::LLVMUniformVectorization::Translation::getVoidTy() const {
+	return llvm::Type::getVoidTy(context());
 }
 
 llvm::IntegerType *analysis::LLVMUniformVectorization::Translation::getTyInt(int n) const {
@@ -566,11 +570,15 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 void analysis::LLVMUniformVectorization::Translation::_prefetchLocalMemory(
 	llvm::Instruction *localPtr, size_t localSize) {
 	
-	// llvm.prefetch(i8 * <addr>, i32 <rw>, i32 <locality>, i32 <cache type>)
-	llvm::Constant *prefetchFn = function->getParent()->getFunction("llvm.prefetch");
-	if (!prefetchFn) {
-		return;
-	}
+	std::vector<llvm::Type*> funcTypeArgs;
+	funcTypeArgs.push_back(llvm::PointerType::get(getTyInt(8), 0));
+	funcTypeArgs.push_back(getTyInt(32));
+	funcTypeArgs.push_back(getTyInt(32));
+	funcTypeArgs.push_back(getTyInt(32));
+	llvm::FunctionType *funcType = llvm::FunctionType::get(getVoidTy(), 
+		llvm::ArrayRef<llvm::Type*>(funcTypeArgs), false);
+	llvm::Constant *prefetchFn = function->getParent()->getOrInsertFunction("llvm.prefetch", funcType);
+
 	assert(prefetchFn && "Failed to get reference to llvm.prefetch() intrinsic");
 	
 	size_t lineSize = 64;
@@ -812,7 +820,15 @@ void analysis::LLVMUniformVectorization::Translation::_eraseBlock(llvm::BasicBlo
 		}
 		llvmToOcelotBlockMap.erase(block_it);
 	}
-			
+	
+	report("  users: ");
+	
+	// visit users
+	for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {
+		inst_it->replaceAllUsesWith(llvm::UndefValue::get(inst_it->getType()));
+	}
+	
+	report("  erasing block " << block->getName().str());
 	block->eraseFromParent();
 }
 

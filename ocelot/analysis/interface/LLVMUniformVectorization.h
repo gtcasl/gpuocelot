@@ -232,6 +232,7 @@ namespace analysis
 		
 		protected:	
 			llvm::LLVMContext & context() const;
+			llvm::Type *getVoidTy() const;
 			llvm::IntegerType *getTyInt(int n) const;
 			llvm::ConstantInt *getConstInt32(int n) const;
 			llvm::ConstantInt *getConstInt16(short n) const;

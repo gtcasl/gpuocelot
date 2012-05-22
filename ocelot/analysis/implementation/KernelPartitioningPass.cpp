@@ -43,9 +43,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define EMIT_PARTITIONED_KERNELGRAPH 1					// emits to .dot text files in directory
+#define EMIT_PARTITIONED_KERNELGRAPH 0					// emits to .dot text files in directory
 #define EMIT_KERNELGRAPH_ORIGINAL_PTX 0					// if 1, shows PTX for original basic blocks
-#define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 1		// enables replacing actual instructions in handler blocks
+#define EMIT_KERNELGRAPH_SUCCINCT_HANDLERS 0		// enables replacing actual instructions in handler blocks
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

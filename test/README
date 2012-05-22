@@ -1,0 +1,24 @@
+Steps of Running hello world with ocelot opencl library
+
+1.Install SNU OpenCL Kernel compiler
+tar -xzvf SnuCL-0.8.5.tar.gz
+Follow the installation guide in SnuCL/README.txt to install SNUCL
+
+2.Build hello world kernel
+cd hello_world
+../t-gpu.sh hello_world.cl
+
+3.Rename kernel output to activate OpenCL runtime backdoor
+mv hello_world.cl.ptx buildout.ptx
+
+4.Build hello world host code, replace library path if necessary
+g++ hello_world.cpp -o hello_world_ocelot -L$HOME/local/lib -locelot-opencl
+
+5.Set up device
+Open configure.ocelot
+Edit "devices" item under "executive", choose llvm/emulated/nvidia as device
+Save configure.ocelot
+
+6. Run hello world
+./hello_world_ocelot
+

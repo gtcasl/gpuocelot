@@ -155,8 +155,11 @@ namespace ir {
 			
 				stream << " }";
 				stack.pop();
-				--si;
-				
+				if( !stack.empty() ) {
+					// If stack.empty cannot decrement si as it is at begin()
+					// and it is invalid to decrement such an iterator.
+					--si;
+				}	
 			}
 			
 		}

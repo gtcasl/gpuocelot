@@ -7,6 +7,7 @@
 #ifndef IR_PTXOPERAND_H_INCLUDED
 #define IR_PTXOPERAND_H_INCLUDED
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <functional>
@@ -14,23 +15,23 @@
 
 namespace ir {
 
-	typedef unsigned char PTXU8;
-	typedef unsigned short PTXU16;
-	typedef unsigned int PTXU32;
-	typedef unsigned long long PTXU64;
+	typedef uint8_t PTXU8;
+	typedef uint16_t PTXU16;
+	typedef uint32_t PTXU32;
+	typedef uint64_t PTXU64;
 	
-	typedef char PTXS8;
-	typedef short PTXS16;
-	typedef int PTXS32;
-	typedef long long PTXS64;
+	typedef int8_t PTXS8;
+	typedef int16_t PTXS16;
+	typedef int32_t PTXS32;
+	typedef int64_t PTXS64;
 	
 	typedef float PTXF32;
 	typedef double PTXF64;
 	
-	typedef PTXU8 PTXB8;
-	typedef PTXU16 PTXB16;
-	typedef PTXU32 PTXB32;
-	typedef PTXU64 PTXB64;
+	typedef PTXU8   PTXB8;
+	typedef PTXU16  PTXB16;
+	typedef PTXU32  PTXB32;
+	typedef PTXU64  PTXB64;
 
 	class PTXOperand {
 	public:

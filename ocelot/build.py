@@ -17,7 +17,7 @@ import sys
 ################################################################################
 ## Build Ocelot
 def build(options):
-	command = "scons -Q "
+	command = "scons -Q"
 
 	if options.clean:
 		command += " -c"
@@ -25,9 +25,12 @@ def build(options):
 	if options.debug:
 		command += " mode=debug"
 
-        if options.no_werr:
-                command += " Werror=false"
-
+	if options.no_werr:
+		command += " Werror=false"
+	
+	if options.no_wall:
+		command += " Wall=false"
+	
 	if options.no_llvm:
 		command += " enable_llvm=false"
 
@@ -38,9 +41,10 @@ def build(options):
 		command += " debian"
 
 	if options.install:
-		command += " install"
+		command += " install=true"
 
-	command += " install_path=" + options.install_prefix
+	if options.install_prefix:
+		command += " install_path=" + options.install_prefix
 
 	if options.build_target != '':
 		if options.debug:
@@ -49,11 +53,18 @@ def build(options):
 			command += " .release_build/"
 		command += options.build_target
 		
-	command += " test_level=" + options.test_level
-	command += " -j" + options.threads
+	if options.test_level != 'none':
+		command += " test_level=" + options.test_level
+
+	if options.threads > 1:
+		command += " -j" + str(options.threads)
 
 	# Run SCons
 	print command
+	
+	# Flush above message as on Windows it is not appearing until
+	# after following subprocess completes.
+	sys.stdout.flush()
 
 	scons = subprocess.Popen(command, shell=True)
 
@@ -64,17 +75,18 @@ def build(options):
 ################################################################################
 ## Run Unit Tests
 def runUnitTests(options, buildSucceeded):
-	if options.clean:
-		return False
-	
-	if options.test_level == 'none':
-		return False
-
 	if not buildSucceeded:
 		print "Build failed..."
 		return False
+
+ 	if options.clean:
+		print "Build cleaned..."
+ 		return False
 	
-	command = "hydrazine/python/RunRegression.py -v"
+	if options.test_level == 'none':
+		return False
+	
+	command = "python hydrazine/python/RunRegression.py -v"
 	
 	if options.debug:
 		command += " -p .debug_build/"
@@ -89,12 +101,16 @@ def runUnitTests(options, buildSucceeded):
 	elif options.test_level == 'full':
 		log = "regression/" + prefix + "-full.log"
 		command += " -t regression/full.level"
+	else:
+		print "Unsupported test_level of '" + options.test_level + "'"
+		return False
 
 	command += " -l " + log
 	
 	print '\nRunning Ocelot Unit Tests...'
-	status = os.popen(command).read()
-	print status
+	print command
+	status = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+ 	print status
 	
 	# Check for any failing/missing tests
 	if re.search('Failing tests|Non-Existent tests', status):
@@ -115,8 +131,8 @@ def submit(options, testPassed):
 		return
 	
 	if not testPassed:
-		print "Regression tests failed, commit prohibited."
-		return
+		print "Regression tests failed or not run, commit prohibited."
+ 		return
 		
 	command = "svn commit -m \"" + options.message + "\""
 	
@@ -126,31 +142,30 @@ def submit(options, testPassed):
 ################################################################################
 ## Main
 def main():
-	defaultInstallPath = '/usr/local'
-	
-	if 'OCELOT_INSTALL_PATH' in os.environ:
-		defaultInstallPath = os.environ['OCELOT_INSTALL_PATH']
-
 	parser = OptionParser()
 	
 	parser.add_option( "-c", "--clean", \
-		default = False, action = "store_true" )
+		default = False, action = "store_true",
+		help = "delete all build results except previously installed files" )
 	parser.add_option( "-d", "--debug", \
 		default = False, action = "store_true", \
 		help = "build Ocelot in debug mode." )
 	parser.add_option( "-t", "--test_level", default = "none", \
 		help = "set the test level (none, basic, full)" )
-	parser.add_option( "-j", "--threads", default = "1" )
+	parser.add_option( "-j", "--threads", "--jobs", dest="threads",
+		type="int", default = "1" )
 	parser.add_option( "-s", "--submit", \
 		default = False, action = "store_true" )
 	parser.add_option( "-i", "--install", \
 		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \
 		default = "", help = "build a specific target." )
+	parser.add_option( "-a", "--no_wall", \
+		default = False, action = "store_true", help = "don't display all warnings." )
 	parser.add_option( "-w", "--no_werr", \
 		default = False, action = "store_true", help = "don't turn warnings into errors." )
 	parser.add_option( "-p", "--install_prefix", \
-		default = defaultInstallPath, help = "The base path to install ocelot in." )
+		help = "The base path to install ocelot in." )
 	parser.add_option( "--build_deb", \
 		default = False, action = "store_true",
 		help = "Build a .deb package of Ocelot." )
@@ -176,7 +191,8 @@ def main():
 	# Submit if the tests pass
 	submit(options, testsPassed)
 	
-	if buildSucceeded and ((options.test_level == 'none') or testsPassed):
+	if (buildSucceeded and (options.clean or 
+		(options.test_level == 'none') or testsPassed)):
 		sys.exit(0)
 	else:
 		print "Build failed"

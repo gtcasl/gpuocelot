@@ -64,12 +64,8 @@ public:
 	typedef ExecutableKernel::TextureVector TextureVector;
 
 public:
-	BlockIdMap           blocks;
-	const ir::PTXKernel* kernel;
-	Function             function;
-	TextureVector        textures;
 
-public:
+	unsigned int warpCount;
 	unsigned int sharedSize;
 	unsigned int localSize;
 	unsigned int globalLocalSize;
@@ -78,6 +74,12 @@ public:
 	unsigned int constantSize;
 	unsigned int warpSize;
 	unsigned int subkernels;
+	
+public:
+	BlockIdMap           blocks;
+	const ir::PTXKernel* kernel;
+	Function             function;
+	TextureVector        textures;
 	
 	executive::Device *device;
 };

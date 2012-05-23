@@ -48,7 +48,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -226,6 +226,8 @@ llvm::Instruction * analysis::LLVMUniformVectorization::ThreadLocalArgument::*
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::constantPointer,
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::parameterPointer,
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::argumentPointer,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::globallyScopedLocal,
+	&analysis::LLVMUniformVectorization::ThreadLocalArgument::externalSharedSize,
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::metadataPointer,
 	&analysis::LLVMUniformVectorization::ThreadLocalArgument::ptrThreadDescriptorArray
 };
@@ -253,6 +255,8 @@ bool LLVMUniformVectorization::ThreadLocalArgumentVarianceMap[] = {
 	false,	// constantPointer
 	true,		// parameterPointer
 	false,	// argumentPointer
+	true,   // globallyScopedLocal
+	false,  // externalSharedSize
 	false	// metadataPointer
 };
 
@@ -297,6 +301,8 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	}
 	
 	_eliminateEmptyBlocks();
+	
+	_createBackEdges();
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
 #if REPORT_BASE && REPORT_FINAL_SUBKERNEL
@@ -501,6 +507,9 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	local.context = &function->getArgumentList().front();
 	std::string threadSuffix = std::string(".t") + boost::lexical_cast<std::string, int>(threadId);
 	
+	report("  local.context = " << String(local.context));
+	report("  type = " << String(local.context->getType()));
+	
 	ThreadLocalArgument * baseThread = (threadId ? &schedulerEntryBlock.threadLocalArguments.at(0) : 0);
 	
 	const char *dim3names[] = { "threadId", "blockDim", "blockId", "gridDim" };
@@ -536,9 +545,10 @@ void analysis::LLVMUniformVectorization::Translation::_loadThreadLocal(
 	}
 	
 	const char *ptrNames[] = {
-		"localPtr", "sharedPtr", "constPtr", "paramPtr", "argumentPtr", "metadataPtr", 
+		"localPtr", "sharedPtr", "constPtr", "paramPtr", "argumentPtr", "globallyScopedLocalPtr", 
+		"externalSharedSize", "metadataPtr", 
 	};
-	for (int idx = 0; idx < 6; idx++) {
+	for (int idx = 0; idx < 8; idx++) {
 		ThreadLocalArgumentMemberPointer argument = ThreadLocalArgumentPointerInstances[idx];
 		
 		if (ThreadLocalArgumentPointerVarianceMap[idx] || !sameCta) {
@@ -1674,6 +1684,76 @@ void analysis::LLVMUniformVectorization::Translation::_eliminateUnusedVectorPack
 			}
 		}
 	}
+}
+
+/*!
+	\brief 
+*/
+void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
+	report("_createBackEdges()");
+	
+	report("  creating exit branch edges");
+	
+	schedulerEntryBlock.warpLoopWhile = llvm::BasicBlock::Create(context(), "WarpLoopWhile", 
+		function, 0);
+		
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		if (&*bb_it == schedulerEntryBlock.warpLoopWhile) { continue; }
+		report("  block: " << bb_it->getName().str());
+		if (llvm::ReturnInst *retInst = llvm::dyn_cast<llvm::ReturnInst>(bb_it->getTerminator())) {
+			llvm::BranchInst *branchInst = llvm::BranchInst::Create(schedulerEntryBlock.warpLoopWhile, retInst);
+			retInst->eraseFromParent();
+			assert(branchInst && "Failed to create branch instruction");
+		}
+	}
+	
+	// update previous exit blocks to branch to warpLoopWhile block instead	
+	schedulerEntryBlock.warpLoopExit = llvm::BasicBlock::Create(context(), "WarpLoopExit", function, 0);
+	
+	report("  creating new entry block");
+	
+	// create an additional entry block, counter, and scheduler
+	schedulerEntryBlock.warpLoopDo = llvm::BasicBlock::Create(context(), "WarpLoopEntry", 
+		function, & function->getEntryBlock());
+	
+	report("  creating loop termination block");
+
+	llvm::CastInst *ptrWarpCount = llvm::CastInst::CreatePointerCast(
+		schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer,
+		llvm::PointerType::get(getTyInt(32), 0), "ptrWarpCount", schedulerEntryBlock.warpLoopDo);
+	ptrWarpCount->removeFromParent();
+	ptrWarpCount->insertAfter(schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer);
+	llvm::Instruction *numThreads = new llvm::LoadInst(ptrWarpCount, "warpCount", 
+		schedulerEntryBlock.warpLoopDo);
+	numThreads->removeFromParent();
+	numThreads->insertAfter(ptrWarpCount);
+	
+	llvm::BranchInst *entryBra = llvm::BranchInst::Create(schedulerEntryBlock.block, 
+		schedulerEntryBlock.warpLoopDo);
+	assert(entryBra && "failed to create entryBra");
+	
+	llvm::PHINode *entryPhi = llvm::PHINode::Create(getTyInt(32), 2, "warpIterationIdx", 
+		&schedulerEntryBlock.block->front());
+	entryPhi->addIncoming(getConstInt32(0), schedulerEntryBlock.warpLoopDo);
+		
+	report("  incrementing warp counter");
+		
+	llvm::Instruction *incrementWarpIdx = llvm::BinaryOperator::CreateNSWAdd(entryPhi,
+		getConstInt32(1), "incrementWarpIdx", schedulerEntryBlock.warpLoopWhile);
+	entryPhi->addIncoming(incrementWarpIdx, schedulerEntryBlock.warpLoopWhile);
+	
+	llvm::Instruction *cmpResult = new llvm::ICmpInst(*schedulerEntryBlock.warpLoopWhile,
+		llvm::ICmpInst::ICMP_EQ, incrementWarpIdx, numThreads, "eqWarpCount");
+	
+	llvm::BranchInst *backEdgeBra = llvm::BranchInst::Create(schedulerEntryBlock.warpLoopExit, 
+		schedulerEntryBlock.block, cmpResult, schedulerEntryBlock.warpLoopWhile);
+	assert(backEdgeBra && "failed to create back edge");
+		
+	llvm::ReturnInst *returnInst = llvm::ReturnInst::Create(context(), 0, 
+		schedulerEntryBlock.warpLoopExit);
+	assert(returnInst && "failed to create return instruction");
+	
+	report("  done");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

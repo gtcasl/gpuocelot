@@ -161,6 +161,10 @@ namespace analysis
 		//! \brief scheduler block
 		class SchedulerBlock {
 		public:
+			SchedulerBlock(): block(0), defaultEntry(0), warpLoopDo(0), warpLoopWhile(0), warpLoopExit(0) { }
+			
+		public:
+		
 			//! \brief data structure maps entry Ids to entry blocks
 			EntryMap entries;
 			
@@ -169,6 +173,18 @@ namespace analysis
 			
 			//! \brief actual default entry
 			llvm::BasicBlock *defaultEntry;
+			
+			/*!
+				\brief dummy block enabling scheduler entry to be branch target
+			*/
+			llvm::BasicBlock *warpLoopDo;
+			
+			/*! \brief inserted after all transformations to create back edges and loop over warps
+			*/	
+			llvm::BasicBlock *warpLoopWhile;
+			
+			//! \brief becomes the actual exit block
+			llvm::BasicBlock *warpLoopExit;
 			
 			//! \brief
 			ThreadLocalArgumentVector threadLocalArguments;
@@ -314,10 +330,7 @@ namespace analysis
 			llvm::Instruction * _vectorizeFPIntConversion(llvm::Instruction *inst, 
 				VectorizedInstructionMap::iterator &vec_it);
 			
-			void _finalizeTranslation();
-			
 			void _eliminateUnusedVectorPacking();
-			
 			
 			void _affineMemoryAccesses();
 			
@@ -328,6 +341,9 @@ namespace analysis
 		
 		protected:
 			
+			void _finalizeTranslation();
+			
+			void _createBackEdges();
 			
 		protected:
 		

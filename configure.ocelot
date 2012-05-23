@@ -34,9 +34,10 @@
 		workerThreadLimit:        8,
 		warpSize:                 1
 	},
-	enabled: {
-		path:   ".",
-		prefix: "kernel_trace_",
+	checkpoint: {
+		enabled: True,
+		path:   "traces/",
+		prefix: "PTXUnitTest_",
 		suffix: ".trace",
 		verify: False
 	},

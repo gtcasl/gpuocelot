@@ -125,11 +125,12 @@ class CheckpointConfig:
 		self.verify  = False
 		
 	def write(self, openFile):
-		openFile.write("\tenabled: {\n")
+		openFile.write("\tcheckpoint: {\n")
+		openFile.write("\t\tenabled:  " + str(self.enabled) + ",\n")
 		openFile.write("\t\tpath:   \"" + str(self.path) + "\",\n")
 		openFile.write("\t\tprefix: \"" + self.prefix + "\",\n")
 		openFile.write("\t\tsuffix: \"" + self.suffix + "\",\n")
-		openFile.write("\t\tverify: " + str(self.verify) + "\n")
+		openFile.write("\t\tverify:   " + str(self.verify) + "\n")
 		openFile.write("\t}")
 
 

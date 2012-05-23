@@ -124,7 +124,7 @@ if env['library'] == 'shared':
 else:
 	libocelot = env.StaticLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 
-if 'install' in COMMAND_LINE_TARGETS:
+if env['install']:
 	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
 # Create ocelot built-in programs
@@ -186,6 +186,9 @@ Default(OcelotConfig)
 
 test_libs = ['-lboost_system-mt', '-lboost_filesystem-mt']
 
+level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
+enabled_tests = []
+
 tests = []
 tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp', 'basic',
 	test_libs))
@@ -241,25 +244,28 @@ tests.append(('TestOptimizations', \
 for test in tests:
 	libs = ocelot_libs
 	if len(test) > 3:
-		libs = libs + test[3]	
+		libs.append(test[3])
 	Test = env.Program(test[0], [MapSource(env, test[1])], LIBS=libs)
 	env.Depends(Test, libocelot)
-
-level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
-
-for test in tests:
 	if level_map[env['test_level']] >= level_map[test[2]]:
-		Default(test[0])
+		enabled_tests.append((test[0], Test))
+
+test_programs = env.Alias('tests', [])
+if enabled_tests:
+	print 'Adding unit tests to the build...'
+	for test in enabled_tests:
+		print '  ' + test[0]
+		Default(test[1])
+		env.Alias('tests', test[1])
 
 # find all header files in the source tree
-headers = []
 directories = ['ocelot/ir/interface', 
 	'ocelot/analysis/interface',
 	'ocelot/api/interface', 
 	'ocelot/cal/interface', 
 	'ocelot/cuda/interface', 
 	'ocelot/executive/interface', 
-	'ocelot/graphs/interface', 
+	'ocelot/tools/interface', 
 	'ocelot/parser/interface', 
 	'ocelot/trace/interface', 
 	'ocelot/transforms/interface',
@@ -269,6 +275,7 @@ directories = ['ocelot/ir/interface',
 	'hydrazine/interface' ]
 extensions = ['*.h', '*.hpp']
 
+headers = []
 for dir in directories:
 	for ext in extensions:
 		regexp = os.path.join(dir, ext)
@@ -276,8 +283,8 @@ for dir in directories:
 
 # Install rules
 
-if 'install' in COMMAND_LINE_TARGETS:
-	print 'Installing ocelot...'
+if env['install']:
+	print 'Ocelot will be installed at ' + env['install_path']
 	installed = []
 	installed.append(libocelot)
 	installed.append(env.Install(os.path.join( \
@@ -309,10 +316,12 @@ if 'install' in COMMAND_LINE_TARGETS:
 	for i in installed:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
 	
-	env.Alias('install', env['install_path'])
+	install_alias = env.Alias('install', env['install_path'])
+	Default(install_alias)
 
 	env.Replace(installed_files = installed)
 
-	Export('env')
-	SConscript('deb/DebSConscript')
+	if env['deb_arch'] != 'unknown':
+		Export('env')
+		SConscript('deb/DebSConscript')
 

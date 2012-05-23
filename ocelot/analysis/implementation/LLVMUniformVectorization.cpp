@@ -48,7 +48,7 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1701,14 +1701,16 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 		if (&*bb_it == schedulerEntryBlock.warpLoopWhile) { continue; }
 		report("  block: " << bb_it->getName().str());
 		if (llvm::ReturnInst *retInst = llvm::dyn_cast<llvm::ReturnInst>(bb_it->getTerminator())) {
-			llvm::BranchInst *branchInst = llvm::BranchInst::Create(schedulerEntryBlock.warpLoopWhile, retInst);
+			llvm::BranchInst *branchInst = llvm::BranchInst::Create(schedulerEntryBlock.warpLoopWhile, 
+				retInst);
 			retInst->eraseFromParent();
 			assert(branchInst && "Failed to create branch instruction");
 		}
 	}
 	
 	// update previous exit blocks to branch to warpLoopWhile block instead	
-	schedulerEntryBlock.warpLoopExit = llvm::BasicBlock::Create(context(), "WarpLoopExit", function, 0);
+	schedulerEntryBlock.warpLoopExit = llvm::BasicBlock::Create(context(), "WarpLoopExit", 
+		function, 0);
 	
 	report("  creating new entry block");
 	
@@ -1720,10 +1722,10 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 
 	llvm::CastInst *ptrWarpCount = llvm::CastInst::CreatePointerCast(
 		schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer,
-		llvm::PointerType::get(getTyInt(32), 0), "ptrWarpCount", schedulerEntryBlock.warpLoopDo);
+		llvm::PointerType::get(getTyInt(32), 0), "ptrThreadCount", schedulerEntryBlock.warpLoopDo);
 	ptrWarpCount->removeFromParent();
 	ptrWarpCount->insertAfter(schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer);
-	llvm::Instruction *numThreads = new llvm::LoadInst(ptrWarpCount, "warpCount", 
+	llvm::Instruction *numThreads = new llvm::LoadInst(ptrWarpCount, "threadCount", 
 		schedulerEntryBlock.warpLoopDo);
 	numThreads->removeFromParent();
 	numThreads->insertAfter(ptrWarpCount);
@@ -1732,22 +1734,72 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 		schedulerEntryBlock.warpLoopDo);
 	assert(entryBra && "failed to create entryBra");
 	
-	llvm::PHINode *entryPhi = llvm::PHINode::Create(getTyInt(32), 2, "warpIterationIdx", 
+	llvm::PHINode *entryPhi = llvm::PHINode::Create(getTyInt(32), 2, "threadIterationIdx", 
 		&schedulerEntryBlock.block->front());
 	entryPhi->addIncoming(getConstInt32(0), schedulerEntryBlock.warpLoopDo);
 		
-	report("  incrementing warp counter");
+	
+	// update getelementptr instances for thread-local
+	for (int tid = 0; tid < pass->warpSize; tid++) {
+		for (unsigned int p = 0; ThreadLocalArgumentInstances[p] != &ThreadLocalArgument::metadataPointer; ++p) { 
+			llvm::Instruction *loadInst = (schedulerEntryBlock.threadLocalArguments.at(tid).*(
+				ThreadLocalArgumentInstances[p]));
+			
+			assert(llvm::LoadInst::classof(loadInst) && "thread-local not a load instruction");
+			
+			llvm::GetElementPtrInst *localPtrInst = llvm::dyn_cast<llvm::GetElementPtrInst>(
+				llvm::dyn_cast<llvm::LoadInst>(loadInst)->getPointerOperand());
+			assert(localPtrInst && "thread-local load instruction has non-GEMP pointer operand");
+			llvm::Instruction *threadId = entryPhi;
+			if (ThreadLocalArgumentVarianceMap[p]) {
+				if (tid) {
+					threadId = llvm::BinaryOperator::CreateNSWAdd(threadId, getConstInt32(tid), "contextId",
+						localPtrInst);
+				}
+				*(localPtrInst->idx_begin()) = threadId;
+			}
+			else if (!tid) {
+				// elevate thread invariant
+				loadInst->removeFromParent();
+				loadInst->insertBefore(entryBra);
+				localPtrInst->removeFromParent();
+				localPtrInst->insertBefore(loadInst);
+			}
+		}
+		
+		// elevate metadata ptr
+		schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer->removeFromParent();
+		schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer->insertBefore(entryBra);
+		llvm::Instruction *metadataPtrGemp = llvm::dyn_cast<llvm::Instruction>(
+			llvm::dyn_cast<llvm::LoadInst>(
+				schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer)->getPointerOperand());
+		metadataPtrGemp->removeFromParent();
+		metadataPtrGemp->insertBefore(schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer);
+		ptrWarpCount->removeFromParent();
+		ptrWarpCount->insertAfter(schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer);
+		numThreads->removeFromParent();
+		numThreads->insertAfter(ptrWarpCount);
+	}
+	
+	report("  incrementing thread counter");
 		
 	llvm::Instruction *incrementWarpIdx = llvm::BinaryOperator::CreateNSWAdd(entryPhi,
-		getConstInt32(1), "incrementWarpIdx", schedulerEntryBlock.warpLoopWhile);
+		getConstInt32(pass->warpSize), "incrementThreadIdx", schedulerEntryBlock.warpLoopWhile);
 	entryPhi->addIncoming(incrementWarpIdx, schedulerEntryBlock.warpLoopWhile);
 	
 	llvm::Instruction *cmpResult = new llvm::ICmpInst(*schedulerEntryBlock.warpLoopWhile,
-		llvm::ICmpInst::ICMP_EQ, incrementWarpIdx, numThreads, "eqWarpCount");
+		llvm::ICmpInst::ICMP_ULT, incrementWarpIdx, numThreads, "ltThreadCount");
 	
-	llvm::BranchInst *backEdgeBra = llvm::BranchInst::Create(schedulerEntryBlock.warpLoopExit, 
-		schedulerEntryBlock.block, cmpResult, schedulerEntryBlock.warpLoopWhile);
+	llvm::BranchInst *backEdgeBra = llvm::BranchInst::Create(schedulerEntryBlock.block, 
+		schedulerEntryBlock.warpLoopExit, cmpResult, schedulerEntryBlock.warpLoopWhile);
 	assert(backEdgeBra && "failed to create back edge");
+		
+	report("  storing threadCount - thread counter over numThreads");
+	llvm::BinaryOperator *subThreadCount = llvm::BinaryOperator::CreateSub(numThreads, 
+		incrementWarpIdx, "remainingThreads", schedulerEntryBlock.warpLoopExit);
+	llvm::StoreInst *storeInst = new llvm::StoreInst(subThreadCount, ptrWarpCount, 
+		schedulerEntryBlock.warpLoopExit);
+	assert(storeInst && "failed to store number of remaining threads");
 		
 	llvm::ReturnInst *returnInst = llvm::ReturnInst::Create(context(), 0, 
 		schedulerEntryBlock.warpLoopExit);

@@ -398,7 +398,7 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 
 void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, size_t threads) {
 
-	reportE(REPORT_SCHEDULE_OPERATIONS, "  executing warp of size " << threads);
+	reportE(REPORT_SCHEDULE_OPERATIONS, "  executing collection of threads of size " << threads);
 
 	//   execute subkernel
 	SubkernelId encodedSubkernel = _getResumePoint(&_contexts[0]);
@@ -416,35 +416,44 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 			warpSize >>= 1;
 		}
 		
-		unsigned int executedWarps = 1;
+		unsigned int executedThreads = warpSize * ((threads - startThread) / warpSize);
+		
+		report(" threads = " << threads);
+		report(" startThread = " << startThread);
+		report(" warpSize = " << warpSize);
+		report(" executedThreads = " << executedThreads);
+		
+		assert(executedThreads + startThread <= threads);
+		assert(executedThreads > 0);
 		
 		{
 			const Translation *translation = _getOrInsertTranslation(warpSize, subkernelId, specialization);
 			executive::MetaData *metadata = static_cast<executive::MetaData*>(translation->metadata);
 			metadata->sharedSize = sharedMemorySize;
-			metadata->warpCount = 1;
+			metadata->warpCount = executedThreads;
+			
+			report("  before execution: metadata->warpCount = " << metadata->warpCount);
 			
 			LLVMContext *warp = &_contexts[startThread];
 			
 			reportE(REPORT_SCHEDULE_OPERATIONS, "");
-			reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp (size " << warpSize << ") over threads: ");
-			for (unsigned int t = 0; t < warpSize; t++) {
+			reportE(REPORT_SCHEDULE_OPERATIONS, "Executing " << executedThreads << " threads with warp size " 
+				<< warpSize << " over threads: ");
+			for (unsigned int t = 0; t < executedThreads; t++) {
 				warp[t].metadata = (char *)metadata;
 				_setResumeStatus(&warp[t], analysis::KernelPartitioningPass::Thread_exit);
 				
 				reportE(REPORT_SCHEDULE_OPERATIONS, "  " << warp[t].tid);	
 			}
 			translation->execute(warp);
-			
-			executedWarps -= metadata->warpCount;
-			executedWarps ++;
-			
+
+			report("  after execution: metadata->warpCount = " << metadata->warpCount);
+
 			reportE(REPORT_SCHEDULE_OPERATIONS, "");
 			reportE(REPORT_SCHEDULE_OPERATIONS, "finished executing warp");
 		}
-		startThread += warpSize;
+		startThread += executedThreads;
 	}
-	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

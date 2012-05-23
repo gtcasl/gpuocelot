@@ -481,8 +481,6 @@ def Environment():
 		'targets that will be built and configure to install in the '
 		'install_path (defaults to false unless one of the targets is '
 		'"install")', 0))
-	if 'install' in COMMAND_LINE_TARGETS:
-		env['install'] = True;
 
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \

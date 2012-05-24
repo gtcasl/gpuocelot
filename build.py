@@ -21,7 +21,7 @@ from create_config import ConfigFile
 ################################################################################
 ## Build Ocelot
 def build(options):
-	command = "scons -Q "
+	command = "scons -Q"
 
 	if options.clean:
 		command += " -c"
@@ -39,12 +39,16 @@ def build(options):
 		if not options.install:
 			print "Install must be set for a debian build, setting it"
 			options.install = True
+		# Should probably change this to not use a specific
+		# target but instead use defaults for the same reason
+		# as install described below.
 		command += " debian"
 
 	if options.install:
-		command += " install"
+		command += " install=true"
 
-	command += " install_path=" + options.install_prefix
+	if options.install_prefix:
+		command += " install_path=" + options.install_prefix
 
 	command += " " + options.build_target
 
@@ -208,7 +212,9 @@ def submit(options, testPassed):
 		return
 	
 	if not testPassed:
-		print "Regression tests failed, commit prohibited."
+		# The tests may have failed or may have not been run
+		# because '-c' or '-t none' was specified.
+		print "Regression tests failed or not run, commit prohibited."
 		return
 		
 	command = "svn commit -m \"" + options.message + "\""
@@ -276,10 +282,11 @@ def main():
 	# Submit if the tests pass
 	submit(options, testsPassed)
 	
-	if buildSucceeded and ((options.test_level == 'none') or testsPassed):
+	# No need to print suceeded as already done in runUnitTests. A
+	# sucessful clean is also success.
+	if buildSucceeded and (options.clean or (options.test_level == 'none') or testsPassed):
 		sys.exit(0)
 	else:
-		print "Build failed"
 		sys.exit(1)
 
 ################################################################################

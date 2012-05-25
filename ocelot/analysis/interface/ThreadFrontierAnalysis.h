@@ -57,7 +57,7 @@ public:
 	Priority getPriority(const_iterator block) const;
 	/*! \brief Test if a block is in the thread frontier of another block */
 	bool isInThreadFrontier(const_iterator block, const_iterator b) const;
-	
+
 private:
 	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
 

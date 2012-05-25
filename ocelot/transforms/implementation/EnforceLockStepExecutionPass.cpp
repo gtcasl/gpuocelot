@@ -9,6 +9,7 @@
 
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
 #include <ocelot/analysis/interface/ConvergentRegionAnalysis.h>
+#include <ocelot/analysis/interface/DominatorTree.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 
@@ -26,7 +27,8 @@ namespace transforms
 
 EnforceLockStepExecutionPass::EnforceLockStepExecutionPass()
 : KernelPass(Analysis::ThreadFrontierAnalysis |
-	Analysis::DataflowGraphAnalysis | Analysis::ConvergentRegionAnalysis,
+	Analysis::DataflowGraphAnalysis | Analysis::ConvergentRegionAnalysis |
+	Analysis::DominatorTreeAnalysis,
 	"EnforceLockStepExecutionPass")
 {
 
@@ -50,6 +52,9 @@ void EnforceLockStepExecutionPass::runOnKernel(ir::IRKernel& k)
 	
 	// Delete all branches
 	_deleteAllBranches(k);
+	
+	// Initialize masks
+	_initializeMasks(k);
 	
 	// Set merge points
 	_setMergePoints(k);
@@ -251,15 +256,110 @@ void EnforceLockStepExecutionPass::_deleteAllBranches(ir::IRKernel& k)
 	}
 }
 
-void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
+void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 {
+	typedef analysis::ThreadFrontierAnalysis::Priority Priority;
+	typedef std::map<Priority, block_iterator,
+		std::greater<Priority>> PriorityMap;
+
+	// The immediate dominator initializes the mask for each block
+	
 	auto tfAnalysis = static_cast<analysis::ThreadFrontierAnalysis*>(
 		getAnalysis(Analysis::ThreadFrontierAnalysis));
-
-	report(" updating masks on region transitions");
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(
 		getAnalysis(Analysis::DataflowGraphAnalysis));
+
+	auto domTree = static_cast<analysis::DominatorTree*>(
+		getAnalysis(Analysis::DominatorTreeAnalysis));
+
+	auto cfgToDfgMap = dfg->getCFGtoDFGMap();
+
+	report(" initializing masks");
+
+	BlockMap    initializers;
+	PriorityMap priorities;
+
+	for(auto block = dfg->begin(); block != dfg->end(); ++block)
+	{
+		if(block->block() == k.cfg()->get_entry_block()) continue;
+		if(block->block() == k.cfg()->get_exit_block())  continue;
+		
+		auto immediateDominator = domTree->getDominator(block->block());
+	
+		auto dfgDominator = cfgToDfgMap.find(immediateDominator);
+		assert(dfgDominator != cfgToDfgMap.end());
+		
+		initializers.insert(std::make_pair(block, dfgDominator->second));
+		
+		report("  block " << block->label() << " is dominated by "
+			<< immediateDominator->label << ", zeroing mask");
+		
+		priorities.insert(std::make_pair(
+			tfAnalysis->getPriority(block->block()), block));
+		
+		if(immediateDominator == k.cfg()->get_entry_block()) continue;
+	
+		_zeroVariableBeforeExiting(dfgDominator->second, block);
+	}
+
+	report(" resetting masks on back edges");
+	
+	// if there is a back-edge with a range containing a block,
+	// reset the variables for all blocks whose immediate dominator has a
+	// priority less than the target of the back-edge
+	for(auto block = dfg->begin(); block != dfg->end(); ++block)
+	{
+		if(block->block() == k.cfg()->get_entry_block()) continue;
+		if(block->block() == k.cfg()->get_exit_block())  continue;
+		
+		Priority blockPriority = tfAnalysis->getPriority(block->block());
+
+		for(auto successor = block->successors().begin();
+			successor != block->successors().end(); ++successor)
+		{
+			if((*successor)->block() == k.cfg()->get_entry_block()) continue;
+			if((*successor)->block() == k.cfg()->get_exit_block())  continue;
+			
+			Priority successorPriority =
+				tfAnalysis->getPriority((*successor)->block());
+			
+			// skip edges that go forward
+			if(successorPriority < blockPriority) continue;
+			
+			auto begin = priorities.lower_bound(successorPriority);
+			auto end   = priorities.lower_bound(blockPriority);
+			
+			report("  examing priority range (" << successorPriority
+				<< ", " << blockPriority << ")");
+			
+			for(auto blockInRange = begin; blockInRange != end; ++blockInRange)
+			{
+				auto initializer = initializers.find(blockInRange->second);
+				assert(initializer != initializers.end());
+				
+				auto initializerPriority = tfAnalysis->getPriority(
+					initializer->second->block());
+				
+				// skip blocks that will be handled by their dominator	
+				if(initializerPriority <= successorPriority) continue;
+				
+				report("   block " << block->label() << " may trigger "
+					<< blockInRange->second->label() << " (priority "
+					<< blockInRange->first << "), zeroing mask");
+		
+				_zeroVariableBeforeExiting(block, blockInRange->second);
+			}
+		}
+	}
+}
+
+void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
+{
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+		getAnalysis(Analysis::DataflowGraphAnalysis));
+
+	report(" updating masks on region transitions");
 	
 	for(auto block = dfg->begin(); block != dfg->end(); ++block)
 	{
@@ -273,19 +373,9 @@ void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
 			if((*successor)->block() == k.cfg()->get_entry_block()) continue;
 			if((*successor)->block() == k.cfg()->get_exit_block())  continue;
 			
-			if(tfAnalysis->isInThreadFrontier(
-				block->block(), (*successor)->block()))
-			{
-				report("   merging variable with " << (*successor)->label()
-					<< " before entering" );
-				_mergeVariablesBeforeEntering(block, (*successor));
-			}
-			else
-			{
-				report("   assigning variable with " << (*successor)->label()
-					<< " before entering" );
-				_assignVariableBeforeEntering(block, (*successor));
-			}
+			report("   merging variable with " << (*successor)->label()
+				<< " before entering" );
+			_mergeVariablesBeforeEntering(block, (*successor));
 		}
 	}
 }
@@ -358,6 +448,11 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 			if(entry->first + 1 == tfAnalysis->getPriority(block->block()))
 			{
 				if(entry == --priorities.end()) continue;
+				
+				if(successors.empty())
+				{
+					break;
+				}				
 			}
 			
 			_branchToTargetIfVariableIsSet(block, entry->second);
@@ -400,13 +495,12 @@ void EnforceLockStepExecutionPass::_mergeVariablesBeforeEntering(
 	_setActiveMaskIfNecessary(successor);
 }
 
-void EnforceLockStepExecutionPass::_assignVariableBeforeEntering(
+void EnforceLockStepExecutionPass::_zeroVariableBeforeExiting(
 	block_iterator block, block_iterator successor)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
 		getAnalysis(Analysis::DataflowGraphAnalysis));
 	
-	Register edgeVariable      = _getEdgeVariable(block, successor);
 	Register successorVariable = _getBlockVariable(successor);
 	
 	ir::PTXInstruction mov(ir::PTXInstruction::Mov);
@@ -415,8 +509,7 @@ void EnforceLockStepExecutionPass::_assignVariableBeforeEntering(
 	
 	mov.d = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::b32, successorVariable);
-	mov.a = ir::PTXOperand(ir::PTXOperand::Register,
-		ir::PTXOperand::b32, edgeVariable);
+	mov.a = ir::PTXOperand(0, ir::PTXOperand::u32);
 	
 	mov.broadcast = true;
 	

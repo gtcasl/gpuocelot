@@ -35,11 +35,11 @@
 		warpSize:                 1
 	},
 	checkpoint: {
-		enabled: True,
-		path:   "traces/",
-		prefix: "PTXUnitTest_",
+		enabled:  False,
+		path:   ".",
+		prefix: "kernel_trace_",
 		suffix: ".trace",
-		verify: False
+		verify:   False
 	},
 	optimizations: {
 		subkernelSize:        10000,

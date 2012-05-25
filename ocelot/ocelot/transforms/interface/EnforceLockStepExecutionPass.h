@@ -47,12 +47,15 @@ private:
 		Register> EdgeMap;
 	typedef std::unordered_map<Region, Register> RegionMap;
 	typedef std::unordered_set<const_block_iterator> BlockSet;
+	typedef std::unordered_map<const_block_iterator,
+		const_block_iterator> BlockMap;
 
 private:
 	// Algorithm stages
 	void _assignMaskToEntryPoint(ir::IRKernel& k);
 	void _assignConditionsToEdges(ir::IRKernel& k);
 	void _deleteAllBranches(ir::IRKernel& k);
+	void _initializeMasks(ir::IRKernel& k);
 	void _setMergePoints(ir::IRKernel& k);
 	void _setBranches(ir::IRKernel& k);
 
@@ -60,7 +63,7 @@ private:
 	// Helper functions
 	void _mergeVariablesBeforeEntering(block_iterator block,
 		block_iterator successor);
-	void _assignVariableBeforeEntering(block_iterator block,
+	void _zeroVariableBeforeExiting(block_iterator block,
 		block_iterator successor);
 	void _setVariableForSuccessor(block_iterator block,
 		block_iterator successor);

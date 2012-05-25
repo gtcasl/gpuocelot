@@ -7,6 +7,8 @@
 
 // C++ and other libraries
 #include <pthread.h>
+#include <fstream>
+#include <chrono>
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
@@ -28,6 +30,10 @@
 #endif
 
 #define REPORT_BASE 0
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REPORT_SUBKERNEL_COVERAGE 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -140,6 +146,11 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	report(" launching grid " << kernel.gridDim().x << " x " << kernel.gridDim().y 
 		<< " on " << workerThreads << " threads");
 	
+	typedef std::chrono::high_resolution_clock Clock;
+	typedef std::chrono::milliseconds milliseconds;
+
+	Clock::time_point t0 = Clock::now();
+		
 	if (workerThreads == 1) {
 	
 		// start executing in main thread
@@ -182,9 +193,65 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 		}
 #endif
 	}
+	Clock::time_point t1 = Clock::now();
+	
+	if (REPORT_SUBKERNEL_COVERAGE) {
+		milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
+		_reportSubkernelCoverage(kernel, ms.count());
+	}
 }
 
 // emma was here. :-)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
+	out << dim.x << ", " << dim.y << ", " << dim.z;
+	return out;
+}
+
+void executive::DynamicExecutionManager::_reportSubkernelCoverage(
+	executive::DynamicMulticoreKernel &kernel, double runtime) {
+	
+	typedef DynamicTranslationCache::SubkernelId SubkernelId;
+	
+	// visit all the subkernels, and record which ones have translations in the code cache
+	std::unordered_map< SubkernelId, std::set<int> > translations;
+	translationCache.getCachedSubkernels(translations, kernel.module->path(), kernel.name);
+	
+	DynamicMulticoreKernel::SubkernelIdRange subkernelIdRange = kernel.getSubkernelIdRange();
+	
+	// assumes warp sizes that are powers of 2 from 1 to warpSize implied by config
+	std::ofstream file("subkernelCoverage.json", std::ios_base::app);
+	const char *app = getenv("APPNAME");
+	if (!app) {
+		app = "Unknown Application";
+	}
+	file << "{ \n   \"application\": \"" << app << "\", \"kernel\": \"" << kernel.name 
+		<< "\", \"launch\": " << kernel.getLaunchCount() << ",\n   \"range\": [" << subkernelIdRange.first 
+		<< ", " << subkernelIdRange.second << "]" << ", \"runtime\": " << runtime
+		<< ", \"gridDim\": [" << kernel.gridDim() << "], \"blockDim\": [" << kernel.blockDim() << "]"
+		<< ",\n   \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit 
+		<< ", \"maxWarpSize\": " << api::OcelotConfiguration::get().executive.warpSize
+		<< ", \"partitioning\": \"" << analysis::KernelPartitioningPass::toString(
+			(analysis::KernelPartitioningPass::PartitioningHeuristic)
+				api::OcelotConfiguration::get().executive.partitioningHeuristic ) << "\""
+		<< ",\n   \"coverage\": [\n";
+	
+	for (SubkernelId start = subkernelIdRange.first; start <= subkernelIdRange.second; ++start) {
+		auto sk_it = translations.find(start);
+		file << "  \"" << sk_it->first << "\": [";
+		if (sk_it != translations.end()) {
+			int wsIdx = 0;
+			for (auto ws_it = sk_it->second.begin(); ws_it != sk_it->second.end(); ++ws_it) {
+				file << (wsIdx++ ? ", " : "") << *ws_it;
+			}
+		}
+		file << "],\n";
+	}
+	
+	file << "  ]\n},\n";
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

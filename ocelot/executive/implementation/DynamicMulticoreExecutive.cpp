@@ -416,6 +416,10 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 			warpSize >>= 1;
 		}
 		
+		if (warpSize != 1 && warpSize != 4 && warpSize != 8) {
+			warpSize = 1;
+		}
+		
 		unsigned int executedThreads = warpSize * ((threads - startThread) / warpSize);
 		
 		report(" threads = " << threads);

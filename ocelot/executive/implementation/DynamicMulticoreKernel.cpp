@@ -47,7 +47,7 @@ executive::DynamicMulticoreKernel::DynamicMulticoreKernel(executive::Device* d) 
 
 executive::DynamicMulticoreKernel::DynamicMulticoreKernel(const ir::IRKernel& _kernel,
 	executive::DynamicMulticoreDevice* _d, SubkernelId _baseId): 
-_kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory(0) {
+_kernelGraph(0), _ptxKernel(0), _device(_d), _argumentMemory(0), _constantMemory(0), _launchCount(0) {
 
 	report("DynamicMulticoreKernel(kernel, device)");
 
@@ -146,6 +146,8 @@ void executive::DynamicMulticoreKernel::launchGrid(int width, int height, int de
 	
 	DynamicExecutionManager::get().launch(*this, 
 		this->sharedMemorySize() + this->externSharedMemorySize());
+		
+	++_launchCount;
 }
 
 

@@ -42,6 +42,9 @@ namespace executive {
 		void launch(DynamicMulticoreKernel &kernel, size_t sharedMemorySize);
 		
 	protected:
+		void _reportSubkernelCoverage(executive::DynamicMulticoreKernel &kernel, double runtime = 0.0);
+		
+	protected:
 		
 		WorkerThreadArgs arguments[MaxThreadCount];
 		pthread_t threads[MaxThreadCount];

@@ -1444,6 +1444,36 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeB
 	
 	return vec_it->second.vector;
 }
+
+static std::string getVectorizedIntrinsicName(const std::string &calleeName, int warpSize) {
+
+	const char *floatSuffixes[] = {
+		"f32", "v2f32", "v4f32", "v8f32", "v16f32", "v32f32", "v64f32", "v128f32", "v256f32", 
+		"v512f32", 0
+	};
+	const char *str[] = {
+		"__ocelot_sqrtf", "llvm.sqrt",
+		"__ocelot_sinf", "llvm.sin",
+		"__ocelot_cosf", "llvm.cos",
+		"llvm.sqrt.f32", "llvm.sqrt",
+		"llvm.sin.f32", "llvm.sin",
+		"llvm.cos.f32f", "llvm.cos",
+		0, 0
+	};
+	for (int n = 0; str[n]; n+=2) {
+		if (calleeName == str[n]) {
+			int s = 0;
+			for (; floatSuffixes[s]; s++) {
+				if ((1 << s) == warpSize) {
+					break;
+				}
+			}
+			assert((1 << s) == warpSize);
+			return std::string(str[n+1]) + "." + floatSuffixes[s];
+		}
+	}
+	return "";
+}
 			
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeCall(
 	llvm::CallInst *callInst, VectorizedInstructionMap::iterator &vec_it) {
@@ -1481,6 +1511,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 				}
 			}
 			assert((1 << s) == pass->warpSize);
+			
 			std::string destName = std::string(str[n+1]) + "." + floatSuffixes[s];
 			funcIntrinsic = function->getParent()->getFunction(destName);
 			if (!funcIntrinsic) {
@@ -1499,6 +1530,7 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 			break;
 		}
 	}
+	
 	assert(funcIntrinsic && "failed to identify intrinsic");
 	
 	std::vector< llvm::Value *> args;
@@ -1509,7 +1541,6 @@ llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeC
 	std::string name = callInst->getName().str() + ".vec";
 	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args, name, before);
 	vec_it->second.vector = vecCallInst;
-	
 	return vecCallInst;
 }
 
@@ -1571,6 +1602,13 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 		
 		if (base->isBinaryOp() || llvm::FPToSIInst::classof(base) || llvm::SIToFPInst::classof(base) || 
 			llvm::CallInst::classof(base)) {
+			
+			if (llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(base)) {
+				if (getVectorizedIntrinsicName(callInst->getCalledFunction()->getName().str(), 4)
+					== "") {
+					return false;
+				}
+			}
 			
 			reportE(REPORT_VECTORIZING, "    vectorizable");
 			return true;	

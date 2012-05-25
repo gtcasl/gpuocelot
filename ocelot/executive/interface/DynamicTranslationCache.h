@@ -159,7 +159,13 @@ namespace executive {
 		*/
 		Translation *getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
 			unsigned int specialization = 0);
-					
+		
+		//! \brief returns a set of cached subkernels
+		void getCachedSubkernels(
+			std::unordered_map< SubkernelId, std::set<int> > & translations,
+			const std::string &moduleName,
+			const std::string &kernelName);
+			
 	private:
 	
 		void _translateKernel(TranslatedKernel &kernel);

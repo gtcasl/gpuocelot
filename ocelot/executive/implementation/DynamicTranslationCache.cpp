@@ -1527,3 +1527,30 @@ executive::DynamicTranslationCache::Translation *
 	return translation;
 }
 
+//! \brief returns a set of cached subkernels
+void executive::DynamicTranslationCache::getCachedSubkernels(
+	std::unordered_map< SubkernelId, std::set<int> > & translations,
+	const std::string &moduleName,
+	const std::string &kernelName) {
+	
+	_lock();
+	ModuleMap::const_iterator mod_it = modules.find(moduleName);
+	if (mod_it != modules.end()) {
+		TranslatedKernelNameMap::const_iterator kernel_it = mod_it->second.kernels.find(kernelName);
+		if (kernel_it != mod_it->second.kernels.end()) {
+			
+			for (TranslatedSubkernelMap::const_iterator sk_it = kernel_it->second->subkernels.begin();
+				sk_it != kernel_it->second->subkernels.end(); ++sk_it) {
+				
+				std::set<int> warpSizes;
+				for (WarpTranslationMap::const_iterator warp_it = sk_it->second.translations.begin();
+					warp_it != sk_it->second.translations.end(); ++warp_it) {
+					warpSizes.insert(warp_it->first);
+				}
+				translations[sk_it->first] = warpSizes;
+			}
+		}
+	}
+	_unlock();
+}
+

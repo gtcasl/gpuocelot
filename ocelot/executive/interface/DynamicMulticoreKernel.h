@@ -63,6 +63,8 @@ namespace executive {
 		SubkernelIdRange getSubkernelIdRange() const;
 		
 		char *constantMemory() const { return _constantMemory; }
+		
+		size_t getLaunchCount() const { return _launchCount; }
 	
 	private:
 		void _analyzePTX();
@@ -77,6 +79,11 @@ namespace executive {
 		DynamicMulticoreDevice *_device;
 		char *_argumentMemory;
 		char *_constantMemory;
+		
+	private:
+	
+		//! \brief tracks the number of times this kernel was launched
+		size_t _launchCount;
 	};
 	typedef std::map< std::string, DynamicMulticoreKernel *> DynamicMulticoreKernelMap;
 	

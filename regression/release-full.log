@@ -26,8 +26,14 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
+INFO     Test completed in 0.0757341384888 seconds
+INFO      It produced the following output:
+TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1028: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.0500750541687 seconds
+INFO     Test completed in 0.0796971321106 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -41,8 +47,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1336759000
-Test time : 0.000858068
+Test Seed : 1337869490
+Test time : 0.00105023
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -173,256 +179,10 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.0660400390625 seconds
+INFO     Test completed in 0.0832121372223 seconds
 INFO      It produced the following output:
-(0.002117) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(increment)
-(0.002150) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.002162) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.002246) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.002262) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.002295) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.002308) KernelPartitioningPass.cpp:729:    saved 16 bytes per thread
-(0.002328) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.002347) KernelPartitioningPass.cpp:1111: Subkernel::create(increment)
-(0.002359) KernelPartitioningPass.cpp:1134: Subkernel::_create(increment id: 1)
-(0.002379) KernelPartitioningPass.cpp:1162: 
-(0.002390) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.002402) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.002425) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> $BB_1_0003
-(0.002439) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.002454) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.002465) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.002476) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.002486) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.002497) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.002509) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.002520) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.002534) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.002546) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.002557) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.002567) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.002587) KernelPartitioningPass.cpp:1111: Subkernel::create(increment)
-(0.002598) KernelPartitioningPass.cpp:1134: Subkernel::_create(increment id: 2)
-(0.002614) KernelPartitioningPass.cpp:1162: 
-(0.002624) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.002635) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0003
-(0.002647) KernelPartitioningPass.cpp:1192:   this block exits
-(0.002659) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0003 -> exit
-(0.002672) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_1_0002 -> $BB_1_0003 with entry ID 131073
-(0.002683) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.002693) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.002704) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.002715) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.002727) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.002738) KernelPartitioningPass.cpp:1374:   $BB_1_0003
-(0.002748) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.002764) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.002775) KernelPartitioningPass.cpp:575:    but first!
-(0.002785) KernelPartitioningPass.cpp:581:    subkernel _subkernel_increment_1 out edges: 
-(0.002796) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> $BB_1_0003
-(0.002807) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.002817) KernelPartitioningPass.cpp:581:    subkernel _subkernel_increment_2 out edges: 
-(0.002827) KernelPartitioningPass.cpp:588:      $BB_1_0003 -> exit
-(0.002838) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.002848) KernelPartitioningPass.cpp:599:      $BB_1_0002 -> $BB_1_0003
-(0.002859) KernelPartitioningPass.cpp:604:    now linking
-(0.002869) KernelPartitioningPass.cpp:621:     same subkernel
-(0.002880) KernelPartitioningPass.cpp:635:    linking $BB_1_0002_exit_handler_to_1_0003 to $BB_1_0003_entry_handler_from_1_0002 (entry 131073)
-(0.002891) KernelPartitioningPass.cpp:621:     same subkernel
-(0.002936) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0003 -> exit
-(0.002976) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.002996) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.003007) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.003018) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_exit_handler_to_1_0003 (0 live values
-(0.003039) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.003053) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_exit_handler_to_1_0003
-(0.003074) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.003089) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.003101) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.003111) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.003141) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: st.global.u32 [%r0], %r2
-(0.003158) KernelPartitioningPass.cpp:1821:  fall-through non-control-flow instruction to external edge: st.global.u32 [%r0], %r2
-(0.003169) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.003207) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.003222) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.003233) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_1_0003_entry_handler_from_1_0002 -> $BB_1_0003 (0 live values
-(0.003250) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.003261) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0003 -> $BB_1_0003_thread_exit (0 live values
-(0.003273) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.003284) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0003_thread_exit
-(0.003299) KernelPartitioningPass.cpp:1664:   adding $BB_1_0003 to frontierExitBlocks
-(0.003311) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.003323) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.003333) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0003
-(0.003345) KernelPartitioningPass.cpp:1782:  block $BB_1_0003 (1 external edges) terminator: exit
-(0.003356) KernelPartitioningPass.cpp:1810:    exit
-(0.003367) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.012358) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(increment)
-(0.012376) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.012388) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.012433) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.012445) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.012464) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.012476) KernelPartitioningPass.cpp:729:    saved 16 bytes per thread
-(0.012492) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.012505) KernelPartitioningPass.cpp:1111: Subkernel::create(increment)
-(0.012516) KernelPartitioningPass.cpp:1134: Subkernel::_create(increment id: 1)
-(0.012533) KernelPartitioningPass.cpp:1162: 
-(0.012543) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.012556) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.012572) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> $BB_1_0003
-(0.012583) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.012596) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.012607) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.012617) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.012628) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.012638) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.012650) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.012666) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.012678) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.012689) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.012700) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.012711) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.012728) KernelPartitioningPass.cpp:1111: Subkernel::create(increment)
-(0.012738) KernelPartitioningPass.cpp:1134: Subkernel::_create(increment id: 2)
-(0.012754) KernelPartitioningPass.cpp:1162: 
-(0.012765) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.012776) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0003
-(0.012788) KernelPartitioningPass.cpp:1192:   this block exits
-(0.012800) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0003 -> exit
-(0.012813) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_1_0002 -> $BB_1_0003 with entry ID 131073
-(0.012825) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.012835) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.012846) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.012857) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.012868) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.012879) KernelPartitioningPass.cpp:1374:   $BB_1_0003
-(0.012889) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.012973) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.012986) KernelPartitioningPass.cpp:575:    but first!
-(0.012996) KernelPartitioningPass.cpp:581:    subkernel _subkernel_increment_1 out edges: 
-(0.013007) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> $BB_1_0003
-(0.013018) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.013028) KernelPartitioningPass.cpp:581:    subkernel _subkernel_increment_2 out edges: 
-(0.013038) KernelPartitioningPass.cpp:588:      $BB_1_0003 -> exit
-(0.013049) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.013059) KernelPartitioningPass.cpp:599:      $BB_1_0002 -> $BB_1_0003
-(0.013069) KernelPartitioningPass.cpp:604:    now linking
-(0.013079) KernelPartitioningPass.cpp:621:     same subkernel
-(0.013090) KernelPartitioningPass.cpp:635:    linking $BB_1_0002_exit_handler_to_1_0003 to $BB_1_0003_entry_handler_from_1_0002 (entry 131073)
-(0.013101) KernelPartitioningPass.cpp:621:     same subkernel
-(0.013111) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0003 -> exit
-(0.013145) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.013160) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.013171) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.013182) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_exit_handler_to_1_0003 (0 live values
-(0.013196) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.013207) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_exit_handler_to_1_0003
-(0.013225) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.013237) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.013248) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.013259) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.013278) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: st.global.u32 [%r0], %r2
-(0.013294) KernelPartitioningPass.cpp:1821:  fall-through non-control-flow instruction to external edge: st.global.u32 [%r0], %r2
-(0.013305) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.013340) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.013355) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.013366) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_1_0003_entry_handler_from_1_0002 -> $BB_1_0003 (0 live values
-(0.013387) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.013398) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0003 -> $BB_1_0003_thread_exit (0 live values
-(0.013411) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.013421) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0003_thread_exit
-(0.013437) KernelPartitioningPass.cpp:1664:   adding $BB_1_0003 to frontierExitBlocks
-(0.013449) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.013460) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.013471) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0003
-(0.013481) KernelPartitioningPass.cpp:1782:  block $BB_1_0003 (1 external edges) terminator: exit
-(0.013492) KernelPartitioningPass.cpp:1810:    exit
-(0.013503) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.014432) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(increment)
-(0.014446) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.014458) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.014494) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.014506) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.014523) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.014534) KernelPartitioningPass.cpp:729:    saved 16 bytes per thread
-(0.014550) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.014563) KernelPartitioningPass.cpp:1111: Subkernel::create(increment)
-(0.014573) KernelPartitioningPass.cpp:1134: Subkernel::_create(increment id: 1)
-(0.014589) KernelPartitioningPass.cpp:1162: 
-(0.014600) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.014612) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.014627) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> $BB_1_0003
-(0.014638) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.014650) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.014661) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.014672) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.014682) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.014693) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.014704) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.014714) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.014726) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.014737) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.014748) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.014759) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.014775) KernelPartitioningPass.cpp:1111: Subkernel::create(increment)
-(0.014785) KernelPartitioningPass.cpp:1134: Subkernel::_create(increment id: 2)
-(0.014801) KernelPartitioningPass.cpp:1162: 
-(0.014811) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.014822) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0003
-(0.014833) KernelPartitioningPass.cpp:1192:   this block exits
-(0.014845) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0003 -> exit
-(0.014858) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_1_0002 -> $BB_1_0003 with entry ID 131073
-(0.014869) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.014879) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.014890) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.014902) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.014913) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.014924) KernelPartitioningPass.cpp:1374:   $BB_1_0003
-(0.014934) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.014955) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.014966) KernelPartitioningPass.cpp:575:    but first!
-(0.014976) KernelPartitioningPass.cpp:581:    subkernel _subkernel_increment_1 out edges: 
-(0.014986) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> $BB_1_0003
-(0.014996) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.015006) KernelPartitioningPass.cpp:581:    subkernel _subkernel_increment_2 out edges: 
-(0.015016) KernelPartitioningPass.cpp:588:      $BB_1_0003 -> exit
-(0.015027) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.015037) KernelPartitioningPass.cpp:599:      $BB_1_0002 -> $BB_1_0003
-(0.015047) KernelPartitioningPass.cpp:604:    now linking
-(0.015057) KernelPartitioningPass.cpp:621:     same subkernel
-(0.015067) KernelPartitioningPass.cpp:635:    linking $BB_1_0002_exit_handler_to_1_0003 to $BB_1_0003_entry_handler_from_1_0002 (entry 131073)
-(0.015078) KernelPartitioningPass.cpp:621:     same subkernel
-(0.015088) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0003 -> exit
-(0.015120) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.015135) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.015146) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.015157) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_exit_handler_to_1_0003 (0 live values
-(0.015170) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.015181) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_exit_handler_to_1_0003
-(0.015198) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.015210) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.015221) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.015232) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.015252) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: st.global.u32 [%r0], %r2
-(0.015268) KernelPartitioningPass.cpp:1821:  fall-through non-control-flow instruction to external edge: st.global.u32 [%r0], %r2
-(0.015279) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.015313) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.015328) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.015339) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_1_0003_entry_handler_from_1_0002 -> $BB_1_0003 (0 live values
-(0.015354) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.015366) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0003 -> $BB_1_0003_thread_exit (0 live values
-(0.015378) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.015389) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0003_thread_exit
-(0.015404) KernelPartitioningPass.cpp:1664:   adding $BB_1_0003 to frontierExitBlocks
-(0.015415) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.015427) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.015437) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0003
-(0.015447) KernelPartitioningPass.cpp:1782:  block $BB_1_0003 (1 external edges) terminator: exit
-(0.015458) KernelPartitioningPass.cpp:1810:    exit
-(0.015469) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
 Pass/Fail : Pass
 
 
@@ -440,8 +200,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1336759000
-Test time : 0.0149884
+Test Seed : 1337869490
+Test time : 0.0145547
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -449,203 +209,15 @@ Test Point 3 Passed
 
 
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.0661149024963 seconds
-INFO      It produced the following output:
-(0.006345) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(kernel)
-(0.006437) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.006450) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.006583) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.006602) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.006648) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 2]
-(0.006661) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.006691) KernelPartitioningPass.cpp:568:    Spill region size is 16
-(0.006712) KernelPartitioningPass.cpp:1111: Subkernel::create(kernel)
-(0.006725) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernel id: 1)
-(0.006747) KernelPartitioningPass.cpp:1162: 
-(0.006758) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.006778) KernelPartitioningPass.cpp:1173:  adding block $BB_2_0002
-(0.006810) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_2_0002 -> $BB_2_0003
-(0.006826) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_2_0002 -> $BB_2_0004
-(0.006839) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_2_0002
-(0.006857) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.006868) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_2_0002
-(0.006879) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.006890) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.006902) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_2_0002 type: fallthrough
-(0.006914) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.006925) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.006942) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.006954) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.006966) KernelPartitioningPass.cpp:1374:   $BB_2_0002
-(0.006977) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.007000) KernelPartitioningPass.cpp:1111: Subkernel::create(kernel)
-(0.007011) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernel id: 2)
-(0.007029) KernelPartitioningPass.cpp:1162: 
-(0.007040) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.007051) KernelPartitioningPass.cpp:1173:  adding block $BB_2_0003
-(0.007063) KernelPartitioningPass.cpp:1192:   this block exits
-(0.007076) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_2_0003 -> exit
-(0.007090) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_2_0002 -> $BB_2_0003 with entry ID 131073
-(0.007102) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.007112) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.007124) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.007136) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.007147) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.007158) KernelPartitioningPass.cpp:1374:   $BB_2_0003
-(0.007169) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.007186) KernelPartitioningPass.cpp:1111: Subkernel::create(kernel)
-(0.007196) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernel id: 3)
-(0.007213) KernelPartitioningPass.cpp:1162: 
-(0.007224) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.007239) KernelPartitioningPass.cpp:1173:  adding block $BB_2_0004
-(0.007252) KernelPartitioningPass.cpp:1192:   this block exits
-(0.007265) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_2_0004 -> exit
-(0.007277) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_2_0002 -> $BB_2_0004 with entry ID 196609
-(0.007289) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.007300) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.007311) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.007323) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.007342) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.007354) KernelPartitioningPass.cpp:1374:   $BB_2_0004
-(0.007366) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.007384) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.007395) KernelPartitioningPass.cpp:575:    but first!
-(0.007405) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernel_1 out edges: 
-(0.007416) KernelPartitioningPass.cpp:588:      $BB_2_0002 -> $BB_2_0003
-(0.007429) KernelPartitioningPass.cpp:588:      $BB_2_0002 -> $BB_2_0004
-(0.007440) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.007451) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernel_2 out edges: 
-(0.007462) KernelPartitioningPass.cpp:588:      $BB_2_0003 -> exit
-(0.007474) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.007485) KernelPartitioningPass.cpp:599:      $BB_2_0002 -> $BB_2_0003
-(0.007496) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernel_3 out edges: 
-(0.007507) KernelPartitioningPass.cpp:588:      $BB_2_0004 -> exit
-(0.007518) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.007529) KernelPartitioningPass.cpp:599:      $BB_2_0002 -> $BB_2_0004
-(0.007540) KernelPartitioningPass.cpp:604:    now linking
-(0.007551) KernelPartitioningPass.cpp:621:     same subkernel
-(0.007562) KernelPartitioningPass.cpp:635:    linking $BB_2_0002_exit_handler_to_2_0003 to $BB_2_0003_entry_handler_from_2_0002 (entry 131073)
-(0.007574) KernelPartitioningPass.cpp:621:     same subkernel
-(0.007585) KernelPartitioningPass.cpp:635:    linking $BB_2_0002_exit_handler_to_2_0004 to $BB_2_0004_entry_handler_from_2_0002 (entry 196609)
-(0.007596) KernelPartitioningPass.cpp:621:     same subkernel
-(0.007607) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_2_0003 -> exit
-(0.007618) KernelPartitioningPass.cpp:621:     same subkernel
-(0.007629) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_2_0004 -> exit
-(0.007683) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.007706) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.007718) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.007730) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_2_0002 -> $BB_2_0002_exit_handler_to_2_0003 (2 live values
-(0.007758) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.007780) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.007796) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.007810) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_2_0002_exit_handler_to_2_0003
-(0.007829) KernelPartitioningPass.cpp:1664:   adding $BB_2_0002 to frontierExitBlocks
-(0.007846) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_2_0002 -> $BB_2_0002_exit_handler_to_2_0004 (2 live values
-(0.007860) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.007877) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.007892) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 1
-(0.007903) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_2_0002_exit_handler_to_2_0004
-(0.007921) KernelPartitioningPass.cpp:1664:   adding $BB_2_0002 to frontierExitBlocks
-(0.007935) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.007947) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.007959) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_2_0002
-(0.007987) KernelPartitioningPass.cpp:1782:  block $BB_2_0002 (2 external edges) terminator: @%p7 bra $BB_2_0004
-(0.008000) KernelPartitioningPass.cpp:1785:    branch
-(0.008011) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.008024) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.008069) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.008091) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.008103) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_2_0003_entry_handler_from_2_0002 -> $BB_2_0003 (2 live values
-(0.008120) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.008132) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.008147) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.008158) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_2_0003 -> $BB_2_0003_thread_exit (0 live values
-(0.008171) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.008182) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_2_0003_thread_exit
-(0.008199) KernelPartitioningPass.cpp:1664:   adding $BB_2_0003 to frontierExitBlocks
-(0.008211) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.008223) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.008234) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_2_0003
-(0.008247) KernelPartitioningPass.cpp:1782:  block $BB_2_0003 (1 external edges) terminator: exit
-(0.008259) KernelPartitioningPass.cpp:1810:    exit
-(0.008270) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.008315) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.008331) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.008342) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_2_0004_entry_handler_from_2_0002 -> $BB_2_0004 (2 live values
-(0.008357) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.008374) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.008390) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.008403) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_2_0004 -> $BB_2_0004_thread_exit (0 live values
-(0.008416) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.008428) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_2_0004_thread_exit
-(0.008444) KernelPartitioningPass.cpp:1664:   adding $BB_2_0004 to frontierExitBlocks
-(0.008456) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.008469) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.008480) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_2_0004
-(0.008491) KernelPartitioningPass.cpp:1782:  block $BB_2_0004 (1 external edges) terminator: exit
-(0.008502) KernelPartitioningPass.cpp:1810:    exit
-(0.008513) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-TestFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1028: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.080708026886 seconds
+INFO     Test completed in 0.0910520553589 seconds
 INFO      It produced the following output:
-(0.002585) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(_Z6kernelPfii)
-(0.002636) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.002649) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.002753) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.002770) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.002805) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.002817) KernelPartitioningPass.cpp:729:    saved 160 bytes per thread
-(0.002836) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.002855) KernelPartitioningPass.cpp:1111: Subkernel::create(_Z6kernelPfii)
-(0.002867) KernelPartitioningPass.cpp:1134: Subkernel::_create(_Z6kernelPfii id: 1)
-(0.002888) KernelPartitioningPass.cpp:1162: 
-(0.002899) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.002917) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.002938) KernelPartitioningPass.cpp:1192:   this block exits
-(0.002954) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.002968) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.002983) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.002993) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.003004) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.003014) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.003025) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.003037) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.003047) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.003061) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.003073) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.003084) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.003094) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.003114) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.003125) KernelPartitioningPass.cpp:575:    but first!
-(0.003135) KernelPartitioningPass.cpp:581:    subkernel _subkernel__Z6kernelPfii_1 out edges: 
-(0.003145) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.003157) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.003168) KernelPartitioningPass.cpp:604:    now linking
-(0.003178) KernelPartitioningPass.cpp:621:     same subkernel
-(0.003189) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.003247) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.003270) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.003281) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.003292) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.003313) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.003325) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.003344) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.003359) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.003371) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.003381) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.003400) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.003411) KernelPartitioningPass.cpp:1810:    exit
-(0.003422) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.0577261447906 seconds
+INFO     Test completed in 0.0711591243744 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -655,8 +227,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1336759001
-Test time : 0.000650167
+Test Seed : 1337869490
+Test time : 0.000744581
 
 Status : Test output:
 Accessors test passed.
@@ -672,395 +244,28 @@ pass: predicated Add and Ld isntructions
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.046285867691 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
+INFO     Test completed in 0.0647830963135 seconds
 INFO      It produced the following output:
-(0.003004) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(kernelEntry)
-(0.003047) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.003059) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.003216) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.003235) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.003293) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 4]
-(0.003306) KernelPartitioningPass.cpp:729:    saved 88 bytes per thread
-(0.003332) KernelPartitioningPass.cpp:568:    Spill region size is 32
-(0.003352) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.003364) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 1)
-(0.003385) KernelPartitioningPass.cpp:1162: 
-(0.003396) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.003411) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0002
-(0.003434) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0002 -> $BB_5_0003
-(0.003449) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0002 -> $BB_5_0008
-(0.003462) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_5_0002
-(0.003478) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.003488) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_5_0002
-(0.003500) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.003510) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.003522) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_5_0002 type: fallthrough
-(0.003533) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.003544) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.003560) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.003572) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.003583) KernelPartitioningPass.cpp:1374:   $BB_5_0002
-(0.003594) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.003614) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.003626) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 2)
-(0.003643) KernelPartitioningPass.cpp:1162: 
-(0.003654) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.003666) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0003
-(0.003680) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0003 -> $BB_5_0004
-(0.003693) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0003 -> $BB_5_0007
-(0.003706) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0002 -> $BB_5_0003 with entry ID 131073
-(0.003719) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.003729) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.003740) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.003753) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.003764) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.003776) KernelPartitioningPass.cpp:1374:   $BB_5_0003
-(0.003787) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.003803) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.003814) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 3)
-(0.003830) KernelPartitioningPass.cpp:1162: 
-(0.003841) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.003853) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0004
-(0.003866) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0004 -> $BB_5_0005
-(0.003879) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0004 -> $BB_5_0006
-(0.003893) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0003 -> $BB_5_0004 with entry ID 196609
-(0.003904) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.003915) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.003927) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.003944) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.003956) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.003968) KernelPartitioningPass.cpp:1374:   $BB_5_0004
-(0.003979) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.003995) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.004006) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 4)
-(0.004023) KernelPartitioningPass.cpp:1162: 
-(0.004033) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.004045) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0005
-(0.004058) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0005 -> $BB_5_0009
-(0.004071) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0004 -> $BB_5_0005 with entry ID 262145
-(0.004083) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.004093) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.004104) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.004115) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.004126) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.004137) KernelPartitioningPass.cpp:1374:   $BB_5_0005
-(0.004148) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.004164) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.004176) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 5)
-(0.004192) KernelPartitioningPass.cpp:1162: 
-(0.004203) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.004215) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0006
-(0.004228) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0006 -> $BB_5_0009
-(0.004241) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0004 -> $BB_5_0006 with entry ID 327681
-(0.004253) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.004264) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.004275) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.004287) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.004299) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.004310) KernelPartitioningPass.cpp:1374:   $BB_5_0006
-(0.004321) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.004337) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.004348) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 6)
-(0.004365) KernelPartitioningPass.cpp:1162: 
-(0.004375) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.004386) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0007
-(0.004400) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0007 -> $BB_5_0009
-(0.004413) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0003 -> $BB_5_0007 with entry ID 393217
-(0.004425) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.004435) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.004447) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.004460) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.004472) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.004483) KernelPartitioningPass.cpp:1374:   $BB_5_0007
-(0.004494) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.004510) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.004521) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 7)
-(0.004538) KernelPartitioningPass.cpp:1162: 
-(0.004549) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.004560) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0008
-(0.004574) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0008 -> $BB_5_0009
-(0.004587) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0002 -> $BB_5_0008 with entry ID 458753
-(0.004604) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.004615) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.004626) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.004638) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.004649) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.004661) KernelPartitioningPass.cpp:1374:   $BB_5_0008
-(0.004671) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.004687) KernelPartitioningPass.cpp:1111: Subkernel::create(kernelEntry)
-(0.004698) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernelEntry id: 8)
-(0.004714) KernelPartitioningPass.cpp:1162: 
-(0.004725) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.004739) KernelPartitioningPass.cpp:1173:  adding block $BB_5_0009
-(0.004751) KernelPartitioningPass.cpp:1192:   this block exits
-(0.004764) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_5_0009 -> exit
-(0.004776) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0008 -> $BB_5_0009 with entry ID 524289
-(0.004790) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0005 -> $BB_5_0009 with entry ID 524290
-(0.004802) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0006 -> $BB_5_0009 with entry ID 524291
-(0.004815) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_5_0007 -> $BB_5_0009 with entry ID 524292
-(0.004827) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.004837) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.004850) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.004861) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.004872) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.004883) KernelPartitioningPass.cpp:1374:   $BB_5_0009
-(0.004893) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.004909) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.004920) KernelPartitioningPass.cpp:575:    but first!
-(0.004930) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_1 out edges: 
-(0.004941) KernelPartitioningPass.cpp:588:      $BB_5_0002 -> $BB_5_0003
-(0.004952) KernelPartitioningPass.cpp:588:      $BB_5_0002 -> $BB_5_0008
-(0.004962) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.004973) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_2 out edges: 
-(0.004983) KernelPartitioningPass.cpp:588:      $BB_5_0003 -> $BB_5_0004
-(0.004993) KernelPartitioningPass.cpp:588:      $BB_5_0003 -> $BB_5_0007
-(0.005004) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005014) KernelPartitioningPass.cpp:599:      $BB_5_0002 -> $BB_5_0003
-(0.005024) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_3 out edges: 
-(0.005034) KernelPartitioningPass.cpp:588:      $BB_5_0004 -> $BB_5_0005
-(0.005045) KernelPartitioningPass.cpp:588:      $BB_5_0004 -> $BB_5_0006
-(0.005055) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005065) KernelPartitioningPass.cpp:599:      $BB_5_0003 -> $BB_5_0004
-(0.005075) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_4 out edges: 
-(0.005085) KernelPartitioningPass.cpp:588:      $BB_5_0005 -> $BB_5_0009
-(0.005095) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005106) KernelPartitioningPass.cpp:599:      $BB_5_0004 -> $BB_5_0005
-(0.005116) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_5 out edges: 
-(0.005126) KernelPartitioningPass.cpp:588:      $BB_5_0006 -> $BB_5_0009
-(0.005136) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005147) KernelPartitioningPass.cpp:599:      $BB_5_0004 -> $BB_5_0006
-(0.005157) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_6 out edges: 
-(0.005167) KernelPartitioningPass.cpp:588:      $BB_5_0007 -> $BB_5_0009
-(0.005182) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005192) KernelPartitioningPass.cpp:599:      $BB_5_0003 -> $BB_5_0007
-(0.005203) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_7 out edges: 
-(0.005213) KernelPartitioningPass.cpp:588:      $BB_5_0008 -> $BB_5_0009
-(0.005223) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005233) KernelPartitioningPass.cpp:599:      $BB_5_0002 -> $BB_5_0008
-(0.005244) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernelEntry_8 out edges: 
-(0.005254) KernelPartitioningPass.cpp:588:      $BB_5_0009 -> exit
-(0.005264) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005274) KernelPartitioningPass.cpp:599:      $BB_5_0008 -> $BB_5_0009
-(0.005284) KernelPartitioningPass.cpp:599:      $BB_5_0005 -> $BB_5_0009
-(0.005295) KernelPartitioningPass.cpp:599:      $BB_5_0006 -> $BB_5_0009
-(0.005305) KernelPartitioningPass.cpp:599:      $BB_5_0007 -> $BB_5_0009
-(0.005316) KernelPartitioningPass.cpp:604:    now linking
-(0.005326) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005337) KernelPartitioningPass.cpp:635:    linking $BB_5_0002_exit_handler_to_5_0003 to $BB_5_0003_entry_handler_from_5_0002 (entry 131073)
-(0.005348) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005358) KernelPartitioningPass.cpp:635:    linking $BB_5_0002_exit_handler_to_5_0008 to $BB_5_0008_entry_handler_from_5_0002 (entry 458753)
-(0.005369) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005379) KernelPartitioningPass.cpp:635:    linking $BB_5_0003_exit_handler_to_5_0004 to $BB_5_0004_entry_handler_from_5_0003 (entry 196609)
-(0.005390) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005400) KernelPartitioningPass.cpp:635:    linking $BB_5_0003_exit_handler_to_5_0007 to $BB_5_0007_entry_handler_from_5_0003 (entry 393217)
-(0.005411) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005421) KernelPartitioningPass.cpp:635:    linking $BB_5_0004_exit_handler_to_5_0005 to $BB_5_0005_entry_handler_from_5_0004 (entry 262145)
-(0.005432) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005442) KernelPartitioningPass.cpp:635:    linking $BB_5_0004_exit_handler_to_5_0006 to $BB_5_0006_entry_handler_from_5_0004 (entry 327681)
-(0.005453) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005463) KernelPartitioningPass.cpp:635:    linking $BB_5_0005_exit_handler_to_5_0009 to $BB_5_0009_entry_handler_from_5_0005 (entry 524290)
-(0.005473) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005484) KernelPartitioningPass.cpp:635:    linking $BB_5_0006_exit_handler_to_5_0009 to $BB_5_0009_entry_handler_from_5_0006 (entry 524291)
-(0.005494) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005505) KernelPartitioningPass.cpp:635:    linking $BB_5_0007_exit_handler_to_5_0009 to $BB_5_0009_entry_handler_from_5_0007 (entry 524292)
-(0.005515) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005525) KernelPartitioningPass.cpp:635:    linking $BB_5_0008_exit_handler_to_5_0009 to $BB_5_0009_entry_handler_from_5_0008 (entry 524289)
-(0.005536) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005546) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_5_0009 -> exit
-(0.005595) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.005616) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.005628) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.005639) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0002 -> $BB_5_0002_exit_handler_to_5_0003 (3 live values
-(0.005660) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.005678) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.005692) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s32, offset: 16]
-(0.005708) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.005720) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0002_exit_handler_to_5_0003
-(0.005742) KernelPartitioningPass.cpp:1664:   adding $BB_5_0002 to frontierExitBlocks
-(0.005763) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0002 -> $BB_5_0002_exit_handler_to_5_0008 (3 live values
-(0.005776) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.005792) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.005806) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s32, offset: 16]
-(0.005820) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 1
-(0.005831) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0002_exit_handler_to_5_0008
-(0.005852) KernelPartitioningPass.cpp:1664:   adding $BB_5_0002 to frontierExitBlocks
-(0.005864) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.005876) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.005888) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0002
-(0.005914) KernelPartitioningPass.cpp:1782:  block $BB_5_0002 (2 external edges) terminator: @%p9 bra $BB_5_0008
-(0.005926) KernelPartitioningPass.cpp:1785:    branch
-(0.005936) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.005948) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.005998) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.006015) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.006026) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0003_entry_handler_from_5_0002 -> $BB_5_0003 (3 live values
-(0.006041) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006052) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006063) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s32, offset: 16]
-(0.006081) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.006093) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0003 -> $BB_5_0003_exit_handler_to_5_0004 (3 live values
-(0.006106) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006117) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006129) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s32, offset: 16]
-(0.006144) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.006155) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0003_exit_handler_to_5_0004
-(0.006177) KernelPartitioningPass.cpp:1664:   adding $BB_5_0003 to frontierExitBlocks
-(0.006190) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0003 -> $BB_5_0003_exit_handler_to_5_0007 (3 live values
-(0.006203) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006214) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006226) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s32, offset: 16]
-(0.006241) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 1
-(0.006252) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0003_exit_handler_to_5_0007
-(0.006272) KernelPartitioningPass.cpp:1664:   adding $BB_5_0003 to frontierExitBlocks
-(0.006284) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.006297) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.006308) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0003
-(0.006321) KernelPartitioningPass.cpp:1782:  block $BB_5_0003 (2 external edges) terminator: @%p10 bra $BB_5_0007
-(0.006333) KernelPartitioningPass.cpp:1785:    branch
-(0.006343) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.006354) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.006397) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.006413) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.006424) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0004_entry_handler_from_5_0003 -> $BB_5_0004 (3 live values
-(0.006439) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006455) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006466) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s32, offset: 16]
-(0.006484) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.006496) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0004 -> $BB_5_0004_exit_handler_to_5_0005 (2 live values
-(0.006508) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006520) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006531) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.006542) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0004_exit_handler_to_5_0005
-(0.006563) KernelPartitioningPass.cpp:1664:   adding $BB_5_0004 to frontierExitBlocks
-(0.006575) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0004 -> $BB_5_0004_exit_handler_to_5_0006 (2 live values
-(0.006588) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006599) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006610) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 1
-(0.006621) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0004_exit_handler_to_5_0006
-(0.006642) KernelPartitioningPass.cpp:1664:   adding $BB_5_0004 to frontierExitBlocks
-(0.006654) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.006666) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.006676) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0004
-(0.006690) KernelPartitioningPass.cpp:1782:  block $BB_5_0004 (2 external edges) terminator: @%p11 bra $BB_5_0006
-(0.006701) KernelPartitioningPass.cpp:1785:    branch
-(0.006712) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.006723) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.006761) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.006776) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.006787) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0005_entry_handler_from_5_0004 -> $BB_5_0005 (2 live values
-(0.006801) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006812) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006827) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.006839) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0005 -> $BB_5_0005_exit_handler_to_5_0009 (3 live values
-(0.006851) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.006867) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006879) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006890) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.006901) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0005_exit_handler_to_5_0009
-(0.006918) KernelPartitioningPass.cpp:1664:   adding $BB_5_0005 to frontierExitBlocks
-(0.006930) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.006941) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.006952) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0005
-(0.006964) KernelPartitioningPass.cpp:1782:  block $BB_5_0005 (1 external edges) terminator: bra.uni $BB_5_0009
-(0.006975) KernelPartitioningPass.cpp:1785:    branch
-(0.006985) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.006996) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.007032) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.007047) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.007059) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0006_entry_handler_from_5_0004 -> $BB_5_0006 (2 live values
-(0.007072) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.007084) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.007103) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.007115) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0006 -> $BB_5_0006_exit_handler_to_5_0009 (3 live values
-(0.007128) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.007147) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.007159) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.007170) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.007180) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0006_exit_handler_to_5_0009
-(0.007198) KernelPartitioningPass.cpp:1664:   adding $BB_5_0006 to frontierExitBlocks
-(0.007210) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.007221) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.007232) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0006
-(0.007244) KernelPartitioningPass.cpp:1782:  block $BB_5_0006 (1 external edges) terminator: bra.uni $BB_5_0009
-(0.007255) KernelPartitioningPass.cpp:1785:    branch
-(0.007267) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.007277) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.007313) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.007329) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.007340) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0007_entry_handler_from_5_0003 -> $BB_5_0007 (3 live values
-(0.007354) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.007365) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.007376) KernelPartitioningPass.cpp:1725:       skipping alive: 8 [type: s32]
-(0.007390) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.007402) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0007 -> $BB_5_0007_exit_handler_to_5_0009 (3 live values
-(0.007414) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.007433) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.007444) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.007456) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.007466) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0007_exit_handler_to_5_0009
-(0.007484) KernelPartitioningPass.cpp:1664:   adding $BB_5_0007 to frontierExitBlocks
-(0.007496) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.007508) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.007518) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0007
-(0.007530) KernelPartitioningPass.cpp:1782:  block $BB_5_0007 (1 external edges) terminator: bra.uni $BB_5_0009
-(0.007541) KernelPartitioningPass.cpp:1785:    branch
-(0.007551) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.007562) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.007597) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.007612) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.007624) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0008_entry_handler_from_5_0002 -> $BB_5_0008 (3 live values
-(0.007638) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.007649) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.007659) KernelPartitioningPass.cpp:1725:       skipping alive: 8 [type: s32]
-(0.007673) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.007684) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0008 -> $BB_5_0008_exit_handler_to_5_0009 (3 live values
-(0.007697) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.007715) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.007727) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.007743) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.007754) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0008_exit_handler_to_5_0009
-(0.007771) KernelPartitioningPass.cpp:1664:   adding $BB_5_0008 to frontierExitBlocks
-(0.007783) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.007795) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.007806) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0008
-(0.007824) KernelPartitioningPass.cpp:1782:  block $BB_5_0008 (1 external edges) terminator: mov.u64 %r12, funcDouble
-(0.007838) KernelPartitioningPass.cpp:1821:  fall-through non-control-flow instruction to external edge: mov.u64 %r12, funcDouble
-(0.007849) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.007909) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.007927) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.007939) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0009_entry_handler_from_5_0008 -> $BB_5_0009 (3 live values
-(0.007953) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.007971) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.007986) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.008002) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0009_entry_handler_from_5_0005 -> $BB_5_0009 (3 live values
-(0.008016) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.008031) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.008048) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.008064) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0009_entry_handler_from_5_0006 -> $BB_5_0009 (3 live values
-(0.008078) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.008093) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.008107) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.008126) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_5_0009_entry_handler_from_5_0007 -> $BB_5_0009 (3 live values
-(0.008140) KernelPartitioningPass.cpp:1731:       alive: 12 [type: s64, offset: 24]
-(0.008155) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.008169) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.008188) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.008199) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_5_0009 -> $BB_5_0009_thread_exit (0 live values
-(0.008212) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.008222) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_5_0009_thread_exit
-(0.008238) KernelPartitioningPass.cpp:1664:   adding $BB_5_0009 to frontierExitBlocks
-(0.008250) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.008261) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.008272) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_5_0009
-(0.008284) KernelPartitioningPass.cpp:1782:  block $BB_5_0009 (1 external edges) terminator: exit
-(0.008295) KernelPartitioningPass.cpp:1810:    exit
-(0.008351) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1028: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1337869490
+Test time : 1.81198e-05
+
+Status : 
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0922300815582 seconds
+INFO     Test completed in 0.0784730911255 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1073,327 +278,28 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1336759001
-Test time : 1.40667e-05
+Test Seed : 1337869490
+Test time : 1.78814e-05
 
 Status : 
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.105364084244 seconds
+INFO     Test completed in 0.113664865494 seconds
 INFO      It produced the following output:
-sequence() - A_gpu = 0x014e8800
-(0.004447) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(sequence)
-(0.004510) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.004522) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.004647) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.004665) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.004715) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 2]
-(0.004728) KernelPartitioningPass.cpp:729:    saved 64 bytes per thread
-(0.004753) KernelPartitioningPass.cpp:568:    Spill region size is 16
-(0.004774) KernelPartitioningPass.cpp:1111: Subkernel::create(sequence)
-(0.004786) KernelPartitioningPass.cpp:1134: Subkernel::_create(sequence id: 1)
-(0.004807) KernelPartitioningPass.cpp:1162: 
-(0.004817) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.004838) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.004864) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> $BB_1_0003
-(0.004879) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> $BB_1_0004
-(0.004891) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.004907) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.004917) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.004928) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.004937) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.004949) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.004961) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.004971) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.004991) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.005003) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.005014) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.005025) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.005047) KernelPartitioningPass.cpp:1111: Subkernel::create(sequence)
-(0.005058) KernelPartitioningPass.cpp:1134: Subkernel::_create(sequence id: 2)
-(0.005075) KernelPartitioningPass.cpp:1162: 
-(0.005085) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.005097) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0003
-(0.005108) KernelPartitioningPass.cpp:1192:   this block exits
-(0.005121) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0003 -> exit
-(0.005134) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_1_0002 -> $BB_1_0003 with entry ID 131073
-(0.005145) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.005155) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.005166) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.005177) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.005188) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.005199) KernelPartitioningPass.cpp:1374:   $BB_1_0003
-(0.005210) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.005225) KernelPartitioningPass.cpp:1111: Subkernel::create(sequence)
-(0.005236) KernelPartitioningPass.cpp:1134: Subkernel::_create(sequence id: 3)
-(0.005262) KernelPartitioningPass.cpp:1162: 
-(0.005273) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.005286) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0004
-(0.005298) KernelPartitioningPass.cpp:1192:   this block exits
-(0.005311) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0004 -> exit
-(0.005328) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_1_0002 -> $BB_1_0004 with entry ID 196609
-(0.005341) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.005351) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.005362) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.005379) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.005391) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.005402) KernelPartitioningPass.cpp:1374:   $BB_1_0004
-(0.005412) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.005429) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.005440) KernelPartitioningPass.cpp:575:    but first!
-(0.005450) KernelPartitioningPass.cpp:581:    subkernel _subkernel_sequence_1 out edges: 
-(0.005461) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> $BB_1_0003
-(0.005473) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> $BB_1_0004
-(0.005484) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005494) KernelPartitioningPass.cpp:581:    subkernel _subkernel_sequence_2 out edges: 
-(0.005505) KernelPartitioningPass.cpp:588:      $BB_1_0003 -> exit
-(0.005515) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005526) KernelPartitioningPass.cpp:599:      $BB_1_0002 -> $BB_1_0003
-(0.005536) KernelPartitioningPass.cpp:581:    subkernel _subkernel_sequence_3 out edges: 
-(0.005547) KernelPartitioningPass.cpp:588:      $BB_1_0004 -> exit
-(0.005557) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.005568) KernelPartitioningPass.cpp:599:      $BB_1_0002 -> $BB_1_0004
-(0.005578) KernelPartitioningPass.cpp:604:    now linking
-(0.005588) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005599) KernelPartitioningPass.cpp:635:    linking $BB_1_0002_exit_handler_to_1_0003 to $BB_1_0003_entry_handler_from_1_0002 (entry 131073)
-(0.005610) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005620) KernelPartitioningPass.cpp:635:    linking $BB_1_0002_exit_handler_to_1_0004 to $BB_1_0004_entry_handler_from_1_0002 (entry 196609)
-(0.005631) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005642) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0003 -> exit
-(0.005652) KernelPartitioningPass.cpp:621:     same subkernel
-(0.005662) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0004 -> exit
-(0.005719) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.005741) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.005752) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.005763) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_exit_handler_to_1_0003 (2 live values
-(0.005786) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.005812) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.005828) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.005841) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_exit_handler_to_1_0003
-(0.005862) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.005880) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_exit_handler_to_1_0004 (2 live values
-(0.005893) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.005908) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.005922) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 1
-(0.005933) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_exit_handler_to_1_0004
-(0.005955) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.005968) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.005980) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.005991) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.006016) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (2 external edges) terminator: @%p7 bra $BB_1_0004
-(0.006028) KernelPartitioningPass.cpp:1785:    branch
-(0.006039) KernelPartitioningPass.cpp:1791:  1 external edge, modifying branch target to point to handler
-(0.006050) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.006092) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.006111) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.006123) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_1_0003_entry_handler_from_1_0002 -> $BB_1_0003 (2 live values
-(0.006138) KernelPartitioningPass.cpp:1725:       skipping alive: 2 [type: s64]
-(0.006149) KernelPartitioningPass.cpp:1725:       skipping alive: 6 [type: s32]
-(0.006162) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.006173) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0003 -> $BB_1_0003_thread_exit (0 live values
-(0.006185) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.006196) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0003_thread_exit
-(0.006212) KernelPartitioningPass.cpp:1664:   adding $BB_1_0003 to frontierExitBlocks
-(0.006223) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.006235) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.006245) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0003
-(0.006258) KernelPartitioningPass.cpp:1782:  block $BB_1_0003 (1 external edges) terminator: exit
-(0.006269) KernelPartitioningPass.cpp:1810:    exit
-(0.006279) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.006320) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.006335) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.006347) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_1_0004_entry_handler_from_1_0002 -> $BB_1_0004 (2 live values
-(0.006361) KernelPartitioningPass.cpp:1731:       alive: 2 [type: s64, offset: 0]
-(0.006376) KernelPartitioningPass.cpp:1731:       alive: 6 [type: s32, offset: 8]
-(0.006397) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.006409) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0004 -> $BB_1_0004_thread_exit (0 live values
-(0.006422) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.006433) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0004_thread_exit
-(0.006448) KernelPartitioningPass.cpp:1664:   adding $BB_1_0004 to frontierExitBlocks
-(0.006459) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.006471) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.006481) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0004
-(0.006492) KernelPartitioningPass.cpp:1782:  block $BB_1_0004 (1 external edges) terminator: exit
-(0.006502) KernelPartitioningPass.cpp:1810:    exit
-(0.006513) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.022724) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(testShr)
-(0.022758) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.022771) KernelPartitioningPass.cpp:131:    barrier in block $BB_4_0002(instruction 11)
-(0.022800) KernelPartitioningPass.cpp:148:    encountered 1 barriers
-(0.022889) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.022902) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.022931) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 3]
-(0.022943) KernelPartitioningPass.cpp:729:    saved 136 bytes per thread
-(0.022964) KernelPartitioningPass.cpp:568:    Spill region size is 24
-(0.022979) KernelPartitioningPass.cpp:1111: Subkernel::create(testShr)
-(0.022990) KernelPartitioningPass.cpp:1134: Subkernel::_create(testShr id: 4)
-(0.023009) KernelPartitioningPass.cpp:1162: 
-(0.023020) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.023040) KernelPartitioningPass.cpp:1173:  adding block $BB_4_0002
-(0.023058) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_4_0002 -> $BB_4_0002_bar
-(0.023071) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_4_0002
-(0.023083) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.023095) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_4_0002
-(0.023105) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.023121) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.023132) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_4_0002 type: fallthrough
-(0.023144) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.023154) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.023166) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.023178) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.023189) KernelPartitioningPass.cpp:1374:   $BB_4_0002
-(0.023200) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.023217) KernelPartitioningPass.cpp:1111: Subkernel::create(testShr)
-(0.023228) KernelPartitioningPass.cpp:1134: Subkernel::_create(testShr id: 5)
-(0.023245) KernelPartitioningPass.cpp:1162: 
-(0.023255) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.023274) KernelPartitioningPass.cpp:1173:  adding block $BB_4_0002_bar
-(0.023288) KernelPartitioningPass.cpp:1192:   this block exits
-(0.023301) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_4_0002_bar -> exit
-(0.023315) KernelPartitioningPass.cpp:1259:   adding EXTERNAL IN-Edge $BB_4_0002 -> $BB_4_0002_bar with entry ID 327681
-(0.023327) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.023337) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.023349) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.023360) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.023371) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.023381) KernelPartitioningPass.cpp:1374:   $BB_4_0002_bar
-(0.023392) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.023408) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.023419) KernelPartitioningPass.cpp:575:    but first!
-(0.023429) KernelPartitioningPass.cpp:581:    subkernel _subkernel_testShr_4 out edges: 
-(0.023440) KernelPartitioningPass.cpp:588:      $BB_4_0002 -> $BB_4_0002_bar
-(0.023451) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.023461) KernelPartitioningPass.cpp:581:    subkernel _subkernel_testShr_5 out edges: 
-(0.023472) KernelPartitioningPass.cpp:588:      $BB_4_0002_bar -> exit
-(0.023483) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.023493) KernelPartitioningPass.cpp:599:      $BB_4_0002 -> $BB_4_0002_bar
-(0.023504) KernelPartitioningPass.cpp:604:    now linking
-(0.023515) KernelPartitioningPass.cpp:621:     same subkernel
-(0.023525) KernelPartitioningPass.cpp:635:    linking $BB_4_0002_exit_handler_to_4_0002_bar to $BB_4_0002_bar_entry_handler_from_4_0002 (entry 327681)
-(0.023536) KernelPartitioningPass.cpp:621:     same subkernel
-(0.023547) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_4_0002_bar -> exit
-(0.023592) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.023609) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.023621) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.023632) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_4_0002 -> $BB_4_0002_exit_handler_to_4_0002_bar (3 live values
-(0.023648) KernelPartitioningPass.cpp:1731:       alive: 1 [type: s64, offset: 0]
-(0.023665) KernelPartitioningPass.cpp:1731:       alive: 5 [type: s32, offset: 8]
-(0.023679) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s64, offset: 16]
-(0.023694) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.023705) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_4_0002_exit_handler_to_4_0002_bar
-(0.023723) KernelPartitioningPass.cpp:1664:   adding $BB_4_0002 to frontierExitBlocks
-(0.023736) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.023748) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.023759) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_4_0002
-(0.023790) KernelPartitioningPass.cpp:1782:  block $BB_4_0002 (1 external edges) terminator: bar.sync 0
-(0.023803) KernelPartitioningPass.cpp:1800:    barrier
-(0.023813) KernelPartitioningPass.cpp:1801:     block: $BB_4_0002
-(0.023826) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.023884) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.023904) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.023916) KernelPartitioningPass.cpp:1585:     IN-edge: $BB_4_0002_bar_entry_handler_from_4_0002 -> $BB_4_0002_bar (3 live values
-(0.023930) KernelPartitioningPass.cpp:1731:       alive: 1 [type: s64, offset: 0]
-(0.023947) KernelPartitioningPass.cpp:1731:       alive: 5 [type: s32, offset: 8]
-(0.023961) KernelPartitioningPass.cpp:1731:       alive: 8 [type: s64, offset: 16]
-(0.023978) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.023989) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_4_0002_bar -> $BB_4_0002_bar_thread_exit (0 live values
-(0.024002) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.024012) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_4_0002_bar_thread_exit
-(0.024028) KernelPartitioningPass.cpp:1664:   adding $BB_4_0002_bar to frontierExitBlocks
-(0.024040) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.024052) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.024062) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_4_0002_bar
-(0.024073) KernelPartitioningPass.cpp:1782:  block $BB_4_0002_bar (1 external edges) terminator: exit
-(0.024084) KernelPartitioningPass.cpp:1810:    exit
-(0.024095) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
+sequence() - A_gpu = 0x0e6fa00
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.0928139686584 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
+INFO     Test completed in 0.0616090297699 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1336759001
-Test time : 1.7643e-05
-
-Status : 
-
+TestIndirectFunctionCall: ocelot/executive/implementation/DynamicTranslationCache.cpp:1028: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.0541460514069 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.0708649158478 seconds
-INFO      It produced the following output:
-(0.002726) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(_Z6kernelPfii)
-(0.002781) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.002794) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.002909) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.002927) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.002965) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.002978) KernelPartitioningPass.cpp:729:    saved 160 bytes per thread
-(0.002999) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.003019) KernelPartitioningPass.cpp:1111: Subkernel::create(_Z6kernelPfii)
-(0.003031) KernelPartitioningPass.cpp:1134: Subkernel::_create(_Z6kernelPfii id: 1)
-(0.003052) KernelPartitioningPass.cpp:1162: 
-(0.003063) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.003083) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.003104) KernelPartitioningPass.cpp:1192:   this block exits
-(0.003121) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.003135) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.003150) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.003161) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.003171) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.003182) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.003193) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.003205) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.003215) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.003231) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.003242) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.003253) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.003264) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.003287) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.003298) KernelPartitioningPass.cpp:575:    but first!
-(0.003308) KernelPartitioningPass.cpp:581:    subkernel _subkernel__Z6kernelPfii_1 out edges: 
-(0.003318) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.003331) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.003341) KernelPartitioningPass.cpp:604:    now linking
-(0.003352) KernelPartitioningPass.cpp:621:     same subkernel
-(0.003362) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.003424) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.003448) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.003459) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.003470) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.003492) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.003505) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.003523) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.003539) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.003551) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.003562) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.003576) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.003587) KernelPartitioningPass.cpp:1810:    exit
-(0.003599) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.0956110954285 seconds
+INFO     Test completed in 0.0808169841766 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1403,8 +309,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1336759001
-Test time : 0.012454
+Test Seed : 1337869490
+Test time : 0.0159552
 
 Status : Test output:
 looping kernel succeeded
@@ -1412,9 +318,28 @@ matrix vector kernel succeeded
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
+INFO     Test completed in 0.0841991901398 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
+INFO     Test completed in 0.0752251148224 seconds
+INFO      It produced the following output:
+No CAL devices found
+Pass/Fail : Pass
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
+INFO     Test completed in 0.0518980026245 seconds
+INFO      It produced the following output:
+TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:1028: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.0626060962677 seconds
+INFO     Test completed in 0.0622289180756 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1427,69 +352,69 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1336759001
-Test time : 1.40667e-05
+Test Seed : 1337869490
+Test time : 1.66893e-05
 
 Status : 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 0.0712261199951 seconds
-INFO      It produced the following output:
-(0.002304) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(kernel)
-(0.002365) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.002378) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.002471) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.002489) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.002524) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.002536) KernelPartitioningPass.cpp:729:    saved 24 bytes per thread
-(0.002557) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.002609) KernelPartitioningPass.cpp:1111: Subkernel::create(kernel)
-(0.002623) KernelPartitioningPass.cpp:1134: Subkernel::_create(kernel id: 1)
-(0.002650) KernelPartitioningPass.cpp:1162: 
-(0.002661) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.002681) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.002702) KernelPartitioningPass.cpp:1192:   this block exits
-(0.002719) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.002733) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.002749) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.002760) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.002771) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.002781) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.002792) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.002804) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.002814) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.002829) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.002841) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.002852) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.002863) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.002884) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.002895) KernelPartitioningPass.cpp:575:    but first!
-(0.002905) KernelPartitioningPass.cpp:581:    subkernel _subkernel_kernel_1 out edges: 
-(0.002916) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.002926) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.002937) KernelPartitioningPass.cpp:604:    now linking
-(0.002947) KernelPartitioningPass.cpp:621:     same subkernel
-(0.002958) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.003001) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.003021) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.003032) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.003043) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.003065) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.003078) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.003096) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.003112) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.003124) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.003135) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.003154) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.003166) KernelPartitioningPass.cpp:1810:    exit
-(0.003177) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-TestExternalFunctions: ocelot/executive/implementation/DynamicTranslationCache.cpp:1028: void setupCallTargets(ir::PTXKernel&, const executive::DynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.0887591838837 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU 
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
+INFO     Test completed in 0.067615032196 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1337869490
+Test time : 0.00409317
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
+INFO     Test completed in 0.0914089679718 seconds
+INFO      It produced the following output:
+Pass/Fail : Fail
+
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1337869490
+Test time : 0.0303349
+
+Status : Ran 'TestVectorElements-u32' for 8 iterations.
+ Output parameter 0 (I16) computed value - -11117 does not match reference value - -15096
+  On device - 0 - 'Ocelot Dynamic Multicore CPU'
+Test 'TestAdd-u16' seed '1337869490' failed.
+
+
+
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.164906978607 seconds
+INFO     Test completed in 0.187506198883 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1500,8 +425,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1336759001
-Test time : 0.0690739
+Test Seed : 1337869490
+Test time : 0.111191
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -1536,638 +461,8 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.0848460197449 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU 
-(0.007959) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(copyFromGlobal)
-(0.008002) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.008014) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.008128) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.008146) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.008185) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.008197) KernelPartitioningPass.cpp:729:    saved 120 bytes per thread
-(0.008219) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.008239) KernelPartitioningPass.cpp:1111: Subkernel::create(copyFromGlobal)
-(0.008251) KernelPartitioningPass.cpp:1134: Subkernel::_create(copyFromGlobal id: 1)
-(0.008272) KernelPartitioningPass.cpp:1162: 
-(0.008282) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.008302) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.008323) KernelPartitioningPass.cpp:1192:   this block exits
-(0.008340) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.008354) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.008370) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.008380) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.008391) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.008401) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.008413) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.008425) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.008435) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.008450) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.008462) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.008473) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.008484) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.008505) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.008515) KernelPartitioningPass.cpp:575:    but first!
-(0.008525) KernelPartitioningPass.cpp:581:    subkernel _subkernel_copyFromGlobal_1 out edges: 
-(0.008536) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.008548) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.008559) KernelPartitioningPass.cpp:604:    now linking
-(0.008570) KernelPartitioningPass.cpp:621:     same subkernel
-(0.008580) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.008640) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.008664) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.008675) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.008686) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.008709) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.008722) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.008741) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.008758) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.008770) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.008782) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.008798) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.008810) KernelPartitioningPass.cpp:1810:    exit
-(0.008822) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.0644099712372 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1336759001
-Test time : 0.00711274
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 0.097913980484 seconds
-INFO      It produced the following output:
-(0.006355) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.006407) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.006419) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.006513) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.006530) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.006563) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.006576) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.006596) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.006616) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.006628) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.006648) KernelPartitioningPass.cpp:1162: 
-(0.006659) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.006674) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.006693) KernelPartitioningPass.cpp:1192:   this block exits
-(0.006709) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.006723) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.006739) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.006749) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.006759) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.006769) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.006780) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.006792) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.006802) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.006818) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.006830) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.006841) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.006852) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.006874) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.006885) KernelPartitioningPass.cpp:575:    but first!
-(0.006895) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.006905) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.006916) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.006926) KernelPartitioningPass.cpp:604:    now linking
-(0.006937) KernelPartitioningPass.cpp:621:     same subkernel
-(0.006947) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.006992) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.007011) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.007023) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.007034) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.007056) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.007068) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.007086) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.007101) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.007113) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.007123) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.007136) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.007148) KernelPartitioningPass.cpp:1810:    exit
-(0.007159) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.015690) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.015713) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.015724) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.015776) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.015788) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.015815) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.015826) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.015842) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.015856) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.015866) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.015883) KernelPartitioningPass.cpp:1162: 
-(0.015893) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.015909) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.015923) KernelPartitioningPass.cpp:1192:   this block exits
-(0.015936) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.015947) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.015960) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.015970) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.015980) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.015990) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.016001) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.016012) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.016022) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.016034) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.016046) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.016057) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.016068) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.016085) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.016095) KernelPartitioningPass.cpp:575:    but first!
-(0.016105) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.016116) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.016126) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.016136) KernelPartitioningPass.cpp:604:    now linking
-(0.016147) KernelPartitioningPass.cpp:621:     same subkernel
-(0.016157) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.016198) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.016215) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.016226) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.016237) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.016251) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.016262) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.016278) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.016290) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.016302) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.016313) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.016324) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.016335) KernelPartitioningPass.cpp:1810:    exit
-(0.016346) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.017178) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.017192) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.017203) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.017243) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.017255) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.017272) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.017282) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.017298) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.017310) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.017320) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.017337) KernelPartitioningPass.cpp:1162: 
-(0.017348) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.017368) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.017381) KernelPartitioningPass.cpp:1192:   this block exits
-(0.017393) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.017404) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.017415) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.017425) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.017436) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.017446) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.017456) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.017467) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.017477) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.017488) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.017500) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.017511) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.017522) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.017537) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.017547) KernelPartitioningPass.cpp:575:    but first!
-(0.017557) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.017567) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.017577) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.017588) KernelPartitioningPass.cpp:604:    now linking
-(0.017598) KernelPartitioningPass.cpp:621:     same subkernel
-(0.017608) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.017648) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.017663) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.017674) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.017685) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.017698) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.017708) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.017724) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.017735) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.017746) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.017757) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.017767) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.017778) KernelPartitioningPass.cpp:1810:    exit
-(0.017788) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.018771) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.018785) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.018796) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.018835) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.018847) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.018864) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.018875) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.018890) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.018902) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.018913) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.018929) KernelPartitioningPass.cpp:1162: 
-(0.018939) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.018955) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.018967) KernelPartitioningPass.cpp:1192:   this block exits
-(0.018980) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.018991) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.019002) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.019017) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.019028) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.019038) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.019048) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.019060) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.019070) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.019082) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.019093) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.019104) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.019115) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.019130) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.019140) KernelPartitioningPass.cpp:575:    but first!
-(0.019150) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.019160) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.019170) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.019180) KernelPartitioningPass.cpp:604:    now linking
-(0.019190) KernelPartitioningPass.cpp:621:     same subkernel
-(0.019200) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.019240) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.019256) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.019267) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.019278) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.019290) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.019302) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.019317) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.019328) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.019340) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.019350) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.019361) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.019372) KernelPartitioningPass.cpp:1810:    exit
-(0.019382) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.020718) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.020733) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.020744) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.020787) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.020799) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.020817) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.020828) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.020844) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.020855) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.020866) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.020883) KernelPartitioningPass.cpp:1162: 
-(0.020894) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.020908) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.020922) KernelPartitioningPass.cpp:1192:   this block exits
-(0.020935) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.020946) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.020957) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.020968) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.020978) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.020988) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.020998) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.021009) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.021025) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.021038) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.021049) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.021060) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.021071) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.021086) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.021097) KernelPartitioningPass.cpp:575:    but first!
-(0.021107) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.021117) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.021127) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.021138) KernelPartitioningPass.cpp:604:    now linking
-(0.021148) KernelPartitioningPass.cpp:621:     same subkernel
-(0.021158) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.021199) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.021214) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.021225) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.021236) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.021248) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.021259) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.021275) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.021286) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.021298) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.021308) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.021319) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.021329) KernelPartitioningPass.cpp:1810:    exit
-(0.021339) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.022343) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.022357) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.022368) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.022408) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.022420) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.022437) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.022448) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.022463) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.022475) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.022486) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.022502) KernelPartitioningPass.cpp:1162: 
-(0.022513) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.022528) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.022541) KernelPartitioningPass.cpp:1192:   this block exits
-(0.022553) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.022564) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.022576) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.022586) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.022596) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.022606) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.022616) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.022627) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.022637) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.022649) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.022660) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.022671) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.022681) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.022701) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.022712) KernelPartitioningPass.cpp:575:    but first!
-(0.022722) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.022732) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.022742) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.022752) KernelPartitioningPass.cpp:604:    now linking
-(0.022762) KernelPartitioningPass.cpp:621:     same subkernel
-(0.022772) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.022812) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.022827) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.022838) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.022848) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.022861) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.022872) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.022887) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.022898) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.022909) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.022920) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.022930) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.022941) KernelPartitioningPass.cpp:1810:    exit
-(0.022951) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.023997) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.024012) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.024023) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.024063) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.024075) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.024092) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.024103) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.024118) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.024130) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.024141) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.024157) KernelPartitioningPass.cpp:1162: 
-(0.024168) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.024183) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.024196) KernelPartitioningPass.cpp:1192:   this block exits
-(0.024208) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.024219) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.024230) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.024240) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.024251) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.024261) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.024271) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.024282) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.024292) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.024304) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.024315) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.024326) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.024337) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.024352) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.024362) KernelPartitioningPass.cpp:575:    but first!
-(0.024372) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.024382) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.024393) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.024403) KernelPartitioningPass.cpp:604:    now linking
-(0.024419) KernelPartitioningPass.cpp:621:     same subkernel
-(0.024429) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.024469) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.024485) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.024496) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.024506) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.024519) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.024530) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.024545) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.024556) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.024567) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.024578) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.024588) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.024599) KernelPartitioningPass.cpp:1810:    exit
-(0.024610) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.025390) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.025403) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.025415) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.025454) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.025466) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.025483) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.025494) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.025509) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.025521) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.025532) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.025548) KernelPartitioningPass.cpp:1162: 
-(0.025559) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.025574) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.025587) KernelPartitioningPass.cpp:1192:   this block exits
-(0.025599) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.025610) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.025621) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.025631) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.025642) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.025652) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.025662) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.025673) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.025684) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.025695) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.025707) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.025717) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.025728) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.025743) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.025753) KernelPartitioningPass.cpp:575:    but first!
-(0.025764) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.025774) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.025785) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.025795) KernelPartitioningPass.cpp:604:    now linking
-(0.025805) KernelPartitioningPass.cpp:621:     same subkernel
-(0.025816) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.025855) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.025871) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.025882) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.025892) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.025910) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.025921) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.025937) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.025948) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.025959) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.025969) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.025980) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.025990) KernelPartitioningPass.cpp:1810:    exit
-(0.026001) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.026950) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.026963) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.026974) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.027014) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.027026) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.027042) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.027054) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.027069) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.027081) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.027092) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.027108) KernelPartitioningPass.cpp:1162: 
-(0.027118) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.027133) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.027146) KernelPartitioningPass.cpp:1192:   this block exits
-(0.027158) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.027169) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.027180) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.027190) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.027201) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.027211) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.027221) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.027232) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.027242) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.027254) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.027265) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.027276) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.027287) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.027302) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.027312) KernelPartitioningPass.cpp:575:    but first!
-(0.027322) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.027332) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.027342) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.027353) KernelPartitioningPass.cpp:604:    now linking
-(0.027363) KernelPartitioningPass.cpp:621:     same subkernel
-(0.027373) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.027412) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.027428) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.027439) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.027449) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.027462) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.027472) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.027487) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.027499) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.027515) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.027526) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.027536) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.027547) KernelPartitioningPass.cpp:1810:    exit
-(0.027557) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.028495) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.028509) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.028520) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.028559) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.028571) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.028588) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.028599) KernelPartitioningPass.cpp:729:    saved 72 bytes per thread
-(0.028614) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.028626) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.028637) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.028653) KernelPartitioningPass.cpp:1162: 
-(0.028663) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.028678) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.028691) KernelPartitioningPass.cpp:1192:   this block exits
-(0.028703) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.028714) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.028726) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.028736) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.028746) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.028756) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.028766) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.028778) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.028788) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.028799) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.028811) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.028821) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.028832) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.028847) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.028857) KernelPartitioningPass.cpp:575:    but first!
-(0.028867) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.028877) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.028888) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.028898) KernelPartitioningPass.cpp:604:    now linking
-(0.028908) KernelPartitioningPass.cpp:621:     same subkernel
-(0.028918) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.028958) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.028973) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.028984) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.028995) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.029007) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.029018) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.029033) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.029044) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.029056) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.029066) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.029077) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.029087) KernelPartitioningPass.cpp:1810:    exit
-(0.029098) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-(0.030006) KernelPartitioningPass.cpp:76:   KernelPartitioningPass::runOnFunction(test)
-(0.030020) KernelPartitioningPass.cpp:113:  partitioning blocks at barriers
-(0.030030) KernelPartitioningPass.cpp:148:    encountered 0 barriers
-(0.030065) KernelPartitioningPass.cpp:195:   KernelGraph( partitioning with heuristic minimum)
-(0.030076) KernelPartitioningPass.cpp:290:  KernelGraph::_partitionMinimumSize()
-(0.030092) KernelPartitioningPass.cpp:727:  LiveRegisters [count: 0]
-(0.030103) KernelPartitioningPass.cpp:729:    saved 32 bytes per thread
-(0.030118) KernelPartitioningPass.cpp:568:    Spill region size is 0
-(0.030130) KernelPartitioningPass.cpp:1111: Subkernel::create(test)
-(0.030140) KernelPartitioningPass.cpp:1134: Subkernel::_create(test id: 1)
-(0.030156) KernelPartitioningPass.cpp:1162: 
-(0.030167) KernelPartitioningPass.cpp:1163:  _analyzeExternalEdges()
-(0.030180) KernelPartitioningPass.cpp:1173:  adding block $BB_1_0002
-(0.030193) KernelPartitioningPass.cpp:1192:   this block exits
-(0.030205) KernelPartitioningPass.cpp:1222:   adding EXTERNAL OUT-Edge $BB_1_0002 -> exit
-(0.030216) KernelPartitioningPass.cpp:1262:  ENTRY EDGE: entry -> $BB_1_0002
-(0.030227) KernelPartitioningPass.cpp:1276: Creating internal edges
-(0.030238) KernelPartitioningPass.cpp:1281:  looking in block mapping: entry -> $BB_1_0002
-(0.030248) KernelPartitioningPass.cpp:1285:   examined terminator
-(0.030258) KernelPartitioningPass.cpp:1296:   instantiating internal edge
-(0.030268) KernelPartitioningPass.cpp:1302:   adding internal edge: entry -> $BB_1_0002 type: fallthrough
-(0.030280) KernelPartitioningPass.cpp:1308:  identifying targets of external IN edges
-(0.030290) KernelPartitioningPass.cpp:1320:  identifying sources of external OUT edges
-(0.030302) KernelPartitioningPass.cpp:1341:  _analyzeDivergentControlFlow()
-(0.030313) KernelPartitioningPass.cpp:1371: as a reminder, this partition contains 1 blocks:
-(0.030324) KernelPartitioningPass.cpp:1374:   $BB_1_0002
-(0.030335) KernelPartitioningPass.cpp:1379:   0 divergent blocks
-(0.030350) KernelPartitioningPass.cpp:573:  Linking external edges
-(0.030360) KernelPartitioningPass.cpp:575:    but first!
-(0.030371) KernelPartitioningPass.cpp:581:    subkernel _subkernel_test_1 out edges: 
-(0.030381) KernelPartitioningPass.cpp:588:      $BB_1_0002 -> exit
-(0.030391) KernelPartitioningPass.cpp:592:    and here are all the in_edges:
-(0.030401) KernelPartitioningPass.cpp:604:    now linking
-(0.030412) KernelPartitioningPass.cpp:621:     same subkernel
-(0.030422) KernelPartitioningPass.cpp:647:   failed to link external edge: $BB_1_0002 -> exit
-(0.030456) KernelPartitioningPass.cpp:1560: Subkernel::_createExternalHandlers()
-(0.030471) KernelPartitioningPass.cpp:1568:   visiting external IN-edges
-(0.030482) KernelPartitioningPass.cpp:1600:   visiting external OUT-edges
-(0.030493) KernelPartitioningPass.cpp:1615:     OUT-edge: $BB_1_0002 -> $BB_1_0002_thread_exit (0 live values
-(0.030505) KernelPartitioningPass.cpp:1630: is this a divergent handler? edgeIndex 0
-(0.030516) KernelPartitioningPass.cpp:1679:   creating exit in block $BB_1_0002_thread_exit
-(0.030531) KernelPartitioningPass.cpp:1664:   adding $BB_1_0002 to frontierExitBlocks
-(0.030543) KernelPartitioningPass.cpp:1765: Frontier exit blocks:
-(0.030554) KernelPartitioningPass.cpp:1770:   obtained CFG-to-DFG mapping. Now visiting 1 frontier exit blocks
-(0.030564) KernelPartitioningPass.cpp:1775:    frontier exit block: $BB_1_0002
-(0.030575) KernelPartitioningPass.cpp:1782:  block $BB_1_0002 (1 external edges) terminator: exit
-(0.030585) KernelPartitioningPass.cpp:1810:    exit
-(0.030596) KernelPartitioningPass.cpp:1825: end frontier exit blocks:
-Pass/Fail : Fail
-
-
-Name : TestPTXAssembly
-
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
-
-
-Test Seed : 1336759001
-Test time : 0.033807
-
-Status : Ran 'TestVectorElements-u32' for 10 iterations.
- Output parameter 0 (I16) computed value - 2 does not match reference value - -14204
-  On device - 0 - 'Ocelot Dynamic Multicore CPU'
-Test 'TestAdd-u16' seed '1336759001' failed.
-
-
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.0618669986725 seconds
+INFO     Test completed in 0.0655319690704 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -2182,7 +477,7 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1336759001
+Test Seed : 1337869490
 Test time : 1.85966e-05
 
 Status : Testing Generic Dataflow
@@ -2195,7 +490,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.076896905899 seconds
+INFO     Test completed in 0.0950520038605 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -2214,26 +509,26 @@ Pass/Fail : Pass
 
 INFO     
 Passing tests:
- (0.105s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
- (0.081s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
- (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
- (0.165s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
- (0.085s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
- (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
- (0.093s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
- (0.092s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
- (0.077s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
- (0.064s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
- (0.063s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
- (0.066s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
- (0.050s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
- (0.054s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
- (0.096s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
+ (0.114s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Passed
+ (0.091s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Passed
+ (0.066s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Passed
+ (0.188s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Passed
+ (0.089s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Passed
+ (0.084s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Passed
+ (0.065s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Passed
+ (0.078s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Passed
+ (0.095s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Passed
+ (0.068s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Passed
+ (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Passed
+ (0.083s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Passed
+ (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Passed
+ (0.080s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Passed
+ (0.075s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Passed
+ (0.081s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Passed
 
 Failing tests:
- (0.046s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.098s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
- (0.066s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
- (0.071s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
+ (0.062s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.091s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Failed
+ (0.076s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
+ (0.052s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
 

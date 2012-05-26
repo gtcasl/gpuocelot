@@ -669,12 +669,26 @@ void analysis::LLVMUniformVectorization::Translation::_hoistDeclarationBlocks() 
 				}
 				else {
 					llvm::Instruction *inst = *inst_it;
-					inst->removeFromParent();
-					inst->insertAfter(&schedulerEntryBlock.block->back());
 					
-					schedulerEntryBlock.threadLocalArguments[0].declarations.push_back(inst);
+					report("   decl: " << String(inst));
+						
+					bool pushConstants = false;
+					if (llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst)) {
+						if (castInst->getDestTy() == castInst->getSrcTy()) {
+							if (llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(castInst->getOperand(0))) {
+								inst->replaceAllUsesWith(constant);
+								inst->eraseFromParent();
+								pushConstants = true;
+								report("    replacing decl with constant value " << String(constant));
+							}
+						}
+					}
 					
-					report("   " << String(inst));
+					if (!pushConstants) {
+						inst->removeFromParent();
+						inst->insertAfter(&schedulerEntryBlock.block->back());
+						schedulerEntryBlock.threadLocalArguments[0].declarations.push_back(inst);
+					}
 				}
 			}	
 			killBlocks.push_back(block);
@@ -714,14 +728,11 @@ void analysis::LLVMUniformVectorization::Translation::_completeSchedulerEntryBlo
 	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(resumePoint, schedulerEntryBlock.defaultEntry, 
 		schedulerEntryBlock.entries.size() + 1, schedulerEntryBlock.block);
 	
-	report("    default entry: " << schedulerEntryBlock.defaultEntry->getName().str());
-	
 	unsigned int idx = 0;
 	for (EntryMap::const_iterator entry_it = schedulerEntryBlock.entries.begin();
 		entry_it != schedulerEntryBlock.entries.end(); ++entry_it, ++idx) {
 
-		switchInst->addCase(getConstInt32(entry_it->first & 0x0ffff), entry_it->second);		
-		report("  added successor " << idx << " -> " << entry_it->second->getName().str());
+		switchInst->addCase(getConstInt32(entry_it->first & 0x0ffff), entry_it->second);
 	}
 }
 
@@ -909,17 +920,17 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 	
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		if (&*bb_it == schedulerEntryBlock.block) {
-		
+
 			// replicate declarations
 			for (InstructionVector::iterator inst_it = schedulerEntryBlock.threadLocalArguments[0].declarations.begin();
 				inst_it != schedulerEntryBlock.threadLocalArguments[0].declarations.end(); ++inst_it) {
 			
 				_replicateInstruction(*inst_it);
 			}
-		
+			
 			continue;
 		}
-		else {
+		else {			
 			std::vector< llvm::Instruction *> instructions;
 			instructions.reserve(bb_it->getInstList().size());
 			
@@ -938,7 +949,6 @@ void analysis::LLVMUniformVectorization::Translation::_replicateInstructions() {
 		}
 	}
 }
-
 
 void analysis::LLVMUniformVectorization::Translation::_identifyScheduler() {
 	report("_identifyScheduler()");
@@ -970,6 +980,7 @@ void analysis::LLVMUniformVectorization::Translation::_packThreadLocal() {
 }
 
 void analysis::LLVMUniformVectorization::Translation::_replicateInstruction(llvm::Instruction *inst) {
+	reportE(REPORT_VECTORIZING, "  _replicateInstruction()");
 	reportE(REPORT_VECTORIZING, "  _replicateInstruction(" << String(inst) << ")");
 	
 	assert(schedulerEntryBlock.threadLocalArguments.size() == (size_t)pass->warpSize);
@@ -1320,7 +1331,7 @@ void analysis::LLVMUniformVectorization::Translation::_vectorizeReplicated() {
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorize(
 	VectorizedInstructionMap::iterator &vec_it) {
 	
-	reportE(REPORT_VECTORIZING, "  vectorize()");
+	report("  vectorize(" << String(vec_it->first) << ")");
 	
 	llvm::Instruction *vectorized = vec_it->second.vector;
 	if (!vectorized) {
@@ -1474,64 +1485,36 @@ static std::string getVectorizedIntrinsicName(const std::string &calleeName, int
 	}
 	return "";
 }
-			
+
 llvm::Instruction * analysis::LLVMUniformVectorization::Translation::_vectorizeCall(
 	llvm::CallInst *callInst, VectorizedInstructionMap::iterator &vec_it) {
 	
-	llvm::Instruction *before = 0;
+	assert(hydrazine::isPowerOfTwo(pass->warpSize) && 
+		"warp size must be power of 2 for vectorizing function calls");
+	
+	llvm::Instruction *before = callInst;
+	
+	report("_vectorizeCall(" << String(callInst) << ")");
 	
 	// it's a call instruction
 	std::string calleeName = callInst->getCalledFunction()->getName().str();
+	std::string intrinsicName = getVectorizedIntrinsicName(calleeName, pass->warpSize);
+	assert(intrinsicName != "" && "failed to identify vector equivalent of callee");
 
-	reportE(REPORT_VECTORIZING, " call instruction: " << calleeName);
-
-	assert(hydrazine::isPowerOfTwo(pass->warpSize) && 
-		"warp size must be power of 2 for vectorizing function calls");
-
-	const char *floatSuffixes[] = {
-		"f32", "v2f32", "v4f32", "v8f32", "v16f32", "v32f32", "v64f32", "v128f32", "v256f32", 
-		"v512f32", 0
-	};
-	const char *str[] = {
-		"__ocelot_sqrtf", "llvm.sqrt",
-		"__ocelot_sinf", "llvm.sin",
-		"__ocelot_cosf", "llvm.cos",
-		"llvm.sqrt.f32", "llvm.sqrt",
-		"llvm.sin.f32", "llvm.sin",
-		"llvm.cos.f32f", "llvm.cos",
-		0, 0
-	};
-	llvm::Function *funcIntrinsic = 0;
-	for (int n = 0; str[n]; n+=2) {
-		if (calleeName == str[n]) {
-			int s = 0;
-			for (; floatSuffixes[s]; s++) {
-				if ((1 << s) == pass->warpSize) {
-					break;
-				}
-			}
-			assert((1 << s) == pass->warpSize);
-			
-			std::string destName = std::string(str[n+1]) + "." + floatSuffixes[s];
-			funcIntrinsic = function->getParent()->getFunction(destName);
-			if (!funcIntrinsic) {
-				reportE(REPORT_VECTORIZING, "creating intrinsic type " << calleeName);
-				llvm::VectorType *vecType = llvm::VectorType::get(callInst->getType(), pass->warpSize);
-				std::vector< llvm::Type *> args;
-				args.push_back(vecType);
-				llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
-				funcIntrinsic = llvm::Function::Create(funcType, 
-					llvm::GlobalValue::ExternalLinkage, destName, function->getParent());
-			}
-			else {
-				reportE(REPORT_VECTORIZING, "using existing intrinsic definition ");
-			}
-			assert(funcIntrinsic && "failed to get identified intrinsic");
-			break;
-		}
-	}
+	reportE(REPORT_VECTORIZING, " call instruction: " << calleeName << " => " << intrinsicName);
 	
+	llvm::Function *funcIntrinsic = function->getParent()->getFunction(intrinsicName);
+	if (!funcIntrinsic) {
+		reportE(REPORT_VECTORIZING, "creating intrinsic type " << calleeName);
+		llvm::VectorType *vecType = llvm::VectorType::get(callInst->getType(), pass->warpSize);
+		std::vector< llvm::Type *> args;
+		args.push_back(vecType);
+		llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
+		funcIntrinsic = llvm::Function::Create(funcType, 
+			llvm::GlobalValue::ExternalLinkage, intrinsicName, function->getParent());
+	}
 	assert(funcIntrinsic && "failed to identify intrinsic");
+	assert(before && "failed to find instruction to insert before");
 	
 	std::vector< llvm::Value *> args;
 	for (unsigned int op = 0; op < callInst->getNumOperands() - 1; ++op) {

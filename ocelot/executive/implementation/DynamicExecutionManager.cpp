@@ -236,21 +236,22 @@ void executive::DynamicExecutionManager::_reportSubkernelCoverage(
 		<< ", \"partitioning\": \"" << analysis::KernelPartitioningPass::toString(
 			(analysis::KernelPartitioningPass::PartitioningHeuristic)
 				api::OcelotConfiguration::get().executive.partitioningHeuristic ) << "\""
-		<< ",\n   \"coverage\": [\n";
+		<< ",\n   \"coverage\": {\n";
 	
+	size_t skCounter = 0;
 	for (SubkernelId start = subkernelIdRange.first; start <= subkernelIdRange.second; ++start) {
 		auto sk_it = translations.find(start);
-		file << "  \"" << sk_it->first << "\": [";
+		file << (skCounter++ ? "," : "") << "  \"" << sk_it->first << "\": [";
 		if (sk_it != translations.end()) {
 			int wsIdx = 0;
 			for (auto ws_it = sk_it->second.begin(); ws_it != sk_it->second.end(); ++ws_it) {
 				file << (wsIdx++ ? ", " : "") << *ws_it;
 			}
 		}
-		file << "],\n";
+		file << "]";
 	}
 	
-	file << "  ]\n},\n";
+	file << "\n  }\n},\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

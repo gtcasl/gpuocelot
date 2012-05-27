@@ -324,7 +324,7 @@ ir::LLVMInstruction::Type PTXToLLVMTranslator::_getCtaContextType()
 	ir::LLVMInstruction::Type context;
 	
 	context.category = ir::LLVMInstruction::Type::Structure;
-	context.members.resize( 12 );
+	context.members.resize( 13 );
 
 	context.members[0].category = ir::LLVMInstruction::Type::Structure;
 	context.members[0].label    = "%Dimension";
@@ -346,6 +346,9 @@ ir::LLVMInstruction::Type PTXToLLVMTranslator::_getCtaContextType()
 	context.members[10].type = ir::LLVMInstruction::I32;
 	
 	context.members[11] = context.members[4];
+	
+	context.members[12].category = ir::LLVMInstruction::Type::Element;
+	context.members[12].type     = ir::LLVMInstruction::I32;
 	
 	return context;
 }

@@ -1740,16 +1740,20 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 		function, & function->getEntryBlock());
 	
 	report("  creating loop termination block");
-
-	llvm::CastInst *ptrWarpCount = llvm::CastInst::CreatePointerCast(
-		schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer,
-		llvm::PointerType::get(getTyInt(32), 0), "ptrThreadCount", schedulerEntryBlock.warpLoopDo);
-	ptrWarpCount->removeFromParent();
-	ptrWarpCount->insertAfter(schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer);
-	llvm::Instruction *numThreads = new llvm::LoadInst(ptrWarpCount, "threadCount", 
+	
+	std::vector<llvm::Value *> ptrNumThreadArgs;
+	ptrNumThreadArgs.push_back(getConstInt32(0));
+	ptrNumThreadArgs.push_back(getConstInt32(12));
+	llvm::Instruction *ptrNumThreads = llvm::GetElementPtrInst::Create(
+		schedulerEntryBlock.threadLocalArguments.at(0).context,	
+		llvm::ArrayRef<llvm::Value*>(ptrNumThreadArgs), "ptrThreadCount", schedulerEntryBlock.warpLoopDo);
+	ptrNumThreads->removeFromParent();
+	ptrNumThreads->insertAfter(schedulerEntryBlock.threadLocalArguments.at(0).metadataPointer);
+	
+	llvm::Instruction *numThreads = new llvm::LoadInst(ptrNumThreads, "threadCount", 
 		schedulerEntryBlock.warpLoopDo);
 	numThreads->removeFromParent();
-	numThreads->insertAfter(ptrWarpCount);
+	numThreads->insertAfter(ptrNumThreads);
 	
 	llvm::BranchInst *entryBra = llvm::BranchInst::Create(schedulerEntryBlock.block, 
 		schedulerEntryBlock.warpLoopDo);
@@ -1796,10 +1800,10 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 				schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer)->getPointerOperand());
 		metadataPtrGemp->removeFromParent();
 		metadataPtrGemp->insertBefore(schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer);
-		ptrWarpCount->removeFromParent();
-		ptrWarpCount->insertAfter(schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer);
+		ptrNumThreads->removeFromParent();
+		ptrNumThreads->insertAfter(schedulerEntryBlock.threadLocalArguments.at(tid).metadataPointer);
 		numThreads->removeFromParent();
-		numThreads->insertAfter(ptrWarpCount);
+		numThreads->insertAfter(ptrNumThreads);
 	}
 	
 	report("  incrementing thread counter");
@@ -1814,14 +1818,14 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 	llvm::BranchInst *backEdgeBra = llvm::BranchInst::Create(schedulerEntryBlock.block, 
 		schedulerEntryBlock.warpLoopExit, cmpResult, schedulerEntryBlock.warpLoopWhile);
 	assert(backEdgeBra && "failed to create back edge");
-		
+#if 0
 	report("  storing threadCount - thread counter over numThreads");
 	llvm::BinaryOperator *subThreadCount = llvm::BinaryOperator::CreateSub(numThreads, 
 		incrementWarpIdx, "remainingThreads", schedulerEntryBlock.warpLoopExit);
 	llvm::StoreInst *storeInst = new llvm::StoreInst(subThreadCount, ptrWarpCount, 
 		schedulerEntryBlock.warpLoopExit);
 	assert(storeInst && "failed to store number of remaining threads");
-		
+#endif
 	llvm::ReturnInst *returnInst = llvm::ReturnInst::Create(context(), 0, 
 		schedulerEntryBlock.warpLoopExit);
 	assert(returnInst && "failed to create return instruction");

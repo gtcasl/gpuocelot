@@ -52,6 +52,7 @@ public:
 public:
 	/*! \brief Generic pointer back to other state */
 	char* metadata;	// [11] 
+	unsigned int threadCount;	//! [12] counts the number of threads to be executed
 };
 
 class MetaData
@@ -65,7 +66,6 @@ public:
 
 public:
 
-	unsigned int warpCount;
 	unsigned int sharedSize;
 	unsigned int localSize;
 	unsigned int globalLocalSize;

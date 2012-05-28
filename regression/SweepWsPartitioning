@@ -1,0 +1,14 @@
+rm -f *.json
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.maximum"
+echo $OCELOT_CONFIG; ./TestTenTimes
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.minimumWithBarriers"
+echo $OCELOT_CONFIG; ./TestTenTimes
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.loops"
+echo $OCELOT_CONFIG; ./TestTenTimes
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.maximum"
+echo $OCELOT_CONFIG; ./TestTenTimes
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.minimumWithBarriers"
+echo $OCELOT_CONFIG; ./TestTenTimes
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.loops"
+echo $OCELOT_CONFIG; ./TestTenTimes
+

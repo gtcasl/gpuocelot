@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_SUBKERNEL_COVERAGE 1
+#define REPORT_SUBKERNEL_FIRSTLAUNCH_LATENCY 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -151,7 +152,10 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 
 	Clock::time_point t0 = Clock::now();
 		
+	EventTimer firstKernelExecutionTimer;
 	if (workerThreads == 1) {
+	
+		// start a timer
 	
 		// start executing in main thread
 		report("  sharedMemorySize() = " << kernel.sharedMemorySize());
@@ -165,6 +169,10 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 				report("Executing block " << blockIdx << ", " << blockIdy);
 			
 				executive.execute(ir::Dim3(blockIdx, blockIdy, 1));
+				
+				if (!blockIdy && !blockIdx) {
+					firstKernelExecutionTimer = executive.getFirstKernelExecutionTimer();
+				}
 			}
 		}
 	}
@@ -199,6 +207,9 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 		milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
 		_reportSubkernelCoverage(kernel, ms.count());
 	}
+	if (REPORT_SUBKERNEL_FIRSTLAUNCH_LATENCY) {
+		_reportFirstLaunchLatency(kernel, firstKernelExecutionTimer);
+	}
 }
 
 // emma was here. :-)
@@ -208,6 +219,24 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 static std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
 	out << dim.x << ", " << dim.y << ", " << dim.z;
 	return out;
+}
+
+void executive::DynamicExecutionManager::_reportFirstLaunchLatency(
+	executive::DynamicMulticoreKernel &kernel, const EventTimer &timer) {
+
+	// serialize output
+	std::ofstream logfile(
+		"/home/andrew/repositories/gpuocelot/trunk/tests/firstKernelExecutionLatency.json", 
+		std::ios_base::app);
+	const char *application = "Unknown Application";
+	if (getenv("APPNAME")) { application = getenv("APPNAME"); }
+	
+	logfile << "{ \"application\": \"" << application << "\", \"heuristic\": \"" 
+		<< analysis::KernelPartitioningPass::toString(
+			(analysis::KernelPartitioningPass::PartitioningHeuristic)
+				api::OcelotConfiguration::get().executive.partitioningHeuristic)
+		<< "\", kernel: \"" << kernel.name << "\", \"timer\": " << timer 
+		<< ", \"maxWarpSize\": " << api::OcelotConfiguration::get().executive.warpSize << " },\n";
 }
 
 void executive::DynamicExecutionManager::_reportSubkernelCoverage(
@@ -222,14 +251,15 @@ void executive::DynamicExecutionManager::_reportSubkernelCoverage(
 	DynamicMulticoreKernel::SubkernelIdRange subkernelIdRange = kernel.getSubkernelIdRange();
 	
 	// assumes warp sizes that are powers of 2 from 1 to warpSize implied by config
-	std::ofstream file("subkernelCoverage.json", std::ios_base::app);
+	std::ofstream file("/home/andrew/repositories/gpuocelot/trunk/tests/subkernelCoverage.json", 
+		std::ios_base::app);
 	const char *app = getenv("APPNAME");
 	if (!app) {
 		app = "Unknown Application";
 	}
 	file << "{ \n   \"application\": \"" << app << "\", \"kernel\": \"" << kernel.name 
 		<< "\", \"launch\": " << kernel.getLaunchCount() << ",\n   \"range\": [" << subkernelIdRange.first 
-		<< ", " << subkernelIdRange.second << "]" << ", \"runtime\": " << runtime
+		<< ", " << subkernelIdRange.second << "]" << ", \"runtime_ms\": " << runtime
 		<< ", \"gridDim\": [" << kernel.gridDim() << "], \"blockDim\": [" << kernel.blockDim() << "]"
 		<< ",\n   \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit 
 		<< ", \"maxWarpSize\": " << api::OcelotConfiguration::get().executive.warpSize

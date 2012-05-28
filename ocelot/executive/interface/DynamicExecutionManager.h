@@ -14,6 +14,7 @@
 // Ocelot includes
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
+#include <ocelot/executive/interface/EventTimer.h>
 
 typedef struct {
 	size_t sharedMemorySize;
@@ -57,7 +58,9 @@ namespace executive {
 	public:
 		//! owns the translation cache
 		DynamicTranslationCache translationCache;
-		
+	
+	protected:
+		void _reportFirstLaunchLatency(executive::DynamicMulticoreKernel &kernel, const EventTimer &timer);
 	};
 
 }

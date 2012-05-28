@@ -198,6 +198,9 @@ namespace executive {
 		
 		//! \brief mutex for calling getOrInsertTranslation
 		pthread_mutex_t mutex;
+	
+	protected:
+		
 	};
 
 }

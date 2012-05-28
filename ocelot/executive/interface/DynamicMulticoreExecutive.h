@@ -14,6 +14,7 @@
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/executive/interface/LLVMContext.h>
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
+#include <ocelot/executive/interface/EventTimer.h>
 
 namespace executive {
 
@@ -22,28 +23,7 @@ namespace executive {
 		typedef analysis::KernelPartitioningPass::SubkernelId SubkernelId;
 		typedef analysis::KernelPartitioningPass::ThreadExitType ThreadExitType;
 		typedef executive::MetaData Metadata;
-		typedef executive::DynamicTranslationCache::Translation Translation;
-		
-		
-		//! \brief timer for measuring performance of various types of execution-time events
-		class EventTimer {
-		public:
-			EventTimer();
-			void start(size_t startCycles = 0);
-			void stop();
-			size_t getAccumulated() const { return accumulated; }
-			void clearAccumulated() { accumulated = 0; }
-			size_t cycles() const;
-			size_t rdtsc() const;
-			void setEvents(size_t _events) { events = _events; }
-			size_t getEvents() const { return events; }
-			void setMaxEvents(size_t _max) { maxEvents = _max; }
-		protected:
-			size_t cycleCount;
-			size_t accumulated;
-			size_t events;
-			size_t maxEvents;
-		};
+		typedef executive::DynamicTranslationCache::Translation Translation;	
 		
 	public:
 		DynamicMulticoreExecutive(const executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
@@ -72,7 +52,10 @@ namespace executive {
 			
 		const Translation *_getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
 			unsigned int specialization = 0);
-			
+		
+	public:
+		EventTimer getFirstKernelExecutionTimer() const { return _timerFirstKernelExecution; }
+		
 	protected:
 	
 		EventTimer _timerFirstKernelExecution;

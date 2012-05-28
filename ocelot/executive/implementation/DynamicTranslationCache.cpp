@@ -63,10 +63,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
-#define REPORT_SOURCE_PTX_KERNELS 1				// PTX prior to transformations
-#define REPORT_PARITIONED_PTX_KERNELS 1		// final output PTX ready to be translated
-#define REPORT_PTX_SUBKERNELS 1
+#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
+#define REPORT_SOURCE_PTX_KERNELS 0				// PTX prior to transformations
+#define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
+#define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
@@ -1219,8 +1219,8 @@ static void cloneAndOptimizeTranslation(
 	if (REQUIRE_VERIFY_MODULE && 
 		llvm::verifyModule(*translatedKernel.llvmModule, llvm::ReturnStatusAction, &verifyError)) {
 	
-		std::cerr << "verification failed for module containing kernel " << translatedKernel.kernel->name << " : \"" 
-			<< verifyError << "\"" << std::endl;
+		std::cerr << "verification failed for module containing kernel " 
+			<< translatedKernel.kernel->name << " : \"" << verifyError << "\"" << std::endl;
 			
 #if (REPORT_BASE && REPORT_LLVM_MASTER && REPORT_LLVM_VERIFY_FAILURE) || ALWAYS_REPORT_BROKEN_LLVM
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
@@ -1435,7 +1435,8 @@ executive::DynamicTranslationCache::Translation *
 	
 	report("_specializeTranslation(subkernelId = " << subkernelId << ")");
 	report("  accessing translatedKernel: " << translatedKernel.kernel->name);
-	report("  exists? " << (translatedKernel.subkernels.find(subkernelId) != translatedKernel.subkernels.end()));
+	report("  exists? " << 
+		(translatedKernel.subkernels.find(subkernelId) != translatedKernel.subkernels.end()));
 		
 	TranslatedSubkernel &subkernel = translatedKernel.subkernels[subkernelId];
 
@@ -1483,7 +1484,8 @@ executive::DynamicTranslationCache::Translation *
 			llvm::raw_fd_ostream llvmStream((translation->llvmFunction->getName().str() + ".ll").c_str(), 
 				errorInfo, 0);
 			if (llvmStream.has_error()) {
-				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " << errorInfo);
+				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " 
+					<< errorInfo);
 			}
 			else {
 				translation->llvmFunction->print(llvmStream);
@@ -1503,7 +1505,8 @@ executive::DynamicTranslationCache::Translation *
 				"_module.ll").c_str(), errorInfo, 0);
 			
 			if (llvmStream.has_error()) {
-				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " << errorInfo);
+				reportE(REPORT_LLVM_MASTER, "Error opening stream for emitting LLVM assembly: " 
+					<< errorInfo);
 			}
 			else {
 				translation->llvmFunction->getParent()->print(llvmStream, &writer);

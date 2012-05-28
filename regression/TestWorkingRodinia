@@ -1,0 +1,6 @@
+APPNAME="R-gaussian" ./gaussian data/gaussian/matrix1024.txt -q
+APPNAME="R-kmeans" ./kmeans -i data/kmeans/204800.txt
+APPNAME="R-lavaMD" ./lavaMD -boxes1d 10
+APPNAME="R-lud" ./lud -i data/lud/2048.dat
+APPNAME="R-nw" ./nw 4096 10
+

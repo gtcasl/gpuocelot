@@ -1,0 +1,7 @@
+cd /home/andrew/repositories/gpuocelot/trunk/tests/cuda4.1sdk
+./TestWorking
+cd /home/andrew/repositories/gpuocelot/trunk/tests/parboil
+./TestParboil
+cd /home/andrew/repositories/gpuocelot/trunk/tests/rodinia2.0.1
+./TestWorkingRodinia
+cd /home/andrew/repositories/gpuocelot/trunk/tests

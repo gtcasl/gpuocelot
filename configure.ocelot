@@ -33,7 +33,8 @@
 		optimizationLevel: full,
 		port: 2011,
 		host: "127.0.0.1",
-		reconvergenceMechanism: "tf-stack"
+		reconvergenceMechanism: "tf-stack",
+		asynchronousKernelLaunch: false
 	},
 	optimizations: {
 		subkernelSize: 1000,

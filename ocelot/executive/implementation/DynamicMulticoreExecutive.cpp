@@ -67,6 +67,49 @@ void executive::DynamicMulticoreExecutive::_setResumeStatus(const executive::LLV
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+executive::DynamicMulticoreExecutive::EventTimer::EventTimer(): cycleCount(0),accumulated(0),events(0),maxEvents(0) {
+
+}
+
+size_t executive::DynamicMulticoreExecutive::EventTimer::rdtsc() const {
+  uint32_t lo, hi;
+  __asm__ __volatile__ (
+  "        xorl %%eax,%%eax \n"
+  "        cpuid"      // serialize
+  ::: "%rax", "%rbx", "%rcx", "%rdx");
+  __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+  return (size_t)(uint64_t)hi << 32 | lo;
+}
+			
+void executive::DynamicMulticoreExecutive::EventTimer::start(size_t startCycles) {
+	if (!maxEvents || events < maxEvents) {
+		cycleCount = startCycles;
+		if (!startCycles) {
+			cycleCount = rdtsc();
+		}
+	}
+}
+
+void executive::DynamicMulticoreExecutive::EventTimer::stop() {
+	if (!maxEvents || events < maxEvents) {
+		cycleCount = rdtsc() - cycleCount;
+		accumulated += cycleCount;
+		++events;
+	}
+}
+
+size_t executive::DynamicMulticoreExecutive::EventTimer::cycles() const {
+	return cycleCount;
+}
+
+std::ostream & operator<<(std::ostream &out, 
+	const executive::DynamicMulticoreExecutive::EventTimer & timer) {
+	out << "{ \"elapsed\": " << timer.getAccumulated() << ", \"events\": " << timer.getEvents() << " }";
+	return out;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void executive::DynamicMulticoreExecutive::_emitThreadLocalMemory(const LLVMContext *context) {
 	for (size_t offset = 0; offset < localMemorySize; offset += 4) {
 		std::cout << "[offset: " << std::setw(3) << std::setfill(' ') << offset << "]: 0x" 
@@ -149,6 +192,11 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 		<< " (" << sharedMemorySize << " bytes)");
 	reportE(REPORT_CTA_OPERATIONS, " parameterMemory = " << (void *)parameterMemory 
 		<< " (" << parameterMemorySize << " bytes)");
+	
+	_timerFirstKernelExecution.clearAccumulated();
+	_timerFirstKernelExecution.setMaxEvents(1);
+	_timerFirstKernelExecution.setEvents(0);
+		
 }
 
 executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
@@ -232,6 +280,8 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 		"DynamicMulticoreExecutive::execute(" << block.x << ", " << block.y << ") kernel: '"
 			<< kernel->name << "' for CTA size " << kernel->blockDim().size() << " threads");
 
+	_timerFirstKernelExecution.start();
+	
 	_initializeThreadContexts(block);
 	
 #if REPORT_LOCAL_MEMORY && REPORT_BASE
@@ -243,6 +293,19 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	
 	//_executeDefault(block);
 	_executeIterateSubkernelBarriers(block);
+	
+	if (block.x == 0 && block.y == 0) {
+		// serialize output
+		std::ofstream logfile("firstKernelExecutionLatency.json", std::ios_base::app);
+		const char *application = "Unknown Application";
+		if (getenv("APPNAME")) { application = getenv("APPNAME"); }
+		
+		logfile << "{ \"application\": \"" << application << "\", \"heuristic\": \"" 
+			<< analysis::KernelPartitioningPass::toString(
+				(analysis::KernelPartitioningPass::PartitioningHeuristic)
+					api::OcelotConfiguration::get().executive.partitioningHeuristic)
+			<< "\", kernel: \"" << kernel->name << "\", \"timer\": " << _timerFirstKernelExecution << " },\n";
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -447,6 +510,8 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 				
 				reportE(REPORT_SCHEDULE_OPERATIONS, "  " << warp[t].tid);	
 			}
+			
+			_timerFirstKernelExecution.stop();
 			translation->execute(warp);
 
 			reportE(REPORT_SCHEDULE_OPERATIONS, "");

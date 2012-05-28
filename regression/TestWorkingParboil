@@ -1,0 +1,8 @@
+APPNAME="P-cutcp" ./cutcp -i benchmarks/cutcp/input/small/watbox.small.pqr -o benchmarks/cutcp/output/small/watbox.small.out
+APPNAME="P-fft" ./fft  -i benchmarks/fft/input/default/array.bin 32768 3  -o benchmarks/fft/output/default/array.out
+APPNAME="P-lbm" ./lbm -i benchmarks/lbm/input/short/100_100_130_ldc.of -o benchmarks/lbm/output/short/100_100_130_ldc.dat 1
+APPNAME="P-mm" ./mm -i benchmarks/mm/input/large/matrix1.txt,benchmarks/mm/input/large/matrix2.txt,benchmarks/mm/input/large/matrix2t.txt -o benchmarks/mm/output/large/output.txt
+APPNAME="P-mri-q" ./mri-q -i benchmarks/mri-q/input/large/64_64_64_dataset.bin -o benchmarks/mri-q/output/large/output.out 64
+APPNAME="P-spmv" ./spmv -i benchmarks/spmv/input/large/Dubcova2.mtx.bin -o benchmarks/spmv/output/large/Dubcova2.mtx.output
+
+

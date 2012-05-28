@@ -36,11 +36,14 @@ static api::OcelotConfiguration* ocelotConfiguration = 0;
 
 const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	if (!ocelotConfiguration) {
-		ocelotConfiguration = new OcelotConfiguration("configure.ocelot");
+		const char *configName = "configure.ocelot";
+		if (const char *cfgOverride = getenv("OCELOT_CONFIG")) {
+			configName = cfgOverride;
+		}
+		ocelotConfiguration = new OcelotConfiguration(configName);
 	}
 	return *ocelotConfiguration;
 }
-
 
 const api::OcelotConfiguration & api::configuration() {
 	return OcelotConfiguration::get();

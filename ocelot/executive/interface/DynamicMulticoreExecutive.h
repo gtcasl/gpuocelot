@@ -24,6 +24,27 @@ namespace executive {
 		typedef executive::MetaData Metadata;
 		typedef executive::DynamicTranslationCache::Translation Translation;
 		
+		
+		//! \brief timer for measuring performance of various types of execution-time events
+		class EventTimer {
+		public:
+			EventTimer();
+			void start(size_t startCycles = 0);
+			void stop();
+			size_t getAccumulated() const { return accumulated; }
+			void clearAccumulated() { accumulated = 0; }
+			size_t cycles() const;
+			size_t rdtsc() const;
+			void setEvents(size_t _events) { events = _events; }
+			size_t getEvents() const { return events; }
+			void setMaxEvents(size_t _max) { maxEvents = _max; }
+		protected:
+			size_t cycleCount;
+			size_t accumulated;
+			size_t events;
+			size_t maxEvents;
+		};
+		
 	public:
 		DynamicMulticoreExecutive(const executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
 		~DynamicMulticoreExecutive();
@@ -53,7 +74,11 @@ namespace executive {
 			unsigned int specialization = 0);
 			
 	protected:
+	
+		EventTimer _timerFirstKernelExecution;
 		
+	protected:
+	
 		DynamicTranslationCache::WarpTranslationVector translationVector;
 	
 		const DynamicMulticoreKernel *kernel;

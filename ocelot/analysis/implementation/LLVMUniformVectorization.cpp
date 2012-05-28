@@ -58,7 +58,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_VECTORIZING 0
-#define REPORT_VECTORIZATION_STATISTICS 0
+#define REPORT_VECTORIZATION_STATISTICS 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -301,7 +301,6 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	}
 	
 	_eliminateEmptyBlocks();
-	
 	_createBackEdges();
 	
 	report("Translation(" << f->getName().str() << ", ws " << pass->warpSize << ") complete");
@@ -1762,7 +1761,6 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 	llvm::PHINode *entryPhi = llvm::PHINode::Create(getTyInt(32), 2, "threadIterationIdx", 
 		&schedulerEntryBlock.block->front());
 	entryPhi->addIncoming(getConstInt32(0), schedulerEntryBlock.warpLoopDo);
-		
 	
 	// update getelementptr instances for thread-local
 	for (int tid = 0; tid < pass->warpSize; tid++) {
@@ -1818,14 +1816,7 @@ void analysis::LLVMUniformVectorization::Translation::_createBackEdges() {
 	llvm::BranchInst *backEdgeBra = llvm::BranchInst::Create(schedulerEntryBlock.block, 
 		schedulerEntryBlock.warpLoopExit, cmpResult, schedulerEntryBlock.warpLoopWhile);
 	assert(backEdgeBra && "failed to create back edge");
-#if 0
-	report("  storing threadCount - thread counter over numThreads");
-	llvm::BinaryOperator *subThreadCount = llvm::BinaryOperator::CreateSub(numThreads, 
-		incrementWarpIdx, "remainingThreads", schedulerEntryBlock.warpLoopExit);
-	llvm::StoreInst *storeInst = new llvm::StoreInst(subThreadCount, ptrWarpCount, 
-		schedulerEntryBlock.warpLoopExit);
-	assert(storeInst && "failed to store number of remaining threads");
-#endif
+
 	llvm::ReturnInst *returnInst = llvm::ReturnInst::Create(context(), 0, 
 		schedulerEntryBlock.warpLoopExit);
 	assert(returnInst && "failed to create return instruction");

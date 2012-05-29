@@ -218,7 +218,6 @@ const executive::DynamicMulticoreExecutive::Translation *
 
 	reportE(REPORT_SCHEDULE_OPERATIONS, "getOrInsertTranslation(ws: " << warpsize 
 		<< ", subkernel: " << subkernel << ", spec: " << specialization);
-
 		
 	int lgwarpsize = Log2WarpSize(warpsize);
 	const Translation *translation = translationVector[lgwarpsize][subkernel];

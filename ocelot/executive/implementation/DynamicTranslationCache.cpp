@@ -179,22 +179,22 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 			WarpTranslationMap::iterator warp_it = translation_it->second.find(warpSize);
 			if (warp_it != translation_it->second.end()) {
 				translation = warp_it->second;
-				reportE(REPORT_SCHEDULE_OPERATIONS, "  found in translation cache");
+				reportE(REPORT_TRANSLATION_OPERATIONS, "  found in translation cache");
 			}
 		}
 	
 		if (!translation) {	
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  Not yet in translation cache. Specializing and JIT compiling... ");
+			reportE(REPORT_TRANSLATION_OPERATIONS, "  Not yet in translation cache. Specializing and JIT compiling... ");
 			translation = _specializeTranslation(*subkernelsToKernel[subkernelId], subkernelId, 
 				getOptimizationLevel(), warpSize, specialization);
 		
-			reportE(REPORT_SCHEDULE_OPERATIONS, "  inserted in translation cache");
+			reportE(REPORT_TRANSLATION_OPERATIONS, "  inserted in translation cache");
 		}
 	}
 	_unlock();
 	
 	#if REPORT_BASE && REPORT_TRANSLATION_OPERATIONS
-	reportNTE(REPORT_TRANSLATION_OPERATIONS, " obtained Translation: " << (void *)translation);
+	reportNTE(REPORT_TRANSLATION_OPERATIONS, " returning Translation: " << (void *)translation << " to calling thread");
 	#endif
 	
 	return translation;
@@ -202,6 +202,9 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 
 //! \brief indicates to the translation cache a kernel is about to be executed
 void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *kernel) {
+	
+	_lock();
+	
 	report("DynamicTranslationCache::registerKernel(" << kernel->name << ")");
 	
 	ModuleMap::iterator module_it = modules.find(kernel->module->path());
@@ -235,33 +238,38 @@ void executive::DynamicTranslationCache::registerKernel(DynamicMulticoreKernel *
 		// do nothing.
 		report("  kernel already registered");
 	}	
+	_unlock();
 }
 
 //! \brief loads a module into the translation cache
 bool executive::DynamicTranslationCache::loadModule(const ir::Module *module, 
 	executive::DynamicMulticoreDevice *_device) {
 	
+	_lock();
 	report("DynamicTranslationCache::loadModule(" << module->path() << ", device = " << (void *)_device << ")");
-	
+
+	bool loaded = false;	
 	if (modules.find(module->path()) == modules.end()) {
 		ModuleMetadata newModule;
 		newModule.ptxModule = module;
 		this->device = _device;
 		modules[module->path()] = newModule;
-		return true;
+		loaded = true;
 	}
-	
-	return false;
+	_unlock();
+	return loaded;
 }
 
 void executive::DynamicTranslationCache::_lock() {
 	pthread_mutex_lock(&mutex);
+	report("  acquired lock");
 }
 
 void executive::DynamicTranslationCache::_unlock() {
+	report("  releasing lock");
 	pthread_mutex_unlock(&mutex);
 }
-		
+
 void executive::DynamicTranslationCache::getTranslationVector(
 	executive::DynamicTranslationCache::WarpTranslationVector &vec) {
 	

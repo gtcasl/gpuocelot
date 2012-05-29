@@ -54,7 +54,8 @@ void * executionManagerLightweightThread(void *args) {
 		// start executing	
 		executive::DynamicMulticoreExecutive executive(*arguments->kernel, arguments->sharedMemorySize);
 		for (int blockId = arguments->threadId; blockId < gridDimx * gridDimy; blockId += arguments->pitch) {
-			executive.execute(ir::Dim3(blockId % gridDimx, blockId / gridDimx, 0));
+			ir::Dim3 blockIdx(blockId % gridDimx, blockId / gridDimx, 0);
+			executive.execute(blockIdx);
 		}
 	}
 	
@@ -151,6 +152,11 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	typedef std::chrono::milliseconds milliseconds;
 
 	Clock::time_point t0 = Clock::now();
+	
+	report("  sharedMemorySize = " << sharedMemorySize);
+	report("  sharedMemorySize() = " << kernel.sharedMemorySize());
+	report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
+	report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
 		
 	EventTimer firstKernelExecutionTimer;
 	if (workerThreads == 1) {
@@ -158,9 +164,6 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 		// start a timer
 	
 		// start executing in main thread
-		report("  sharedMemorySize() = " << kernel.sharedMemorySize());
-		report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
-		report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
 	
 		DynamicMulticoreExecutive executive(kernel, sharedMemorySize);
 	
@@ -235,7 +238,7 @@ void executive::DynamicExecutionManager::_reportFirstLaunchLatency(
 		<< analysis::KernelPartitioningPass::toString(
 			(analysis::KernelPartitioningPass::PartitioningHeuristic)
 				api::OcelotConfiguration::get().executive.partitioningHeuristic)
-		<< "\", kernel: \"" << kernel.name << "\", \"timer\": " << timer 
+		<< "\", \"kernel\": \"" << kernel.name << "\", \"timer\": " << timer 
 		<< ", \"maxWarpSize\": " << api::OcelotConfiguration::get().executive.warpSize << " },\n";
 }
 

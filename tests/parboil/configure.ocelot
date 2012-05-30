@@ -40,9 +40,9 @@
 		simplifyCFG: true
 	},
 	checkpoint: {
-		enabled: false,
-		path: "./",
-		prefix: "TestCudaIndirectFunctionCall_",
+		enabled: true,
+		path: "./traces/",
+		prefix: "tpacf_",
 		suffix: ".checkpoint"
 	}
 }

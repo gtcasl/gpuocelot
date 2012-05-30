@@ -31,7 +31,7 @@
 			.reg .pred %predicate;
 			setp.le.s32 	%predicate, %r6, %r5;
 			@%predicate bra 	$Lt_0_1026;
-		}
+		} //! comment
 
 		.loc	28	9	0
 		add.s32 	%r7, %r5, 1;

@@ -33,9 +33,9 @@
 		subkernelSize: 1
 	},
 	checkpoint: {
-		enabled: false,
-		path: "./",
-		prefix: "mummer_cbriggs_",
+		enabled: true,
+		path: "./traces/",
+		prefix: "mummer_",
 		suffix: ".checkpoint"
 	}
 }

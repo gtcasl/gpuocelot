@@ -53,6 +53,7 @@ private:
 private:
 	// Algorithm stages
 	void _assignMaskToEntryPoint(ir::IRKernel& k);
+	void _activateAllThreads(ir::IRKernel& k);
 	void _assignConditionsToEdges(ir::IRKernel& k);
 	void _deleteAllBranches(ir::IRKernel& k);
 	void _initializeMasks(ir::IRKernel& k);

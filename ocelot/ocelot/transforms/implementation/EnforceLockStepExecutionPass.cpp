@@ -47,6 +47,9 @@ void EnforceLockStepExecutionPass::runOnKernel(ir::IRKernel& k)
 	// assign a mask to the program entry point
 	_assignMaskToEntryPoint(k);
 	
+	// Set all threads to active for control flow operations
+	_activateAllThreads(k);
+	
 	// assign condition variables to branch edges
 	_assignConditionsToEdges(k);
 	
@@ -126,6 +129,31 @@ void EnforceLockStepExecutionPass::_assignMaskToEntryPoint(ir::IRKernel& k)
 	report("  " << vote.toString());
 }
 
+void EnforceLockStepExecutionPass::_activateAllThreads(ir::IRKernel& k)
+{
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+			getAnalysis(Analysis::DataflowGraphAnalysis));
+	
+	for(auto block = dfg->begin(); block != dfg->end(); ++block)
+	{
+		if(block->block() == k.cfg()->get_entry_block()) continue;
+		if(block->block() == k.cfg()->get_exit_block())  continue;
+	
+		ir::PTXInstruction merge(ir::PTXInstruction::Reconverge);
+
+		merge.a = ir::PTXOperand(0xffffffff, ir::PTXOperand::u32);
+		merge.getActiveMask = false;
+	
+		std::stringstream stream;
+	
+		stream << "// active mask = " << merge.a.toString();
+	
+		merge.metadata = stream.str();
+	
+		dfg->insert(block, merge);
+	}
+}
+
 void EnforceLockStepExecutionPass::_assignConditionsToEdges(ir::IRKernel& k)
 {
 	report(" generating masks for each edge");
@@ -178,14 +206,37 @@ void EnforceLockStepExecutionPass::_assignConditionsToEdges(ir::IRKernel& k)
 			
 			dfg->insert(block, vote);
 		
-			takenMask = vote.d.reg;
+			ir::PTXInstruction land(ir::PTXInstruction::And);
+		
+			land.type = ir::PTXOperand::b32;
+		
+			land.d = ir::PTXOperand(ir::PTXOperand::Register,
+				ir::PTXOperand::u32, dfg->newRegister());
+			land.a = ir::PTXOperand(ir::PTXOperand::Register,
+				ir::PTXOperand::u32, _getBlockVariable(block));
+			land.b = ir::PTXOperand(ir::PTXOperand::Register,
+				ir::PTXOperand::u32, vote.d.reg);
+		
+			dfg->insert(block, land);
+		
+			takenMask = land.d.reg;
 		}
 		
 		assert(block->block()->has_branch_edge());
 		auto branchEdge = block->block()->get_branch_edge();
 		
-		_edgeVariables.insert(std::make_pair(branchEdge, takenMask));
-
+		if(bra->pg.condition == ir::PTXOperand::InvPred)
+		{
+			assert(block->block()->has_fallthrough_edge());
+			auto fallthroughEdge = block->block()->get_fallthrough_edge();
+		
+			_edgeVariables.insert(std::make_pair(fallthroughEdge, takenMask));
+		}
+		else
+		{
+			_edgeVariables.insert(std::make_pair(branchEdge, takenMask));
+		}
+		
 		report("   creating mask for branch edge " << branchEdge->head->label
 			<< " -> " << branchEdge->tail->label);
 		
@@ -220,7 +271,15 @@ void EnforceLockStepExecutionPass::_assignConditionsToEdges(ir::IRKernel& k)
 		assert(block->block()->has_fallthrough_edge());
 		auto fallthroughEdge = block->block()->get_fallthrough_edge();
 		
-		_edgeVariables.insert(std::make_pair(fallthroughEdge, fallthroughMask));
+		if(bra->pg.condition == ir::PTXOperand::InvPred)
+		{
+			_edgeVariables.insert(std::make_pair(branchEdge, fallthroughMask));
+		}
+		else
+		{
+			_edgeVariables.insert(std::make_pair(
+				fallthroughEdge, fallthroughMask));
+		}
 		
 		report("   creating mask for fallthrough edge "
 			<< fallthroughEdge->head->label << " -> "
@@ -261,6 +320,8 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 	typedef analysis::ThreadFrontierAnalysis::Priority Priority;
 	typedef std::map<Priority, block_iterator,
 		std::greater<Priority>> PriorityMap;
+	typedef std::vector<block_iterator> BlockVector;
+	typedef std::unordered_multimap<block_iterator, BlockVector> ReverseTFMap;
 
 	// The immediate dominator initializes the mask for each block
 	
@@ -277,8 +338,36 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 
 	report(" initializing masks");
 
-	BlockMap    initializers;
-	PriorityMap priorities;
+	BlockMap     initializers;
+	PriorityMap  priorities;
+	ReverseTFMap frontiers;
+
+	for(auto block = dfg->begin(); block != dfg->end(); ++block)
+	{
+		if(block->block() == k.cfg()->get_entry_block()) continue;
+		if(block->block() == k.cfg()->get_exit_block())  continue;
+		
+		priorities.insert(std::make_pair(
+			tfAnalysis->getPriority(block->block()), block));
+		
+		auto frontier = tfAnalysis->getThreadFrontier(block->block());
+		
+		for(auto frontierBlock = frontier.begin();
+			frontierBlock != frontier.end(); ++frontierBlock)
+		{
+			auto dfgFrontierBlock = cfgToDfgMap.find(*frontierBlock);
+			assert(dfgFrontierBlock != cfgToDfgMap.end());
+		
+			auto frontierList = frontiers.find(dfgFrontierBlock->second);
+			if(frontierList == frontiers.end())
+			{
+				frontierList = frontiers.insert(std::make_pair(
+					dfgFrontierBlock->second, BlockVector()));
+			}
+			
+			frontierList->second.push_back(block);
+		}
+	}
 
 	for(auto block = dfg->begin(); block != dfg->end(); ++block)
 	{
@@ -286,17 +375,40 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 		if(block->block() == k.cfg()->get_exit_block())  continue;
 		
 		auto immediateDominator = domTree->getDominator(block->block());
+		auto nearest = block->block();
 	
+		report("  computing TF dominator for block " << block->label()
+			<< " with actual dominator " << immediateDominator->label);
+		
+		// get the common dominator of this block and all blocks with this
+		//  block in their thread frontier
+		auto frontier = frontiers.find(block);
+		if(frontier != frontiers.end())
+		{
+			for(auto predecessor = frontier->second.begin();
+				predecessor != frontier->second.end(); ++predecessor)
+			{
+				auto commonDominator = domTree->getCommonDominator(
+					nearest, (*predecessor)->block());
+				
+				if(commonDominator != immediateDominator)
+				{
+					immediateDominator = commonDominator;
+					nearest = (*predecessor)->block();
+				}
+				
+				report("   in TF of " << (*predecessor)->label()
+					<< ", common dominator is " << immediateDominator->label);
+			}
+		}
+		
+		report("   block " << block->label() << " is TF dominated by "
+			<< immediateDominator->label << ", zeroing mask");
+		
 		auto dfgDominator = cfgToDfgMap.find(immediateDominator);
 		assert(dfgDominator != cfgToDfgMap.end());
 		
 		initializers.insert(std::make_pair(block, dfgDominator->second));
-		
-		report("  block " << block->label() << " is dominated by "
-			<< immediateDominator->label << ", zeroing mask");
-		
-		priorities.insert(std::make_pair(
-			tfAnalysis->getPriority(block->block()), block));
 		
 		if(immediateDominator == k.cfg()->get_entry_block()) continue;
 	
@@ -328,7 +440,7 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 			if(successorPriority < blockPriority) continue;
 			
 			auto begin = priorities.lower_bound(successorPriority);
-			auto end   = priorities.lower_bound(blockPriority);
+			auto end   = priorities.upper_bound(blockPriority);
 			
 			report("  examing priority range (" << successorPriority
 				<< ", " << blockPriority << ")");
@@ -342,7 +454,8 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 					initializer->second->block());
 				
 				// skip blocks that will be handled by their dominator	
-				if(initializerPriority <= successorPriority) continue;
+				if(initializerPriority <= successorPriority &&
+					(successorPriority != blockPriority)) continue;
 				
 				report("   block " << block->label() << " may trigger "
 					<< blockInRange->second->label() << " (priority "
@@ -477,7 +590,7 @@ void EnforceLockStepExecutionPass::_mergeVariablesBeforeEntering(
 	Register edgeVariable      = _getEdgeVariable(block, successor);
 	Register successorVariable = _getBlockVariable(successor);
 	
-	ir::PTXInstruction lor(ir::PTXInstruction::Or);
+	ir::PTXInstruction lor(ir::PTXInstruction::Xor);
 	
 	lor.type = ir::PTXOperand::b32;
 	
@@ -487,8 +600,6 @@ void EnforceLockStepExecutionPass::_mergeVariablesBeforeEntering(
 		ir::PTXOperand::u32, edgeVariable);
 	lor.b = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::u32, successorVariable);
-	
-	lor.broadcast = true;
 	
 	dfg->insert(block, lor);
 	
@@ -510,8 +621,6 @@ void EnforceLockStepExecutionPass::_zeroVariableBeforeExiting(
 	mov.d = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::b32, successorVariable);
 	mov.a = ir::PTXOperand(0, ir::PTXOperand::u32);
-	
-	mov.broadcast = true;
 	
 	dfg->insert(block, mov);
 	

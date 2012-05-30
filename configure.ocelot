@@ -32,7 +32,7 @@
 		host: "127.0.0.1",
 		optimizationLevel: none,
 		workerThreadLimit: 1,
-		reconvergenceMechanism: "tf-stack",
+		reconvergenceMechanism: "ipdom",
 		warpSize: 1
 	},
 	optimizations: {

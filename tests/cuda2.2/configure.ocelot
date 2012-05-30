@@ -25,7 +25,7 @@
 		devices:                  ["emulated"],
 		preferredISA:             "nvidia",
 		optimizationLevel:        "full",
-		reconvergenceMechanism:   "tf-stack",
+		reconvergenceMechanism:   "ipdom",
 		defaultDeviceID:          0,
 		required:                 False,
 		asynchronousKernelLaunch: True,
@@ -34,11 +34,12 @@
 		workerThreadLimit:        8,
 		warpSize:                 1
 	},
-	enabled: {
+	checkpoint: {
+		enabled:  False,
 		path:   ".",
 		prefix: "kernel_trace_",
 		suffix: ".trace",
-		verify: False
+		verify:   False
 	},
 	optimizations: {
 		subkernelSize:        10000,

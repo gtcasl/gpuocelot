@@ -294,8 +294,14 @@ bool executive::ReconvergenceIPDOM::nextInstruction(
 		&& opcode != ir::PTXInstruction::Reconverge
 		&& opcode != ir::PTXInstruction::Call
 		&& opcode != ir::PTXInstruction::Ret ) {
+	
+		report("context at: [PC: " << context.PC
+			<< "] " << context.kernel->location(context.PC)
+			<< " " << context.active);
+			
 		context.PC++;
 	}
+	
 	return context.running;
 }
 
@@ -797,7 +803,16 @@ void executive::ReconvergenceTFSoftware::eval_Bar(
 		report(" Bar called - " << context.active.count() << " of " 
 			<< context.active.size() << " threads active");
 #endif		
-		throw RuntimeException("barrier deadlock", context.PC, instr);
+
+		std::stringstream message;
+		
+		message << "barrier deadlock:\n";
+
+		message << "context at: [PC: " << context.PC
+				<< "] " << context.kernel->location(context.PC)
+				<< " " << context.active << "\n";
+		
+		throw RuntimeException(message.str(), context.PC, instr);
 	}
 }
 
@@ -849,7 +864,7 @@ void executive::ReconvergenceTFSoftware::eval_Reconverge(
 				
 				maskSet = true;
 			}
-			
+		 	
 			for (int threadID = threadStart, index = 0;
 				threadID != threadEnd; threadID++, ++index) {
 				context.active[threadID] = (mask >> index) & 0x1;
@@ -909,38 +924,15 @@ bool executive::ReconvergenceTFSoftware::nextInstruction(
 	executive::CTAContext &context,
 	const ir::PTXInstruction &instr, const ir::PTXInstruction::Opcode &opcode) {
 
-	// handle broadcasts
-	if (instr.broadcast) {
-		unsigned int warps = (cta->threadCount + warpSize - 1) / warpSize;
-		for(unsigned int warp = 0; warp != warps; ++warp) {
-			ir::PTXB64 result = 0;
-			bool any = false;
-			int threadStart = warp * warpSize;
-			int threadEnd   = std::min(threadStart + warpSize, cta->threadCount);
-			for (int threadID = threadStart, index = 0;
-				threadID != threadEnd; threadID++, ++index) {
-				if (!context.predicated(threadID, instr)) continue;
-				result = cta->getRegAsB64(threadID, instr.d.reg);
-				
-				any = true;
-				break;
-			}
-
-			if (!any) continue;
-
-			report("Broadcasting " << result << " to all threads in r"
-				<< instr.d.reg);
-
-			for (int threadID = threadStart; threadID < threadEnd; threadID++) {
-				cta->setRegAsB64(threadID, instr.d.reg, result);
-			}
-		}
-	}
-
 	// advance to next instruction if the current instruction wasn't a branch
 	if (opcode != ir::PTXInstruction::Bra
 		&& opcode != ir::PTXInstruction::Call
 		&& opcode != ir::PTXInstruction::Ret) {
+			
+		report("context at: [PC: " << context.PC
+			<< "] " << context.kernel->location(context.PC)
+			<< " " << context.active);
+		
 		context.PC++;
 	}
 	

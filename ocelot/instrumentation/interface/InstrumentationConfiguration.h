@@ -10,6 +10,8 @@
 #include <ocelot/instrumentation/interface/ClockCycleCountInstrumentor.h>
 #include <ocelot/instrumentation/interface/BasicBlockInstrumentor.h>
 #include <ocelot/instrumentation/interface/WarpReductionInstrumentor.h>
+#include <ocelot/instrumentation/interface/BoundsCheckInstrumentor.h>
+#include <ocelot/instrumentation/interface/AlignmentCheckInstrumentor.h>
 
 #include <mqueue.h>
 
@@ -20,6 +22,32 @@ namespace instrumentation
 	{
 	
 	public:
+		//! \brief configuration for the alignment check instrumentor */
+		class AlignmentCheckInstrumentor 
+		{
+		public:
+			AlignmentCheckInstrumentor() : enabled(false) { }
+			
+			//! \brief whether instrumentor is enabled
+			bool enabled;
+			
+			//! \brief path to log file
+			std::string logfile;
+		};
+		
+		//! \brief configuration for the array bounds check instrumentor */
+		class BoundsCheckInstrumentor 
+		{
+		public:
+			BoundsCheckInstrumentor() : enabled(false) { }
+			
+			//! \brief whether instrumentor is enabled
+			bool enabled;
+			
+			//! \brief path to log file
+			std::string logfile;
+		};
+		
 		//! \brief configuration for the clock cycle count instrumentor */
 		class ClockCycleCountInstrumentor 
 		{
@@ -84,7 +112,8 @@ namespace instrumentation
         //! \brief message queue descriptor
         mqd_t messageQueue;    
 
-		
+		bool alignmentCheck;
+		bool boundsCheck;
 		bool clockCycleCount;
 		bool memoryEfficiency;
 		bool branchDivergence;
@@ -92,6 +121,11 @@ namespace instrumentation
 		bool warpInstructionCount;
 		bool basicBlockExecutionCount;
 
+        //! \brief alignment check instrumentor
+        AlignmentCheckInstrumentor alignmentCheckInstrumentor;
+		//! \brief array bound check instrumentor
+		BoundsCheckInstrumentor boundsCheckInstrumentor;
+		
 		//! \brief clock cycle count instrumentor
 		ClockCycleCountInstrumentor clockCycleCountInstrumentor;
 		
@@ -106,6 +140,8 @@ namespace instrumentation
 		~InstrumentationConfiguration();
 
 	private:
+	    instrumentation::AlignmentCheckInstrumentor _alignmentCheckInstrumentor;
+		instrumentation::BoundsCheckInstrumentor _boundsCheckInstrumentor;
 		instrumentation::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
 		instrumentation::BasicBlockInstrumentor _basicBlockInstrumentor;
 		instrumentation::WarpReductionInstrumentor _warpReductionInstrumentor;

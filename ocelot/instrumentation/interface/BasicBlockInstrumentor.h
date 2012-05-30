@@ -45,7 +45,10 @@ namespace instrumentation
             void checkConditions();
 
             /*! \brief The analyze method performs any necessary static analysis */
-            virtual void analyze(ir::Module &module);
+            virtual void analyze(ir::Module &module){}
+
+            /*! \brief The analyze method performs any necessary static analysis */
+            virtual void analyze(ir::Module &module, const executive::Device &device);
 
             /*! \brief The initialize method performs any necessary CUDA runtime initialization prior to instrumentation */
             void initialize();

@@ -884,7 +884,7 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		std::string m;
 		llvm::raw_string_ostream message(m);
 		message << "LLVM Parser failed: ";
-		error.print(kernel.name.c_str(), message);
+		error.Print(kernel.name.c_str(), message);
 
 		throw hydrazine::Exception(message.str());
 	}

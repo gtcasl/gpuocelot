@@ -35,7 +35,7 @@ namespace instrumentation
         conditionsMet = true;
     }
 
-    void BasicBlockInstrumentor::analyze(ir::Module &module) {
+    void BasicBlockInstrumentor::analyze(ir::Module &module, const executive::Device &device) {
         
         for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
 	        kernel != module.kernels().end(); ++kernel) {

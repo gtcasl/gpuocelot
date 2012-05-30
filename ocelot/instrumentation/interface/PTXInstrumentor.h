@@ -13,6 +13,7 @@
 
 #include <ocelot/instrumentation/interface/kernel_profile.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/executive/interface/Device.h>
 #include <ocelot/transforms/interface/Pass.h>
 
 #include <hydrazine/implementation/json.h>
@@ -132,13 +133,15 @@ namespace instrumentation
 		public:
 		
 		    PTXInstrumentor();
-            ~PTXInstrumentor();
+            virtual ~PTXInstrumentor();
 		    
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             virtual void checkConditions() = 0;
 
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module) = 0;
+
+            virtual void analyze(ir::Module &module, const executive::Device & device) = 0;
 
             /*! \brief Performs the instrumentation */
 			void instrument();		

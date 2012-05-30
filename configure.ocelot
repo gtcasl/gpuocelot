@@ -1,7 +1,11 @@
 {
 	ocelot: "ocelot",
 	instrument: {
-	    memoryEfficiency: {  }
+	    alignmentCheck: {
+	    		enabled: true,
+			log: "boundscheckLog"
+	    }
+	    
 	},
 	trace: { 
 		database: "traces-ipdom/database.trace",
@@ -32,7 +36,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ emulated ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,

@@ -54,6 +54,7 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 	hydrazine::json::Object* object = 0;
 
 	// initialize
+	boundsCheck = false;
 	clockCycleCount = false;
 	memoryEfficiency = false;
 	branchDivergence = false;
@@ -75,8 +76,36 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 		
 		if(!instrumentConfig.is_null())
 		{
+			// configuration for alignment check instrumentor
+			hydrazine::json::Visitor config = instrumentConfig["alignmentCheck"];
+			
+			if(!config.is_null()) 
+			{
+			    alignmentCheck = true;
+			    
+				alignmentCheckInstrumentor.enabled = config.parse<bool>(
+					"enabled", true);
+	
+				alignmentCheckInstrumentor.logfile = config.parse<std::string>(
+					"logfile", "");
+			}
+			
+			// configuration for bounds check instrumentor
+			config = instrumentConfig["boundsCheck"];
+			
+			if(!config.is_null()) 
+			{
+			    boundsCheck = true;
+			    
+				boundsCheckInstrumentor.enabled = config.parse<bool>(
+					"enabled", true);
+	
+				boundsCheckInstrumentor.logfile = config.parse<std::string>(
+					"logfile", "");
+			}
+			
             // configuration for clock cycle instrumentor
-			hydrazine::json::Visitor config = instrumentConfig["clockCycleCount"];
+			config = instrumentConfig["clockCycleCount"];
 			
 			if(!config.is_null()) 
 			{
@@ -177,7 +206,18 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 
 	delete object;
 
-   
+	if(alignmentCheck)
+	{
+		report( "Creating alignment check instrumentor" );
+		ocelot::addInstrumentor(_alignmentCheckInstrumentor);			
+	}
+	
+	if(boundsCheck)
+	{
+		report( "Creating array bounds check instrumentor" );
+		ocelot::addInstrumentor(_boundsCheckInstrumentor);			
+	}
+	
 	if(clockCycleCount)
 	{
 		report( "Creating clock cycle count instrumentor" );

@@ -1,0 +1,203 @@
+/*! \file WarpReductionInstrumentor.cpp
+	\date Monday July 30, 2011
+	\author Naila Farooqui <naila@cc.gatech.edu>
+	\brief The source file for the WarpReductionInstrumentor class.
+*/
+
+#ifndef WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
+#define WARP_REDUCTION_INSTRUMENTOR_CPP_INCLUDED
+
+#include <ocelot/instrumentation/interface/WarpReductionInstrumentor.h>
+#include <ocelot/instrumentation/interface/InstrumentationConfiguration.h>
+
+#include <ocelot/cuda/interface/cuda_runtime.h>
+
+#include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
+#include <ocelot/transforms/interface/CToPTXModulePass.h>
+#include <ocelot/ir/interface/Module.h>
+
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/string.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
+
+#include <fstream>
+
+using namespace hydrazine;
+
+namespace instrumentation
+{
+
+    void WarpReductionInstrumentor::checkConditions() {
+        conditionsMet = true;
+    }
+
+    void WarpReductionInstrumentor::analyze(ir::Module &module) {
+             
+    }
+
+    void WarpReductionInstrumentor::initialize() {
+        
+        counter = 0;
+        
+        warpCount = (threads * threadBlocks)/32;
+        if(warpCount == 0)
+            warpCount = 1;
+
+        if(cudaMalloc((void **) &counter, entries * warpCount * sizeof(size_t)) != cudaSuccess){
+            throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
+        }
+        if(cudaMemset( counter, 0, entries * warpCount * sizeof( size_t )) != cudaSuccess){
+            throw hydrazine::Exception( "cudaMemset failed!" );
+        }
+        
+        if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+            throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
+        }
+    }
+
+    void WarpReductionInstrumentor::createPasses() {
+        
+        entries = 1;
+
+        switch(type){
+            case memoryEfficiency:
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/memoryEfficiency.c");
+                _profile.type = MEM_EFFICIENCY;
+                symbol = pass->baseAddress;
+                transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass(UNIQUE_ELEMENT_COUNT);
+                modulePass->parameterMap = pass->parameterMap;
+                
+                passes[0] = pass;   
+                passes[1] = modulePass;
+                
+                entries = 2;
+            }
+            break;
+            case branchDivergence:
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/branchDivergence.c");
+                _profile.type = BRANCH_DIVERGENCE;
+                symbol = pass->baseAddress;
+                
+                passes[0] = pass;   
+                
+                entries = 2;
+            }
+            break;
+            case instructionCount:
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/warpInstructionCount.c");
+                _profile.type = INST_COUNT;
+                symbol = pass->baseAddress;
+                
+                passes[0] = pass;   
+            }
+            break;
+            default:
+                throw hydrazine::Exception("No instrumentation type specified!");
+            break;
+        }
+
+        
+    }
+
+    void WarpReductionInstrumentor::extractResults(std::ostream *out) {
+
+        size_t *info = new size_t[entries * warpCount];
+        if(counter) {
+            cudaMemcpy(info, counter, entries * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaFree(counter);
+        }
+
+        switch(fmt) {
+
+            case json:
+
+                *out << "{\n\"kernel\": " << kernelName << ",\n";
+                *out << "\n\"threadBlocks\": " << threadBlocks << ",\n";
+                *out << "\n\"threads\": " << threads << ",\n";
+                *out << "\n\"counters\": {\n";
+                
+                *out << "\n}\n";
+
+            break;
+            case text:
+
+                *out << "Thread Block Count: " << threadBlocks << "\n";
+		        *out << "Kernel Name: " << kernelName << "\n";		
+		        *out << "Thread Count: " << threads << "\n";
+            
+                switch(type)
+                {
+                    case memoryEfficiency:
+                    {
+                        unsigned int dynamicWarps = 0;
+                        unsigned int memTransactions = 0;
+                        
+                        for(unsigned int i = 0; i < warpCount; i++)
+                        {
+                            memTransactions += info[i * entries];
+                            dynamicWarps += info[i * entries + 1];
+                        }
+
+                        *out << "Dynamic Warps Executing Global Memory Operations: " << dynamicWarps << "\n";
+                        *out << "Memory Transactions: " << ((double)memTransactions/2) << "\n\n";              
+                        *out << "Memory Efficiency: " << ((double)dynamicWarps/((double)memTransactions/2)) * 100 << "%\n\n";
+                        
+                        _profile.data.memory_efficiency = ((double)dynamicWarps/(double)memTransactions) * 100 ;
+                    }
+                    break;
+                    case branchDivergence:
+                    {
+                        unsigned int divergentBranches = 0;
+                        unsigned int totalBranches = 0;
+                        
+                        for(unsigned int i = 0; i < warpCount; i++)
+                        {
+                            divergentBranches += info[i * entries];
+                            totalBranches += info[i * entries + 1];
+                        }
+                    
+                        *out << "Divergent Dynamic Branches: " << divergentBranches << "\n";
+                        *out << "Total Dynamic Branches: " << totalBranches << "\n\n";              
+                        *out << "Branch Divergence: " << ((double)divergentBranches/(double)totalBranches) * 100 << "%\n\n";
+                        
+                        _profile.data.branch_divergence = ((double)divergentBranches/(double)totalBranches) * 100;
+                    
+                    }
+                    break;
+                    case instructionCount:
+                    {
+                        _kernelProfile.instructionCount = 0;
+                        for(unsigned int i = 0; i < warpCount; i++)
+                            _kernelProfile.instructionCount += info[i];
+                        
+                        *out << "\nDynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
+                        
+                        _profile.data.instruction_count = _kernelProfile.instructionCount;
+                    }                    
+                    break;
+                    default:
+                    break;
+                }
+
+            break;
+        }
+        
+        sendKernelProfile(InstrumentationConfiguration::Singleton.messageQueue);
+
+        if(info)
+            delete[] info;
+            
+    }
+
+    WarpReductionInstrumentor::WarpReductionInstrumentor() : 
+        description("Warp Reduction Instrumentor") {
+    }
+    
+
+}
+
+#endif

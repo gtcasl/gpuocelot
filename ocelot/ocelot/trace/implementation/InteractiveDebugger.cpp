@@ -265,6 +265,12 @@ void InteractiveDebugger::_command(const std::string& command)
 			stream >> reg;
 			_printRegister(thread, reg);
 		}
+		else if(modifier == "mask")
+		{
+			unsigned int reg = 0;
+			stream >> reg;
+			_printRegisterAsMask(reg);
+		}
 		else if(modifier == "mem" || modifier == "m")
 		{
 			ir::PTXU64 address = 0;
@@ -340,6 +346,7 @@ void InteractiveDebugger::_help() const
 	std::cout << "  print (p)  - Print the value of a resource.\n";
 	std::cout << "   asm  (a)  - Print instructions near the specified PC.\n";
 	std::cout << "   reg  (r)  - Print the value of a register.\n";
+	std::cout << "   mask      - Print the of a register as a 1-bit-per-thread mask.\n";
 	std::cout << "   mem  (m)  - Print the values near an address.\n";
 	std::cout << "   warp (w)  - Print the current warp status.\n";
 	std::cout << "   pc        - Print the PC of the current warp.\n";
@@ -503,6 +510,44 @@ void InteractiveDebugger::_printRegister(unsigned int thread,
 	default:
 	{
 		assertM(false, "Print registers not implemented for '" 
+			<< ir::Instruction::toString(_kernel->ISA) << "' kernels.");
+	}
+	break;
+	}
+
+}
+
+void InteractiveDebugger::_printRegisterAsMask(
+	ir::PTXOperand::RegisterType reg) const
+{
+	switch(_kernel->ISA)
+	{
+	case ir::Instruction::Emulated:
+	{
+		const executive::EmulatedKernel& kernel =
+			static_cast<const executive::EmulatedKernel&>(*_kernel);
+		executive::EmulatedKernel::RegisterFile 
+			file = kernel.getCurrentRegisterFile();
+		
+		unsigned int threads = _event.blockDim.x * _event.blockDim.y 
+			* _event.blockDim.z;
+		unsigned int registers = file.size() / threads;
+
+		std::cout << "r" << reg << " as mask: ";
+		
+		unsigned int count = 0;
+		for(unsigned int tid = 0; tid < threads; ++tid)
+		{
+			std::cout << ((file[tid * registers + reg] & 0x1) == 0x1 ? "1" : "0");
+			count += file[tid * registers + reg] & 0x1;
+		}
+
+		std::cout << " [" << count << " bits set]\n";
+	}
+	break;
+	default:
+	{
+		assertM(false, "Print registers as masks not implemented for '" 
 			<< ir::Instruction::toString(_kernel->ISA) << "' kernels.");
 	}
 	break;
@@ -1120,7 +1165,7 @@ void InteractiveDebugger::_setWatchpoint(const std::string &command) {
 	}
 	
 	Watchpoint watch;
-			
+	
 	if (tokens[1].valString == "global") {
 		
 		if (tokens.size() >= 4 &&

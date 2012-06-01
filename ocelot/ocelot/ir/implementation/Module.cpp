@@ -476,6 +476,9 @@ void ir::Module::removeKernel(const std::string& name) {
 
 ir::PTXKernel* ir::Module::insertKernel(PTXKernel* kernel) {
 	loadNow();
+	
+	kernel->module = this;
+	
 	if(!_kernels.insert(std::make_pair(kernel->name, kernel)).second) {
 		throw hydrazine::Exception("Inserted duplicated kernel - " 
 			+ kernel->name);

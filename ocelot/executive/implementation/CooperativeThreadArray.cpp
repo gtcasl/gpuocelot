@@ -44,10 +44,11 @@
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
-#define REPORT_NTH_THREAD_ONLY 1
+#define REPORT_NTH_THREAD_ONLY 0
 #define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
+#define REPORT_PREDICATE_READS 0
 
 // individually turn on or off reporting for particular instructions
 #define REPORT_ABS 1
@@ -940,7 +941,8 @@ bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID,
 			<< " reg " << reg << " <= " << r);
 	}
 	#else
-	reportE(REPORT_REGISTER_READS, "   thread " << threadID 
+	reportE(REPORT_REGISTER_READS && REPORT_PREDICATE_READS,
+		"   thread " << threadID 
 		<< " reg " << reg << " <= " << r);
 	#endif
 	return r;
@@ -1281,7 +1283,8 @@ void executive::CooperativeThreadArray::setRegAsPredicate(int threadID,
 			<< " reg " << reg << " value " << " => " << value );
 	}
 	#else
-	reportE(REPORT_REGISTER_WRITES, "   thread " << threadID 
+	reportE(REPORT_REGISTER_WRITES,
+		"   thread " << threadID 
 		<< " reg " << reg << " value " << " => " << value );
 	#endif
 	*r = value;
@@ -1530,8 +1533,7 @@ bool executive::CooperativeThreadArray::operandAsPredicate(int threadID,
 			result = getRegAsPredicate(threadID, op.reg);
 			break;
 		case PTXOperand::Immediate:
-			result = (bool)(op.imm_uint);
-			break;
+			return (bool)(op.imm_uint);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
@@ -6713,6 +6715,7 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 	switch (instr.type) {
 		
 		// unsigned int types [extended to 64-bit uint]
+		case PTXOperand::pred:
 		case PTXOperand::b16:
 		case PTXOperand::b32:
 		case PTXOperand::b64:
@@ -6723,12 +6726,16 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				bool c = true;	// read predicate somehow
+				bool c = true;
 				bool t = false;
 				
 				PTXU64 a, b;
 
 				switch (instr.type) {
+					case PTXOperand::pred:
+						a = (PTXU64)operandAsPredicate(threadID, instr.a) & 0x1;
+						b = (PTXU64)operandAsPredicate(threadID, instr.b) & 0x1;
+						break;
 					case PTXOperand::s16:
 					case PTXOperand::b16:
 					case PTXOperand::u16:
@@ -6794,12 +6801,12 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 						q = (!t && c);
 						break;
 					case PTXInstruction::BoolOr:
-						p = (t || c);
-						q = (!t ||c);
+						p = (t  || c);
+						q = (!t || c);
 						break;
 					case PTXInstruction::BoolXor:
-						p = (t && !c) || (!t && c);
-						q = (!t && !c) || (t && c);
+						p = (t  && !c) || (!t && c);
+						q = (!t && !c) || (t  && c);
 						break;
 					default:
 						p = t;

@@ -53,12 +53,15 @@ private:
 private:
 	// Algorithm stages
 	void _assignMaskToEntryPoint(ir::IRKernel& k);
-	void _activateAllThreads(ir::IRKernel& k);
+	void _predicateInstructions(ir::IRKernel& k);
 	void _assignConditionsToEdges(ir::IRKernel& k);
 	void _deleteAllBranches(ir::IRKernel& k);
 	void _initializeMasks(ir::IRKernel& k);
 	void _setMergePoints(ir::IRKernel& k);
 	void _setBranches(ir::IRKernel& k);
+
+	// Optimization stages
+	void _propagateConstants(ir::IRKernel& k);
 
 private:
 	// Helper functions
@@ -70,8 +73,14 @@ private:
 		block_iterator successor);
 	void _branchToTargetIfVariableIsSet(block_iterator block,
 		const_block_iterator target);
-	void _setActiveMaskIfNecessary(block_iterator target);
-
+	void _uniformBranchToTarget(block_iterator block,
+		const_block_iterator target);
+	ir::PTXInstruction* _canonicalizeComparison(block_iterator block,
+		ir::PTXInstruction* comparison);
+	void _addComparison(block_iterator block, ir::PTXInstruction* branch);
+	ir::PTXInstruction* _moveToEnd(block_iterator block,
+		ir::PTXInstruction* instruction);
+	
 	void _reset();
 
 	bool _variablesMismatch(block_iterator left, block_iterator right);

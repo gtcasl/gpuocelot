@@ -797,7 +797,21 @@ bool executive::ReconvergenceTFSoftware::eval_Bra(
 void executive::ReconvergenceTFSoftware::eval_Bar(
 	executive::CTAContext &context,
 	const ir::PTXInstruction &instr) {
-	if (context.active.count() < context.active.size()) {
+	
+	bool predicated = true;
+	boost::dynamic_bitset<> predicatedMask(cta->threadCount, 1);
+	
+	if (instr.pg.condition != ir::PTXOperand::PT) {
+		for (int thread = 0; thread < cta->threadCount; ++thread) {
+			if (!context.predicated(thread, instr)) {
+				predicated = false;
+				predicatedMask[thread] = 0;
+			}
+		}
+	}
+	
+	
+	if (context.active.count() < context.active.size() || !predicated) {
 		// deadlock - not all threads reach synchronization barrier
 #if REPORT_BAR
 		report(" Bar called - " << context.active.count() << " of " 
@@ -810,7 +824,8 @@ void executive::ReconvergenceTFSoftware::eval_Bar(
 
 		message << "context at: [PC: " << context.PC
 				<< "] " << context.kernel->location(context.PC)
-				<< " " << context.active << "\n";
+				<< " " << context.active
+				<< "\n predicated mask: " << predicatedMask << "\n";
 		
 		throw RuntimeException(message.str(), context.PC, instr);
 	}

@@ -966,8 +966,8 @@ namespace analysis
 		_cfg->insert_edge( edge );
 	}
 
-	void DataflowGraph::insert( iterator block, 
-		const ir::Instruction& instruction, unsigned int index )
+	DataflowGraph::InstructionVector::iterator DataflowGraph::insert(
+		iterator block, const ir::Instruction& instruction, unsigned int index )
 	{
 		_consistent = false;
 		
@@ -977,41 +977,44 @@ namespace analysis
 		ir::PTXInstruction* ptx = static_cast< ir::PTXInstruction* >( 
 			instruction.clone() );
 		
-		block->_instructions.insert( position, convert( *ptx ) );
+		InstructionVector::iterator newPosition =
+			block->_instructions.insert( position, convert( *ptx ) );
 		
 		ir::ControlFlowGraph::InstructionList::iterator 
 			bbPosition = block->_block->instructions.begin();
 		std::advance( bbPosition, index );
 		
 		block->_block->instructions.insert( bbPosition, ptx );
+		
+		return newPosition;
 	}
 	
-	 DataflowGraph::InstructionVector::iterator DataflowGraph::insert(
-	 	iterator block, const ir::Instruction& instruction,
-	 	InstructionVector::iterator position )
+	DataflowGraph::InstructionVector::iterator DataflowGraph::insert(
+		iterator block, const ir::Instruction& instruction,
+		InstructionVector::iterator position )
 	{
 		_consistent = false;
 
-		  int index = std::distance(block->_instructions.begin(), position);
-				    
+		int index = std::distance(block->_instructions.begin(), position);
+
 		ir::PTXInstruction* ptx = static_cast< ir::PTXInstruction* >( 
-			instruction.clone() );
-		
-		  InstructionVector::iterator new_position = 
-			   block->_instructions.insert( position, convert( *ptx ) );
-		
+		instruction.clone() );
+
+		InstructionVector::iterator newPosition = 
+			block->_instructions.insert( position, convert( *ptx ) );
+
 		ir::ControlFlowGraph::InstructionList::iterator 
-			bbPosition = block->_block->instructions.begin();
+		bbPosition = block->_block->instructions.begin();
 		std::advance( bbPosition, index );
-		
+
 		block->_block->instructions.insert( bbPosition, ptx );
-		  return new_position;
+		return newPosition;
 	}
 
-	void DataflowGraph::insert( iterator block, 
-		const ir::Instruction& instruction )
+	DataflowGraph::InstructionVector::iterator DataflowGraph::insert(
+		iterator block, const ir::Instruction& instruction )
 	{
-		insert( block, instruction, block->instructions().size() );
+		return insert( block, instruction, block->instructions().size() );
 	}
 	
 	DataflowGraph::iterator DataflowGraph::erase( iterator block )

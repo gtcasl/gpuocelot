@@ -13,6 +13,7 @@
 #include <set>
 #include <algorithm>
 #include <functional>
+#include <iomanip>
 
 // System includes
 #include <execinfo.h>
@@ -58,7 +59,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_VECTORIZING 0
-#define REPORT_VECTORIZATION_STATISTICS 0
+#define REPORT_VECTORIZATION_STATISTICS 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -312,9 +313,15 @@ analysis::LLVMUniformVectorization::Translation::Translation(
 	{
 		VectorizationStatistics statistics;
 		_computeVectorizationStatistics(statistics);
-		std::string name = f->getName().str() + ".vec-statistics";
-		std::ofstream file(name);
+		std::ofstream file("affineVectorizationStatistics.json", std::ios_base::app);
+		
+		const char *application = getenv("APPNAME");
+		if (!application) {
+			application = "Unknown Application";
+		}
+		file << "{  \"application\": \"" << application << "\", \"kernel\": \"" << f->getName().str() << "\", \"statistics\": ";
 		statistics.write(file);
+		file << "},\n";
 	}
 #endif
 }
@@ -2340,13 +2347,13 @@ void analysis::LLVMUniformVectorization::VectorizationStatistics::write(std::ost
 		"integer", "float", "call", "store", "load", 0
 	};
 	
-	out << "{\n";
+	out << "{ ";
 	for (int i = 0; memberNames[i]; ++i) {
 		const Counter &counter = (this->*(members[i]));
-		out << (i?",\n":"") << "\"" << memberNames[i] << "\": ";
+		out << (i?", ":"") << "\"" << memberNames[i] << "\": ";
 		counter.write(out);
 	}
-	out << "\n}";
+	out << " }";
 }
 
 //! \brief visits all vectorized instructions and updates statistics accordingly

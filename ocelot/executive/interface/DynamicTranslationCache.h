@@ -155,10 +155,18 @@ namespace executive {
 		void getTranslationVector(WarpTranslationVector &vec);
 		
 		/*!
+		
+		*/
+		Translation *getTranslation(int warpsize, SubkernelId subkernel, unsigned int specialization = 0);
+		
+		/*!
 			\brief gets the translation corresponding to a particular warp size
 		*/
 		Translation *getOrInsertTranslation(int warpsize, SubkernelId subkernel, 
 			unsigned int specialization = 0);
+		
+		/*! \brief invokes the compilation of all subkernels if they do not exist in the cache already */
+		size_t compileAllSubkernels(executive::DynamicMulticoreKernel *kernel);
 		
 		//! \brief returns a set of cached subkernels
 		void getCachedSubkernels(

@@ -172,7 +172,8 @@ api::OcelotConfiguration::Optimizations::Optimizations():
 	mimdThreadScheduling(false),
 	syncElimination(false),
 	vectorizeConvergent(false),
-	vectorizeAffineMemory(false)
+	vectorizeAffineMemory(false),
+	lazyDynamicCompilation(true)
 {
 
 }
@@ -366,6 +367,9 @@ static void initializeOptimizations(
 	
 	optimizations.vectorizeAffineMemory =
 		config.parse<bool>("vectorizeAffineMemory", false);
+	
+	optimizations.lazyDynamicCompilation =
+		config.parse<bool>("lazyDynamicCompilation", true);
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

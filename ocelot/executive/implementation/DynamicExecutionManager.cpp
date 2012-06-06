@@ -145,6 +145,11 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	
 	int workerThreads = api::OcelotConfiguration::get().executive.workerThreadLimit;
 
+	if (!api::OcelotConfiguration::get().optimizations.lazyDynamicCompilation) {
+		// dynamically compile all subkernels before starting timer
+		
+	}
+
 	report(" launching grid " << kernel.gridDim().x << " x " << kernel.gridDim().y 
 		<< " on " << workerThreads << " threads");
 	
@@ -229,7 +234,7 @@ void executive::DynamicExecutionManager::_reportFirstLaunchLatency(
 
 	// serialize output
 	std::ofstream logfile(
-		"/home/andrew/repositories/gpuocelot/trunk/tests/firstKernelExecutionLatency.json", 
+		"firstKernelExecutionLatency.json", 
 		std::ios_base::app);
 	const char *application = "Unknown Application";
 	if (getenv("APPNAME")) { application = getenv("APPNAME"); }
@@ -254,7 +259,7 @@ void executive::DynamicExecutionManager::_reportSubkernelCoverage(
 	DynamicMulticoreKernel::SubkernelIdRange subkernelIdRange = kernel.getSubkernelIdRange();
 	
 	// assumes warp sizes that are powers of 2 from 1 to warpSize implied by config
-	std::ofstream file("/home/andrew/repositories/gpuocelot/trunk/tests/subkernelCoverage.json", 
+	std::ofstream file("subkernelCoverage.json", 
 		std::ios_base::app);
 	const char *app = getenv("APPNAME");
 	if (!app) {

@@ -162,6 +162,31 @@ int Log2WarpSize(int warpSize) {
 	return -1;
 }
 
+//
+executive::DynamicTranslationCache::Translation *
+	executive::DynamicTranslationCache::getTranslation(
+	int warpSize, SubkernelId subkernelId, unsigned int specialization) {
+
+	reportE(REPORT_SCHEDULE_OPERATIONS, " DynamicTranslationCache::getTranslation(ws: " << warpSize 
+		<< ", skId: " << subkernelId << ", specialization = " << specialization << ")");
+
+	Translation *translation = 0;
+
+	_lock();
+	
+	TranslationCacheMap::iterator translation_it = translationCache.find(subkernelId);
+	if (translation_it != translationCache.end()) {
+		WarpTranslationMap::iterator warp_it = translation_it->second.find(warpSize);
+		if (warp_it != translation_it->second.end()) {
+			translation = warp_it->second;
+			reportE(REPORT_TRANSLATION_OPERATIONS, "  found in translation cache");
+		}
+	}
+	
+	_unlock();
+	return translation;
+}
+
 executive::DynamicTranslationCache::Translation *
 executive::DynamicTranslationCache::getOrInsertTranslation(
 	int warpSize, SubkernelId subkernelId, unsigned int specialization) {
@@ -198,6 +223,28 @@ executive::DynamicTranslationCache::getOrInsertTranslation(
 	#endif
 	
 	return translation;
+}
+
+
+/*! \brief invokes the compilation of all subkernels if they do not exist in the cache already */
+size_t executive::DynamicTranslationCache::compileAllSubkernels(executive::DynamicMulticoreKernel *kernel) {
+	int warpSize = api::OcelotConfiguration::get().executive.warpSize;
+	size_t compiled = 0;
+	typedef analysis::KernelPartitioningPass::KernelGraph KernelGraph;
+	KernelGraph *kernelGraph = kernel->kernelGraph();
+	for (analysis::KernelPartitioningPass::SubkernelMap::const_iterator 
+		subkernel_it = kernelGraph->subkernels.begin(); 
+		subkernel_it != kernelGraph->subkernels.end(); ++subkernel_it) {
+		
+		for (int logWs = 0; (1 << logWs) <= warpSize; logWs++) { 
+			Translation *translation = getTranslation((1 << logWs), subkernel_it->first, 0);
+			if (!translation) {
+				++compiled;
+				translation = getOrInsertTranslation((1 << logWs), subkernel_it->first, 0);
+			}
+		}
+	}
+	return compiled;
 }
 
 //! \brief indicates to the translation cache a kernel is about to be executed

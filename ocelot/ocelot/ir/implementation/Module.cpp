@@ -40,28 +40,18 @@ ir::Module::Module(std::istream& stream, const std::string& path)
 }
 
 ir::Module::Module()
-: _ptxPointer(0), _addressSize(64), _loaded(false) {
-	PTXStatement version;
-	PTXStatement target;
-	version.directive = PTXStatement::Version;
-	version.major = 2; version.minor = 3;
-	target.targets.push_back("sm_23");
-	_statements.push_back(version);
-	_statements.push_back(target);
-	_target = ".target sm_23";
+: _ptxPointer(0), _addressSize(64), _loaded(false){
+  //.target sm_21
+  _target.directive = PTXStatement::Directive::Target;
+  _target.targets.push_back("sm_21");
+  //.version 2.3
+  _version.directive = PTXStatement::Directive::Version;
+  _version.minor = 3;
+  _version.major = 2;
 }
 
 ir::Module::Module(const ir::Module& m) 
 : _ptxPointer(0), _addressSize(64), _loaded(false) {
-	PTXStatement version;
-	PTXStatement target;
-	version.directive = PTXStatement::Version;
-	version.major = 2; version.minor = 3;
-	target.targets.push_back("sm_23");
-	_statements.push_back(version);
-	_statements.push_back(target);
-	_target = ".target sm_23";
-	
 	*this = m;
 }
 
@@ -295,10 +285,14 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	stream << "/*\n* Ocelot Version : " 
 		<< hydrazine::Version().toString() << "\n*/\n\n";
 		
-	stream << ".version 2.3\n";
-	stream << ".target sm_20\n";
-	stream << ".address_size " << addressSize() << "\n";
+	stream << _version.toString() << "\n";
+	stream << _target.toString()  << "\n";
 
+	if((_version.major > 2) ||
+		( (_version.major == 2) && (_version.minor >= 3))) {
+		stream << ".address_size " << addressSize() << "\n";
+	}
+	
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
 #if EMIT_FUNCTION_PROTOTYPES == 1

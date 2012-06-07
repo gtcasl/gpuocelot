@@ -142,6 +142,10 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 
+KernelDrawer = env.Program('KernelDrawer', \
+	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
+env.Depends(KernelDrawer, libocelot)
+
 ocelot_server_libs = ['']
 
 if os.name != 'nt':
@@ -291,6 +295,8 @@ if env['install']:
 		env['install_path'], "bin"), OcelotConfig))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), PTXOptimizer))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), KernelDrawer))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotServer))
 	installed.append(env.Install(os.path.join( \

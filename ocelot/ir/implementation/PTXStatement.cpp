@@ -16,6 +16,7 @@
 
 // Standard Library Includes
 #include <cstring>
+#include <sstream>
 #include <stack>
 #include <cstdint>
 
@@ -573,7 +574,9 @@ namespace ir {
 				break;
 			}
 			case Version: {
-				return ".version 2.1";
+			  std::stringstream stream;
+			  stream << ".version " << major << '.' << minor;
+				return stream.str();
 				break;
 			}
 			case StartScope:

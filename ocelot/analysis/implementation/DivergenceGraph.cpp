@@ -46,18 +46,22 @@ void DivergenceGraph::eraseSpecialSource( const ir::PTXOperand* tid ){
 
 /*!\brief Define a node as being divergent,
 	not depending on it's predecessors */
-void DivergenceGraph::setAsDiv( const node_type &node ){
-	assert( nodes.find(node) != nodes.end() );
-	
-	_upToDate = false;
-	_divergenceSources.insert(node);
+void DivergenceGraph::setAsDiv(const node_type &node)
+{
+  if (_divergenceSources.find(node) == _divergenceSources.end()) {
+    _upToDate = false;
+    _divergenceSources.insert(node);
+  }
+  if (nodes.find(node) == nodes.end()){
+    _upToDate = false;
+    nodes.insert(node);
+  }
 }
 
 /*!\brief Unset a node as being divergent, not depending on it's predecessors */
 void DivergenceGraph::unsetAsDiv( const node_type &node ){
 	if( _divergenceSources.find(node) != _divergenceSources.end() ){
 		_upToDate = false;
-//		nodes.insert(node);
 		_divergenceSources.erase(node);
 	}
 }
@@ -267,7 +271,7 @@ std::ostream& DivergenceGraph::print( std::ostream& out ) const{
 		if( divergence->second.size() ){
 			out << getSpecialName(divergence->first)
 				<< "[style=filled, fillcolor = \""
-				<< (isDivSource(divergence->first)?"tomato":"lightblue")
+				<< (isDivSource(divergence->first)?"red":"lightblue")
 				<< "\"]" << std::endl;
 		}
 	}
@@ -279,7 +283,7 @@ std::ostream& DivergenceGraph::print( std::ostream& out ) const{
 
 	for( ; node != endNode; node++ ){
 		out << *node << " [style=filled, fillcolor = \""
-			<< (isDivNode(*node)?"lightyellow":"white") << "\"]" << std::endl;
+			<< (isDivNode(*node)?((isDivSource(*node))?"tomato":"yellow"):"white") << "\"]" << std::endl;
 	}
 
 	out << std::endl;

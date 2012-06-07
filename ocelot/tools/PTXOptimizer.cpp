@@ -119,7 +119,7 @@ namespace tools
 		
 		if( linearscan != 0 )
 		{
-			linearscan->registers = registerCount;
+			linearscan->setRegisterCount( registerCount );
 		}
 		
 		transforms::SplitBasicBlockPass* splitblocks = 

@@ -13,6 +13,7 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
+#include <ocelot/analysis/interface/AffineAnalysis.h>
 #include <ocelot/analysis/interface/ControlTree.h>
 #include <ocelot/analysis/interface/DominatorTree.h>
 #include <ocelot/analysis/interface/PostdominatorTree.h>
@@ -52,6 +53,7 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 	TypeVector types;
 	
 	types.push_back(analysis::Analysis::DivergenceAnalysis);
+	types.push_back(analysis::Analysis::AffineAnalysis);
 	types.push_back(analysis::Analysis::DataflowGraphAnalysis);
 	types.push_back(analysis::Analysis::PostDominatorTreeAnalysis);
 	types.push_back(analysis::Analysis::DominatorTreeAnalysis);
@@ -62,7 +64,10 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 	types.push_back(analysis::Analysis::ConvergentRegionAnalysis);
 	
 	#else
-	TypeVector types = {analysis::Analysis::DivergenceAnalysis,
+	TypeVector types =
+	{
+		analysis::Analysis::AffineAnalysis,
+		analysis::Analysis::DivergenceAnalysis,
 		analysis::Analysis::DataflowGraphAnalysis,
 		analysis::Analysis::PostDominatorTreeAnalysis,
 		analysis::Analysis::DominatorTreeAnalysis,
@@ -71,7 +76,7 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 		analysis::Analysis::ThreadFrontierAnalysis,
 		analysis::Analysis::LoopAnalysis,
 		analysis::Analysis::ConvergentRegionAnalysis
-		};
+	};
 	#endif
 	
 	for(TypeVector::const_iterator t = types.begin(); t != types.end(); ++t)
@@ -135,31 +140,58 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			pdomTree->analyze(*k);
 		}
 	}
-	if(type & analysis::Analysis::DataflowGraphAnalysis)
+	if(type & (analysis::Analysis::DataflowGraphAnalysis
+	    |analysis::Analysis::StaticSingleAssignment
+	    |analysis::Analysis::MinimalStaticSingleAssignment
+	    |analysis::Analysis::GatedStaticSingleAssignment))
 	{
-		AnalysisMap::iterator dfg = analyses.find(
-			analysis::Analysis::DataflowGraphAnalysis);
-		
-		if(analyses.end() == dfg)
+    if(analyses.count(analysis::Analysis::DataflowGraphAnalysis) == 0)
 		{
-			report("   Allocating dataflow graph for kernel " << k->name);
-			analysis::DataflowGraph* graph = new analysis::DataflowGraph;
+      report("   Allocating dataflow graph for kernel " << k->name);
+      analysis::DataflowGraph* graph = new analysis::DataflowGraph;
 
-			dfg = analyses.insert(std::make_pair(
+			analyses.insert(std::make_pair(
 				analysis::Analysis::DataflowGraphAnalysis, graph)).first;
-			
-			graph->setPassManager(manager);
-			allocateNewDataStructures(analyses, k, graph->required, manager);
-			graph->analyze(*k);
-		}
-		if( (type & analysis::Analysis::StaticSingleAssignment) &&
-		  !(static_cast<analysis::DataflowGraph*>(dfg->second)->ssa()))
-		{
-			report("   Converting DFG into SSA for " << k->name);
-			static_cast<analysis::DataflowGraph*>(dfg->second)->toSsa();
-		}
-	}
-	if(type & analysis::Analysis::DivergenceAnalysis)
+
+      graph->setPassManager(manager);
+      allocateNewDataStructures(analyses, k, graph->required, manager);
+      graph->analyze(*k);
+    }
+
+    AnalysisMap::iterator dfg = analyses.find(analysis::Analysis::DataflowGraphAnalysis);
+
+    analysis::DataflowGraph *dfgp = static_cast<analysis::DataflowGraph*>(dfg->second);
+    if (type & analysis::Analysis::StaticSingleAssignment) {
+      assertM(!(type &
+          (analysis::Analysis::MinimalStaticSingleAssignment |
+          analysis::Analysis::GatedStaticSingleAssignment)),
+          "Cannot ask for more than one SSA form at once");
+      if (dfgp->ssa() != analysis::DataflowGraph::SsaType::Default) {
+        if (dfgp->ssa() != analysis::DataflowGraph::SsaType::None) {
+          dfgp->fromSsa();
+        }
+        dfgp->toSsa();
+      }
+    } else if (type & analysis::Analysis::MinimalStaticSingleAssignment) {
+      assertM(!(type & analysis::Analysis::GatedStaticSingleAssignment),
+          "Cannot ask for more than one SSA form at once");
+      if (dfgp->ssa() != analysis::DataflowGraph::SsaType::Minimal) {
+        if (dfgp->ssa() != analysis::DataflowGraph::SsaType::None) {
+          dfgp->fromSsa();
+        }
+        dfgp->toSsa(analysis::DataflowGraph::SsaType::Minimal);
+      }
+    } else if(type & analysis::Analysis::GatedStaticSingleAssignment){
+      if (dfgp->ssa() != analysis::DataflowGraph::SsaType::Gated) {
+        if (dfgp->ssa() != analysis::DataflowGraph::SsaType::None) {
+          dfgp->fromSsa();
+        }
+        dfgp->toSsa(analysis::DataflowGraph::SsaType::Gated);
+      }
+    }
+  }
+
+  if (type & analysis::Analysis::DivergenceAnalysis)
 	{
 		if(analyses.count(analysis::Analysis::DivergenceAnalysis) == 0)
 		{
@@ -180,6 +212,20 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			
 			static_cast<analysis::DivergenceAnalysis*>(
 				analysis->second)->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::AffineAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::AffineAnalysis) == 0)
+		{
+			report("   Allocating affine analysis for kernel " << k->name);
+
+			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
+			analysis::Analysis::AffineAnalysis, new analysis::AffineAnalysis )).first;
+
+			analysis->second->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, analysis->second->required, manager);
+			static_cast<analysis::AffineAnalysis*>(analysis->second)->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)

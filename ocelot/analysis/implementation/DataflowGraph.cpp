@@ -503,13 +503,13 @@ namespace analysis
 	DataflowGraph::DataflowGraph()  
 		: KernelAnalysis(Analysis::DataflowGraphAnalysis,
 			"DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 
-			_ssa( false ), _maxRegister( 0 )
+			_ssa( SsaType::None ), _maxRegister( 0 )
 	{
 	}
 	
 	DataflowGraph::~DataflowGraph()
 	{
-		if( _ssa ) fromSsa();	
+		if( _ssa ) fromSsa();
 	}
 
 	void DataflowGraph::analyze(ir::IRKernel& kernel)
@@ -1286,10 +1286,10 @@ namespace analysis
 		return ++_maxRegister;
 	}
 
-	void DataflowGraph::toSsa()
+	void DataflowGraph::toSsa(DataflowGraph::SsaType form)
 	{
 		compute();
-		SSAGraph graph( *this );
+		SSAGraph graph( *this, form );
 		graph.toSsa();		
 	}
 
@@ -1299,7 +1299,7 @@ namespace analysis
 		graph.fromSsa();		
 	}
 	
-	bool DataflowGraph::ssa() const
+	unsigned int DataflowGraph::ssa() const
 	{
 		return _ssa;
 	}
@@ -1553,6 +1553,37 @@ namespace analysis
 		return out;
 	}
 
+  std::ostream& operator<<( std::ostream& out, const DataflowGraph::PhiInstruction& phi ){
+    out << phi.d.id << " = phi( ";
+    DataflowGraph::RegisterVector::const_iterator source = phi.s.begin();
+    DataflowGraph::RegisterVector::const_iterator sourceEnd = phi.s.end();
+
+    for(; source != sourceEnd; source++){
+      out << source->id << ' ';
+    }
+
+    out << ")";
+    return out;
+  }
+
+  std::ostream& operator<<( std::ostream& out, const DataflowGraph::Instruction& i ){
+    DataflowGraph::RegisterPointerVector::const_iterator destination = i.d.begin();
+    DataflowGraph::RegisterPointerVector::const_iterator destinationEnd = i.d.end();
+
+    for(; destination != destinationEnd; destination++){
+      out << *destination->pointer << ' ';
+    }
+
+    out << i.i->toString() << ' ';
+
+    DataflowGraph::RegisterPointerVector::const_iterator source = i.s.begin();
+    DataflowGraph::RegisterPointerVector::const_iterator sourceEnd = i.s.end();
+
+    for(; source != sourceEnd; source++){
+      out << *source->pointer << ' ';
+    }
+    return out;
+  }
 }
 
 #endif

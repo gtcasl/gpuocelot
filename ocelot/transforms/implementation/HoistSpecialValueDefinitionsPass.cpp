@@ -95,6 +95,11 @@ HoistSpecialValueDefinitionsPass::VariableDescriptor::VariableDescriptor(
 
 }
 
+HoistSpecialValueDefinitionsPass::VariableDescriptor::~VariableDescriptor()
+{
+
+}
+
 bool HoistSpecialValueDefinitionsPass::VariableDescriptor::isRegister() const
 {
 	return _isRegister;
@@ -108,7 +113,7 @@ HoistSpecialValueDefinitionsPass::VariableUse::VariableUse(
 {
 
 }
-	
+
 HoistSpecialValueDefinitionsPass::MemoryVariable::MemoryVariable(
 	const std::string& n, ir::PTXInstruction::AddressSpace s)
 : VariableDescriptor(false), name(n), space(s)

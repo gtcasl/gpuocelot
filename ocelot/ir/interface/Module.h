@@ -227,9 +227,12 @@ namespace ir {
 
 		/*! Path from which Module was loaded */
 		std::string _modulePath;
-		
-		/*! Target string */
-		std::string _target;
+
+		/*! Target statment */
+		PTXStatement _target;
+
+		/*! \brief Version statment */
+		PTXStatement _version;
 
 		/*! \brief The address size */
 		unsigned int _addressSize;

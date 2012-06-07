@@ -37,6 +37,9 @@ public:
 		ThreadFrontierAnalysis        = 0x100,
 		LoopAnalysis                  = 0x200,
 		ConvergentRegionAnalysis      = 0x400,
+		MinimalStaticSingleAssignment = 0x800,
+		GatedStaticSingleAssignment   = 0x1000,
+		AffineAnalysis                = 0x2000
 	};
 
 public:

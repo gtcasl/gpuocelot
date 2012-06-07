@@ -16,9 +16,6 @@ namespace analysis {
 class DirectionalGraph
 {
 	public:
-		/*TODO: Make this as a template class, so can use other types instead
-			of node_type, might need to change set and map to unordered and a
-			class to draw them as dot friendly */
 		typedef unsigned int node_type;
 
 		/* A set of nodes of a directional graph */

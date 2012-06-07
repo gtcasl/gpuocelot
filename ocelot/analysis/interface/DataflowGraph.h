@@ -18,7 +18,8 @@
 // Standard Library Includes
 #include <cassert>
 #include <unordered_set>
-
+#include <set>
+#include <map>
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -45,7 +46,15 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A list of instructions */
 		typedef ir::ControlFlowGraph::InstructionList InstructionList;
 
-		/*! \brief A register with type info */
+    enum SsaType
+    {
+      None = 0,
+      Default = 1,
+      Minimal = 2,
+      Gated = 4
+    };
+
+    /*! \brief A register with type info */
 		class RegisterPointer
 		{
 			public:
@@ -94,7 +103,7 @@ class DataflowGraph : public KernelAnalysis
 		
 		/*! \brief A vector of register ID pointers */
 		typedef std::vector< RegisterPointer > RegisterPointerVector;
-		/*! \brief A vector of register ID pointers */
+		/*! \brief A vector of registers */
 		typedef std::vector< Register > RegisterVector;
 		
 		/*! \brief An exception for potentially uninitialized regs */
@@ -179,7 +188,7 @@ class DataflowGraph : public KernelAnalysis
 					Body,
 					Invalid
 				};
-		
+
 				/*! \brief A unique set of register Ids */
 				typedef std::unordered_set< Register, Register_Hash > RegisterSet;
 
@@ -305,7 +314,7 @@ class DataflowGraph : public KernelAnalysis
 		BlockVector _blocks;
 		ir::ControlFlowGraph* _cfg;
 		bool _consistent;
-		bool _ssa;
+		SsaType _ssa;
 		RegisterId _maxRegister;
 
 	public:
@@ -418,20 +427,45 @@ class DataflowGraph : public KernelAnalysis
 		
 	public:
 		/*! \brief Convert into ssa form */
-		void toSsa();
+		void toSsa(SsaType form = SsaType::Default);
 		/*! \brief Convert out of ssa form */
 		void fromSsa();
 		/*! \brief Is the graph in ssa form? */
-		bool ssa() const;
+		unsigned int ssa() const;
 		
 	public:
 		/*! \brief Get an executable sequence of blocks */
 		BlockPointerVector executableSequence();
 		/*! \brief Get a map from CFG to DFG iterators */
 		IteratorMap getCFGtoDFGMap();
+
+	public:
+    typedef std::map<const PhiInstruction*, std::set<RegisterId> > PhiPredicateMap;
+
+    inline const std::set<DataflowGraph::RegisterId> &getPhiPredicates(
+        DataflowGraph::PhiInstruction const * phi) const
+    {
+      assertM(hasPhi(phi), "Asked for a phi not known");
+      return _phiPredicateMap.find(phi)->second;
+    }
+
+    const PhiPredicateMap &phiPredicateMap() const{
+      assertM(_ssa == SsaType::Gated, "Asking for a phiPridicateMap not in GSSA");
+      return _phiPredicateMap;
+    }
+
+    inline bool hasPhi(DataflowGraph::PhiInstruction const *phi) const{
+      return _phiPredicateMap.find(phi) != _phiPredicateMap.end();
+    }
+  private:
+    PhiPredicateMap _phiPredicateMap;
+
 };
 
 std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
+std::ostream& operator<<( std::ostream& out, const DataflowGraph::PhiInstruction& phi );
+std::ostream& operator<<( std::ostream& out, const DataflowGraph::Instruction& i );
+
 }
 
 namespace std

@@ -1,14 +1,35 @@
+rm -rf ./benchmarkResults
 rm -f *.json
 export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.maximum"
 echo $OCELOT_CONFIG; ./TestTenTimes
-export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.minimumWithBarriers"
+mv firstKernelExecutionLatency.json kernelExecutionLatency-ws1-maximum.json
+mv subkernelCoverage.json subkernelCoverage-ws1-maximum.json
+
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.minimum"
 echo $OCELOT_CONFIG; ./TestTenTimes
+mv firstKernelExecutionLatency.json kernelExecutionLatency-ws1-minimum.json
+mv subkernelCoverage.json subkernelCoverage-ws1-minimum.json
+
 export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws1.loops"
 echo $OCELOT_CONFIG; ./TestTenTimes
+mv firstKernelExecutionLatency.json kernelExecutionLatency-ws1-loops.json
+mv subkernelCoverage.json subkernelCoverage-ws1-loops.json
+
 export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.maximum"
 echo $OCELOT_CONFIG; ./TestTenTimes
-export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.minimumWithBarriers"
+mv firstKernelExecutionLatency.json kernelExecutionLatency-ws4-maximum.json
+mv subkernelCoverage.json subkernelCoverage-ws4-maximum.json
+
+export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.minimum"
 echo $OCELOT_CONFIG; ./TestTenTimes
+mv firstKernelExecutionLatency.json kernelExecutionLatency-ws4-minimum.json
+mv subkernelCoverage.json subkernelCoverage-ws4-minimum.json
+
 export OCELOT_CONFIG="/home/andrew/repositories/gpuocelot/trunk/tests/configure.ocelot.ws4.loops"
 echo $OCELOT_CONFIG; ./TestTenTimes
+mv firstKernelExecutionLatency.json kernelExecutionLatency-ws4-loops.json
+mv subkernelCoverage.json subkernelCoverage-ws4-loops.json
+
+mkdir benchmarkResults
+mv *.json benchmarkResults
 

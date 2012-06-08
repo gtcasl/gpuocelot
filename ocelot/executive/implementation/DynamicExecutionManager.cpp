@@ -162,7 +162,8 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	report("  sharedMemorySize() = " << kernel.sharedMemorySize());
 	report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
 	report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
-		
+
+	DynamicMulticoreExecutive::CTAEventTimer ctaTimer;		
 	EventTimer firstKernelExecutionTimer;
 	if (workerThreads == 1) {
 	
@@ -183,6 +184,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 				}
 			}
 		}
+		ctaTimer = executive.getCtaTimer();
 	}
 	else {
 		//
@@ -213,7 +215,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	
 	if (REPORT_SUBKERNEL_COVERAGE) {
 		milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
-		_reportSubkernelCoverage(kernel, ms.count());
+		_reportSubkernelCoverage(kernel, ctaTimer, ms.count());
 	}
 	if (REPORT_SUBKERNEL_FIRSTLAUNCH_LATENCY) {
 		_reportFirstLaunchLatency(kernel, firstKernelExecutionTimer);
@@ -248,7 +250,8 @@ void executive::DynamicExecutionManager::_reportFirstLaunchLatency(
 }
 
 void executive::DynamicExecutionManager::_reportSubkernelCoverage(
-	executive::DynamicMulticoreKernel &kernel, double runtime) {
+	executive::DynamicMulticoreKernel &kernel, 
+	const DynamicMulticoreExecutive::CTAEventTimer &ctaTimer, double runtime) {
 	
 	typedef DynamicTranslationCache::SubkernelId SubkernelId;
 	
@@ -271,7 +274,10 @@ void executive::DynamicExecutionManager::_reportSubkernelCoverage(
 		<< ", \"gridDim\": [" << kernel.gridDim() << "], \"blockDim\": [" << kernel.blockDim() << "]"
 		<< ",\n   \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit 
 		<< ", \"maxWarpSize\": " << api::OcelotConfiguration::get().executive.warpSize
-		<< ", \"partitioning\": \"" << analysis::KernelPartitioningPass::toString(
+		<< ", \"ctaTime\": ";
+	ctaTimer.write(file);
+		
+	file << ",\n   \"partitioning\": \"" << analysis::KernelPartitioningPass::toString(
 			(analysis::KernelPartitioningPass::PartitioningHeuristic)
 				api::OcelotConfiguration::get().executive.partitioningHeuristic ) << "\""
 		<< ",\n   \"coverage\": {\n";

@@ -37,6 +37,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define ENABLE_CTA_TIMER 1
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 executive::DynamicMulticoreExecutive::SubkernelId 
 	executive::DynamicMulticoreExecutive::_getResumePoint(const executive::LLVMContext *context) {
 	
@@ -111,6 +115,20 @@ std::ostream & operator<<(std::ostream &out, const ir::Dim3 &dim) {
 namespace llvm { class Value; class Function; }
 std::string String(llvm::Value *);
 std::string String(llvm::Function *);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+executive::DynamicMulticoreExecutive::CTAEventTimer::CTAEventTimer() {
+
+}
+
+void executive::DynamicMulticoreExecutive::CTAEventTimer::write(std::ostream &out) const {
+	out << "{ \"total\": " << total.getAccumulated() 
+		<< ", \"initialize\": " << initialize.getAccumulated()
+		<< ", \"scheduling\": " << scheduling.getAccumulated()
+		<< ", \"subkernelExecution\": " << subkernelExecution.getAccumulated()
+		<< ", \"compilation\": " << compilation.getAccumulated() << " }";
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -223,8 +241,17 @@ const executive::DynamicMulticoreExecutive::Translation *
 	const Translation *translation = translationVector[lgwarpsize][subkernel];
 	
 	if (!translation) {
+	
+#if ENABLE_CTA_TIMER
+			_ctaEvents.compilation.start();
+#endif
+
 		translation = DynamicExecutionManager::get().translationCache.getOrInsertTranslation(warpsize, 
 			subkernel, specialization);
+			
+#if ENABLE_CTA_TIMER
+			_ctaEvents.compilation.stop();
+#endif
 		translationVector[lgwarpsize][subkernel] = translation;
 		assert(translation && "Failed to fetch translation from translation cache");
 	}
@@ -238,6 +265,11 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 			<< kernel->name << "' for CTA size " << kernel->blockDim().size() << " threads");
 
 	_timerFirstKernelExecution.start();
+
+#if ENABLE_CTA_TIMER
+	_ctaEvents.total.start();
+	_ctaEvents.initialize.start();
+#endif
 	
 	_initializeThreadContexts(block);
 	
@@ -247,9 +279,17 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 #endif
 	
 	report(" executing block: " << block.x << ", " << block.y);
+
+#if ENABLE_CTA_TIMER
+	_ctaEvents.initialize.stop();
+#endif
 	
 	//_executeDefault(block);
 	_executeIterateSubkernelBarriers(block);
+	
+#if ENABLE_CTA_TIMER
+	_ctaEvents.total.stop();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,6 +382,10 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 	bool executing = true;
 	int blockDimSize = kernel->blockDim().size();
 	
+#if ENABLE_CTA_TIMER
+	_ctaEvents.scheduling.start();
+#endif
+
 	do {
 		int exitedThreads = 0;
 		int barrierThreads = 0;
@@ -368,6 +412,7 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 			
 					reportE(REPORT_SCHEDULE_OPERATIONS, "warp: tid " << tid << " of size " << warpsize 
 						<< " threads [subkernel " << std::hex << "0x" << warpEntryId << std::dec << "]");
+
 
 					_executeWarp(&contexts[tid], warpsize);
 				
@@ -399,6 +444,10 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 			executing = false;
 		}
 	} while (executing);
+
+#if ENABLE_CTA_TIMER
+	_ctaEvents.scheduling.stop();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,9 +503,25 @@ void executive::DynamicMulticoreExecutive::_executeWarp(LLVMContext *_contexts, 
 				
 				reportE(REPORT_SCHEDULE_OPERATIONS, "  " << warp[t].tid);	
 			}
-			
+#if ENABLE_CTA_TIMER
+			_ctaEvents.scheduling.stop();
+#endif
+
 			_timerFirstKernelExecution.stop();
+			
+#if ENABLE_CTA_TIMER
+			_ctaEvents.subkernelExecution.start();
+#endif
+
 			translation->execute(warp);
+			
+#if ENABLE_CTA_TIMER
+			_ctaEvents.subkernelExecution.stop();
+#endif
+
+#if ENABLE_CTA_TIMER
+			_ctaEvents.scheduling.start();
+#endif
 
 			reportE(REPORT_SCHEDULE_OPERATIONS, "");
 			reportE(REPORT_SCHEDULE_OPERATIONS, "finished executing warp");

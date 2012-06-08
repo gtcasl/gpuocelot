@@ -15,6 +15,7 @@
 #include <ocelot/executive/interface/DynamicTranslationCache.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 #include <ocelot/executive/interface/EventTimer.h>
+#include <ocelot/executive/interface/DynamicMulticoreExecutive.h>
 
 typedef struct {
 	size_t sharedMemorySize;
@@ -43,7 +44,6 @@ namespace executive {
 		void launch(DynamicMulticoreKernel &kernel, size_t sharedMemorySize);
 		
 	protected:
-		void _reportSubkernelCoverage(executive::DynamicMulticoreKernel &kernel, double runtime = 0.0);
 		
 	protected:
 		
@@ -61,6 +61,8 @@ namespace executive {
 	
 	protected:
 		void _reportFirstLaunchLatency(executive::DynamicMulticoreKernel &kernel, const EventTimer &timer);
+		void _reportSubkernelCoverage(executive::DynamicMulticoreKernel &kernel, 
+			const DynamicMulticoreExecutive::CTAEventTimer &ctaTimer, double runtime = 0.0);
 	};
 
 }

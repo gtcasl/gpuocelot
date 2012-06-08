@@ -25,6 +25,18 @@ namespace executive {
 		typedef executive::MetaData Metadata;
 		typedef executive::DynamicTranslationCache::Translation Translation;	
 		
+		class CTAEventTimer {
+		public:
+			CTAEventTimer();
+			void write(std::ostream &out) const;
+		public:
+			EventTimer total;
+			EventTimer initialize;
+			EventTimer scheduling;
+			EventTimer subkernelExecution;
+			EventTimer compilation;
+		};
+		
 	public:
 		DynamicMulticoreExecutive(const executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
 		~DynamicMulticoreExecutive();
@@ -32,7 +44,6 @@ namespace executive {
 		void execute(const ir::Dim3 &block);
 		
 	protected:
-	
 	
 		void _executeDefault(const ir::Dim3 &block);
 		void _executeIterateSubkernelBarriers(const ir::Dim3 &block);
@@ -55,10 +66,12 @@ namespace executive {
 		
 	public:
 		EventTimer getFirstKernelExecutionTimer() const { return _timerFirstKernelExecution; }
-		
+		CTAEventTimer getCtaTimer() const { return _ctaEvents; }
 	protected:
 	
 		EventTimer _timerFirstKernelExecution;
+		
+		CTAEventTimer _ctaEvents;
 		
 	protected:
 	

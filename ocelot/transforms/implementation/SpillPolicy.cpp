@@ -22,7 +22,7 @@ SpillPolicy::RegisterMap SpillPolicy::LRU(const CoalescedRegisterVector &crv,
 	{
 		assertM(crv.find(*r) != crv.end(), "ihhhhhhhhhhh");
 		const CoalescedRegister &reg = *crv.find(*r)->second;
-		uint value = (uint)(-1) - reg.readDistance(p+1);
+		unsigned int value = (unsigned int)(-1) - reg.readDistance(p+1);
 		sorted.insert(std::make_pair(value, reg.reg()));;
 	}
 
@@ -39,7 +39,7 @@ SpillPolicy::RegisterMap SpillPolicy::LU(const CoalescedRegisterVector &crv,
 	for(; r != end; r++)
 	{
 		const CoalescedRegister &reg = *crv.find(*r)->second;
-		uint value = (uint)(-1) - reg.readsCount;
+		unsigned int value = (unsigned int)(-1) - reg.readsCount;
 		sorted.insert(std::make_pair(value, reg.reg()));;
 	}
 

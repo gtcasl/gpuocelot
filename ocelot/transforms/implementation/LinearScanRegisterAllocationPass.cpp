@@ -306,8 +306,8 @@ void LinearScanRegisterAllocationPass::_computeIntervals()
 	{
 		if((*block)->instructions().size() == 0) continue;
 
-		uint blockStart = ++count;
-		uint blockEnd = count + (*block)->instructions().size();
+		unsigned int blockStart = ++count;
+		unsigned int blockEnd = count + (*block)->instructions().size();
 		_aliveIns.insert(blockStart);
 		reportE(DEBUG, "\t---Point:" << blockStart << " marked as aliveIn");
 		_writes[blockStart] = RegisterSet();
@@ -551,7 +551,7 @@ void LinearScanRegisterAllocationPass::_treatPoint(
 	RegisterList &available, const Interval::Point pointNum)
 {
 
-	uint used = 0;
+	unsigned int used = 0;
 	RegisterSet created;
 	reportE(DEBUG, "---Point:" << pointNum << ", instruction "
 		<< _instructions[pointNum]->i->toString());

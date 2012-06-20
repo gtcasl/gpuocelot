@@ -2,7 +2,9 @@
 #include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/transforms/interface/KernelDrawerPass.h>
 #include <set>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 /* This application generates control, data / divergence flow graphs on dot language for a input ptx file */
 void help(const string name){
   cerr << endl << "Kernel Drawer Help" << endl
@@ -44,7 +46,10 @@ int main(int argc, char* argv[]) {
   unsigned todo = 0;
   unsigned a = Analysis::Type::DataflowGraphAnalysis;
   bool i = false, o = false;
-
+#ifdef _WIN32
+  printf("Command line options not supported on Windows\n");
+  // 'getopt' does not exist in regular Windows (VC) headers
+#else
   while((c = getopt(argc, argv, "s:o:arcfdv12DPih")) != -1){
     switch(c){
       case 'o':
@@ -75,6 +80,7 @@ int main(int argc, char* argv[]) {
     ptxFilenames.insert((argv[optind]));
     optind++;
   }
+#endif // #ifndef _WIN32
 
   if(i & o){
     help(argv[0]);

@@ -30,7 +30,7 @@ public:
 	/*! \brief A set of Coalesced registers */
 	typedef std::set<RegisterId> RegisterSet;
 	/*! \brief A map from SSA registers to Coalesced registers */
-	typedef std::multimap<uint, RegisterId> RegisterMap;
+	typedef std::multimap<unsigned int, RegisterId> RegisterMap;
 
 	/* \brief Less Recently Used policy */
 	RegisterMap LRU(const CoalescedRegisterVector &crv,

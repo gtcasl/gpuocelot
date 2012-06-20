@@ -79,7 +79,7 @@ def getBoost(env):
 		bitness = 32;
 		# If Visual Studio then MSCV builder will have set TARGET_ARCH
 		if 'TARGET_ARCH' in env:
-			if env['TARGET_ARCH'] == 'x64':
+			if env['TARGET_ARCH'] == 'x86_64':
 				bitness = 64
 		boost_path = '../../tools/boost_1_46_1'
 		inc_path = boost_path + "/"
@@ -248,14 +248,18 @@ gCompilerOptions = {
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
 		'cl'  : {'warn_all' : '/Wall',
 			'warn_errors' : '/WX',
-			'optimization' : ['/Ox', '/MT', '/Z7', '/DNDEBUG'],
-			'debug' : ['/Z7', '/Od', '/D_DEBUG', '/RTC1', '/MTd'],
+			'optimization' : ['/Zi', '/Ox', '/DNDEBUG'],
+			'debug' : ['/Zi', '/Od', '/D_DEBUG', '/RTC1'],
 			'exception_handling': '/EHsc',
 			'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
 				'/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H',
 				'/D_WIN32_WINNT=0x0601', '/wd4482', '/wd4503']}
 	}
 
+def updateCompilerOptionsFromEnv(env):
+	if 'CRT_LIB_OPTION' in env:
+		gCompilerOptions['cl']['optimization'].append(env['CRT_LIB_OPTION'])
+		gCompilerOptions['cl']['debug'].append(env['CRT_LIB_OPTION']+'d')
 
 # this dictionary maps the name of a linker program to a dictionary mapping the name of
 # a linker switch of interest to the specific switch implementing the feature
@@ -432,7 +436,10 @@ def Environment():
 		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version',
 			'10.0', allowed_values=('8.0', '9.0', '10.0')))
 		vars.Add(EnumVariable('TARGET_ARCH', 'MS Visual C++ target architecture',
-			'x86', allowed_values=('x86', 'x64')))
+			'x86', allowed_values=('x86', 'x86_64')))
+		vars.Add(EnumVariable('CRT_LIB_OPTION', 'MS Visual C++ runtime library option for cl.exe ',
+			'/MD', allowed_values=('/MD', '/MT')))
+
 
 	# add a variable to handle RELEASE/DEBUG mode
 	vars.Add(EnumVariable('mode', 'Release versus debug mode', 'release',
@@ -485,6 +492,10 @@ def Environment():
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \
 		tools = getTools(), variables = vars)
+
+	# update compiler options with variables in the environment
+	# (such as those from the command line)
+	updateCompilerOptionsFromEnv(env)
 
 	# always link with the c++ compiler
 	if os.name != 'nt':

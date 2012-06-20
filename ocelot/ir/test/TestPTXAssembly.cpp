@@ -634,22 +634,22 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 		{
 			if(rmi)
 			{
-				ptx << ".rm";
+				ptx << ".rmi";
 			}
 			else
 			{
-				ptx << ".rz";
+				ptx << ".rzi";
 			}
 		}
 		else
 		{
 			if(rmi)
 			{
-				ptx << ".rmi";
+				ptx << ".rm";
 			}
 			else
 			{
-				ptx << ".rzi";
+				ptx << ".rz";
 			}
 		}
 	}

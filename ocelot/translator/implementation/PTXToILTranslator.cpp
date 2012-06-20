@@ -1103,6 +1103,7 @@ namespace translator
 
 						if(i.modifier & ir::PTXInstruction::rz) 
 						{
+              // REVISE - is this ::rz or ::rzi?
 							ir::ILMov mov;
 							mov.d = d;
 							mov.a = a;
@@ -1112,6 +1113,7 @@ namespace translator
 
 						if (i.modifier & ir::PTXInstruction::rn)
 						{
+              // REVISE - is this ::rn or ::rni?
 							ir::ILRound_Nearest round_nearest;
 							round_nearest.d = d;
 							round_nearest.a = a;
@@ -1120,6 +1122,7 @@ namespace translator
 						}
 						if (i.modifier & ir::PTXInstruction::rm)
 						{
+              // REVISE - is this ::rm or ::rmi?
 							ir::ILRound_Neginf round_neginf;
 							round_neginf.d = d;
 							round_neginf.a = a;

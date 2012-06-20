@@ -2794,13 +2794,13 @@ template< typename Float >
 static Float roundToInt(Float a, int modifier, executive::CTAContext &context, 
 	const PTXInstruction &instr) {
 	Float fd = 0;
-	if (modifier & PTXInstruction::rn) {
+	if (modifier & PTXInstruction::rni) {
 		fd = hydrazine::nearbyintf(a);
-	} else if (modifier & PTXInstruction::rz) {
+	} else if (modifier & PTXInstruction::rzi) {
 		fd = hydrazine::trunc(a);
-	} else if (modifier & PTXInstruction::rm) {
+	} else if (modifier & PTXInstruction::rmi) {
 		fd = floor(a);
-	} else if (modifier & PTXInstruction::rp) {
+	} else if (modifier & PTXInstruction::rpi) {
 		fd = ceil(a);
 	} else {
 		throw executive::RuntimeException("Rounding mode is required for float "

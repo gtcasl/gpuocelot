@@ -122,12 +122,16 @@ namespace ir {
 			wide = 4,		//<
 			sat = 8,		//< saturation modifier	
 			rn = 32,		//< mantissa LSB rounds to nearest even
-			rz = 64,		//< mantissa LSB roudns toward zero
+			rz = 64,		//< mantissa LSB rounds toward zero
 			rm = 128,		//< mantissa LSB rounds toward negative infty
 			rp = 256,		//< mantissa LSB rounds toward positive infty
-			approx = 512, 	//< identify an approximate instruction
-			ftz = 1024, 	//< flush to zero
-			full = 2048, 	//< full division
+			rni = 512,	//< round to nearest integer, choosing even integer if source is equidistant between two integers.
+			rzi = 1024,	//< round to nearest integer in the direction of zero
+			rmi = 2048,	//< round to nearest integer in direction of negative infinity
+			rpi = 4096,	//< round to nearest integer in direction of positive infinity
+			approx = 8192,//< identify an approximate instruction
+			ftz = 16384,	//< flush to zero
+			full = 32768,	//< full division
 			Modifier_invalid = 0
 		};
 			

@@ -7210,7 +7210,7 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 			
 			if( !ir::PTXOperand::isFloat( dType ) )
 			{
-				if( modifier & ir::PTXInstruction::rn )
+				if( modifier & ir::PTXInstruction::rni )
 				{
 					ir::LLVMFcmp compare;
 				
@@ -7274,7 +7274,7 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 				
 					tempA = sitofp.d;
 				}
-				else if( modifier & ir::PTXInstruction::rp )
+				else if( modifier & ir::PTXInstruction::rpi )
 				{
 					ir::LLVMFadd add;
 				
@@ -7392,19 +7392,19 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 				}
 				case ir::PTXOperand::f32:
 				{
-					if( ir::PTXInstruction::rz & modifier )
+					if( ir::PTXInstruction::rzi & modifier )
 					{
 						_trunc( d, tempA );
 					}
-					else if( ir::PTXInstruction::rn & modifier )
+					else if( ir::PTXInstruction::rni & modifier )
 					{
 						_nearbyint( d, tempA );
 					}
-					else if( ir::PTXInstruction::rm & modifier )
+					else if( ir::PTXInstruction::rmi & modifier )
 					{
 						_floor( d, tempA );
 					}
-					else if( ir::PTXInstruction::rp & modifier )
+					else if( ir::PTXInstruction::rpi & modifier )
 					{
 						_ceil( d, tempA );
 					}

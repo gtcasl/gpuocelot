@@ -15,10 +15,11 @@
 #include <ocelot/api/interface/ocelot.h>
 
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/string.h>
-#include <hydrazine/implementation/math.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/string.h>
+#include <hydrazine/interface/math.h>
+#include <hydrazine/interface/FloatingPoint.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
@@ -698,16 +699,37 @@ void testCvt_REF(void* output, void* input)
 
 	if(round)
 	{
-		if(typeid(float) == typeid(dtype) && typeid(float) == typeid(stype))
+		if(isFloat<stype>() && typeid(stype) == typeid(dtype))
 		{
 			if(rmi)
 			{
 				r1 = floor(r0);
 			}
+			else if(typeid(double) == typeid(dtype))
+			{
+				r1 = hydrazine::trunc((double)r0);
+			}
 			else
 			{
-				r1 = trunc(r0);
+				r1 = hydrazine::trunc((float)r0);
 			}
+		}
+		else if(isFloat<stype>())
+		{
+			int mode = hydrazine::fegetround();
+		
+			if(rmi)
+			{
+				hydrazine::fesetround(FE_DOWNWARD);
+			}
+			else
+			{
+				hydrazine::fesetround(FE_TOWARDZERO);
+			}
+		
+			r1 = r0;
+		
+			hydrazine::fesetround(mode);
 		}
 	}
 
@@ -6705,7 +6727,7 @@ namespace test
 				ir::PTXOperand::f32, false, false, true, true),
 			testCvt_INOUT(I32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
-		add("TestCvt-u32-f64",
+		add("TestCvt-u32-f64-rzi",
 			testCvt_REF<uint32_t, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::u32,
 				ir::PTXOperand::f64, false, false, true),
@@ -7079,7 +7101,7 @@ namespace test
 				ir::PTXOperand::f32, false, false, false),
 			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
-		add("TestCvt-f32-f32-rz",
+		add("TestCvt-f32-f32-rzi",
 			testCvt_REF<float, float, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
 				ir::PTXOperand::f32, false, false, true),

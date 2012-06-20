@@ -2370,13 +2370,13 @@ namespace parser
 			case TOKEN_LO: return ir::PTXInstruction::lo; break;
 			case TOKEN_WIDE: return ir::PTXInstruction::wide; break;
 			case TOKEN_SAT: return ir::PTXInstruction::sat; break;
-			case TOKEN_RNI: /* fall through */
+			case TOKEN_RNI: return ir::PTXInstruction::rni; break;
 			case TOKEN_RN: return ir::PTXInstruction::rn; break;
-			case TOKEN_RZI: /* fall through */
+			case TOKEN_RZI: return ir::PTXInstruction::rzi; break;
 			case TOKEN_RZ: return ir::PTXInstruction::rz; break;
-			case TOKEN_RMI: /* fall through */
+			case TOKEN_RMI: return ir::PTXInstruction::rmi; break;
 			case TOKEN_RM: return ir::PTXInstruction::rm; break;
-			case TOKEN_RPI: /* fall through */
+			case TOKEN_RPI: return ir::PTXInstruction::rpi; break;
 			case TOKEN_RP: return ir::PTXInstruction::rp; break;
 			case TOKEN_FTZ: return ir::PTXInstruction::ftz; break;
 			case TOKEN_APPROX: return ir::PTXInstruction::approx; break;			

@@ -2087,14 +2087,22 @@ std::string ir::PTXInstruction::toString() const {
 			}
 			else {
 				if( modifier & rn ) {
-					result += "rni.";
+					result += "rn.";
 				} else if( modifier & rz ) {
-					result += "rzi.";
+					result += "rz.";
 				} else if( modifier & rm ) {
-					result += "rmi.";
+					result += "rm.";
 				} else if( modifier & rp ) {
-					result += "rpi.";
-				}
+					result += "rp.";
+				} else if( modifier & rni ) {
+          result += "rni.";
+        } else if( modifier & rzi ) {
+          result += "rzi.";
+        } else if( modifier & rmi ) {
+          result += "rmi.";
+        } else if( modifier & rpi ) {
+          result += "rpi.";
+        }
 
 				if( modifier & ftz ) {
 					result += "ftz.";

@@ -420,7 +420,9 @@ namespace analysis {
 }
 
 namespace std {
+#ifndef _WIN32
   bool operator==(const analysis::DataflowGraph::const_iterator x, const analysis::DataflowGraph::const_iterator y);
+#endif
   bool operator<(const analysis::DataflowGraph::const_iterator x, const analysis::DataflowGraph::const_iterator y);
   bool operator<=(const analysis::DataflowGraph::const_iterator x, const analysis::DataflowGraph::const_iterator y);
   bool operator>(const analysis::DataflowGraph::const_iterator x, const analysis::DataflowGraph::const_iterator y);

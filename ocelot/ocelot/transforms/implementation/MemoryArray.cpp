@@ -102,7 +102,7 @@ void MemoryArray::clear(){
 	_hasUnsigned = false;
 	_isBin = false;
 	_maxVarSize = 0;
-	_minVarSize = (uint)(-1);
+	_minVarSize = (unsigned int)(-1);
 	_stackSize = 0;
 }
 

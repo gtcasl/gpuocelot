@@ -52,7 +52,7 @@ bool CoalescedRegister::spilled() const
 	return _spilled;
 }
 
-ushort CoalescedRegister::size() const
+uint16_t CoalescedRegister::size() const
 {
 	return _size;
 }
@@ -67,17 +67,17 @@ bool CoalescedRegister::isAllocated() const
 	return allocated.size() == _size;
 }
 
-uint CoalescedRegister::readDistance(const Interval::Point &point) const
+unsigned int CoalescedRegister::readDistance(const Interval::Point &point) const
 {
 	return distance(point, RW::READ);
 }
 
-uint CoalescedRegister::writeDistance(const Interval::Point &point) const
+unsigned int CoalescedRegister::writeDistance(const Interval::Point &point) const
 {
 	return distance(point, RW::WRITE);
 }
 
-uint CoalescedRegister::distance(const Interval::Point &point,
+unsigned int CoalescedRegister::distance(const Interval::Point &point,
 	const RW type) const
 {
 	UseMap::const_iterator pos = rw.find(point);
@@ -89,7 +89,7 @@ uint CoalescedRegister::distance(const Interval::Point &point,
 		pos++;
 	}
 
-	if(pos == rw.end()) return (uint)(-1);
+	if(pos == rw.end()) return (unsigned int)(-1);
 
 	return pos->first - point;
 }
@@ -191,9 +191,9 @@ void CoalescedRegister::store(DataflowGraph & dfg,
 
 }
 
-uint CoalescedRegister::averageDistance() const
+unsigned int CoalescedRegister::averageDistance() const
 {
-	if(rw.size() < 2) return (uint)(-1);
+	if(rw.size() < 2) return (unsigned int)(-1);
 
 	return ( (std::prev(rw.end())->first - rw.begin()->first) / rw.size());
 }

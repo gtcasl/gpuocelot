@@ -31,23 +31,39 @@
 
 ir::Module::Module(const std::string& path, bool dontLoad)
 : _ptxPointer(0), _modulePath(path), _addressSize(64), _loaded(true) {
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
+
 	if(!dontLoad) load(path);
 }
 
 ir::Module::Module(std::istream& stream, const std::string& path)
 : _ptxPointer(0), _addressSize(64), _loaded(true) {
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
+
 	load(stream, path);
 }
 
 ir::Module::Module()
 : _ptxPointer(0), _addressSize(64), _loaded(false){
-  //.target sm_21
-  _target.directive = PTXStatement::Directive::Target;
-  _target.targets.push_back("sm_21");
-  //.version 2.3
-  _version.directive = PTXStatement::Directive::Version;
-  _version.minor = 3;
-  _version.major = 2;
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
 }
 
 ir::Module::Module(const ir::Module& m) 
@@ -80,6 +96,9 @@ const ir::Module& ir::Module::operator=(const Module& m) {
 		_textures   = m._textures;
 		_prototypes = m._prototypes;
 		_globals    = m._globals;
+		
+		_version = m._version;
+		_target  = m._target;
 		
 		for(KernelMap::const_iterator k = m._kernels.begin();
 			k != m._kernels.end(); ++k)
@@ -517,6 +536,16 @@ void ir::Module::extractPTXKernels() {
 		}
 	
 		switch (statement.directive) {
+			case PTXStatement::Version:
+			{
+				_version = statement;
+			}
+			break;
+			case PTXStatement::Target:
+			{
+				_target = statement;
+			}
+			break;
 			case PTXStatement::Entry:	// fallthrough
 			case PTXStatement::Func:
 			{

@@ -3576,7 +3576,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							a = toF32(a, instr.modifier);
+							a = roundToInt(a, instr.modifier, context, instr);
 							setRegAsF32(threadID, instr.d.reg, 
 								sat(instr.modifier, a));
 						}
@@ -3773,7 +3773,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f64: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							a = toF64(a, instr.modifier);
+							a = roundToInt(a, instr.modifier, context, instr);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);

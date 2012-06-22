@@ -7095,10 +7095,10 @@ namespace test
 				ir::PTXOperand::s64, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I64),
 			uniformRandom<int64_t, 1>, 1, 1);
-		add("TestCvt-f32-f32",
-			testCvt_REF<float, float, false, false, false>,
+		add("TestCvt-f32-f32-rmi",
+			testCvt_REF<float, float, false, false, true, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::f32, false, false, false),
+				ir::PTXOperand::f32, false, false, true, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-f32-f32-rzi",
@@ -7169,10 +7169,10 @@ namespace test
 				ir::PTXOperand::f32, false, false, false),
 			testCvt_INOUT(FP64), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
-		add("TestCvt-f64-f64",
-			testCvt_REF<double, double, false, false, false>,
+		add("TestCvt-f64-f64-rzi",
+			testCvt_REF<double, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::f64, false, false, false),
+				ir::PTXOperand::f64, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(FP64),
 			uniformFloat<double, 1>, 1, 1);
 	

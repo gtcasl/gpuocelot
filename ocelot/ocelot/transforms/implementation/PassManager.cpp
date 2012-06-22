@@ -9,6 +9,7 @@
 
 // Ocelot Includes
 #include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/PassFactory.h>
 #include <ocelot/transforms/interface/Pass.h>
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
@@ -36,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -674,22 +675,57 @@ void PassManager::invalidateAnalysis(int type)
 
 PassManager::PassVector PassManager::_schedulePasses()
 {
-	typedef std::unordered_set<Pass*> PassSet;
+	typedef std::unordered_map<std::string, Pass*> PassMap;
+	
+	report(" Scheduling passes...");
 	
 	PassVector scheduled;
-	PassSet unscheduled;
+	PassMap    unscheduled;
+	PassMap    needDependencyCheck;
 	
+	report("  Initial list:");
 	for(auto pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
-		unscheduled.insert(pass->second);
+		report("   " << pass->second->name);
+		unscheduled.insert(std::make_pair(pass->second->name, pass->second));
+		needDependencyCheck.insert(std::make_pair(pass->second->name,
+			pass->second));
 	}
+	
+	report("  Adding dependent passes:");
+	while(!needDependencyCheck.empty())
+	{
+		auto pass = needDependencyCheck.begin();
+
+		report("   for pass '" << pass->first << "'");
+		
+		auto dependentPasses = pass->second->getDependentPasses();
+		
+		needDependencyCheck.erase(pass);
+		
+		for(auto dependentPass = dependentPasses.begin();
+			dependentPass != dependentPasses.end(); ++dependentPass)
+		{
+			if(unscheduled.count(*dependentPass) == 0)
+			{
+				report("    adding '" << *dependentPass << "'");
+				auto newPass = PassFactory::createPass(*dependentPass);
+				addPass(*newPass);
+				unscheduled.insert(std::make_pair(*dependentPass, newPass));
+				needDependencyCheck.insert(
+					std::make_pair(*dependentPass, newPass));
+			}
+		}
+	}
+	
+	report("  Final schedule:");
 	
 	while(!unscheduled.empty())
 	{
 		bool dependenciesSatisfied = false;
 		for(auto pass = unscheduled.begin(); pass != unscheduled.end(); ++pass)
 		{
-			Pass::StringVector dependentPasses = (*pass)->getDependentPasses();
+			auto dependentPasses = pass->second->getDependentPasses();
 			
 			dependenciesSatisfied = true;
 			
@@ -699,7 +735,7 @@ PassManager::PassVector PassManager::_schedulePasses()
 				for(auto pass = unscheduled.begin();
 					pass != unscheduled.end(); ++pass)
 				{
-					if(*dependentPass == (*pass)->name)
+					if(*dependentPass == pass->second->name)
 					{
 						dependenciesSatisfied = false;
 						break;
@@ -711,7 +747,8 @@ PassManager::PassVector PassManager::_schedulePasses()
 			
 			if(dependenciesSatisfied)
 			{
-				scheduled.push_back(*pass);
+				report("   " << pass->second->name);
+				scheduled.push_back(pass->second);
 				unscheduled.erase(pass);
 				break;
 			}
@@ -722,6 +759,8 @@ PassManager::PassVector PassManager::_schedulePasses()
 			throw std::runtime_error("Passes have circular dependencies!");
 		}
 	}
+	
+	report("  Finished scheduling");
 	
 	return scheduled;
 }

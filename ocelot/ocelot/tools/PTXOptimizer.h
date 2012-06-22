@@ -41,6 +41,9 @@ namespace tools
 			/*! \brief The target sub-kernel size */
 			unsigned int subkernelSize;
 			
+			/*! \brief The inlining threshold */
+			unsigned int inliningThreshold;
+			
 			/*! \brief The target basic block size */
 			unsigned int basicBlockSize;
 			

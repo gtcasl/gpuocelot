@@ -45,7 +45,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	
 	report("  return arguments:");
 	
-	for(ir::PTXOperand::Array::const_iterator parameter = call.d.array.begin();
+	for(auto parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
 		report("   " << parameter->identifier << " ("
@@ -56,7 +56,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	}
 
 	report("  input arguments:");
-	for(ir::PTXOperand::Array::const_iterator parameter = call.b.array.begin();
+	for(auto parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
 		report("   " << parameter->identifier << " ("
@@ -258,7 +258,14 @@ static void simplifyCall(ir::PTXKernel& kernel,
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
 	const ir::ExternalFunctionSet& e, bool s) 
 : KernelPass(analysis::Analysis::DataflowGraphAnalysis,
-	"SimplifyExternalCallsPass"), _externals(&e), _simplifyAll(s)
+	"SimplifyExternalCallsPass"), _externals(&e), _simplifyAll(s || &e == 0)
+{
+
+}
+
+SimplifyExternalCallsPass::SimplifyExternalCallsPass() 
+: KernelPass(analysis::Analysis::DataflowGraphAnalysis,
+	"SimplifyExternalCallsPass"), _externals(0), _simplifyAll(true)
 {
 
 }

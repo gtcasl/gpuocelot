@@ -158,7 +158,8 @@ api::OcelotConfiguration::Optimizations::Optimizations():
 	predicateToSelect(false),
 	linearScanAllocation(false),
 	mimdThreadScheduling(false),
-	syncElimination(false)
+	syncElimination(false),
+	inlining(false)
 {
 
 }
@@ -336,6 +337,9 @@ static void initializeOptimizations(
 	
 	optimizations.enforceLockStepExecution =
 		config.parse<bool>("enforceLockStepExecution", false);
+	
+	optimizations.inlining =
+		config.parse<bool>("functionInlining", false);
 		
 }
 

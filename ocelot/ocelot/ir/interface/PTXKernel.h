@@ -109,7 +109,7 @@ namespace ir
 				\param isFunction Is this a kernel or a function?
 			*/
 			PTXKernel(const std::string& name = "", bool isFunction = false,
-				const ir::Module* module = 0);
+				const ir::Module* module = 0, Id id = 0);
 			
 			/*! Constructs a kernel from an iterator into the PTXStatementVector
 
@@ -117,7 +117,8 @@ namespace ir
 				\param end iterator into end of kernel
 			*/
 			PTXKernel(PTXStatementVector::const_iterator start,
-				PTXStatementVector::const_iterator end, bool isFunction);
+				PTXStatementVector::const_iterator end, bool isFunction,
+				Id id = 0);
 
 			/*! \brief Copy constructor (deep) */
 			PTXKernel(const PTXKernel& k);
@@ -142,7 +143,7 @@ namespace ir
 
 		public:
 			/*! \brief renames all the blocks with canonical names */
-			virtual void canonicalBlockLabels(int kernelID=1);
+			virtual void canonicalBlockLabels();
 
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */

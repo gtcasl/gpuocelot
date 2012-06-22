@@ -21,6 +21,7 @@
 #include <ocelot/transforms/interface/HoistSpecialValueDefinitionsPass.h>
 #include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
 #include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
+#include <ocelot/transforms/interface/FunctionInliningPass.h>
 
 namespace ocelot
 {
@@ -39,6 +40,7 @@ namespace ocelot
 		transforms::HoistSpecialValueDefinitionsPass _hoistSpecialValues;
 		transforms::SimplifyControlFlowGraphPass _simplifyCFG;
 		transforms::EnforceLockStepExecutionPass _enforceLockStepExecution;
+		transforms::FunctionInliningPass _inliner;
 		
 		bool _initialized;
 		

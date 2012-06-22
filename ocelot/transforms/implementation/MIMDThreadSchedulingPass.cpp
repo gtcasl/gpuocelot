@@ -92,7 +92,7 @@ static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 	successor->instructions.push_front(setp);
 	
 	ir::ControlFlowGraph::iterator scheduler = kernel.cfg()->split_block(pdom,
-		0, ir::Edge::FallThrough, pdom->label);
+		pdom->instructions.begin(), ir::Edge::FallThrough, pdom->label);
 
 	report("   created scheduler block " << scheduler->id
 		<< " from pdom block " << pdom->id);
@@ -162,16 +162,15 @@ void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 				*static_cast<const ir::PTXInstruction*>(*instruction);
 			if(ptx.opcode == ir::PTXInstruction::Bar)
 			{
-				unsigned int instructionIndex = std::distance(
-					block->instructions.begin(), instruction) + 1;
 				ir::ControlFlowGraph::iterator
 					successor = kernel.cfg()->split_block(block,
-					instructionIndex, ir::Edge::Branch,
+					++instruction, ir::Edge::Branch,
 					block->label + "_resume");
 				
 				kernel.cfg()->remove_edge(block->get_edge(successor));
 				
-				report("  for barrier at instruction " << instructionIndex);
+				report("  for barrier at instruction " << (std::distance(
+					block->instructions.begin(), instruction)));
 				report("   created resume block " << successor->id);
 				
 				ir::Instruction::RegisterType

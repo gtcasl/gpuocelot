@@ -13,6 +13,9 @@
 #include <list>
 #include <unordered_map>
 
+// Forward declarations
+namespace ir { class IRKernel; }
+
 namespace ir {
 
 class Instruction;
@@ -197,8 +200,11 @@ public:
 	typedef std::unordered_map<std::string, unsigned int> BasicBlockColorMap;
 
 public:
-	ControlFlowGraph();
+	ControlFlowGraph(ir::IRKernel* kernel = 0);
 	~ControlFlowGraph();
+	
+	/*!	deep copy of ControlFlowGraph */
+	ControlFlowGraph& operator=(const ControlFlowGraph &);
 
 public:
 	/*! \brief Get the name of an edge type */
@@ -214,6 +220,9 @@ public:
 	/*!	Gets the number of blocks within the graph */
 	size_t size() const;
 	
+	/*! \brief Get the number of instructions within the graph */
+	size_t instructionCount() const;
+	
 	/*! \brie Is the graph empty? */
 	bool empty() const;
 
@@ -222,7 +231,7 @@ public:
 	
 	/*! Duplicates the selected block, inserts it in an unconnected state,
 		returns an iterator to the newly created block */
-	iterator clone_block(iterator block, std::string suffix);
+	iterator clone_block(const_iterator block, std::string suffix = "");
 	
 	/*! Removes a basic block and associated edges. Any blocks dominated by
 		block are now unreachable but still part of the graph.
@@ -267,7 +276,7 @@ public:
 		\param the label of the new block
 		\return A pointer to the newly allocated second block
 	*/
-	iterator split_block(iterator block, unsigned int instruction, 
+	iterator split_block(iterator block, instruction_iterator instruction, 
 		Edge::Type type, const std::string& label = "");
 
 	/*!	Returns the entry block of a control flow graph */
@@ -320,9 +329,6 @@ public:
 	*/
 	BlockPointerVector      executable_sequence();
 	ConstBlockPointerVector	executable_sequence() const;
-	
-	/*!	deep copy of ControlFlowGraph */
-	ControlFlowGraph& operator=(const ControlFlowGraph &);
 
 public:
 	/*! \brief Get an iterator to the first block */
@@ -345,7 +351,11 @@ public:
 	/*! \brief Get a const iterator to the last edge */
 	const_edge_iterator edges_end() const;
 
-private:
+public:
+	/*! \brief The owning kernel */
+	IRKernel* kernel;
+
+public:
 	BlockList _blocks;
 	EdgeList  _edges;
 

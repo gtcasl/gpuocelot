@@ -31,16 +31,15 @@ void splitBlock(ir::ControlFlowGraph& cfg,
 	
 	while(block->instructions.size() > maxSize)
 	{
-		unsigned int splitPoint = maxSize - 1;
+		auto splitPoint = block->instructions.begin();
 		bool split = true;
 		
 		// don't split up function call setup instructions
 		unsigned int counter = 0;
-		ir::ControlFlowGraph::instruction_iterator i =
-			block->instructions.begin();
-		for(; i != block->instructions.end(); ++i, ++counter)
+		for(; splitPoint != block->instructions.end(); ++splitPoint, ++counter)
 		{
-			ir::PTXInstruction& ptx = *static_cast<ir::PTXInstruction*>(*i);
+			ir::PTXInstruction& ptx =
+				*static_cast<ir::PTXInstruction*>(*splitPoint);
 			
 			bool isParamLoad = ptx.opcode == ir::PTXInstruction::Ld &&
 				ptx.addressSpace == ir::PTXInstruction::Param &&
@@ -58,9 +57,10 @@ void splitBlock(ir::ControlFlowGraph& cfg,
 			if(counter == maxSize - 1) break;
 		}
 		
-		for(; i != block->instructions.end(); ++i, ++counter)
+		for(; splitPoint != block->instructions.end(); ++splitPoint, ++counter)
 		{
-			ir::PTXInstruction& ptx = *static_cast<ir::PTXInstruction*>(*i);
+			ir::PTXInstruction& ptx =
+				*static_cast<ir::PTXInstruction*>(*splitPoint);
 		
 			bool isParamStore = ptx.opcode == ir::PTXInstruction::St &&
 				ptx.addressSpace == ir::PTXInstruction::Param &&
@@ -73,7 +73,6 @@ void splitBlock(ir::ControlFlowGraph& cfg,
 				&& !isParamLoad)
 			{
 				split = true;
-				splitPoint = counter;
 				break;
 			}
 		}

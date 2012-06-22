@@ -21,6 +21,8 @@
 #include <ocelot/transforms/interface/LoopUnrollingPass.h>
 #include <ocelot/transforms/interface/SimplifyControlFlowGraphPass.h>
 #include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
+#include <ocelot/transforms/interface/FunctionInliningPass.h>
+#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -34,53 +36,64 @@ Pass* PassFactory::createPass(const std::string& name)
 	{
 		return new transforms::LinearScanRegisterAllocationPass;
 	}
-	else if( name == "remove-barriers" )
+	else if( name == "remove-barriers" || name == "RemoveBarrierPass" )
 	{
 		return new transforms::RemoveBarrierPass;
 	}
-	else if( name == "reverse-if-conversion" )
+	else if( name == "reverse-if-conversion" ||
+		name == "ConvertPredicationToSelectPass" )
 	{
 		return new transforms::ConvertPredicationToSelectPass;
 	}
-	else if( name == "structural-transform" )
+	else if( name == "structural-transform" || name == "StructuralTransform" )
 	{
 		return new transforms::StructuralTransform;
 	}
-	else if( name == "subkernel-formation" )
+	else if( name == "subkernel-formation" || name == "SubkernelFormationPass" )
 	{
 		return new transforms::SubkernelFormationPass;
 	}
-	else if( name == "mimd-threading" )
+	else if( name == "mimd-threading" || name == "MIMDThreadSchedulingPass" )
 	{
 		return new transforms::MIMDThreadSchedulingPass;
 	}
-	else if( name == "dead-code-elimination" )
+	else if( name == "dead-code-elimination" ||
+		name == "DeadCodeEliminationPass" )
 	{
 		return new transforms::DeadCodeEliminationPass;
 	}
-	else if( name == "split-blocks" )
+	else if( name == "split-blocks" || name == "SplitBasicBlockPass" )
 	{
 		return new transforms::SplitBasicBlockPass;
 	}
-	else if( name == "sync-elimination" )
+	else if( name == "sync-elimination" || name == "SyncEliminationPass" )
 	{
 		return new transforms::SyncEliminationPass;
 	}
-	else if( name == "hoist-special-definitions" )
+	else if( name == "hoist-special-definitions" ||
+		name == "HoistSpecialValueDefinitionsPass" )
 	{
 		return new transforms::HoistSpecialValueDefinitionsPass;
 	}
-	else if( name == "simplify-cfg" )
+	else if( name == "simplify-cfg" || name == "SimplifyControlFlowGraphPass" )
 	{
 		return new transforms::SimplifyControlFlowGraphPass;
 	}
-	else if( name == "loop-unrolling" )
+	else if( name == "loop-unrolling" || name == "LoopUnrollingPass" )
 	{
 		return new transforms::LoopUnrollingPass;
 	}
-	else if( name == "lock-step" )
+	else if( name == "lock-step" || name == "EnforceLockStepExecutionPass" )
 	{
 		return new transforms::EnforceLockStepExecutionPass;
+	}
+	else if( name == "function-inlining" || name == "FunctionInliningPass" )
+	{
+		return new transforms::FunctionInliningPass;
+	}
+	else if( name == "simplify-calls" || name == "SimplifyExternalCallsPass" )
+	{
+		return new transforms::SimplifyExternalCallsPass;
 	}
 	else
 	{

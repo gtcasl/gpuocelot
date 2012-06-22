@@ -115,17 +115,17 @@ std::string PTXKernel::Prototype::getMangledName() const {
 ////////////////////////////////////////////////////////////////////////////
 
 PTXKernel::PTXKernel( const std::string& name, bool isFunction,
-	const ir::Module* module ) :
-	IRKernel( Instruction::PTX, name, isFunction, module )
+	const ir::Module* module, Id id ) :
+	IRKernel( Instruction::PTX, name, isFunction, module, id )
 {
-	_cfg = new ControlFlowGraph;
+	_cfg = new ControlFlowGraph(this);
 }
 
 PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
-	PTXStatementVector::const_iterator end, bool function) : 
-	IRKernel( Instruction::PTX, "", function )
+	PTXStatementVector::const_iterator end, bool function, Id id) : 
+	IRKernel( Instruction::PTX, "", function, 0, id )
 {
-	_cfg = new ControlFlowGraph;
+	_cfg = new ControlFlowGraph(this);
 	constructCFG( *_cfg, start, end );
 	assignRegisters( *_cfg );
 }
@@ -709,7 +709,7 @@ void PTXKernel::write(std::ostream& stream) const
 }
 
 /*! \brief renames all the blocks with canonical names */
-void PTXKernel::canonicalBlockLabels(int kernelID) {
+void PTXKernel::canonicalBlockLabels() {
 
 	// visit every block and map the old label to the new label
 	std::map<std::string, std::string> labelMap;
@@ -722,7 +722,7 @@ void PTXKernel::canonicalBlockLabels(int kernelID) {
 		if (block == cfg()->get_exit_block()) continue;
 		
 		std::stringstream ss;
-		ss << "$BB_" << kernelID << "_";
+		ss << "$BB_" << id() << "_";
 		ss.fill('0');
 		ss.width(4);
 		ss << block->id;

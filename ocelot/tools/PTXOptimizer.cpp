@@ -15,6 +15,7 @@
 #include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/transforms/interface/SubkernelFormationPass.h>
 #include <ocelot/transforms/interface/SplitBasicBlockPass.h>
+#include <ocelot/transforms/interface/FunctionInliningPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -36,108 +37,117 @@
 
 namespace tools
 {
-	PTXOptimizer::PTXOptimizer()
-	{
+
+PTXOptimizer::PTXOptimizer()
+{
+
+}
+
+void PTXOptimizer::optimize()
+{		
+	report("Running PTX to PTX Optimizer.");
 	
+	report(" Loading module '" << input << "'");
+	ir::Module module( input );
+
+	transforms::PassManager manager( &module );
+
+	if( registerAllocationType != "none" &&
+		!registerAllocationType.empty() )
+	{
+		transforms::Pass* pass =
+			transforms::PassFactory::createPass( registerAllocationType );
+		
+		applyOptions( pass );
+		
+		manager.addPass( *pass );
 	}
 
-	void PTXOptimizer::optimize()
-	{		
-		report("Running PTX to PTX Optimizer.");
+	for( auto name = passes.begin(); name != passes.end(); ++name )
+	{
+		if( name->empty() ) continue;
 		
-		report(" Loading module '" << input << "'");
-		ir::Module module( input );
-
-		transforms::PassManager manager( &module );
-
-		if( registerAllocationType != "none" &&
-			!registerAllocationType.empty() )
-		{
-			transforms::Pass* pass =
-				transforms::PassFactory::createPass( registerAllocationType );
-			
-			applyOptions( pass );
-			
-			manager.addPass( *pass );
-		}
-
-		for( auto name = passes.begin(); name != passes.end(); ++name )
-		{
-			if( name->empty() ) continue;
-			
-			transforms::Pass* pass =
-				transforms::PassFactory::createPass( *name );
-			
-			applyOptions( pass );
-			
-			manager.addPass( *pass );
-		}
+		transforms::Pass* pass =
+			transforms::PassFactory::createPass( *name );
 		
-		if( input.empty() )
-		{
-			std::cout << "No input file name given.  Bailing out." << std::endl;
-			return;
-		}
+		applyOptions( pass );
+		
+		manager.addPass( *pass );
+	}
+	
+	if( input.empty() )
+	{
+		std::cout << "No input file name given.  Bailing out." << std::endl;
+		return;
+	}
 
-		manager.runOnModule();
-		manager.destroyPasses();
-		
-		std::ofstream out( output.c_str() );
-		
+	manager.runOnModule();
+	manager.destroyPasses();
+	
+	std::ofstream out( output.c_str() );
+	
+	if( !out.is_open() )
+	{
+		throw hydrazine::Exception( "Could not open output file " 
+			+ output + " for writing." );
+	}
+	
+	module.writeIR( out );
+
+	if(!cfg) return;
+	
+	for( ir::Module::KernelMap::const_iterator 
+		kernel = module.kernels().begin(); 
+		kernel != module.kernels().end(); ++kernel )
+	{
+		report(" Writing CFG for kernel '" << kernel->first << "'");
+		std::ofstream out( std::string( 
+			kernel->first + "_cfg.dot" ).c_str() );
+	
 		if( !out.is_open() )
 		{
 			throw hydrazine::Exception( "Could not open output file " 
 				+ output + " for writing." );
 		}
-		
-		module.writeIR( out );
+	
+		module.getKernel( kernel->first )->cfg()->write( out );
+	}
+}
 
-		if(!cfg) return;
-		
-		for( ir::Module::KernelMap::const_iterator 
-			kernel = module.kernels().begin(); 
-			kernel != module.kernels().end(); ++kernel )
-		{
-			report(" Writing CFG for kernel '" << kernel->first << "'");
-			std::ofstream out( std::string( 
-				kernel->first + "_cfg.dot" ).c_str() );
-		
-			if( !out.is_open() )
-			{
-				throw hydrazine::Exception( "Could not open output file " 
-					+ output + " for writing." );
-			}
-		
-			module.getKernel( kernel->first )->cfg()->write( out );
-		}
+void PTXOptimizer::applyOptions( transforms::Pass* pass )
+{
+	transforms::LinearScanRegisterAllocationPass* linearscan = 
+		dynamic_cast<transforms::LinearScanRegisterAllocationPass*>( pass );
+	
+	if( linearscan != 0 )
+	{
+		linearscan->setRegisterCount( registerCount );
 	}
 	
-	void PTXOptimizer::applyOptions( transforms::Pass* pass )
+	transforms::SplitBasicBlockPass* splitblocks = 
+		dynamic_cast<transforms::SplitBasicBlockPass*>( pass );
+	
+	if( splitblocks != 0 )
 	{
-		transforms::LinearScanRegisterAllocationPass* linearscan = 
-			dynamic_cast<transforms::LinearScanRegisterAllocationPass*>( pass );
-		
-		if( linearscan != 0 )
-		{
-			linearscan->setRegisterCount( registerCount );
-		}
-		
-		transforms::SplitBasicBlockPass* splitblocks = 
-			dynamic_cast<transforms::SplitBasicBlockPass*>( pass );
-		
-		if( splitblocks != 0 )
-		{
-			splitblocks->setMaximumBlockSize( basicBlockSize );
-		}
-		
-		transforms::SubkernelFormationPass* subkernel = 
-			dynamic_cast<transforms::SubkernelFormationPass*>( pass );
-		
-		if( subkernel != 0 )
-		{
-			subkernel->setExpectedRegionSize( subkernelSize );
-		}
+		splitblocks->setMaximumBlockSize( basicBlockSize );
 	}
+
+	transforms::FunctionInliningPass* inlining = 
+		dynamic_cast<transforms::FunctionInliningPass*>( pass );
+	
+	if( inlining != 0 )
+	{
+		inlining->thresholdToInline = inliningThreshold;
+	}
+	
+	transforms::SubkernelFormationPass* subkernel = 
+		dynamic_cast<transforms::SubkernelFormationPass*>( pass );
+	
+	if( subkernel != 0 )
+	{
+		subkernel->setExpectedRegionSize( subkernelSize );
+	}
+}
 	
 }
 
@@ -172,6 +182,9 @@ int main( int argc, char** argv )
 		"The number of registers available for allocation." );
 	parser.parse( "-s", "--subkernel-size", optimizer.subkernelSize, 70,
 		"The target size for subkernel formation." );
+	parser.parse( "-I", "--inlining-threshold",
+		optimizer.inliningThreshold, 1000,
+		"Inline functions with bodies smaller than this." );
 	parser.parse( "-b", "--block-size", optimizer.basicBlockSize, 50,
 		"The target size for block splitting." );
 	parser.parse( "-p", "--passes", passes, "", 
@@ -179,7 +192,7 @@ int main( int argc, char** argv )
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
 		"mimd-threading, dead-code-elimination, split-blocks, "
 		"sync-elimination, hoist-special-definitions, "
-		"simplify-cfg, loop-unrolling, lock-step)" );
+		"simplify-cfg, loop-unrolling, lock-step, function-inlining)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

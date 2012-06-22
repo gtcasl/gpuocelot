@@ -25,6 +25,8 @@ public:
 	 */
 	SimplifyExternalCallsPass(const ir::ExternalFunctionSet&,
 		bool simplifyAll = false);
+		
+	SimplifyExternalCallsPass();
 
 public:
 	/*! \brief Initialize the pass using a specific module */

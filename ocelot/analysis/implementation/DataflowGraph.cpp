@@ -768,14 +768,19 @@ namespace analysis
 		iterator added = _blocks.insert( ++iterator( block ), 
 			Block( *this, Block::Body ) );
 
+		ir::ControlFlowGraph::instruction_iterator cfgBegin =
+			block->_block->instructions.begin();
+		
+		std::advance( cfgBegin, instruction );
+
 		if( isFallthrough )
 		{
-			added->_block = _cfg->split_block( block->_block, instruction, 
+			added->_block = _cfg->split_block( block->_block, cfgBegin, 
 				ir::ControlFlowGraph::Edge::FallThrough );
 		}
 		else
 		{
-			added->_block = _cfg->split_block( block->_block, instruction, 
+			added->_block = _cfg->split_block( block->_block, cfgBegin, 
 				ir::ControlFlowGraph::Edge::Branch );
 		}
 		
@@ -846,14 +851,20 @@ namespace analysis
 
 		iterator added = _blocks.insert( ++iterator( block ), 
 			Block( *this, Block::Body ) );
+
+		ir::ControlFlowGraph::instruction_iterator cfgBegin =
+			block->_block->instructions.begin();
+		
+		std::advance( cfgBegin, index );
+
 		if( isFallthrough )
 		{
-			added->_block = _cfg->split_block( block->_block, index, 
+			added->_block = _cfg->split_block( block->_block, cfgBegin, 
 				ir::ControlFlowGraph::Edge::FallThrough, l );
 		}
 		else
 		{
-			added->_block = _cfg->split_block( block->_block, index, 
+			added->_block = _cfg->split_block( block->_block, cfgBegin, 
 				ir::ControlFlowGraph::Edge::Branch, l );
 		}
 		

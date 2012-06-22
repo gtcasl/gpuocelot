@@ -104,6 +104,8 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 		bb_it != bb_sequence.end(); ++bb_it) {
 		int n = 0;
 		
+		report("  " << (*bb_it)->label);
+		
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++n) {
@@ -116,7 +118,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 			ptx.pc = instructions.size();
 			lastPC = ptx.pc;
 			instructions.push_back(ptx);
-			report("[" << lastPC << "] - " << ptx.toString());
+			report("   [" << lastPC << "] - " << ptx.toString());
 		}
 		
 	}
@@ -148,8 +150,15 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 					report("   reconverge at " << target->second);
 				}
 				
+				auto target = (*bb_it)->get_branch_edge()->tail;
+				
+				while(target->instructions.empty())
+				{
+					target = target->get_fallthrough_edge()->tail;
+				}
+				
 				InstructionIdMap::iterator branch = ids.find(
-					(*bb_it)->get_branch_edge()->tail->instructions.begin());
+					target->instructions.begin());
 				assert(branch != ids.end());
 				instructions[id].branchTargetInstruction = branch->second;
 				report("   target at " << branch->second);

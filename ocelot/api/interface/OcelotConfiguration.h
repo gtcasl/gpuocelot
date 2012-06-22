@@ -201,7 +201,10 @@ namespace api {
 			bool simplifyCFG;		
 			
 			/*! \brief Enforce lock-step execution pass */
-			bool enforceLockStepExecution;		
+			bool enforceLockStepExecution;	
+			
+			/*! \brief Function inlining pass */
+			bool inlining;		
 		};
 
 

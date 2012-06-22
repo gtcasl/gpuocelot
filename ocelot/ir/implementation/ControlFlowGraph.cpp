@@ -5,6 +5,7 @@
 */
 
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
 #include <hydrazine/interface/string.h>
@@ -224,7 +225,8 @@ ControlFlowGraph::EdgePointerVector::iterator
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-ControlFlowGraph::ControlFlowGraph(): 
+ControlFlowGraph::ControlFlowGraph(IRKernel* k): 
+	kernel(k),
 	_entry(_blocks.insert(end(), BasicBlock("entry", 0))),
 	_exit(_blocks.insert(end(), BasicBlock("exit", 1))),
 	_nextId(2) {
@@ -250,6 +252,16 @@ size_t ControlFlowGraph::size() const {
 	return _blocks.size();
 }
 
+size_t ControlFlowGraph::instructionCount() const {
+	size_t count = 0;
+
+	for (auto block = begin(); block != end(); ++block) {
+		count += block->instructions.size();
+	}
+	
+	return count;
+}
+
 bool ControlFlowGraph::empty() const {
 	return _blocks.empty();
 }
@@ -260,11 +272,25 @@ ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	return _blocks.insert(end(), block);
 }
 
-ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block,
+ControlFlowGraph::iterator ControlFlowGraph::clone_block(const_iterator block,
 	std::string suffix)
 {
-	return insert_block(BasicBlock(block->label + "_cloned" + suffix,
-		newId(), block->instructions));
+	std::string label;
+	
+	BasicBlock::Id id = newId();
+	
+	if (!suffix.empty()) {
+		label = block->label + "_cloned" + suffix;
+	}
+	else {
+		std::stringstream name;
+		
+		name << "BB_" << kernel->id() << "_" << id;
+	
+		label = name.str();
+	}
+	
+	return insert_block(BasicBlock(label, id, block->instructions));
 }
 
 void ControlFlowGraph::remove_block(iterator block) {
@@ -348,10 +374,12 @@ ControlFlowGraph::EdgePair ControlFlowGraph::split_edge(edge_iterator edge,
 }
 
 ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block, 
-	unsigned int instruction, Edge::Type type, const std::string& l) {
-	assert( instruction <= block->instructions.size() );
+	instruction_iterator instruction, Edge::Type type,
+	const std::string& l) {
+	
 	report("Splitting block " << block->label 
-		<< " at instruction " << instruction);
+		<< " at instruction "
+		<< std::distance(block->instructions.begin(), instruction));
 	
 	std::string label;
 	
@@ -365,13 +393,12 @@ ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block,
 	}
 	
 	iterator newBlock = insert_block(BasicBlock(label, newId()));
-	BasicBlock::InstructionList::iterator 
-		begin = block->instructions.begin();
-	std::advance(begin, instruction);
-	BasicBlock::InstructionList::iterator end = block->instructions.end();
 	
-	newBlock->instructions.insert(newBlock->instructions.begin(), begin, end);
-	block->instructions.erase(begin, end);
+	BasicBlock::InstructionList::iterator end = block->instructions.end();
+
+	newBlock->instructions.insert(newBlock->instructions.begin(),
+		instruction, end);
+	block->instructions.erase(instruction, end);
 
 	EdgePointerVector out_edges = block->out_edges;
 

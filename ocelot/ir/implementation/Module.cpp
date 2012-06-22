@@ -477,6 +477,16 @@ ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
 	}
 	return 0;
 }
+		
+const ir::PTXKernel* ir::Module::getKernel(
+	const std::string& kernelName) const {
+
+	KernelMap::const_iterator kernel = _kernels.find(kernelName);
+	if (kernel != _kernels.end()) {
+		return kernel->second;
+	}
+	return 0;
+}
 
 void ir::Module::removeKernel(const std::string& name) {
 	loadNow();
@@ -596,10 +606,10 @@ void ir::Module::extractPTXKernels() {
 					endIterator = ++StatementVector::const_iterator(it);
 					if (instructionCount) {
 						PTXKernel *kernel = new PTXKernel(startIterator, 
-							    endIterator, isFunction);
+							    endIterator, isFunction, kernelInstance++);
 						kernel->module = this;
 						_kernels[kernel->name] = (kernel);
-						kernel->canonicalBlockLabels(kernelInstance++);
+						kernel->canonicalBlockLabels();
 					}
 				}
 			}

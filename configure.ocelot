@@ -49,6 +49,7 @@
 		linearScanAllocation: False,
 		mimdThreadScheduling: False,
 		syncElimination:      False,
-		hoistSpecialValues:   False
+		hoistSpecialValues:   False,
+		functionInlining:     False
 	}
 }

@@ -749,11 +749,15 @@ void testCvt_REF(void* output, void* input)
 	{
 		if(typeid(float) == typeid(dtype))
 		{
+			if(isnan(r1)) r1 = 0.0f;
+
 			r1 = std::min((dtype)1.0f, r1);
 			r1 = std::max((dtype)0.0f, r1);
 		}
 		else if(typeid(double) == typeid(dtype))
 		{
+			if(isnan(r1)) r1 = 0.0;
+
 			r1 = std::min((dtype)1.0, r1);
 			r1 = std::max((dtype)0.0, r1);
 		}
@@ -7095,6 +7099,12 @@ namespace test
 				ir::PTXOperand::s64, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I64),
 			uniformRandom<int64_t, 1>, 1, 1);
+		add("TestCvt-f32-f32-sat",
+			testCvt_REF<float, float, false, true, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::f32, false, true, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-f32-f32-rmi",
 			testCvt_REF<float, float, false, false, true, true>,
 			testCvt_PTX(ir::PTXOperand::f32,

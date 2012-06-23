@@ -2430,6 +2430,24 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 	typedef std::unordered_map<PTXU64, CTAContext> TargetMap;
 	trace();
 	
+	// copy any register operands into parameter stack memory
+	for (ir::PTXOperand::Array::const_iterator 
+		argument = instr.b.array.begin();
+		argument != instr.b.array.end(); ++argument) {
+		if (argument->addressMode != ir::PTXOperand::Register) continue;
+		
+		for (int threadID = 0; threadID != threadCount; ++threadID) {
+			if(!context.active[threadID]) continue;
+
+			ir::PTXU64 data = getRegAsU64(threadID, argument->reg);
+			
+			char* base = (char*) functionCallStack.stackFramePointer(threadID);
+				
+			std::memcpy(base + argument->offset, &data,
+				ir::PTXOperand::bytes(argument->type));
+		}
+	}
+	
 	// Is this a direct or indirect call?
 	if (instr.a.addressMode == ir::PTXOperand::Register) {
 		// Complex indirect call handling
@@ -3576,7 +3594,23 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							a = roundToInt(a, instr.modifier, context, instr);
+							if (instr.modifier & ir::PTXInstruction::sat) {
+								if (a != a) {
+									a = 0.0f;
+								}
+								
+								if (a > 1.0f) {
+									a = 1.0f;
+								}
+								if (a < 0.0f) {
+									a = 0.0f;
+								}
+							}
+							else {
+								a = roundToInt(a, instr.modifier, context,
+									instr);
+							
+							}
 							setRegAsF32(threadID, instr.d.reg, 
 								sat(instr.modifier, a));
 						}
@@ -3773,11 +3807,14 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f64: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							a = roundToInt(a, instr.modifier, context, instr);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);
 								a = max(a, 0.0);
+							}
+							else {
+								a = roundToInt(a, instr.modifier,
+									context, instr);
 							}
 							setRegAsF64(threadID, instr.d.reg, a);
 						}
@@ -6439,10 +6476,11 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 		return;
 	}
 	
+	int returnedPC = functionCallStack.returnPC();
+	
 	reportE(REPORT_RET, "Returned from function call at PC " 
-		<< functionCallStack.returnPC() );
-	const PTXInstruction& call = kernel->instructions[
-		functionCallStack.returnPC()];
+		<< returnedPC );
+	const PTXInstruction& call = kernel->instructions[returnedPC];
 	reportE(REPORT_RET, " Previous stack size (" 
 		<< functionCallStack.callerFrameSize() );
 	unsigned int offset = 0;
@@ -6469,11 +6507,38 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 			
 			std::memcpy(callerPointer + argument->offset, pointer + offset, 
 				ir::PTXOperand::bytes(argument->type));
+			
 		}
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
+
 	functionCallStack.popFrame();
 	reconvergenceMechanism->pop();
+	
+	// if we returned all the way back, copy operands into registers
+	CTAContext &returnedContext = getActiveContext();
+	
+	if (returnedContext.PC == returnedPC + 1) {
+		for (ir::PTXOperand::Array::const_iterator
+			argument = call.d.array.begin();
+			argument != call.d.array.end(); ++argument) {
+			if (argument->addressMode != ir::PTXOperand::Register) continue;
+			
+			for (int threadID = 0; threadID != threadCount; ++threadID) {
+				if (!returnedContext.predicated(threadID, instr)) continue;
+			
+				char* frame =
+					(char*)functionCallStack.stackFramePointer(threadID);
+			
+				ir::PTXU64 data = 0;
+
+				std::memcpy(&data, frame + argument->offset, 
+					ir::PTXOperand::bytes(argument->type));
+				
+				setRegAsU64(threadID, argument->reg, data);
+			}
+		}
+	}
 }
 
 /*!

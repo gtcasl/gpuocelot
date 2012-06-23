@@ -18,7 +18,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -76,9 +76,14 @@ void FunctionInliningPass::_getFunctionsToInline(ir::IRKernel& k)
 			auto ptx = static_cast<ir::PTXInstruction&>(**instruction);
 			
 			if(ptx.opcode != ir::PTXInstruction::Call)            continue;
-			if(ptx.a.addressMode != ir::PTXOperand::FunctionName) continue;
 			
 			report("  Examining " << ptx.toString());
+
+			if(ptx.a.addressMode != ir::PTXOperand::FunctionName)
+			{
+				report("   skipping because it is an indirect call.");
+				continue;
+			}
 			
 			// Get the kernel being called if it is in this module
 			auto calledKernel = k.module->getKernel(ptx.a.identifier);

@@ -83,7 +83,8 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 
 				report( "  Getting post dominator block " << pdom->label 
 					<< " of instruction " << ptx_instr.toString() );
-				if(static_cast<ir::PTXInstruction*>(
+				if(pdom->instructions.empty() ||
+					static_cast<ir::PTXInstruction*>(
 					pdom->instructions.front())->opcode
 					!= ir::PTXInstruction::Reconverge)
 				{

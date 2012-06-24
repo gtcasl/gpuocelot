@@ -166,6 +166,7 @@ void executive::ReconvergenceIPDOM::initialize() {
 	pcStack.clear();
 	runtimeStack.push_back(context);
 	pcStack.push_back(0);
+	tokenStack.push_back(Branch);
 }
 
 void executive::ReconvergenceIPDOM::evalPredicate(
@@ -196,21 +197,30 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		CTAContext branchContext(context), fallthroughContext(context),
 			reconvergeContext(context);
 
+		int pc = context.PC + 1;
+
 		branchContext.active = branch;
 		branchContext.PC = instr.branchTargetInstruction;
 
 		fallthroughContext.active = fallthrough;
-		fallthroughContext.PC++;
+		fallthroughContext.PC = pc;
 		
 		reconvergeContext.PC = instr.reconvergeInstruction + 1;
 		int reconverge = pcStack.back();
+		Token token = tokenStack.back();
 		
 		runtimeStack.pop_back();
 		pcStack.pop_back();
+		tokenStack.pop_back();
 
 		bool reconvergeContextAlreadyExists = false;
-		for(RuntimeStack::reverse_iterator si = runtimeStack.rbegin(); 
-			si != runtimeStack.rend(); ++si) {
+		auto ti = tokenStack.rbegin();
+		for(auto si = runtimeStack.rbegin(); 
+			si != runtimeStack.rend(); ++si, ++ti) {
+			assert(ti != tokenStack.rend());
+			
+			if(*ti != Branch) break;
+			
 			if(si->PC == reconvergeContext.PC) {
 				reconvergeContextAlreadyExists = true;
 				break;
@@ -218,18 +228,29 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		}
 
 		if(!reconvergeContextAlreadyExists) {
+			report(" (" << pc << ") Pushing reconvergence context at "
+				<< reconvergeContext.PC);
 			runtimeStack.push_back(reconvergeContext);
 			pcStack.push_back(reconverge);
+			tokenStack.push_back(token);
 		}
 		
 		if (branchContext.active.any()) {
+			report(" (" << pc << ") Pushing branch context at "
+				<< branchContext.PC << ", reconverge at "
+				<< instr.reconvergeInstruction);
 			runtimeStack.push_back(branchContext);
 			pcStack.push_back(instr.reconvergeInstruction);
+			tokenStack.push_back(Branch);
 		}
 		
 		if (fallthroughContext.active.any()) {
+			report(" (" << pc << ") Pushing fallthrough context at "
+				<< fallthroughContext.PC << ", reconverge at "
+				<< instr.reconvergeInstruction);
 			runtimeStack.push_back(fallthroughContext);		
 			pcStack.push_back(instr.reconvergeInstruction);
+			tokenStack.push_back(Branch);
 		}
 	}
 
@@ -265,9 +286,13 @@ void executive::ReconvergenceIPDOM::eval_Bar(executive::CTAContext &context,
 void executive::ReconvergenceIPDOM::eval_Reconverge(
 	executive::CTAContext &context, const ir::PTXInstruction &instr) {
 	if(runtimeStack.size() > 1)	{
-		if(pcStack.back() == context.PC) {
-			pcStack.pop_back();
+		if(pcStack.back() == context.PC && tokenStack.back() == Branch) {
 			runtimeStack.pop_back();
+			tokenStack.pop_back();
+			report(" (" << pcStack.back()
+				<< ") Reconvergence occured, popping stack... to PC "
+				<< getContext().PC);
+			pcStack.pop_back();
 			++reconvergeEvents;
 		}
 		else {
@@ -294,11 +319,7 @@ bool executive::ReconvergenceIPDOM::nextInstruction(
 		&& opcode != ir::PTXInstruction::Reconverge
 		&& opcode != ir::PTXInstruction::Call
 		&& opcode != ir::PTXInstruction::Ret ) {
-	
-		report("context at: [PC: " << context.PC
-			<< "] " << context.kernel->location(context.PC)
-			<< " " << context.active);
-			
+				
 		context.PC++;
 	}
 	
@@ -314,11 +335,20 @@ size_t executive::ReconvergenceIPDOM::stackSize() const {
 }
 
 void executive::ReconvergenceIPDOM::push(executive::CTAContext& c) {
+	report(" (" << getContext().PC << ") Pushing call context at " << c.PC);
 	runtimeStack.push_back(c);
+	tokenStack.push_back(Call);
 }
 
 void executive::ReconvergenceIPDOM::pop() {
+	
+	assert(tokenStack.back() == Call);
+	
+	report(" (" << getContext().PC
+		<< ") Popping call context to " << runtimeStack.rbegin()->PC);
+	
 	runtimeStack.pop_back();
+	tokenStack.pop_back();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

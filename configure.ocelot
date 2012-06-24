@@ -50,6 +50,6 @@
 		mimdThreadScheduling: False,
 		syncElimination:      False,
 		hoistSpecialValues:   False,
-		functionInlining:     False
+		functionInlining:     True
 	}
 }

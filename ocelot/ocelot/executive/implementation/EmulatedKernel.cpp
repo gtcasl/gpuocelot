@@ -836,6 +836,13 @@ void executive::EmulatedKernel::fixBranchTargets(size_t basePC) {
 				ptx.branchTargetInstruction += basePC;
 			}
 		}
+		
+		if(ptx.opcode == ir::PTXInstruction::Bra) {
+			if(!ptx.uni) {
+				ptx.reconvergeInstruction += basePC;
+			}
+		}
+		
 	}
 }
 

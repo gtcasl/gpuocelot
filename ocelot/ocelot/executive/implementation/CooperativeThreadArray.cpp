@@ -44,7 +44,7 @@
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
-#define REPORT_NTH_THREAD_ONLY 0
+#define REPORT_NTH_THREAD_ONLY 1
 #define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
@@ -57,7 +57,7 @@
 #define REPORT_AND 1
 #define REPORT_ATOM 1
 #define REPORT_BAR 1
-#define REPORT_BRA 0
+#define REPORT_BRA 1
 #define REPORT_BRKPT 1
 #define REPORT_CALL 1
 #define REPORT_CNOT 1
@@ -2437,7 +2437,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 		if (argument->addressMode != ir::PTXOperand::Register) continue;
 		
 		for (int threadID = 0; threadID != threadCount; ++threadID) {
-			if(!context.active[threadID]) continue;
+			if(!context.predicated(threadID, instr)) continue;
 
 			ir::PTXU64 data = getRegAsU64(threadID, argument->reg);
 			
@@ -2546,6 +2546,25 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					<< " calling external function " << instr.a.identifier);			
 				external->call(functionCallStack.stackFramePointer(threadID),
 					prototype->second);
+			}
+			
+			// copy register operands back from the stack
+			for (ir::PTXOperand::Array::const_iterator 
+				argument = instr.d.array.begin();
+				argument != instr.d.array.end(); ++argument) {
+				if (argument->addressMode != ir::PTXOperand::Register) continue;
+		
+				for (int threadID = 0; threadID != threadCount; ++threadID) {
+					if(!context.predicated(threadID, instr)) continue;
+
+					ir::PTXU64 data = 0;
+					char* base =
+						(char*) functionCallStack.stackFramePointer(threadID);
+				
+					std::memcpy(&data, base + argument->offset,
+						ir::PTXOperand::bytes(argument->type));
+					setRegAsU64(threadID, argument->reg, data);
+				}
 			}
 			
 			++context.PC;

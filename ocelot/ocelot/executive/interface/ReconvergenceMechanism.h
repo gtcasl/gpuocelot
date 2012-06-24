@@ -151,14 +151,22 @@ public:
 	void pop();
 	
 private:
+	enum Token
+	{
+		Call,
+		Branch
+	};
+
 	typedef std::vector<CTAContext> RuntimeStack;
 	typedef std::vector<int>        PCStack;
+	typedef std::vector<Token>      TokenStack;
 
 private:
 	//! \brief context stack
 	RuntimeStack runtimeStack;
 	//! \brief stack of reconvergence points for the current context
 	PCStack pcStack;
+	TokenStack tokenStack;
 	unsigned int reconvergeEvents;
 };
 

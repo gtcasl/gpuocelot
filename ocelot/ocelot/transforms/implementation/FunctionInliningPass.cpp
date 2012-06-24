@@ -260,6 +260,52 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 		}
 	}
 	
+	//  Assign copied blocks new local variables
+	typedef std::unordered_map<std::string, std::string> LocalMap;
+	
+	LocalMap locals;
+	
+	for(auto local = inlinedKernel.locals.begin();
+		local != inlinedKernel.locals.end(); ++local)
+	{
+		std::string newName = "_Zinlined_" + local->first;
+	
+		locals.insert(std::make_pair(local->first, newName));
+		
+		auto newLocal = kernel.locals.insert(
+			std::make_pair(newName, local->second)).first;
+		
+		newLocal->second.name = newName;
+	}
+	
+	for(auto block = newBlocks.begin(); block != newBlocks.end(); ++block)
+	{
+		for(auto instruction = block->second->instructions.begin();
+			instruction != block->second->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
+				**instruction);
+		
+			if(!ptx.mayHaveAddressableOperand()) continue;
+		
+			ir::PTXOperand* operands[] = {&ptx.pg, &ptx.pq, &ptx.d, &ptx.a,
+				&ptx.b, &ptx.c};
+				
+			for(unsigned int i = 0; i < 6; ++i)
+			{
+				ir::PTXOperand& operand = *operands[i];
+				
+				if(operand.addressMode != ir::PTXOperand::Address) continue;
+				
+				auto local = locals.find(operand.identifier);
+				
+				if(local == locals.end()) continue;
+				
+				operand.identifier = local->second;
+			}
+		}
+	}
+	
 	//  Get the entry and exit points
 	auto entryMapping = newBlocks.find(
 		inlinedKernelPointer->cfg()->get_entry_block());
@@ -336,6 +382,8 @@ static void convertParametersToRegisters(
 			auto type = argumentTypeMap.find(ptx.d.identifier);
 			assert(type != argumentTypeMap.end());
 
+			ptx.pg = call.pg;
+
 			if(ptx.a.addressMode == ir::PTXOperand::Register)
 			{
 				ptx.type = type->second;
@@ -397,6 +445,8 @@ static void convertParametersToRegisters(
 			
 			ptx.type = type->second;
 			
+			ptx.pg = call.pg;
+			
 			// If the types match, it is a move
 			if(ptx.type == ptx.a.type)
 			{
@@ -438,12 +488,22 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 	kernel.cfg()->insert_edge(ir::Edge(block, functionEntry, ir::Edge::Branch));
 	kernel.cfg()->insert_edge(ir::Edge(functionExit,
 		returnBlock, ir::Edge::Branch));
-
-	// set branch to function instruction
+	
 	ir::PTXInstruction& ptxCall = static_cast<ir::PTXInstruction&>(**call);
 	
+	if(ptxCall.pg.condition != ir::PTXOperand::PT)
+	{
+		kernel.cfg()->insert_edge(ir::Edge(block,
+			returnBlock, ir::Edge::FallThrough));
+	}
+	else
+	{
+		ptxCall.uni = true;
+	}
+
+	// set branch to function instruction
+	
 	ptxCall.opcode = ir::PTXInstruction::Bra;
-	ptxCall.uni = true;
 	
 	ptxCall.d.addressMode = ir::PTXOperand::Label;
 	ptxCall.d.identifier  = functionEntry->label;
@@ -468,6 +528,8 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 				ptx.pg.condition == ir::PTXOperand::PT)
 			{
 				auto fallthrough = block->second->get_fallthrough_edge();
+				
+				ptx.uni = true;
 				
 				ir::Edge newEdge(fallthrough->head, fallthrough->tail,
 					ir::Edge::Branch);

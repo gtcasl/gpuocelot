@@ -435,9 +435,11 @@ def Environment():
 	if os.name == 'nt':
 		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version',
 			'10.0', allowed_values=('8.0', '9.0', '10.0')))
-		vars.Add(EnumVariable('TARGET_ARCH', 'MS Visual C++ target architecture',
-			'x86', allowed_values=('x86', 'x86_64')))
-		vars.Add(EnumVariable('CRT_LIB_OPTION', 'MS Visual C++ runtime library option for cl.exe ',
+		vars.Add(EnumVariable('TARGET_ARCH',
+			'MS Visual C++ target architecture',
+			'x86_64', allowed_values=('x86', 'x86_64')))
+		vars.Add(EnumVariable('CRT_LIB_OPTION',
+			'MS Visual C++ runtime library option for cl.exe ',
 			'/MD', allowed_values=('/MD', '/MT')))
 
 

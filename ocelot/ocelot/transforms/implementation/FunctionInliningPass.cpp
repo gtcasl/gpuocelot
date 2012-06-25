@@ -329,10 +329,12 @@ static void convertParametersToRegisters(
 		ir::PTXOperand::RegisterType> RegisterMap;
 	typedef std::unordered_map<std::string,
 		ir::PTXOperand::DataType> TypeMap;
+	typedef std::unordered_set<std::string> StringSet;
 	
 	// Get a map from argument name to register in the calling function
 	RegisterMap argumentMap;
 	TypeMap	    argumentTypeMap;
+	StringSet   bitBucketArguments;
 	
 	auto argument = calledKernel.arguments.begin();
 	
@@ -341,6 +343,12 @@ static void convertParametersToRegisters(
 	for(auto parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter, ++argument)
 	{
+		if(parameter->addressMode == ir::PTXOperand::BitBucket)
+		{
+			bitBucketArguments.insert(argument->name);
+			continue;
+		}
+
 		assert(argument != calledKernel.arguments.end());
 		assert(parameter->addressMode == ir::PTXOperand::Register);
 		assert(argumentMap.count(argument->name) == 0);
@@ -353,6 +361,12 @@ static void convertParametersToRegisters(
 	for(auto parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter, ++argument)
 	{
+		if(parameter->addressMode == ir::PTXOperand::BitBucket)
+		{
+			bitBucketArguments.insert(argument->name);
+			continue;
+		}
+
 		assert(argument != calledKernel.arguments.end());
 		assert(parameter->addressMode == ir::PTXOperand::Register);
 		assert(argumentMap.count(argument->name) == 0);
@@ -374,6 +388,14 @@ static void convertParametersToRegisters(
 			if(ptx.opcode        != ir::PTXInstruction::St)    continue;
 			if(ptx.addressSpace  != ir::PTXInstruction::Param) continue;
 			if(ptx.d.addressMode != ir::PTXOperand::Address)   continue;
+			
+			if(bitBucketArguments.count(ptx.d.identifier))
+			{
+				delete *instruction;
+				instruction = --block->second->instructions.erase(instruction);
+				
+				continue;
+			}
 			
 			auto argument = argumentMap.find(ptx.d.identifier);
 			
@@ -433,6 +455,14 @@ static void convertParametersToRegisters(
 			if(ptx.opcode        != ir::PTXInstruction::Ld)    continue;
 			if(ptx.addressSpace  != ir::PTXInstruction::Param) continue;
 			if(ptx.a.addressMode != ir::PTXOperand::Address)   continue;
+			
+			if(bitBucketArguments.count(ptx.a.identifier))
+			{
+				delete *instruction;
+				instruction = --block->second->instructions.erase(instruction);
+				
+				continue;
+			}
 			
 			auto argument = argumentMap.find(ptx.a.identifier);
 			

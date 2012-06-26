@@ -324,6 +324,13 @@ ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 	return f;
 }
 
+ir::PTXF64 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF64 f) {
+	if (modifier & ir::PTXInstruction::sat) {
+		return (f <= 0 || hydrazine::isnan(f) ? 0 : (f >= 1.0 ? 1.0 : f));
+	}
+	return f;
+}
+
 static ir::PTXF32 ftz(int modifier, ir::PTXF32 f) {
 	if (modifier & ir::PTXInstruction::ftz) {
 		return (!hydrazine::isnormal(f) &&
@@ -2839,9 +2846,9 @@ static Float roundToInt(Float a, int modifier, executive::CTAContext &context,
 		fd = floor(a);
 	} else if (modifier & PTXInstruction::rpi) {
 		fd = ceil(a);
-	} else {
-		throw executive::RuntimeException("Rounding mode is required for float "
-			"to int conversions.", context.PC, instr);
+	}
+	else {
+		fd = a;
 	}
 	return fd;
 }
@@ -3613,23 +3620,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f32: 
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
-							if (instr.modifier & ir::PTXInstruction::sat) {
-								if (a != a) {
-									a = 0.0f;
-								}
-								
-								if (a > 1.0f) {
-									a = 1.0f;
-								}
-								if (a < 0.0f) {
-									a = 0.0f;
-								}
-							}
-							else {
-								a = roundToInt(a, instr.modifier, context,
-									instr);
 							
-							}
+							a = roundToInt(a, instr.modifier, context,
+								instr);
+							
 							setRegAsF32(threadID, instr.d.reg, 
 								sat(instr.modifier, a));
 						}
@@ -3826,16 +3820,8 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f64: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							if(instr.modifier & PTXInstruction::sat) {
-								if (a != a) a = 0.0;
-								a = min(1.0, a);
-								a = max(a, 0.0);
-							}
-							else {
-								a = roundToInt(a, instr.modifier,
-									context, instr);
-							}
-							setRegAsF64(threadID, instr.d.reg, a);
+							setRegAsF64(threadID, instr.d.reg,
+							sat(instr.modifier, a));
 						}
 						break;
 					default:

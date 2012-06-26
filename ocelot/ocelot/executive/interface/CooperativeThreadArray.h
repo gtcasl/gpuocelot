@@ -121,6 +121,7 @@ namespace executive {
 		// execution helper functions
 
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
+		ir::PTXF64 sat(int modifier, ir::PTXF64 f);
 		
 		// Set the trace event
 		void trace();

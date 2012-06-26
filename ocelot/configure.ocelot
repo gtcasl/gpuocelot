@@ -8,8 +8,8 @@
 			checkInitialization: False
 		},
 		raceDetector: {
-			enabled:                False,
-			ignoreIrrelevantWrites: False
+			enabled:                True,
+			ignoreIrrelevantWrites: True
 		},
 		debugger: {
 			enabled:      False,
@@ -35,9 +35,9 @@
 		warpSize:                 1
 	},
 	checkpoint: {
-		enabled:  False,
-		path:   ".",
-		prefix: "kernel_trace_",
+		enabled:  True,
+		path:   "traces/",
+		prefix: "OcelotUnitTest_",
 		suffix: ".trace",
 		verify:   False
 	},

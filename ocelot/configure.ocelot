@@ -35,7 +35,7 @@
 		warpSize:                 1
 	},
 	checkpoint: {
-		enabled:  True,
+		enabled:  False,
 		path:   "traces/",
 		prefix: "OcelotUnitTest_",
 		suffix: ".trace",

@@ -56,7 +56,7 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 	check.enabled = config.parse<bool>("enabled", false);
 	check.path = config.parse<std::string>("path", "trace/");
 	check.prefix = config.parse<std::string>("prefix", "check");
-	check.suffix = config.parse<std::string>("suffix", ".binary");
+	check.suffix = config.parse<std::string>("suffix", ".trace");
 	check.verify = config.parse<bool>("verify", false);
 }
 

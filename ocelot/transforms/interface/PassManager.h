@@ -41,6 +41,7 @@ public:
 		\param module The module that this manager is associated with.
 	*/
 	explicit PassManager(ir::Module* module);
+	~PassManager();
 		
 public:
 	/*! \brief Adds a pass that needs to be eventually run
@@ -106,6 +107,7 @@ private:
 	ir::Module*   _module;
 	ir::IRKernel* _kernel;
 	AnalysisMap*  _analyses;
+	PassVector    _ownedTemporaryPasses;
 };
 
 }

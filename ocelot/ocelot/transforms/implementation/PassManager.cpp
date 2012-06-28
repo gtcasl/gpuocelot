@@ -490,6 +490,11 @@ PassManager::PassManager(ir::Module* module) :
 	assert(_module != 0);
 }
 
+PassManager::~PassManager()
+{
+	clear();
+}
+
 void PassManager::addPass(Pass& pass)
 {
 	report("Adding pass '" << pass.toString() << "'");
@@ -503,6 +508,14 @@ void PassManager::clear()
 	{
 		pass->second->setPassManager(0);
 	}
+	
+	for(auto pass = _ownedTemporaryPasses.begin();
+		pass != _ownedTemporaryPasses.end(); ++pass)
+	{
+		delete *pass;
+	}
+	
+	_ownedTemporaryPasses.clear();
 	_passes.clear();
 }
 
@@ -512,8 +525,9 @@ void PassManager::destroyPasses()
 	{
 		delete pass->second;
 	}
-	
+		
 	_passes.clear();
+	_ownedTemporaryPasses.clear();
 }
 
 void PassManager::runOnKernel(const std::string& name)
@@ -711,6 +725,7 @@ PassManager::PassVector PassManager::_schedulePasses()
 				report("    adding '" << *dependentPass << "'");
 				auto newPass = PassFactory::createPass(*dependentPass);
 				addPass(*newPass);
+				_ownedTemporaryPasses.push_back(newPass);
 				unscheduled.insert(std::make_pair(*dependentPass, newPass));
 				needDependencyCheck.insert(
 					std::make_pair(*dependentPass, newPass));

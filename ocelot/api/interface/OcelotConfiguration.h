@@ -91,14 +91,26 @@ namespace api {
 					bool checkInitialization;
 			};
 			
+			class KernelTimer {
+			public:
+				KernelTimer();
+				bool enabled;
+				std::string outputFile;
+			};
+			
+		public:
+			
 			//! \brief Race detection
 			RaceDetector raceDetector;
                         
-            //! \brief Interactive Debugger
-            Debugger debugger;
+      //! \brief Interactive Debugger
+      Debugger debugger;
 
-            //! \brief Memory checker
-            MemoryChecker memoryChecker;
+      //! \brief Memory checker
+      MemoryChecker memoryChecker;
+      
+      //! \brief measures the total runtime of kernels launched by the application
+      KernelTimer kernelTimer;
 		};
 
 		class CudaRuntimeImplementation {

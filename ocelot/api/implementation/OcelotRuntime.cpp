@@ -147,10 +147,15 @@ namespace ocelot
 		}
 		if (c.trace.debugger.enabled)
 		{
-				report("Creating interactive PTX debugger");
-				_debugger.filter = c.trace.debugger.kernelFilter;
-				_debugger.alwaysAttach = c.trace.debugger.alwaysAttach;
-				ocelot::addTraceGenerator(_debugger, true);
+			report("Creating interactive PTX debugger");
+			_debugger.filter = c.trace.debugger.kernelFilter;
+			_debugger.alwaysAttach = c.trace.debugger.alwaysAttach;
+			ocelot::addTraceGenerator(_debugger, true);
+		}
+		if (c.trace.kernelTimer.enabled) {
+			report( "Creating kernel timer" );
+			_kernelTimer.outputFile = c.trace.kernelTimer.outputFile;
+			ocelot::addTraceGenerator(_kernelTimer, true);
 		}
 
 		if (c.optimizations.structuralTransform)

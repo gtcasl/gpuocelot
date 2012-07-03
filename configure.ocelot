@@ -18,6 +18,10 @@
 		cacheSimulator: {
 			enabled: false,
 		},
+		kernelTimer: {
+			enabled: true,
+			outputFile: "applicationKernelRuntime.json"
+		},
 		branch: false,
 		memory: false
 	},
@@ -26,7 +30,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ "dynamic" ],
+		devices: [ "emulated" ],
 		partitioningHeuristic: "minimum",
 		workerThreadLimit: 1,
 		warpSize: 1,

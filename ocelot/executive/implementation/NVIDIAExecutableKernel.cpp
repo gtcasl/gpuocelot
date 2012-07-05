@@ -168,19 +168,6 @@ void executive::NVIDIAExecutableKernel::updateConstantMemory() {
 
 }
 
-void executive::NVIDIAExecutableKernel::addTraceGenerator(
-	trace::TraceGenerator *generator)
-{
-	assertM(false, "No trace generation support in GPU kernel.");
-}
-
-void executive::NVIDIAExecutableKernel::removeTraceGenerator(
-	trace::TraceGenerator *generator)
-{
-	assertM(false, "No trace generation support in GPU kernel.");	
-}
-
-
 void executive::NVIDIAExecutableKernel::setExternalFunctionSet(
 	const ir::ExternalFunctionSet& s) {
 	assertM(false, "No external function support in GPU kernel.");	

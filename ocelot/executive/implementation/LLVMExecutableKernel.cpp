@@ -171,18 +171,6 @@ LLVMExecutableKernel::OptimizationLevel
 	return _optimizationLevel;
 }
 
-void LLVMExecutableKernel::addTraceGenerator(
-	trace::TraceGenerator *generator)
-{
-	assertM(false, "No trace generation support in LLVM kernel.");
-}
-
-void LLVMExecutableKernel::removeTraceGenerator(
-	trace::TraceGenerator *generator)
-{
-	assertM(false, "No trace generation support in LLVM kernel.");	
-}
-
 void LLVMExecutableKernel::setExternalFunctionSet(
 	const ir::ExternalFunctionSet& s)
 {

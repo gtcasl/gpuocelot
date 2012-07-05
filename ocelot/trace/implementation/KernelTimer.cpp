@@ -30,15 +30,17 @@ void trace::KernelTimer::initialize(const executive::ExecutableKernel& kernel) {
 void trace::KernelTimer::finish() {
 	kernelTimer.stop();
 	
-	size_t kernelCycles = kernelTimer.getAccumulated();
-
-	std::ofstream file(outputFile.c_str(), std::ios_base::app);
-
 	
+	size_t kernelCycles = kernelTimer.getAccumulated();
+	assert(kernelCycles);
+	
+	std::ofstream file("applicationKernelRuntime.json", std::ios_base::app);
+
 	const char *appname = getenv("APPNAME");
 	if (!appname) { appname = "Unknown Application"; }
 
 	file << "{ \"application\": \"" << appname << "\", ";
+	
 	const char *trial = getenv("TRIALNAME");
 	if (trial) {
 		file << " \"trial\": \"" << trial << "\", ";
@@ -47,8 +49,10 @@ void trace::KernelTimer::finish() {
 	if (execution) {
 		file << " \"execution\": " << std::atoi(execution) << ", ";
 	}
+	
 	file
-		<< "\"device\": \"" << kernel->device->properties().name << "\","
+		<< "\"ISA\": \"" << ir::Instruction::toString(kernel->device->properties().ISA) << "\", "
+		<< "\"device\": \"" << kernel->device->properties().name << "\", "
 		<< "\"kernel\": \"" << kernel->name << "\", "
 		<< "\"kernelRuntime\": " << kernelCycles << " }, " << std::endl;
 }

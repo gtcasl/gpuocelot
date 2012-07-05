@@ -30,7 +30,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ "emulated" ],
+		devices: [ "dynamic" ],
 		partitioningHeuristic: "minimum",
 		workerThreadLimit: 1,
 		warpSize: 1,
@@ -44,7 +44,7 @@
 		subkernelSize: 1000,
 		vectorizeConvergent: false,
 		vectorizeAffineMemory: false,
-		lazyDynamicCompilation: false
+		lazyDynamicCompilation: true
 	},
 	checkpoint: {
 		enabled: false,

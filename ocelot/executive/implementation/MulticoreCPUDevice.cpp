@@ -149,8 +149,23 @@ namespace executive
 		kernel->setExternSharedMemorySize(sharedMemory);
 		kernel->setWorkerThreads(_workerThreads);
 		kernel->setExternalFunctionSet(*externals);
+		kernel->device = this;
 		
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
+		{
+			kernel->addTraceGenerator(*gen);
+		}
+	
 		kernel->launchGrid(grid.x, grid.y, grid.z);
+		
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
+		{
+			kernel->removeTraceGenerator(*gen);
+		}
 		
 		kernel->clearExternalFunctionSet();
 	}

@@ -177,6 +177,7 @@ void executive::DynamicMulticoreDevice::launch(
 	executableKernel->updateMemory();
 	executableKernel->setExternSharedMemorySize(sharedMemory);
 	executableKernel->setExternalFunctionSet(*externals);
+	executableKernel->device = this;
 
 #if REPORT_DEVICE_ALLOCATIONS && REPORT_BASE
 	for (AllocationMap::iterator alloc_it = _allocations.begin(); 

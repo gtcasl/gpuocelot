@@ -1538,8 +1538,6 @@ namespace executive
 			Throw("Unknown module - " << moduleName);
 		}
 		
-		
-		
 		NVIDIAExecutableKernel* kernel = module->second.getKernel(kernelName);
 		
 		if(kernel == 0)
@@ -1575,6 +1573,7 @@ namespace executive
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->device = this;
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)
@@ -1582,8 +1581,22 @@ namespace executive
 			if(array->second != 0) array->second->update();
 		}
 		
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
+		{
+			kernel->addTraceGenerator(*gen);
+		}
+		
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 		synchronize();
+		
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
+		{
+			kernel->removeTraceGenerator(*gen);
+		}
 	}
 
 	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(const std::string& path, 

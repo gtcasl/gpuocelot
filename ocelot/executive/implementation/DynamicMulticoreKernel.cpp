@@ -144,9 +144,13 @@ void executive::DynamicMulticoreKernel::launchGrid(int width, int height, int de
 	_gridDim.x = width;
 	_gridDim.y = height;
 	
+	initializeTraceGenerators();
+	
 	DynamicExecutionManager::get().launch(*this, 
 		this->sharedMemorySize() + this->externSharedMemorySize());
-		
+
+	finalizeTraceGenerators();
+	
 	++_launchCount;
 }
 

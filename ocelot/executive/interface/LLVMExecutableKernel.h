@@ -72,10 +72,6 @@ public:
 	OptimizationLevel optimization() const;
 
 public:
-	/*!	adds a trace generator to the EmulatedKernel */
-	void addTraceGenerator(trace::TraceGenerator *generator);
-	/*!	removes a trace generator from an EmulatedKernel */
-	void removeTraceGenerator(trace::TraceGenerator *generator);
 	/*! sets an external function table for the emulated kernel */
 	void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
 	/*! clear the external function table for the emulated kernel */

@@ -319,6 +319,10 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return TOKEN_SM20; }
 "sm_21"                         { yylval->value = TOKEN_SM21; 
                                     return TOKEN_SM21; }
+"sm_30"                         { yylval->value = TOKEN_SM30; 
+                                    return TOKEN_SM30; }
+"sm_35"                         { yylval->value = TOKEN_SM35; 
+                                    return TOKEN_SM35; }
 "map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
                                     return TOKEN_MAP_F64_TO_F32; }
 

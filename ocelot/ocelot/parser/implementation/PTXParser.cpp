@@ -548,6 +548,8 @@ namespace parser
 		else if( token == TOKEN_SM13 ) statement.targets.push_back( "sm_13" );
 		else if( token == TOKEN_SM20 ) statement.targets.push_back( "sm_20" );
 		else if( token == TOKEN_SM21 ) statement.targets.push_back( "sm_21" );
+		else if( token == TOKEN_SM30 ) statement.targets.push_back( "sm_30" );
+		else if( token == TOKEN_SM35 ) statement.targets.push_back( "sm_35" );
 		else if( token == TOKEN_MAP_F64_TO_F32 )
 		{
 			statement.targets.push_back( "map_f64_to_f32" );
@@ -1157,6 +1159,9 @@ namespace parser
 
 		contexts.back().prototypes.insert(
 			std::make_pair( prototype.name, prototype ) );
+		contexts.back().operands.insert( std::make_pair( prototype.name, 
+			ir::PTXOperand( ir::PTXOperand::FunctionName, 
+			ir::PTXOperand::TypeSpecifier_invalid, prototype.name ) ) );
 		
 		prototype.clear();
 	}

@@ -54,7 +54,9 @@ bool opencl::Kernel::isValidContext(Context * context) {
 void opencl::Kernel::addDeviceInfo(Device * device, std::string moduleName, 
 	ir::Module * module, ir::Kernel * irKernel) {
 
-	_deviceInfo[device] = (deviceInfoT){moduleName, module, irKernel};
+	deviceInfoT devInfo = {moduleName, module, irKernel};
+
+	_deviceInfo[device] = devInfo;
 }
 
 void opencl::Kernel::setArg(cl_uint arg_index, size_t arg_size, const void * arg_value) {

@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -141,58 +141,75 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			pdomTree->analyze(*k);
 		}
 	}
+	
 	if(type & (analysis::Analysis::DataflowGraphAnalysis
-	    |analysis::Analysis::StaticSingleAssignment
-	    |analysis::Analysis::MinimalStaticSingleAssignment
-	    |analysis::Analysis::GatedStaticSingleAssignment))
+	    | analysis::Analysis::StaticSingleAssignment
+	    | analysis::Analysis::MinimalStaticSingleAssignment
+	    | analysis::Analysis::GatedStaticSingleAssignment))
 	{
-    if(analyses.count(analysis::Analysis::DataflowGraphAnalysis) == 0)
+		if(analyses.count(analysis::Analysis::DataflowGraphAnalysis) == 0)
 		{
-      report("   Allocating dataflow graph for kernel " << k->name);
-      analysis::DataflowGraph* graph = new analysis::DataflowGraph;
+			report("   Allocating dataflow graph for kernel " << k->name);
+			analysis::DataflowGraph* graph = new analysis::DataflowGraph;
 
 			analyses.insert(std::make_pair(
-				analysis::Analysis::DataflowGraphAnalysis, graph)).first;
+			analysis::Analysis::DataflowGraphAnalysis, graph)).first;
 
-      graph->setPassManager(manager);
-      allocateNewDataStructures(analyses, k, graph->required, manager);
-      graph->analyze(*k);
-    }
+			graph->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, graph->required, manager);
+			graph->analyze(*k);
+		}
 
-    AnalysisMap::iterator dfg = analyses.find(analysis::Analysis::DataflowGraphAnalysis);
+		AnalysisMap::iterator dfg = analyses.find(
+			analysis::Analysis::DataflowGraphAnalysis);
 
-    analysis::DataflowGraph *dfgp = static_cast<analysis::DataflowGraph*>(dfg->second);
-    if (type & analysis::Analysis::StaticSingleAssignment) {
-      assertM(!(type &
-          (analysis::Analysis::MinimalStaticSingleAssignment |
-          analysis::Analysis::GatedStaticSingleAssignment)),
-          "Cannot ask for more than one SSA form at once");
-      if (dfgp->ssa() != analysis::DataflowGraph::SsaType::Default) {
-        if (dfgp->ssa() != analysis::DataflowGraph::SsaType::None) {
-          dfgp->fromSsa();
-        }
-        dfgp->toSsa();
-      }
-    } else if (type & analysis::Analysis::MinimalStaticSingleAssignment) {
-      assertM(!(type & analysis::Analysis::GatedStaticSingleAssignment),
-          "Cannot ask for more than one SSA form at once");
-      if (dfgp->ssa() != analysis::DataflowGraph::SsaType::Minimal) {
-        if (dfgp->ssa() != analysis::DataflowGraph::SsaType::None) {
-          dfgp->fromSsa();
-        }
-        dfgp->toSsa(analysis::DataflowGraph::SsaType::Minimal);
-      }
-    } else if(type & analysis::Analysis::GatedStaticSingleAssignment){
-      if (dfgp->ssa() != analysis::DataflowGraph::SsaType::Gated) {
-        if (dfgp->ssa() != analysis::DataflowGraph::SsaType::None) {
-          dfgp->fromSsa();
-        }
-        dfgp->toSsa(analysis::DataflowGraph::SsaType::Gated);
-      }
-    }
-  }
+		auto dfgp = static_cast<analysis::DataflowGraph*>(dfg->second);
 
-  if (type & analysis::Analysis::DivergenceAnalysis)
+		if(type & analysis::Analysis::StaticSingleAssignment)
+		{
+			assertM(!(type & (analysis::Analysis::MinimalStaticSingleAssignment
+				| analysis::Analysis::GatedStaticSingleAssignment)),
+				"Cannot ask for more than one SSA form at once");
+	
+			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::Default)
+			{
+				if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+				{
+					dfgp->fromSsa();
+				}
+		
+				dfgp->toSsa();
+			}
+		}
+		else if(type & analysis::Analysis::MinimalStaticSingleAssignment)
+		{
+			assertM(!(type & analysis::Analysis::GatedStaticSingleAssignment),
+				"Cannot ask for more than one SSA form at once");
+			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::Minimal)
+			{
+				if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+				{
+					dfgp->fromSsa();
+				}
+		
+				dfgp->toSsa(analysis::DataflowGraph::SsaType::Minimal);
+			}
+		}
+		else if(type & analysis::Analysis::GatedStaticSingleAssignment)
+		{
+			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::Gated)
+			{
+				if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+				{
+					dfgp->fromSsa();
+				}
+		
+				dfgp->toSsa(analysis::DataflowGraph::SsaType::Gated);
+			}
+		}
+	}
+
+	if(type & analysis::Analysis::DivergenceAnalysis)
 	{
 		if(analyses.count(analysis::Analysis::DivergenceAnalysis) == 0)
 		{
@@ -222,11 +239,14 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			report("   Allocating affine analysis for kernel " << k->name);
 
 			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
-			analysis::Analysis::AffineAnalysis, new analysis::AffineAnalysis )).first;
+			analysis::Analysis::AffineAnalysis,
+				new analysis::AffineAnalysis )).first;
 
 			analysis->second->setPassManager(manager);
-			allocateNewDataStructures(analyses, k, analysis->second->required, manager);
-			static_cast<analysis::AffineAnalysis*>(analysis->second)->analyze(*k);
+			allocateNewDataStructures(analyses, k,
+				analysis->second->required, manager);
+			static_cast<analysis::AffineAnalysis*>(
+				analysis->second)->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::StructuralAnalysis)

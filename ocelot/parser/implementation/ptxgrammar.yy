@@ -77,7 +77,7 @@
 
 %token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM 
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
-%token<value> TOKEN_SM21 TOKEN_SM10
+%token<value> TOKEN_SM21 TOKEN_SM10 TOKEN_SM30 TOKEN_SM35
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
 %token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA TOKEN_SURFREF 
@@ -258,7 +258,8 @@ singleInitializer : singleList |  '{' singleList '}' | '{' singleListSingle '}'
 	| singleListSingle;
 
 shaderModel : TOKEN_SM10 | TOKEN_SM11 | TOKEN_SM12 | TOKEN_SM13 | TOKEN_SM20
-	| TOKEN_SM21;
+	| TOKEN_SM21 | TOKEN_SM30 | TOKEN_SM35;
+	
 floatingPointOption : TOKEN_MAP_F64_TO_F32;
 
 targetOption : shaderModel | floatingPointOption;

@@ -37,7 +37,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -566,35 +566,40 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 
 	report("Running pass manager on kernel " << kernel.name);
 
-	PassVector passes = _schedulePasses();
-
-	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
+	PassWaveList passes = _schedulePasses();
+	
+	for(auto wave = passes.begin(); wave != passes.end(); ++wave)
 	{
-		initializeKernelPass(_module, *pass);
-	}
+		for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+		{
+			initializeKernelPass(_module, *pass);
+		}
 	
-	AnalysisMap analyses;
+		AnalysisMap analyses;
 	
-	_analyses = &analyses;
-	_kernel = &kernel;
+		_analyses = &analyses;
+		_kernel = &kernel;
 	
-	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
-	{
-		freeUnusedDataStructures(analyses, &kernel, (*pass)->analyses);
-		allocateNewDataStructures(analyses, &kernel, (*pass)->analyses, this);
+		for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+		{
+			freeUnusedDataStructures(analyses, &kernel, (*pass)->analyses);
+			allocateNewDataStructures(analyses, &kernel,
+				(*pass)->analyses, this);
 		
-		runKernelPass(&kernel, *pass);
+			runKernelPass(&kernel, *pass);
+		}
+
+		freeUnusedDataStructures(analyses, &kernel,
+			analysis::Analysis::NoAnalysis);
+
+		for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+		{
+			finalizeKernelPass(_module, *pass);
+		}
+
+		_analyses = 0;
+		_kernel   = 0;
 	}
-
-	freeUnusedDataStructures(analyses, &kernel, analysis::Analysis::NoAnalysis);
-
-	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
-	{
-		finalizeKernelPass(_module, *pass);
-	}
-
-	_analyses = 0;
-	_kernel   = 0;
 }
 
 void PassManager::runOnModule()
@@ -607,63 +612,67 @@ void PassManager::runOnModule()
 	
 	AnalysisMapVector kernelAnalyses(_module->kernels().size());
 	
-	PassVector passes = _schedulePasses();
+	PassWaveList passes = _schedulePasses();
 
-	// Run all module passes first
-	for(auto pass = passes.begin(); pass != passes.end(); ++pass)
+	// Run waves in order
+	for(auto wave = passes.begin(); wave != passes.end(); ++wave)
 	{
-		if((*pass)->type == Pass::KernelPass)     continue;
-		if((*pass)->type == Pass::BasicBlockPass) continue;
+		// Run all module passes first
+		for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+		{
+			if((*pass)->type == Pass::KernelPass)     continue;
+			if((*pass)->type == Pass::BasicBlockPass) continue;
 		
+			AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
+			for(ir::Module::KernelMap::const_iterator 
+				kernel = _module->kernels().begin();
+				kernel != _module->kernels().end(); ++kernel, ++analyses)
+			{
+				allocateNewDataStructures(*analyses,
+					kernel->second, (*pass)->analyses, this);
+			}
+		
+			runModulePass(_module, *pass);
+		}
+	
+		// Run all kernel and bb passes
 		AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
 		for(ir::Module::KernelMap::const_iterator 
 			kernel = _module->kernels().begin();
 			kernel != _module->kernels().end(); ++kernel, ++analyses)
 		{
-			allocateNewDataStructures(*analyses,
-				kernel->second, (*pass)->analyses, this);
-		}
+			for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+			{
+				initializeKernelPass(_module, *pass);
+			}
 		
-		runModulePass(_module, *pass);
-	}
-	
-	// Run all kernel and bb passes
-	AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
-	for(ir::Module::KernelMap::const_iterator 
-		kernel = _module->kernels().begin();
-		kernel != _module->kernels().end(); ++kernel, ++analyses)
-	{
-		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
-		{
-			initializeKernelPass(_module, *pass);
-		}
+			_analyses = &*analyses;
+			_kernel = kernel->second;
 		
-		_analyses = &*analyses;
-		_kernel = kernel->second;
-		
-		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
-		{
-			if((*pass)->type == Pass::ImmutablePass) continue;
-			if((*pass)->type == Pass::ModulePass)    continue;
+			for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+			{
+				if((*pass)->type == Pass::ImmutablePass) continue;
+				if((*pass)->type == Pass::ModulePass)    continue;
 			
-			freeUnusedDataStructures( *analyses, kernel->second,
-				(*pass)->analyses);
-			allocateNewDataStructures(*analyses, kernel->second,
-				(*pass)->analyses, this);
+				freeUnusedDataStructures( *analyses, kernel->second,
+					(*pass)->analyses);
+				allocateNewDataStructures(*analyses, kernel->second,
+					(*pass)->analyses, this);
 			
-			runKernelPass(_module, kernel->second, *pass);
-		}
+				runKernelPass(_module, kernel->second, *pass);
+			}
 		
-		freeUnusedDataStructures(*analyses, kernel->second,
-			analysis::Analysis::NoAnalysis);
+			freeUnusedDataStructures(*analyses, kernel->second,
+				analysis::Analysis::NoAnalysis);
 
-		for(auto pass = passes.begin(); pass != passes.end(); ++pass)
-		{
-			finalizeKernelPass(_module, *pass);
-		}
+			for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+			{
+				finalizeKernelPass(_module, *pass);
+			}
 		
-		_analyses = 0;
-		_kernel   = 0;
+			_analyses = 0;
+			_kernel   = 0;
+		}
 	}
 }
 
@@ -707,13 +716,12 @@ void PassManager::invalidateAnalysis(int type)
 	}
 }
 
-PassManager::PassVector PassManager::_schedulePasses()
+PassManager::PassWaveList PassManager::_schedulePasses()
 {
 	typedef std::unordered_map<std::string, Pass*> PassMap;
 	
 	report(" Scheduling passes...");
 	
-	PassVector scheduled;
 	PassMap    unscheduled;
 	PassMap    needDependencyCheck;
 	
@@ -755,9 +763,16 @@ PassManager::PassVector PassManager::_schedulePasses()
 	
 	report("  Final schedule:");
 	
+	PassWaveList scheduled;
+	
 	while(!unscheduled.empty())
 	{
 		bool dependenciesSatisfied = false;
+		
+		report("   Wave " << scheduled.size());
+		
+		scheduled.push_back(PassVector());
+		
 		for(auto pass = unscheduled.begin(); pass != unscheduled.end(); ++pass)
 		{
 			auto dependentPasses = pass->second->getDependentPasses();
@@ -782,8 +797,8 @@ PassManager::PassVector PassManager::_schedulePasses()
 			
 			if(dependenciesSatisfied)
 			{
-				report("   " << pass->second->name);
-				scheduled.push_back(pass->second);
+				report("    " << pass->second->name);
+				scheduled.back().push_back(pass->second);
 				unscheduled.erase(pass);
 				break;
 			}

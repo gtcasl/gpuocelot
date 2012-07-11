@@ -18,7 +18,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -75,7 +75,7 @@ void FunctionInliningPass::_getFunctionsToInline(ir::IRKernel& k)
 		{
 			auto ptx = static_cast<ir::PTXInstruction&>(**instruction);
 			
-			if(ptx.opcode != ir::PTXInstruction::Call)            continue;
+			if(ptx.opcode != ir::PTXInstruction::Call) continue;
 			
 			report("  Examining " << ptx.toString());
 
@@ -201,6 +201,7 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 				ir::PTXOperand& operand = *operands[i];
 				
 				if(operand.addressMode != ir::PTXOperand::Register &&
+					operand.addressMode != ir::PTXOperand::Indirect &&
 					operand.addressMode != ir::PTXOperand::ArgumentList)
 				{
 					continue;
@@ -533,7 +534,7 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 
 	// set branch to function instruction
 	
-	ptxCall.opcode = ir::PTXInstruction::Bra;
+	ptxCall = ir::PTXInstruction(ir::PTXInstruction::Bra);
 	
 	ptxCall.d.addressMode = ir::PTXOperand::Label;
 	ptxCall.d.identifier  = functionEntry->label;
@@ -549,7 +550,7 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 		
 			if(ptx.opcode != ir::PTXInstruction::Ret) continue;
 			
-			ptx.opcode = ir::PTXInstruction::Bra;
+			ptx = ir::PTXInstruction(ir::PTXInstruction::Bra);
 
 			ptx.d.addressMode = ir::PTXOperand::Label;
 			ptx.d.identifier  = functionExit->label;

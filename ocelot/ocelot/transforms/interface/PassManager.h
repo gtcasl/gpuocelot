@@ -54,6 +54,19 @@ public:
 	 */
 	void addPass(Pass& pass);
 	
+	/*! \brief Adds an explicit dependence between pass types
+	
+		The dependence relationship is:
+		
+			dependentPassName <- passName
+			
+		or:
+			
+			dependentPassName depends on passName
+	 */
+	void addDependence(const std::string& dependentPassName,
+		const std::string& passName);
+	
 	/*! \brief Clears all added passes */
 	void clear();
 	
@@ -98,6 +111,7 @@ public:
 
 private:
 	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
+	typedef std::multimap<std::string, std::string> DependenceMap;
 	typedef std::vector<Pass*> PassVector;
 	typedef std::list<PassVector> PassWaveList;
 
@@ -110,6 +124,7 @@ private:
 	ir::IRKernel* _kernel;
 	AnalysisMap*  _analyses;
 	PassVector    _ownedTemporaryPasses;
+	DependenceMap _extraDependences;
 };
 
 }

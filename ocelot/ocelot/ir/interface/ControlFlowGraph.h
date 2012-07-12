@@ -305,7 +305,7 @@ public:
 	/*! returns an ordered sequence of the nodes of the CFG including entry 
 		and exit that would be encountered by a pre order traversal
 	*/
-	BlockPointerVector pre_order_sequence();
+	BlockPointerVector      pre_order_sequence();
 	
 	/*! returns an ordered sequence of the nodes of the CFG including entry 
 		and exit that would be encountered by a post order traversal

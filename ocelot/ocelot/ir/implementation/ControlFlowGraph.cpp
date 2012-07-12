@@ -684,11 +684,28 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 		stack.pop();
 		
 		sequence.push_back(current);
+		
+		// favor the fallthrough
+		iterator fallthrough = end();
+		
+		if (current->has_fallthrough_edge()) {
+			edge_iterator fallthroughEdge 	
+				= sequence.back()->get_fallthrough_edge();
+			
+			if (visited.insert(fallthroughEdge->tail).second) {
+				fallthrough = fallthroughEdge->tail;
+			}
+		}
+		
 		for (pointer_iterator block = current->successors.begin(); 
 			block != current->successors.end(); ++block) {
 			if (visited.insert(*block).second) {
 				stack.push(*block);
 			}
+		}
+		
+		if (fallthrough != end()) {
+			stack.push(fallthrough);
 		}
 	}
 	

@@ -41,24 +41,30 @@ void SimplifyControlFlowGraphPass::runOnKernel(ir::IRKernel& k)
 	
 	while(changed)
 	{
-		#if REPORT_BASE != 0
-		k.cfg()->write(std::cout);
-		#endif
-
-		changed = _swapBranchAndFallthroughEdges(k);
-		
-		#if REPORT_BASE != 0
-		k.cfg()->write(std::cout);
-		#endif
-		
-		_mergeExitBlocks(k);
+		changed  = _deleteUnconnectedBlocks(k);
+		changed |= _deleteEmptyBlocks(k);
 		
 		#if REPORT_BASE != 0
 		k.cfg()->write(std::cout);
 		#endif
 
-		_deleteEmptyBlocks(k);
-		_deleteUnconnectedBlocks(k);
+		changed |= _simplifyTerminator(k);
+		
+		#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);
+		#endif
+		
+		changed |= _mergeBlockIntoPredecessor(k);
+		
+		#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);
+		#endif
+		
+		changed |= _mergeExitBlocks(k);
+		
+		#if REPORT_BASE != 0
+		k.cfg()->write(std::cout);
+		#endif
 	}
 }
 
@@ -243,7 +249,13 @@ bool SimplifyControlFlowGraphPass::_deleteUnconnectedBlocks(ir::IRKernel& k)
 	// TODO implement this
 }
 
-bool SimplifyControlFlowGraphPass::_swapBranchAndFallthroughEdges(
+bool SimplifyControlFlowGraphPass::_mergeBlockIntoPredecessor(ir::IRKernel& k)
+{
+	return false;
+	// TODO implement this
+}
+
+bool SimplifyControlFlowGraphPass::_simplifyTerminator(
 	ir::IRKernel& k)
 {
 	return false;	

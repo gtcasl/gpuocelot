@@ -23,6 +23,7 @@
 #include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
 #include <ocelot/transforms/interface/FunctionInliningPass.h>
 #include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/interface/GlobalValueNumberingPass.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -94,6 +95,11 @@ Pass* PassFactory::createPass(const std::string& name)
 	else if( name == "simplify-calls" || name == "SimplifyExternalCallsPass" )
 	{
 		return new transforms::SimplifyExternalCallsPass;
+	}
+	else if( name == "global-value-numbering"
+		|| name == "GlobalValueNumberingPass" )
+	{
+		return new transforms::GlobalValueNumberingPass;
 	}
 	else
 	{

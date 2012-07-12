@@ -522,6 +522,14 @@ void PassManager::addPass(Pass& pass)
 	pass.setPassManager(this);
 }
 
+void PassManager::addDependence(const std::string& dependentPassName,
+	const std::string& passName)
+{
+	report("Adding dependency '" << dependentPassName
+		<< "' <- '" << passName << "'");
+	_extraDependences.insert(std::make_pair(dependentPassName, passName));
+}
+
 void PassManager::clear()
 {
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
@@ -537,6 +545,7 @@ void PassManager::clear()
 	
 	_ownedTemporaryPasses.clear();
 	_passes.clear();
+	_extraDependences.clear();
 }
 
 void PassManager::destroyPasses()
@@ -742,6 +751,14 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 		report("   for pass '" << pass->first << "'");
 		
 		auto dependentPasses = pass->second->getDependentPasses();
+		
+		auto extraDependences = _extraDependences.equal_range(pass->first);
+		
+		for(auto dependentPass = extraDependences.first;
+			dependentPass != extraDependences.second; ++dependentPass)
+		{
+			dependentPasses.push_back(dependentPass->second);
+		}
 		
 		needDependencyCheck.erase(pass);
 		

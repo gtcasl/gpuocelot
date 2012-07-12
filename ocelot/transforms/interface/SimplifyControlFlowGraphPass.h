@@ -43,6 +43,7 @@ private:
 	*/
 	bool _mergeExitBlocks(ir::IRKernel& k);
 
+
 	/*! \brief Delete empty blocks.
 	
 		\return True if this pass changes the CFG.
@@ -55,12 +56,17 @@ private:
 	*/
 	bool _deleteUnconnectedBlocks(ir::IRKernel& k);
 
-	/*! \brief Swap branch/fallthroughs to eliminate instructions
-		where possible.
+	/*! \brief Merge a basic block into its predecessor if possible
 	
 		\return True if this pass changes the CFG.
 	*/
-	bool _swapBranchAndFallthroughEdges(ir::IRKernel& k);
+	bool _mergeBlockIntoPredecessor(ir::IRKernel& k);
+
+	/*! \brief Simplify the terminator instruction on basic blocks.
+	
+		\return True if this pass changes the CFG.
+	*/
+	bool _simplifyTerminator(ir::IRKernel& k);
 
 };
 

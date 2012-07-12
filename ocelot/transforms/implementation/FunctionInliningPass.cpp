@@ -18,7 +18,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -92,6 +92,13 @@ void FunctionInliningPass::_getFunctionsToInline(ir::IRKernel& k)
 			if(calledKernel == 0)
 			{
 				report("   skipping because it is in a different module.");
+				continue;
+			}
+			
+			// Skip kernels that are built-in functions
+			if(ptx.a.identifier.find("_Z") == 0)
+			{
+				report("   skipping because it is a reserved keyword.");
 				continue;
 			}
 			

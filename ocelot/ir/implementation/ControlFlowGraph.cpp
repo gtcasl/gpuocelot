@@ -23,11 +23,6 @@
 
 #define REPORT_BASE 0
 
-#define FAST_RANDOM_LAYOUT     1
-#define PRESERVE_SOURCE_LAYOUT 2
-
-#define LAYOUT_SCHEME PRESERVE_SOURCE_LAYOUT
-
 namespace ir {
 
 

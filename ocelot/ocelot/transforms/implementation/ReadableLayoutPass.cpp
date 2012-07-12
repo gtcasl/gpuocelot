@@ -61,7 +61,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 		
 		report("  starting at " << current->label);
 		
-		// Make sure no unscheduled blocks fallthrough into this one
+		// Make sure no unscheduled blocks that fallthrough into this one
 		bool rewinding = true;
 		while(rewinding)
 		{
@@ -73,6 +73,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 				{
 					if(scheduled.count((*edge)->head) == 0)
 					{
+						visited.erase(current);
 						current = (*edge)->head;
 						report("   rewinding to " << current->label );
 						rewinding = true;
@@ -101,10 +102,11 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 		{
 			auto fallthroughEdge = blocks.back()->get_fallthrough_edge();
 			
-			if(visited.insert(fallthroughEdge->tail).second)
-			{
-				fallthrough = fallthroughEdge->tail;
-			}
+			fallthrough = fallthroughEdge->tail;
+			
+			assert(scheduled.count(fallthrough) == 0);
+			
+			visited.insert(fallthrough);
 		}
 		
 		// Explore the remaining targets

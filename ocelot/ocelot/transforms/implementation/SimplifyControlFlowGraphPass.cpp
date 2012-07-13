@@ -251,7 +251,6 @@ bool SimplifyControlFlowGraphPass::_deleteUnconnectedBlocks(ir::IRKernel& k)
 	// TODO implement this
 }
 
-#if 0
 static ir::PTXInstruction* getBranch(ir::ControlFlowGraph::iterator block)
 {
 	if(!block->instructions.empty())
@@ -268,6 +267,8 @@ static void mergeBlocks(ir::IRKernel& k,
 	ir::ControlFlowGraph::iterator predecessor,
 	ir::ControlFlowGraph::iterator block)
 {
+	typedef std::vector<ir::Edge> EdgeVector;
+
 	// delete the branch at the end of the predecessor
 	auto branch = getBranch(predecessor);
 	
@@ -277,18 +278,33 @@ static void mergeBlocks(ir::IRKernel& k,
 		predecessor->instructions.pop_back();
 	}
 	
+	// move remaining instructions intro the predecessor
 	predecessor->instructions.insert(predecessor->instructions.end(),
 		block->instructions.begin(), block->instructions.end());
 	
 	block->instructions.clear();
 
+	// track the block's out edges
+	EdgeVector outEdges;
+	
+	for(auto edge = block->out_edges.begin();
+		edge != block->out_edges.end(); ++edge)
+	{
+		outEdges.push_back(**edge);
+	}	
+	
+	// remove the block
 	k.cfg()->remove_block(block);
+
+	// add the edges back in
+	for(auto edge = outEdges.begin(); edge != outEdges.end(); ++edge)
+	{
+		k.cfg()->insert_edge(ir::Edge(predecessor, edge->tail, edge->type));
+	}
 }
-#endif
 
 bool SimplifyControlFlowGraphPass::_mergeBlockIntoPredecessor(ir::IRKernel& k)
 {
-	#if 0
 	bool merged = false;
 	
 	report(" Merging blocks with predecessors...");
@@ -322,9 +338,6 @@ bool SimplifyControlFlowGraphPass::_mergeBlockIntoPredecessor(ir::IRKernel& k)
 	}
 	
 	return merged;
-	#else
-	return false;
-	#endif
 }
 
 bool SimplifyControlFlowGraphPass::_simplifyTerminator(

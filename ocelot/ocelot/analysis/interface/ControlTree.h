@@ -243,19 +243,25 @@ namespace analysis
 
 namespace std
 {
-	template<> inline size_t hash< 
-		analysis::ControlTree::NodeList::iterator >::operator()( 
-				analysis::ControlTree::NodeList::iterator it ) const
+	template<> struct hash<
+		analysis::ControlTree::NodeList::iterator >
 		{
-			return ( size_t )&( *it );
-		}
+			inline size_t operator()(
+					analysis::ControlTree::NodeList::iterator it ) const
+			{
+				return ( size_t)&( *it );
+			}
+		};
 
-	template<> inline size_t hash< 
-		analysis::ControlTree::NodeList::const_iterator >::operator()( 
-				analysis::ControlTree::NodeList::const_iterator it ) const
+	template<> struct hash<
+		analysis::ControlTree::NodeList::const_iterator >
 		{
-			return ( size_t )&( *it );
-		}
+			inline size_t operator()(
+					analysis::ControlTree::NodeList::const_iterator it ) const
+			{
+				return ( size_t)&( *it );
+			}
+		};
 }
 #endif
 

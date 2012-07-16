@@ -13,7 +13,12 @@
 #include <hydrazine/interface/debug.h>
 
 // STL includes
+#include <functional>
 #include <algorithm>
+#include <queue>
+
+// Boost includes
+#include <boost/bind.hpp>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -25,7 +30,7 @@ namespace analysis
 {
 	ControlTree::ControlTree(CFG *cfg) 
 		: 
-			_nodes(NodeList()),
+			_nodes(NodeVector()),
 			_post(NodeList()),
 			_visit(NodeSet()),
 			_root(0),
@@ -73,8 +78,9 @@ namespace analysis
 
 	ControlTree::~ControlTree()
 	{
-		NodeList::iterator i;
-		for (i = _nodes.begin() ; i != _nodes.end() ; i++) delete *i;
+		for (NodeVector::iterator i = _nodes.begin() ; i != _nodes.end() ; ++i) 
+			delete *i;
+		
 		_nodes.clear();
 	}
 
@@ -83,6 +89,13 @@ namespace analysis
 		_size++;
 		_nodes.push_back(node);
 		return node;
+	}
+
+	ControlTree::NodeList::iterator ControlTree::_erase_node(
+			NodeList::iterator& node)
+	{
+		_size--;
+		return _post.erase(node);
 	}
 
 	ControlTree::Node::Node(const std::string& label, RegionType rtype, 
@@ -125,6 +138,24 @@ namespace analysis
 		return _fallthrough;
 	}
 
+	bool ControlTree::Node::has_branch_edge() const
+	{
+		if (_succs.size() > 1 || (_succs.size() == 1 && _fallthrough == 0)) 
+			return true;
+
+		return false;
+	}
+
+	ControlTree::Edge ControlTree::Node::get_branch_edge()
+	{
+		assertM(has_branch_edge(), "The node has no branch edge");
+
+		if (*(_succs.begin()) != _fallthrough) 
+			return Edge(this, *(_succs.begin()));
+
+		return Edge(this, *(++_succs.begin()));
+	}
+
 	std::ostream& ControlTree::write(std::ostream& out) const
 	{
 		std::unordered_map<Node*, unsigned int> bmap;
@@ -134,9 +165,9 @@ namespace analysis
 		// emit nodes
 		out << "  // nodes" << std::endl;
 
-		int i;
-		NodeList::const_iterator n;
-		for (n = _nodes.begin(), i = 0 ; n != _nodes.end() ; n++, i++)
+		int i = 0;
+		for (NodeVector::const_iterator n = _nodes.begin() ; n != _nodes.end() ; 
+				++n, ++i)
 		{
 			bmap[*n] = i;
 			if ((*n)->rtype() == Inst)
@@ -147,7 +178,8 @@ namespace analysis
 				// emit instructions
 				InstNode* m = static_cast<InstNode *>(*n);
 				for (InstructionList::const_iterator 
-						ins = m->insts().begin(), end = m->insts().end() ;
+						ins = m->bb()->instructions.begin(), 
+						end = m->bb()->instructions.end() ;
 						ins != end ; ins++)
 				{
 					out << " | " << 
@@ -166,7 +198,8 @@ namespace analysis
 		// emit edges
 		out << std::endl << "  // edges" << std::endl;
 
-		for (n = _nodes.begin() ; n != _nodes.end() ; n++)
+		for (NodeVector::const_iterator n = _nodes.begin() ; 
+				n != _nodes.end() ; ++n)
 		{
 			NodeList children = (*n)->children();
 			NodeList::const_iterator child;
@@ -193,9 +226,9 @@ namespace analysis
 	{
 	}
 
-	const ControlTree::InstructionList& ControlTree::InstNode::insts() const
+	const CFG::const_iterator& ControlTree::InstNode::bb() const
 	{
-		return _bb->instructions;
+		return _bb;
 	}
 
 	ControlTree::BlockNode::BlockNode(const std::string& label, 
@@ -234,11 +267,6 @@ namespace analysis
 	const ControlTree::Node* ControlTree::IfThenNode::ifFalse() const
 	{
 		return children().back();
-	}
-
-	ControlTree::WhileNode::WhileNode(const std::string& label, 
-			const NodeList& children) : Node(label, While, children)
-	{
 	}
 
 	ControlTree::NaturalNode::NaturalNode(const std::string& label, 
@@ -411,17 +439,19 @@ namespace analysis
 
 	bool ControlTree::_isCyclic(Node* node)
 	{
-		if (node->rtype() == While) return true;
 		if (node->rtype() == Natural) return true;
 
 		return false;
 	}
 
-	bool ControlTree::_backedge(Node* head, Node* tail)
+	bool ControlTree::_isBackedge(const Edge& edge)
 	{
+		const Node* head = edge.first;
+		const Node* tail = edge.second;
+
 		// head->tail is a back-edge if tail dominates head
 		// (tail dominates head if head appears first in the _post list)
-		Node* match[] = {head, tail};
+		const Node* match[] = {head, tail};
 		NodeList::iterator n = 
 			find_first_of(_post.begin(), _post.end(), match, match + 2);
 		
@@ -429,7 +459,7 @@ namespace analysis
 		if (*n == tail) return false;
 
 		assertM(false, "Neither head nor tail are valid nodes");
-		
+
 		return false;
 	}
 
@@ -446,9 +476,8 @@ namespace analysis
 				continue;
 			}
 
-			n = _post.erase(n);
+			n = _erase_node(n);
 			pos = n;
-			_size--;
 		}
 
 		_postCtr = _post.insert(pos, node);
@@ -456,8 +485,6 @@ namespace analysis
 
 	void ControlTree::_reduce(Node* node, NodeSet nodeSet)
 	{
-		// link region node into abstract flowgraph, adjust the predecessor and 
-		// successor functions, and augment the control tree
 		NodeSet::iterator n;
 		for (n = nodeSet.begin() ; n != nodeSet.end() ; n++)
 		{
@@ -515,14 +542,16 @@ namespace analysis
 			{
 				bool shouldbreak = false;
 				NodeSet::iterator p;
-				for (p = (*n)->preds().begin() ; p != (*n)->preds().end() ; p++)
+				for (NodeSet::iterator p = (*n)->preds().begin() ; 
+						p != (*n)->preds().end() ; ++p)
 				{
 					if (nodeSet.find(*p) == nodeSet.end()) continue;
 
-					if (_backedge(*p, *n)) 
+					if (_isBackedge(Edge(*p, *n))) 
 					{
 						// add back-edge region->region
-						report("Add " << node->label() << " -> " << node->label());
+						report("Add " << node->label() << " -> " 
+								<< node->label());
 						node->preds().insert(node);
 						node->succs().insert(node);
 
@@ -539,8 +568,6 @@ namespace analysis
 		_compact(node, nodeSet);
 	}
 
-	// returns true if there is a (possibly empty) path from m to k that does
-	// not pass through n
 	bool ControlTree::_path(Node* m, Node* k, Node* n)
 	{
 		if (m == n || _visit.find(m) != _visit.end()) return false;
@@ -557,15 +584,12 @@ namespace analysis
 		return false;
 	}
 
-	// returns true if there is a node k such that there is a (possibly empty)
-	// path from m to k that does not pass through n and an edge k->n that is a
-	// back edge, and false otherwise.
 	bool ControlTree::_path_back(Node* m, Node* n)
 	{
 		for (NodeSet::const_iterator k = n->preds().begin() ;
 				k != n->preds().end() ; k++)
 		{
-			if (_backedge(*k, n))
+			if (_isBackedge(Edge(*k, n)))
 			{
 				_visit.clear();
 				if (_path(m, *k, n)) return true;
@@ -610,13 +634,32 @@ namespace analysis
 			}
 		}
 
-		// check for a While loop
-		Node* m = *(++nset.begin());
-
-		if (node->succs().size() == 2 && m->succs().size() == 1 
-				&& node->preds().size() == 2 && m->preds().size() == 1)
+		// check for a Natural loop (this includes While loops)
+		NodeList::iterator m;
+		report("Natural loop from " << node->label());
+		for (m = nset.begin() ; m != nset.end() ; ++m)
 		{
-			std::string label("WhileNode_");
+			if (*m == node)
+			{
+				if ((*m)->preds().size() != 2) 
+				{
+					report((*m)->label() << " " << (*m)->preds().size());
+					break;
+				}
+			}
+			else
+			{
+				if ((*m)->preds().size() != 1) 
+				{
+					report((*m)->label() << " " << (*m)->preds().size());
+					break;
+				}
+			}
+		}
+
+		if (m == nset.end())
+		{
+			std::string label("NaturalNode_");
 
 			std::stringstream ss;
 			ss << _nodes.size();
@@ -625,20 +668,11 @@ namespace analysis
 			report("Found " << label << ": " << nset.front()->label() << "..."
 					<< nset.back()->label());
 
-			return new WhileNode(label, nset);
+			return new NaturalNode(label, nset);
 		}
 
-		// it's a Natural loop
-		std::string label("NaturalNode_");
-
-		std::stringstream ss;
-		ss << _nodes.size();
-		label += ss.str();
-
-		report("Found " << label << ": " << nset.front()->label() << "..."
-				<< nset.back()->label());
-
-		return new NaturalNode(label, nset);
+		report("Couldn't find any cyclic regions");
+		return new InvalidNode();
 	}
 
 	void ControlTree::_structural_analysis(Node* entry)
@@ -648,9 +682,10 @@ namespace analysis
 		NodeList reachUnder; // TODO Implement reachUnder as an ordered set
 		bool changed;
 
-		report("Starting Structural Analysis...");
 		do
 		{
+			report("Starting Structural Analysis...");
+
 			changed = false;
 
 			_post.clear(); 
@@ -690,7 +725,8 @@ namespace analysis
 					{
 						if (*m != n && _path_back(*m, n)) 
 						{
-							report("Add " << (*m)->label() << " to reachUnder");
+							report("Add " << (*m)->label() 
+									<< " to reachUnder of " << n->label());
 							reachUnder.push_front(*m); nodeSet.insert(*m);
 						}
 					}
@@ -717,9 +753,399 @@ namespace analysis
 				}
 			}
 
+			if (!changed)
+			{
+				changed = _forward_copy(entry);
+			}
+
 			assertM(changed, "Irreducible CFG");
 		} while (_size > 1);
 
 		_root = entry;
+	}
+
+	ControlTree::NodeVector ControlTree::_executable_sequence(Node* entry) 
+	{
+		NodeVector sequence;
+		NodeSet unscheduled;
+
+		for(NodeList::iterator i = _post.begin(); i != _post.end(); ++i)
+		{
+			unscheduled.insert(*i);
+		}
+
+		report("Getting executable sequence.");
+
+		sequence.push_back(entry);
+		unscheduled.erase(entry);
+		report("Added " << entry->label());
+
+		while (!unscheduled.empty()) 
+		{
+			if (sequence.back()->fallthrough() != 0) 
+			{
+				Node* tail = sequence.back()->fallthrough();
+				sequence.push_back(tail);
+				unscheduled.erase(tail);
+			}
+			else 
+			{
+				// find a new block, favor branch targets over random blocks
+				Node* next = *unscheduled.begin();
+
+				for (NodeSet::iterator succ = sequence.back()->succs().begin() ;
+						succ != sequence.back()->succs().end() ; ++succ)
+				{
+					if (unscheduled.count(*succ) != 0)
+					{
+						next = *succ;
+						break;
+					}
+				}
+
+				// rewind through fallthrough edges to find the beginning of the 
+				// next chain of fall throughs
+				report("    Restarting at " << next->label());
+				bool rewinding = true;
+				while (rewinding) {
+					rewinding = false;
+					for (NodeSet::iterator pred = next->preds().begin() ;
+							pred != next->preds().end() ; ++pred)
+					{
+						if ((*pred)->fallthrough() == next)
+						{
+							assertM(unscheduled.count(*pred) != 0,
+									(*pred)->label()
+									<< " has multiple fallthrough branches.");
+							next = *pred;
+							report("    Rewinding to " << next->label());
+							rewinding = true;
+							break;
+						}
+					}
+				}
+				sequence.push_back(next);
+				unscheduled.erase(next);
+			}
+
+			report("Added " << sequence.back()->label());
+		}
+
+		return sequence;
+	}
+
+	ControlTree::EdgeVector ControlTree::_find_forward_branches()
+	{
+		assert(_lexical.size() != 0);
+
+		EdgeVector fwdBranches;
+
+		for (NodeVector::iterator node = _lexical.begin() ;
+				node != _lexical.end() ; ++node)
+		{
+			if ((*node)->has_branch_edge())
+			{
+				Edge branch = (*node)->get_branch_edge();
+
+				NodeVector::iterator head = node;
+				NodeVector::iterator tail = find(++head, _lexical.end(), 
+						branch.second);
+
+				if (tail != _lexical.end()) 
+				{
+					report("Found forward branch " << (*node)->label() << " -> " 
+							<< (*tail)->label());
+					fwdBranches.push_back(branch);
+				}
+			}
+		}
+
+		return fwdBranches;
+	}
+
+	bool ControlTree::_lexicographical_compare(const Node* a, const Node* b)
+	{
+		return (find(_lexical.begin(), _lexical.end(), a) < 
+				find(_lexical.begin(), _lexical.end(), b));
+	}
+
+	ControlTree::NodeVector ControlTree::_control_graph(const Edge& nb)
+	{
+		NodeVector::iterator head, tail;
+
+		head = find(_lexical.begin(), _lexical.end(), nb.first);
+		tail = find(_lexical.begin(), _lexical.end(), nb.second);
+
+		if (head < tail) return NodeVector(head, ++tail);
+
+		return NodeVector(tail, ++head);
+	}
+
+	bool ControlTree::_interact(const NodeVector& CGi0, const NodeVector& CGm0)
+	{
+		NodeVector result1;
+		NodeVector result2;
+		NodeVector result3;
+
+		// partial intersection
+		std::set_intersection(
+				CGi0.begin(), CGi0.end(), 
+				CGm0.begin(), CGm0.end(), 
+				std::back_inserter(result1), 
+				boost::bind(&analysis::ControlTree::_lexicographical_compare, 
+					boost::ref(this), _1, _2));
+		std::set_difference(
+				CGi0.begin(), CGi0.end(), 
+				CGm0.begin(), CGm0.end(), 
+				std::back_inserter(result2),
+				boost::bind(&analysis::ControlTree::_lexicographical_compare, 
+					boost::ref(this), _1, _2));
+		std::set_difference(
+				CGm0.begin(), CGm0.end(), 
+				CGi0.begin(), CGi0.end(), 
+				std::back_inserter(result3),
+				boost::bind(&analysis::ControlTree::_lexicographical_compare, 
+					boost::ref(this), _1, _2));
+
+		if (!result1.empty() && !result2.empty() && !result3.empty()) 
+			return true;
+
+		return false;
+	}
+
+	bool ControlTree::_interact(const EdgeVector::iterator& i0, 
+			const EdgeVector::iterator& m0)
+	{
+		return _interact(_control_graph(*i0), _control_graph(*m0));
+	}
+
+	ControlTree::NodeVector ControlTree::_minimal_hammock_graph(const Edge& nb)
+	{
+		NodeVector mhg = _control_graph(nb);
+
+		// TODO Consider keeping a vector of edges in the class
+		for (NodeVector::iterator node = _lexical.begin() ;
+				node != _lexical.end() ; ++node)
+		{
+			if ((*node)->has_branch_edge())
+			{
+				Edge ib = (*node)->get_branch_edge();
+				NodeVector CGib = _control_graph(ib);
+
+				if (_interact(CGib, mhg))
+				{
+					NodeVector result;
+					std::set_union(
+							mhg.begin(), mhg.end(), 
+							CGib.begin(), CGib.end(), 
+							std::back_inserter(result), 
+							boost::bind(
+								&analysis::ControlTree::_lexicographical_compare, 
+								boost::ref(this), _1, _2));
+					mhg = result;
+				}
+			}
+		}
+
+		report("MHG = " << mhg.front()->label() << " ... " 
+				<< mhg.back()->label());
+
+		return mhg;
+	}
+
+	void ControlTree::_forward_copy_transform(const Edge& iFwdBranch, 
+			const NodeVector& true_part)
+	{
+		std::unordered_map<Node*, Node*> bmap;
+
+		for (NodeVector::const_iterator node = true_part.begin() ;
+				node != true_part.end() ; ++node)
+		{
+			// TODO Handle clonning of other region types
+			assert((*node)->rtype() == Inst);
+
+			report("Clonning " << (*node)->label());
+			bmap[*node] = _insert_node(new InstNode(
+						static_cast<InstNode *>(*node)->bb()));
+
+			// adjust the postorder traversal
+			_post.insert(find(_post.begin(), _post.end(), *node), bmap[*node]);
+		}
+
+		Node* iFwdNode = iFwdBranch.first;
+		NodeVector::const_iterator node = true_part.begin();
+		Node* clone = bmap[*node];
+
+		report("Del " << iFwdNode->label() << " -> " << (*node)->label());
+		iFwdNode->succs().erase(*node);
+		(*node)->preds().erase(iFwdNode);
+
+		report("Add " << iFwdNode->label() << " -> " << clone->label());
+		iFwdNode->succs().insert(clone);
+		clone->preds().insert(iFwdNode);
+
+		for ( ; node != true_part.end() ; ++node)
+		{
+			clone = bmap[*node];
+			for (NodeSet::iterator s = (*node)->succs().begin() ;
+					s != (*node)->succs().end() ; ++s)
+			{
+				if (find(true_part.begin(), true_part.end(), *s) != 
+						true_part.end())
+				{
+					clone->succs().insert(bmap[*s]);
+					bmap[*s]->preds().insert(clone);
+
+					if ((*node)->fallthrough() == *s) 
+					{
+						report("Add " << clone->label() << " --> " 
+								<< (bmap[*s])->label());
+						clone->fallthrough() = bmap[*s];
+					}
+					else
+					{
+						report("Add " << clone->label() << " -> " 
+								<< (bmap[*s])->label());
+					}
+				}
+				else
+				{
+					clone->succs().insert(*s);
+					(*s)->preds().insert(clone);
+
+					if ((*node)->fallthrough() == *s) 
+					{
+						report("Add " << clone->label() << " --> " 
+								<< (*s)->label());
+						clone->fallthrough() = *s;
+					}
+					else
+					{
+						report("Add " << clone->label() << " -> " 
+								<< (*s)->label());
+					}
+				}
+			}
+		}
+	}
+
+	void ControlTree::_elim_unreach_code(ControlTree::Node* en)
+	{
+		report("Eliminating unreachable code");
+
+		for (NodeList::iterator i = _post.begin() ; i != _post.end() ; )
+		{
+			_visit.clear();
+			if (_path(en, *i)) ++i;
+			else
+			{
+				report("Eliminating unreachable node " << (*i)->label());
+
+				for (NodeSet::iterator p = (*i)->preds().begin() ; 
+						p != (*i)->preds().end() ; ++p)
+				{
+					report("Del " << (*p)->label() << " -> " << (*i)->label());
+					(*p)->succs().erase(*i);
+				}
+
+				for (NodeSet::iterator s = (*i)->succs().begin() ;
+						s != (*i)->succs().end() ; ++ s)
+				{
+					report("Del " << (*i)->label() << " -> " << (*s)->label());
+					(*s)->preds().erase(*i);
+				}
+
+				i = _erase_node(i);
+			}
+		}
+	}
+
+	bool ControlTree::_forward_copy(Node* entry)
+	{
+		report("Starting Forward Copy Pass...");
+
+		bool changed = false;
+
+		_lexical = _executable_sequence(entry);
+		EdgeVector fwdBranches = _find_forward_branches();
+
+		while (!fwdBranches.empty())
+		{
+			EdgeVector::iterator iFwdBranch = fwdBranches.begin();
+
+			report("iFwdBranch = " 
+					<< iFwdBranch->first->label() << " -> "
+					<< iFwdBranch->second->label());
+
+			for (EdgeVector::iterator fwdBranch = iFwdBranch + 1 ;
+					fwdBranch != fwdBranches.end() ; ++fwdBranch)
+			{
+				if (_interact(iFwdBranch, fwdBranch))
+				{
+					report(iFwdBranch->first->label() << " -> " 
+							<< iFwdBranch->second->label()
+							<< " interacts with "
+							<< fwdBranch->first->label() 
+							<< " -> " << fwdBranch->second->label());
+
+					NodeVector MHGif = _minimal_hammock_graph(*iFwdBranch);
+					NodeVector CGif  = _control_graph(*iFwdBranch);
+					NodeVector ie    = NodeVector(1, MHGif.back());
+					NodeVector J     = NodeVector(1, iFwdBranch->second);
+
+					// true_part = the shared statements =
+					// (MHGif - CGif - {ie}) U J
+					NodeVector result1, result2, true_part;
+					std::set_difference(
+							MHGif.begin(), MHGif.end(), 
+							CGif.begin(), CGif.end(), 
+							std::back_inserter(result1),
+							boost::bind(
+								&analysis::ControlTree::_lexicographical_compare, 
+								boost::ref(this), _1, _2));
+					std::set_difference(
+							result1.begin(), result1.end(),
+							ie.begin(), ie.end(), 
+							std::back_inserter(result2),
+							boost::bind(
+								&analysis::ControlTree::_lexicographical_compare, 
+								boost::ref(this), _1, _2));
+					std::set_union(
+							result2.begin(), result2.end(),
+							J.begin(), J.end(), 
+							std::back_inserter(true_part),
+							boost::bind(
+								&analysis::ControlTree::_lexicographical_compare,
+								boost::ref(this), _1, _2));
+
+					NodeVector false_part;
+					NodeVector ifie = NodeVector(1, iFwdBranch->first); 
+					ifie.push_back(MHGif.back());
+
+					// false_part = MHGif - {if, ie}
+					std::set_difference(
+							MHGif.begin(), MHGif.end(),
+							ifie.begin(), ifie.end(), 
+							std::back_inserter(false_part),
+							boost::bind(
+								&analysis::ControlTree::_lexicographical_compare,
+								boost::ref(this), _1, _2));
+
+					// a forward-copy transformation is applied
+					_forward_copy_transform(*iFwdBranch, true_part);
+
+					// perform unreachable-code elimination
+					_elim_unreach_code(entry);
+
+					changed = true;
+
+					break;
+				}
+			}
+
+			fwdBranches.erase(iFwdBranch);
+		}
+
+		return changed;
 	}
 }

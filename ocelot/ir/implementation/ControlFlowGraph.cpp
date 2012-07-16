@@ -448,7 +448,7 @@ std::ostream& ControlFlowGraph::write(std::ostream &out,
 	blockIndices[_entry] = 0;
 	blockIndices[_exit] = 1;
 
-	int n = 0;
+	int n = 2;
 	for (const_iterator block = begin(); block != end(); ++block, ++n) {
 		if (block == _entry || block == _exit) continue;
 

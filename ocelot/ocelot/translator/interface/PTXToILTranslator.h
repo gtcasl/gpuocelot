@@ -57,7 +57,6 @@ namespace translator
 			void _translate(const CT::InstNode*    node);
 			void _translate(const CT::BlockNode*   node);
 			void _translate(const CT::IfThenNode*  node);
-			void _translate(const CT::WhileNode*   node);
 			void _translate(const CT::NaturalNode* node);
 
 			void _translate(const ir::PTXInstruction &i); 

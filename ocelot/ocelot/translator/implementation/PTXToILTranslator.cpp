@@ -77,11 +77,6 @@ namespace translator
 				_translate(static_cast<const CT::IfThenNode*>(node)); 
 				break;
 			}
-			case CT::While:
-			{
-				_translate(static_cast<const CT::WhileNode*>(node)); 
-				break;
-			}
 			case CT::Natural: 
 			{
 				_translate(static_cast<const CT::NaturalNode*>(node)); 
@@ -94,7 +89,8 @@ namespace translator
 	void PTXToILTranslator::_translate(const CT::InstNode* node)
 	{
 		for (CT::InstructionList::const_iterator
-				ins = node->insts().begin(), end = node->insts().end() ;
+				ins = node->bb()->instructions.begin(), 
+				end = node->bb()->instructions.end() ;
 				ins != end ; ins++)
 		{
 			_translate(static_cast<ir::PTXInstruction &>(**ins));
@@ -120,7 +116,7 @@ namespace translator
 					static_cast<const CT::InstNode*>(node);
 
 				return static_cast<ir::PTXInstruction*>(
-						inode->insts().back());
+						inode->bb()->instructions.back());
 			}
 			case CT::Block:
 			{
@@ -128,6 +124,14 @@ namespace translator
 					static_cast<const CT::BlockNode*>(node);
 
 				return getLastIns(bnode->children().back());
+			}
+			case CT::IfThen:
+			{
+				const CT::IfThenNode* ifnode =
+					static_cast<const CT::IfThenNode*>(node);
+
+				return getLastIns(ifnode->ifTrue());
+
 			}
 			default: assertM(false, "Invalid region type " << node->rtype());
 		}
@@ -160,37 +164,6 @@ namespace translator
 		_add(ir::ILEndIf());
 	}
 
-	void PTXToILTranslator::_translate(const CT::WhileNode* node)
-	{
-		// translate while
-		_add(ir::ILWhileLoop());
-
-		// translate body (except last block)
-		CT::NodeList::const_iterator last = (--node->children().end());
-		for (CT::NodeList::const_iterator child = node->children().begin() ; 
-				child != last ; child++)
-		{
-			// the fall-through edge should be the next node in the loop
-			CT::NodeList::const_iterator next(child); next++;
-			assertM((*child)->fallthrough() == *next, "Invalid Natural loop");
-			_translate(*child);
-
-			// translate side exit (invert logic)
-			ir::PTXInstruction* bra = getLastIns(*child);
-			assert(bra->opcode == ir::PTXInstruction::Bra);
-			bra->pg.condition = ir::PTXOperand::InvPred;
-			_translateBra(*bra);
-			_add(ir::ILBreak());
-			_add(ir::ILEndIf());
-		}
-
-		// translate last block 
-		_translate(*last);
-
-		// done!
-		_add(ir::ILEndLoop());
-	}
-
 	void PTXToILTranslator::_translate(const CT::NaturalNode* node)
 	{
 		// translate while
@@ -206,26 +179,35 @@ namespace translator
 			assertM((*child)->fallthrough() == *next, "Invalid Natural loop");
 			_translate(*child);
 
-			// translate side exit (invert logic)
+			// translate optional side exit (invert logic)
 			ir::PTXInstruction* bra = getLastIns(*child);
-			assert(bra->opcode == ir::PTXInstruction::Bra);
-			bra->pg.condition = ir::PTXOperand::InvPred;
+			if (bra->opcode == ir::PTXInstruction::Bra &&
+					(bra->pg.condition == ir::PTXOperand::Pred ||
+					 bra->pg.condition == ir::PTXOperand::InvPred))
+			{
+				bra->pg.condition = ir::PTXOperand::InvPred;
+				_translateBra(*bra);
+				_add(ir::ILBreak());
+				_add(ir::ILEndIf());
+			}
+		}
+
+		// the fall-through edge should be the head node of the loop
+		assert((*last)->fallthrough() != *(node->children().begin()));
+
+		// translate last block
+		_translate(*last);
+
+		// translate optional side exit 
+		ir::PTXInstruction* bra = getLastIns(*last);
+		if (bra->opcode == ir::PTXInstruction::Bra &&
+				(bra->pg.condition == ir::PTXOperand::Pred ||
+				 bra->pg.condition == ir::PTXOperand::InvPred))
+		{
 			_translateBra(*bra);
 			_add(ir::ILBreak());
 			_add(ir::ILEndIf());
 		}
-
-		// translate last block
-		assert((*last)->fallthrough() != *(node->children().begin()));
-		_translate(*last);
-
-		// translate side exit 
-		ir::PTXInstruction* bra = getLastIns(*last);
-		assert(bra->opcode == ir::PTXInstruction::Bra);
-		assert(bra->pg.condition == ir::PTXOperand::Pred);
-		_translateBra(*bra);
-		_add(ir::ILBreak());
-		_add(ir::ILEndIf());
 
 		// done!
 		_add(ir::ILEndLoop());

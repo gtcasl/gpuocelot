@@ -922,7 +922,7 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 		false, false );
 
 	bitcast.d.type = ir::LLVMInstruction::Type( 
-		ir::LLVMInstruction::I32, ir::LLVMInstruction::Type::Pointer );
+		continuation.type.type, ir::LLVMInstruction::Type::Pointer );
 	bitcast.d.name = _tempRegister();
 
 	_add( bitcast );
@@ -931,7 +931,8 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 
 	store.d = bitcast.d;
 	store.a = ir::LLVMInstruction::Operand( (ir::LLVMI32) type );
-		
+	store.a.type.type = continuation.type.type;
+	
 	_add( store );
 	
 	if( type == executive::LLVMExecutableKernel::TailCall 
@@ -941,7 +942,7 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 	
 		get.a = bitcast.d;
 		get.d = ir::LLVMInstruction::Operand( _tempRegister(), 
-			ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+			ir::LLVMInstruction::Type( continuation.type.type,
 			ir::LLVMInstruction::Type::Pointer ) );
 		get.indices.push_back( 1 );
 	

@@ -1337,8 +1337,8 @@ namespace parser
 				operand = mode->operand;
 			}
 		}
-		else if( mode->operand.addressMode 
-			== ir::PTXOperand::FunctionName ) {
+		else
+		{
 			operand = mode->operand;
 		}
 		
@@ -1452,6 +1452,7 @@ namespace parser
 		{ 
 			value = -value;
 		}
+		
 		operand.offset = (int) value;
 		operand.type = mode->operand.type;
 	

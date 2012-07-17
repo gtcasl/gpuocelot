@@ -329,7 +329,7 @@ bool SimplifyControlFlowGraphPass::_mergeBlockIntoPredecessor(ir::IRKernel& k)
 		
 		if(!singleSuccessor) { ++block; continue; }
 		
-		report("  " << predecessor->label << " <-> " << block->label);
+		report("  " << predecessor->label << " <- " << block->label);
 		
 		// Merge the blocks
 		mergeBlocks(k, predecessor, block++);

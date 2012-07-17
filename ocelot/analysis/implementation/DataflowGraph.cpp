@@ -1345,6 +1345,24 @@ DataflowGraph::IteratorMap DataflowGraph::getCFGtoDFGMap()
 	return map;	
 }
 
+const DataflowGraph::RegisterIdSet& DataflowGraph::getPhiPredicates(
+	PhiInstruction const* phi ) const
+{
+	assertM(hasPhi(phi), "Asked for a phi not known");
+	return _phiPredicateMap.find(phi)->second;
+}
+
+const DataflowGraph::PhiPredicateMap& DataflowGraph::phiPredicateMap() const
+{
+	assertM(_ssa == SsaType::Gated, "Asking for a phiPridicateMap not in GSSA");
+	return _phiPredicateMap;
+}
+
+bool DataflowGraph::hasPhi( DataflowGraph::PhiInstruction const *phi ) const
+{
+  return _phiPredicateMap.find(phi) != _phiPredicateMap.end();
+}
+
 std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
 {
 	DataflowGraph& nonConstGraph = const_cast< DataflowGraph& >( graph );

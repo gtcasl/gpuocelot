@@ -190,7 +190,8 @@ class DataflowGraph : public KernelAnalysis
 				};
 
 				/*! \brief A unique set of register Ids */
-				typedef std::unordered_set< Register, Register_Hash > RegisterSet;
+				typedef std::unordered_set< Register,
+					Register_Hash > RegisterSet;
 
 			private:
 				/*! \brief Registers that are alive entering the block */
@@ -310,12 +311,16 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::unordered_map< ir::ControlFlowGraph::const_iterator, 
 			iterator > IteratorMap;
 
+		typedef std::set<RegisterId> RegisterIdSet;
+		typedef std::map<const PhiInstruction*, RegisterIdSet > PhiPredicateMap;
+
 	private:
 		BlockVector _blocks;
 		ir::ControlFlowGraph* _cfg;
 		bool _consistent;
 		SsaType _ssa;
 		RegisterId _maxRegister;
+		PhiPredicateMap _phiPredicateMap;
 
 	public:
 		/*! \brief Convert from a PTXInstruction to an Instruction  */
@@ -440,31 +445,18 @@ class DataflowGraph : public KernelAnalysis
 		IteratorMap getCFGtoDFGMap();
 
 	public:
-    typedef std::map<const PhiInstruction*, std::set<RegisterId> > PhiPredicateMap;
-
-    inline const std::set<DataflowGraph::RegisterId> &getPhiPredicates(
-        DataflowGraph::PhiInstruction const * phi) const
-    {
-      assertM(hasPhi(phi), "Asked for a phi not known");
-      return _phiPredicateMap.find(phi)->second;
-    }
-
-    const PhiPredicateMap &phiPredicateMap() const{
-      assertM(_ssa == SsaType::Gated, "Asking for a phiPridicateMap not in GSSA");
-      return _phiPredicateMap;
-    }
-
-    inline bool hasPhi(DataflowGraph::PhiInstruction const *phi) const{
-      return _phiPredicateMap.find(phi) != _phiPredicateMap.end();
-    }
-  private:
-    PhiPredicateMap _phiPredicateMap;
+		const RegisterIdSet& getPhiPredicates(
+			PhiInstruction const* phi ) const;
+		const PhiPredicateMap& phiPredicateMap() const;
+		bool hasPhi( DataflowGraph::PhiInstruction const *phi ) const;
 
 };
 
 std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
-std::ostream& operator<<( std::ostream& out, const DataflowGraph::PhiInstruction& phi );
-std::ostream& operator<<( std::ostream& out, const DataflowGraph::Instruction& i );
+std::ostream& operator<<( std::ostream& out,
+	const DataflowGraph::PhiInstruction& phi );
+std::ostream& operator<<( std::ostream& out,
+	const DataflowGraph::Instruction& i );
 
 }
 

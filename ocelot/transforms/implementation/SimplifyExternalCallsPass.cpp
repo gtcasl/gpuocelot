@@ -328,6 +328,8 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 			kernel.parameters.erase(parameter);
 		}
 	}
+	
+	invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 }
 
 void SimplifyExternalCallsPass::finalize()

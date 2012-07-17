@@ -18,7 +18,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE    0
+#define REPORT_DETAILS 1
 
 namespace transforms
 {
@@ -111,7 +112,7 @@ void FunctionInliningPass::_getFunctionsToInline(ir::IRKernel& k)
 				continue;
 			}
 			
-			report("   is is eligible for inlining!");
+			report("   it is eligible for inlining!");
 			
 			if(linked)
 			{
@@ -207,7 +208,7 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 			{
 				ir::PTXOperand& operand = *operands[i];
 				
-				if(operand.addressMode != ir::PTXOperand::Register &&
+				if( operand.addressMode != ir::PTXOperand::Register &&
 					operand.addressMode != ir::PTXOperand::Indirect &&
 					operand.addressMode != ir::PTXOperand::ArgumentList)
 				{
@@ -333,15 +334,13 @@ static void convertParametersToRegisters(
 	ir::ControlFlowGraph::instruction_iterator callIterator,
 	const ir::IRKernel& calledKernel)
 {
-	typedef std::unordered_map<std::string,
-		ir::PTXOperand::RegisterType> RegisterMap;
-	typedef std::unordered_map<std::string,
-		ir::PTXOperand::DataType> TypeMap;
+	typedef std::unordered_map<std::string,	ir::PTXOperand> OperandMap;
 	typedef std::unordered_set<std::string> StringSet;
+
+	reportE(REPORT_DETAILS, "   Converting parameters to registers...");
 	
 	// Get a map from argument name to register in the calling function
-	RegisterMap argumentMap;
-	TypeMap	    argumentTypeMap;
+	OperandMap  argumentMap;
 	StringSet   bitBucketArguments;
 	
 	auto argument = calledKernel.arguments.begin();
@@ -358,12 +357,12 @@ static void convertParametersToRegisters(
 		}
 
 		assert(argument != calledKernel.arguments.end());
-		assert(parameter->addressMode == ir::PTXOperand::Register);
+		assert(parameter->addressMode == ir::PTXOperand::Register ||
+			parameter->addressMode == ir::PTXOperand::Immediate);
 		assert(argumentMap.count(argument->name) == 0);
 		assert(argument->returnArgument);
 
-		argumentMap.insert(std::make_pair(argument->name, parameter->reg));
-		argumentTypeMap.insert(std::make_pair(argument->name, parameter->type));
+		argumentMap.insert(std::make_pair(argument->name, *parameter));
 	}
 
 	for(auto parameter = call.b.array.begin();
@@ -376,12 +375,12 @@ static void convertParametersToRegisters(
 		}
 
 		assert(argument != calledKernel.arguments.end());
-		assert(parameter->addressMode == ir::PTXOperand::Register);
+		assert(parameter->addressMode == ir::PTXOperand::Register ||
+			parameter->addressMode == ir::PTXOperand::Immediate);
 		assert(argumentMap.count(argument->name) == 0);
 		assert(!argument->returnArgument);
 
-		argumentMap.insert(std::make_pair(argument->name, parameter->reg));
-		argumentTypeMap.insert(std::make_pair(argument->name, parameter->type));
+		argumentMap.insert(std::make_pair(argument->name, *parameter));
 	}
 	
 	// Convert all stores to that parameter to moves to the associated register
@@ -408,45 +407,31 @@ static void convertParametersToRegisters(
 			auto argument = argumentMap.find(ptx.d.identifier);
 			
 			if(argument == argumentMap.end()) continue;
-			
-			auto type = argumentTypeMap.find(ptx.d.identifier);
-			assert(type != argumentTypeMap.end());
 
-			ptx.pg = call.pg;
-
-			if(ptx.a.addressMode == ir::PTXOperand::Register)
-			{
-				ptx.type = type->second;
+			ptx.type = argument->second.type;
+			ptx.pg   = call.pg;
+			ptx.d    = argument->second;
 				
+			if(argument->second.addressMode == ir::PTXOperand::Register)
+			{
 				// If the types match, it is a move
-				if(type->second == ptx.d.type)
+				if(argument->second.type == ptx.d.type)
 				{
 					ptx.opcode = ir::PTXInstruction::Mov;
-				
-					ptx.d = ir::PTXOperand(
-						ir::PTXOperand::Register, ptx.type,
-						argument->second);
 				}
 				else
 				{
 					// otherwise, we need a cast
-					ptx.opcode = ir::PTXInstruction::Cvt;
-					ptx.d = ir::PTXOperand(
-						ir::PTXOperand::Register, ptx.type,
-						argument->second);
-					ptx.modifier =
-						ir::PTXInstruction::Modifier_invalid;
+					ptx.opcode   = ir::PTXInstruction::Cvt;
+					ptx.modifier = ir::PTXInstruction::Modifier_invalid;
 				}
 			}
 			else
 			{
-				assert(ptx.a.addressMode
-					== ir::PTXOperand::Immediate);
+				assert(argument->second.addressMode ==
+					ir::PTXOperand::Immediate);
 		
 				ptx.opcode = ir::PTXInstruction::Mov;
-				ptx.d = ir::PTXOperand(
-					ir::PTXOperand::Register, ptx.type,
-					argument->second);
 			}
 		}
 	}
@@ -477,31 +462,21 @@ static void convertParametersToRegisters(
 			if(argument == argumentMap.end()) continue;
 			
 			assert(ptx.d.addressMode == ir::PTXOperand::Register);
-
-			auto type = argumentTypeMap.find(ptx.a.identifier);
-			assert(type != argumentTypeMap.end());
 			
-			ptx.type = type->second;
-			
-			ptx.pg = call.pg;
+			ptx.type = argument->second.type;			
+			ptx.pg   = call.pg;
+			ptx.a    = argument->second;
 			
 			// If the types match, it is a move
 			if(ptx.type == ptx.a.type)
 			{
 				ptx.opcode = ir::PTXInstruction::Mov;
-			
-				ptx.a = ir::PTXOperand(
-					ir::PTXOperand::Register, ptx.type,
-					argument->second);
 			}
 			else
 			{
 				// otherwise, we need a cast
-				ptx.opcode = ir::PTXInstruction::Cvt;
-				ptx.a = ir::PTXOperand(
-					ir::PTXOperand::Register, ptx.type,
-					argument->second);
-				ptx.modifier = ir::PTXInstruction::Modifier_invalid;
+				ptx.opcode        = ir::PTXInstruction::Cvt;
+				ptx.modifier      = ir::PTXInstruction::Modifier_invalid;
 			}
 		}
 	}

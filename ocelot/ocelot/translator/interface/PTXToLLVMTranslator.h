@@ -89,7 +89,9 @@ protected:
 	
 protected:
 	void _yield( unsigned int type, const ir::LLVMInstruction::Operand&
-		continuation = ir::LLVMInstruction::Operand() );
+		continuation = ir::LLVMInstruction::Operand( "",
+		ir::LLVMInstruction::Type( 
+		ir::LLVMInstruction::I32, ir::LLVMInstruction::Type::Element ) ) );
 
 	ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o );
 	void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 

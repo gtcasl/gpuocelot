@@ -727,12 +727,12 @@ void PassManager::invalidateAnalysis(int type)
 
 PassManager::PassWaveList PassManager::_schedulePasses()
 {
-	typedef std::unordered_map<std::string, Pass*> PassMap;
+	typedef std::map<std::string, Pass*> PassMap;
 	
 	report(" Scheduling passes...");
 	
-	PassMap    unscheduled;
-	PassMap    needDependencyCheck;
+	PassMap unscheduled;
+	PassMap needDependencyCheck;
 	
 	report("  Initial list:");
 	for(auto pass = _passes.begin(); pass != _passes.end(); ++pass)
@@ -790,7 +790,7 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 		
 		scheduled.push_back(PassVector());
 		
-		for(auto pass = unscheduled.begin(); pass != unscheduled.end(); ++pass)
+		for(auto pass = unscheduled.begin(); pass != unscheduled.end(); )
 		{
 			auto dependentPasses = pass->second->getDependentPasses();
 			
@@ -816,9 +816,11 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 			{
 				report("    " << pass->second->name);
 				scheduled.back().push_back(pass->second);
-				unscheduled.erase(pass);
-				break;
+				unscheduled.erase(pass++);
+				continue;
 			}
+			
+			++pass;
 		}
 		
 		if(!dependenciesSatisfied)

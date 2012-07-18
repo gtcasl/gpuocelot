@@ -64,9 +64,10 @@ namespace parser
 					class Context
 					{
 					public:
-						Context();
+						Context( unsigned int id );
 					
 					public:
+						unsigned int id;
 						OperandMap   operands;
 						PrototypeMap prototypes;
 						unsigned int instructionCount;
@@ -113,6 +114,7 @@ namespace parser
 					StringList identifiers;
 					
 					ContextStack contexts;
+					unsigned int contextId;
 					
 					bool inEntry;
 					bool inArgumentList;
@@ -127,13 +129,15 @@ namespace parser
 					
 					ir::PTXStatement::Directive directive;
 					std::string comment;
-									
+
+														
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
 						ir::PTXStatement::Directive directive );
 				
 				private:
 					void _setImmediateTypes();
+					std::string _nameInContext( const std::string& name );
 				
 					OperandWrapper* _getOperand( const std::string& name );
 					OperandWrapper* _getOperandInScope(

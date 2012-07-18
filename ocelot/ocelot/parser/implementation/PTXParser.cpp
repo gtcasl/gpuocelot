@@ -115,8 +115,8 @@ namespace parser
 		return stream.str();
 	}
 
-	PTXParser::State::Context::Context()
-	: instructionCount( 0 )
+	PTXParser::State::Context::Context( unsigned int i )
+	: id(i), instructionCount( 0 )
 	{
 	
 	}
@@ -154,6 +154,19 @@ namespace parser
 		}
 	}
 	
+	std::string PTXParser::State::_nameInContext(
+		const std::string& name )
+	{
+		// Don't rename in the original context or if there is no collision
+		if( contexts.size() == 1 || _getOperand( name ) == 0 ) return name;
+		
+		std::stringstream stream;
+		
+		stream << "_Zcontext_" << contexts.back().id << "_" << name;
+		
+		return stream.str();
+	}
+					
 	PTXParser::State::OperandWrapper*
 		PTXParser::State::_getOperand( const std::string& name )
 	{
@@ -976,7 +989,7 @@ namespace parser
 		statement.directive = ir::PTXStatement::StartScope;	
 		statementEnd( location );
 		
-		contexts.push_back( Context() );
+		contexts.push_back( Context( contextId++ ) );
 	}
 	
 	void PTXParser::State::closeBrace( YYLTYPE& location )
@@ -1064,7 +1077,7 @@ namespace parser
 		report( "  Rule: .func" );
 		statement.directive = ir::PTXStatement::Func;
 		
-		contexts.push_back( Context() );
+		contexts.push_back( Context( contextId++ ) );
 		
 		statementEnd( location );
 	}
@@ -1142,7 +1155,7 @@ namespace parser
 	
 		statementEnd( location );
 		
-		contexts.push_back( Context() );
+		contexts.push_back( Context( contextId++ ) );
 	}	
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )
@@ -1213,15 +1226,15 @@ namespace parser
 			directive == ir::PTXStatement::Shared );
 
 		statement.directive = directive;
-		statement.name = name;
+		statement.name      = _nameInContext(name);
 		statement.alignment = alignment;
-		statement.type = operand.type;
+		statement.type      = operand.type;
 	
-		operand.identifier = statement.name;
+		operand.identifier  = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
 	
 		contexts.back().operands.insert( std::make_pair( 
-			statement.name, OperandWrapper( operand, 
+			name, OperandWrapper( operand, 
 			_toAddressSpace( directive ) ) ) );
 	}
 
@@ -1444,7 +1457,7 @@ namespace parser
 			}
 		}
 	
-		operand.identifier = name;
+		operand.identifier = mode->operand.identifier;
 		operand.vec = ir::PTXOperand::v1;
 		operand.array.clear();
 
@@ -2194,7 +2207,9 @@ namespace parser
 		state.identifiers.clear();
 
 		state.contexts.clear();
-		state.contexts.push_back( State::Context() );
+		state.contextId = 1;
+		
+		state.contexts.push_back( State::Context( 0 ) );
 		state.operandVector.clear();
 
 		state.returnOperands = 0;
@@ -2717,13 +2732,13 @@ namespace parser
 		parser::PTXLexer lexer( &input, &temp );
 		reset();
 		
-		
 		try 
 		{
 			state.addSpecialRegisters();
 			ptx::yyparse( lexer, state );
 			assertM( temp.str().empty(),
-				"Failed to lex all characters, remainder is:\n" << (int)temp.str()[0] );
+				"Failed to lex all characters, remainder is:\n"
+				<< (int)temp.str()[0] );
 		
 			checkLabels();
 		}

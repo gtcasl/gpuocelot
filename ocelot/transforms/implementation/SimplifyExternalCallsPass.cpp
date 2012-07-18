@@ -148,19 +148,21 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
 			**instruction);
 	
+		report("   examining '"	<< ptx.toString() << "'");
 		if(ptx.opcode == ir::PTXInstruction::Ld)
 		{
 			if(ptx.addressSpace == ir::PTXInstruction::Param)
 			{
 				if(ptx.a.addressMode == ir::PTXOperand::Address)
 				{
+						
 					StringSet::iterator output =
 						outputNames.find(ptx.a.identifier);
 					
 					if(outputNames.end() != output)
 					{
-						report("   found output '" << ptx.a.identifier << "'");
-	
+						report("    found output '" << ptx.a.identifier << "'");
+						
 						assert(ptx.d.addressMode == ir::PTXOperand::Register);
 						assert(nameToRegister.count(ptx.a.identifier) == 0);
 						// if the types match, kill the load
@@ -202,8 +204,6 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		
-		parameter->identifier.clear();
-		
 		if(mapping != nameToRegister.end())
 		{
 			parameter->addressMode = ir::PTXOperand::Register;
@@ -217,6 +217,8 @@ static void simplifyCall(ir::PTXKernel& kernel,
 			report("   assuming output " << parameter->identifier
 				<< " is dead, assigning temp value r" << parameter->reg);
 		}
+		
+		parameter->identifier.clear();
 	}
 
 	for(ir::PTXOperand::Array::iterator parameter = call.b.array.begin();

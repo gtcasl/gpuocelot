@@ -20,6 +20,7 @@
 #endif
 
 #define REPORT_BASE 0
+#define REPORT_PTX  0
 
 namespace transforms
 {
@@ -244,6 +245,8 @@ static void eliminateDeadInstructions(analysis::DataflowGraph& dfg,
 void DeadCodeEliminationPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running dead code elimination on kernel " << k.name);
+	reportE(REPORT_PTX, k);
+	
 	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(dfgAnalysis != 0);
 
@@ -269,6 +272,9 @@ void DeadCodeEliminationPass::runOnKernel(ir::IRKernel& k)
 	
 		eliminateDeadInstructions(dfg, blocks, block);
 	}
+	
+	report("Finished running dead code elimination on kernel " << k.name);
+	reportE(REPORT_PTX, k);
 }
 
 void DeadCodeEliminationPass::finalize()

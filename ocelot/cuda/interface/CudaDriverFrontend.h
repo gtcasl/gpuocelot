@@ -27,7 +27,7 @@
 #include <ocelot/cuda/interface/CudaRuntimeContext.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Timer.h>
+#include <hydrazine/interface/Timer.h>
 
 namespace cuda {
 

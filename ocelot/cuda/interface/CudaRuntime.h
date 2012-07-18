@@ -24,7 +24,7 @@
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Timer.h>
+#include <hydrazine/interface/Timer.h>
 
 // Forward Declarations
 

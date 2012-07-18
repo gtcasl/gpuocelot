@@ -9,7 +9,6 @@
 #include <boost/dynamic_bitset.hpp>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <hydrazine/interface/Stringable.h>
 #include <deque>
 
 /*! \brief A namespace for trace generation related classes */
@@ -41,7 +40,7 @@ namespace trace {
 		bool conservativeBranch;
 	};
 
-	class TraceEvent : hydrazine::Stringable {
+	class TraceEvent {
 	public:
 		typedef std::vector< ir::PTXU64 > U64Vector;
 		typedef boost::dynamic_bitset<> BitMask;

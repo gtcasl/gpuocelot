@@ -10,8 +10,8 @@
 #include <ocelot/tools/OcelotServer.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/Exception.h>
 
 // Boost includes
 #include <boost/thread/thread.hpp>

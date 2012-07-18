@@ -9,7 +9,7 @@
 #define TEST_LLVM_INSTRUCTIONS_CPP_INCLUDED
 
 #include <ocelot/ir/test/TestLLVMInstructions.h>
-#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/interface/ArgumentParser.h>
 
 namespace test
 {

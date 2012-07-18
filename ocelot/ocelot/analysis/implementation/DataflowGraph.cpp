@@ -9,7 +9,7 @@
 
 #include <ocelot/ir/interface/IRKernel.h>
 
-#include <hydrazine/implementation/string.h>
+#include <hydrazine/interface/string.h>
 
 #include <unordered_map>
 

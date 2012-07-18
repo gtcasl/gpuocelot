@@ -11,7 +11,7 @@
 #include <ocelot/tools/OcelotConfig.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/interface/ArgumentParser.h>
 
 // Generated Includes
 #include <configure.h>

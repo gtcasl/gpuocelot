@@ -16,6 +16,7 @@
 #include <functional>
 #include <algorithm>
 #include <queue>
+#include <iterator>
 
 // Boost includes
 #include <boost/bind.hpp>

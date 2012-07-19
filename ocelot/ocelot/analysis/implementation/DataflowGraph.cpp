@@ -1134,6 +1134,12 @@ DataflowGraph::InstructionVector::iterator DataflowGraph::erase(
 	return next;
 }
 
+DataflowGraph::InstructionVector::iterator DataflowGraph::erase(
+	InstructionVector::iterator position )
+{
+	return erase( position->block, position );
+}
+
 void DataflowGraph::compute()
 {
 	if( _consistent ) return;		

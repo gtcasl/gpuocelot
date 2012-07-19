@@ -9,10 +9,15 @@
 // Ocelot Includes
 #include <ocelot/transforms/interface/Pass.h>
 
+#include <ocelot/analysis/interface/DataflowGraph.h>
+
 namespace transforms
 {
 
-/*! \brief Perform global value numbering on a PTX kernel */
+/*! \brief Perform global value numbering on a PTX kernel.
+	
+	Based on the LLVM implementation in GVN.cpp.
+ */
 class GlobalValueNumberingPass : public KernelPass
 {
 public:
@@ -27,8 +32,95 @@ public:
 	/*! \brief Finalize the pass */
 	void finalize();
 
+private:
+	typedef unsigned int Number;
+	typedef analysis::DataflowGraph::instruction_iterator InstructionIterator;
+	typedef analysis::DataflowGraph::iterator             BlockIterator;
+	typedef analysis::DataflowGraph::BlockPointerVector   BlockPointerVector;
+
+	class Expression
+	{
+	public:
+		ir::PTXInstruction::Opcode opcode;
+		ir::PTXOperand::DataType   type;
+		
+		Number arguments[4];
+		
+	public:
+		Expression(ir::PTXInstruction::Opcode
+			oc = ir::PTXInstruction::Invalid_Opcode, 
+			ir::PTXOperand::DataType t = ir::PTXOperand::TypeSpecifier_invalid);
+	
+	public:
+		bool operator==(const Expression& eq) const;
+				
+	};
+
+	struct ExpressionHash
+	{
+		inline size_t operator()(
+			const transforms::GlobalValueNumberingPass::Expression& e) const
+		{
+			return e.opcode ^ e.type ^ e.arguments[0] ^
+				e.arguments[1] ^ e.arguments[2] ^ e.arguments[3];
+		}
+	};
+
+	class GeneratingInstruction
+	{
+	public:
+		GeneratingInstruction(const InstructionIterator& it);
+	
+	public:
+		InstructionIterator instruction;
+	};
+
+	typedef std::list<GeneratingInstruction> GeneratingInstructionList;
+	typedef std::vector<InstructionIterator> InstructionVector;
+
+	typedef std::unordered_map<ir::Instruction::RegisterType, Number>
+		ValueToNumberMap;
+	typedef std::unordered_map<Expression, Number, ExpressionHash>
+		ExpressionToNumberMap;
+	typedef std::unordered_map<Number, GeneratingInstructionList>
+		NumberToGeneratingInstructionMap;
+
+private:
+	bool _numberThenMergeIdenticalValues(ir::IRKernel& k);
+
+	BlockPointerVector _depthFirstTraversal(ir::IRKernel& k);
+	bool _processBlock(const BlockIterator& block);
+	void _clearValueAssignments();
+
+private:
+	bool _processInstruction(const InstructionIterator& instruction);
+	bool _processLoad(const InstructionIterator& instruction);
+	void _processEliminatedInstructions();
+
+private:
+	Number _getNextNumber();
+	Number _lookupExistingOrCreateNewNumber(
+		const InstructionIterator& instruction);
+
+	void _setGeneratingInstruction(Number n,
+		const InstructionIterator& instruction);
+	InstructionIterator _findGeneratingInstruction(Number n,
+		const InstructionIterator& instruction);
+	void _eliminateInstruction(const InstructionIterator& generatingInstruction,
+		const InstructionIterator& instruction);
+
+	Expression _createExpression(const InstructionIterator& instruction);
+
+private:
+	ValueToNumberMap                 _numberedValues;
+	ExpressionToNumberMap            _numberedExpressions;
+	Number                           _nextNumber;
+	NumberToGeneratingInstructionMap _generatingInstructions;
+	InstructionVector                _eliminatedInstructions;
 
 };
 
 }
+
+
 

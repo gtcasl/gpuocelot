@@ -770,7 +770,8 @@ offsetAddressableOperand : identifier '-' TOKEN_DECIMAL_CONSTANT
 	state.addressableOperand( $<text>1, $<value>3, @1, true );
 };
 
-callOperand : memoryOperand;
+callOperand : constantOperand | addressableOperand | '[' addressableOperand ']'
+    | '[' offsetAddressableOperand ']';
 operand : constantOperand | nonLabelOperand;
 
 memoryOperand : constantOperand | addressableOperand | offsetAddressableOperand;

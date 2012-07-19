@@ -64,7 +64,7 @@ void SSAGraph::_initialize( Block& b, DataflowGraph::iterator block,
 {
 	report( "	Initializing block: " << block->label() );
 	b.regs.clear();
-	for( DataflowGraph::Block::RegisterSet::iterator 
+	for( DataflowGraph::RegisterSet::iterator 
 		reg = block->_aliveIn.begin(); 
 		reg != block->_aliveIn.end(); ++reg )
 	{
@@ -146,11 +146,11 @@ void SSAGraph::_insertPhis()
 				= _blocks.find( *predecessor );
 			assert( predecessorBlock != _blocks.end() );
 					
-			for( DataflowGraph::Block::RegisterSet::iterator 
+			for( DataflowGraph::RegisterSet::iterator 
 				reg = (*predecessor)->_aliveOut.begin(); 
 				reg != (*predecessor)->_aliveOut.end(); ++reg )
 			{
-				DataflowGraph::Block::RegisterSet::iterator in 
+				DataflowGraph::RegisterSet::iterator in 
 					= block->first->_aliveIn.find( reg->id );
 				if( in != block->first->_aliveIn.end() )
 				{
@@ -177,7 +177,7 @@ void SSAGraph::_insertPhis()
 		
 		report( "		 Mapping phis with no producer." );
 		
-		for( DataflowGraph::Block::RegisterSet::iterator 
+		for( DataflowGraph::RegisterSet::iterator 
 			reg = block->first->_aliveIn.begin(); 
 			reg != block->first->_aliveIn.end(); ++reg )
 		{
@@ -247,8 +247,8 @@ void SSAGraph::_updateOut()
 		block != _blocks.end(); ++block )
 	{
 		report( "	Updating AliveOut for block " << block->first->label() );
-		DataflowGraph::Block::RegisterSet newAliveOut;
-		for( DataflowGraph::Block::RegisterSet::iterator 
+		DataflowGraph::RegisterSet newAliveOut;
+		for( DataflowGraph::RegisterSet::iterator 
 			reg = block->first->_aliveOut.begin(); 
 			reg != block->first->_aliveOut.end(); ++reg )
 		{
@@ -422,10 +422,10 @@ void SSAGraph::fromSsa()
 				<< instruction->i->toString() );
 		}
 		
-		DataflowGraph::Block::RegisterSet newAlive;
+		DataflowGraph::RegisterSet newAlive;
 		
 		report(" Updating alive out set.");
-		for( DataflowGraph::Block::RegisterSet::iterator 
+		for( DataflowGraph::RegisterSet::iterator 
 			reg = fi->_aliveOut.begin(); 
 			reg != fi->_aliveOut.end(); ++reg )
 		{
@@ -446,7 +446,7 @@ void SSAGraph::fromSsa()
 		newAlive.clear();
 		
 		report(" Updating alive in set.");
-		for( DataflowGraph::Block::RegisterSet::iterator 
+		for( DataflowGraph::RegisterSet::iterator 
 			reg = fi->_aliveIn.begin(); 
 			reg != fi->_aliveIn.end(); ++reg )
 		{
@@ -534,7 +534,7 @@ void SSAGraph::_minimize()
 					auto source    = phi->s.begin();
 					auto sourceEnd = phi->s.end();
 					
-					DataflowGraph::Block::RegisterSet newSources;
+					DataflowGraph::RegisterSet newSources;
 					bool hasNewSources = false;
 					
 					reportE(DEBUG, "\tFor phi " << *phi);
@@ -675,7 +675,7 @@ void SSAGraph::_minimize()
 					reportE(DEBUG, "\t\t - r" << in->id
 						<< " + r" << final->second.id);
 
-					DataflowGraph::Block::RegisterSet::iterator inErase = in++;
+					DataflowGraph::RegisterSet::iterator inErase = in++;
 					fi->aliveIn().erase(inErase);
 					fi->aliveIn().insert(final->second);
 					in = fi->aliveIn().begin();

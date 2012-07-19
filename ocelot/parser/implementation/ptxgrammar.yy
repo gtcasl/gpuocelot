@@ -814,12 +814,12 @@ intRounding : intRoundingToken
 optionalFloatRounding : floatRounding | /* empty string */;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
-	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
-	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
+	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub
+	| addCOrSubC | atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
-	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
-	| setp | slct | st | suld | suq | sured | sust | testp | tex | tld4 | trap
-	| txq | vote;
+	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red
+	| ret | sad | selp | set | setp | slct | st | suld | suq | sured | sust
+	| testp | tex | tld4 | trap | txq | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;

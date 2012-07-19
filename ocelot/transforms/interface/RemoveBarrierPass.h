@@ -46,10 +46,10 @@ private:
 	analysis::DataflowGraph::RegisterId _tempRegister( );
 	void _addSpillCode( analysis::DataflowGraph::iterator block, 
 		analysis::DataflowGraph::iterator target, 
-		const analysis::DataflowGraph::Block::RegisterSet& alive,
+		const analysis::DataflowGraph::RegisterSet& alive,
 		bool isBarrier );
 	void _addRestoreCode( analysis::DataflowGraph::iterator block, 
-		const analysis::DataflowGraph::Block::RegisterSet& alive );
+		const analysis::DataflowGraph::RegisterSet& alive );
 	void _addEntryPoint( analysis::DataflowGraph::iterator block );
 	void _removeBarrier( analysis::DataflowGraph::iterator block, 
 		unsigned int instruction );

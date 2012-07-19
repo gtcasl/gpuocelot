@@ -37,7 +37,7 @@ analysis::DataflowGraph::RegisterId RemoveBarrierPass::_tempRegister()
 
 void RemoveBarrierPass::_addSpillCode( analysis::DataflowGraph::iterator block, 
 	analysis::DataflowGraph::iterator target, 
-	const analysis::DataflowGraph::Block::RegisterSet& alive, bool isBarrier )
+	const analysis::DataflowGraph::RegisterSet& alive, bool isBarrier )
 {
 	unsigned int bytes = 0;
 	
@@ -57,7 +57,7 @@ void RemoveBarrierPass::_addSpillCode( analysis::DataflowGraph::iterator block,
 
 	report( "   Saving " << alive.size() << " Registers" );
 	
-	for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
+	for( analysis::DataflowGraph::RegisterSet::const_iterator 
 		reg = alive.begin(); reg != alive.end(); ++reg )
 	{
 		report( "    r" << reg->id << " (" 
@@ -129,7 +129,7 @@ void RemoveBarrierPass::_addSpillCode( analysis::DataflowGraph::iterator block,
 
 void RemoveBarrierPass::_addRestoreCode(
 	analysis::DataflowGraph::iterator block, 
-	const analysis::DataflowGraph::Block::RegisterSet& alive )
+	const analysis::DataflowGraph::RegisterSet& alive )
 {
 	unsigned int bytes = 0;
 
@@ -145,7 +145,7 @@ void RemoveBarrierPass::_addRestoreCode(
 	move.d.addressMode = ir::PTXOperand::Register;
 	move.d.type = ir::PTXOperand::u32;
 
-	for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
+	for( analysis::DataflowGraph::RegisterSet::const_iterator 
 		reg = alive.begin(); reg != alive.end(); ++reg )
 	{
 		ir::PTXInstruction load( 
@@ -239,7 +239,7 @@ void RemoveBarrierPass::_addEntryPoint(
 void RemoveBarrierPass::_removeBarrier( analysis::DataflowGraph::iterator block, 
 	unsigned int id )
 {
-	typedef analysis::DataflowGraph::Block::RegisterSet RegisterSet;
+	typedef analysis::DataflowGraph::RegisterSet RegisterSet;
 	
 	analysis::DataflowGraph::InstructionVector::const_iterator 
 		_instruction( block->instructions().begin() );

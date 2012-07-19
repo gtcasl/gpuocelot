@@ -192,7 +192,8 @@ int main( int argc, char** argv )
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
 		"mimd-threading, dead-code-elimination, split-blocks, "
 		"sync-elimination, hoist-special-definitions, "
-		"simplify-cfg, loop-unrolling, lock-step, function-inlining)" );
+		"simplify-cfg, loop-unrolling, lock-step, function-inlining, "
+		"global-value-numbering)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

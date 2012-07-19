@@ -63,6 +63,10 @@ public:
 		ir::ControlFlowGraph::iterator block1,
 		ir::ControlFlowGraph::iterator block2);
 	
+	/*! Get the set of blocks immediately dominated by the specified block */
+	ir::ControlFlowGraph::BlockPointerVector getDominatedBlocks(
+		ir::ControlFlowGraph::iterator block);
+	
 private:
 	void computeDT();
 	int intersect(int b1, int b2) const;

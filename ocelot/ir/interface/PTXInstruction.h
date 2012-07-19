@@ -371,6 +371,8 @@ namespace ir {
 	public:
 		/*! \brief Is the instruction a branch */
 		bool isBranch() const;
+		/*! \brief Is the instruction a load */
+		bool isLoad() const;
 		/*! \brief Does the instruction accept an address as an operand */
 		bool mayHaveAddressableOperand() const;
 		/*! \brief Does the instruction write to a relaxed type? */
@@ -481,7 +483,6 @@ namespace ir {
 			CacheOperation cacheOperation;
 		};
 		
-		
 		union {
 			/*! optionally writes carry-out value to condition code register */
 			CarryFlag carry;
@@ -502,14 +503,12 @@ namespace ir {
 		/*! Source operand c */
 		PTXOperand c;
 
-	public:
-	
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
 				at analysis time for use at runtime
 		*/
-		
+	public:
 		union
 		{
 			/*! \brief Index of post dominator instruction at which possibly 

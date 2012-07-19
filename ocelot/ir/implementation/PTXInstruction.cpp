@@ -2509,6 +2509,10 @@ bool ir::PTXInstruction::isBranch() const {
 	return opcode == Bra || opcode == Call;
 }
 
+bool ir::PTXInstruction::isLoad() const {
+	return opcode == Ld || opcode == Ldu;
+}
+
 bool ir::PTXInstruction::mayHaveAddressableOperand() const {
 	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
 		|| opcode == Atom || opcode == Ldu;

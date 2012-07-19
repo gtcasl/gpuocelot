@@ -134,6 +134,11 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::list< InstructionIterator > InstructionIteratorList;
 		/*! \brief iterator over all uses in the same block */
 		typedef InstructionIteratorList::iterator DUIterator;
+		/*! \brief iterator */
+		typedef BlockVector::iterator iterator;
+		/*! \brief const_iterator */
+		typedef BlockVector::const_iterator const_iterator;
+		/*! \brief instruction iterator */
 		
 		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
@@ -149,6 +154,8 @@ class DataflowGraph : public KernelAnalysis
 				InstructionIteratorList uses;
 				/*! \brief iterator over all defs in the same block */
 				InstructionIteratorList defs;
+				/*! \brief A pointer to the owning DFG block */
+				iterator block;
 
 		};
 		
@@ -219,6 +226,8 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief A pointer to the underlying 
 					basic block in the cfg */
 				ir::ControlFlowGraph::iterator _block;
+				/*! \brief A pointer to the owning DFG */
+				DataflowGraph* _dfg;
 
 			private:
 				/*! \brief Compare two register sets */
@@ -280,6 +289,8 @@ class DataflowGraph : public KernelAnalysis
 				ir::ControlFlowGraph::iterator block();
 				/*! \brief Get a pointer to the underlying block */
 				ir::ControlFlowGraph::const_iterator block() const;
+				/*! \brief Get a pointer to the underlying dfg */
+				DataflowGraph* dfg();
 
 			public:
 				/*! \brief Determine the block that produced a register */
@@ -291,11 +302,6 @@ class DataflowGraph : public KernelAnalysis
 		};
 		
 	public:
-		/*! \brief iterator */
-		typedef BlockVector::iterator iterator;
-		/*! \brief const_iterator */
-		typedef BlockVector::const_iterator const_iterator;
-		/*! \brief instruction iterator */
 		typedef InstructionIterator instruction_iterator;
 		/*! \brief Value type */
 		typedef BlockVector::value_type value_type;
@@ -421,6 +427,10 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief Erase an instruction from a block at the specified
 			index */
 		void erase( iterator block, unsigned int index );
+		/*! \brief Erase an instruction from its block at the specified
+			position */
+		InstructionVector::iterator erase(
+			InstructionVector::iterator position );
 		
 	public:
 		/*! \brief Compute live ranges */

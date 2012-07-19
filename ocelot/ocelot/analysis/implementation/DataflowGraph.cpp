@@ -336,24 +336,22 @@ bool DataflowGraph::Block::compute( bool hasFallthrough )
 	return !_equal( _aliveIn, previousIn );
 }
 
-const DataflowGraph::Block::RegisterSet& 
-	DataflowGraph::Block::aliveIn() const
+const DataflowGraph::RegisterSet& DataflowGraph::Block::aliveIn() const
 {
 	return _aliveIn;
 }
 
-const DataflowGraph::Block::RegisterSet& 
-	DataflowGraph::Block::aliveOut() const
+const DataflowGraph::RegisterSet& DataflowGraph::Block::aliveOut() const
 {
 	return _aliveOut;
 }
 
-DataflowGraph::Block::RegisterSet& DataflowGraph::Block::aliveIn()
+DataflowGraph::RegisterSet& DataflowGraph::Block::aliveIn()
 {
 	return _aliveIn;
 }
 
-DataflowGraph::Block::RegisterSet& DataflowGraph::Block::aliveOut()
+DataflowGraph::RegisterSet& DataflowGraph::Block::aliveOut()
 {
 	return _aliveOut;
 }
@@ -455,7 +453,7 @@ const std::string* DataflowGraph::Block::producer( const Register& r ) const
 	return &(*predecessor)->label();
 }
 
-DataflowGraph::Block::RegisterSet DataflowGraph::Block::alive( 
+DataflowGraph::RegisterSet DataflowGraph::Block::alive( 
 	const InstructionVector::const_iterator& i )
 {
 	RegisterSet alive( _aliveOut );
@@ -1184,14 +1182,14 @@ void DataflowGraph::compute()
 	{
 		report( " Block " << fi->label() );
 		report( "  Alive In" );
-		for( Block::RegisterSet::iterator ri = fi->_aliveIn.begin(); 
+		for( RegisterSet::iterator ri = fi->_aliveIn.begin(); 
 			ri != fi->_aliveIn.end(); ++ri )
 		{
 			report( "   r" << ri->id << " "
 				<< ir::PTXOperand::toString( ri->type ) );
 		}
 		report( "  Alive Out" );
-		for( Block::RegisterSet::iterator ri = fi->_aliveOut.begin(); 
+		for( RegisterSet::iterator ri = fi->_aliveOut.begin(); 
 			ri != fi->_aliveOut.end(); ++ri )
 		{
 			report( "   r" << ri->id << " "
@@ -1394,7 +1392,7 @@ std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
 		if( !block->aliveIn().empty() )
 		{
 			out << " | { ";
-			DataflowGraph::Block::RegisterSet::const_iterator 
+			DataflowGraph::RegisterSet::const_iterator 
 				ri = block->aliveIn().begin();
 			std::stringstream value;
 			value << "r" << ri->id;
@@ -1534,7 +1532,7 @@ std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
 		if( !block->aliveOut().empty() )
 		{
 			out << " | { ";
-			DataflowGraph::Block::RegisterSet::const_iterator 
+			DataflowGraph::RegisterSet::const_iterator 
 				ri = block->aliveOut().begin();
 			out << "<r" << ri->id << "> ";
 			out << "r" << ri->id;
@@ -1547,7 +1545,7 @@ std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
 		}
 		out << " }\"];\n";
 		
-		for( DataflowGraph::Block::RegisterSet::const_iterator 
+		for( DataflowGraph::RegisterSet::const_iterator 
 			ri = block->aliveOut().begin(); 
 			ri != block->aliveOut().end(); ++ri )
 		{

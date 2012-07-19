@@ -64,10 +64,10 @@ namespace test
 		for( analysis::DataflowGraph::const_iterator block = graph.begin(); 
 			block != graph.end(); ++block )
 		{
-			analysis::DataflowGraph::Block::RegisterSet defined;
+			analysis::DataflowGraph::RegisterSet defined;
 			
 			report( " Alive in registers:" );
-			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
+			for( analysis::DataflowGraph::RegisterSet::const_iterator 
 				reg = block->aliveIn().begin(); 
 				reg != block->aliveIn().end(); ++reg )
 			{
@@ -115,7 +115,7 @@ namespace test
 				}
 			}
 			
-			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
+			for( analysis::DataflowGraph::RegisterSet::const_iterator 
 				reg = block->aliveOut().begin(); 
 				reg != block->aliveOut().end(); ++reg )
 			{
@@ -133,15 +133,15 @@ namespace test
 
 	bool TestDataflowGraph::_verifySsa( const analysis::DataflowGraph& graph )
 	{
-		analysis::DataflowGraph::Block::RegisterSet global;
+		analysis::DataflowGraph::RegisterSet global;
 		for( analysis::DataflowGraph::const_iterator block = graph.begin(); 
 			block != graph.end(); ++block )
 		{
-			analysis::DataflowGraph::Block::RegisterSet defined;
+			analysis::DataflowGraph::RegisterSet defined;
 			
 			report( block->label() );
 			report( " Alive in registers:" );
-			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
+			for( analysis::DataflowGraph::RegisterSet::const_iterator 
 				reg = block->aliveIn().begin(); 
 				reg != block->aliveIn().end(); ++reg )
 			{
@@ -221,7 +221,7 @@ namespace test
 				}
 			}
 			
-			for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
+			for( analysis::DataflowGraph::RegisterSet::const_iterator 
 				reg = block->aliveOut().begin(); 
 				reg != block->aliveOut().end(); ++reg )
 			{

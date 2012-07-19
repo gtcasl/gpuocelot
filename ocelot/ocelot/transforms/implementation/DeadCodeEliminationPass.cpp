@@ -45,7 +45,7 @@ typedef std::unordered_set<iterator>                   BlockSet;
 typedef analysis::DataflowGraph::BlockPointerSet       BlockPointerSet;
 typedef analysis::DataflowGraph::PhiInstruction        PhiInstruction;
 typedef analysis::DataflowGraph::Register              Register;
-typedef analysis::DataflowGraph::Block::RegisterSet    RegisterSet;
+typedef analysis::DataflowGraph::RegisterSet    RegisterSet;
 typedef analysis::DataflowGraph::InstructionVector     InstructionVector;
 typedef analysis::DataflowGraph::PhiInstructionVector  PhiInstructionVector;
 
@@ -148,7 +148,7 @@ static void eliminateDeadInstructions(analysis::DataflowGraph& dfg,
 	BlockSet& blocks, iterator block)
 {
 	typedef analysis::DataflowGraph::Block                Block;
-	typedef analysis::DataflowGraph::Block::RegisterSet   RegisterSet;
+	typedef analysis::DataflowGraph::RegisterSet   RegisterSet;
 	typedef std::vector<unsigned int>                     KillList;
 	typedef std::vector<PhiInstructionVector::iterator>   PhiKillList;
 	typedef std::vector<RegisterSet::iterator>            AliveKillList;

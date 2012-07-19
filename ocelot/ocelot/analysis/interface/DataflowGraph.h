@@ -46,15 +46,15 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A list of instructions */
 		typedef ir::ControlFlowGraph::InstructionList InstructionList;
 
-    enum SsaType
-    {
-      None = 0,
-      Default = 1,
-      Minimal = 2,
-      Gated = 4
-    };
+		enum SsaType
+		{
+			None = 0,
+			Default = 1,
+			Minimal = 2,
+			Gated = 4
+		};
 
-    /*! \brief A register with type info */
+    	/*! \brief A register with type info */
 		class RegisterPointer
 		{
 			public:
@@ -128,7 +128,12 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::list< PhiInstruction > PhiInstructionVector;
 		/*! \brief A vector of blocks */
 		typedef std::list< Block > BlockVector;
-		typedef std::list<InstructionVector::iterator> InstructionIteratorList;
+		/*! \brief An iterator over an instruction vector */
+		typedef InstructionVector::iterator InstructionIterator;
+		/*! \brief A vector of instruction iterators */
+		typedef std::list< InstructionIterator > InstructionIteratorList;
+		/*! \brief iterator over all uses in the same block */
+		typedef InstructionIteratorList::iterator DUIterator;
 		
 		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
@@ -144,8 +149,6 @@ class DataflowGraph : public KernelAnalysis
 				InstructionIteratorList uses;
 				/*! \brief iterator over all defs in the same block */
 				InstructionIteratorList defs;
-				/*! \brief iterator over all uses in the same block */
-				typedef InstructionIteratorList::iterator DUIterator;
 
 		};
 		
@@ -170,7 +173,11 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A vector of Block pointers */
 		typedef std::unordered_set< BlockVector::iterator,
 			BlockVector_Hash > BlockPointerSet;
-		
+
+		/*! \brief A unique set of register Ids */
+		typedef std::unordered_set< Register,
+			Register_Hash > RegisterSet;		
+
 		/*! \brief A class for referring to a generic basic block of 
 				instructions.
 		*/
@@ -189,9 +196,6 @@ class DataflowGraph : public KernelAnalysis
 					Invalid
 				};
 
-				/*! \brief A unique set of register Ids */
-				typedef std::unordered_set< Register,
-					Register_Hash > RegisterSet;
 
 			private:
 				/*! \brief Registers that are alive entering the block */
@@ -291,12 +295,12 @@ class DataflowGraph : public KernelAnalysis
 		typedef BlockVector::iterator iterator;
 		/*! \brief const_iterator */
 		typedef BlockVector::const_iterator const_iterator;
+		/*! \brief instruction iterator */
+		typedef InstructionIterator instruction_iterator;
 		/*! \brief Value type */
 		typedef BlockVector::value_type value_type;
 		/*! \brief Size type */
 		typedef BlockVector::size_type size_type;
-		/*! \brief Register set */
-		typedef Block::RegisterSet RegisterSet;
 		/*! \brief Register set iterator */
 		typedef RegisterSet::const_iterator register_iterator;
 

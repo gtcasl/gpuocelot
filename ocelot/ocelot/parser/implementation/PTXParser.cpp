@@ -154,15 +154,27 @@ namespace parser
 		}
 	}
 	
+	static std::string strip(const std::string& name)
+	{
+		if(name.find("_Zcontext_") == 0)
+		{
+			size_t position = name.find("_", 10);
+			
+			return name.substr(position + 1);
+		}
+		
+		return name;
+	}
+	
 	std::string PTXParser::State::_nameInContext(
 		const std::string& name )
 	{
-		// Don't rename in the original context or if there is no collision
-		if( contexts.size() == 1 || _getOperand( name ) == 0 ) return name;
+		// Don't rename in the original context
+		if( contexts.size() <= 3 ) return name;
 		
 		std::stringstream stream;
 		
-		stream << "_Zcontext_" << contexts.back().id << "_" << name;
+		stream << "_Zcontext_" << contexts.back().id << "_" << strip(name);
 		
 		return stream.str();
 	}
@@ -990,6 +1002,7 @@ namespace parser
 		statementEnd( location );
 		
 		contexts.push_back( Context( contextId++ ) );
+		report("Nesting level " << contexts.size());		
 	}
 	
 	void PTXParser::State::closeBrace( YYLTYPE& location )
@@ -1020,6 +1033,7 @@ namespace parser
 		statementEnd( location );
 		
 		contexts.pop_back();
+		report("Nesting level " << contexts.size());		
 
 		inEntry = contexts.size() > 1;
 	}
@@ -1078,7 +1092,8 @@ namespace parser
 		statement.directive = ir::PTXStatement::Func;
 		
 		contexts.push_back( Context( contextId++ ) );
-		
+		report("Nesting level " << contexts.size());		
+
 		statementEnd( location );
 	}
 
@@ -1112,7 +1127,8 @@ namespace parser
 			assert( contexts.size() > 1 );
 	
 			contexts.pop_back();
-		
+			report("Nesting level " << contexts.size());		
+
 			statement.directive = ir::PTXStatement::EndFuncDec;
 			statementEnd( location );
 		}
@@ -1150,13 +1166,11 @@ namespace parser
 
 		statement.directive = ir::PTXStatement::Entry;
 		statement.name = name;
-	
-		prototype.name = name;
-	
-		statementEnd( location );
 		
-		contexts.push_back( Context( contextId++ ) );
-	}	
+		prototype.name = name;
+		
+		statementEnd( location );	
+	}
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )
 	{
@@ -2211,6 +2225,7 @@ namespace parser
 		
 		state.contexts.push_back( State::Context( 0 ) );
 		state.operandVector.clear();
+		report("Reset nesting level " << state.contexts.size());		
 
 		state.returnOperands = 0;
 

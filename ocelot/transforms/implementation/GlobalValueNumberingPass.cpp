@@ -10,9 +10,21 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/DominatorTree.h>
 
+#include <ocelot/ir/interface/IRKernel.h>
+
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+
 // Standard Library Includes
 #include <cassert>
 #include <stack>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -33,6 +45,9 @@ void GlobalValueNumberingPass::initialize(const ir::Module& m)
 
 void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 {
+	report("Running GlobalValueNumberingPass on '" << k.name << "'");
+	
+	#if 0
 	// identify identical values
 	bool changed = true;
 	
@@ -41,6 +56,7 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 	{
 		changed = _numberThenMergeIdenticalValues(k);
 	}
+	#endif
 	
 	// convert out of SSA, this renumbers registers
 	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
@@ -53,6 +69,7 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 	dfg->fromSsa();
 	
 	invalidateAnalysis(Analysis::StaticSingleAssignment);
+	invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 }
 
 void GlobalValueNumberingPass::finalize()
@@ -62,9 +79,13 @@ void GlobalValueNumberingPass::finalize()
 
 bool GlobalValueNumberingPass::_numberThenMergeIdenticalValues(ir::IRKernel& k)
 {
+	report(" Starting new iteration.");
+	
 	// Depth first traversal of the dominator tree
 	auto depthFirstTraversal = _depthFirstTraversal(k);
 	
+	report(" Walking blocks depth first along the dominator tree.");
+
 	bool changed = false;
 	for(auto block = depthFirstTraversal.begin();
 		block != depthFirstTraversal.end(); ++block)
@@ -130,6 +151,8 @@ analysis::DataflowGraph::BlockPointerVector
 
 bool GlobalValueNumberingPass::_processBlock(const BlockIterator& block)
 {
+	report("  Processing block '" << block->label() << "'");
+
 	bool changed = false;
 	
 	for(auto instruction = block->instructions().begin();

@@ -16,7 +16,7 @@
 #include <ocelot/cuda/interface/CudaDriverFrontend.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 
 #ifdef REPORT_BASE
@@ -59,8 +59,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define Function(f) f
-#define FunctionV(f) f ## _v2
+#define Function(f) CUDAAPI f
+#define FunctionV(f) CUDAAPI f ## _v2
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

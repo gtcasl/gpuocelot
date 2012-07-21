@@ -74,6 +74,7 @@ private:
 	{
 	public:
 		VariableDescriptor(bool isRegister);
+		virtual ~VariableDescriptor();
 	
 	public:
 		virtual void hoistAllUses(KernelPass* pass, ir::IRKernel& k,

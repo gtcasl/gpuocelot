@@ -13,12 +13,13 @@
 #include <ocelot/ir/interface/PTXInstruction.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <cassert>
 #include <unordered_set>
-
+#include <set>
+#include <map>
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -45,7 +46,15 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A list of instructions */
 		typedef ir::ControlFlowGraph::InstructionList InstructionList;
 
-		/*! \brief A register with type info */
+		enum SsaType
+		{
+			None    = 0,
+			Default = 1,
+			Minimal = 2,
+			Gated   = 4
+		};
+
+    	/*! \brief A register with type info */
 		class RegisterPointer
 		{
 			public:
@@ -94,7 +103,7 @@ class DataflowGraph : public KernelAnalysis
 		
 		/*! \brief A vector of register ID pointers */
 		typedef std::vector< RegisterPointer > RegisterPointerVector;
-		/*! \brief A vector of register ID pointers */
+		/*! \brief A vector of registers */
 		typedef std::vector< Register > RegisterVector;
 		
 		/*! \brief An exception for potentially uninitialized regs */
@@ -119,7 +128,17 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::list< PhiInstruction > PhiInstructionVector;
 		/*! \brief A vector of blocks */
 		typedef std::list< Block > BlockVector;
-		typedef std::list<InstructionVector::iterator> InstructionIteratorList;
+		/*! \brief An iterator over an instruction vector */
+		typedef InstructionVector::iterator InstructionIterator;
+		/*! \brief A vector of instruction iterators */
+		typedef std::list< InstructionIterator > InstructionIteratorList;
+		/*! \brief iterator over all uses in the same block */
+		typedef InstructionIteratorList::iterator DUIterator;
+		/*! \brief iterator */
+		typedef BlockVector::iterator iterator;
+		/*! \brief const_iterator */
+		typedef BlockVector::const_iterator const_iterator;
+		/*! \brief instruction iterator */
 		
 		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
@@ -135,8 +154,8 @@ class DataflowGraph : public KernelAnalysis
 				InstructionIteratorList uses;
 				/*! \brief iterator over all defs in the same block */
 				InstructionIteratorList defs;
-				/*! \brief iterator over all uses in the same block */
-				typedef InstructionIteratorList::iterator DUIterator;
+				/*! \brief A pointer to the owning DFG block */
+				iterator block;
 
 		};
 		
@@ -161,7 +180,11 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A vector of Block pointers */
 		typedef std::unordered_set< BlockVector::iterator,
 			BlockVector_Hash > BlockPointerSet;
-		
+
+		/*! \brief A unique set of register Ids */
+		typedef std::unordered_set< Register,
+			Register_Hash > RegisterSet;		
+
 		/*! \brief A class for referring to a generic basic block of 
 				instructions.
 		*/
@@ -179,9 +202,7 @@ class DataflowGraph : public KernelAnalysis
 					Body,
 					Invalid
 				};
-		
-				/*! \brief A unique set of register Ids */
-				typedef std::unordered_set< Register, Register_Hash > RegisterSet;
+
 
 			private:
 				/*! \brief Registers that are alive entering the block */
@@ -194,6 +215,8 @@ class DataflowGraph : public KernelAnalysis
 				BlockPointerSet _targets;
 				/*! \brief A list of predecessor blocks */
 				BlockPointerSet _predecessors;
+				/*! \brief A list of successors blocks */
+				BlockPointerSet _successors;
 				/*! \brief The type of block */
 				Type _type;
 				/*! \brief Ordered set of phi instructions in the block */
@@ -203,6 +226,8 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief A pointer to the underlying 
 					basic block in the cfg */
 				ir::ControlFlowGraph::iterator _block;
+				/*! \brief A pointer to the owning DFG */
+				DataflowGraph* _dfg;
 
 			private:
 				/*! \brief Compare two register sets */
@@ -238,8 +263,12 @@ class DataflowGraph : public KernelAnalysis
 				const BlockPointerSet& targets() const;
 				/*! \brief Get a list of predecessor blocks */
 				const BlockPointerSet& predecessors() const;
+				/*! \brief Get a list of successor blocks */
+				const BlockPointerSet& successors() const;
 				/*! \brief Get a list of target blocks */
 				BlockPointerSet& targets();
+				/*! \brief Get a list of successor blocks */
+				BlockPointerSet& successors();
 				/*! \brief Get a list of predecessor blocks */
 				BlockPointerSet& predecessors();
 				/*! \brief Get the type of the block */
@@ -258,6 +287,10 @@ class DataflowGraph : public KernelAnalysis
 				ir::ControlFlowGraph::BasicBlock::Id id() const;
 				/*! \brief Get a pointer to the underlying block */
 				ir::ControlFlowGraph::iterator block();
+				/*! \brief Get a pointer to the underlying block */
+				ir::ControlFlowGraph::const_iterator block() const;
+				/*! \brief Get a pointer to the underlying dfg */
+				DataflowGraph* dfg();
 
 			public:
 				/*! \brief Determine the block that produced a register */
@@ -269,16 +302,11 @@ class DataflowGraph : public KernelAnalysis
 		};
 		
 	public:
-		/*! \brief iterator */
-		typedef BlockVector::iterator iterator;
-		/*! \brief const_iterator */
-		typedef BlockVector::const_iterator const_iterator;
+		typedef InstructionIterator instruction_iterator;
 		/*! \brief Value type */
 		typedef BlockVector::value_type value_type;
 		/*! \brief Size type */
 		typedef BlockVector::size_type size_type;
-		/*! \brief Register set */
-		typedef Block::RegisterSet RegisterSet;
 		/*! \brief Register set iterator */
 		typedef RegisterSet::const_iterator register_iterator;
 
@@ -290,15 +318,19 @@ class DataflowGraph : public KernelAnalysis
 		typedef BlockPointerVector::reverse_iterator 
 			reverse_pointer_iterator;
 		/*! \brief A map from cfg blocks to dfg equivalents */
-		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
+		typedef std::unordered_map< ir::ControlFlowGraph::const_iterator, 
 			iterator > IteratorMap;
+
+		typedef std::set<RegisterId> RegisterIdSet;
+		typedef std::map<const PhiInstruction*, RegisterIdSet > PhiPredicateMap;
 
 	private:
 		BlockVector _blocks;
 		ir::ControlFlowGraph* _cfg;
 		bool _consistent;
-		bool _ssa;
+		SsaType _ssa;
 		RegisterId _maxRegister;
+		PhiPredicateMap _phiPredicateMap;
 
 	public:
 		/*! \brief Convert from a PTXInstruction to an Instruction  */
@@ -378,20 +410,27 @@ class DataflowGraph : public KernelAnalysis
 	public:
 		/*! \brief Insert an instruction into a block 
 			immediately before the specified index */
-		void insert( iterator block, const ir::Instruction& instruction, 
-			unsigned int index );
+		InstructionVector::iterator insert( iterator block,
+			const ir::Instruction& instruction, unsigned int index );
 		/*! \brief Insert an instruction into a block 
 			immediately before the element at specified  position*/
-                InstructionVector::iterator insert( iterator block, const ir::Instruction& instruction, 
+        InstructionVector::iterator insert( iterator block,
+                const ir::Instruction& instruction, 
 			InstructionVector::iterator position );
 		/*! \brief Insert an instruction at the end of a block */
-		void insert( iterator block, const ir::Instruction& instruction );
+		InstructionVector::iterator insert( iterator block,
+			const ir::Instruction& instruction );
 		/*! \brief Erase an instruction from a block at the specified
 			position */
-		void erase( iterator block, InstructionVector::iterator position );
+		InstructionVector::iterator erase( iterator block,
+			InstructionVector::iterator position );
 		/*! \brief Erase an instruction from a block at the specified
 			index */
 		void erase( iterator block, unsigned int index );
+		/*! \brief Erase an instruction from its block at the specified
+			position */
+		InstructionVector::iterator erase(
+			InstructionVector::iterator position );
 		
 	public:
 		/*! \brief Compute live ranges */
@@ -407,20 +446,32 @@ class DataflowGraph : public KernelAnalysis
 		
 	public:
 		/*! \brief Convert into ssa form */
-		void toSsa();
+		void toSsa(SsaType form = SsaType::Default);
 		/*! \brief Convert out of ssa form */
 		void fromSsa();
 		/*! \brief Is the graph in ssa form? */
-		bool ssa() const;
+		unsigned int ssa() const;
 		
 	public:
 		/*! \brief Get an executable sequence of blocks */
 		BlockPointerVector executableSequence();
 		/*! \brief Get a map from CFG to DFG iterators */
 		IteratorMap getCFGtoDFGMap();
+
+	public:
+		const RegisterIdSet& getPhiPredicates(
+			PhiInstruction const* phi ) const;
+		const PhiPredicateMap& phiPredicateMap() const;
+		bool hasPhi( DataflowGraph::PhiInstruction const *phi ) const;
+
 };
 
 std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
+std::ostream& operator<<( std::ostream& out,
+	const DataflowGraph::PhiInstruction& phi );
+std::ostream& operator<<( std::ostream& out,
+	const DataflowGraph::Instruction& i );
+
 }
 
 namespace std
@@ -430,6 +481,16 @@ namespace std
 	{
 		inline size_t operator()(
 			const analysis::DataflowGraph::iterator& it ) const
+		{
+			return ( size_t )it->id();
+		}
+	};
+	
+	template<>
+	struct hash< analysis::DataflowGraph::const_iterator >
+	{
+		inline size_t operator()(
+			const analysis::DataflowGraph::const_iterator& it ) const
 		{
 			return ( size_t )it->id();
 		}

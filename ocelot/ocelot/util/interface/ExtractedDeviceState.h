@@ -20,7 +20,7 @@
 #include <vector>
 
 // Hydrazine includes
-#include <hydrazine/implementation/json.h>
+#include <hydrazine/interface/json.h>
 
 namespace util {
 

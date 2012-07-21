@@ -39,8 +39,10 @@ def MapSource(env, source):
 #
 ## The script begins here
 # try to import an environment first
+print "Build rules for Ocelot...."
 try:
 	Import('env')
+	print " Imported environment from higher level SCons script."
 except:
 	exec open("../scripts/which.py")
 	prefix = '../'
@@ -50,6 +52,13 @@ except:
 # on mac we have to tell the linker to link against the C++ library
 if env['PLATFORM'] == "darwin":
 	env.Append(LINKFLAGS = "-lstdc++")
+
+# set the ocelot build root if a higher level script didn't already do it
+if not 'OCELOT_BUILD_ROOT' in env:
+	env.Replace(OCELOT_BUILD_ROOT = env['BUILD_ROOT'])
+
+# include the build directory in case of generated files
+env.AppendUnique(CPPPATH = env['OCELOT_BUILD_ROOT'])
 
 # Create configure.h
 env.AlwaysBuild(env.Command('configure.h', 'configure.h.in', config_h_build))
@@ -116,7 +125,7 @@ if env['library'] == 'shared':
 else:
 	libocelot = env.StaticLibrary('ocelot-opencl', sources, LIBS=ocelot_dep_libs)
 
-if 'install' in COMMAND_LINE_TARGETS:
+if env['install']:
 	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
 # Create ocelot built-in programs
@@ -152,9 +161,6 @@ OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
 
-CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
-env.Depends(CFG, libocelot)
-
 if enableKernelExtractor and os.name != 'nt':		
 	kernelExtractorSources = [
 		'ocelot/tools/KernelExtractor.cpp',
@@ -184,6 +190,9 @@ Default(OcelotConfig)
 # Create the ocelot unit tests
 
 test_libs = ['-lboost_system-mt', '-lboost_filesystem-mt']
+
+level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
+enabled_tests = []
 
 tests = []
 tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp', 'basic',
@@ -226,8 +235,6 @@ tests.append(('TestIndirectFunctionCall', \
 	'ocelot/cuda/test/functions/indirectCall.cu', 'full'))
 tests.append(('TestIndirectFunctionCallOcelot', \
 	'ocelot/cuda/test/functions/indirectCallOcelot.cpp', 'full'))
-tests.append(('TestCalVectorScale', \
-	'ocelot/cal/test/vectorScale.cu', 'full'))
 tests.append(('TestDeviceSwitching', \
 	'ocelot/api/test/TestDeviceSwitching.cpp', 'full'))
 tests.append(('TestExternalFunctions', \
@@ -236,26 +243,27 @@ tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 tests.append(('TestDriverAPISequence', \
 	'ocelot/cuda/test/driver/sequence.cpp', 'full'))
+tests.append(('TestOptimizations', \
+	'ocelot/transforms/test/TestOptimizations.cpp', 'full', test_libs))
 
 for test in tests:
 	libs = ocelot_libs
 	if len(test) > 3:
-		libs = libs + test[3]	
+		libs.append(test[3])
 	Test = env.Program(test[0], [MapSource(env, test[1])], LIBS=libs)
 	env.Depends(Test, libocelot)
-
-if env['test_level'] != 'none':
-	print 'Adding unit tests to the build...'
-
-level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
-
-for test in tests:
 	if level_map[env['test_level']] >= level_map[test[2]]:
-		print 'Adding test ' + test[0]
-		Default(test[0])
+		enabled_tests.append((test[0], Test))
+
+test_programs = env.Alias('tests', [])
+if enabled_tests:
+	print 'Adding unit tests to the build...'
+	for test in enabled_tests:
+		print '  ' + test[0]
+		Default(test[1])
+		env.Alias('tests', test[1])
 
 # find all header files in the source tree
-headers = []
 directories = ['ocelot/ir/interface', 
 	'ocelot/analysis/interface',
 	'ocelot/api/interface', 
@@ -264,7 +272,7 @@ directories = ['ocelot/ir/interface',
 	'ocelot/executive/interface', 
 	'ocelot/opencl/interface', 
 	'ocelot/opencl/interface/CL',
-	'ocelot/graphs/interface', 
+	'ocelot/tools/interface', 
 	'ocelot/parser/interface', 
 	'ocelot/trace/interface', 
 	'ocelot/transforms/interface',
@@ -274,6 +282,7 @@ directories = ['ocelot/ir/interface',
 	'hydrazine/interface' ]
 extensions = ['*.h', '*.hpp']
 
+headers = []
 for dir in directories:
 	for ext in extensions:
 		regexp = os.path.join(dir, ext)
@@ -281,14 +290,16 @@ for dir in directories:
 
 # Install rules
 
-if 'install' in COMMAND_LINE_TARGETS:
-	print 'Installing ocelot...'
+if env['install']:
+	print 'Ocelot will be installed at ' + env['install_path']
 	installed = []
 	installed.append(libocelot)
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotConfig))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), PTXOptimizer))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), KernelDrawer))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotServer))
 	installed.append(env.Install(os.path.join( \
@@ -297,9 +308,11 @@ if 'install' in COMMAND_LINE_TARGETS:
 	if enableKernelExtractor and os.name != 'nt':
 		installed.append(env.Install(os.path.join(env['install_path'], "lib"), KernelExtractorLib))
 
+	scriptDirectory = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
+
 	for header in headers:
 		(directoryPath, headerName) = os.path.split( \
-			os.path.relpath(str(header), prefix))
+			os.path.relpath(str(header), scriptDirectory))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
 
@@ -312,10 +325,12 @@ if 'install' in COMMAND_LINE_TARGETS:
 	for i in installed:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
 	
-	env.Alias('install', env['install_path'])
+	install_alias = env.Alias('install', env['install_path'])
+	Default(install_alias)
 
 	env.Replace(installed_files = installed)
 
-	Export('env')
-	SConscript('deb/DebSConscript')
+	if env['deb_arch'] != 'unknown':
+		Export('env')
+		SConscript('deb/DebSConscript')
 

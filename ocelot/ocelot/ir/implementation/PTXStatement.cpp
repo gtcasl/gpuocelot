@@ -7,10 +7,18 @@
 #ifndef IR_PTXSTATEMENT_CPP_INCLUDED
 #define IR_PTXSTATEMENT_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/ir/interface/PTXStatement.h>
+
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Casts.h>
+
+// Standard Library Includes
 #include <cstring>
+#include <sstream>
 #include <stack>
-#include <hydrazine/implementation/debug.h>
+#include <cstdint>
 
 namespace ir {
 
@@ -35,7 +43,13 @@ namespace ir {
 				case ir::PTXOperand::u16: out << it->u16; break;
 				case ir::PTXOperand::u32: out << it->u32; break;
 				case ir::PTXOperand::u64: out << it->u64; break;
-				case ir::PTXOperand::f32: out << it->f32; break;
+				case ir::PTXOperand::f32:
+				{
+					out << "0f" << std::hex
+						<< hydrazine::bit_cast<uint32_t>(it->f32)
+					    << std::dec;
+					break;
+				}
 				case ir::PTXOperand::f64: out << it->f64; break;
 				case ir::PTXOperand::b8: out << it->b8; break;
 				case ir::PTXOperand::b16: out << it->b16; break;
@@ -142,8 +156,11 @@ namespace ir {
 			
 				stream << " }";
 				stack.pop();
-				--si;
-				
+				if( !stack.empty() ) {
+					// If stack.empty cannot decrement si as it is at begin()
+					// and it is invalid to decrement such an iterator.
+					--si;
+				}	
 			}
 			
 		}
@@ -174,19 +191,25 @@ namespace ir {
 	std::string PTXStatement::toString( Data d, PTXOperand::DataType t ) {
 		std::stringstream stream;
 		switch( t ) {
-			case PTXOperand::s8: /*fall through*/
+			case PTXOperand::s8:  /*fall through*/
 			case PTXOperand::s16: /*fall through*/
 			case PTXOperand::s32: /*fall through*/
 			case PTXOperand::s64: stream << d.s64; break;
-			case PTXOperand::u8: /*fall through*/
+			case PTXOperand::u8:  /*fall through*/
 			case PTXOperand::u16: /*fall through*/
 			case PTXOperand::u32: /*fall through*/
 			case PTXOperand::u64: /*fall through*/
-			case PTXOperand::b8: /*fall through*/
+			case PTXOperand::b8:  /*fall through*/
 			case PTXOperand::b16: /*fall through*/
 			case PTXOperand::b32: /*fall through*/
 			case PTXOperand::b64: stream << d.u64; break;
-			case PTXOperand::f32: stream << d.f32; break;
+			case PTXOperand::f32: 
+			{
+				stream << "0f" << std::hex
+					<< hydrazine::bit_cast<uint32_t>(d.f32)
+				    << std::dec;
+				break;
+			}
 			case PTXOperand::f64: stream << d.f64; break;
 			default : assert("Invalid type" == 0);
 		}
@@ -551,7 +574,9 @@ namespace ir {
 				break;
 			}
 			case Version: {
-				return ".version 2.1";
+			  std::stringstream stream;
+			  stream << ".version " << major << '.' << minor;
+				return stream.str();
 				break;
 			}
 			case StartScope:

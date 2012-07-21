@@ -14,8 +14,8 @@
 #include <ocelot/executive/interface/Device.h>
 
 // hydrazine includes
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 
 // Debugging messages
 #ifdef REPORT_BASE

@@ -41,6 +41,7 @@ namespace ir
 				Ge,
 				Iadd,
 				Iand,
+				Icbits,
 				Ieq,
 				IfLogicalNZ,
 				IfLogicalZ,
@@ -57,10 +58,10 @@ namespace ir
 				Ishr,
 				ItoF,
 				Ixor,
-				Lds_And_Resource,
+				Lds_And_Id,
 				Lds_Load_Id,
-				Lds_Or_Resource,
-				Lds_Read_Add_Resource,
+				Lds_Or_Id,
+				Lds_Read_Add_Id,
 				Lds_Store_Id,
 				Log_Vec,
 				Lt,
@@ -99,23 +100,6 @@ namespace ir
 				Dword
 			};
 
-			enum ClampOperation
-			{
-				Clamp,
-				NoClamp
-			};
-
-			enum ShiftScale
-			{
-				Shift_D2,			// shift value right by 1 bit
-				Shift_D4,			// shift value right by 2 bits
-				Shift_D8,			// shift value right by 3 bits
-				Shift_None,
-				Shift_X2,			// shift value left by 1 bit
-				Shift_X4,			// shift value left by 2 bits
-				Shift_X8,			// shift value left by 3 bits
-			};
-
 		public:
 			/*! \brief Default constructor */
 			ILInstruction(Opcode op = InvalidOpcode);
@@ -126,8 +110,6 @@ namespace ir
 			//@{
 			static  std::string toString(Opcode o);
 			static  std::string toString(DataType d);
-			static  std::string toString(const ClampOperation &c);
-			static  std::string toString(const ShiftScale &s);
 			virtual std::string toString() const;
 			//@}
 
@@ -140,12 +122,6 @@ namespace ir
 		public:
 			/*! \brief Opcode of the instruction */
 			const Opcode opcode;
-
-			/*! \brief Clamp modifiers */
-			ClampOperation clamp;
-
-			/*! \brief Shift scale modifiers */
-			ShiftScale shift_scale;
 	};
 
 	/*! \brief A generic 1 operand instruction */
@@ -383,6 +359,13 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILIcbits: public ILUnaryInstruction
+	{
+		public:
+			ILIcbits();
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIeq : public ILBinaryInstruction
 	{
 		public:
@@ -507,11 +490,20 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILLds_And_Resource : public ILUnaryInstruction
+	class ILLds_And_Id : public ILInstruction
 	{
 		public:
-			ILLds_And_Resource();
+			ILLds_And_Id();
 			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
+
+			/*! \brief Parsable IL strings */
+			std::string toString() const;
 	};
 
 	class ILLds_Load_Id : public ILUnaryInstruction
@@ -521,25 +513,43 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILLds_Or_Resource : public ILUnaryInstruction
+	class ILLds_Or_Id : public ILInstruction
 	{
 		public:
-			ILLds_Or_Resource();
+			ILLds_Or_Id();
+			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
+
+			/*! \brief Parsable IL strings */
+			std::string toString() const;
+	};
+
+	class ILLds_Read_Add_Id : public ILBinaryInstruction
+	{
+		public:
+			ILLds_Read_Add_Id();
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILLds_Read_Add_Resource : public ILBinaryInstruction
-	{
-		public:
-			ILLds_Read_Add_Resource();
-			Instruction *clone(bool copy=true) const;
-	};
-
-	class ILLds_Store_Id : public ILUnaryInstruction
+	class ILLds_Store_Id : public ILInstruction
 	{
 		public:
 			ILLds_Store_Id();
 			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
+
+			/*! \brief Parsable IL strings */
+			std::string toString() const;
 	};
 
 	class ILLog_Vec : public ILUnaryInstruction
@@ -646,11 +656,17 @@ namespace ir
 			DataType type;
 	};
 
-	class ILUav_Arena_Store_Id : public ILUnaryInstruction
+	class ILUav_Arena_Store_Id : public ILInstruction
 	{
 		public:
 			ILUav_Arena_Store_Id();
 			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
 
 			/*! \brief Parsable IL strings */
 			std::string toString() const;
@@ -666,7 +682,7 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILUav_Raw_Store_Id : public ILUnaryInstruction
+	class ILUav_Raw_Store_Id : public ILBinaryInstruction
 	{
 		public:
 			ILUav_Raw_Store_Id();

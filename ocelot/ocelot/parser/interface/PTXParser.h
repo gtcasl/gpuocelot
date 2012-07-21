@@ -55,20 +55,29 @@ namespace parser
 							bool compare( const FunctionPrototype& t );
 							std::string toString() const;
 					};
+					
+					typedef std::unordered_map< std::string, 
+						OperandWrapper > OperandMap;
+					typedef std::unordered_map< std::string, 
+						FunctionPrototype > PrototypeMap;
+			
+					class Context
+					{
+					public:
+						Context( unsigned int id );
+					
+					public:
+						unsigned int id;
+						OperandMap   operands;
+						PrototypeMap prototypes;
+						unsigned int instructionCount;
+					};
 				
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
-					typedef std::unordered_set< std::string > StringSet;
-					typedef std::vector< StringSet > StringSetStack;
-					typedef std::vector< unsigned int > UintStack;
-					typedef std::vector< unsigned int > DimensionVector;
-					typedef std::vector< double > DoubleVector;
-					typedef std::unordered_map< std::string, 
-						OperandWrapper > OperandMap;
 					typedef std::vector< ir::PTXOperand > OperandVector;
-					typedef std::unordered_map< std::string, 
-						FunctionPrototype > PrototypeMap;
+					typedef std::vector< Context > ContextStack;
 			
 					enum Error
 					{
@@ -103,11 +112,9 @@ namespace parser
 					std::string sectionName;
 					
 					StringList identifiers;
-					OperandMap operands;
-					StringSetStack localOperands;
-
-					PrototypeMap prototypes;
-					StringSetStack localPrototypes;
+					
+					ContextStack contexts;
+					unsigned int contextId;
 					
 					bool inEntry;
 					bool inArgumentList;
@@ -122,13 +129,20 @@ namespace parser
 					
 					ir::PTXStatement::Directive directive;
 					std::string comment;
-									
+
+														
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
 						ir::PTXStatement::Directive directive );
 				
 				private:
 					void _setImmediateTypes();
+					std::string _nameInContext( const std::string& name );
+				
+					OperandWrapper* _getOperand( const std::string& name );
+					OperandWrapper* _getOperandInScope(
+						const std::string& name );
+					FunctionPrototype* _getPrototype( const std::string& name );
 				
 				public:
 					void addSpecialRegisters();
@@ -263,6 +277,7 @@ namespace parser
 					void convertD( int token, YYLTYPE& location );
 					void barrierOperation( int token, YYLTYPE & location);
 					void cacheOperation(int token );
+					void cacheLevel(int token );
 					void clampOperation(int token);
 					void formatMode(int token);
 					void surfaceQuery(int token);
@@ -312,6 +327,7 @@ namespace parser
 			static ir::PTXInstruction::CmpOp tokenToCmpOp( int );
 			static ir::PTXInstruction::BarrierOperation tokenToBarrierOp(int);
 			static ir::PTXInstruction::CacheOperation tokenToCacheOperation(int);
+			static ir::PTXInstruction::CacheLevel tokenToCacheLevel(int);
 			static ir::PTXInstruction::ClampOperation tokenToClampOperation(int);
 			static ir::PTXInstruction::FormatMode tokenToFormatMode(int);
 			static ir::PTXInstruction::SurfaceQuery tokenToSurfaceQuery(int);

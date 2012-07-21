@@ -14,7 +14,7 @@
 //#include <ocelot/trace/interface/TraceGenerator.h>
 //#include <ocelot/translator/interface/Translator.h>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <ocelot/opencl/interface/opencl_runtime.h>
 
 namespace opencl {

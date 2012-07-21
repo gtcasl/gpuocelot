@@ -12,12 +12,13 @@
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <stack>
 #include <unordered_set>
 #include <set>
+#include <algorithm>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -60,6 +61,15 @@ ThreadFrontierAnalysis::Priority ThreadFrontierAnalysis::getPriority(
 	return priority->second;
 }
 
+bool ThreadFrontierAnalysis::isInThreadFrontier(const_iterator block,
+	const_iterator testedBlock) const
+{
+	BlockVector frontier = getThreadFrontier(block);
+	
+	return std::find(frontier.begin(), frontier.end(), testedBlock) !=
+		frontier.end();
+}
+
 void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 {
 	typedef std::unordered_set<const_iterator> BlockSet;
@@ -85,6 +95,9 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 	
 	// 2) Walk the tree, assign priorities
 	root->assignPriorities(_priorities);
+	
+	// 3) Break ties
+	_breakPriorityTies();
 }
 
 void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
@@ -189,6 +202,27 @@ void ThreadFrontierAnalysis::_visitNode(NodeMap& nodes, node_iterator node)
 	}
 }
 
+void ThreadFrontierAnalysis::_breakPriorityTies()
+{
+	typedef std::multimap<Priority, const_iterator> PriorityMultiMap;
+	
+	PriorityMultiMap priorities;
+	
+	for(auto entry = _priorities.begin(); entry != _priorities.end(); ++entry)
+	{
+		priorities.insert(std::make_pair(entry->second, entry->first));
+	}
+	
+	Priority priority = 0;
+	
+	for(auto entry = priorities.begin(); entry != priorities.end(); ++entry)
+	{
+		report(" Assigning basic block '" << entry->second->label
+			<< "' (" << entry->second->id << ") priority " << priority);	
+		_priorities[entry->second] = priority++;
+	}
+}
+
 ThreadFrontierAnalysis::Node::Node(const_iterator b, node_iterator p,
 	node_iterator r, Priority pri)
 : block(b), parent(p), root(r), priority(pri)
@@ -199,8 +233,6 @@ ThreadFrontierAnalysis::Node::Node(const_iterator b, node_iterator p,
 void ThreadFrontierAnalysis::Node::assignPriorities(PriorityMap& priorities)
 {
 	priorities[block] = priority;
-	report(" Assigning basic block '" << block->label
-		<< "' (" << block->id << ") priority " << priority);	
 	
 	for(node_iterator child = children.begin();
 		child != children.end(); ++child)

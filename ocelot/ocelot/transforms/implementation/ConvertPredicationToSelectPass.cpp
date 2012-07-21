@@ -10,7 +10,7 @@
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -38,7 +38,7 @@ namespace transforms
 	void ConvertPredicationToSelectPass::_replacePredicate( 
 		analysis::DataflowGraph::iterator block, unsigned int id )
 	{
-		typedef analysis::DataflowGraph::Block::RegisterSet RegisterSet;
+		typedef analysis::DataflowGraph::RegisterSet RegisterSet;
 
 		analysis::DataflowGraph::InstructionVector::const_iterator 
 			instruction( block->instructions().begin() );

@@ -20,7 +20,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <climits>
@@ -157,6 +157,84 @@ ir::LLVMInstruction::DataType PTXToLLVMTranslator::_translate(
 	}
 	return ir::LLVMInstruction::InvalidDataType;
 }
+
+ir::LLVMInstruction::AtomicOperation PTXToLLVMTranslator::_translate( 
+	ir::PTXInstruction::AtomicOperation operation,
+	ir::PTXOperand::DataType type )
+{
+	switch( operation )
+	{
+		case ir::PTXInstruction::AtomicAnd:
+		{
+			return ir::LLVMInstruction::AtomicAnd;
+		}
+		case ir::PTXInstruction::AtomicOr:
+		{
+			return ir::LLVMInstruction::AtomicOr;
+			break;
+		}
+		case ir::PTXInstruction::AtomicXor:
+		{
+			return ir::LLVMInstruction::AtomicXor;
+			break;
+		}
+		case ir::PTXInstruction::AtomicCas:
+		{
+			assertM( false, "Cannot translate atomic CAS." );
+			break;
+		}
+		case ir::PTXInstruction::AtomicExch:
+		{
+			return ir::LLVMInstruction::AtomicXchg;
+			break;
+		}
+		case ir::PTXInstruction::AtomicAdd:
+		{
+			return ir::LLVMInstruction::AtomicAdd;
+			break;
+		}
+		case ir::PTXInstruction::AtomicInc:
+		{
+			assertM( false, "Cannot translate atomic Inc." );
+			break;
+		}
+		case ir::PTXInstruction::AtomicDec:
+		{
+			assertM( false, "Cannot translate atomic Dec." );
+			break;
+		}
+		case ir::PTXInstruction::AtomicMin:
+		{
+			if( ir::PTXOperand::isSigned( type ) )
+			{
+				return ir::LLVMInstruction::AtomicMin;
+			}
+			else
+			{
+				return ir::LLVMInstruction::AtomicUmin;
+			}
+			break;
+		}
+		case ir::PTXInstruction::AtomicMax:
+		{
+			if( ir::PTXOperand::isSigned( type ) )
+			{
+				return ir::LLVMInstruction::AtomicMax;
+			}
+			else
+			{
+				return ir::LLVMInstruction::AtomicUmax;
+			}
+			break;
+		}
+		case ir::PTXInstruction::AtomicOperation_Invalid:
+		{
+			assertM( false, "Invalid atomic operation" );
+		}
+	}
+	
+	return ir::LLVMInstruction::InvalidAtomicOperation;
+}	
 
 void PTXToLLVMTranslator::_doubleWidth( ir::LLVMInstruction::DataType& t )
 {
@@ -844,7 +922,7 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 		false, false );
 
 	bitcast.d.type = ir::LLVMInstruction::Type( 
-		ir::LLVMInstruction::I32, ir::LLVMInstruction::Type::Pointer );
+		continuation.type.type, ir::LLVMInstruction::Type::Pointer );
 	bitcast.d.name = _tempRegister();
 
 	_add( bitcast );
@@ -853,7 +931,8 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 
 	store.d = bitcast.d;
 	store.a = ir::LLVMInstruction::Operand( (ir::LLVMI32) type );
-		
+	store.a.type.type = continuation.type.type;
+	
 	_add( store );
 	
 	if( type == executive::LLVMExecutableKernel::TailCall 
@@ -863,7 +942,7 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 	
 		get.a = bitcast.d;
 		get.d = ir::LLVMInstruction::Operand( _tempRegister(), 
-			ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+			ir::LLVMInstruction::Type( continuation.type.type,
 			ir::LLVMInstruction::Type::Pointer ) );
 		get.indices.push_back( 1 );
 	
@@ -925,7 +1004,7 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate(
 				}
 				case ir::PTXOperand::f32:
 				{
-					op.f32 = (float) o.imm_float;
+					op.f32 = o.imm_single;
 					break;
 				}
 				case ir::PTXOperand::f64:
@@ -1595,140 +1674,57 @@ void PTXToLLVMTranslator::_translateAtom( const ir::PTXInstruction& i )
 {
 	if( i.addressSpace != ir::PTXInstruction::Shared )
 	{
-		ir::LLVMCall call;
-	
-		call.d = _destination( i );
-		call.parameters.resize( 2 );
-
-		switch( i.atomicOperation )
+		if( i.atomicOperation == ir::PTXInstruction::AtomicCas )
 		{
-			case ir::PTXInstruction::AtomicAnd:
-			{
-				call.name = "@llvm.atomic.load.and";
-				break;
-			}
-			case ir::PTXInstruction::AtomicOr:
-			{
-				call.name = "@llvm.atomic.load.or";
-				break;
-			}
-			case ir::PTXInstruction::AtomicXor:
-			{
-				call.name = "@llvm.atomic.load.xor";
-				break;
-			}
-			case ir::PTXInstruction::AtomicCas:
-			{
-				call.name = "@llvm.atomic.cmp.swap";
-				call.parameters.resize( 3 );
-				call.parameters[ 2 ] = _translate( i.c );
-				break;
-			}
-			case ir::PTXInstruction::AtomicExch:
-			{
-				call.name = "@llvm.atomic.swap";
-				break;
-			}
-			case ir::PTXInstruction::AtomicAdd:
-			{
-				call.name = "@llvm.atomic.load.add";
-				break;
-			}
-			case ir::PTXInstruction::AtomicInc:
-			{
-				call.name = "@__ocelot_atomic_inc";
-				break;
-			}
-			case ir::PTXInstruction::AtomicDec: 
-			{
-				call.name = "@__ocelot_atomic_dec";
-				break;
-			}
-			case ir::PTXInstruction::AtomicMin:
-			{
-				if( ir::PTXOperand::isSigned( i.type ) )
-				{
-					call.name = "@llvm.atomic.load.min";
-				}
-				else
-				{
-					call.name = "@llvm.atomic.load.umin";
-				}
-				break;
-			}
-			case ir::PTXInstruction::AtomicMax:
-			{
-				if( ir::PTXOperand::isSigned( i.type ) )
-				{
-					call.name = "@llvm.atomic.load.max";
-				}
-				else
-				{
-					call.name = "@llvm.atomic.load.umax";
-				}
-				break;
-			}
-			default: break;
-		}
-
-		if( i.atomicOperation != ir::PTXInstruction::AtomicInc
-			&& i.atomicOperation != ir::PTXInstruction::AtomicDec )
-		{
-
-			ir::LLVMInttoptr cast;
+			ir::LLVMCmpxchg atom;
 			
-			cast.a = _translate( i.a );
-			cast.d = ir::LLVMInstruction::Operand( _tempRegister(), 
-				ir::LLVMInstruction::Type( _translate( i.type ),
-				ir::LLVMInstruction::Type::Pointer ) );
-
-			_add( cast );
-
-			call.parameters[0] = cast.d;
-
-			switch( i.type )
-			{
-				case ir::PTXOperand::b8:  /* fall through */
-				case ir::PTXOperand::u8:  /* fall through */
-				case ir::PTXOperand::s8:
-				{
-					call.name += ".i8.p0i8";
-					break;
-				}
-				case ir::PTXOperand::b16: /* fall through */
-				case ir::PTXOperand::u16: /* fall through */
-				case ir::PTXOperand::s16:
-				{
-					call.name += ".i16.p0i16";
-					break;
-				}
-				case ir::PTXOperand::b32: /* fall through */
-				case ir::PTXOperand::u32: /* fall through */
-				case ir::PTXOperand::s32:
-				{
-					call.name += ".i32.p0i32";
-					break;
-				}
-				case ir::PTXOperand::s64: /* fall through */
-				case ir::PTXOperand::u64: /* fall through */
-				case ir::PTXOperand::b64:
-				{
-					call.name += ".i64.p0i64";
-					break;
-				}
-				case ir::PTXOperand::f32:
-				{
-					call.name += ".f32.p0f32";
-					break;
-				}
-				default: assertM(false, "Invalid type.");
-			}
+			atom.d = _destination( i );
+			atom.a = _getLoadOrStorePointer( i.a, i.addressSpace, 
+				_translate( i.type ), i.vec );
+			atom.b = _translate( i.b );
+			atom.c = _translate( i.c );
+			
+			_add( atom );		
+		}
+		else if( i.atomicOperation != ir::PTXInstruction::AtomicInc && 
+			i.atomicOperation != ir::PTXInstruction::AtomicDec )
+		{
+			ir::LLVMAtomicrmw atom;
+			
+			atom.d = _destination( i );
+			atom.a = _getLoadOrStorePointer( i.a, i.addressSpace, 
+				_translate( i.type ), i.vec );
+			atom.b = _translate( i.b );
+			atom.operation = _translate( i.atomicOperation, i.type );
+			
+			_add( atom );
 		}
 		else
 		{
+			ir::LLVMCall call;
+	
+			call.d = _destination( i );
+			call.parameters.resize( 2 );
+
+			switch( i.atomicOperation )
+			{
+				case ir::PTXInstruction::AtomicInc:
+				{
+					call.name = "@__ocelot_atomic_inc";
+					break;
+				}
+				case ir::PTXInstruction::AtomicDec: 
+				{
+					call.name = "@__ocelot_atomic_dec";
+					break;
+				}
+				
+				default: break;
+			}
+
 			call.parameters[0] = _translate( i.a );
 
-				switch( i.type )
+			switch( i.type )
 			{
 				case ir::PTXOperand::b32: /* fall through */
 				case ir::PTXOperand::u32: /* fall through */
@@ -1746,11 +1742,11 @@ void PTXToLLVMTranslator::_translateAtom( const ir::PTXInstruction& i )
 				}
 				default: assertM(false, "Invalid type.");
 			}
-		}
 			
-		call.parameters[1] = _translate( i.b );
+			call.parameters[1] = _translate( i.b );
 
-		_add( call );
+			_add( call );
+		}
 	}
 	else
 	{
@@ -2608,7 +2604,21 @@ void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 		destination = _translate( i.d );
 	}
 
-	_convert( destination, i.type, source, i.a.type, i.modifier );
+	ir::PTXOperand::DataType sourceType = i.a.type;
+	
+	if( i.a.relaxedType != ir::PTXOperand::TypeSpecifier_invalid )
+	{
+		sourceType = i.a.relaxedType;
+		ir::LLVMInstruction::Operand temp( _tempRegister(), 
+			ir::LLVMInstruction::Type( _translate( sourceType ), 
+			ir::LLVMInstruction::Type::Element ) );
+
+		_bitcast( temp, source );
+
+		source = temp;
+	}
+
+	_convert( destination, i.type, source, sourceType, i.modifier );
 
 	if( _translate( i.d.type ) != _translate( i.type ) )
 	{
@@ -7201,7 +7211,7 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 			
 			if( !ir::PTXOperand::isFloat( dType ) )
 			{
-				if( modifier & ir::PTXInstruction::rn )
+				if( modifier & ir::PTXInstruction::rni )
 				{
 					ir::LLVMFcmp compare;
 				
@@ -7265,7 +7275,7 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 				
 					tempA = sitofp.d;
 				}
-				else if( modifier & ir::PTXInstruction::rp )
+				else if( modifier & ir::PTXInstruction::rpi )
 				{
 					ir::LLVMFadd add;
 				
@@ -7383,19 +7393,19 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 				}
 				case ir::PTXOperand::f32:
 				{
-					if( ir::PTXInstruction::rz & modifier )
+					if( ir::PTXInstruction::rzi & modifier )
 					{
 						_trunc( d, tempA );
 					}
-					else if( ir::PTXInstruction::rn & modifier )
+					else if( ir::PTXInstruction::rni & modifier )
 					{
 						_nearbyint( d, tempA );
 					}
-					else if( ir::PTXInstruction::rm & modifier )
+					else if( ir::PTXInstruction::rmi & modifier )
 					{
 						_floor( d, tempA );
 					}
-					else if( ir::PTXInstruction::rp & modifier )
+					else if( ir::PTXInstruction::rpi & modifier )
 					{
 						_ceil( d, tempA );
 					}
@@ -9006,106 +9016,6 @@ void PTXToLLVMTranslator::_addMathCalls()
 
 void PTXToLLVMTranslator::_addLLVMIntrinsics()
 {
-	// @llvm.atomic.load.add
-	ir::LLVMStatement atom( ir::LLVMStatement::FunctionDeclaration );
-
-	atom.label = "llvm.atomic.load.add.i32.p0i32";
-	atom.linkage = ir::LLVMStatement::InvalidLinkage;
-	atom.convention = ir::LLVMInstruction::DefaultCallingConvention;
-	atom.visibility = ir::LLVMStatement::Default;
-	
-	atom.operand.type.category = ir::LLVMInstruction::Type::Element;
-	atom.operand.type.type = ir::LLVMInstruction::I32;
-	
-	atom.parameters.resize( 2 );
-
-	atom.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-	atom.parameters[0].type.type = ir::LLVMInstruction::I32;
-
-	atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
-	atom.parameters[1].type.type = ir::LLVMInstruction::I32;
-
-	_llvmKernel->push_front( atom );
-
-	atom.label = "llvm.atomic.load.and.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.or.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.xor.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.min.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.umin.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.max.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.umax.i32.p0i32";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.swap.i32.p0i32";
-	_llvmKernel->push_front( atom );
-
-	atom.operand.type.type = ir::LLVMInstruction::I64;
-	atom.parameters[0].type.type = ir::LLVMInstruction::I64;
-	atom.parameters[1].type.type = ir::LLVMInstruction::I64;
-
-	atom.label = "llvm.atomic.load.add.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.and.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.or.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.xor.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.min.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.umin.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.max.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.load.umax.i64.p0i64";
-	_llvmKernel->push_front( atom );
-	atom.label = "llvm.atomic.swap.i64.p0i64";
-	_llvmKernel->push_front( atom );
-
-	// @llvm.atomic.load.add
-	atom.label = "llvm.atomic.swap.f32.p0f32";
-	atom.operand.type.type = ir::LLVMInstruction::F32;
-	atom.parameters[0].type.type = ir::LLVMInstruction::I64;
-	atom.parameters[1].type.type = ir::LLVMInstruction::F32;
-	_llvmKernel->push_front( atom );
-
-	// @llvm.atomic.cmp.swap
-	ir::LLVMStatement cmp( ir::LLVMStatement::FunctionDeclaration );
-
-	cmp.label = "llvm.atomic.cmp.swap.i32.p0i32";
-	cmp.linkage = ir::LLVMStatement::InvalidLinkage;
-	cmp.convention = ir::LLVMInstruction::DefaultCallingConvention;
-	cmp.visibility = ir::LLVMStatement::Default;
-	
-	cmp.operand.type.category = ir::LLVMInstruction::Type::Element;
-	cmp.operand.type.type = ir::LLVMInstruction::I32;
-	
-	cmp.parameters.resize( 3 );
-
-	cmp.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-	cmp.parameters[0].type.type = ir::LLVMInstruction::I32;
-
-	cmp.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
-	cmp.parameters[1].type.type = ir::LLVMInstruction::I32;
-
-	cmp.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
-	cmp.parameters[2].type.type = ir::LLVMInstruction::I32;
-
-	_llvmKernel->push_front( cmp );
-
-	cmp.operand.type.type = ir::LLVMInstruction::I64;
-	cmp.parameters[0].type.type = ir::LLVMInstruction::I64;
-	cmp.parameters[1].type.type = ir::LLVMInstruction::I64;
-	cmp.parameters[2].type.type = ir::LLVMInstruction::I64;
-	cmp.label = "llvm.atomic.cmp.swap.i64.p0i64";
-
-	_llvmKernel->push_front( cmp );
-	
 	// @llvm.ctpop
 	ir::LLVMStatement ctpop( ir::LLVMStatement::FunctionDeclaration );
 

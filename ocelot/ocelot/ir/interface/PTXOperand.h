@@ -7,6 +7,7 @@
 #ifndef IR_PTXOPERAND_H_INCLUDED
 #define IR_PTXOPERAND_H_INCLUDED
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <functional>
@@ -14,23 +15,23 @@
 
 namespace ir {
 
-	typedef unsigned char PTXU8;
-	typedef unsigned short PTXU16;
-	typedef unsigned int PTXU32;
-	typedef unsigned long long PTXU64;
+	typedef uint8_t PTXU8;
+	typedef uint16_t PTXU16;
+	typedef uint32_t PTXU32;
+	typedef uint64_t PTXU64;
 	
-	typedef char PTXS8;
-	typedef short PTXS16;
-	typedef int PTXS32;
-	typedef long long PTXS64;
+	typedef int8_t PTXS8;
+	typedef int16_t PTXS16;
+	typedef int32_t PTXS32;
+	typedef int64_t PTXS64;
 	
 	typedef float PTXF32;
 	typedef double PTXF64;
 	
-	typedef PTXU8 PTXB8;
-	typedef PTXU16 PTXB16;
-	typedef PTXU32 PTXB32;
-	typedef PTXU64 PTXB64;
+	typedef PTXU8   PTXB8;
+	typedef PTXU16  PTXB16;
+	typedef PTXU32  PTXB32;
+	typedef PTXU64  PTXB64;
 
 	class PTXOperand {
 	public:
@@ -50,23 +51,23 @@ namespace ir {
 
 		/*! Type specifiers for instructions */
 		enum DataType {
-			s8 = 0,
+			TypeSpecifier_invalid = 0,
+			s8,
 			s16,
 			s32,
 			s64,
-			u8 = 4,
+			u8,
 			u16,
 			u32,
 			u64,
-			f16 = 8,
+			f16,
 			f32,
 			f64,
 			b8,
 			b16,
 			b32,
 			b64,
-			pred,
-			TypeSpecifier_invalid
+			pred
 		};
 
 		/*!	Special register names */
@@ -194,6 +195,7 @@ namespace ir {
 
 		//! data type for PTX instruction
 		DataType type;
+		DataType relaxedType;
 
 		//!	offset when used with an indirect addressing mode
 		union {
@@ -207,6 +209,7 @@ namespace ir {
 			long long unsigned int imm_uint;
 			long long int imm_int;
 			double imm_float;
+			float  imm_single;
 			PredicateCondition condition;
 			SpecialRegister special;
 			unsigned int localMemorySize;

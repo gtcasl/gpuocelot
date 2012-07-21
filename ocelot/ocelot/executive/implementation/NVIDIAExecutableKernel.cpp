@@ -6,9 +6,9 @@
 
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
 
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/macros.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/macros.h>
 
 
 #ifdef REPORT_BASE
@@ -59,7 +59,8 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	report("  constructed new NVIDIAExecutableKernel");
 }
 
-static CUfunc_cache _translateCacheConfiguration(executive::ExecutableKernel::CacheConfiguration config) {
+static CUfunc_cache _translateCacheConfiguration(
+	executive::ExecutableKernel::CacheConfiguration config) {
 	switch (config) {
 		case executive::ExecutableKernel::CachePreferShared:
 			return CU_FUNC_CACHE_PREFER_SHARED;

@@ -14,7 +14,7 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -186,6 +186,16 @@ namespace ocelot
 		if (c.optimizations.simplifyCFG)
 		{
 			ocelot::addPTXPass(_simplifyCFG);
+		}
+		
+		if (c.optimizations.enforceLockStepExecution)
+		{
+			ocelot::addPTXPass(_enforceLockStepExecution);
+		}
+		
+		if (c.optimizations.inlining)
+		{
+			ocelot::addPTXPass(_inliner);
 		}
 
 		// add built-in functions

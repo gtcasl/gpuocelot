@@ -12,7 +12,7 @@
 #include <ocelot/transforms/interface/Pass.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 namespace transforms
 {
@@ -52,6 +52,11 @@ void Pass::invalidateAnalysis(Analysis::Type type)
 	assert(_manager != 0);
 
 	return _manager->invalidateAnalysis(type);
+}
+
+Pass::StringVector Pass::getDependentPasses() const
+{
+	return StringVector();
 }
 
 std::string Pass::toString() const

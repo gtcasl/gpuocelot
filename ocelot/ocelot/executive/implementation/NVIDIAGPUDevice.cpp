@@ -19,9 +19,9 @@
 // hydrazine includes
 #include <hydrazine/interface/SystemCompatibility.h>
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/string.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/string.h>
 
 // standard library includes
 #include <cstring>
@@ -404,10 +404,13 @@ namespace executive
 			CU_JIT_ERROR_LOG_BUFFER, 
 			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES, 
 		};
-		const int errorLogSize = 2048;
-		unsigned int errorLogActualSize = errorLogSize-1;
-		char errorLogBuffer[errorLogSize];
-		memset(errorLogBuffer, 0, errorLogSize);
+		
+		const uint32_t errorLogSize       = 2048;
+		uint32_t       errorLogActualSize = errorLogSize - 1;
+
+		uint8_t errorLogBuffer[errorLogSize];
+
+		std::memset(errorLogBuffer, 0, errorLogSize);
 
 		void* optionValues[3] = {
 			(void*)CU_TARGET_COMPUTE_20,

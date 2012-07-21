@@ -13,7 +13,7 @@
 #include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -45,7 +45,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	
 	report("  return arguments:");
 	
-	for(ir::PTXOperand::Array::const_iterator parameter = call.d.array.begin();
+	for(auto parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
 		report("   " << parameter->identifier << " ("
@@ -56,7 +56,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	}
 
 	report("  input arguments:");
-	for(ir::PTXOperand::Array::const_iterator parameter = call.b.array.begin();
+	for(auto parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
 		report("   " << parameter->identifier << " ("
@@ -148,19 +148,21 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
 			**instruction);
 	
+		report("   examining '"	<< ptx.toString() << "'");
 		if(ptx.opcode == ir::PTXInstruction::Ld)
 		{
 			if(ptx.addressSpace == ir::PTXInstruction::Param)
 			{
 				if(ptx.a.addressMode == ir::PTXOperand::Address)
 				{
+						
 					StringSet::iterator output =
 						outputNames.find(ptx.a.identifier);
 					
 					if(outputNames.end() != output)
 					{
-						report("   found output '" << ptx.a.identifier << "'");
-	
+						report("    found output '" << ptx.a.identifier << "'");
+						
 						assert(ptx.d.addressMode == ir::PTXOperand::Register);
 						assert(nameToRegister.count(ptx.a.identifier) == 0);
 						// if the types match, kill the load
@@ -202,8 +204,6 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		
-		parameter->identifier.clear();
-		
 		if(mapping != nameToRegister.end())
 		{
 			parameter->addressMode = ir::PTXOperand::Register;
@@ -217,6 +217,8 @@ static void simplifyCall(ir::PTXKernel& kernel,
 			report("   assuming output " << parameter->identifier
 				<< " is dead, assigning temp value r" << parameter->reg);
 		}
+		
+		parameter->identifier.clear();
 	}
 
 	for(ir::PTXOperand::Array::iterator parameter = call.b.array.begin();
@@ -258,7 +260,14 @@ static void simplifyCall(ir::PTXKernel& kernel,
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
 	const ir::ExternalFunctionSet& e, bool s) 
 : KernelPass(analysis::Analysis::DataflowGraphAnalysis,
-	"SimplifyExternalCallsPass"), _externals(&e), _simplifyAll(s)
+	"SimplifyExternalCallsPass"), _externals(&e), _simplifyAll(s || &e == 0)
+{
+
+}
+
+SimplifyExternalCallsPass::SimplifyExternalCallsPass() 
+: KernelPass(analysis::Analysis::DataflowGraphAnalysis,
+	"SimplifyExternalCallsPass"), _externals(0), _simplifyAll(true)
 {
 
 }
@@ -321,6 +330,8 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 			kernel.parameters.erase(parameter);
 		}
 	}
+	
+	invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 }
 
 void SimplifyExternalCallsPass::finalize()

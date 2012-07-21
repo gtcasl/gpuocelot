@@ -23,7 +23,7 @@ namespace ir {
 
 		/*!	List of opcodes for PTX instructions */
 		enum Opcode {
-			Abs,
+			Abs = 0,
 			Add,
 			AddC,
 			And,
@@ -122,12 +122,16 @@ namespace ir {
 			wide = 4,		//<
 			sat = 8,		//< saturation modifier	
 			rn = 32,		//< mantissa LSB rounds to nearest even
-			rz = 64,		//< mantissa LSB roudns toward zero
+			rz = 64,		//< mantissa LSB rounds toward zero
 			rm = 128,		//< mantissa LSB rounds toward negative infty
 			rp = 256,		//< mantissa LSB rounds toward positive infty
-			approx = 512, 	//< identify an approximate instruction
-			ftz = 1024, 	//< flush to zero
-			full = 2048, 	//< full division
+			rni = 512,	//< round to nearest integer, choosing even integer if source is equidistant between two integers.
+			rzi = 1024,	//< round to nearest integer in the direction of zero
+			rmi = 2048,	//< round to nearest integer in direction of negative infinity
+			rpi = 4096,	//< round to nearest integer in direction of positive infinity
+			approx = 8192,//< identify an approximate instruction
+			ftz = 16384,	//< flush to zero
+			full = 32768,	//< full division
 			Modifier_invalid = 0
 		};
 			
@@ -187,13 +191,19 @@ namespace ir {
 		};
 		
 		enum CacheOperation {
-			Ca,
-			Cg,
-			Cs,
-			Cv,
-			Wb,
-			Wt,
+			Ca = 0,
+			Cv = 1,
+			Cg = 2,
+			Cs = 3,
+			Wb = 0,
+			Wt = 1,
 			CacheOperation_Invalid
+		};
+		
+		enum CacheLevel {
+			L1,
+			L2,
+			CacheLevel_invalid
 		};
 		
 		enum ClampOperation {
@@ -282,7 +292,7 @@ namespace ir {
 			_a2d = 5,
 			_cube = 6,
 			_acube = 7,
-			Geometry_Invalid
+			Geometry_Invalid = 0
 		};
 
 		enum SurfaceQuery {
@@ -309,6 +319,9 @@ namespace ir {
 		
 	public:
 		static std::string toString( Level );
+		static std::string toString( CacheLevel cache );
+		static std::string toStringLoad( CacheOperation op );
+		static std::string toStringStore( CacheOperation op );
 		static std::string toString( PermuteMode );
 		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );
@@ -358,8 +371,12 @@ namespace ir {
 	public:
 		/*! \brief Is the instruction a branch */
 		bool isBranch() const;
+		/*! \brief Is the instruction a load */
+		bool isLoad() const;
 		/*! \brief Does the instruction accept an address as an operand */
 		bool mayHaveAddressableOperand() const;
+		/*! \brief Does the instruction write to a relaxed type? */
+		bool mayHaveRelaxedTypeDestination() const;
 		/*! \brief Can the instruction affect state other than destinations? */
 		bool hasSideEffects() const;
 		/*! \brief Does the instruction trigger a memory operation */
@@ -454,13 +471,18 @@ namespace ir {
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;
 			
+			/*! cache level */
+			CacheLevel cacheLevel;
+		};
+		
+		union {
+			/*! Geometry if this is a texture or surface instruction */
+			Geometry geometry;
+			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
 		};
 		
-		/*! Geometry if this is a texture or surface instruction */
-		Geometry geometry;
-
 		union {
 			/*! optionally writes carry-out value to condition code register */
 			CarryFlag carry;
@@ -481,14 +503,12 @@ namespace ir {
 		/*! Source operand c */
 		PTXOperand c;
 
-	public:
-	
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
 				at analysis time for use at runtime
 		*/
-		
+	public:
 		union
 		{
 			/*! \brief Index of post dominator instruction at which possibly 
@@ -507,6 +527,8 @@ namespace ir {
 			int reentryPoint;
 			/*! \brief Is this a kernel argument in the parameter space? */
 			bool isArgument;
+			/*! \brief Get or set the active mask */
+			bool getActiveMask;
 		};
 		
 		/*!	The following are used for debugging information at runtime. */

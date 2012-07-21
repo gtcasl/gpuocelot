@@ -5,8 +5,8 @@
  */
 
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/debug.h>
 #include <ocelot/translator/test/PtxToIlTranslator.h>
 #include <ocelot/translator/interface/PTXToILTranslator.h>
 #include <ocelot/ir/interface/Module.h>
@@ -34,7 +34,6 @@ void PtxToIlTranslator::translate()
 			new executive::ATIExecutableKernel(*k_it->second, NULL, NULL, NULL, 
 					NULL, NULL, NULL);
 		kernel->updateGlobals();
-		kernel->allocateSharedMemory();
 
 		std::string il = kernel->name + ".il";
 

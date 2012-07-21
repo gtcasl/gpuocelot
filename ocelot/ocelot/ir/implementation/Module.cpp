@@ -9,9 +9,9 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/parser/interface/PTXParser.h>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/Exception.h>
 
 #include <fstream>
 #include <cassert>
@@ -31,37 +31,43 @@
 
 ir::Module::Module(const std::string& path, bool dontLoad)
 : _ptxPointer(0), _modulePath(path), _addressSize(64), _loaded(true) {
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
+
 	if(!dontLoad) load(path);
 }
 
 ir::Module::Module(std::istream& stream, const std::string& path)
 : _ptxPointer(0), _addressSize(64), _loaded(true) {
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
+
 	load(stream, path);
 }
 
 ir::Module::Module()
-: _ptxPointer(0), _addressSize(64), _loaded(false) {
-	PTXStatement version;
-	PTXStatement target;
-	version.directive = PTXStatement::Version;
-	version.major = 2; version.minor = 3;
-	target.targets.push_back("sm_23");
-	_statements.push_back(version);
-	_statements.push_back(target);
-	_target = ".target sm_23";
+: _ptxPointer(0), _addressSize(64), _loaded(false){
+	//.target sm_21
+	_target.directive = PTXStatement::Directive::Target;
+	_target.targets.push_back("sm_21");
+	//.version 2.3
+	_version.directive = PTXStatement::Directive::Version;
+	_version.minor = 3;
+	_version.major = 2;
 }
 
 ir::Module::Module(const ir::Module& m) 
 : _ptxPointer(0), _addressSize(64), _loaded(false) {
-	PTXStatement version;
-	PTXStatement target;
-	version.directive = PTXStatement::Version;
-	version.major = 2; version.minor = 3;
-	target.targets.push_back("sm_23");
-	_statements.push_back(version);
-	_statements.push_back(target);
-	_target = ".target sm_23";
-	
 	*this = m;
 }
 
@@ -90,6 +96,9 @@ const ir::Module& ir::Module::operator=(const Module& m) {
 		_textures   = m._textures;
 		_prototypes = m._prototypes;
 		_globals    = m._globals;
+		
+		_version = m._version;
+		_target  = m._target;
 		
 		for(KernelMap::const_iterator k = m._kernels.begin();
 			k != m._kernels.end(); ++k)
@@ -292,10 +301,17 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	assert( loaded() );
 	report("Writing module (IR) - " << _modulePath << " - to output stream.");
 
-	stream << ".version 2.3\n";
-	stream << ".target sm_20\n";
-	stream << ".address_size " << addressSize() << "\n";
+	stream << "/*\n* Ocelot Version : " 
+		<< hydrazine::Version().toString() << "\n*/\n\n";
+		
+	stream << _version.toString() << "\n";
+	stream << _target.toString()  << "\n";
 
+	if((_version.major > 2) ||
+		( (_version.major == 2) && (_version.minor >= 3))) {
+		stream << ".address_size " << addressSize() << "\n";
+	}
+	
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
 #if EMIT_FUNCTION_PROTOTYPES == 1
@@ -461,6 +477,16 @@ ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
 	}
 	return 0;
 }
+		
+const ir::PTXKernel* ir::Module::getKernel(
+	const std::string& kernelName) const {
+
+	KernelMap::const_iterator kernel = _kernels.find(kernelName);
+	if (kernel != _kernels.end()) {
+		return kernel->second;
+	}
+	return 0;
+}
 
 void ir::Module::removeKernel(const std::string& name) {
 	loadNow();
@@ -473,6 +499,9 @@ void ir::Module::removeKernel(const std::string& name) {
 
 ir::PTXKernel* ir::Module::insertKernel(PTXKernel* kernel) {
 	loadNow();
+	
+	kernel->module = this;
+	
 	if(!_kernels.insert(std::make_pair(kernel->name, kernel)).second) {
 		throw hydrazine::Exception("Inserted duplicated kernel - " 
 			+ kernel->name);
@@ -491,9 +520,10 @@ void ir::Module::extractPTXKernels() {
 		endIterator = _statements.end();
 
 	bool inKernel = false;
-	int instructionCount = 0;
-	int kernelInstance = 1;
+	unsigned int instructionCount = 0;
+	unsigned int kernelInstance = 1;
 	bool isFunction = false;
+	unsigned int depth = 0;
 	ir::PTXKernel::Prototype functionPrototype;
 	
 	report("extractPTXKernels()");
@@ -516,6 +546,16 @@ void ir::Module::extractPTXKernels() {
 		}
 	
 		switch (statement.directive) {
+			case PTXStatement::Version:
+			{
+				_version = statement;
+			}
+			break;
+			case PTXStatement::Target:
+			{
+				_target = statement;
+			}
+			break;
 			case PTXStatement::Entry:	// fallthrough
 			case PTXStatement::Func:
 			{
@@ -554,28 +594,33 @@ void ir::Module::extractPTXKernels() {
 			break;
 			case PTXStatement::EndScope:
 			{
-				// construct the kernel and push it onto something
+				report("  end scope: '}'");
 				assert(inKernel);
-				inKernel = false;
-				endIterator = ++StatementVector::const_iterator(it);
-				if (instructionCount) {
-					PTXKernel *kernel = new PTXKernel(startIterator, 
-					        endIterator, isFunction);
-					kernel->module = this;
-					_kernels[kernel->name] = (kernel);
-					kernel->canonicalBlockLabels(kernelInstance++);
+				assert(depth != 0);
+				
+				--depth;
+				
+				if (depth == 0) {
+					// construct the kernel and push it onto something
+					inKernel = false;
+					endIterator = ++StatementVector::const_iterator(it);
+					if (instructionCount) {
+						PTXKernel *kernel = new PTXKernel(startIterator, 
+							    endIterator, isFunction, kernelInstance++);
+						kernel->module = this;
+						_kernels[kernel->name] = (kernel);
+						kernel->canonicalBlockLabels();
+					}
 				}
 			}
 			break;
 			case PTXStatement::EndFuncDec:
 			{
+				report("  end func dec:");
+				
 				assert(inKernel);
 				inKernel   = false;
 				isFunction = false;
-				
-			} // fallthrough
-			case PTXStatement::StartScope:
-			{
 				if (prototypeState != PS_NoState &&
 					functionPrototype.callType !=
 					ir::PTXKernel::Prototype::Entry) {
@@ -583,6 +628,21 @@ void ir::Module::extractPTXKernels() {
 						functionPrototype);
 					prototypeState = PS_NoState;
 				}
+				
+			}
+			break;
+			case PTXStatement::StartScope:
+			{
+				report("  start scope: '{'");
+				if (prototypeState != PS_NoState &&
+					functionPrototype.callType !=
+					ir::PTXKernel::Prototype::Entry) {
+					addPrototype(functionPrototype.identifier,
+						functionPrototype);
+					prototypeState = PS_NoState;
+				}
+				
+				++depth;
 			}
 			break;
 			case PTXStatement::Param:
@@ -604,49 +664,62 @@ void ir::Module::extractPTXKernels() {
 				
 				}
 			}
-				break;
+			break;
 				
-		case PTXStatement::Instr:
-			if (inKernel) {
-				instructionCount++;
+			case PTXStatement::Instr:
+			{
+				if (inKernel) {
+					instructionCount++;
+				}
 			}
 			break;
-		case PTXStatement::Const:  // fallthrough
-		case PTXStatement::Global: // fallthrough
-		case PTXStatement::Shared: // fallthrough
-		case PTXStatement::Local:
-			if (!inKernel) {
-				assertM(_globals.count(statement.name) == 0, "Global operand '" 
-					<< statement.name << "' declared more than once." );
+			case PTXStatement::Const:  // fallthrough
+			case PTXStatement::Global: // fallthrough
+			case PTXStatement::Shared: // fallthrough
+			case PTXStatement::Local:
+			{
+				if (!inKernel) {
+					assertM(_globals.count(statement.name) == 0,
+						"Global operand '" 
+						<< statement.name << "' declared more than once." );
 
-				_globals.insert(std::make_pair(statement.name,
-					Global(statement)));
+					_globals.insert(std::make_pair(statement.name,
+						Global(statement)));
+				}
 			}
 			break;
 
-		case PTXStatement::AddressSize:
-			_addressSize = statement.addressSize;
+			case PTXStatement::AddressSize:
+			{
+				_addressSize = statement.addressSize;
+			}
 			break;
 
-		case PTXStatement::Texref:
-			if (!inKernel) {
-				assert(_textures.count(statement.name) == 0);
-				_textures.insert(std::make_pair(statement.name, 
-								Texture(statement.name, Texture::Texref)));
+			case PTXStatement::Texref:
+			{
+				if (!inKernel) {
+					assert(_textures.count(statement.name) == 0);
+					_textures.insert(std::make_pair(statement.name, 
+									Texture(statement.name, Texture::Texref)));
+				}
 			}
 			break;
-		case PTXStatement::Surfref:
-			if (!inKernel) {
-				assert(_textures.count(statement.name) == 0);
-				_textures.insert(std::make_pair(statement.name, 
-                Texture(statement.name, Texture::Surfref)));
+			case PTXStatement::Surfref:
+			{
+				if (!inKernel) {
+					assert(_textures.count(statement.name) == 0);
+					_textures.insert(std::make_pair(statement.name, 
+		            Texture(statement.name, Texture::Surfref)));
+				}
 			}
 			break;
-		case PTXStatement::Samplerref:
-			if (!inKernel) {
-				assert(_textures.count(statement.name) == 0);
-				_textures.insert(std::make_pair(statement.name, 
-								Texture(statement.name, Texture::Samplerref)));
+			case PTXStatement::Samplerref:
+			{
+				if (!inKernel) {
+					assert(_textures.count(statement.name) == 0);
+					_textures.insert(std::make_pair(statement.name, 
+									Texture(statement.name, Texture::Samplerref)));
+				}
 			}
 			break;
 				

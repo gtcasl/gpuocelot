@@ -12,7 +12,7 @@
 #include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -20,6 +20,7 @@
 #endif
 
 #define REPORT_BASE 0
+#define REPORT_PTX  0
 
 namespace transforms
 {
@@ -44,7 +45,7 @@ typedef std::unordered_set<iterator>                   BlockSet;
 typedef analysis::DataflowGraph::BlockPointerSet       BlockPointerSet;
 typedef analysis::DataflowGraph::PhiInstruction        PhiInstruction;
 typedef analysis::DataflowGraph::Register              Register;
-typedef analysis::DataflowGraph::Block::RegisterSet    RegisterSet;
+typedef analysis::DataflowGraph::RegisterSet    RegisterSet;
 typedef analysis::DataflowGraph::InstructionVector     InstructionVector;
 typedef analysis::DataflowGraph::PhiInstructionVector  PhiInstructionVector;
 
@@ -147,7 +148,7 @@ static void eliminateDeadInstructions(analysis::DataflowGraph& dfg,
 	BlockSet& blocks, iterator block)
 {
 	typedef analysis::DataflowGraph::Block                Block;
-	typedef analysis::DataflowGraph::Block::RegisterSet   RegisterSet;
+	typedef analysis::DataflowGraph::RegisterSet   RegisterSet;
 	typedef std::vector<unsigned int>                     KillList;
 	typedef std::vector<PhiInstructionVector::iterator>   PhiKillList;
 	typedef std::vector<RegisterSet::iterator>            AliveKillList;
@@ -244,13 +245,15 @@ static void eliminateDeadInstructions(analysis::DataflowGraph& dfg,
 void DeadCodeEliminationPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running dead code elimination on kernel " << k.name);
+	reportE(REPORT_PTX, k);
+	
 	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(dfgAnalysis != 0);
 
 	analysis::DataflowGraph& dfg =
 		*static_cast<analysis::DataflowGraph*>(dfgAnalysis);
 	
-	assert(dfg.ssa());
+	assert(dfg.ssa() != analysis::DataflowGraph::SsaType::None);
 	
 	BlockSet blocks;
 	
@@ -269,6 +272,9 @@ void DeadCodeEliminationPass::runOnKernel(ir::IRKernel& k)
 	
 		eliminateDeadInstructions(dfg, blocks, block);
 	}
+	
+	report("Finished running dead code elimination on kernel " << k.name);
+	reportE(REPORT_PTX, k);
 }
 
 void DeadCodeEliminationPass::finalize()

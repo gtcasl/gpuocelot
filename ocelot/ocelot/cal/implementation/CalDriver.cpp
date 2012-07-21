@@ -9,8 +9,8 @@
 
 // hydrazine includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 
 // Linux system headers
 #if __GNUC__

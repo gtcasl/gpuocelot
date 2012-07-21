@@ -19,7 +19,7 @@
 #include <fstream>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/interface/ArgumentParser.h>
 
 namespace test
 {

@@ -28,11 +28,13 @@
 #include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
 #include <ocelot/transforms/interface/ThreadFrontierReconvergencePass.h>
 #include <ocelot/transforms/interface/DefaultLayoutPass.h>
+#include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
+#include <ocelot/transforms/interface/PriorityLayoutPass.h>
 
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -203,7 +205,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::IPDOMReconvergencePass;
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
@@ -214,7 +216,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::DefaultLayoutPass;
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
@@ -225,7 +227,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::ThreadFrontierReconvergencePass(false);
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
@@ -236,13 +238,26 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			= new transforms::ThreadFrontierReconvergencePass(true);
 
 		manager.addPass(*pass);
-		manager.runOnKernel(name);
+		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
 	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFSoftware)
+	{
+		transforms::PriorityLayoutPass* layout
+			= new transforms::PriorityLayoutPass();
+
+		manager.addPass(*layout);
+		manager.runOnKernel(*this);
+		
+		instructions = std::move(layout->instructions);
+	}
 	else {
 		assertM(false, "unknown thread reconvergence mechanism - "
-			<< config::get().executive.reconvergenceMechanism);
+			<< ReconvergenceMechanism::toString(
+				(ReconvergenceMechanism::Type)
+				config::get().executive.reconvergenceMechanism));
 	}	
 	
 	manager.destroyPasses();
@@ -821,6 +836,13 @@ void executive::EmulatedKernel::fixBranchTargets(size_t basePC) {
 				ptx.branchTargetInstruction += basePC;
 			}
 		}
+		
+		if(ptx.opcode == ir::PTXInstruction::Bra) {
+			if(!ptx.uni) {
+				ptx.reconvergeInstruction += basePC;
+			}
+		}
+		
 	}
 }
 
@@ -1149,6 +1171,16 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 	assert(module != 0 );
 	assert(PC < instructions.size());
 	unsigned int statement = instructions[PC].statementIndex;
+	
+	while (statement == (unsigned int) -1) {
+		if (PC >= instructions.size()) {
+			statement = 0;
+			break;
+		}
+		
+		statement = instructions[++PC].statementIndex;
+	}
+	
 	ir::Module::StatementVector::const_iterator s_it 
 		= module->statements().begin();
 	std::advance(s_it, statement);

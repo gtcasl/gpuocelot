@@ -184,6 +184,8 @@ public:
 		/*! \brief View the value of a register */
 		void _printRegister(unsigned int thread,
 			ir::PTXOperand::RegisterType reg) const;
+		/*! \brief View the value of a register */
+		void _printRegisterAsMask(ir::PTXOperand::RegisterType reg) const;
 		/*! \brief prints watchpoints according to formatting information from command */
 		void _listWatchpoints(const std::string &command) const;
 		/*! \brief print the value of the region specified in a watchpoint */

@@ -15,7 +15,7 @@
 
 // hydrazine includes
 #include <hydrazine/interface/SystemCompatibility.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/Exception.h>
 #include <hydrazine/interface/Casts.h>
 
 // Standard Library Includes

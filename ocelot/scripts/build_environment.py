@@ -64,10 +64,10 @@ def getCudaPaths():
 
 	return (bin_path,lib_path,inc_path)
 
-def getBoostPaths():
-	"""Determines BOOST {bin,lib,include} paths
+def getBoost(env):
+	"""Determines BOOST {bin_path,lib_path,include_path,libs}
 	
-	returns (bin_path,lib_path,inc_path)
+	returns (bin_path,lib_path,inc_path,libs)
 	"""
 
 	# determine defaults
@@ -76,10 +76,15 @@ def getBoostPaths():
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
 	elif os.name == 'nt':
+		bitness = 32;
+		# If Visual Studio then MSCV builder will have set TARGET_ARCH
+		if 'TARGET_ARCH' in env:
+			if env['TARGET_ARCH'] == 'x86_64':
+				bitness = 64
 		boost_path = '../../tools/boost_1_46_1'
-		bin_path = boost_path + "/bin"
-		lib_path = boost_path + "/lib/win" + os.environ['VC_BITNESS']
 		inc_path = boost_path + "/"
+		bin_path = boost_path + "/bin"
+		lib_path = boost_path + "/lib/win" + str(bitness)
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
 
@@ -91,7 +96,20 @@ def getBoostPaths():
 	if 'BOOST_INC_PATH' in os.environ:
 		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
 
-	return (bin_path,lib_path,inc_path)
+	libs = [];
+	if os.name == 'nt':
+		lib_files = Flatten([Glob(os.path.join(lib_path, 'libboost_system-vc100-mt-s-*')),
+				     Glob(os.path.join(lib_path, 'libboost_filesystem-vc100-mt-s-*')),
+				     Glob(os.path.join(lib_path, 'libboost_thread-vc100-mt-s-*'))])
+		for f in lib_files:
+			libs.append(os.path.basename(f.abspath))
+	elif os.name == 'posix':
+		libs = ['-lboost_system-mt', '-lboost_filesystem-mt',
+			'-lboost_thread-mt']
+	else:
+		raise ValueError, 'Error: unknown OS.  What are Boost library names?'
+ 
+	return (bin_path,lib_path,inc_path,libs)
 
 def getFlexPaths(env):
 	"""Determines Flex {include} paths
@@ -103,7 +121,7 @@ def getFlexPaths(env):
 	if os.name == 'posix':
 		inc_path = ['/usr/include']
 	elif os.name == 'nt':
-		inc_path = inc_path = ['../../tools/MinGW/msys/1.0/include']
+		inc_path = ['../../tools/MinGW/msys/1.0/include']
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is FLEX installed?'
 
@@ -113,40 +131,49 @@ def getFlexPaths(env):
 
 	return (inc_path)
 
-def getGLEWPaths(env):
-	"""Determines GLEW {bin,lib,include} paths and is it installed?
+def getGLEW(env):
+	"""Determines GLEW {bin_path,lib_path,include_path,libs} and is it installed?
 
-	returns (have_glew,bin_path,lib_path,inc_path)
+	returns (have_glew,bin_path,lib_path,inc_path,libs)
 	"""
-
+	
 	configure = Configure(env)
 	glew = configure.CheckLib('GLEW')		
 	
 	if not glew:
 		print "Glew disabled: not found"
-		return (glew, '', '', '')
+		return (glew, [], [], [], [])
 
 	# determine defaults
 	if os.name == 'posix':
-		bin_path = '/usr/bin'
-		lib_path = '/usr/lib'
-		inc_path = '/usr/include'
+		bin_path = ['/usr/bin']
+		lib_path = ['/usr/lib']
+		inc_path = ['/usr/include']
 	elif os.name == 'nt':
-		bin_path = ''
-		lib_path = ''
-		inc_path = ''
+		bin_path = []
+		lib_path = []
+		inc_path = []
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is GLEW installed?'
 
 	# override with environement variables
 	if 'GLEW_BIN_PATH' in os.environ:
-		bin_path = os.path.abspath(os.environ['GLEW_BIN_PATH'])
+		bin_path = [os.path.abspath(os.environ['GLEW_BIN_PATH'])]
 	if 'GLEW_LIB_PATH' in os.environ:
-		lib_path = os.path.abspath(os.environ['GLEW_LIB_PATH'])
+		lib_path = [os.path.abspath(os.environ['GLEW_LIB_PATH'])]
 	if 'GLEW_INC_PATH' in os.environ:
-		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
+		inc_path = [os.path.abspath(os.environ['GLEW_INC_PATH'])]
 
-	return (glew,bin_path,lib_path,inc_path)
+	libs = []
+	if os.name == 'nt':
+		libs.append('opengl32.lib');
+	elif os.name == 'posix':
+		libs.append('-lGLEW');
+		if platform.system() == 'Darwin':
+			libs.append('-lGL')
+			lib_path.append('/usr/X11/lib')
+ 
+	return (glew,bin_path,lib_path,inc_path,libs)
 
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
@@ -158,18 +185,18 @@ def getLLVMPaths(enabled):
 		return (False, [], [], [], [], [], [])
 	
 	try:
-		llvm_config_path = which('llvm-config')
+		llvm_config_path = which('/usr/local/bin/llvm-config')
 	except:
 		print 'Failed to find llvm-config'
 		return (False, [], [], [], [], [], [])
 	
 	# determine defaults
-	bin_path = os.popen('llvm-config --bindir').read().split()
-	lib_path = os.popen('llvm-config --libdir').read().split()
-	inc_path = os.popen('llvm-config --includedir').read().split()
-	cflags   = os.popen('llvm-config --cppflags').read().split()
-	lflags   = os.popen('llvm-config --ldflags').read().split()
-	libs     = os.popen('llvm-config --libs core jit native \
+	bin_path = os.popen('/usr/local/bin/llvm-config --bindir').read().split()
+	lib_path = os.popen('/usr/local/bin/llvm-config --libdir').read().split()
+	inc_path = os.popen('/usr/local/bin/llvm-config --includedir').read().split()
+	cflags   = os.popen('/usr/local/bin/llvm-config --cppflags').read().split()
+	lflags   = os.popen('/usr/local/bin/llvm-config --ldflags').read().split()
+	libs     = os.popen('/usr/local/bin/llvm-config --libs core jit native \
 		asmparser instcombine').read().split()
 	
 	# remove -DNDEBUG
@@ -220,14 +247,19 @@ gCompilerOptions = {
 			'exception_handling' : '',
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
 		'cl'  : {'warn_all' : '/Wall',
-				 'warn_errors' : '/WX', 
-		         'optimization' : ['/Ox', '/MD', '/Zi', '/DNDEBUG'], 
-				 'debug' : ['/Zi', '/Od', '/D_DEBUG', '/RTC1', '/MDd'], 
-				 'exception_handling': '/EHsc', 
-				 'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
-				 	'/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H']}
+			'warn_errors' : '/WX',
+			'optimization' : ['/Zi', '/Ox', '/DNDEBUG'],
+			'debug' : ['/Zi', '/Od', '/D_DEBUG', '/RTC1'],
+			'exception_handling': '/EHsc',
+			'standard': ['/GS', '/GR', '/Gd', '/fp:precise',
+				'/Zc:wchar_t','/Zc:forScope', '/DYY_NO_UNISTD_H',
+				'/D_WIN32_WINNT=0x0601', '/wd4482', '/wd4503']}
 	}
 
+def updateCompilerOptionsFromEnv(env):
+	if 'CRT_LIB_OPTION' in env:
+		gCompilerOptions['cl']['optimization'].append(env['CRT_LIB_OPTION'])
+		gCompilerOptions['cl']['debug'].append(env['CRT_LIB_OPTION']+'d')
 
 # this dictionary maps the name of a linker program to a dictionary mapping the name of
 # a linker switch of interest to the specific switch implementing the feature
@@ -328,7 +360,7 @@ def getVersion(base):
 
 	(svn_info, std_err_data) = process.communicate()
 	
-	match = re.search('Last Changed Rev: ', svn_info)
+	match = re.search('Revision: ', svn_info)
 	revision = 'unknown'
 	if match:
 		end = re.search('\n', svn_info[match.end():])
@@ -339,22 +371,11 @@ def getVersion(base):
 
 	return base + '.' + revision
 
-def getExtraLibs():
-	if os.name == 'nt':
-		return ['libboost_system-vc100-mt-s-1_46_1.lib',
-			'libboost_filesystem-vc100-mt-s-1_46_1.lib',
-			'libboost_thread-vc100-mt-s-1_46_1.lib', 'opengl32.lib']
-	else:
-		return ['-lboost_system-mt', '-lboost_filesystem-mt',
-			'-lboost_thread-mt']
-
-
 def fixPath(path):
 	if (os.name == 'nt'):
 		return path.replace('\\', '\\\\')
 	else:
 		return path
-
 
 import collections
 
@@ -413,11 +434,21 @@ def Environment():
 	# allow the user discretion to choose the MSVC version
 	if os.name == 'nt':
 		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version',
-			None, allowed_values=('8.0', '9.0', '10.0')))
+			'10.0', allowed_values=('8.0', '9.0', '10.0')))
+		vars.Add(EnumVariable('TARGET_ARCH',
+			'MS Visual C++ target architecture',
+			'x86_64', allowed_values=('x86', 'x86_64')))
+		vars.Add(EnumVariable('CRT_LIB_OPTION',
+			'MS Visual C++ runtime library option for cl.exe ',
+			'/MD', allowed_values=('/MD', '/MT')))
+
 
 	# add a variable to handle RELEASE/DEBUG mode
 	vars.Add(EnumVariable('mode', 'Release versus debug mode', 'release',
 		allowed_values = ('release', 'debug')))
+
+	# add a variable to treat warnings as errors
+	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 1))
 
 	# add a variable to handle warnings
 	vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 1))
@@ -430,10 +461,6 @@ def Environment():
 	vars.Add(EnumVariable('library', 'Build shared or static library',
 		libraryDefault, allowed_values = ('shared', 'static')))
 	
-	# add a variable to treat warnings as errors
-	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 1))
-
-	# add a variable to treat warnings as errors
 	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
 	
@@ -443,17 +470,34 @@ def Environment():
 		allowed_values = ('none', 'basic', 'full')))
 
 	# add a variable to determine the install path
-	default_install_path = '/usr/local'
+	if os.name == 'nt':
+		if 'USERPROFILE' in os.environ:
+			default_install_path = os.path.join(os.environ['USERPROFILE'], 'ocelot')
+		else:
+			default_install_path = '/ocelot'
+	elif os.name == 'posix':
+		default_install_path = '/usr/local'
+	else:
+		raise ValueError, 'Error: unknown OS.  Where is Ocelot installed by default?'
 	
 	if 'OCELOT_INSTALL_PATH' in os.environ:
 		default_install_path = os.environ['OCELOT_INSTALL_PATH']
 		
 	vars.Add(PathVariable('install_path', 'The ocelot install path',
-		default_install_path))
+		default_install_path, PathVariable.PathIsDirCreate))
+ 
+	vars.Add(BoolVariable('install', 'Include ocelot install path in default '
+		'targets that will be built and configure to install in the '
+		'install_path (defaults to false unless one of the targets is '
+		'"install")', 0))
 
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \
 		tools = getTools(), variables = vars)
+
+	# update compiler options with variables in the environment
+	# (such as those from the command line)
+	updateCompilerOptionsFromEnv(env)
 
 	# always link with the c++ compiler
 	if os.name != 'nt':
@@ -482,7 +526,7 @@ def Environment():
 	env.AppendUnique(YACCFLAGS = "-d")
 	
 	# Install paths
-	if 'install' in COMMAND_LINE_TARGETS:
+	if env['install']:
 		env.Replace(INSTALL_PATH = os.path.abspath(env['install_path']))
 	else:
 		env.Replace(INSTALL_PATH = os.path.abspath('.'))
@@ -503,7 +547,7 @@ def Environment():
 		src_suffix = '.cu'
 	)})
 
-  # CUDA builder
+	# CUDA builder
 	nvccPath = cuda_exe_path + ('/' if cuda_exe_path != '' else '')
 	env.Append(BUILDERS = {'Cuda': Builder(
 		action= nvccPath + 'nvcc -arch=sm_20 $SOURCE -c -o $TARGET',
@@ -516,19 +560,21 @@ def Environment():
 		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
 		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
 	
-	# include the build directory in case of generated files
-	env.Prepend(CPPPATH = env.Dir('.'))
+	# set the build path
+	env.Replace(BUILD_ROOT = str(env.Dir('.')))
 
-	# get boost paths
-	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
+	# get boost information
+	(boost_exe_path,boost_lib_path,boost_inc_path,boost_libs) = getBoost(env)
 	env.AppendUnique(LIBPATH = [boost_lib_path])
 	env.AppendUnique(CPPPATH = [boost_inc_path])
+	env.AppendUnique(EXTRA_LIBS = boost_libs) 
 
-	# get GLEW paths
-	(glew,glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths(env)
+	# get GLEW information
+	(glew,glew_exe_path,glew_lib_path,glew_inc_path,glew_libs) = getGLEW(env)
 	if glew:
-		env.AppendUnique(LIBPATH = [glew_lib_path])
-		env.AppendUnique(CPPPATH = [glew_inc_path])
+		env.AppendUnique(LIBPATH = glew_lib_path)
+		env.AppendUnique(CPPPATH = glew_inc_path)
+		env.AppendUnique(EXTRA_LIBS = glew_libs) 
 	env.Replace(HAVE_GLEW = glew)
 
 	# get Flex paths
@@ -551,21 +597,20 @@ def Environment():
 
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
-	env.AppendUnique(LIBPATH = os.path.abspath('.'))
-	
-	# set extra libs 
-	env.Replace(EXTRA_LIBS=getExtraLibs())
 
+	if env['install']:
+		env.AppendUnique(LIBPATH = os.path.abspath(os.path.join(env['install_path'], 'lib')))
+	
 	if os.name == 'nt':      
                env.AppendUnique(CFLAGS   = "-DYY_NO_UNISTD_H")
                env.AppendUnique(CXXFLAGS = "-DYY_NO_UNISTD_H")
 
-	if glew:
-		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
-	
+
 	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-lrt']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		if platform.system() != 'Darwin':
+			env.AppendUnique(EXTRA_LIBS = ['-lrt'])
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot-opencl'

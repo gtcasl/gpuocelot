@@ -121,6 +121,7 @@ namespace executive {
 		// execution helper functions
 
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
+		ir::PTXF64 sat(int modifier, ir::PTXF64 f);
 		
 		// Set the trace event
 		void trace();
@@ -461,6 +462,8 @@ namespace executive {
 		void eval_Or(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Pmevent(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Popc(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Prefetchu(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Prmt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rcp(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Red(CTAContext &context, const ir::PTXInstruction &instr);

@@ -11,8 +11,8 @@
 #include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/string.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/string.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -95,7 +95,7 @@ bool DominatorTree::dominates(ir::ControlFlowGraph::iterator block,
 	}
 	while(startId != nextId && !dominates);
 	
-	return dominates;
+	return dominates || nextId == id;
 }
 
 ir::ControlFlowGraph::iterator DominatorTree::getDominator(
@@ -116,12 +116,27 @@ ir::ControlFlowGraph::iterator DominatorTree::getCommonDominator(
 	return blocks[n];
 }
 
+
+ir::ControlFlowGraph::BlockPointerVector DominatorTree::getDominatedBlocks(
+	ir::ControlFlowGraph::iterator block) {
+	ir::ControlFlowGraph::BlockPointerVector dominatedBlocks;
+	
+	int n = blocksToIndex[block];
+	
+	for(auto dominatedBlock = dominated[n].begin();
+		dominatedBlock != dominated[n].end(); ++dominatedBlock) {
+		
+		dominatedBlocks.push_back(blocks[*dominatedBlock]);
+	}
+	
+	return dominatedBlocks;
+}
+
 /*! Computes the dominator tree from a CFG using algorithm desrcibed in
 	"A simple and fast dominance algorithm" by 
 		Keith D. Cooper, Timothy J. Harvey, and Ken Kennedy
  */
 void DominatorTree::computeDT() {
-	using namespace std;
 	int start_node = blocksToIndex[cfg->get_entry_block()];
 
 	bool changed = true;

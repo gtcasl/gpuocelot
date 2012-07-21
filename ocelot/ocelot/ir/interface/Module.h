@@ -111,6 +111,15 @@ namespace ir {
 		*/
 		PTXKernel* getKernel(const std::string& name);
 		
+		/*! \brief Gets a kernel instance by name. 
+
+			\param name [mangled] name of kernel
+
+			\return const pointer to kernel instance with (name) 
+				or 0 if kernel does not exist
+		*/
+		const PTXKernel* getKernel(const std::string& name) const;
+		
 		/*! \brief Removes an existing kernel by name.
 			\param name [mangled] name of kernel
 		*/
@@ -227,9 +236,12 @@ namespace ir {
 
 		/*! Path from which Module was loaded */
 		std::string _modulePath;
-		
-		/*! Target string */
-		std::string _target;
+
+		/*! Target statment */
+		PTXStatement _target;
+
+		/*! \brief Version statment */
+		PTXStatement _version;
 
 		/*! \brief The address size */
 		unsigned int _addressSize;

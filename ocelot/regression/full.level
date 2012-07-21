@@ -14,9 +14,10 @@ TestCudaTextureArray
 TestCudaGlobals
 TestDeviceSwitching
 TestCudaSequence
-TestCalVectorScale
 TestPTXAssembly
 TestFunctionCall
 TestIndirectFunctionCall
 TestExternalFunctions
+
+TestOptimizations -i ../tests/ptx
 

@@ -15,7 +15,7 @@
 #include <ocelot/cuda/interface/CudaRuntime.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

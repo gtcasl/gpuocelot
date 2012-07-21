@@ -34,9 +34,11 @@ namespace ir
 				Alloca,
 				And,
 				Ashr,
+				Atomicrmw,
 				Bitcast,	
 				Br,
 				Call,
+				Cmpxchg,
 				Extractelement,
 				Extractvalue,
 				Fadd,
@@ -150,6 +152,23 @@ namespace ir
 				NoCapture,
 				Nested,
 				InvalidParameterAttribute
+			};
+			
+			/*! \brief Type of atomic operation */
+			enum AtomicOperation
+			{
+				AtomicXchg,
+				AtomicAdd,
+				AtomicSub,
+				AtomicAnd,
+				AtomicNand,
+				AtomicOr,
+				AtomicXor,
+				AtomicMax,
+				AtomicMin,
+				AtomicUmax,
+				AtomicUmin,
+				InvalidAtomicOperation
 			};
 			
 			/*! \brief Valid Function Attributes */
@@ -316,6 +335,8 @@ namespace ir
 			static std::string toString( CallingConvention cc );
 			/*! \brief Convert a Parameter attribute to a string */
 			static std::string toString( ParameterAttribute attribute );
+			/*! \brief Convert an atomic operation to a string */
+			static std::string toString( AtomicOperation op );
 			/*! \brief Convert a Comparison to a string */
 			static std::string toString( Comparison comp );
 			/*! \brief Convert a series of function attributes to a string */
@@ -507,6 +528,24 @@ namespace ir
 			Instruction* clone(bool copy=true) const;
 	};
 	
+	/*! \brief The LLVM atomicrmw instruction */
+	class LLVMAtomicrmw : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMAtomicrmw();
+
+		public:
+			AtomicOperation operation;
+
+		public:
+			std::string valid() const;
+			std::string toString() const;
+		
+		public:
+			Instruction* clone(bool copy=true) const;
+	};
+	
 	/*! \brief The LLVM bitcast instruction */
 	class LLVMBitcast : public LLVMConversionInstruction
 	{
@@ -576,6 +615,24 @@ namespace ir
 			std::string toString() const;
 			std::string valid() const;
 
+		public:
+			Instruction* clone(bool copy=true) const;
+	};
+	
+	/*! \brief The LLVM cmpxchg instruction */
+	class LLVMCmpxchg : public LLVMBinaryInstruction
+	{
+		public:
+			/*! \brief The default constructor sets the opcode */
+			LLVMCmpxchg();
+
+		public:
+			Operand c;
+
+		public:
+			std::string toString() const;
+			std::string valid() const;
+		
 		public:
 			Instruction* clone(bool copy=true) const;
 	};

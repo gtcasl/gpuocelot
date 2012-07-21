@@ -11,6 +11,8 @@
 #include <map>
 #include <unordered_map>
 #include <string>
+#include <vector>
+#include <list>
 
 // Forward Declarations
 namespace analysis   { class Analysis; }
@@ -40,6 +42,7 @@ public:
 		\param module The module that this manager is associated with.
 	*/
 	explicit PassManager(ir::Module* module);
+	~PassManager();
 		
 public:
 	/*! \brief Adds a pass that needs to be eventually run
@@ -50,6 +53,19 @@ public:
 		\param pass The pass being added
 	 */
 	void addPass(Pass& pass);
+	
+	/*! \brief Adds an explicit dependence between pass types
+	
+		The dependence relationship is:
+		
+			dependentPassName <- passName
+			
+		or:
+			
+			dependentPassName depends on passName
+	 */
+	void addDependence(const std::string& dependentPassName,
+		const std::string& passName);
 	
 	/*! \brief Clears all added passes */
 	void clear();
@@ -95,12 +111,20 @@ public:
 
 private:
 	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
-	
+	typedef std::multimap<std::string, std::string> DependenceMap;
+	typedef std::vector<Pass*> PassVector;
+	typedef std::list<PassVector> PassWaveList;
+
 private:
-	PassMap           _passes;
-	ir::Module*       _module;
-	ir::IRKernel*     _kernel;
-	AnalysisMap*      _analyses;
+	PassWaveList _schedulePasses();
+
+private:
+	PassMap       _passes;
+	ir::Module*   _module;
+	ir::IRKernel* _kernel;
+	AnalysisMap*  _analyses;
+	PassVector    _ownedTemporaryPasses;
+	DependenceMap _extraDependences;
 };
 
 }

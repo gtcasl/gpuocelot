@@ -20,7 +20,7 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <set>

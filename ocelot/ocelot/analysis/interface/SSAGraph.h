@@ -4,11 +4,11 @@
 	\brief The header file for the SSAGraph class.	
 */
 
-#ifndef SSA_GRAPH_H_INCLUDED
-#define SSA_GRAPH_H_INCLUDED
+#pragma once
 
 // Ocelot Includes
 #include <ocelot/analysis/interface/DataflowGraph.h>
+#include <map>
 
 namespace analysis
 {
@@ -18,8 +18,11 @@ namespace analysis
 class SSAGraph
 {
 private:
-	typedef std::unordered_map< DataflowGraph::Register, 
-		DataflowGraph::Register > RegisterMap;
+	typedef std::unordered_map<DataflowGraph::Register, 
+		DataflowGraph::Register> RegisterMap;
+
+	typedef std::map<DataflowGraph::RegisterId,
+		DataflowGraph::Register> RegisterIdMap;
 
 	class Block
 	{
@@ -28,26 +31,30 @@ private:
 		RegisterMap aliveInMap;
 	};
 
-	typedef std::unordered_map< DataflowGraph::iterator, 
-		Block > BlockMap;
+	typedef std::unordered_map<DataflowGraph::iterator, Block> BlockMap;
 
 private:
 	DataflowGraph& _graph;
 	BlockMap _blocks;
+	DataflowGraph::SsaType _form;
 
-	void _initialize( Block& b, DataflowGraph::iterator it, 
-		DataflowGraph::RegisterId& current );		
+	void _initialize(Block& b, DataflowGraph::iterator it, 
+		DataflowGraph::RegisterId& current);		
 	void _insertPhis();
 	void _updateIn();
 	void _updateOut();
-	
+	void _minimize();
+	void _gssa(DataflowGraph::RegisterId&);
+	bool _isPossibleDivBranch(
+		const DataflowGraph::InstructionVector::iterator &) const;
+
 public:
-	SSAGraph( DataflowGraph& graph );
+	SSAGraph( DataflowGraph& graph,
+		DataflowGraph::SsaType form = DataflowGraph::SsaType::Default);
 	void toSsa();
 	void fromSsa();
 };
 
 }
 
-#endif
 

@@ -27,6 +27,9 @@ public:
 	/*! \brief Finalize the pass */
 	void finalize();
 
+public:
+	void setMaximumBlockSize(unsigned int s);
+
 private:
 	unsigned int _maxSize;
 

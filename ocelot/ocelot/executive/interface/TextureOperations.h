@@ -15,7 +15,7 @@
 #include <cfloat>
 
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #include <iostream>
 

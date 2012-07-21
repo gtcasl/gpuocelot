@@ -8,7 +8,7 @@
 	#include <iostream>
 	#include <ocelot/parser/interface/PTXParser.h>
 	#include <ocelot/parser/interface/PTXLexer.h>
-	#include <hydrazine/implementation/debug.h>
+	#include <hydrazine/interface/debug.h>
 	#include <cassert>
 	#include <cstring>
 
@@ -65,6 +65,7 @@
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
 %token<text> OPCODE_BFI OPCODE_BFE OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
+%token<text> OPCODE_PREFETCH OPCODE_PREFETCHU
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -76,7 +77,7 @@
 
 %token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM 
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
-%token<value> TOKEN_SM21 TOKEN_SM10
+%token<value> TOKEN_SM21 TOKEN_SM10 TOKEN_SM30 TOKEN_SM35
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
 %token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA TOKEN_SURFREF 
@@ -257,7 +258,8 @@ singleInitializer : singleList |  '{' singleList '}' | '{' singleListSingle '}'
 	| singleListSingle;
 
 shaderModel : TOKEN_SM10 | TOKEN_SM11 | TOKEN_SM12 | TOKEN_SM13 | TOKEN_SM20
-	| TOKEN_SM21;
+	| TOKEN_SM21 | TOKEN_SM30 | TOKEN_SM35;
+	
 floatingPointOption : TOKEN_MAP_F64_TO_F32;
 
 targetOption : shaderModel | floatingPointOption;
@@ -471,7 +473,7 @@ openBrace : '{'
 	state.openBrace( @1 );
 };
 
-closeBrace : '}'
+closeBrace : '}' optionalMetadata
 {
 	state.closeBrace( @1 );
 };
@@ -513,9 +515,9 @@ functionBodyDefinition : externOrVisible functionBegin
 
 functionBody : functionBodyDefinition openBrace entryStatements closeBrace;
 
-entryName : TOKEN_ENTRY identifier
+entryName : externOrVisible TOKEN_ENTRY identifier
 {
-	state.entry( $<text>2, @1 );
+	state.entry( $<text>3, @1 );
 };
 
 entryDeclaration : entryName argumentList performanceDirectives
@@ -646,7 +648,8 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_SUQ | OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT
 	| OPCODE_VOTE | OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA
 	| OPCODE_PMEVENT | OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV
-	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4;
+	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4
+	| OPCODE_PREFETCH | OPCODE_PREFETCHU;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -812,12 +815,12 @@ intRounding : intRoundingToken
 optionalFloatRounding : floatRounding | /* empty string */;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
-	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
-	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
+	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub
+	| addCOrSubC | atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
-	| pmevent | popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
-	| setp | slct | st | suld | suq | sured | sust | testp | tex | tld4 | trap
-	| txq | vote;
+	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red
+	| ret | sad | selp | set | setp | slct | st | suld | suq | sured | sust
+	| testp | tex | tld4 | trap | txq | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;
@@ -1282,6 +1285,21 @@ permuteMode : /* empty string */
 	state.defaultPermute();
 };
 
+cacheLevel : TOKEN_L1 | TOKEN_L2
+{
+	state.cacheLevel( $<value>1 );
+};
+
+prefetch : OPCODE_PREFETCH addressSpace cacheLevel '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1 );
+};
+
+prefetchu : OPCODE_PREFETCHU cacheLevel '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1 );
+};
+
 prmt : OPCODE_PRMT dataType permuteMode operand ',' operand 
 	',' operand ',' operand ';'
 {
@@ -1390,6 +1408,12 @@ setp : OPCODE_SETP setpModifier dataType predicatePair ',' operand ','
 	operand ';'
 {
 	state.instruction( $<text>1, $<value>3 );
+};
+
+setp : OPCODE_SETP dataType setpModifier predicatePair ',' operand ',' 
+	operand ';'
+{
+	state.instruction( $<text>1, $<value>2 );
 };
 
 setp : OPCODE_SETP comparison boolOperator optionalFtz dataType predicatePair 

@@ -12,10 +12,10 @@
 #include <ocelot/translator/interface/Translator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/json.h>
+#include <hydrazine/interface/json.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 
 // C stdlib includes
 #include <cassert>
@@ -56,7 +56,7 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 	check.enabled = config.parse<bool>("enabled", false);
 	check.path = config.parse<std::string>("path", "trace/");
 	check.prefix = config.parse<std::string>("prefix", "check");
-	check.suffix = config.parse<std::string>("suffix", ".binary");
+	check.suffix = config.parse<std::string>("suffix", ".trace");
 	check.verify = config.parse<bool>("verify", false);
 }
 
@@ -175,7 +175,8 @@ api::OcelotConfiguration::Optimizations::Optimizations():
 	predicateToSelect(false),
 	linearScanAllocation(false),
 	mimdThreadScheduling(false),
-	syncElimination(false)
+	syncElimination(false),
+	inlining(false)
 {
 
 }
@@ -269,8 +270,12 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		executive.reconvergenceMechanism
 			= (int)executive::ReconvergenceMechanism::Reconverge_TFSortedStack;
 	}
+	else if (strReconvMech == "tf-sw") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_TFSoftware;
+	}
 	else {
-		report("Unknown reconvergence mechanism - ipdom");
+		report("Unknown reconvergence mechanism - " + strReconvMech);
 	}
 
 	executive.defaultDeviceID = config.parse<int>("defaultDeviceID", 0);
@@ -342,10 +347,17 @@ static void initializeOptimizations(
 		config.parse<bool>("syncElimination", false);	
 	
 	optimizations.hoistSpecialValues =
-		config.parse<bool>("hoistSpecialValues", false);	
+		config.parse<bool>("hoistSpecialValues", false);
 	
 	optimizations.simplifyCFG =
-		config.parse<bool>("simplifyCFG", false);			
+		config.parse<bool>("simplifyCFG", false);
+	
+	optimizations.enforceLockStepExecution =
+		config.parse<bool>("enforceLockStepExecution", false);
+	
+	optimizations.inlining =
+		config.parse<bool>("functionInlining", false);
+		
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {
@@ -359,7 +371,18 @@ api::OcelotConfiguration::OcelotConfiguration(std::istream &stream) {
 api::OcelotConfiguration::OcelotConfiguration(
 	const std::string &_path): path(_path) {
 	std::ifstream file(path.c_str());
-	initialize(file);
+	
+	if(file.is_open())
+	{
+		initialize(file);
+	}
+	else
+	{
+		std::cerr << "==Ocelot== WARNING: Failed to find 'configure.ocelot' "
+			"in current directory, loading defaults.\n" << std::endl;
+		std::cerr << "==Ocelot== INFO: You may consider adding one if you need "
+			"to change the Ocelot target, or runtime options.\n" << std::endl;
+	}
 }
 
 //! \brief parses and returns configuration object
@@ -404,6 +427,12 @@ void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) 
 		if (main.find("optimizations")) {
 			initializeOptimizations(optimizations, main["optimizations"]);
 		}
+		
+		if (executive.reconvergenceMechanism
+			== (int)executive::ReconvergenceMechanism::Reconverge_TFSoftware) {
+			optimizations.enforceLockStepExecution = true;
+		}
+		
 		version = main.parse<std::string>("version", 
 			hydrazine::Version().toString());
 		ocelot = main.parse<std::string>("ocelot", "ocelot");

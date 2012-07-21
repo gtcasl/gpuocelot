@@ -236,7 +236,7 @@ bool DataflowGraph::Block::_equal( const RegisterSet& one,
 
 DataflowGraph::Block::Block( DataflowGraph& dfg, 
 	ir::ControlFlowGraph::iterator block ) : _fallthrough( dfg.end() ),
-	_type( Body ), _block( block )
+	_type( Body ), _block( block ), _dfg( &dfg )
 {
 	_fallthrough = dfg.end();
 	for( ir::ControlFlowGraph::InstructionList::const_iterator 
@@ -250,7 +250,7 @@ DataflowGraph::Block::Block( DataflowGraph& dfg,
 }
 
 DataflowGraph::Block::Block( DataflowGraph& dfg, Type t ) :
-	_fallthrough( dfg.end() ), _type( t )
+	_fallthrough( dfg.end() ), _type( t ), _dfg( &dfg )
 {
 	
 }
@@ -596,6 +596,16 @@ void DataflowGraph::analyze(ir::IRKernel& kernel)
 				begin->second->_successors.insert( bi->second );
 				bi->second->_predecessors.insert( begin->second );
 			}
+		}
+	}
+	
+	report( "Setting instruction->block pointers" );
+	for(auto block = _blocks.begin(); block != _blocks.end(); ++block)
+	{
+		for(auto instruction = block->instructions().begin();
+			instruction != block->instructions().end(); ++instruction)
+		{
+			instruction->block = block;
 		}
 	}
 	
@@ -1209,6 +1219,8 @@ void DataflowGraph::compute()
 
 void DataflowGraph::constructDUChains()
 {
+	report( "Constructing DU chains...");
+
 	for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
 	{
 		for (InstructionVector::iterator
@@ -1240,6 +1252,8 @@ void DataflowGraph::constructDUChains()
 					{		 
 						if(*dest->pointer == *src->pointer)
 						{
+							report(" " << instIter->i->toString()
+								<< " <- " << instRIter->i->toString() );
 							InstructionVector::iterator tempIter =
 								instRIter.base();
 							instIter->defs.push_back(--tempIter);
@@ -1301,6 +1315,8 @@ DataflowGraph::RegisterId DataflowGraph::newRegister()
 void DataflowGraph::toSsa(DataflowGraph::SsaType form)
 {
 	compute();
+	report("Converting to SSA");
+	
 	SSAGraph graph( *this, form );
 	graph.toSsa();		
 }

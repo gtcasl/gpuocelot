@@ -23,7 +23,7 @@ namespace ir {
 
 		/*!	List of opcodes for PTX instructions */
 		enum Opcode {
-			Abs,
+			Abs = 0,
 			Add,
 			AddC,
 			And,

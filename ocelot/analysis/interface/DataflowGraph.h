@@ -48,10 +48,10 @@ class DataflowGraph : public KernelAnalysis
 
 		enum SsaType
 		{
-			None = 0,
+			None    = 0,
 			Default = 1,
 			Minimal = 2,
-			Gated = 4
+			Gated   = 4
 		};
 
     	/*! \brief A register with type info */

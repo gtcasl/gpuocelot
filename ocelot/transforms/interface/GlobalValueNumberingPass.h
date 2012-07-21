@@ -44,7 +44,7 @@ private:
 		ir::PTXInstruction::Opcode opcode;
 		ir::PTXOperand::DataType   type;
 		
-		Number arguments[4];
+		Number arguments[5];
 		
 	public:
 		Expression(ir::PTXInstruction::Opcode
@@ -55,14 +55,35 @@ private:
 		bool operator==(const Expression& eq) const;
 				
 	};
+	
+	class Immediate
+	{
+	public:
+		ir::PTXOperand::DataType type;
+		ir::PTXU64               value;
+		
+	public:
+		Immediate(ir::PTXOperand::DataType type, ir::PTXU64 value);
+
+	public:
+		bool operator==(const Immediate& imm) const;
+	};
 
 	struct ExpressionHash
 	{
-		inline size_t operator()(
-			const transforms::GlobalValueNumberingPass::Expression& e) const
+		inline size_t operator()(const Expression& e) const
 		{
 			return e.opcode ^ e.type ^ e.arguments[0] ^
-				e.arguments[1] ^ e.arguments[2] ^ e.arguments[3];
+				e.arguments[1] ^ e.arguments[2] ^ e.arguments[3] ^
+				e.arguments[4];
+		}
+	};
+
+	struct ImmediateHash
+	{
+		inline size_t operator()(const Immediate& i) const
+		{
+			return i.type ^ i.value;
 		}
 	};
 
@@ -82,8 +103,16 @@ private:
 		ValueToNumberMap;
 	typedef std::unordered_map<Expression, Number, ExpressionHash>
 		ExpressionToNumberMap;
+	typedef std::unordered_map<Immediate, Number, ImmediateHash>
+		ImmediateToNumberMap;
 	typedef std::unordered_map<Number, GeneratingInstructionList>
 		NumberToGeneratingInstructionMap;
+
+	enum PredefinedNumbers
+	{
+		UnsetNumber   = (Number)-1,
+		InvalidNumber = (Number)-2
+	};
 
 private:
 	bool _numberThenMergeIdenticalValues(ir::IRKernel& k);
@@ -101,7 +130,9 @@ private:
 	Number _getNextNumber();
 	Number _lookupExistingOrCreateNewNumber(
 		const InstructionIterator& instruction);
-
+	Number _lookupExistingOrCreateNewNumber(
+		const ir::PTXOperand& instruction);
+	
 	void _setGeneratingInstruction(Number n,
 		const InstructionIterator& instruction);
 	InstructionIterator _findGeneratingInstruction(Number n,
@@ -110,10 +141,12 @@ private:
 		const InstructionIterator& instruction);
 
 	Expression _createExpression(const InstructionIterator& instruction);
-
+	Immediate  _createImmediate(const ir::PTXOperand& operand);
+	
 private:
 	ValueToNumberMap                 _numberedValues;
 	ExpressionToNumberMap            _numberedExpressions;
+	ImmediateToNumberMap             _numberedImmediates;
 	Number                           _nextNumber;
 	NumberToGeneratingInstructionMap _generatingInstructions;
 	InstructionVector                _eliminatedInstructions;

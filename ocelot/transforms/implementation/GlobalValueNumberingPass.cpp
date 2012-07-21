@@ -56,14 +56,16 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 		changed = _numberThenMergeIdenticalValues(k);
 	}
 	#endif
-
 	// convert to and out of SSA, this renumbers registers
 	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
 
-	dfg->toSsa();
+	if(dfg->ssa() == analysis::DataflowGraph::None)
+	{
+		dfg->toSsa();
+	}
 	
 	assert(dfg->ssa() != analysis::DataflowGraph::None);
 	

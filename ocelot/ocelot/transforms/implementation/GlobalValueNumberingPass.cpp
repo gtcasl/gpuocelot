@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -32,7 +32,6 @@ namespace transforms
 
 GlobalValueNumberingPass::GlobalValueNumberingPass()
 :  KernelPass(Analysis::DataflowGraphAnalysis |
-	Analysis::StaticSingleAssignment |
 	Analysis::DominatorTreeAnalysis, "GlobalValueNumberingPass")
 {
 
@@ -57,13 +56,15 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 		changed = _numberThenMergeIdenticalValues(k);
 	}
 	#endif
-	
-	// convert out of SSA, this renumbers registers
+
+	// convert to and out of SSA, this renumbers registers
 	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
 
+	dfg->toSsa();
+	
 	assert(dfg->ssa() != analysis::DataflowGraph::None);
 	
 	dfg->fromSsa();
@@ -170,6 +171,8 @@ bool GlobalValueNumberingPass::_processInstruction(
 	const InstructionIterator& instruction)
 {
 	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
+	
+	report("   Processing instruction '" << ptx->toString() << "'");
 
 	// TODO attempt to simplify the instruction
 	
@@ -182,6 +185,7 @@ bool GlobalValueNumberingPass::_processInstruction(
 	// if a new number was created, just insert it
 	if(nextNumber <= number)
 	{
+		report("    this instruction generates the number.");
 		_setGeneratingInstruction(number, instruction);
 		return false;
 	}
@@ -190,14 +194,20 @@ bool GlobalValueNumberingPass::_processInstruction(
 	auto generatingInstruction = _findGeneratingInstruction(number,
 		instruction);
 	
+	report("    finding a dominating instruction that "
+		"generates the same number.");
 	if(generatingInstruction == instruction->block->instructions().end())
 	{
 		// None exists, set this one in case another instruction is
 		//  dominated by it
 		_setGeneratingInstruction(number, instruction);
+
+		report("     couldn't find one...");
 		
 		return false;
 	}
+	
+	report("     found " << generatingInstruction->i->toString());
 	
 	// Success, eliminate the instruction
 	_eliminateInstruction(generatingInstruction, instruction);
@@ -221,6 +231,10 @@ GlobalValueNumberingPass::Number
 	GlobalValueNumberingPass::_lookupExistingOrCreateNewNumber(
 		const InstructionIterator& instruction)
 {
+	// Ignore instructions with multiple or no defs
+	if(instruction->d.size() != 1) return InvalidNumber;
+	
+	// number the expression
 	auto expression = _createExpression(instruction);
 	
 	auto numberedExpression = _numberedExpressions.find(expression);
@@ -229,10 +243,52 @@ GlobalValueNumberingPass::Number
 	{
 		return numberedExpression->second;
 	}
-	
+
+	report("    assigning number " << _nextNumber
+		<< " to instruction '" << instruction->i->toString()
+		<< "', register r" << *instruction->d.back().pointer << "");
+
 	_numberedExpressions.insert(std::make_pair(expression, _nextNumber));
 	
+	// number the generated value
+	_numberedValues.insert(std::make_pair(
+		*instruction->d.back().pointer, _nextNumber));
+	
 	return _nextNumber++;
+}
+
+GlobalValueNumberingPass::Number
+	GlobalValueNumberingPass::_lookupExistingOrCreateNewNumber(
+		const ir::PTXOperand& operand)
+{
+	if(operand.isRegister())
+	{
+		auto value = _numberedValues.find(operand.reg);
+		
+		if(value != _numberedValues.end())
+		{
+			return value->second;
+		}
+	}
+	else if(operand.addressMode == ir::PTXOperand::Immediate)
+	{
+		auto immediate = _createImmediate(operand);
+	
+		auto value = _numberedImmediates.find(immediate);
+		
+		if(value != _numberedImmediates.end())
+		{
+			return value->second;
+		}
+		
+		_numberedImmediates.insert(std::make_pair(immediate, _nextNumber));
+		
+		++_nextNumber;
+	}
+
+	// TODO handle other types of operands
+	
+	return InvalidNumber;
 }
 
 void GlobalValueNumberingPass::_setGeneratingInstruction(Number n,
@@ -287,17 +343,23 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 {
 	assert(generatingInstruction->d.size() == instruction->d.size());
 
+	report("    eliminating the instruction...");
+
 	// Replace all of the uses with the generated value
 	for(auto generatedValue = generatingInstruction->d.begin(),
 		replacedValue = instruction->d.begin();
 		generatedValue != generatingInstruction->d.end();
 		++generatedValue, ++replacedValue)
 	{
+		report("    replacing all uses of value r" << *replacedValue->pointer);
+
 		for(auto use = instruction->uses.begin();
 			use != instruction->uses.end(); ++use)
 		{
 			auto usedValue = (*use)->s.end();
 		
+			report("     checking " << (*use)->i->toString());
+
 			for(auto potentiallyUsedValue = (*use)->s.begin();
 				potentiallyUsedValue != (*use)->s.end(); ++potentiallyUsedValue)
 			{
@@ -308,9 +370,15 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 				}
 			}
 			
-			assert(usedValue != (*use)->s.end());
+			// TODO fix this when we actually handle SSA
+			if(usedValue != (*use)->s.end())
+			{
+				assertM(usedValue != (*use)->s.end(),
+					"Invalid def-use chain, no uses of r"
+					<< *replacedValue->pointer);
 			
-			*usedValue->pointer = *generatedValue->pointer;
+				*usedValue->pointer = *generatedValue->pointer;
+			}
 		}
 	}
 	
@@ -320,15 +388,39 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 	_eliminatedInstructions.push_back(instruction);
 }
 
-
 GlobalValueNumberingPass::Expression
 	GlobalValueNumberingPass::_createExpression(
 	const InstructionIterator& instruction)
 {
-	assertM(false, "Not implemented.");
+	auto ptx = static_cast<ir::PTXInstruction&>(*instruction->i);
 
-	return Expression();
+	Expression expression(ptx.opcode, ptx.type);
+
+	ir::PTXOperand* sources[] = { &ptx.pg, &ptx.a, &ptx.b, &ptx.c, &ptx.d };
+	unsigned int limit = ptx.opcode == ir::PTXInstruction::St ? 5 : 4;
+	
+	unsigned int argumentId = 0;
+	for(unsigned int i = 0; i < limit; ++i)
+	{
+		if(sources[i]->addressMode == ir::PTXOperand::Invalid) continue;
+
+		expression.arguments[argumentId++] =
+			_lookupExistingOrCreateNewNumber(*sources[i]);
+	}
+
+	// TODO sort arguments to commutative instructions
+
+	return expression;
 }
+
+GlobalValueNumberingPass::Immediate GlobalValueNumberingPass::_createImmediate(
+	const ir::PTXOperand& operand)
+{
+	assert(operand.addressMode == ir::PTXOperand::Immediate);
+
+	return Immediate(operand.type, operand.imm_uint);
+}
+	
 
 void GlobalValueNumberingPass::_processEliminatedInstructions()
 {
@@ -350,13 +442,15 @@ void GlobalValueNumberingPass::_clearValueAssignments()
 {
 	_numberedValues.clear();
 	_numberedExpressions.clear();
+	_numberedImmediates.clear();
 	_nextNumber = 0;
 	_generatingInstructions.clear();
 }
 
 GlobalValueNumberingPass::Expression::Expression(ir::PTXInstruction::Opcode o,
 	ir::PTXOperand::DataType t)
-: opcode(o), type(t)
+: opcode(o), type(t), arguments( { UnsetNumber, UnsetNumber,
+	UnsetNumber, UnsetNumber, UnsetNumber } )
 {
 
 }
@@ -364,10 +458,11 @@ GlobalValueNumberingPass::Expression::Expression(ir::PTXInstruction::Opcode o,
 bool GlobalValueNumberingPass::Expression::operator==(const Expression& e) const
 {
 	return opcode == e.opcode && type == e.type &&
-		arguments[0] == e.arguments[0] &&
-		arguments[1] == e.arguments[1] &&
-		arguments[2] == e.arguments[2] &&
-		arguments[3] == e.arguments[3];
+		(arguments[0] == e.arguments[0] && arguments[0] != InvalidNumber ) &&
+		(arguments[1] == e.arguments[1] && arguments[1] != InvalidNumber ) &&
+		(arguments[2] == e.arguments[2] && arguments[2] != InvalidNumber ) &&
+		(arguments[3] == e.arguments[3] && arguments[3] != InvalidNumber ) &&
+		(arguments[4] == e.arguments[4] && arguments[4] != InvalidNumber );
 }
 
 GlobalValueNumberingPass::GeneratingInstruction::GeneratingInstruction(
@@ -376,6 +471,19 @@ GlobalValueNumberingPass::GeneratingInstruction::GeneratingInstruction(
 {
 	
 }
+
+GlobalValueNumberingPass::Immediate::Immediate(
+	ir::PTXOperand::DataType t, ir::PTXU64 v)
+: type(t), value(v)
+{
+
+}
+
+bool GlobalValueNumberingPass::Immediate::operator==(const Immediate& imm) const
+{
+	return type == imm.type && value == imm.value;
+}
+
 
 }
 

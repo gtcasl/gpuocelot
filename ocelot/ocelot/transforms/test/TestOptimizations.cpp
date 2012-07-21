@@ -225,7 +225,8 @@ int main(int argc, char** argv)
 	parser.parse( "-i", "--input", test.path, "../tests/ptx", 
 		"Search path for PTX files." );
 	parser.parse( "-O", "--optimizations", test.optimizations, 
-		"dead-code-elimination, loop-unrolling, function-inlining", 
+		"dead-code-elimination, loop-unrolling, function-inlining, "
+		"global-value-numbering", 
 		"Comma separated list of optimizations to run." );
 	parser.parse();
 

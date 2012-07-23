@@ -451,10 +451,12 @@ void GlobalValueNumberingPass::_clearValueAssignments()
 
 GlobalValueNumberingPass::Expression::Expression(ir::PTXInstruction::Opcode o,
 	ir::PTXOperand::DataType t)
-: opcode(o), type(t), arguments( { UnsetNumber, UnsetNumber,
-	UnsetNumber, UnsetNumber, UnsetNumber } )
+: opcode(o), type(t)
 {
-
+	for(unsigned int i = 0; i < 5; ++i)
+	{
+		arguments[i] = UnsetNumber;
+	}
 }
 
 bool GlobalValueNumberingPass::Expression::operator==(const Expression& e) const

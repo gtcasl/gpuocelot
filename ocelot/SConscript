@@ -182,7 +182,8 @@ if enableKernelExtractor and os.name != 'nt':
 		"hydrazine/implementation/SystemCompatibility.cpp",
 		"hydrazine/interface/Stringable.cpp",
 		]
-	KernelExtractorLib = env.SharedLibrary('kernelExtractor', kernelExtractorSources, LIBS=ocelot_dep_libs)
+	KernelExtractorLib = env.SharedLibrary('kernelExtractor',
+		kernelExtractorSources, LIBS=ocelot_dep_libs)
 
 Default(OcelotConfig)
 

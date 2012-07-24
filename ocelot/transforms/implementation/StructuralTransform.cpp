@@ -34,8 +34,7 @@ ir::ControlFlowGraph::iterator StructuralTransform::SplitBlockPredecessors(
 
 	ir::ControlFlowGraph::edge_iterator firstEdge = (*iter)->get_edge(BB);
 	ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(
-		ir::BasicBlock(BB->label + "_splitpredecessor",
-			_kernel->cfg()->newId()));
+		ir::BasicBlock(_kernel->cfg()->newId()));
 	ir::ControlFlowGraph::EdgePair
 		splitEdge = _kernel->cfg()->split_edge(firstEdge, *NewBB);
 	splitEdge.second->type = ir::Edge::Dummy;
@@ -44,7 +43,7 @@ ir::ControlFlowGraph::iterator StructuralTransform::SplitBlockPredecessors(
 	ir::PTXInstruction* branch = new ir::PTXInstruction(
 		ir::PTXInstruction::Bra);
 	branch->uni = true;
-	branch->d = std::move(ir::PTXOperand(BB->label));
+	branch->d = std::move(ir::PTXOperand(BB->label()));
 	NewBB->instructions.push_back(branch);
 	
 	++iter;
@@ -58,8 +57,8 @@ ir::ControlFlowGraph::iterator StructuralTransform::SplitBlockPredecessors(
 		(*iter)->instructions.back());
 
 		if (bra->opcode == ir::PTXInstruction::Bra
-			&& bra->d.identifier == BB->label) 
-			bra->d = std::move(ir::PTXOperand(NewBB->label));
+			&& bra->d.identifier == BB->label()) 
+			bra->d = std::move(ir::PTXOperand(NewBB->label()));
 
 		++i;
 		++iter;
@@ -141,8 +140,7 @@ report("Applying cut transform");
 				// 3. After loop, insert if (fp) goto t
 				ir::ControlFlowGraph::iterator
 					NewCmpBB = _kernel->cfg()->insert_block(
-						ir::BasicBlock(i->first->label + "_cmp",
-						_kernel->cfg()->newId()));
+						ir::BasicBlock(_kernel->cfg()->newId()));
  
 				// ValueMap
 				ValueToValueMapTy ValueMap;
@@ -176,9 +174,9 @@ report("Applying cut transform");
 								BB->instructions.back());
 	
 							if (term->opcode == ir::PTXInstruction::Bra
-								&& term->d.identifier == (*ei)->tail->label)
+								&& term->d.identifier == (*ei)->tail->label())
 								term->d = std::move(
-									ir::PTXOperand((*it).second->label));
+									ir::PTXOperand((*it).second->label()));
 
 							_kernel->cfg()->remove_edge(*ei);
 						} 
@@ -211,7 +209,7 @@ report("Applying cut transform");
 	
 							if (term->opcode == ir::PTXInstruction::Bra) {
 								term->d = std::move(
-									ir::PTXOperand((*it1).second->label));
+									ir::PTXOperand((*it1).second->label()));
 								term->uni = true;
 							}
 						} 
@@ -226,9 +224,9 @@ report("Applying cut transform");
 								BB->instructions.back());
 	
 							if (term->opcode == ir::PTXInstruction::Bra) {
-								if (term->d.identifier == (*ei1)->tail->label)
+								if (term->d.identifier == (*ei1)->tail->label())
 									term->d = std::move(
-										ir::PTXOperand((*it1).second->label));
+										ir::PTXOperand((*it1).second->label()));
 							}
 							
 							_kernel->cfg()->remove_edge(*ei1);
@@ -244,9 +242,9 @@ report("Applying cut transform");
 								BB->instructions.back());
 	
 							if (term->opcode == ir::PTXInstruction::Bra) {
-								if (term->d.identifier == (*ei2)->tail->label)
+								if (term->d.identifier == (*ei2)->tail->label())
 									term->d = std::move(
-										ir::PTXOperand((*it2).second->label));
+										ir::PTXOperand((*it2).second->label()));
 							}
 							
 							_kernel->cfg()->remove_edge(*ei2);
@@ -271,7 +269,7 @@ report("Applying cut transform");
 
 					ir::PTXInstruction* bra = new ir::PTXInstruction(
 						ir::PTXInstruction::Bra);
-					bra->d = std::move(ir::PTXOperand(i->second->label));
+					bra->d = std::move(ir::PTXOperand(i->second->label()));
 					bra->pg = setp->d;
 					NewCmpBB->instructions.push_back(bra);
 					_kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
@@ -282,7 +280,7 @@ report("Applying cut transform");
 				else {
 					ir::PTXInstruction* bra = new ir::PTXInstruction(
 						ir::PTXInstruction::Bra);
-					bra->d = std::move(ir::PTXOperand(i->second->label));
+					bra->d = std::move(ir::PTXOperand(i->second->label()));
 					bra->uni = true;
 					NewCmpBB->instructions.push_back(bra);
 					_kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
@@ -343,10 +341,8 @@ report("Applying backward copy");
 		for (SA::BBSetTy::iterator BI = N->containedBB.begin(),
 			BE = N->containedBB.end(); BI != BE; ++BI){
 			ir::ControlFlowGraph::iterator BB = *BI;
-			char tmp[20];
-			sprintf(tmp, "_backward%d", index++);
 			ir::ControlFlowGraph::iterator
-				ClonedBB = _kernel->cfg()->clone_block(BB, tmp);
+				ClonedBB = _kernel->cfg()->clone_block(BB);
 			ValueMap[BB] = ClonedBB;
 			
 			if (BB == N->entryBB) clonedEntryBB = ClonedBB;
@@ -374,9 +370,9 @@ report("Applying backward copy");
 						ValuePair.second->instructions.back());
 
 					if (term->opcode == ir::PTXInstruction::Bra
-						&& term->d.identifier == (*ei)->tail->label)
+						&& term->d.identifier == (*ei)->tail->label())
 						term->d = std::move(ir::PTXOperand(
-							(*it).second->label));
+							(*it).second->label()));
 				} 
 				// not found in ValueMap
 				else {
@@ -408,12 +404,12 @@ report("Applying backward copy");
 						ValuePair.second->instructions.back());
 
 					if (term->opcode == ir::PTXInstruction::Bra) {
-						if (term->d.identifier == (*ei1)->tail->label)
+						if (term->d.identifier == (*ei1)->tail->label())
 							term->d = std::move(
-								ir::PTXOperand((*it1).second->label));
-						else if (term->d.identifier == (*ei2)->tail->label)
+								ir::PTXOperand((*it1).second->label()));
+						else if (term->d.identifier == (*ei2)->tail->label())
 							term->d = std::move(
-								ir::PTXOperand((*it2).second->label));
+								ir::PTXOperand((*it2).second->label()));
 					}
 				} 
 				// edge 1 is found in ValueMap & edge 2 is not
@@ -427,9 +423,9 @@ report("Applying backward copy");
 						ValuePair.second->instructions.back());
 
 					if (term->opcode == ir::PTXInstruction::Bra) {
-						if (term->d.identifier == (*ei1)->tail->label)
+						if (term->d.identifier == (*ei1)->tail->label())
 							term->d = std::move(ir::PTXOperand(
-								(*it1).second->label));
+								(*it1).second->label()));
 				 }
 				}
 				// edge 2 is found in ValueMap & edge 1 is not
@@ -443,9 +439,9 @@ report("Applying backward copy");
 						ValuePair.second->instructions.back());
 
 					if (term->opcode == ir::PTXInstruction::Bra) {
-						if (term->d.identifier == (*ei2)->tail->label)
+						if (term->d.identifier == (*ei2)->tail->label())
 							term->d = std::move(ir::PTXOperand(
-								(*it2).second->label));
+								(*it2).second->label()));
 					}
 				}
 				// neither is in ValueMap 
@@ -462,7 +458,7 @@ report("Applying backward copy");
 			PreHeader->instructions.back());
 
 		if (bra->opcode == ir::PTXInstruction::Bra) {
-			bra->d = std::move(ir::PTXOperand(clonedEntryBB->label));
+			bra->d = std::move(ir::PTXOperand(clonedEntryBB->label()));
 			_kernel->cfg()->remove_edge(PreHeader->get_edge(N->entryBB));
 			_kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
 				PreHeader, clonedEntryBB, ir::Edge::Dummy)); 
@@ -479,9 +475,9 @@ report("Applying backward copy");
 				i->first->instructions.back());
 
 			if (bra->opcode == ir::PTXInstruction::Bra) 
-				if (bra->d.identifier == i->second->label) 
+				if (bra->d.identifier == i->second->label()) 
 					bra->d = std::move(ir::PTXOperand(
-						ValueMap[i->second]->label));
+						ValueMap[i->second]->label()));
 		}
 
 		return change;
@@ -512,10 +508,8 @@ report("Applying forward copy");
 			for (SA::BBSetTy::iterator BI = N->containedBB.begin(),
 				BE = N->containedBB.end(); BI != BE; ++BI) {
 				ir::ControlFlowGraph::iterator BB = *BI;
-				char tmp[20];
-				sprintf(tmp, "_forward%d", index++);
 				ir::ControlFlowGraph::iterator
-					ClonedBB = _kernel->cfg()->clone_block(BB, tmp);
+					ClonedBB = _kernel->cfg()->clone_block(BB);
 				ValueMap[BB] = ClonedBB;
 			}
 	
@@ -543,9 +537,9 @@ report("Applying forward copy");
 							ValuePair.second->instructions.back());
 
 						if (term->opcode == ir::PTXInstruction::Bra
-							&& term->d.identifier == (*ei)->tail->label)
+							&& term->d.identifier == (*ei)->tail->label())
 							term->d = std::move(
-								ir::PTXOperand((*it).second->label));
+								ir::PTXOperand((*it).second->label()));
 					} 
 					// not found in ValueMap
 					else {
@@ -576,12 +570,12 @@ report("Applying forward copy");
 							ValuePair.second->instructions.back());
 
 						if (term->opcode == ir::PTXInstruction::Bra) {
-							if (term->d.identifier == (*ei1)->tail->label)
+							if (term->d.identifier == (*ei1)->tail->label())
 								term->d = std::move(
-									ir::PTXOperand((*it1).second->label));
-							else if (term->d.identifier == (*ei2)->tail->label)
+									ir::PTXOperand((*it1).second->label()));
+							else if (term->d.identifier == (*ei2)->tail->label())
 								term->d = std::move(
-									ir::PTXOperand((*it2).second->label));
+									ir::PTXOperand((*it2).second->label()));
 						}
 					} 
 					// edge 1 is found in ValueMap & edge 2 is not
@@ -596,9 +590,9 @@ report("Applying forward copy");
 							ValuePair.second->instructions.back());
 
 						if (term->opcode == ir::PTXInstruction::Bra) {
-							if (term->d.identifier == (*ei1)->tail->label)
+							if (term->d.identifier == (*ei1)->tail->label())
 								term->d = std::move(
-									ir::PTXOperand((*it1).second->label));
+									ir::PTXOperand((*it1).second->label()));
 					 }
 					}
 					// edge 2 is found in ValueMap & edge 1 is not
@@ -613,9 +607,9 @@ report("Applying forward copy");
 							ValuePair.second->instructions.back());
 
 						if (term->opcode == ir::PTXInstruction::Bra) {
-							if (term->d.identifier == (*ei2)->tail->label)
+							if (term->d.identifier == (*ei2)->tail->label())
 								term->d = std::move(ir::PTXOperand(
-									(*it2).second->label));
+									(*it2).second->label()));
 						}
 					}
 					// neither is in ValueMap 
@@ -638,9 +632,9 @@ report("Applying forward copy");
 				i->first->instructions.back());
 
 			if (bra->opcode == ir::PTXInstruction::Bra) {
-				if (bra->d.identifier == i->second->label) {
+				if (bra->d.identifier == i->second->label()) {
 					bra->d = std::move(ir::PTXOperand(
-						ValueMap[i->second]->label));
+						ValueMap[i->second]->label()));
 				} 
 			} 
 		} 
@@ -804,7 +798,7 @@ const SA::NodeTy* StructuralTransform::ifTrue(const NodeTy *node) const {
 	++tmpNode;
 	NodeTy* childNode2 = *tmpNode;
 
-	if (term->d.identifier == childNode1->entryBB->label)
+	if (term->d.identifier == childNode1->entryBB->label())
 		return childNode2;
 	else
 		return childNode1;		
@@ -824,7 +818,7 @@ const SA::NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
 	++tmpNode;
 	NodeTy* childNode2 = *tmpNode;
 
-	if (term->d.identifier == childNode1->entryBB->label)
+	if (term->d.identifier == childNode1->entryBB->label())
 		return childNode1;
 	else
 		return childNode2;		

@@ -58,6 +58,7 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 	check.prefix = config.parse<std::string>("prefix", "check");
 	check.suffix = config.parse<std::string>("suffix", ".trace");
 	check.verify = config.parse<bool>("verify", false);
+	check.kernelFilter = config.parse<std::string>("kernelFilter", "");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

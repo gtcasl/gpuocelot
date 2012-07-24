@@ -302,7 +302,7 @@ void HoistSpecialValueDefinitionsPass::_addSpecialVariableUse(
 	}
 	
 	report("   Found use of special register: " << toPTX(ptx)->toString()
-		<< " (" << block->label << ")");
+		<< " (" << block->label() << ")");
 	
 	variable->second->uses.push_back(VariableUse(block, ptx, operand));	
 }
@@ -362,7 +362,7 @@ void HoistSpecialValueDefinitionsPass::_addMemoryVariableUse(
 	}
 	
 	report("   Found use of special address: " << toPTX(ptx)->toString()
-		<< " (" << block->label << ")");
+		<< " (" << block->label() << ")");
 	
 	variable->second->uses.push_back(VariableUse(block, ptx, operand));	
 }
@@ -384,7 +384,7 @@ void HoistSpecialValueDefinitionsPass::_addAddressSpaceUse(ir::IRKernel& kernel,
 	report("   Found use of non-global address space: "
 		<< ir::PTXInstruction::toString(toPTX(ptx)->addressSpace)
 		<< " (" << toPTX(ptx)->toString() << ")"
-		<< " (" << block->label << ")");
+		<< " (" << block->label() << ")");
 	
 	space->second->uses.push_back(VariableUse(block, ptx, operand));	
 }
@@ -422,14 +422,14 @@ ir::ControlFlowGraph::iterator
 		dominator = dominatorTree->getCommonDominator(dominator, use->block);
 	}
 	
-	report("    to " << dominator->label);
+	report("    to " << dominator->label());
 	
 	// Create a new block if the entry block is the dominator
 	if(dominator == k.cfg()->get_entry_block())
 	{
 		dominator = k.cfg()->split_edge(
 			dominator->get_fallthrough_edge(),
-			ir::BasicBlock("HoistedValues", k.cfg()->newId())).first->tail;
+			ir::BasicBlock(k.cfg()->newId())).first->tail;
 			
 		// invalidate the dominator tree
 		pass->invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
@@ -476,7 +476,7 @@ void HoistSpecialValueDefinitionsPass::MemoryVariable::hoistAllUses(
 		nextRegister++);
 	cvta->a = *uses.front().operand;
 	
-	report("    to " << dominator->label << " (" << cvta->toString() << ")");	
+	report("    to " << dominator->label() << " (" << cvta->toString() << ")");	
 	
 	insertBeforeTerminator(dominator, cvta);
 	
@@ -526,7 +526,7 @@ void HoistSpecialValueDefinitionsPass::SpecialRegister::hoistAllUses(
 		nextRegister++);
 	cvt->a = *uses.front().operand;
 	
-	report("    to " << dominator->label << " (" << cvt->toString() << ")");	
+	report("    to " << dominator->label() << " (" << cvt->toString() << ")");	
 	
 	insertBeforeTerminator(dominator, cvt);
 	
@@ -576,7 +576,7 @@ void HoistSpecialValueDefinitionsPass::AddressSpace::hoistAllUses(
 		nextRegister++);
 	cvta->a = ir::PTXOperand(0ULL, ir::PTXOperand::u64);
 	
-	report("    to " << dominator->label << " (" << cvta->toString() << ")");	
+	report("    to " << dominator->label() << " (" << cvta->toString() << ")");	
 	
 	insertBeforeTerminator(dominator, cvta);
 	

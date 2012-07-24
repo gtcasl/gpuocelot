@@ -41,7 +41,7 @@ DominatorTree::DominatorTree(ir::ControlFlowGraph *c) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
 		i_dom.push_back(-1);
-		report("  " << (*it)->label);
+		report("  " << (*it)->label());
 	}
 	
 	computeDT();
@@ -54,7 +54,7 @@ std::ostream& DominatorTree::write(std::ostream& out) {
 
 	for (int n = 0; n < (int)blocks.size(); n++) {
 		out << "  bb_" << n << " [shape=record,label=\"{" << 
-			hydrazine::toGraphVizParsableLabel(blocks[n]->label) << " | ";
+			hydrazine::toGraphVizParsableLabel(blocks[n]->label()) << " | ";
 		ir::ControlFlowGraph::InstructionList::iterator 
 			instr_it = blocks[n]->instructions.begin();
 		for (int j = 0; instr_it != blocks[n]->instructions.end(); 

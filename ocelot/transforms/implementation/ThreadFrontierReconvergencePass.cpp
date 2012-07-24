@@ -82,7 +82,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	{
 		ir::ControlFlowGraph::const_iterator block = priorityAndBlock->second;
 
-		report("  Basic Block " << block->label << " ("
+		report("  Basic Block " << block->label() << " ("
 			<< block->id << ")");
 			
 		pcs.insert(std::make_pair(block->id, instructions.size()));
@@ -139,7 +139,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 					
 					instructions.push_back(ir::PTXInstruction(
 						ir::PTXInstruction::Bra,
-						ir::PTXOperand(target->label)));
+						ir::PTXOperand(target->label())));
 		
 					instructions.back().needsReconvergenceCheck = true;
 					instructions.back().branchTargetInstruction = -1;
@@ -214,7 +214,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 			instructions[pc].reconvergeInstruction =
 				reconverge->second;
 			report("   re-converge point "  << reconverge->second
-				<< ", " << firstBlock->label);
+				<< ", " << firstBlock->label());
 		}
 		else
 		{

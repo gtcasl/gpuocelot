@@ -28,6 +28,8 @@ namespace ir {
 		typedef std::map<std::string, Parameter> ParameterMap;
 		/*! \brief Map from names to local variables */
 		typedef std::map<std::string, Local> LocalMap;
+		/*! \brief A type of an Id */
+		typedef unsigned int Id;
 
 	protected:
 		/*! \brief Is this kernel a function? */
@@ -37,13 +39,9 @@ namespace ir {
 		/*!	Constructs an empty kernel */
 		Kernel(Instruction::Architecture isa = Instruction::Unknown,
 			const std::string& name = "", bool isFunction = false,
-			const ir::Module* module = 0);
+			const ir::Module* module = 0, Id id = 0);
 		/*!	Destructs kernel */
 		virtual ~Kernel();
-		/*! \brief Copy constructor (deep) */
-		Kernel( const Kernel& k );
-		/*! \brief Assignment operator (deep) */
-		const Kernel& operator=( const Kernel& k );
 		/*! \brief Write this kernel to a parseable string */
 		virtual void write(std::ostream& stream) const;
 
@@ -67,6 +65,8 @@ namespace ir {
 	public:
 		/*!	[mangled] name of kernel within module */
 		std::string name;
+		/*!	Unique id of the kernel within the module */
+		Id id;
 		/*!	Instruction Set Architecture of the kernel */
 		Instruction::Architecture ISA;
 		/*!	Set of parameters in order specified in the kernel's definition */

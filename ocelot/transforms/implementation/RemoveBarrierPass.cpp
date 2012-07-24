@@ -174,13 +174,7 @@ void RemoveBarrierPass::_addRestoreCode(
 void RemoveBarrierPass::_addEntryPoint(
 	analysis::DataflowGraph::iterator block )
 {
-	std::stringstream stream;
-	
-	stream << "$" << _kernel->name << "_barrier_"
-		<< _reentryPoint << "_scheduler";
-	
-	analysis::DataflowGraph::iterator entry = _dfg().insert( 
-		_dfg().begin(), stream.str() );
+	analysis::DataflowGraph::iterator entry = _dfg().insert(_dfg().begin());
 			
 	ir::PTXInstruction move( ir::PTXInstruction::Mov );
 	

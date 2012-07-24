@@ -81,7 +81,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 				ir::ControlFlowGraph::iterator 
 					pdom = pdom_tree->getPostDominator(*bb_it);
 
-				report( "  Getting post dominator block " << pdom->label 
+				report( "  Getting post dominator block " << pdom->label()
 					<< " of instruction " << ptx_instr.toString() );
 				if(pdom->instructions.empty() ||
 					static_cast<ir::PTXInstruction*>(
@@ -105,7 +105,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 		bb_it != bb_sequence.end(); ++bb_it) {
 		int n = 0;
 		
-		report("  " << (*bb_it)->label);
+		report("  " << (*bb_it)->label());
 		
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 

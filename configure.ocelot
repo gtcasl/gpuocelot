@@ -35,11 +35,12 @@
 		warpSize:                 1
 	},
 	checkpoint: {
-		enabled:  False,
-		path:   "traces/",
-		prefix: "OcelotUnitTest_",
-		suffix: ".trace",
-		verify:   False
+		enabled:      False,
+		path:         "traces/",
+		prefix:       "OcelotUnitTest_",
+		suffix:       ".trace",
+		kernelFilter: "",
+		verify:       False
 	},
 	optimizations: {
 		subkernelSize:        10000,

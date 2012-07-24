@@ -185,7 +185,7 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 				assertM(branch->opcode == ir::PTXInstruction::Bra, "Expecting "
 					<< branch->toString() << " to be a branch");
 				
-				branch->d.identifier = tailBlock->second->label;
+				branch->d.identifier = tailBlock->second->label();
 			}
 		}
 	}
@@ -519,7 +519,7 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 	ptxCall = ir::PTXInstruction(ir::PTXInstruction::Bra);
 	
 	ptxCall.d.addressMode = ir::PTXOperand::Label;
-	ptxCall.d.identifier  = functionEntry->label;
+	ptxCall.d.identifier  = functionEntry->label();
 	
 	// set all return instructions to branches to the exit node
 	for(auto block = newBlocks.begin(); block != newBlocks.end(); ++block)
@@ -535,7 +535,7 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 			ptx = ir::PTXInstruction(ir::PTXInstruction::Bra);
 
 			ptx.d.addressMode = ir::PTXOperand::Label;
-			ptx.d.identifier  = functionExit->label;
+			ptx.d.identifier  = functionExit->label();
 			
 			if(block->second->has_fallthrough_edge() &&
 				ptx.pg.condition == ir::PTXOperand::PT)
@@ -561,7 +561,7 @@ static ir::ControlFlowGraph::iterator convertCallToJumps(
 	ret->uni = true;
 	
 	ret->d.addressMode = ir::PTXOperand::Label;
-	ret->d.identifier  = returnBlock->label;
+	ret->d.identifier  = returnBlock->label();
 	
 	functionExit->instructions.push_back(ret);
 	

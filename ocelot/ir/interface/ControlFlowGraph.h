@@ -14,11 +14,11 @@
 #include <unordered_map>
 
 // Forward declarations
-namespace ir { class IRKernel; }
+namespace ir { class IRKernel;         }
+namespace ir { class ControlFlowGraph; }
+namespace ir { class Instruction;      }
 
 namespace ir {
-
-class Instruction;
 
 /*! \brief A basic block contains a series of instructions 
 	terminated by control flow */
@@ -62,7 +62,10 @@ public:
 	typedef unsigned int                    Id;
 
 public:
-	BasicBlock(const std::string& l = "", Id i = 0, 
+	BasicBlock(ControlFlowGraph* cfg = 0, Id i = 0, 
+		const InstructionList& instructions = InstructionList(),
+		const std::string& c = "");
+	BasicBlock(Id i,
 		const InstructionList& instructions = InstructionList(),
 		const std::string& c = "");
 	~BasicBlock();
@@ -88,6 +91,9 @@ public:
 	EdgeList::iterator get_edge(BlockList::iterator b);
 	/*! \brief Get the edge connecting to the specified block */
 	EdgeList::const_iterator get_edge(BlockList::const_iterator b) const;
+
+	/*! \brief Get a string representation of the block's label */
+	std::string label() const;
 	
 public:
 	/*! \brief Find an in-edge with specific head and tail pointers */
@@ -101,8 +107,6 @@ public:
 	/*!	list of instructions in BasicBlock. */
 	InstructionList instructions;
 
-	/*!	\brief Basic block label */
-	std::string label;
 	/*! \brief a comment appearing in the emitted PTX source file */
 	std::string comment;
 	/*! \brief Basic block unique identifier */
@@ -117,6 +121,9 @@ public:
 	EdgePointerVector in_edges;
 	/*! \brief Edges to direct successors */
 	EdgePointerVector out_edges;
+
+	/*! \brief A pointer to the owning CFG */
+	ControlFlowGraph* cfg;
 
 public:
 
@@ -231,7 +238,7 @@ public:
 	
 	/*! Duplicates the selected block, inserts it in an unconnected state,
 		returns an iterator to the newly created block */
-	iterator clone_block(const_iterator block, std::string suffix = "");
+	iterator clone_block(const_iterator block);
 	
 	/*! Removes a basic block and associated edges. Any blocks dominated by
 		block are now unreachable but still part of the graph.
@@ -277,7 +284,7 @@ public:
 		\return A pointer to the newly allocated second block
 	*/
 	iterator split_block(iterator block, instruction_iterator instruction, 
-		Edge::Type type, const std::string& label = "");
+		Edge::Type type);
 
 	/*!	Returns the entry block of a control flow graph */
 	iterator get_entry_block();
@@ -305,7 +312,7 @@ public:
 	/*! returns an ordered sequence of the nodes of the CFG including entry 
 		and exit that would be encountered by a pre order traversal
 	*/
-	BlockPointerVector      pre_order_sequence();
+	BlockPointerVector pre_order_sequence();
 	
 	/*! returns an ordered sequence of the nodes of the CFG including entry 
 		and exit that would be encountered by a post order traversal

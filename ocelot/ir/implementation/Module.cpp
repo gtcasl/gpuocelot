@@ -609,7 +609,6 @@ void ir::Module::extractPTXKernels() {
 							    endIterator, isFunction, kernelInstance++);
 						kernel->module = this;
 						_kernels[kernel->name] = (kernel);
-						kernel->canonicalBlockLabels();
 					}
 				}
 			}

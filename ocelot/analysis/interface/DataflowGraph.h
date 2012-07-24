@@ -282,7 +282,7 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief Get an ordered set of phis in the block*/
 				PhiInstructionVector& phis();
 				/*! \brief Get the block label */
-				const std::string& label() const;
+				std::string label() const;
 				/*! \brief Get the id of the block */
 				ir::ControlFlowGraph::BasicBlock::Id id() const;
 				/*! \brief Get a pointer to the underlying block */
@@ -294,7 +294,7 @@ class DataflowGraph : public KernelAnalysis
 
 			public:
 				/*! \brief Determine the block that produced a register */
-				const std::string* producer( const Register& r ) const;
+				BlockVector::const_iterator producer( const Register& r ) const;
 				/*! \brief Determine the alive registers immediately
 					before a given instruction in the block */
 				RegisterSet alive( const 
@@ -377,7 +377,7 @@ class DataflowGraph : public KernelAnalysis
 			
 			Note that this insert splits the fallthrough edge
 		*/
-		iterator insert( iterator predecessor, const std::string& label );
+		iterator insert( iterator predecessor );
 		/*! \brief Insert a Block between two existing blocks.
 			\param predecessor An iterator to the previous block.
 			\param successor An iterator to the next block.
@@ -386,8 +386,7 @@ class DataflowGraph : public KernelAnalysis
 			Note that this insert splits the edge 
 				between predecessor and successor.
 		*/
-		iterator insert( iterator predecessor, iterator successor, 
-			const std::string& label );
+		iterator insert( iterator predecessor, iterator successor );
 		/*! \brief Split a block into two starting at a given instruction,
 			the split instruction goes in the first block */
 		iterator split( iterator block, unsigned int instruction, 
@@ -395,7 +394,7 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief Split a block into two starting at a given instruction iterator,
 			the split instruction goes in the first block */
 		iterator split( iterator block, InstructionVector::iterator position, 
-			bool isFallthrough, const std::string& l );
+			bool isFallthrough );
 		/*! \brief Redirect an edge between two blocks to a third */
 		void redirect( iterator source, 
 			iterator destination, iterator newTarget );

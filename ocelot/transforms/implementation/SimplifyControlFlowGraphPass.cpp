@@ -130,7 +130,7 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 	
 	// 1) create a new exit block
 	ir::ControlFlowGraph::iterator newExit = k.cfg()->insert_block(
-		ir::BasicBlock("Exit", k.cfg()->newId()));
+		ir::BasicBlock(k.cfg()->newId()));
 	
 	ir::BasicBlock::EdgePointerVector deletedEdges =
 		k.cfg()->get_exit_block()->in_edges;
@@ -150,7 +150,7 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 	for(BlockMap::iterator block = exitBlocks.begin();
 		block != exitBlocks.end(); ++block)
 	{
-		report("  merging block " << block->first->label);
+		report("  merging block " << block->first->label());
 		
 		// 2a) Insert a branch from blocks with branch edges
 		ir::ControlFlowGraph::edge_pointer_iterator edge =
@@ -159,7 +159,7 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 		if((*edge)->type == ir::Edge::Branch)
 		{
 			ir::PTXInstruction* newBranch = new ir::PTXInstruction(
-				ir::PTXInstruction::Bra, ir::PTXOperand(newExit->label));
+				ir::PTXInstruction::Bra, ir::PTXOperand(newExit->label()));
 				
 			newBranch->uni = true;
 		
@@ -226,12 +226,12 @@ bool SimplifyControlFlowGraphPass::_deleteEmptyBlocks(ir::IRKernel& k)
 							static_cast<ir::PTXInstruction&>(
 							*(*edge)->head->instructions.back());
 							
-						ptx.d.identifier = fallthrough->label;
+						ptx.d.identifier = fallthrough->label();
 					}
 				}
 			}
 		
-			report("  " << block->label);
+			report("  " << block->label());
 		
 			// delete the block, should wipe out all edges
 			k.cfg()->remove_block(block++);
@@ -329,7 +329,7 @@ bool SimplifyControlFlowGraphPass::_mergeBlockIntoPredecessor(ir::IRKernel& k)
 		
 		if(!singleSuccessor) { ++block; continue; }
 		
-		report("  " << predecessor->label << " <- " << block->label);
+		report("  " << predecessor->label() << " <- " << block->label());
 		
 		// Merge the blocks
 		mergeBlocks(k, predecessor, block++);

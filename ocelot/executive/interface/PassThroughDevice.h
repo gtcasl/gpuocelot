@@ -165,9 +165,10 @@ namespace executive
 			void limitWorkerThreads(unsigned int threads);
 			void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level);
-			
+		
 		public:
-			PassThroughDevice(Device *target, unsigned int flags = 0);
+			PassThroughDevice(Device *target, unsigned int flags = 0,
+				const std::string& filter = "");
 			~PassThroughDevice();
 
 		private:
@@ -203,7 +204,10 @@ namespace executive
 			Device* _target;
 			
 			/*! \brief The list of all modules */
-			ModuleVector _modules;			
+			ModuleVector _modules;
+			
+			/*! \brief The filter of kernel names to instrument */
+			std::string _kernelFilter;	
 	};
 }
 

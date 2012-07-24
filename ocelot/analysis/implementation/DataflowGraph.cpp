@@ -422,12 +422,13 @@ DataflowGraph::PhiInstructionVector& DataflowGraph::Block::phis()
 	return _phis;
 }
 
-const std::string& DataflowGraph::Block::label() const
+std::string DataflowGraph::Block::label() const
 {
-	return _block->label;
+	return _block->label();
 }
 
-const std::string* DataflowGraph::Block::producer( const Register& r ) const
+DataflowGraph::const_iterator
+	DataflowGraph::Block::producer( const Register& r ) const
 {
 	assertM( aliveIn().count( r ) != 0, "Register " << r.id 
 		<< " is not in the alive-in set of block " << label() );
@@ -447,10 +448,10 @@ const std::string* DataflowGraph::Block::producer( const Register& r ) const
 	
 	if( predecessor == predecessors().end() )
 	{
-		return 0;
+		return _dfg->end();
 	}
 	
-	return &(*predecessor)->label();
+	return *predecessor;
 }
 
 DataflowGraph::RegisterSet DataflowGraph::Block::alive( 
@@ -536,12 +537,6 @@ void DataflowGraph::analyze(ir::IRKernel& kernel)
 		if( *bbi == cfg.get_exit_block() ) continue;
 		if( *bbi == cfg.get_entry_block() ) continue;
 		Block newB( *this, *bbi );
-		if( (*bbi)->label.empty() )
-		{
-			std::stringstream label;
-			label << "$__Block_" << count;
-			(*bbi)->label = label.str();
-		}
 		map.insert( std::make_pair( *bbi, 
 			_blocks.insert( _blocks.end(), newB ) ) );	
 	}
@@ -559,7 +554,7 @@ void DataflowGraph::analyze(ir::IRKernel& kernel)
 		BlockMap::iterator bi = map.find( *bbi );
 		assert( bi != map.end() );
 	
-		report( " Adding edges into " << (*bbi)->label );
+		report( " Adding edges into " << (*bbi)->label() );
 	
 		for( ir::ControlFlowGraph::edge_pointer_iterator 
 			ei = (*bbi)->in_edges.begin(); 
@@ -647,8 +642,7 @@ DataflowGraph::size_type DataflowGraph::max_size() const
 	return _blocks.max_size();
 }
 
-DataflowGraph::iterator DataflowGraph::insert( iterator predecessor, 
-	const std::string& label )
+DataflowGraph::iterator DataflowGraph::insert( iterator predecessor )
 {
 	BlockVector::iterator successor = predecessor->_fallthrough;
 
@@ -658,17 +652,17 @@ DataflowGraph::iterator DataflowGraph::insert( iterator predecessor,
 		successor = *predecessor->_targets.begin();
 	}
 	
-	return insert( predecessor, successor, label );
+	return insert( predecessor, successor );
 }
 
 DataflowGraph::iterator DataflowGraph::insert( iterator predecessor, 
-	iterator successor, const std::string& label )
+	iterator successor )
 {
 	assert( predecessor->successors().count( successor ) != 0 );
 
 	_consistent = false;
 	
-	report( "Inserting new block " << label << " between " 
+	report( "Inserting new block between " 
 		<< predecessor->label() << " and " << successor->label() );
 	
 	assert( successor != begin() );
@@ -687,7 +681,7 @@ DataflowGraph::iterator DataflowGraph::insert( iterator predecessor,
 	iterator current = _blocks.insert( successor, Block( *this, 
 		Block::Body ) );
 	current->_block = _cfg->insert_block(
-		ir::ControlFlowGraph::BasicBlock( label, _cfg->newId() ) );
+		ir::ControlFlowGraph::BasicBlock( _cfg->newId() ) );
 	
 	_cfg->insert_edge( ir::ControlFlowGraph::Edge( predecessor->_block, 
 		current->_block, edgeType ) );
@@ -839,8 +833,7 @@ DataflowGraph::iterator DataflowGraph::split( iterator block,
 }
 
 DataflowGraph::iterator DataflowGraph::split( iterator block, 
-	InstructionVector::iterator position, bool isFallthrough,
-	const std::string& l )
+	InstructionVector::iterator position, bool isFallthrough )
 {
 	_consistent = false;
 	report( "Splitting block " << block->label()); 
@@ -865,12 +858,12 @@ DataflowGraph::iterator DataflowGraph::split( iterator block,
 	if( isFallthrough )
 	{
 		added->_block = _cfg->split_block( block->_block, cfgBegin, 
-			ir::ControlFlowGraph::Edge::FallThrough, l );
+			ir::ControlFlowGraph::Edge::FallThrough );
 	}
 	else
 	{
 		added->_block = _cfg->split_block( block->_block, cfgBegin, 
-			ir::ControlFlowGraph::Edge::Branch, l );
+			ir::ControlFlowGraph::Edge::Branch );
 	}
 	
 	added->_predecessors.insert( block );

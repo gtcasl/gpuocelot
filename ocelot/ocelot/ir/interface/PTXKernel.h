@@ -142,9 +142,6 @@ namespace ir
 			analysis::ProgramStructureGraph* getProgramStructureGraph();
 
 		public:
-			/*! \brief renames all the blocks with canonical names */
-			virtual void canonicalBlockLabels();
-
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */
 			virtual bool executable() const;

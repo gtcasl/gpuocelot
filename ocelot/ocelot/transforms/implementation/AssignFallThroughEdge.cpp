@@ -94,7 +94,7 @@ namespace transforms {
       	SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
         ir::ControlFlowGraph::iterator succ = *SI;
 
-        if (succ->label == "exit") {
+        if (succ == _kernel->cfg()->get_exit_block()) {
           _kernel->cfg()->remove_edge(i->get_edge(succ));
           _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
           	i, succ, ir::Edge::FallThrough));
@@ -184,8 +184,8 @@ namespace transforms {
           ir::ControlFlowGraph::edge_iterator braEdge = i->get_branch_edge();
           ir::ControlFlowGraph::iterator braDst = braEdge->tail;
 
-          if (braDst->label != term->d.identifier) {
-            term->d = std::move(ir::PTXOperand(braDst->label));
+          if (braDst->label() != term->d.identifier) {
+            term->d = std::move(ir::PTXOperand(braDst->label()));
 
             switch(term->pg.condition) {
             case ir::PTXOperand::Pred:
@@ -206,7 +206,7 @@ namespace transforms {
           if (i->has_branch_edge()) { 
             ir::ControlFlowGraph::edge_iterator braEdge = i->get_branch_edge();
             ir::ControlFlowGraph::iterator braDst = braEdge->tail;
-            term->d = std::move(ir::PTXOperand(braDst->label));
+            term->d = std::move(ir::PTXOperand(braDst->label()));
             term->uni = true;
           } else {
             i->instructions.pop_back();
@@ -220,7 +220,7 @@ namespace transforms {
           ir::PTXInstruction* branch =
           	new ir::PTXInstruction(ir::PTXInstruction::Bra);
           branch->uni = true;
-          branch->d = std::move(ir::PTXOperand(braDst->label));
+          branch->d = std::move(ir::PTXOperand(braDst->label()));
           i->instructions.push_back(branch);
         } 
       }
@@ -300,12 +300,11 @@ namespace transforms {
             hasIncomingFallThroughNode.insert(remoteBB); 
           } else {
             ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(
-            	ir::BasicBlock(BB->label + "_fallthrough",
-                _kernel->cfg()->newId()));
+            	ir::BasicBlock(_kernel->cfg()->newId()));
             ir::PTXInstruction* branch = new ir::PTXInstruction(
             	ir::PTXInstruction::Bra);
             branch->uni = true;
-            branch->d = std::move(ir::PTXOperand(closeBB->label));
+            branch->d = std::move(ir::PTXOperand(closeBB->label()));
             NewBB->instructions.push_back(branch);
 
             _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
@@ -333,12 +332,11 @@ namespace transforms {
             hasIncomingFallThroughNode.insert(remainBB); 
           } else {
             ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(
-            	ir::BasicBlock(BB->label + "_fallthrough",
-                _kernel->cfg()->newId()));
+            	ir::BasicBlock(_kernel->cfg()->newId()));
             ir::PTXInstruction* branch = new ir::PTXInstruction(
             	ir::PTXInstruction::Bra);
             branch->uni = true;
-            branch->d = std::move(ir::PTXOperand(remainBB->label));
+            branch->d = std::move(ir::PTXOperand(remainBB->label()));
             NewBB->instructions.push_back(branch);
 
             _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(

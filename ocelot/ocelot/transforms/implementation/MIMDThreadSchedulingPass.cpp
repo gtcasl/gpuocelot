@@ -92,7 +92,7 @@ static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 	successor->instructions.push_front(setp);
 	
 	ir::ControlFlowGraph::iterator scheduler = kernel.cfg()->split_block(pdom,
-		pdom->instructions.begin(), ir::Edge::FallThrough, pdom->label);
+		pdom->instructions.begin(), ir::Edge::FallThrough);
 
 	report("   created scheduler block " << scheduler->id
 		<< " from pdom block " << pdom->id);
@@ -107,7 +107,6 @@ static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 
 	std::swap(pdom, scheduler);
 
-	scheduler->label = block->label + "_scheduler";
 	scheduler->instructions.push_back(barrier);
 		
 	ir::PTXInstruction* branchToResumePoint
@@ -115,14 +114,14 @@ static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 
 	branchToResumePoint->pg = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, reg);
-	branchToResumePoint->d = ir::PTXOperand(successor->label);
+	branchToResumePoint->d = ir::PTXOperand(successor->label());
 	
 	scheduler->instructions.push_back(branchToResumePoint);
 	
 	ir::PTXInstruction* branchToScheduler
 		= new ir::PTXInstruction(ir::PTXInstruction::Bra);
 
-	branchToScheduler->d = ir::PTXOperand(scheduler->label);
+	branchToScheduler->d = ir::PTXOperand(scheduler->label());
 	
 	block->instructions.push_back(branchToScheduler);	
 	
@@ -140,7 +139,7 @@ static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 			(*edge)->head->instructions.back());
 		assert(ptx.opcode == ir::PTXInstruction::Bra);
 		
-		ptx.d.identifier = scheduler->label;
+		ptx.d.identifier = scheduler->label();
 	}
 }
 
@@ -164,8 +163,7 @@ void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 			{
 				ir::ControlFlowGraph::iterator
 					successor = kernel.cfg()->split_block(block,
-					++instruction, ir::Edge::Branch,
-					block->label + "_resume");
+					++instruction, ir::Edge::Branch);
 				
 				kernel.cfg()->remove_edge(block->get_edge(successor));
 				

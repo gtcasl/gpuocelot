@@ -1149,9 +1149,10 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	delete _module;
 	delete _metadata;
 	#else
-	// Is it possible this is called when LLVMModuleManager is being destructed even with no LLVM
-	// device present?
-//	assertM(false, "LLVM support not compiled into ocelot. You should use a different device.");
+	// Is it possible this is called when LLVMModuleManager 
+	// is being destructed even with no LLVM device present?
+	// assertM(false, "LLVM support not compiled into ocelot. 
+	//         You should use a different device.");
 	#endif
 }
 
@@ -1295,11 +1296,14 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
+	#if HAVE_LLVM
 	start();
+	#endif
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 {
+	#if HAVE_LLVM
 	DatabaseMessage message;
 
 	message.type = DatabaseMessage::KillThread;
@@ -1318,6 +1322,7 @@ LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 			break;
 		}
 	}
+	#endif
 	
 	for(KernelVector::iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel)

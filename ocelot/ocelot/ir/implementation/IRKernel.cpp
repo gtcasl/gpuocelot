@@ -21,7 +21,7 @@
 
 ir::IRKernel::IRKernel(Instruction::Architecture isa, const std::string& n, 
 	bool isFunction, const ir::Module* m, Id id)
-: Kernel(isa, n, isFunction, m), _cfg(0), _id(id) {
+: Kernel(isa, n, isFunction, m, id), _cfg(0) {
 
 }
 
@@ -32,10 +32,8 @@ ir::IRKernel::~IRKernel() {
 ir::IRKernel::IRKernel(const IRKernel &kernel) : Kernel(kernel) {
 	// deep copy the elements from a kernel to this one
 
-	_id = kernel.id();
 	_cfg = new ControlFlowGraph(this);
 	*_cfg = *kernel._cfg;
-	
 }
 
 const ir::IRKernel& ir::IRKernel::operator=(const IRKernel &kernel) {
@@ -46,7 +44,6 @@ const ir::IRKernel& ir::IRKernel::operator=(const IRKernel &kernel) {
 	
 	delete _cfg;
 	
-	_id = kernel.id();
 	_cfg = new ControlFlowGraph(this);
 	*_cfg = *kernel._cfg;
 
@@ -59,10 +56,6 @@ ir::ControlFlowGraph* ir::IRKernel::cfg() {
 
 const ir::ControlFlowGraph* ir::IRKernel::cfg() const {
 	return _cfg;
-}
-
-ir::IRKernel::Id ir::IRKernel::id() const {
-	return _id;
 }
 
 bool ir::IRKernel::executable() const {

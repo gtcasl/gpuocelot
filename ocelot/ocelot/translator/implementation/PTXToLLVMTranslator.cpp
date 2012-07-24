@@ -1093,9 +1093,9 @@ void PTXToLLVMTranslator::_translateInstructions()
 			{			
 				ir::LLVMPhi::Node node;
 				
-				const std::string* producer = block->producer( *s );
+				auto producer = block->producer( *s );
 				
-				if(producer == 0)
+				if(producer == _dfg->end())
 				{
 					node.label = "%$OcelotRegisterInitializerBlock";
 					_uninitialized.push_back( *s );
@@ -1114,7 +1114,7 @@ void PTXToLLVMTranslator::_translateInstructions()
 				}
 				else
 				{
-					node.label = "%" + *producer;
+					node.label = "%" + producer->label();
 				}
 				
 				node.reg = s->id;
@@ -2777,7 +2777,7 @@ void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 	_yield( executive::LLVMExecutableKernel::ExitCall );
 
 	ir::LLVMBr branch;
-	branch.iftrue = "%exit";
+	branch.iftrue = "%" + (--_dfg->end())->label();
 	
 	_add( branch );
 }

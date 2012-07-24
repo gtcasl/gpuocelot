@@ -74,7 +74,7 @@ void PriorityLayoutPass::runOnKernel(const ir::IRKernel& k)
 				
 			if(instruction == block->second->instructions.begin())
 			{
-				pcs.insert(std::make_pair(block->second->label,
+				pcs.insert(std::make_pair(block->second->label(),
 					instructions.size()));
 			}
 			

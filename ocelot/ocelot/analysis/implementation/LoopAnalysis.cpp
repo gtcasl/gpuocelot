@@ -278,7 +278,7 @@ bool LoopAnalysis::_tryAddingLoop(ir::ControlFlowGraph::iterator bb,
 {
 	typedef std::vector<block_iterator> BlockQueue;
 	
-	report(" Checking for loops starting at " << bb->label << ":");
+	report(" Checking for loops starting at " << bb->label() << ":");
 	
 	if(_blockToLoopMap.count(bb) != 0) return false;
 	
@@ -312,7 +312,7 @@ bool LoopAnalysis::_tryAddingLoop(ir::ControlFlowGraph::iterator bb,
 		block_iterator block = queued.back();
 		queued.pop_back();
 		
-		report("   checking predecessor " << block->label << "...");
+		report("   checking predecessor " << block->label() << "...");
 		if(!loop->contains(block) &&
 			dominatorTree->dominates(entryBlock, block))
 		{
@@ -364,7 +364,7 @@ bool LoopAnalysis::_tryAddingLoop(ir::ControlFlowGraph::iterator bb,
 			Loop* subLoop   = _getLoopAt(*block);
 			subLoop->parent = &*loop;
 			loop->subLoops.push_back(subLoop);
-			report("    setting parent to " << bb->label);
+			report("    setting parent to " << bb->label());
 		}
 	}
 	

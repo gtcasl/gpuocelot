@@ -44,7 +44,7 @@ namespace analysis
 		CFG::const_iterator bb;
 		for (bb = cfg->begin() ; bb != cfg->end() ; bb++)
 		{
-			report("Inserting node " << bb->label);
+			report("Inserting node " << bb->label());
 			Node *node = _insert_node(new InstNode(bb));
 			bmap[bb] = node;
 		}
@@ -63,11 +63,11 @@ namespace analysis
 
 			if (e->type == CFG::Edge::FallThrough)
 			{
-				report("Add edge " << h->label << " --> " << t->label);
+				report("Add edge " << h->label() << " --> " << t->label());
 				bmap[h]->fallthrough() = bmap[t];
 			} else
 			{
-				report("Add edge " << h->label << " -> " << t->label);
+				report("Add edge " << h->label() << " -> " << t->label());
 			}
 		}
 
@@ -223,7 +223,7 @@ namespace analysis
 	}
 
 	ControlTree::InstNode::InstNode(const CFG::const_iterator& bb)
-		: Node(bb->label, Inst, NodeList()), _bb(bb)
+		: Node(bb->label(), Inst, NodeList()), _bb(bb)
 	{
 	}
 

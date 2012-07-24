@@ -59,7 +59,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 		iterator current = stack.top();
 		stack.pop();
 		
-		report("  starting at " << current->label);
+		report("  starting at " << current->label());
 		
 		// Make sure no unscheduled blocks that fallthrough into this one
 		bool rewinding = true;
@@ -75,7 +75,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 					{
 						visited.erase(current);
 						current = (*edge)->head;
-						report("   rewinding to " << current->label );
+						report("   rewinding to " << current->label());
 						rewinding = true;
 					}
 					break;

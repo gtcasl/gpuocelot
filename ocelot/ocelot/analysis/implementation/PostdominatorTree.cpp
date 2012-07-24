@@ -51,7 +51,7 @@ void PostdominatorTree::analyze(ir::IRKernel& kernel) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
 		p_dom.push_back(-1);
-		report("  " << (*it)->label);
+		report("  " << (*it)->label());
 	}
 	
 	computeDT();
@@ -159,7 +159,7 @@ std::ostream& PostdominatorTree::write(std::ostream& out) {
 
 	for (int n = 0; n < (int)blocks.size(); n++) {
 		out << "  bb_" << n << " [shape=record,label=\"{" 
-			<< blocks[n]->label << " | ";
+			<< blocks[n]->label() << " | ";
 		ir::ControlFlowGraph::InstructionList::iterator 
 			instr_it = blocks[n]->instructions.begin();
 		for (int j = 0; instr_it != blocks[n]->instructions.end(); 

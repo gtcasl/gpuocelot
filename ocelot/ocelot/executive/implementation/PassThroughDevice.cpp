@@ -44,8 +44,8 @@ typedef api::OcelotConfiguration config;
 
 executive::PassThroughDevice::PassThroughDevice(
 	executive::Device *target, 
-	unsigned int flags)
-: _kernelCount(0), _target(target) 
+	unsigned int flags, const std::string& filter)
+: _kernelCount(0), _target(target), _kernelFilter(filter)
 {
 	TRACE();
 	_properties = _target->properties();
@@ -455,13 +455,22 @@ void executive::PassThroughDevice::launch(
 	TRACE();
 	CHECK();
 	
-	_recordStatePreExecution();
-	_recordKernelLaunch(module, kernel, grid, block, sharedMemory,
-		argumentBlock, argumentBlockSize);
+	bool match = _kernelFilter.empty() || kernel.find(_kernelFilter) == 0;
+	
+	if(match)
+	{
+		_recordStatePreExecution();
+		_recordKernelLaunch(module, kernel, grid, block, sharedMemory,
+			argumentBlock, argumentBlockSize);
+	}
+	
 	_target->launch(module, kernel, grid, block, sharedMemory, argumentBlock,
 		argumentBlockSize, traceGenerators, externals);
-	_recordStatePostExecution();
 	
+	if(match)
+	{
+		_recordStatePostExecution();
+	}
 }
 
 cudaFuncAttributes executive::PassThroughDevice::getAttributes(

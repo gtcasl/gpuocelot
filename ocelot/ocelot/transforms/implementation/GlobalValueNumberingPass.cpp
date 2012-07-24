@@ -32,7 +32,7 @@ namespace transforms
 
 GlobalValueNumberingPass::GlobalValueNumberingPass()
 :  KernelPass(Analysis::DataflowGraphAnalysis |
-	Analysis::DominatorTreeAnalysis, "GlobalValueNumberingPass")
+	Analysis::DominatorTreeAnalysis, "GlobalValueNumberingPass"), _nextNumber(0)
 {
 
 }
@@ -46,7 +46,6 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running GlobalValueNumberingPass on '" << k.name << "'");
 	
-	#if 0
 	// identify identical values
 	bool changed = true;
 	
@@ -55,7 +54,7 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 	{
 		changed = _numberThenMergeIdenticalValues(k);
 	}
-	#endif
+	
 	// convert to and out of SSA, this renumbers registers
 	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(analysis != 0);

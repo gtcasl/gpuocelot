@@ -259,7 +259,8 @@ namespace analysis
 
 	ControlTree::Node* ControlTree::IfThenNode::ifFalse() const
 	{
-		return children().back();
+		if (children().size() == 3) return children().back();
+		else return NULL;
 	}
 
 	ControlTree::NaturalNode::NaturalNode(const std::string& label, 
@@ -951,14 +952,13 @@ namespace analysis
 			}
 			case IfThen:
 			{
-				NodeList children;
-				for (NodeList::const_iterator child = node->children().begin();
-						child != node->children().end(); ++child)
-				{
-					_nodes.push_back(_clone_node(*child));
-				}
-
 				const IfThenNode* ifnode = static_cast<const IfThenNode*>(node);
+
+				_nodes.push_back(_clone_node(ifnode->cond()));
+				_nodes.push_back(_clone_node(ifnode->ifTrue()));
+				if (ifnode->ifFalse() != NULL) 
+					_nodes.push_back(_clone_node(ifnode->ifFalse()));
+
 				return _insert_node(new IfThenNode(ifnode->label(), 
 							ifnode->cond(), ifnode->ifTrue(), 
 							ifnode->ifFalse()));

@@ -32,7 +32,8 @@ namespace transforms
 
 GlobalValueNumberingPass::GlobalValueNumberingPass()
 :  KernelPass(Analysis::DataflowGraphAnalysis |
-	Analysis::DominatorTreeAnalysis, "GlobalValueNumberingPass"), _nextNumber(0)
+	Analysis::MinimalStaticSingleAssignment | Analysis::DominatorTreeAnalysis,
+	"GlobalValueNumberingPass"), _nextNumber(0)
 {
 
 }
@@ -54,24 +55,6 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 	{
 		changed = _numberThenMergeIdenticalValues(k);
 	}
-	
-	// convert to and out of SSA, this renumbers registers
-	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
-	assert(analysis != 0);
-	
-	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
-
-	if(dfg->ssa() == analysis::DataflowGraph::None)
-	{
-		dfg->toSsa();
-	}
-	
-	assert(dfg->ssa() != analysis::DataflowGraph::None);
-	
-	dfg->fromSsa();
-	
-	invalidateAnalysis(Analysis::StaticSingleAssignment);
-	invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 }
 
 void GlobalValueNumberingPass::finalize()
@@ -157,6 +140,12 @@ bool GlobalValueNumberingPass::_processBlock(const BlockIterator& block)
 
 	bool changed = false;
 	
+	for(auto phi = block->phis().begin();
+		phi != block->phis().end(); ++phi)
+	{
+		changed |= _processPhi(phi);
+	}
+	
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
 	{
@@ -166,6 +155,23 @@ bool GlobalValueNumberingPass::_processBlock(const BlockIterator& block)
 	_processEliminatedInstructions();
 	
 	return changed;
+}
+
+bool GlobalValueNumberingPass::_processPhi(const PhiIterator& phi)
+{
+	report("   Processing " << GeneratingInstruction(phi).toString());
+
+	Number nextNumber = _getNextNumber();
+	Number number     = _lookupExistingOrCreateNewNumber(phi);
+	
+	// PHIs must generate a unique number
+	if(nextNumber > number)
+	{
+		report("    this instruction generates the number (" << number << ").");
+		_setGeneratingInstruction(number, phi);
+	}
+	
+	return false;
 }
 
 bool GlobalValueNumberingPass::_processInstruction(
@@ -197,7 +203,7 @@ bool GlobalValueNumberingPass::_processInstruction(
 	
 	report("    finding a dominating instruction that "
 		"generates the same number.");
-	if(generatingInstruction == instruction->block->instructions().end())
+	if(!generatingInstruction.valid)
 	{
 		// None exists, set this one in case another instruction is
 		//  dominated by it
@@ -208,7 +214,7 @@ bool GlobalValueNumberingPass::_processInstruction(
 		return false;
 	}
 	
-	report("     found " << generatingInstruction->i->toString());
+	report("     found " << generatingInstruction.toString());
 	
 	// Success, eliminate the instruction
 	_eliminateInstruction(generatingInstruction, instruction);
@@ -228,12 +234,43 @@ GlobalValueNumberingPass::Number GlobalValueNumberingPass::_getNextNumber()
 	return _nextNumber;
 }
 
+static bool isTrivial(const ir::PTXInstruction& ptx)
+{
+	if(ptx.opcode == ir::PTXInstruction::Mov && ptx.a.isRegister())
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+GlobalValueNumberingPass::Number
+	GlobalValueNumberingPass::_lookupExistingOrCreateNewNumber(
+	const PhiIterator& phi)
+{
+	// Should we allow this to eliminate multiple phis?
+	//  No for now, possibly revisit this in the future
+
+	// number the generated value
+	_numberedValues.insert(std::make_pair(phi->d.id, _nextNumber));
+	
+	return _nextNumber++;
+}
+
 GlobalValueNumberingPass::Number
 	GlobalValueNumberingPass::_lookupExistingOrCreateNewNumber(
 		const InstructionIterator& instruction)
 {
 	// Ignore instructions with multiple or no defs
 	if(instruction->d.size() != 1) return InvalidNumber;
+
+	// If the assignment is trivial, return the number of the source
+	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);	
+
+	if(isTrivial(*ptx))
+	{
+		return _lookupExistingOrCreateNewNumber(ptx->a);
+	}
 	
 	// number the expression
 	auto expression = _createExpression(instruction);
@@ -244,7 +281,7 @@ GlobalValueNumberingPass::Number
 	{
 		return numberedExpression->second;
 	}
-
+	
 	report("    assigning number " << _nextNumber
 		<< " to instruction '" << instruction->i->toString()
 		<< "', register r" << *instruction->d.back().pointer << "");
@@ -284,7 +321,22 @@ GlobalValueNumberingPass::Number
 		
 		_numberedImmediates.insert(std::make_pair(immediate, _nextNumber));
 		
-		++_nextNumber;
+		return _nextNumber++;
+	}
+	else if(operand.addressMode == ir::PTXOperand::Special)
+	{
+		auto special = SpecialValue(operand.special, operand.vIndex);
+	
+		auto value = _numberedSpecials.find(special);
+		
+		if(value != _numberedSpecials.end())
+		{
+			return value->second;
+		}
+		
+		_numberedSpecials.insert(std::make_pair(special, _nextNumber));
+		
+		return _nextNumber++;
 	}
 
 	// TODO handle other types of operands
@@ -303,11 +355,27 @@ void GlobalValueNumberingPass::_setGeneratingInstruction(Number n,
 			std::make_pair(n, GeneratingInstructionList())).first;
 	}
 	
-	generatingInstructionList->second.push_back(
+	generatingInstructionList->second.push_front(
 		GeneratingInstruction(instruction));
 }
 
-GlobalValueNumberingPass::InstructionIterator
+
+void GlobalValueNumberingPass::_setGeneratingInstruction(Number n,
+	const PhiIterator& phi)
+{
+	auto generatingInstructionList = _generatingInstructions.find(n);
+	
+	if(generatingInstructionList == _generatingInstructions.end())
+	{
+		generatingInstructionList = _generatingInstructions.insert(
+			std::make_pair(n, GeneratingInstructionList())).first;
+	}
+	
+	generatingInstructionList->second.push_front(
+		GeneratingInstruction(phi));
+}
+
+GlobalValueNumberingPass::GeneratingInstruction
 	GlobalValueNumberingPass::_findGeneratingInstruction(
 	Number n, const InstructionIterator& instruction)
 {
@@ -315,7 +383,7 @@ GlobalValueNumberingPass::InstructionIterator
 	
 	if(generatingInstructionList == _generatingInstructions.end())
 	{
-		return instruction->block->instructions().end();
+		return GeneratingInstruction(false);
 	}
 	
 	auto analysis = getAnalysis(Analysis::DominatorTreeAnalysis);
@@ -335,13 +403,15 @@ GlobalValueNumberingPass::InstructionIterator
 		}
 	}
 	
-	return instruction->block->instructions().end();
+	return GeneratingInstruction(false);
 }
 
 void GlobalValueNumberingPass::_eliminateInstruction(
-	const InstructionIterator& generatingInstruction,
+	const GeneratingInstruction& generatingInstructionContainer,
 	const InstructionIterator& instruction)
 {
+	auto generatingInstruction = generatingInstructionContainer.instruction;
+		
 	assert(generatingInstruction->d.size() == instruction->d.size());
 
 	report("    eliminating the instruction...");
@@ -352,41 +422,97 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 		generatedValue != generatingInstruction->d.end();
 		++generatedValue, ++replacedValue)
 	{
-		report("    replacing all uses of value r" << *replacedValue->pointer);
+		// If the value is live-out, update live-in/out/PHIs with the new value
+		_updateDataflow(instruction, replacedValue, generatedValue);
+	}
+	
+	// Add the instruction to the pool of deleted
+	_eliminatedInstructions.push_back(instruction);
+}
 
-		for(auto use = instruction->uses.begin();
-			use != instruction->uses.end(); ++use)
+void GlobalValueNumberingPass::_updateDataflow(
+	const InstructionIterator& instruction,
+	const RegisterPointerIterator& replacedValue,
+	const RegisterPointerIterator& generatedValue)
+{
+	// Replace all uses in the block
+	report("    replacing all uses of value r" << *replacedValue->pointer
+			<< " with r" << *generatedValue->pointer);
+	
+	for(auto use = instruction->uses.begin();
+		use != instruction->uses.end(); ++use)
+	{
+		auto usedValue = (*use)->s.end();
+	
+		report("     checking " << (*use)->i->toString());
+
+		for(auto potentiallyUsedValue = (*use)->s.begin();
+			potentiallyUsedValue != (*use)->s.end(); ++potentiallyUsedValue)
 		{
-			auto usedValue = (*use)->s.end();
-		
-			report("     checking " << (*use)->i->toString());
-
-			for(auto potentiallyUsedValue = (*use)->s.begin();
-				potentiallyUsedValue != (*use)->s.end(); ++potentiallyUsedValue)
+			if(*potentiallyUsedValue->pointer == *replacedValue->pointer)
 			{
-				if(*potentiallyUsedValue->pointer == *replacedValue->pointer)
-				{
-					usedValue = potentiallyUsedValue;
-					break;
-				}
-			}
-			
-			// TODO fix this when we actually handle SSA
-			if(usedValue != (*use)->s.end())
-			{
-				assertM(usedValue != (*use)->s.end(),
-					"Invalid def-use chain, no uses of r"
-					<< *replacedValue->pointer);
-			
-				*usedValue->pointer = *generatedValue->pointer;
+				usedValue = potentiallyUsedValue;
+				break;
 			}
 		}
+		
+		// Handle the case of no uses in the block
+		if(usedValue == (*use)->s.end()) continue;
+		
+		*usedValue->pointer = *generatedValue->pointer;
+		
+		 // TODO update def-use-chain
 	}
 	
 	instruction->uses.clear();
 	
-	// Add the instruction to the pool of deleted
-	_eliminatedInstructions.push_back(instruction);
+	auto aliveOutEntry = instruction->block->aliveOut().find(*replacedValue);
+
+	bool replacedValueIsAliveOut =
+		aliveOutEntry != instruction->block->aliveOut().end();
+	
+	if(replacedValueIsAliveOut)
+	{
+		report("    the value is live out of the block, updating dataflow...");
+		
+		// Update live-outs
+		instruction->block->aliveOut().erase(aliveOutEntry);
+		instruction->block->aliveOut().insert(*generatedValue);
+		
+		// Update successor live-ins
+		for(auto successor = instruction->block->successors().begin();
+			successor != instruction->block->successors().end(); ++successor)
+		{
+			auto aliveInEntry = (*successor)->aliveIn().find(*replacedValue);
+			
+			bool replacedValueIsAliveIn =
+				aliveInEntry != (*successor)->aliveIn().end();
+			
+			if(replacedValueIsAliveIn)
+			{
+				report("     updating using successor: "
+					<< instruction->block->label());
+				
+				(*successor)->aliveIn().erase(aliveInEntry);
+				(*successor)->aliveIn().insert(*generatedValue);
+	
+				// Update successor Phis
+				for(auto phi = (*successor)->phis().begin();
+					phi != (*successor)->phis().end(); ++phi)
+				{
+					for(auto potentiallyUsedValue = phi->s.begin();
+						potentiallyUsedValue != phi->s.end();
+						++potentiallyUsedValue)
+					{
+						if(potentiallyUsedValue->id == *replacedValue->pointer)
+						{
+							potentiallyUsedValue->id = *generatedValue->pointer;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 GlobalValueNumberingPass::Expression
@@ -421,7 +547,6 @@ GlobalValueNumberingPass::Immediate GlobalValueNumberingPass::_createImmediate(
 
 	return Immediate(operand.type, operand.imm_uint);
 }
-	
 
 void GlobalValueNumberingPass::_processEliminatedInstructions()
 {
@@ -468,13 +593,6 @@ bool GlobalValueNumberingPass::Expression::operator==(const Expression& e) const
 		(arguments[4] == e.arguments[4] && arguments[4] != InvalidNumber );
 }
 
-GlobalValueNumberingPass::GeneratingInstruction::GeneratingInstruction(
-	const InstructionIterator& it)
-: instruction(it)
-{
-	
-}
-
 GlobalValueNumberingPass::Immediate::Immediate(
 	ir::PTXOperand::DataType t, ir::PTXU64 v)
 : type(t), value(v)
@@ -487,6 +605,67 @@ bool GlobalValueNumberingPass::Immediate::operator==(const Immediate& imm) const
 	return type == imm.type && value == imm.value;
 }
 
+GlobalValueNumberingPass::SpecialValue::SpecialValue(
+	ir::PTXOperand::SpecialRegister s, ir::PTXOperand::VectorIndex v)
+: special(s), vectorIndex(v)
+{
+
+}
+
+bool GlobalValueNumberingPass::SpecialValue::operator==(
+	const SpecialValue& s) const
+{
+	return special == s.special && vectorIndex == s.vectorIndex;
+}
+
+GlobalValueNumberingPass::GeneratingInstruction::GeneratingInstruction(
+	const InstructionIterator& it)
+: instruction(it), isPhi(false), valid(true)
+{
+	
+}
+
+GlobalValueNumberingPass::GeneratingInstruction::GeneratingInstruction(
+	const PhiIterator& it)
+: phi(it), isPhi(true), valid(true)
+{
+
+}
+
+GlobalValueNumberingPass::GeneratingInstruction::GeneratingInstruction(
+	bool valid)
+: isPhi(false), valid(false)
+{
+
+}
+
+std::string GlobalValueNumberingPass::GeneratingInstruction::toString() const
+{
+	if(valid)
+	{
+		if(isPhi)
+		{
+			std::stringstream stream;
+			
+			stream << "phi r" << phi->d.id;
+			
+			for(auto source = phi->s.begin(); source != phi->s.end(); ++source)
+			{
+				stream << ", r" << source->id;
+			}
+			
+			return stream.str();
+		}
+		else
+		{
+			return instruction->i->toString();
+		}
+	}
+	else
+	{
+		return "invalid";
+	}
+}
 
 }
 

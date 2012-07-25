@@ -105,6 +105,10 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::vector< RegisterPointer > RegisterPointerVector;
 		/*! \brief A vector of registers */
 		typedef std::vector< Register > RegisterVector;
+		/*! \brief register iterator */
+		typedef RegisterVector::iterator register_iterator;
+		/*! \brief register iterator */
+		typedef RegisterPointerVector::iterator register_pointer_iterator;
 		
 		/*! \brief An exception for potentially uninitialized regs */
 		class NoProducerException : public std::exception
@@ -138,7 +142,6 @@ class DataflowGraph : public KernelAnalysis
 		typedef BlockVector::iterator iterator;
 		/*! \brief const_iterator */
 		typedef BlockVector::const_iterator const_iterator;
-		/*! \brief instruction iterator */
 		
 		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
@@ -302,13 +305,17 @@ class DataflowGraph : public KernelAnalysis
 		};
 		
 	public:
+		/*! \brief Iterator over phi instructions */
+		typedef PhiInstructionVector::iterator phi_iterator;
+		
+		/*! \brief Iterator over normal instructions */
 		typedef InstructionIterator instruction_iterator;
 		/*! \brief Value type */
 		typedef BlockVector::value_type value_type;
 		/*! \brief Size type */
 		typedef BlockVector::size_type size_type;
 		/*! \brief Register set iterator */
-		typedef RegisterSet::const_iterator register_iterator;
+		typedef RegisterSet::const_iterator const_register_iterator;
 
 		/*! \brief A vector of iterators */
 		typedef std::vector< iterator >	BlockPointerVector;

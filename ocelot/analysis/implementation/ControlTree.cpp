@@ -34,8 +34,7 @@ namespace analysis
 			_nodes(NodeVector()),
 			_post(NodeList()),
 			_visit(NodeSet()),
-			_root(0),
-			_size(0)
+			_root(0)
 	{
 		Node* start = 0;
 		Node* end = 0;
@@ -87,16 +86,8 @@ namespace analysis
 
 	ControlTree::Node* ControlTree::_insert_node(Node* node)
 	{
-		_size++;
 		_nodes.push_back(node);
 		return node;
-	}
-
-	ControlTree::NodeList::iterator ControlTree::_erase_node(
-			NodeList::iterator& node)
-	{
-		_size--;
-		return _post.erase(node);
 	}
 
 	ControlTree::Node::Node(const std::string& label, RegionType rtype, 
@@ -246,36 +237,33 @@ namespace analysis
 	const ControlTree::NodeList ControlTree::IfThenNode::buildChildren(
 			Node* cond, Node* ifTrue, Node* ifFalse) const
 	{
-		NodeList nodes;
+		assert(cond != NULL && ifTrue != NULL);
+		
+		NodeList children;
+		children.push_back(cond);
+		children.push_back(ifTrue);
+		if (ifFalse != NULL) children.push_back(ifFalse);
 
-		nodes.push_back(cond);
-		nodes.push_back(ifTrue);
-		nodes.push_back(ifFalse);
-
-		return nodes;
+		return children;
 	}
 
-	const ControlTree::Node* ControlTree::IfThenNode::cond() const
+	ControlTree::Node* ControlTree::IfThenNode::cond() const
 	{
 		return children().front();
 	}
 
-	const ControlTree::Node* ControlTree::IfThenNode::ifTrue() const
+	ControlTree::Node* ControlTree::IfThenNode::ifTrue() const
 	{
 		return *(++(children().begin()));
 	}
 
-	const ControlTree::Node* ControlTree::IfThenNode::ifFalse() const
+	ControlTree::Node* ControlTree::IfThenNode::ifFalse() const
 	{
 		return children().back();
 	}
 
 	ControlTree::NaturalNode::NaturalNode(const std::string& label, 
 			const NodeList& children) : Node(label, Natural, children)
-	{
-	}
-
-	ControlTree::InvalidNode::InvalidNode() : Node("", Invalid, NodeList())
 	{
 	}
 
@@ -349,7 +337,7 @@ namespace analysis
 			report("Found " << label << ": " << nodes.front()->label() << "..."
 					<< nodes.back()->label());
 
-			return new BlockNode(label, nodes);
+			return _insert_node(new BlockNode(label, nodes));
 		} else if (node->succs().size() == 2)
 		{
 			Node *m;
@@ -372,7 +360,7 @@ namespace analysis
 				report("Found " << label << ":" << " if " << node->label() 
 						<< " then " << n->label());
 
-				return new IfThenNode(label, node, n);
+				return _insert_node(new IfThenNode(label, node, n));
 			}
 
 			// check for an IfThen (if node then m)
@@ -390,7 +378,7 @@ namespace analysis
 				report("Found " << label << ":" << " if " << node->label()
 						<< " then " << m->label());
 
-				return new IfThenNode(label, node, m);
+				return _insert_node(new IfThenNode(label, node, m));
 			}
 
 			// check for an IfThen (if node then n else m)
@@ -410,7 +398,7 @@ namespace analysis
 				report("Found " << label << ":" << " if " << node->label()
 						<< " then " << n->label() << " else " << m->label());
 
-				return new IfThenNode(label, node, n, m);
+				return _insert_node(new IfThenNode(label, node, n, m));
 			}
 
 			// check for an IfThen (if node then m else n)
@@ -430,12 +418,12 @@ namespace analysis
 				report("Found " << label << ":" << " if " << node->label()
 						<< " then " << m->label() << " else " << n->label());
 
-				return new IfThenNode(label, node, m, n);
+				return _insert_node(new IfThenNode(label, node, m, n));
 			}
 		}
 
 		report("Couldn't find any acyclic regions");
-		return new InvalidNode();
+		return NULL;
 	}
 
 	bool ControlTree::_isCyclic(Node* node)
@@ -466,8 +454,6 @@ namespace analysis
 
 	void ControlTree::_compact(Node* node, NodeSet nodeSet)
 	{
-		_insert_node(node);
-
 		NodeList::iterator n, pos;
 		for (n = _post.begin() ; n != _post.end() && !nodeSet.empty() ; )
 		{
@@ -477,7 +463,7 @@ namespace analysis
 				continue;
 			}
 
-			n = _erase_node(n);
+			n = _post.erase(n);
 			pos = n;
 		}
 
@@ -615,11 +601,11 @@ namespace analysis
 				label += ss.str();
 
 				report("Found " << label << ": " << node->label());
-				return new NaturalNode(label, NodeList(1, node));
+				return _insert_node(new NaturalNode(label, NodeList(1, node)));
 			} else
 			{
 				report("Couldn't find any cyclic regions");
-				return new InvalidNode();
+				return NULL;
 			}
 		}
 
@@ -631,31 +617,16 @@ namespace analysis
 				// it's an Improper region
 				// TODO Improper regions are not supported yet
 				report("Found Improper region");
-				return new InvalidNode();
+				return NULL;
 			}
 		}
 
 		// check for a Natural loop (this includes While loops)
 		NodeList::iterator m;
-		report("Natural loop from " << node->label());
 		for (m = nset.begin() ; m != nset.end() ; ++m)
 		{
-			if (*m == node)
-			{
-				if ((*m)->preds().size() != 2) 
-				{
-					report((*m)->label() << " " << (*m)->preds().size());
-					break;
-				}
-			}
-			else
-			{
-				if ((*m)->preds().size() != 1) 
-				{
-					report((*m)->label() << " " << (*m)->preds().size());
-					break;
-				}
-			}
+			if (*m == node && (*m)->preds().size() != 2) break;
+			if (*m != node && (*m)->preds().size() != 1) break;
 		}
 
 		if (m == nset.end())
@@ -669,11 +640,11 @@ namespace analysis
 			report("Found " << label << ": " << nset.front()->label() << "..."
 					<< nset.back()->label());
 
-			return new NaturalNode(label, nset);
+			return _insert_node(new NaturalNode(label, nset));
 		}
 
 		report("Couldn't find any cyclic regions");
-		return new InvalidNode();
+		return NULL;
 	}
 
 	void ControlTree::_structural_analysis(Node* entry)
@@ -697,7 +668,7 @@ namespace analysis
 
 			_postCtr = _post.begin();
 
-			while (_size > 1 && _postCtr != _post.end())
+			while (_post.size() > 1 && _postCtr != _post.end())
 			{
 				n = *_postCtr;
 
@@ -705,7 +676,7 @@ namespace analysis
 				report("Looking for acyclic region from " << n->label());
 				Node* region = _acyclic_region_type(n, nodeSet);
 
-				if (region->rtype() != Invalid)
+				if (region != NULL)
 				{
 					report("Replacing nodeSet for " << region->label());
 					_reduce(region, nodeSet);
@@ -736,7 +707,7 @@ namespace analysis
 					report("Looking for cyclic region from " << n->label());
 					region = _cyclic_region_type(n, reachUnder);
 
-					if (region->rtype() != Invalid)
+					if (region != NULL)
 					{
 						report("Replacing nodeSet for " << region->label());
 						_reduce(region, nodeSet);
@@ -760,7 +731,7 @@ namespace analysis
 			}
 
 			assertM(changed, "Irreducible CFG");
-		} while (_size > 1);
+		} while (_post.size() > 1);
 
 		_root = entry;
 	}
@@ -954,6 +925,65 @@ namespace analysis
 		return mhg;
 	}
 
+	ControlTree::Node* ControlTree::_clone_node(const Node* node)
+	{
+		report("Clonning " << node->label());
+
+		switch(node->rtype())
+		{
+			case Inst:
+			{
+				assert(node->children().size() == 0);
+				const InstNode* ifnode = static_cast<const InstNode*>(node);
+				return _insert_node(new InstNode(ifnode->bb()));
+			}
+			case Block:
+			{
+				NodeList children;
+				for (NodeList::const_iterator child = node->children().begin();
+						child != node->children().end(); ++child)
+				{
+					_nodes.push_back(_clone_node(*child));
+				}
+
+				const BlockNode* bnode = static_cast<const BlockNode*>(node);
+				return _insert_node(new BlockNode(bnode->label(), children));
+			}
+			case IfThen:
+			{
+				NodeList children;
+				for (NodeList::const_iterator child = node->children().begin();
+						child != node->children().end(); ++child)
+				{
+					_nodes.push_back(_clone_node(*child));
+				}
+
+				const IfThenNode* ifnode = static_cast<const IfThenNode*>(node);
+				return _insert_node(new IfThenNode(ifnode->label(), 
+							ifnode->cond(), ifnode->ifTrue(), 
+							ifnode->ifFalse()));
+			}
+			case Natural:
+			{
+				NodeList children;
+				for (NodeList::const_iterator child = node->children().begin();
+						child != node->children().end(); ++child)
+				{
+					_nodes.push_back(_clone_node(*child));
+				}
+
+				const NaturalNode* nnode = 
+					static_cast<const NaturalNode*>(node);
+				return _insert_node(new NaturalNode(nnode->label(), children));
+
+			}
+			default: 
+			{
+				assertM(false, "Invalid region type " << node->rtype());
+			}
+		}
+	}
+
 	void ControlTree::_forward_copy_transform(const Edge& iFwdBranch, 
 			const NodeVector& true_part)
 	{
@@ -962,12 +992,8 @@ namespace analysis
 		for (NodeVector::const_iterator node = true_part.begin() ;
 				node != true_part.end() ; ++node)
 		{
-			// TODO Handle clonning of other region types
-			assert((*node)->rtype() == Inst);
-
-			report("Clonning " << (*node)->label());
-			bmap[*node] = _insert_node(new InstNode(
-						static_cast<InstNode *>(*node)->bb()));
+			// Clone the node
+			bmap[*node] = _clone_node(*node);
 
 			// adjust the postorder traversal
 			_post.insert(find(_post.begin(), _post.end(), *node), bmap[*node]);
@@ -1056,7 +1082,7 @@ namespace analysis
 					(*s)->preds().erase(*i);
 				}
 
-				i = _erase_node(i);
+				i = _post.erase(i);
 			}
 		}
 	}

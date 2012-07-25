@@ -54,8 +54,7 @@ namespace analysis
 				Inst,           // Instructions (e.g. basic block)
 				Block,          // Block of nodes
 				IfThen,         // If-Then
-				Natural,        // Natural loop with side exits
-				Invalid
+				Natural         // Natural loop with side exits
 			};
 
 			class Node;
@@ -69,6 +68,13 @@ namespace analysis
 			class Node
 			{
 				public:
+					/*! \brief Constructor */
+					Node(const std::string& label, RegionType rtype, 
+							const NodeList& children);
+
+					/*! \brief Destructor */
+					virtual ~Node() = 0;
+
 					/*! \brief Get the label */
 					const std::string& label() const;
 					/*! \brief Get the region type */
@@ -85,14 +91,6 @@ namespace analysis
 					bool has_branch_edge() const;
 					/*! \brief Get the branch edge */
 					Edge get_branch_edge();
-
-					/*! \brief Destructor (virtual because polymorphic) */
-					virtual ~Node();
-
-				protected:
-					/*! \brief Constructor (protected to avoid instantiation) */
-					Node(const std::string& label, RegionType rtype, 
-							const NodeList& children);
 
 				private:
 					/*! \brief Node label */
@@ -146,11 +144,11 @@ namespace analysis
 							Node* ifTrue, Node* ifFalse = NULL);
 
 					/*! \brief Get condition node */
-					const Node* cond() const;
+					Node* cond() const;
 					/*! \brief Get if-true node */
-					const Node* ifTrue() const;
+					Node* ifTrue() const;
 					/*! \brief Get if-false node */
-					const Node* ifFalse() const;
+					Node* ifFalse() const;
 
 				private:
 					const NodeList buildChildren(Node* cond, 
@@ -165,14 +163,6 @@ namespace analysis
 							const NodeList& children);
 			};
 
-			/*! \brief Invalid node */
-			class InvalidNode : public Node
-			{
-				public:
-					/*! \brief Constructor */
-					InvalidNode();
-			};
-
 			/*! \brief write a graphviz-compatible file for visualizing the 
 			 * control tree */
 			std::ostream& write(std::ostream& out) const;
@@ -182,7 +172,6 @@ namespace analysis
 
 		private:
 			Node* _insert_node(Node* node);
-			NodeList::iterator _erase_node(NodeList::iterator& node);
 
 			/*! \brief depth first search */
 			void _dfs_postorder(Node* x);
@@ -226,6 +215,7 @@ namespace analysis
 			bool _interact(const EdgeVector::iterator& e1, 
 					const EdgeVector::iterator& e2); 
 			NodeVector _minimal_hammock_graph(const Edge& nb);
+			Node* _clone_node(const Node* node);
 			void _forward_copy_transform(const Edge& iFwdBranch, 
 					const NodeVector& true_part);
 			void _elim_unreach_code(ControlTree::Node* en);
@@ -237,7 +227,6 @@ namespace analysis
 			NodeSet _visit;
 			Node* _root;
 			NodeVector _lexical;
-			unsigned int _size;
 	};
 }
 

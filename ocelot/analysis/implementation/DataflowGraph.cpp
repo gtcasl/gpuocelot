@@ -246,7 +246,6 @@ DataflowGraph::Block::Block( DataflowGraph& dfg,
 		_instructions.push_back( dfg.convert( 
 			*static_cast< ir::PTXInstruction* >( *fi ) ) );
 	}
-
 }
 
 DataflowGraph::Block::Block( DataflowGraph& dfg, Type t ) :

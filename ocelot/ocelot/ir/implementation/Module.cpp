@@ -459,14 +459,7 @@ void ir::Module::addPrototype(const std::string &identifier,
 	const ir::PTXKernel::Prototype &prototype) {
 	report("adding prototype: " << prototype.toString());
 	
-	FunctionPrototypeMap::iterator proto = _prototypes.find(identifier);
-	
-	if (proto == _prototypes.end()) {
-		_prototypes.insert(proto, std::make_pair(identifier, prototype));
-	}
-	else {
-		//assert(prototype == proto->second);
-	}
+	_prototypes.insert(std::make_pair(identifier, prototype));
 }
 		
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {

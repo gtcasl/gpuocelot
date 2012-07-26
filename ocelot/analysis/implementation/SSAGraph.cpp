@@ -55,7 +55,7 @@
 #undef REPORT_ERROR_LEVEL
 #endif
 
-#define REPORT_ERROR_LEVEL 5
+#define REPORT_ERROR_LEVEL 1
 
 namespace analysis {
 
@@ -233,7 +233,8 @@ void SSAGraph::_updateIn()
 			for( DataflowGraph::RegisterVector::iterator 
 				reg = phi->s.begin(); reg != phi->s.end(); ++reg )
 			{
-				report( "	 Adding register r" << reg->id );
+				report( "	 Adding register r" << reg->id << " ("
+					<< ir::PTXOperand::toString( reg->type ) << ")" );
 				block->first->_aliveIn.insert( *reg );
 			}
 		}
@@ -255,7 +256,8 @@ void SSAGraph::_updateOut()
 			RegisterMap::iterator mapping = block->second.regs.find( *reg );
 			assert( mapping != block->second.regs.end() );
 			report( "	 Mapping alive out register r" << mapping->first.id 
-				<< " to r" << mapping->second.id );
+				<< " to r" << mapping->second.id << " ("
+				<< ir::PTXOperand::toString( mapping->second.type ) << ")" );
 			newAliveOut.insert( mapping->second );
 		}
 		block->first->_aliveOut = std::move( newAliveOut );
@@ -313,16 +315,18 @@ void SSAGraph::fromSsa()
 {
 	report( "Converting dataflow graph out of pure SSA form" );
 	
-	typedef std::unordered_set< DataflowGraph::RegisterId > RegisterIdSet;
-	typedef std::unordered_map< DataflowGraph::RegisterId, 
-		RegisterIdSet > RegisterIdMap;
-	typedef std::stack< DataflowGraph::RegisterId > RegisterIdStack;
+	typedef std::unordered_set< DataflowGraph::Register > RegisterSet;
+	typedef std::unordered_map< DataflowGraph::Register, 
+		RegisterSet > RegisterSetMap;
+	typedef std::unordered_map< DataflowGraph::Register, 
+		DataflowGraph::Register > RegisterMap;
+	typedef std::stack< DataflowGraph::Register > RegisterStack;
 	
-		assert( _graph._ssa != DataflowGraph::SsaType::None);
-		_graph._ssa = DataflowGraph::SsaType::None;
+	assert( _graph._ssa != DataflowGraph::SsaType::None);
+	_graph._ssa = DataflowGraph::SsaType::None;
 	
-	RegisterMap map;
-	RegisterIdMap registerGraph;
+	RegisterMap    map;
+	RegisterSetMap registerGraph;
 	
 	report( "Coalescing phi instructions." );
 	for( DataflowGraph::iterator fi = _graph.begin(); 
@@ -334,25 +338,27 @@ void SSAGraph::fromSsa()
 			for( DataflowGraph::RegisterVector::iterator s = phi->s.begin();
 				s != phi->s.end(); ++s )
 			{
-				registerGraph[ phi->d.id ].insert( s->id );
-				registerGraph[ s->id ].insert( phi->d.id );
+				registerGraph[ phi->d ].insert( *s );
+				registerGraph[ *s ].insert( phi->d );
 			}
 		}
 		
 		fi->_phis.clear();
 	}
 
-	RegisterIdSet encountered;
+	RegisterSet encountered;
 
-	for( RegisterIdMap::iterator node = registerGraph.begin(); 
+	for( RegisterSetMap::iterator node = registerGraph.begin(); 
 		node != registerGraph.end(); ++node )
 	{
 		if( encountered.insert( node->first ).second )
 		{
-			report(" Subgraph for r" << node->first);
-			RegisterIdStack stack;
-			DataflowGraph::RegisterId id = node->first;
-			for( RegisterIdSet::iterator connection = node->second.begin();
+			report(" Subgraph for r" << node->first.id << " ("
+				<< ir::PTXOperand::toString( node->first.type ) << ")");
+			RegisterStack stack;
+			DataflowGraph::Register reg = node->first;
+			
+			for( RegisterSet::iterator connection = node->second.begin();
 				connection != node->second.end(); ++connection )
 			{
 				if( encountered.insert( *connection ).second )
@@ -362,14 +368,15 @@ void SSAGraph::fromSsa()
 			}
 			while( !stack.empty() )
 			{
-				DataflowGraph::RegisterId nextId = stack.top();
+				DataflowGraph::Register nextReg = stack.top();
 				stack.pop();
-				map[ nextId ] = id;
-				report( "	contains r" << nextId );
-				RegisterIdMap::iterator 
-					next = registerGraph.find( nextId );
+				map[ nextReg ] = reg;
+				report( "	contains r" << nextReg.id << " ("
+					<< ir::PTXOperand::toString( nextReg.type ) << ")" );
+				RegisterSetMap::iterator 
+					next = registerGraph.find( nextReg );
 				assert( next != registerGraph.end() );
-				for( RegisterIdSet::iterator 
+				for( RegisterSet::iterator 
 					connection = next->second.begin();
 					connection != next->second.end(); ++connection )
 				{
@@ -432,12 +439,15 @@ void SSAGraph::fromSsa()
 			RegisterMap::iterator mapping = map.find( *reg );
 			if( mapping != map.end() )
 			{
-				report( "	r" << mapping->second.id );
+				report( "	r" << mapping->second.id << " ("
+					<< ir::PTXOperand::toString( mapping->second.type )
+					<< ")" );
 				newAlive.insert( mapping->second );
 			}
 			else
 			{
-				report( "	r" << reg->id );
+				report( "	r" << reg->id << " ("
+					<< ir::PTXOperand::toString( reg->type ) << ")" );
 				newAlive.insert( *reg );
 			}
 		}
@@ -453,12 +463,15 @@ void SSAGraph::fromSsa()
 			RegisterMap::iterator mapping = map.find( *reg );
 			if( mapping != map.end() )
 			{
-				report( "	r" << mapping->second.id );
+				report( "	r" << mapping->second.id << " ("
+					<< ir::PTXOperand::toString( mapping->second.type )
+					<< ")" );
 				newAlive.insert( mapping->second );
 			}
 			else
 			{
-				report( "	r" << reg->id );
+				report( "	r" << reg->id << " ("
+					<< ir::PTXOperand::toString( reg->type ) << ")" );
 				newAlive.insert( *reg );
 			}
 		}

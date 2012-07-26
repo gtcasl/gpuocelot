@@ -183,7 +183,7 @@ private:
 	void _eliminateInstruction(
 		const GeneratingInstruction& generatingInstruction,
 		const InstructionIterator& instruction);
-	void _updateDataflow(const InstructionIterator& instruction,
+	void _updateDataflow(const BlockIterator& instruction,
 		const RegisterPointerIterator& replacedValue,
 		const RegisterPointerIterator& generatedValue);
 	

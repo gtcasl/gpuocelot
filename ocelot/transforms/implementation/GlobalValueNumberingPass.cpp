@@ -25,6 +25,7 @@
 #endif
 
 #define REPORT_BASE 1
+#define GVN_ENABLE 1
 
 namespace transforms
 {
@@ -32,7 +33,12 @@ namespace transforms
 
 GlobalValueNumberingPass::GlobalValueNumberingPass()
 :  KernelPass(Analysis::DataflowGraphAnalysis |
-	Analysis::MinimalStaticSingleAssignment | Analysis::DominatorTreeAnalysis,
+	#if GVN_ENABLE
+	Analysis::MinimalStaticSingleAssignment
+	#else
+	Analysis::StaticSingleAssignment
+	#endif
+	| Analysis::DominatorTreeAnalysis,
 	"GlobalValueNumberingPass"), _nextNumber(0)
 {
 
@@ -49,12 +55,13 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 	
 	// identify identical values
 	bool changed = true;
-	
+	#if GVN_ENABLE
 	//  iterate until there is no change
 	while(changed)
 	{
 		changed = _numberThenMergeIdenticalValues(k);
 	}
+	#endif
 }
 
 void GlobalValueNumberingPass::finalize()
@@ -423,7 +430,7 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 		++generatedValue, ++replacedValue)
 	{
 		// If the value is live-out, update live-in/out/PHIs with the new value
-		_updateDataflow(instruction, replacedValue, generatedValue);
+		_updateDataflow(instruction->block, replacedValue, generatedValue);
 	}
 	
 	// Add the instruction to the pool of deleted
@@ -431,23 +438,39 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 }
 
 void GlobalValueNumberingPass::_updateDataflow(
-	const InstructionIterator& instruction,
+	const BlockIterator& block,
 	const RegisterPointerIterator& replacedValue,
 	const RegisterPointerIterator& generatedValue)
 {
 	// Replace all uses in the block
 	report("    replacing all uses of value r" << *replacedValue->pointer
-			<< " with r" << *generatedValue->pointer);
+			<< " with r" << *generatedValue->pointer << " in block "
+			<< block->label());
 	
-	for(auto use = instruction->uses.begin();
-		use != instruction->uses.end(); ++use)
+	// Update Phis
+	for(auto phi = block->phis().begin();
+		phi != block->phis().end(); ++phi)
 	{
-		auto usedValue = (*use)->s.end();
-	
-		report("     checking " << (*use)->i->toString());
+		for(auto potentiallyUsedValue = phi->s.begin();
+			potentiallyUsedValue != phi->s.end();
+			++potentiallyUsedValue)
+		{
+			if(potentiallyUsedValue->id == *replacedValue->pointer)
+			{
+				potentiallyUsedValue->id = *generatedValue->pointer;
+			}
+		}
+	}
 
-		for(auto potentiallyUsedValue = (*use)->s.begin();
-			potentiallyUsedValue != (*use)->s.end(); ++potentiallyUsedValue)
+	// Update Instructions
+	for(auto instruction = block->instructions().begin();
+		instruction != block->instructions().end(); ++instruction)
+	{
+		auto usedValue = instruction->s.end();
+
+		for(auto potentiallyUsedValue = instruction->s.begin();
+			potentiallyUsedValue != instruction->s.end();
+			++potentiallyUsedValue)
 		{
 			if(*potentiallyUsedValue->pointer == *replacedValue->pointer)
 			{
@@ -457,31 +480,26 @@ void GlobalValueNumberingPass::_updateDataflow(
 		}
 		
 		// Handle the case of no uses in the block
-		if(usedValue == (*use)->s.end()) continue;
+		if(usedValue == instruction->s.end()) continue;
 		
 		*usedValue->pointer = *generatedValue->pointer;
-		
-		 // TODO update def-use-chain
 	}
 	
-	instruction->uses.clear();
-	
-	auto aliveOutEntry = instruction->block->aliveOut().find(*replacedValue);
+	auto aliveOutEntry = block->aliveOut().find(*replacedValue);
 
-	bool replacedValueIsAliveOut =
-		aliveOutEntry != instruction->block->aliveOut().end();
+	bool replacedValueIsAliveOut = aliveOutEntry != block->aliveOut().end();
 	
 	if(replacedValueIsAliveOut)
 	{
 		report("    the value is live out of the block, updating dataflow...");
 		
 		// Update live-outs
-		instruction->block->aliveOut().erase(aliveOutEntry);
-		instruction->block->aliveOut().insert(*generatedValue);
+		block->aliveOut().erase(aliveOutEntry);
+		block->aliveOut().insert(*generatedValue);
 		
 		// Update successor live-ins
-		for(auto successor = instruction->block->successors().begin();
-			successor != instruction->block->successors().end(); ++successor)
+		for(auto successor = block->successors().begin();
+			successor != block->successors().end(); ++successor)
 		{
 			auto aliveInEntry = (*successor)->aliveIn().find(*replacedValue);
 			
@@ -490,26 +508,12 @@ void GlobalValueNumberingPass::_updateDataflow(
 			
 			if(replacedValueIsAliveIn)
 			{
-				report("     updating using successor: "
-					<< instruction->block->label());
+				report("     updating using successor: " << block->label());
 				
 				(*successor)->aliveIn().erase(aliveInEntry);
 				(*successor)->aliveIn().insert(*generatedValue);
 	
-				// Update successor Phis
-				for(auto phi = (*successor)->phis().begin();
-					phi != (*successor)->phis().end(); ++phi)
-				{
-					for(auto potentiallyUsedValue = phi->s.begin();
-						potentiallyUsedValue != phi->s.end();
-						++potentiallyUsedValue)
-					{
-						if(potentiallyUsedValue->id == *replacedValue->pointer)
-						{
-							potentiallyUsedValue->id = *generatedValue->pointer;
-						}
-					}
-				}
+				_updateDataflow(block, replacedValue, generatedValue);
 			}
 		}
 	}

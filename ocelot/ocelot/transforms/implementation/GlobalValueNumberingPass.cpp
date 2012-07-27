@@ -25,7 +25,7 @@
 #endif
 
 #define REPORT_BASE 1
-#define GVN_ENABLE 1
+#define GVN_ENABLE  0
 
 namespace transforms
 {
@@ -53,14 +53,28 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running GlobalValueNumberingPass on '" << k.name << "'");
 	
+	#if GVN_ENABLE
 	// identify identical values
 	bool changed = true;
-	#if GVN_ENABLE
+	
 	//  iterate until there is no change
 	while(changed)
 	{
 		changed = _numberThenMergeIdenticalValues(k);
 	}
+	#else
+	// convert out of SSA, this renumbers registers
+    auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+    assert(analysis != 0);
+    
+    auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
+
+    assert(dfg->ssa() != analysis::DataflowGraph::None);
+    
+    dfg->fromSsa();
+    
+    invalidateAnalysis(Analysis::StaticSingleAssignment);
+    invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 	#endif
 }
 

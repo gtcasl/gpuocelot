@@ -52,6 +52,20 @@ bool DivergenceAnalysis::_doesOperandUseLocalMemory(
 	return global->space() == ir::PTXInstruction::Local;
 }
 
+static bool isDivergenceSource(const ir::PTXOperand& operand)
+{
+	if (operand.addressMode == ir::PTXOperand::Special) {
+		if( (operand.special == ir::PTXOperand::tid &&
+			(operand.vIndex == ir::PTXOperand::ix
+			|| operand.vIndex == ir::PTXOperand::iy))
+			|| (operand.special == ir::PTXOperand::laneId)) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 void DivergenceAnalysis::_analyzeDataFlow()
 {
 	Analysis* dfg = getAnalysis(Analysis::DataflowGraphAnalysis);
@@ -96,28 +110,14 @@ void DivergenceAnalysis::_analyzeDataFlow()
 			 */
 			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
 				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
-				if (ptxInstruction->a.addressMode == ir::PTXOperand::Special) {
-					if( (ptxInstruction->a.special == ir::PTXOperand::tid &&
-						ptxInstruction->a.vIndex == ir::PTXOperand::ix)
-						|| (ptxInstruction->a.special
-						== ir::PTXOperand::laneId))
-						divergenceSources.insert(&ptxInstruction->a);
+				if (isDivergenceSource(ptxInstruction->a)) {
+					divergenceSources.insert(&ptxInstruction->a);
 				}
-
-				if (ptxInstruction->b.addressMode == ir::PTXOperand::Special) {
-					if( (ptxInstruction->c.special == ir::PTXOperand::tid &&
-						ptxInstruction->c.vIndex == ir::PTXOperand::ix)
-						|| (ptxInstruction->b.special
-						== ir::PTXOperand::laneId))
-						divergenceSources.insert(&ptxInstruction->b);
+				if (isDivergenceSource(ptxInstruction->b)) {
+					divergenceSources.insert(&ptxInstruction->b);
 				}
-
-				if (ptxInstruction->c.addressMode == ir::PTXOperand::Special) {
-					if( (ptxInstruction->c.special == ir::PTXOperand::tid &&
-						ptxInstruction->c.vIndex == ir::PTXOperand::ix)
-						|| (ptxInstruction->c.special
-						== ir::PTXOperand::laneId))
-						divergenceSources.insert(&ptxInstruction->c);
+				if (isDivergenceSource(ptxInstruction->c)) {
+					divergenceSources.insert(&ptxInstruction->c);
 				}
 
 				if (ptxInstruction->opcode == ir::PTXInstruction::Atom){

@@ -31,15 +31,11 @@ namespace transforms
 {
 
 
-GlobalValueNumberingPass::GlobalValueNumberingPass()
+GlobalValueNumberingPass::GlobalValueNumberingPass(bool e)
 :  KernelPass(Analysis::DataflowGraphAnalysis |
-	#if GVN_ENABLE
 	Analysis::MinimalStaticSingleAssignment
-	#else
-	Analysis::StaticSingleAssignment
-	#endif
 	| Analysis::DominatorTreeAnalysis,
-	"GlobalValueNumberingPass"), _nextNumber(0)
+	"GlobalValueNumberingPass"), eliminateInstructions(e), _nextNumber(0)
 {
 
 }
@@ -53,29 +49,32 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running GlobalValueNumberingPass on '" << k.name << "'");
 	
-	#if GVN_ENABLE
-	// identify identical values
-	bool changed = true;
-	
-	//  iterate until there is no change
-	while(changed)
+	if(eliminateInstructions)
 	{
-		changed = _numberThenMergeIdenticalValues(k);
+		// identify identical values
+		bool changed = true;
+	
+		//  iterate until there is no change
+		while(changed)
+		{
+			changed = _numberThenMergeIdenticalValues(k);
+		}
 	}
-	#else
-	// convert out of SSA, this renumbers registers
-    auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
-    assert(analysis != 0);
-    
-    auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
+	else
+	{
+		// convert out of SSA, this renumbers registers
+		auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+		assert(analysis != 0);
+		
+		auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
 
-    assert(dfg->ssa() != analysis::DataflowGraph::None);
-    
-    dfg->fromSsa();
-    
-    invalidateAnalysis(Analysis::StaticSingleAssignment);
-    invalidateAnalysis(Analysis::DataflowGraphAnalysis);
-	#endif
+		assert(dfg->ssa() != analysis::DataflowGraph::None);
+		
+		dfg->fromSsa();
+		
+		invalidateAnalysis(Analysis::StaticSingleAssignment);
+		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
+	}
 }
 
 void GlobalValueNumberingPass::finalize()

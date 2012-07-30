@@ -22,7 +22,7 @@ class GlobalValueNumberingPass : public KernelPass
 {
 public:
 	/*! \brief Create the pass, create dependencies */
-	GlobalValueNumberingPass();
+	GlobalValueNumberingPass(bool eliminateInstructions = true);
 
 public:
 	/*! \brief Initialize the pass using a specific module */
@@ -31,6 +31,11 @@ public:
 	void runOnKernel(ir::IRKernel& k);		
 	/*! \brief Finalize the pass */
 	void finalize();
+
+public:
+	/*! \brief Should the pass attempt to eliminate redundant instructions,
+		or just renumber values */
+	bool eliminateInstructions;
 
 private:
 	typedef unsigned int Number;

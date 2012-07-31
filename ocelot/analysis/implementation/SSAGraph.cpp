@@ -294,7 +294,7 @@ void SSAGraph::toSsa()
 
 	if(_form == DataflowGraph::SsaType::Default)
 	{
-		reportE(INFO,	" Graph is now in full gated SSA form.");
+		reportE(INFO,	" Graph is now in full SSA form.");
 		return;
 	}
 

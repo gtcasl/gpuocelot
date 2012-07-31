@@ -33,8 +33,7 @@ void DivergenceGraph::clear(){
 void DivergenceGraph::insertSpecialSource( const ir::PTXOperand* tid ){
 	_upToDate = false;
 	if( _specials.find(tid) == _specials.end() ){
-		node_set a;
-		_specials[tid] = a;
+		_specials.insert(std::make_pair(tid, node_set()));
 	}
 }
 
@@ -203,6 +202,9 @@ void DivergenceGraph::computeDivergence(){
 			if( isDivSource(divergence->first) ){
 				const_node_iterator node = divergence->second.begin();
 				const_node_iterator endNode = divergence->second.end();
+				
+				report(" Node r" << *node
+					<< " is a special divergent register.");
 
 				for( ; node != endNode; node++ ){
 					newDivergenceNodes.insert(*node);
@@ -219,11 +221,12 @@ void DivergenceGraph::computeDivergence(){
 
 		for( ; divergence != divergenceEnd; divergence++ ){
 			newDivergenceNodes.insert(*divergence);
-			report(" Node " << *divergence << " is a new divergent register.");
+			report(" Node r" << *divergence << " is a new divergent register.");
 		}
 	}
 
 	/* 4) For each new divergent nodes */
+	report(" Propagating divergence");
 	while( newDivergenceNodes.size() != 0 ){
 		node_type originNode = *newDivergenceNodes.begin();
 		node_set newReachedNodes = getOutNodesSet(originNode);
@@ -236,6 +239,8 @@ void DivergenceGraph::computeDivergence(){
 			if( !isDivNode(*current) ){
 				/* 4.1.1) Go to step 4 after step 4.3 until there are
 					new divergent nodes */
+				report("  propagated from r" << originNode
+					<< " -> r" << *current);
 				newDivergenceNodes.insert(*current);
 			}
 		}
@@ -247,6 +252,10 @@ void DivergenceGraph::computeDivergence(){
 	}
 
 	_upToDate = true;
+
+	#if REPORT_BASE > 0
+	std::cout << *this;
+	#endif
 }
 
 /*!\brief Gives a string as name for a special register */

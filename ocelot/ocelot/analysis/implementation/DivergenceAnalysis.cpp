@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
@@ -213,6 +213,7 @@ void DivergenceAnalysis::_analyzeDataFlow()
 void DivergenceAnalysis::_analyzeControlFlow()
 {
 	/* Set of possible diverging branches */
+	report(" Analyzing control flow");
 	std::set<BranchInfo> branches;
 
 	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
@@ -229,22 +230,33 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	PostdominatorTree *dtree;
 	dtree = (PostdominatorTree*) (getAnalysis(Type::PostDominatorTreeAnalysis));
 
+	report(" Finding branches");
 	for (; block != endBlock; ++block) {
 		ir::PTXInstruction *ptxInstruction = NULL;
 
 		if (block->instructions().size() > 0) {
 			/* Branch instructions can only be the last
 			instruction of a basic block */
-			DataflowGraph::Instruction lastInstruction =
+			DataflowGraph::Instruction& lastInstruction =
 			*(--block->instructions().end());
 
 			if (typeid(ir::PTXInstruction) == typeid(*(lastInstruction.i))) {
 				ptxInstruction =
 					static_cast<ir::PTXInstruction*>(lastInstruction.i);
 
-				if ((ptxInstruction->opcode == ir::PTXInstruction::Bra)
-					&& (ptxInstruction->uni == false)
-					&& (lastInstruction.s.size() != 0)) {
+				if ((ptxInstruction->opcode == ir::PTXInstruction::Bra)) {
+					report("  examining " << ptxInstruction->toString());
+					
+					if(ptxInstruction->uni == true) { 
+						report("   eliminated, uniform...");
+						continue;
+					}
+					
+					if(lastInstruction.s.size() == 0) {
+						report("   eliminated, wrong source count ("
+							<< lastInstruction.s.size() << ")...");
+						continue;
+					}
 					
 					assert(lastInstruction.s.size() == 1);
 					DataflowGraph::iterator postDomBlock =
@@ -254,6 +266,10 @@ void DivergenceAnalysis::_analyzeControlFlow()
 						BranchInfo newBranch(&(*block), &(*postDomBlock), 
 							lastInstruction, _divergGraph);
 						branches.insert(newBranch);
+						report("   is potentially divergent...");
+					}
+					else {
+						report("   eliminated, no post-dominator...");
 					}
 				}
 			}
@@ -265,11 +281,13 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	std::set<BranchInfo> worklist;
 
 	/* Populate the divergent branches set */
-	std::set<BranchInfo>::iterator branch = branches.begin();
+	std::set<BranchInfo>::iterator branch    = branches.begin();
 	std::set<BranchInfo>::iterator endBranch = branches.end();
 
+	report(" Finding divergent branches");
 	while (branch != endBranch) {
 		if (isDivInstruction(branch->instruction()) ){
+			report("   found " << branch->instruction().i->toString());
 			std::set<BranchInfo>::iterator divBranch = branch--;
 			worklist.insert(*divBranch);
 			_divergentBranches.insert(*divBranch);
@@ -278,6 +296,8 @@ void DivergenceAnalysis::_analyzeControlFlow()
 			branch = branches.begin();
 			continue;
 		} else {
+			report("   " << branch->instruction().i->toString()
+				<< " is not divergent.");
 			_notDivergentBranches.insert(*branch);
 		}
 		branch++;
@@ -286,8 +306,10 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	/*  3) For each divergent branch
 	 * Test for divergence on the post-dominator block of every
 	 	divergent branch instruction */
+	report(" Propagating divergence along control dependences");
 	while (worklist.size() > 0) {
 		BranchInfo branchInfo = *worklist.begin();
+		report("  for branch " << branchInfo.instruction().i->toString());
 		/* 3.1) Compute the controlflow dependency. populate is O(E) */
 		branchInfo.populate();
 		/* 3.2) Search the postdominator block for new divergent variables */
@@ -307,6 +329,8 @@ void DivergenceAnalysis::_analyzeControlFlow()
 
 			for (; source != endSource; source++) {
 				if (branchInfo.isTainted(source->id)) {
+					report("   adding dependence r" << source->id
+						<< " <- r" << branchInfo.predicate());
 					_addPredicate(*phi, branchInfo.predicate());
 					newDivergences = true;
 				}
@@ -535,6 +559,11 @@ void DivergenceAnalysis::analyze(ir::IRKernel &k)
 	_notDivergentBranches.clear();
 	_notDivergentBlocks.clear();
 	_kernel = &k;
+
+	report("Running Divergence analysis on kernel '" << k.name << "'")
+	#if REPORT_BASE > 0
+	k.write(std::cout);
+	#endif
 
 	DivergenceGraph::node_set predicates;
 	/* 1) Makes data flow analysis that detects divergent variables and blocks

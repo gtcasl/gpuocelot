@@ -40,6 +40,7 @@
 #endif
 
 #define REPORT_BASE 0
+#define REPORT_LLVM 0
 
 namespace ir
 {
@@ -305,6 +306,9 @@ static llvm::Function* jitFunction(
 	
 	m = llvm::ParseAssemblyString(kernel.code().c_str(), 
 		m, error, llvm::getGlobalContext());
+
+	reportE(REPORT_LLVM,
+		"Generated the following LLVM:\n" << kernel.numberedCode());
 
 	if(m == 0)
 	{

@@ -16,7 +16,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE  0
+#define REPORT_GRAPH 0
 
 namespace analysis {
 
@@ -253,7 +254,7 @@ void DivergenceGraph::computeDivergence(){
 
 	_upToDate = true;
 
-	#if REPORT_BASE > 0
+	#if REPORT_GRAPH > 0
 	std::cout << *this;
 	#endif
 }

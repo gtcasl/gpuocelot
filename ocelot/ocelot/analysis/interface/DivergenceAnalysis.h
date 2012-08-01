@@ -60,22 +60,22 @@ class DivergenceAnalysis : public KernelAnalysis
 		virtual void analyze( ir::IRKernel& k );
 
 		/*!\brief Tests if a block ends with a divergent branch instruction */
-		bool isDivBlock( const DataflowGraph::const_iterator &block ) const;
+		bool isDivBlock(const DataflowGraph::const_iterator &block) const;
 		/*!\brief Tests if a block ends with a divergent branch instruction */
-		bool isDivBlock( const DataflowGraph::iterator &block ) const;
+		bool isDivBlock(const DataflowGraph::iterator &block) const;
 
 		/*!\brief Tests if all threads enter the block in a convergent state */
-		bool isEntryDiv( const DataflowGraph::iterator &block ) const;
+		bool isEntryDiv(const DataflowGraph::iterator &block) const;
 				
 		/*!\brief Tests if a branch instruction is divergent */
-		bool isDivBranch( const const_instruction_iterator &instruction ) const;
+		bool isDivBranch(const DataflowGraph::Instruction &instruction) const;
 		/*!\brief Tests if a instruction uses divergent variables */
 		bool isDivInstruction(
-			const DataflowGraph::Instruction &instruction ) const;
+			const DataflowGraph::Instruction &instruction) const;
 		/*!\brief Tests if a instruction is a possibly divergent branch */
-		bool isPossibleDivBranch(const const_instruction_iterator
-		    &instruction) const;
-
+		bool isPossibleDivBranch(const DataflowGraph::Instruction
+			&instruction) const;
+		
 		/*!\brief Returns set of all divergent branches of the kernel */
 		branch_set &getDivergentBranches();
 		/*!\brief Returns a set of all not divergent branches of the kernel */

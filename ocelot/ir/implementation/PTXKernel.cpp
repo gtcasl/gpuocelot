@@ -708,24 +708,9 @@ void PTXKernel::write(std::ostream& stream) const
 }
 
 /*! \brief returns a prototype for this kernel */
-ir::PTXKernel::Prototype ir::PTXKernel::getPrototype() const {
-	ir::PTXKernel::Prototype prototype;
-	prototype.linkingDirective = ir::PTXKernel::Prototype::Visible;
-	prototype.callType = (function() ?
-		ir::PTXKernel::Prototype::Func : ir::PTXKernel::Prototype::Entry);
-	prototype.identifier = name;
-
-	for (ir::Kernel::ParameterVector::const_iterator param = arguments.begin();
-		param != arguments.end(); ++param) {
-		if (param->returnArgument) {
-			prototype.returnArguments.push_back(*param);
-		}
-		else {
-			prototype.arguments.push_back(*param);
-		}
-	}
-	
-	return prototype;
+const ir::PTXKernel::Prototype& ir::PTXKernel::getPrototype() const {
+	auto it = module->prototypes().find(name);
+	return it->second;
 }
 
 }

@@ -27,9 +27,9 @@ namespace analysis
 /*! \brief Constructor, already making the analysis of a input kernel */
 DivergenceAnalysis::DivergenceAnalysis()
 : KernelAnalysis( Analysis::DivergenceAnalysis, "DivergenceAnalysis",
-	Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment |
+	Analysis::DataflowGraphAnalysis | Analysis::GatedStaticSingleAssignment |
 	Analysis::PostDominatorTreeAnalysis), _doCFGanalysis(true),
-	_includeConditionalConvergence(false)
+	_includeConditionalConvergence(true)
 {
 }
 
@@ -215,7 +215,7 @@ void DivergenceAnalysis::_convergenceAnalysis()
 	      convergent.  
 	*/
 	report(" Marking never-divergent blocks using conservative analysis.");
-	auto block = dfg.begin();
+	auto block     = dfg.begin();
 	for (; block != dfg.end(); ++block) {
 		if(dtree->postDominates(block->block(),
 			_kernel->cfg()->get_entry_block())) {
@@ -262,17 +262,16 @@ void DivergenceAnalysis::_convergenceAnalysis()
 			if (!isEntryDiv(block)) continue;
 			
 			changed = _discoverBlocksWithSimpleConvergentPredecessors(block);
+			changed = _discoverBlocksWithSimplePathsToTheExit(block);
 		}
 	}
-
 }
 
 static bool isDivergenceSource(const ir::PTXOperand& operand)
 {
 	if (operand.addressMode == ir::PTXOperand::Special) {
 		if( (operand.special == ir::PTXOperand::tid &&
-			(operand.vIndex == ir::PTXOperand::ix
-			|| operand.vIndex == ir::PTXOperand::iy))
+			(operand.vIndex == ir::PTXOperand::ix))
 			|| (operand.special == ir::PTXOperand::laneId)) {
 			return true;
 		}
@@ -782,6 +781,9 @@ void DivergenceAnalysis::_discoverNewConvergentBlocks()
 
 	// TODO use a worklist
 	bool changed = true;
+
+	report(" Searching for convergent blocks using "
+		"control flow information...");
 	
 	while(changed) {
 		changed = false;
@@ -798,6 +800,8 @@ void DivergenceAnalysis::_discoverNewConvergentBlocks()
 void DivergenceAnalysis::_discoverNewConvergentBlocksUsingBranchInfo(
 	branch_set& branches)
 {
+	report(" Searching for convergent blocks along branches...");
+	
 	for (auto branch = branches.begin(); branch != branches.end(); ++branch) {
 		// scan all successors
 		for (auto successor = branch->block()->successors().begin();

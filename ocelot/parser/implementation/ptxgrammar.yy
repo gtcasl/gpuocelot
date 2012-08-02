@@ -525,7 +525,7 @@ entryDeclaration : entryName argumentList performanceDirectives
 	state.entryDeclaration( @1 );
 };
 
-entryDeclaration : entryName
+entryDeclaration : entryName performanceDirectives
 {
 	state.entryDeclaration( @1 );
 };

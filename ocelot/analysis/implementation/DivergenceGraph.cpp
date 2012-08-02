@@ -153,8 +153,7 @@ bool DivergenceGraph::isDivSource( const ir::PTXOperand* srt ) const{
 	return ((srt->addressMode == ir::PTXOperand::Special) &&
 		( (srt->special == ir::PTXOperand::laneId) ||
 		(srt->special == ir::PTXOperand::tid &&
-		(srt->vIndex == ir::PTXOperand::ix ||
-		srt->vIndex == ir::PTXOperand::iy))));
+		(srt->vIndex == ir::PTXOperand::ix))));
 }
 
 /*!\brief Tests if a special register is present on the graph */

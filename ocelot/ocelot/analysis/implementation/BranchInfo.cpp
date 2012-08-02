@@ -1,7 +1,8 @@
 /*! \file BranchInfo.cpp
 	\date Aug 23, 2010
 	\author Diogo Sampaio <dnsampaio@gmail.com>
-	\brief The source file for the BranchInfo class, the class that holds informations of branches required to do the divergence analysis
+	\brief The source file for the BranchInfo class, the class that holds
+		informations of branches required to do the divergence analysis
 */
 
 // Ocelot Includes

@@ -46,11 +46,6 @@ public:
 	/*!\brief Tests if a instruction is a possibly divergent branch */
 	bool isPossibleDivBranch(const DataflowGraph::Instruction
 		&instruction) const;
-	
-	/*!\brief Returns set of all divergent branches of the kernel */
-	branch_set &getDivergentBranches();
-	/*!\brief Returns a set of all not divergent branches of the kernel */
-	branch_set &getNonDivergentBranches();
 
 	const DivergenceGraph& getDivergenceGraph() const;
 	const DataflowGraph* getDFG() const;
@@ -105,6 +100,10 @@ private:
 			are convergent, not using control dependence analysis */
 	bool _discoverBlocksWithSimpleConvergentPredecessors(
 		const DataflowGraph::iterator &block);
+	/*!\brief Marks a block as never-divergent if the predecessor
+		is convergent, and the other block is the exit */
+	bool _discoverBlocksWithSimplePathsToTheExit(
+		const DataflowGraph::iterator &block);
 
 private:
 	/*! \brief Get the set of possibly divergent branches */
@@ -127,10 +126,6 @@ private:
 	ir::IRKernel *_kernel;
 	/*!\brief Holds the variables marks of divergent blocks */
 	DivergenceGraph _divergGraph;
-	/*!\brief A set with all divergent branch instructions of the kernel */
-	branch_set _divergentBranches;
-	/*!\brief Set with all not divergent branch instructions of the kernel*/
-	branch_set _notDivergentBranches;
 	/*!\brief Set with all not divergent blocks in the kernel*/
 	block_set  _notDivergentBlocks;
 	bool _doCFGanalysis;

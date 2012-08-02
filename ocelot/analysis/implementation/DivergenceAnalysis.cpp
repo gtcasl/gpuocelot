@@ -126,15 +126,45 @@ bool DivergenceAnalysis::isPossibleDivBranch(
 		// Uniform branches may not be divergent
 		if (ptxI.uni) return false;
 		
-		// Branches with a divergent target may be divergent, as long
-		// as it isn't a reconvergence point
+		// Branches with only a single target cannot be divergent
+		if (instruction.block->successors().size() < 2) return false;
+
+		// We can ignore divergent threads that immediately exit
+		unsigned int exitingPaths = 0;
+		
+		const Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+		assert(dfgAnalysis != 0);
+
+		const DataflowGraph &dfg = static_cast<const DataflowGraph&>(*dfgAnalysis);
+
+		auto exit = --dfg.end();
+
 		for (auto successor = instruction.block->successors().begin();
 			successor != instruction.block->successors().end(); ++successor) {
-			if (isEntryDiv(*successor) || _isReconvergencePoint(*successor)) {
-				return true;
+			auto path = *successor;
+
+			while (true) {
+				if (path == exit) {
+					++exitingPaths;
+					break;
+				}
+				if (path->successors().size() != 1) {
+					break;
+				}
+				if (!path->instructions().empty()) {
+					break;
+				}
+				path = *path->successors().begin();
 			}
 		}
+
+		if (instruction.block->successors().size() - exitingPaths < 2) {
+			return false;
+		}
+
+		return true;
 	}
+	
 	return false;
 }
 
@@ -262,7 +292,6 @@ void DivergenceAnalysis::_convergenceAnalysis()
 			if (!isEntryDiv(block)) continue;
 			
 			changed = _discoverBlocksWithSimpleConvergentPredecessors(block);
-			changed = _discoverBlocksWithSimplePathsToTheExit(block);
 		}
 	}
 }
@@ -500,20 +529,6 @@ bool DivergenceAnalysis::_isPossibleDivBlock(
 	}
 
 	return isPossibleDivBranch(*--block->instructions().end());
-}
-
-bool DivergenceAnalysis::_isReconvergencePoint(
-	const DataflowGraph::iterator &block) const
-{
-	if (isEntryDiv(block)) return false;
-	
-	for (auto predecessor = block->predecessors().begin();
-		predecessor != block->predecessors().end(); ++predecessor) {
-		
-		if (isEntryDiv(*predecessor)) return true;
-	}
-	
-	return false;
 }
 
 bool DivergenceAnalysis::_assignAndPropagateConvergence(

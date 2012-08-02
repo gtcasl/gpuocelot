@@ -92,9 +92,6 @@ private:
 	/*!\brief Tests if a block can end with a divergent branch instruction,
 		without using control dependence analysis */
 	bool _isPossibleDivBlock(const DataflowGraph::iterator &block) const;
-	/*!\brief Test if a block is a reconvergence point (it is convergent,
-		but a predecessor is not) */
-	bool _isReconvergencePoint(const DataflowGraph::iterator &block) const;
 	
 	/*!\brief Marks a block as never-divergent and propagates
 		this property */

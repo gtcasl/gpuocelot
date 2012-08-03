@@ -784,8 +784,6 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 	
 	while(!unscheduled.empty())
 	{
-		bool dependenciesSatisfied = false;
-		
 		report("   Wave " << scheduled.size());
 		
 		scheduled.push_back(PassVector());
@@ -794,7 +792,15 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 		{
 			auto dependentPasses = pass->second->getDependentPasses();
 			
-			dependenciesSatisfied = true;
+			auto extraDependences = _extraDependences.equal_range(pass->first);
+		
+			for(auto dependentPass = extraDependences.first;
+				dependentPass != extraDependences.second; ++dependentPass)
+			{
+				dependentPasses.push_back(dependentPass->second);
+			}
+			
+			bool dependenciesSatisfied = true;
 			
 			for(auto dependentPass = dependentPasses.begin();
 				dependentPass != dependentPasses.end(); ++dependentPass)
@@ -823,7 +829,7 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 			++pass;
 		}
 		
-		if(!dependenciesSatisfied)
+		if(scheduled.back().empty())
 		{
 			throw std::runtime_error("Passes have circular dependencies!");
 		}

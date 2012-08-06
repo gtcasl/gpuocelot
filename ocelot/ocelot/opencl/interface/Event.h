@@ -28,13 +28,23 @@ namespace opencl {
 		~Event();
 
 	public:
+		static void waitForEvents(cl_uint num_events,
+			const cl_event * event_list);
+
 		void release();
 
 		//! get type
 		cl_command_type type();
+
+		//! is user event
+		bool isUserEvent();
 		
 		//! execute event
 		virtual void execute(Device * device) = 0;
+
+		//! set call back function
+		void setCallBack(void (CL_CALLBACK * pfn_notify)(cl_event, cl_int, void *),
+				void * user_data);
 
 		//! check if completed
 		bool isCompleted();
@@ -44,6 +54,9 @@ namespace opencl {
 
 		//! set status
 		void setStatus(cl_int status);
+		
+		//! check if error
+		bool hasError();
 
 		//! get event info
 		void getInfo(cl_event_info    param_name,
@@ -57,7 +70,10 @@ namespace opencl {
 		Context * _context;
 		cl_int _status;
 		EventList _waitList;
-		
+		void (CL_CALLBACK *_eventNotify)(cl_event event,
+						cl_int event_command_exec_status,
+						void * user_data);
+		void * _userData;		
 
 	};
 
@@ -109,6 +125,24 @@ namespace opencl {
 		Kernel * _kernel;
 	
 			
+	};
+
+	/*! \brief User event */
+	class UserEvent : public Event {
+	public:
+		UserEvent(Context * context);
+		~UserEvent();
+
+	public:
+		virtual void execute(Device * device);
+
+		// set user event status
+		void setUserStatus(cl_int status);
+
+	private:
+
+		//! if the status if previous changed
+		bool _prevChanged;
 	};
 
 }

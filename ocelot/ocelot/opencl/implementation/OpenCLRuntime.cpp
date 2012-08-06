@@ -949,6 +949,27 @@ cl_mem opencl::OpenCLRuntime::clCreateSubBuffer(cl_mem buffer,
 	return (cl_mem)subBuffer;
 }
 
+cl_int opencl::OpenCLRuntime::clRetainMemObject(cl_mem memobj) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
+			throw CL_INVALID_MEM_OBJECT;
+
+		memobj->retain();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+}
 
 cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
 	cl_int result = CL_SUCCESS;
@@ -1006,6 +1027,105 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	_unlock();
 
 	return (cl_program)program;
+}
+
+cl_program opencl::OpenCLRuntime::clCreateProgramWithBinary(cl_context context,
+	cl_uint                        num_devices,
+	const cl_device_id *           device_list,
+	const size_t *                 lengths,
+	const unsigned char **         binaries,
+	cl_int *                       binary_status,
+	cl_int *                       errcode_ret) {
+
+	_lock();
+	cl_int err = CL_SUCCESS;
+	Program * program = NULL;
+
+	try {
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
+			throw CL_INVALID_CONTEXT;
+
+		if(!device_list || num_devices == 0)
+			throw CL_INVALID_VALUE;
+
+		if(lengths == NULL || binaries == NULL)
+			throw CL_INVALID_VALUE;
+
+		program = new Program(context, num_devices, device_list, lengths, binaries,
+							  binary_status, Program::PROGRAM_BINARY);
+
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	if(errcode_ret)
+		*errcode_ret = err;
+	_unlock();
+
+	return (cl_program)program;
+}
+
+cl_program opencl::OpenCLRuntime::clCreateProgramWithBuiltInKernels(cl_context context,
+                    cl_uint               num_devices,
+                    const cl_device_id *  device_list,
+                    const char *          kernel_names,
+                    cl_int *              errcode_ret) {
+
+	_lock();
+	cl_int err = CL_SUCCESS;
+	Program * program = NULL;
+
+	try {
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
+			throw CL_INVALID_CONTEXT;
+
+		if(!device_list || num_devices == 0)
+			throw CL_INVALID_VALUE;
+
+		if(!kernel_names == 0)
+			throw CL_INVALID_VALUE;
+
+		program = new Program(context, num_devices, device_list, kernel_names);
+
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	if(errcode_ret)
+		*errcode_ret = err;
+	_unlock();
+
+	return (cl_program)program;
+}
+
+cl_int opencl::OpenCLRuntime::clRetainProgram(cl_program program) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))
+			throw CL_INVALID_PROGRAM;
+
+		program->retain();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
 }
 
 cl_int opencl::OpenCLRuntime::clReleaseProgram(cl_program program) {
@@ -1137,6 +1257,55 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	return (cl_kernel)kernel;
 }
 
+cl_int opencl::OpenCLRuntime::clCreateKernelsInProgram(cl_program program,
+                    cl_uint        num_kernels,
+                    cl_kernel *    kernels,
+                    cl_uint *      num_kernels_ret) {
+	
+	cl_int err = CL_SUCCESS;	
+
+	_lock();
+
+	try{
+
+		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))//Not found
+			throw CL_INVALID_PROGRAM;
+
+		program->createAllKernels(num_kernels, kernels, num_kernels_ret);
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return err;
+}
+
+cl_int opencl::OpenCLRuntime::clRetainKernel(cl_kernel kernel) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
+			throw CL_INVALID_KERNEL;
+
+		kernel->retain();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+}
+
 cl_int opencl::OpenCLRuntime::clReleaseKernel(cl_kernel kernel) {
 	cl_int result = CL_SUCCESS;
 
@@ -1186,6 +1355,75 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 	return result;
 }
 
+cl_int opencl::OpenCLRuntime::clGetKernelInfo(cl_kernel kernel,
+                    cl_kernel_info  param_name,
+                    size_t          param_value_size,
+                    void *          param_value,
+                    size_t *        param_value_size_ret) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
+			throw CL_INVALID_KERNEL;
+
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+
+		kernel->getInfo(param_name, param_value_size, 
+			param_value, param_value_size_ret);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+
+}
+
+cl_int opencl::OpenCLRuntime::clGetKernelArgInfo(cl_kernel kernel,
+                    cl_uint         arg_index,
+                    cl_kernel_arg_info  param_name,
+                    size_t          param_value_size,
+                    void *          param_value,
+                    size_t *        param_value_size_ret) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
+			throw CL_INVALID_KERNEL;
+
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+
+		kernel->getArgInfo(arg_index, param_name, param_value_size, 
+			param_value, param_value_size_ret);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+
+}
+
 cl_int opencl::OpenCLRuntime::clGetKernelWorkGroupInfo(cl_kernel kernel,
 	cl_device_id               device,
 	cl_kernel_work_group_info  param_name,
@@ -1221,6 +1459,58 @@ cl_int opencl::OpenCLRuntime::clGetKernelWorkGroupInfo(cl_kernel kernel,
 
 	_unlock();
 	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clWaitForEvents(cl_uint num_events,
+                    const cl_event *    event_list) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+
+	try {
+		if(num_events == 0 || event_list == NULL)
+			throw CL_INVALID_VALUE;
+		Event::waitForEvents(num_events, event_list);
+		
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
+cl_event opencl::OpenCLRuntime::clCreateUserEvent(cl_context context,
+                  cl_int *      errcode_ret) {
+	
+	cl_int err = CL_SUCCESS;	
+
+	Event * event = NULL;
+
+	_lock();
+
+	try{
+
+		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))//Not found
+			throw CL_INVALID_CONTEXT;
+
+		event = new UserEvent(context);
+
+	}
+	catch(cl_int exception) {
+		err = exception;
+	}
+	catch(...) {
+		err = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	if(errcode_ret)
+		*errcode_ret = err;
+	_unlock();
+	return (cl_event)event;
 }
 
 cl_int opencl::OpenCLRuntime::clGetEventInfo(cl_event event,
@@ -1376,6 +1666,28 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	return result;
 }
 
+cl_int opencl::OpenCLRuntime::clRetainEvent(cl_event event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!event->isValidObject(Object::OBJTYPE_EVENT))
+			throw CL_INVALID_EVENT;
+
+		event->retain();
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+}
+
 cl_int opencl::OpenCLRuntime::clReleaseEvent(cl_event event) {
 	cl_int result = CL_SUCCESS;
 
@@ -1399,6 +1711,62 @@ cl_int opencl::OpenCLRuntime::clReleaseEvent(cl_event event) {
 
 }
 
+cl_int opencl::OpenCLRuntime::clSetUserEventStatus(cl_event   event,
+                     cl_int execution_status) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!(event->isValidObject(Object::OBJTYPE_EVENT) && event->isUserEvent()))
+			throw CL_INVALID_EVENT;
+
+		if(! (execution_status == CL_COMPLETE || execution_status < 0))
+			throw CL_INVALID_VALUE;
+
+		((UserEvent *)event)->setUserStatus(execution_status);
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clSetEventCallback( cl_event    event,
+                    cl_int      command_exec_callback_type,
+                    void (CL_CALLBACK * pfn_notify)(cl_event, cl_int, void *),
+                    void *      user_data) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+	try {
+		if(!event->isValidObject(Object::OBJTYPE_EVENT))
+			throw CL_INVALID_EVENT;
+
+		if(pfn_notify == NULL || command_exec_callback_type != CL_COMPLETE)
+			throw CL_INVALID_VALUE;
+
+		event->setCallBack(pfn_notify, user_data);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
+
+}
 
 cl_int opencl::OpenCLRuntime::clFlush(cl_command_queue command_queue) {
 	cl_int result = CL_SUCCESS;

@@ -81,6 +81,15 @@ bool opencl::Program::_hasBinaryOnDevice(Device * device) {
 	return true;
 }
 
+void opencl::Program::_loadBinaryOnDevice(Device * device, const size_t length, 
+	const char * binary) {
+
+	report("load binary on device " << device);
+	std::stringstream binaryStr;
+	binaryStr.write(binary, std::min(length, strlen(binary)));
+	_deviceBuiltInfo[device]._binary = std::move(binaryStr.str());
+}
+
 void opencl::Program::_buildOnDevice(Device * device, std::string backdoorBinary) {
 
 	std::stringstream moduleName;
@@ -237,6 +246,64 @@ opencl::Program::Program(Context * context, cl_uint count, const char ** strings
 	_context->retain();
 }
 
+opencl::Program::Program(Context * context, 
+	cl_uint num_devices, 
+	const cl_device_id * device_list,
+	const size_t * lengths, 
+	const unsigned char ** binaries, 
+	cl_int * binary_status, 
+	programT type):
+	Object(OBJTYPE_PROGRAM), 
+	_type(type), _context(context) {
+
+	//program name = __clmodule_id
+	std::stringstream name;
+	name << "__clmodule_" << _id;
+	_name = std::move(name.str());
+	_id++;
+
+	//setup devices
+	if(!setupDevices(num_devices, device_list))
+		throw CL_INVALID_DEVICE;
+
+	//copy binary
+	for(cl_uint i = 0; i < num_devices; i++) {
+		if(lengths[i] == 0 || binaries[i] == 0) {
+			if(binary_status)
+				binary_status[i] = CL_INVALID_VALUE;
+			throw CL_INVALID_VALUE;
+		}
+		_loadBinaryOnDevice((Device *)(device_list[i]), lengths[i], (const char *)binaries[i]);
+		if(binary_status)
+			binary_status[i] = CL_SUCCESS;
+	}
+
+	_context->retain();
+}
+
+opencl::Program::Program(Context * context, 
+                cl_uint num_devices,
+                const cl_device_id * device_list,
+                const char * kernel_names):
+	Object(OBJTYPE_PROGRAM), 
+	_type(PROGRAM_BUILTIN), _context(context) {
+
+	//program name = __clmodule_id
+	std::stringstream name;
+	name << "__clmodule_" << _id;
+	_name = std::move(name.str());
+	_id++;
+
+	//setup devices
+	if(!setupDevices(num_devices, device_list))
+		throw CL_INVALID_DEVICE;
+
+	report("Current impelmentation does not support built-in kernels\n");
+	throw(CL_UNIMPLEMENTED);
+
+	_context->retain();
+}
+
 opencl::Program::~Program() {
 	
 	for(std::map <Device *, deviceBuiltInfoT>::iterator it = _deviceBuiltInfo.begin();
@@ -254,6 +321,10 @@ void opencl::Program::release() {
 
 bool opencl::Program::isValidContext(Context * context) {
 	return (_context == context);
+}
+
+opencl::Context * opencl::Program::getContext() {
+	return _context;
 }
 
 bool opencl::Program::setupDevices(cl_uint num_devices, const cl_device_id * device_list) {
@@ -387,6 +458,40 @@ opencl::Kernel * opencl::Program::createKernel(const char * kernelName) {
 
 	return kernel;
 
+}
+
+void opencl::Program::createAllKernels(cl_uint num_kernels, 
+		cl_kernel * kernels, 
+		cl_uint * num_kernels_ret) {
+	if(!_isAllBuilt())
+		throw CL_INVALID_PROGRAM_EXECUTABLE;
+
+	const ir::Module::KernelMap &irKernels = _deviceBuiltInfo.begin()->second._module->kernels();
+	const cl_uint kernelCount = irKernels.size();
+
+	if(kernels != NULL && num_kernels < kernelCount)
+		throw CL_INVALID_VALUE;
+
+	report("Register all kernels in program '" << _name << "'");
+
+	cl_uint i = 0;
+	for(ir::Module::KernelMap::const_iterator it = irKernels.begin(); it != irKernels.end(); it++) {
+		std::string kernelName = it->first;
+		if(!_hasKernelAll(kernelName.c_str()))
+			throw CL_INVALID_PROGRAM_EXECUTABLE;
+		Kernel * kernel = new Kernel(kernelName, this);
+		_kernels.push_back(kernel);
+
+		for(std::map < Device *, deviceBuiltInfoT>::iterator dIt = _deviceBuiltInfo.begin();
+			dIt != _deviceBuiltInfo.end(); dIt++) {
+			ir::Kernel * irKernel = dIt->second._module->getKernel(kernelName);
+			kernel->addDeviceInfo(dIt->first, dIt->second._moduleName, dIt->second._module, irKernel);
+		}
+		kernels[i++] = (cl_kernel)kernel;
+	}
+
+	if(num_kernels_ret)
+		*num_kernels_ret = kernelCount;
 }
 
 void opencl::Program::removeKernel(Kernel * kernel) {

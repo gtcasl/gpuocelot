@@ -10,7 +10,8 @@ opencl::Event::Event(cl_command_type type,
     cl_uint num_events_in_wait_list,
     const cl_event * event_wait_list,
     cl_event * event): Object(OBJTYPE_EVENT),
-	_type(type), _commandQueue(commandQueue), _context(context) {
+	_type(type), _commandQueue(commandQueue), _context(context), 
+	_eventNotify(NULL), _userData(NULL) {
 
 	report("Creating Event " << this);
 	if(event_wait_list == NULL && num_events_in_wait_list > 0)
@@ -63,6 +64,16 @@ cl_command_type opencl::Event::type() {
 	return _type;
 }
 
+bool opencl::Event::isUserEvent() {
+	return (_type == CL_COMMAND_USER);
+}
+
+void opencl::Event::setCallBack(void (CL_CALLBACK * pfn_notify)(cl_event, cl_int, void *),
+                void * user_data) {
+	_eventNotify = pfn_notify;
+	_userData = user_data;
+}
+
 bool opencl::Event::isCompleted() {
 	return ((_status == CL_COMPLETE) ||
 		(_status < 0));
@@ -74,6 +85,10 @@ bool opencl::Event::hasStatus(cl_int status) {
 
 void opencl::Event::setStatus(cl_int status) {
 	_status = status;
+}
+
+bool opencl::Event::hasError() {
+	return (_status < 0);
 }
 
 void opencl::Event::getInfo(cl_event_info    param_name,
@@ -137,6 +152,36 @@ do { \
 	if(param_value_size_ret !=0 )
 		*param_value_size_ret = infoLen;
 
+}
+
+void opencl::Event::waitForEvents(cl_uint num_events,
+		const cl_event * event_list) {
+
+	// check if is valid event objects
+	for(cl_uint i = 0; i < num_events; i++) {
+		if(!event_list[i]->isValidObject(Object::OBJTYPE_EVENT))
+			throw CL_INVALID_EVENT;
+	}
+
+	// check if belong to the same context
+	Context * context = event_list[0]->_context;
+	for(cl_uint i = 0; i < num_events; i++) {
+		if((Context *)(event_list[i]->_context) != context)
+			throw CL_INVALID_CONTEXT;
+	}
+
+	// wait for events
+	while(true) {
+		cl_uint i = 0;
+		for(i = 0; i < num_events; i++) {
+			if(!event_list[i]->isCompleted())
+				break;
+			else if(event_list[i]->hasError()) // error
+				throw CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST;
+		}
+		if(i == num_events) // all completed
+			break;
+	}
 }
 
 
@@ -218,4 +263,21 @@ void opencl::KernelEvent::execute(Device * device) {
 	_kernel->launchOnDevice(device);
 }
 
+opencl::UserEvent::UserEvent(Context * context) :
+	Event(CL_COMMAND_USER, NULL, context, 0, NULL, NULL),
+	_prevChanged(false) {
+	_status = CL_SUBMITTED;
+}
 
+opencl::UserEvent::~UserEvent() {
+}
+
+void opencl::UserEvent::execute(Device * device) {
+}
+
+void opencl::UserEvent::setUserStatus(cl_int status) {
+	if(_prevChanged)
+		throw CL_INVALID_OPERATION;
+
+	setStatus(status);
+}

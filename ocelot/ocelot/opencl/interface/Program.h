@@ -22,7 +22,8 @@ namespace opencl {
 	public:
 		typedef enum {
 			PROGRAM_SOURCE,
-			PROGRAM_BINARY
+			PROGRAM_BINARY,
+			PROGRAM_BUILTIN
 		}programT;
 
 		typedef std::list < Program * > ProgramList;
@@ -32,6 +33,19 @@ namespace opencl {
 		Program(Context * context, cl_uint count, const char ** strings, 
 			const size_t * lengths, programT type);
 
+		Program(Context * context, 
+		    cl_uint num_devices, 
+		    const cl_device_id * device_list,
+		    const size_t * lengths, 
+		    const unsigned char ** binaries, 
+		    cl_int * binary_status, 
+		    programT type);
+
+		Program(Context * context, 
+				cl_uint num_devices,
+				const cl_device_id * device_list,
+				const char * kernel_names);
+
 		~Program();	
 
 	public:
@@ -40,6 +54,9 @@ namespace opencl {
 
 		//!validate context
 		bool isValidContext(Context * context);
+
+		//! get context
+		Context * getContext();
 
 		//! check if devices are valid
 		bool setupDevices(cl_uint num_devices, const cl_device_id * device_list);
@@ -57,6 +74,11 @@ namespace opencl {
 	
 		//! create kernels
 		Kernel * createKernel(const char * kernelName);	
+		
+		//! create all kernels in the program
+		void createAllKernels(cl_uint num_kernels,
+		        cl_kernel * kernels,
+		        cl_uint * num_kernels_ret);
 
 		//! remove kernel
 		void removeKernel(Kernel * kernel);
@@ -125,6 +147,10 @@ namespace opencl {
 
 		//! check if binary is loaded on a device
 		bool _hasBinaryOnDevice(Device * device);
+
+		//! load binary on device
+		void _loadBinaryOnDevice(Device * device, const size_t length, 
+								const char * binary);
 
 		//! build program on a device
 		void _buildOnDevice(Device * device, std::string backdoorBinary = "");

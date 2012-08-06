@@ -285,7 +285,7 @@ namespace opencl {
 //					const cl_image_desc *   image_desc,
 //					void *                  host_ptr,
 //					cl_int *                errcode_ret);
-//		virtual cl_int clRetainMemObject(cl_mem memobj);
+		virtual cl_int clRetainMemObject(cl_mem memobj);
 		virtual cl_int clReleaseMemObject(cl_mem memobj);
 //		virtual cl_int clGetSupportedImageFormats(cl_context context,
 //					cl_mem_flags         flags,
@@ -327,19 +327,19 @@ namespace opencl {
 					const char ** strings,
 					const size_t * lengths,
 					cl_int * errcode_ret);
-//		virtual cl_program clCreateProgramWithBinary(cl_context context,
-//					cl_uint                        num_devices,
-//					const cl_device_id *           device_list,
-//					const size_t *                 lengths,
-//					const unsigned char **         binaries,
-//					cl_int *                       binary_status,
-//					cl_int *                       errcode_ret);
-//		virtual cl_program clCreateProgramWithBuiltInKernels(cl_context context,
-//					cl_uint               num_devices,
-//					const cl_device_id *  device_list,
-//					const char *          kernel_names,
-//					cl_int *              errcode_ret);
-//		virtual cl_int clRetainProgram(cl_program program);
+		virtual cl_program clCreateProgramWithBinary(cl_context context,
+					cl_uint                        num_devices,
+					const cl_device_id *           device_list,
+					const size_t *                 lengths,
+					const unsigned char **         binaries,
+					cl_int *                       binary_status,
+					cl_int *                       errcode_ret);
+		virtual cl_program clCreateProgramWithBuiltInKernels(cl_context context,
+					cl_uint               num_devices,
+					const cl_device_id *  device_list,
+					const char *          kernel_names,
+					cl_int *              errcode_ret);
+		virtual cl_int clRetainProgram(cl_program program);
 		virtual cl_int clReleaseProgram(cl_program program);
 		virtual cl_int clBuildProgram(cl_program program,
 					cl_uint num_devices,
@@ -382,27 +382,27 @@ namespace opencl {
 		virtual cl_kernel clCreateKernel(cl_program program,
 					const char * kernel_name,
 					cl_int * errcode_ret);
-//		virtual cl_int clCreateKernelsInProgram(cl_program program,
-//					cl_uint        num_kernels,
-//					cl_kernel *    kernels,
-//					cl_uint *      num_kernels_ret);
-//		virtual cl_int clRetainKernel(cl_kernel  kernel);
+		virtual cl_int clCreateKernelsInProgram(cl_program program,
+					cl_uint        num_kernels,
+					cl_kernel *    kernels,
+					cl_uint *      num_kernels_ret);
+		virtual cl_int clRetainKernel(cl_kernel  kernel);
 		virtual cl_int clReleaseKernel(cl_kernel kernel);
 		virtual cl_int clSetKernelArg(cl_kernel kernel,
 					cl_uint arg_index,
 					size_t arg_size,
 					const void * arg_value);
-//		virtual cl_int clGetKernelInfo(cl_kernel kernel,
-//					cl_kernel_info  param_name,
-//					size_t          param_value_size,
-//					void *          param_value,
-//					size_t *        param_value_size_ret);
-//		virtual cl_int clGetKernelArgInfo(cl_kernel kernel,
-//					cl_uint         arg_index,
-//					cl_kernel_arg_info  param_name,
-//					size_t          param_value_size,
-//					void *          param_value,
-//					size_t *        param_value_size_ret);
+		virtual cl_int clGetKernelInfo(cl_kernel kernel,
+					cl_kernel_info  param_name,
+					size_t          param_value_size,
+					void *          param_value,
+					size_t *        param_value_size_ret);
+		virtual cl_int clGetKernelArgInfo(cl_kernel kernel,
+					cl_uint         arg_index,
+					cl_kernel_arg_info  param_name,
+					size_t          param_value_size,
+					void *          param_value,
+					size_t *        param_value_size_ret);
 		virtual cl_int clGetKernelWorkGroupInfo(cl_kernel kernel,
 					cl_device_id               device,
 					cl_kernel_work_group_info  param_name,
@@ -411,23 +411,23 @@ namespace opencl {
 					size_t *                   param_value_size_ret);
 
 		/* Event Object APIs */
-//		virtual cl_int clWaitForEvents(cl_uint num_events,
-//					const cl_event *    event_list);
+		virtual cl_int clWaitForEvents(cl_uint num_events,
+					const cl_event *    event_list);
 		virtual cl_int clGetEventInfo(cl_event event,
 					cl_event_info    param_name,
 					size_t           param_value_size,
 					void *           param_value,
 					size_t *         param_value_size_ret); 
-//		virtual cl_event clCreateUserEvent(cl_context context,
-//                  cl_int *      errcode_ret); 
-//		virtual cl_int clRetainEvent(cl_event event);
+		virtual cl_event clCreateUserEvent(cl_context context,
+                  cl_int *      errcode_ret); 
+		virtual cl_int clRetainEvent(cl_event event);
 		virtual cl_int clReleaseEvent(cl_event event);
-//		virtual cl_int clSetUserEventStatus(cl_event   event,
-//                     cl_int     execution_status);
-//		virtual cl_int clSetEventCallback( cl_event    event,
-//                    cl_int      command_exec_callback_type,
-//                    void (CL_CALLBACK * pfn_notify)(cl_event, cl_int, void *),
-//                    void *      user_data);
+		virtual cl_int clSetUserEventStatus(cl_event   event,
+                     cl_int     execution_status);
+		virtual cl_int clSetEventCallback( cl_event    event,
+                    cl_int      command_exec_callback_type,
+                    void (CL_CALLBACK * pfn_notify)(cl_event, cl_int, void *),
+                    void *      user_data);
 
 		/* Profiling APIs */
 //		virtual cl_int clGetEventProfilingInfo(cl_event event,

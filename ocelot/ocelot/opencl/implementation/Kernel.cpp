@@ -18,6 +18,15 @@ size_t opencl::Kernel::_maxWorkGroupSize(Device * device) {
 	return maxSize; 
 }
 
+size_t opencl::Kernel::_getArgumentsSize() {
+
+	return _deviceInfo.begin()->second._irKernel->arguments.size();
+}
+
+std::string & opencl::Kernel::_getArgumentName(cl_uint arg_index) {
+	return _deviceInfo.begin()->second._irKernel->arguments[arg_index].name;
+}
+
 opencl::Kernel::Kernel(const std::string &n, 
 	Program * p, bool builtIn): Object(OBJTYPE_KERNEL),
 	_name(n), _isBuiltIn(builtIn), _program(p) {
@@ -50,6 +59,9 @@ bool opencl::Kernel::isValidContext(Context * context) {
 	return _program->isValidContext(context);
 }
 
+opencl::Context * opencl::Kernel::getContext() {
+	return _program->getContext();
+}
 
 void opencl::Kernel::addDeviceInfo(Device * device, std::string moduleName, 
 	ir::Module * module, ir::Kernel * irKernel) {
@@ -246,6 +258,135 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //	}
 }
 
+void opencl::Kernel::getInfo(cl_kernel_info param_name,
+		size_t param_value_size,
+		void * param_value,
+		size_t * param_value_size_ret) {
+
+	size_t infoLen = 0;
+	cl_uint info;
+	const void * ptr = &info;
+
+	switch(param_name) {
+		case CL_KERNEL_FUNCTION_NAME:
+			infoLen = _name.length() + 1;
+			ptr = _name.c_str();	
+			break;
+
+		case CL_KERNEL_NUM_ARGS:
+			infoLen = sizeof(cl_uint);
+			info = (cl_uint)_getArgumentsSize();
+			break;
+
+		case CL_KERNEL_REFERENCE_COUNT:
+			infoLen = sizeof(cl_uint);
+			info = (cl_uint)_references;
+			break;
+
+		case CL_KERNEL_CONTEXT:
+			infoLen = sizeof(cl_context);
+			ptr = getContext();
+			break;
+
+		case CL_KERNEL_PROGRAM:
+			infoLen = sizeof(cl_program);
+			ptr = _program;
+			break;
+
+		case CL_KERNEL_ATTRIBUTES:
+			assertM(false, "CL_KERNEL_ATTRIBUTES unimplemented\n");
+			throw CL_UNIMPLEMENTED;
+
+			break;
+		default:
+			throw CL_INVALID_VALUE;
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+}
+
+void opencl::Kernel::getArgInfo(cl_uint arg_index, 
+		cl_kernel_info param_name,
+		size_t param_value_size,
+		void * param_value,
+		size_t * param_value_size_ret) {
+
+	size_t argSizes = _getArgumentsSize();
+	if(arg_index >= (cl_uint) argSizes)
+		throw CL_INVALID_ARG_INDEX;
+
+	union infoUnion {
+		cl_kernel_arg_address_qualifier cl_kernel_arg_address_qualifier_var;
+		cl_kernel_arg_access_qualifier cl_kernel_arg_access_qualifier_var;
+		cl_kernel_arg_type_qualifier cl_kernel_type_qualifier_var;
+	};
+
+#ifndef ASSIGN_INFO
+#define ASSIGN_INFO(field, value) \
+do { \
+	info.field##_var = value; \
+	infoLen = sizeof(field); \
+} while(0)
+#endif
+
+#ifndef ASSIGN_STRING
+#define ASSIGN_STRING(value) \
+do { \
+	str = value; \
+	ptr = str.c_str(); \
+	infoLen = str.length() + 1; \
+}while(0)
+#endif
+
+
+	size_t infoLen = 0;
+	infoUnion info;
+	const void * ptr = &info;
+	std::string str;
+
+	switch(param_name) {
+		case CL_KERNEL_ARG_ADDRESS_QUALIFIER:
+			assertM(false, "Unimplemented argument address qualifier\n");
+			break;
+
+		case CL_KERNEL_ARG_ACCESS_QUALIFIER:
+			assertM(false, "Unimplemented argument access qualifier\n");
+			break;
+
+		case CL_KERNEL_ARG_TYPE_NAME:
+			assertM(false, "Unimplemented argument type name\n");
+			break;
+
+		case CL_KERNEL_ARG_TYPE_QUALIFIER:
+			assertM(false, "Unimplemented argument type qualifier\n");
+			break;
+
+		case CL_KERNEL_ARG_NAME:
+			ASSIGN_STRING(_getArgumentName(arg_index));
+			break;
+
+		default:
+			throw CL_INVALID_VALUE;
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+}
 
 void opencl::Kernel::getWorkGroupInfo(cl_device_id device,
 		cl_kernel_work_group_info  param_name,

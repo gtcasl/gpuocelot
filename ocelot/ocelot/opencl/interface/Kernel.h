@@ -35,6 +35,9 @@ namespace opencl {
 		//validate context
 		bool isValidContext(Context * context);
 
+		//get context
+		Context * getContext();
+
 		//add device info
 		void addDeviceInfo(Device * device, std::string moduleName, 
 				ir::Module * module, ir::Kernel * irKernel);
@@ -51,6 +54,19 @@ namespace opencl {
 
 		//Launch kernel
 		void launchOnDevice(Device * device);
+
+		//Get kernel info
+		void getInfo(cl_kernel_info param_name,
+				size_t    param_value_size,
+				void *    param_value,
+				size_t *  param_value_size_ret);
+
+		//Get kernel argument info
+		void getArgInfo(cl_uint arg_index,
+        cl_kernel_info param_name,
+        size_t param_value_size,
+        void * param_value,
+        size_t * param_value_size_ret);
 
 		//Get WorkGroup Info
 		void getWorkGroupInfo(cl_device_id               device,
@@ -119,6 +135,12 @@ namespace opencl {
 
 		//! get max work group size
 		size_t _maxWorkGroupSize(Device * device);
+
+		//! get arguments size
+		size_t _getArgumentsSize();
+
+		//! get argument name
+		std::string & _getArgumentName(cl_uint arg_index);
 			
 	};
 	

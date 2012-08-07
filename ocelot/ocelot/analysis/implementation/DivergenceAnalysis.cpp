@@ -520,8 +520,13 @@ bool DivergenceAnalysis::_doesOperandUseLocalMemory(
 		return false;
 	}
 	
-	if (_kernel->locals.count(operand.identifier) != 0) {
-		return true;
+	ir::Kernel::LocalMap::const_iterator local = _kernel->locals.find(
+		operand.identifier);
+	
+	if (_kernel->locals.end() != local) {	
+		if (local->second.space == ir::PTXInstruction::Local) {
+			return true;
+		}
 	}
 	
 	const ir::Global* global = _kernel->module->getGlobal(operand.identifier);

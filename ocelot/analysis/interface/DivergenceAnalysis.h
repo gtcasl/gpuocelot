@@ -87,6 +87,9 @@ private:
 	/*!\brief Tests if a block can end with a divergent branch instruction,
 		without using control dependence analysis */
 	bool _isPossibleDivBlock(const DataflowGraph::iterator &block) const;
+	/*!\brief Tests if this block has at most 1 path that does not reach
+		the exit without executing another instruction */
+	bool _hasTrivialPathToExit(const DataflowGraph::iterator &block) const;
 	
 	/*!\brief Marks a block as never-divergent and propagates
 		this property */

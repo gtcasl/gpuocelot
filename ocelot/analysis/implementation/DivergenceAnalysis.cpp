@@ -129,50 +129,6 @@ bool DivergenceAnalysis::isPossibleDivBranch(
 		// Branches with only a single target cannot be divergent
 		if (instruction.block->successors().size() < 2) return false;
 
-		// We can ignore divergent threads that immediately exit
-		unsigned int exitingPaths = 0;
-		
-		const Analysis* dfgAnalysis = getAnalysis(
-			Analysis::DataflowGraphAnalysis);
-		assert(dfgAnalysis != 0);
-
-		const DataflowGraph &dfg =
-			static_cast<const DataflowGraph&>(*dfgAnalysis);
-
-		auto exit = --dfg.end();
-
-		for (auto successor = instruction.block->successors().begin();
-			successor != instruction.block->successors().end(); ++successor) {
-			auto path = *successor;
-			
-			while (true) {
-				if (path == exit) {
-					++exitingPaths;
-					break;
-				}
-				if (path->successors().size() != 1) {
-					break;
-				}
-				if (!path->instructions().empty()) {
-					if (path->instructions().size() == 1) {
-						const ir::PTXInstruction &ptxI =
-							*(static_cast<ir::PTXInstruction *> (
-							path->instructions().back().i));
-					
-						if (ptxI.isExit()) {
-							++exitingPaths;
-						}
-					}
-					break;
-				}
-				path = *path->successors().begin();
-			}
-		}
-
-		if (instruction.block->successors().size() - exitingPaths < 2) {
-			return false;
-		}
-
 		return true;
 	}
 	
@@ -548,6 +504,56 @@ bool DivergenceAnalysis::_isPossibleDivBlock(
 	return isPossibleDivBranch(*--block->instructions().end());
 }
 
+bool DivergenceAnalysis::_hasTrivialPathToExit(
+	const DataflowGraph::iterator &block) const {
+
+	// We can ignore divergent threads that immediately exit
+	unsigned int exitingPaths = 0;
+	
+	const Analysis* dfgAnalysis = getAnalysis(
+		Analysis::DataflowGraphAnalysis);
+	assert(dfgAnalysis != 0);
+
+	const DataflowGraph &dfg =
+		static_cast<const DataflowGraph&>(*dfgAnalysis);
+
+	auto exit = --dfg.end();
+
+	for (auto successor = block->successors().begin();
+		successor != block->successors().end(); ++successor) {
+		auto path = *successor;
+		
+		while (true) {
+			if (path == exit) {
+				++exitingPaths;
+				break;
+			}
+			if (path->successors().size() != 1) {
+				break;
+			}
+			if (!path->instructions().empty()) {
+				if (path->instructions().size() == 1) {
+					const ir::PTXInstruction &ptxI =
+						*(static_cast<ir::PTXInstruction *> (
+						path->instructions().back().i));
+				
+					if (ptxI.isExit()) {
+						++exitingPaths;
+					}
+				}
+				break;
+			}
+			path = *path->successors().begin();
+		}
+	}
+
+	if (block->successors().size() - exitingPaths < 2) {
+		return true;
+	}
+	
+	return false;
+}
+
 bool DivergenceAnalysis::_assignAndPropagateConvergence(
 	const DataflowGraph::iterator &block)
 {		
@@ -591,7 +597,7 @@ bool DivergenceAnalysis::_discoverBlocksWithConvergentPredecessors(
 		predecessor = block->predecessors().begin();
 		predecessor != block->predecessors().end(); ++predecessor) {
 	
-		if (isDivBlock(*predecessor)) {
+		if (isDivBlock(*predecessor) && !_hasTrivialPathToExit(*predecessor)) {
 			report("  (divergent) " << block->label()
 				<< " has a predecessor with a possibly divergent branch "
 				<< (*predecessor)->label() << ".");
@@ -632,7 +638,8 @@ bool DivergenceAnalysis::_discoverBlocksWithSimpleConvergentPredecessors(
 		predecessor =  block->predecessors().begin();
 		predecessor != block->predecessors().end(); ++predecessor) {
 		
-		if (_isPossibleDivBlock(*predecessor)) {
+		if (_isPossibleDivBlock(*predecessor) &&
+			!_hasTrivialPathToExit(*predecessor)) {
 			report("  (divergent) " << block->label()
 				<< " has a predecessor with a possibly divergent branch "
 				<< (*predecessor)->label() << ".");

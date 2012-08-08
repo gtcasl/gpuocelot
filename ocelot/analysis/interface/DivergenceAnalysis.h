@@ -95,13 +95,17 @@ private:
 	bool _doAllPathsConvergeBeforeReconvergencePoint(
 		const DataflowGraph::iterator &block) const;
 	
-	/*!\brief Marks a block as never-divergent and propagates
+	/*! \brief Marks a block as never-divergent and propagates
 		this property */
 	bool _assignAndPropagateConvergence(
 		const DataflowGraph::iterator &block);
-	/*!\brief Marks a block as never-divergent if all predecessors
+	/*! \brief Marks a block as never-divergent if all predecessors
 			are convergent */
 	bool _discoverBlocksWithConvergentPredecessors(
+		const DataflowGraph::iterator &block);
+	/*! \brief Marks a block as never-divergent if paths converge before the
+		reconvergence point */
+	bool _discoverBlocksThatConvergeBeforeReconvergence(
 		const DataflowGraph::iterator &block);
 
 private:

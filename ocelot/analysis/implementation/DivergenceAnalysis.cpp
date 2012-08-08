@@ -19,8 +19,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
-#define REPORT_PTX  1
+#define REPORT_BASE 0
+#define REPORT_PTX  0
 #define REPORT_ALL_DEPENDENCES 0
 
 namespace analysis
@@ -283,7 +283,8 @@ void DivergenceAnalysis::_convergenceAnalysis()
 			block != divergentBlocks.end(); ++block) {		
 			if (!isEntryDiv(*block)) continue;
 			
-			changed = _discoverBlocksWithConvergentPredecessors(*block);
+			changed |= _discoverBlocksWithConvergentPredecessors(*block);
+			changed |= _discoverBlocksThatConvergeBeforeReconvergence(*block);
 		}
 	}
 }
@@ -689,6 +690,19 @@ bool DivergenceAnalysis::_discoverBlocksWithConvergentPredecessors(
 	if (allPredecessorsConvergent) {
 		report("  " << block->label()
 			<< " has only convergent predecessors.");
+		
+		_assignAndPropagateConvergence(block);
+		return true;
+	}
+	
+	return false;
+}
+bool DivergenceAnalysis::_discoverBlocksThatConvergeBeforeReconvergence(
+	const DataflowGraph::iterator &block)
+{		
+	if (_doAllPathsConvergeBeforeReconvergencePoint(block)) {
+		report("  a path from " << block->label()
+			<< " converges before the reconvergence point.");
 		
 		_assignAndPropagateConvergence(block);
 		return true;

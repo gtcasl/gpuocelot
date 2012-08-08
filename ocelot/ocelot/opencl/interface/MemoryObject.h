@@ -65,11 +65,17 @@ namespace opencl {
 		bool isOffsetAligned(size_t offset);
 
 	protected:
+		typedef struct {
+			size_t offset;
+			size_t size;
+		}mapPtrInfo;
+
 		Context * _context;
 		const cl_mem_object_type _type;
 		cl_mem_flags _flags;
 		void * _hostPtr;
 		bool _isSubBuffer;
+		std::unordered_map<void *, mapPtrInfo> _mappedPtrs;
 
 	private:
 		std::map< Device *, void * > _allocations; //allocations on device
@@ -80,6 +86,7 @@ namespace opencl {
 	class BufferObject: public MemoryObject {
 	public:
 		BufferObject(Context * context, const cl_mem_flags flags, void * host_ptr, size_t size);
+		~BufferObject();
 
 	public:
 		//! get allocation size
@@ -92,6 +99,16 @@ namespace opencl {
 		//! write on device
 		void writeOnDevice(Device * device,
         	size_t offset, size_t cb, const void * ptr);
+
+		//! create new mapping pointer
+		void * createNewMapPtr(size_t offset, size_t size);
+
+		//! map pointer
+		void mapPtr(Device * device, void * ptr);
+
+		//! unmap pointer
+		void unmapPtr(Device * device, void * ptr);
+
 
 	private:
 		size_t _size;	

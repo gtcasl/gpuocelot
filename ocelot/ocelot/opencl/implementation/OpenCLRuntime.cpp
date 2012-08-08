@@ -1550,7 +1550,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 	cl_mem buffer,
 	cl_bool blocking_read,
 	size_t offset,
-	size_t cb, 
+	size_t size, 
 	void * ptr,
 	cl_uint num_events_in_wait_list,
 	const cl_event * event_wait_list,
@@ -1572,7 +1572,54 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 
 		new ReadWriteBufferEvent(CL_COMMAND_READ_BUFFER, 
 			(CommandQueue *)command_queue, (BufferObject *)buffer, 
-			blocking_read, offset, cb, ptr, 
+			blocking_read, offset, size, ptr, 
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueReadBufferRect(cl_command_queue    command_queue,
+	cl_mem              buffer,
+	cl_bool             blocking_read,
+	const size_t *      buffer_origin,
+	const size_t *      host_origin, 
+	const size_t *      region,
+	size_t              buffer_row_pitch,
+	size_t              buffer_slice_pitch,
+	size_t              host_row_pitch,
+	size_t              host_slice_pitch,                        
+	void *              ptr,
+	cl_uint             num_events_in_wait_list,
+	const cl_event *    event_wait_list,
+	cl_event *          event) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new ReadWriteBufferRectEvent(CL_COMMAND_READ_BUFFER_RECT, 
+			(CommandQueue *)command_queue, (BufferObject *)buffer, 
+			blocking_read, buffer_origin, host_origin, region,
+			buffer_row_pitch, buffer_slice_pitch, 
+			host_row_pitch, host_slice_pitch, ptr, 
 			num_events_in_wait_list, event_wait_list, event);
 
 	}
@@ -1590,7 +1637,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	cl_mem buffer,
 	cl_bool blocking_write,
 	size_t offset,
-	size_t cb, 
+	size_t size, 
 	const void * ptr,
 	cl_uint num_events_in_wait_list,
 	const cl_event * event_wait_list,
@@ -1611,7 +1658,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 
 		new ReadWriteBufferEvent(CL_COMMAND_WRITE_BUFFER, 
 			(CommandQueue *)command_queue, (BufferObject *)buffer, 
-			blocking_write, offset, cb, (void *)ptr, 
+			blocking_write, offset, size, (void *)ptr, 
 			num_events_in_wait_list, event_wait_list, event);
 
 	}
@@ -1622,6 +1669,282 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 		result = CL_OUT_OF_HOST_MEMORY;
 	}
 	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueWriteBufferRect(cl_command_queue    command_queue,
+	cl_mem              buffer,
+	cl_bool             blocking_write,
+	const size_t *      buffer_origin,
+	const size_t *      host_origin, 
+	const size_t *      region,
+	size_t              buffer_row_pitch,
+	size_t              buffer_slice_pitch,
+	size_t              host_row_pitch,
+	size_t              host_slice_pitch,                        
+	const void *        ptr,
+	cl_uint             num_events_in_wait_list,
+	const cl_event *    event_wait_list,
+	cl_event *          event) {
+	cl_int result = CL_SUCCESS;
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new ReadWriteBufferRectEvent(CL_COMMAND_WRITE_BUFFER_RECT, 
+			(CommandQueue *)command_queue, (BufferObject *)buffer, 
+			blocking_write, buffer_origin, host_origin, region,
+			buffer_row_pitch, buffer_slice_pitch, 
+			host_row_pitch, host_slice_pitch, (void *)ptr, 
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueFillBuffer(cl_command_queue   command_queue,
+	cl_mem             buffer,
+	const void *       pattern,
+	size_t             pattern_size,
+	size_t             offset,
+	size_t             size,
+	cl_uint            num_events_in_wait_list,
+	const cl_event *   event_wait_list,
+	cl_event *         event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new FillBufferEvent((CommandQueue *)command_queue, 
+			(BufferObject *)buffer,
+			pattern, pattern_size, offset, size, 
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+
+	return result;
+} 
+
+cl_int opencl::OpenCLRuntime::clEnqueueCopyBuffer(cl_command_queue    command_queue, 
+	cl_mem              src_buffer,
+	cl_mem              dst_buffer, 
+	size_t              src_offset,
+	size_t              dst_offset,
+	size_t              size,
+	cl_uint             num_events_in_wait_list,
+	const cl_event *    event_wait_list,
+	cl_event *          event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!src_buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!src_buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+		if(!dst_buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!dst_buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new CopyBufferEvent((CommandQueue *)command_queue, 
+			(BufferObject *)src_buffer, (BufferObject *)dst_buffer,
+			src_offset, dst_offset, size,
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueCopyBufferRect(cl_command_queue     command_queue,
+	cl_mem               src_buffer,
+	cl_mem               dst_buffer, 
+	const size_t *       src_origin,
+	const size_t *       dst_origin,
+	const size_t *       region,
+	size_t               src_row_pitch,
+	size_t               src_slice_pitch,
+	size_t               dst_row_pitch,
+	size_t               dst_slice_pitch,
+	cl_uint              num_events_in_wait_list,
+	const cl_event *     event_wait_list,
+	cl_event *           event) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!src_buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!src_buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+		if(!dst_buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!dst_buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new CopyBufferRectEvent((CommandQueue *)command_queue, 
+			(BufferObject *)src_buffer, (BufferObject *)dst_buffer,
+			src_origin, dst_origin, region,
+			src_row_pitch, src_slice_pitch,
+			dst_row_pitch, dst_slice_pitch,
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+
+	return result;
+}
+void * opencl::OpenCLRuntime::clEnqueueMapBuffer(cl_command_queue  command_queue,
+	cl_mem            buffer,
+	cl_bool           blocking_map, 
+	cl_map_flags      map_flags,
+	size_t            offset,
+	size_t            size,
+	cl_uint           num_events_in_wait_list,
+	const cl_event *  event_wait_list,
+	cl_event *        event,
+	cl_int *          errcode_ret) {
+	cl_int result = CL_SUCCESS;
+	void * mapPtr = NULL;
+
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!buffer->isValidMemoryObject(CL_MEM_OBJECT_BUFFER))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!buffer->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new MapBufferEvent((CommandQueue *)command_queue, 
+			(BufferObject *)buffer, 
+			blocking_map, map_flags, &mapPtr,
+			offset, size, 
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+
+	if(errcode_ret)
+		*errcode_ret = result;
+	return mapPtr;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueUnmapMemObject(cl_command_queue  command_queue,
+	cl_mem            memobj,
+	void *            mapped_ptr,
+	cl_uint           num_events_in_wait_list,
+	const cl_event *   event_wait_list,
+	cl_event *         event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
+			throw CL_INVALID_MEM_OBJECT;
+
+		if(!memobj->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+
+
+		new UnmapMemObjectEvent((CommandQueue *)command_queue, 
+			(MemoryObject *)memobj, mapped_ptr,
+			num_events_in_wait_list, event_wait_list, event);
+
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+	_unlock();
+
 	return result;
 }
 
@@ -1665,6 +1988,105 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	_unlock();
 	return result;
 }
+
+cl_int opencl::OpenCLRuntime::clEnqueueTask(cl_command_queue command_queue,
+	cl_kernel kernel,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
+			throw CL_INVALID_KERNEL;
+
+		if(!kernel->isValidContext(command_queue->context()))
+			throw CL_INVALID_CONTEXT;
+	
+		size_t size = 1;	
+		size_t offset = 0;
+	
+		new KernelEvent(CL_COMMAND_TASK,
+			(CommandQueue *)command_queue, (Kernel *)kernel,
+			1, &offset, &size, &size,
+			num_events_in_wait_list, 
+			event_wait_list, event);
+		
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueMarkerWithWaitList(cl_command_queue  command_queue,
+	cl_uint            num_events_in_wait_list,
+	const cl_event *   event_wait_list,
+	cl_event *         event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		new MarkerBarrierEvent(CL_COMMAND_MARKER,
+			(CommandQueue *)command_queue, 
+			num_events_in_wait_list, 
+			event_wait_list, event);
+		
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
+cl_int opencl::OpenCLRuntime::clEnqueueBarrierWithWaitList(cl_command_queue  command_queue,
+	cl_uint            num_events_in_wait_list,
+	const cl_event *   event_wait_list,
+	cl_event *         event) {
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
+			throw CL_INVALID_COMMAND_QUEUE;
+
+		new MarkerBarrierEvent(CL_COMMAND_BARRIER,
+			(CommandQueue *)command_queue, 
+			num_events_in_wait_list, 
+			event_wait_list, event);
+		
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+	return result;
+}
+
 
 cl_int opencl::OpenCLRuntime::clRetainEvent(cl_event event) {
 	cl_int result = CL_SUCCESS;

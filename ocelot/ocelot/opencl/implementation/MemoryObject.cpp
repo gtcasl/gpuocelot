@@ -129,6 +129,14 @@ opencl::BufferObject::BufferObject(Context * context, cl_mem_flags flags,
 
 }
 
+opencl::BufferObject::~BufferObject() {
+	for(std::unordered_map<void *, mapPtrInfo>::iterator it = _mappedPtrs.begin();
+		it != _mappedPtrs.end(); it++) {
+
+		delete[] (unsigned char *)(it->first);
+	}
+
+}
 const size_t opencl::BufferObject::size() const {
 	return _size;
 }
@@ -157,6 +165,33 @@ void opencl::BufferObject::writeOnDevice(Device * device,
 	//Copy ptr to host ptr
 	if(_hostPtr)
 		std::memcpy(((uint8_t *)_hostPtr) + offset, ptr, cb);
+}
+
+void * opencl::BufferObject::createNewMapPtr(size_t offset, size_t size) {
+	
+	unsigned char * ptr = new unsigned char[size];
+
+	mapPtrInfo ptrInfo = {offset, size};
+	_mappedPtrs[ptr] = ptrInfo;
+
+	return ptr;
+}
+
+void opencl::BufferObject::mapPtr(Device * device, void * ptr) {
+
+	assert(_mappedPtrs.find(ptr) != _mappedPtrs.end());
+	readOnDevice(device, _mappedPtrs[ptr].offset, _mappedPtrs[ptr].size, ptr);
+
+}
+
+void opencl::BufferObject::unmapPtr(Device * device, void * ptr) {
+	if(_mappedPtrs.find(ptr) == _mappedPtrs.end())
+		throw CL_INVALID_VALUE;
+
+	writeOnDevice(device, _mappedPtrs[ptr].offset, _mappedPtrs[ptr].size, ptr);
+
+	delete[] (unsigned char *)ptr;
+	_mappedPtrs.erase(ptr);
 }
 
 opencl::SubBufferObject::SubBufferObject(BufferObject * buffer, 

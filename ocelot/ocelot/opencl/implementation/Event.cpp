@@ -154,6 +154,11 @@ do { \
 
 }
 
+void opencl::Event::callBack() {
+	if(!_eventNotify)
+		_eventNotify((cl_event)this, _status, _userData);
+}
+
 void opencl::Event::waitForEvents(cl_uint num_events,
 		const cl_event * event_list) {
 
@@ -190,7 +195,7 @@ opencl::ReadWriteBufferEvent::ReadWriteBufferEvent(cl_command_type type,
 	CommandQueue * commandQueue,
 	BufferObject * buffer,
 	cl_bool blocking,
-	size_t offset, size_t cb, void * ptr,
+	size_t offset, size_t size, void * ptr,
 	cl_uint num_events_in_wait_list,
 	const cl_event * event_wait_list,
 	cl_event * event) :
@@ -198,9 +203,9 @@ opencl::ReadWriteBufferEvent::ReadWriteBufferEvent(cl_command_type type,
 	commandQueue->context(), num_events_in_wait_list,
 	event_wait_list, event),
 	_buffer(buffer), _offset(offset),
-	_cb(cb), _ptr(ptr) {
+	_size(size), _ptr(ptr) {
 
-	if(offset >= buffer->size() || cb + offset > buffer->size())
+	if(offset >= buffer->size() || size + offset > buffer->size())
 		throw CL_INVALID_VALUE;
 	
 	if(ptr == NULL)
@@ -223,12 +228,245 @@ void opencl::ReadWriteBufferEvent::execute(Device * device) {
 	assertM(device == _commandQueue->device(), "invalid device");
 
 	if(_type == CL_COMMAND_READ_BUFFER)
-		_buffer->readOnDevice(device, _offset, _cb, _ptr);
+		_buffer->readOnDevice(device, _offset, _size, _ptr);
 	else  if(_type == CL_COMMAND_WRITE_BUFFER)
-		_buffer->writeOnDevice(device, _offset, _cb, _ptr);
+		_buffer->writeOnDevice(device, _offset, _size, _ptr);
 	else
 		assertM(false, "Invalid read/write buffer command");
 
+}
+
+opencl::ReadWriteBufferRectEvent::ReadWriteBufferRectEvent(cl_command_type type,
+			CommandQueue * commandQueue,
+            BufferObject * buffer,
+            cl_bool blocking,
+            const size_t *      buffer_origin,
+            const size_t *      host_origin,
+            const size_t *      region,
+            size_t              buffer_row_pitch,
+            size_t              buffer_slice_pitch,
+            size_t              host_row_pitch,
+            size_t              host_slice_pitch,                        
+            void *              ptr,
+            cl_uint num_events_in_wait_list,
+            const cl_event * event_wait_list,
+            cl_event * event) :
+	Event(type, commandQueue, 
+	commandQueue->context(), num_events_in_wait_list,
+	event_wait_list, event),
+	_buffer(buffer), _origin(buffer_origin), _hostOrigin(host_origin),
+	_region(region), _rowPitch(buffer_row_pitch), _slicePitch(buffer_slice_pitch),
+	_hostRowPitch(host_row_pitch), _hostSlicePitch(host_slice_pitch), _ptr(ptr) {
+
+	if(ptr == NULL)
+		throw CL_INVALID_VALUE;
+	
+	//TO DO: check boundary
+	if(region[0] == 0 || region[1] == 0 || region[2] == 0)
+		throw CL_INVALID_VALUE;
+
+	if(buffer_row_pitch > 0 && buffer_row_pitch < region[0])
+		throw CL_INVALID_VALUE;
+	
+	size_t offset = _origin[2] * _slicePitch + _origin[1] * _rowPitch + _origin[0];
+
+	if(offset >= buffer->size())
+		throw CL_INVALID_VALUE;
+
+
+	if(!buffer->isAllocatedOnDevice(commandQueue->device()))
+		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+	buffer->retain();
+
+	commandQueue->queueEvent(this, blocking);
+}
+
+opencl::ReadWriteBufferRectEvent::~ReadWriteBufferRectEvent() {
+
+	_buffer->release();
+}
+
+void opencl::ReadWriteBufferRectEvent::execute(Device * device) {
+	assertM(device == _commandQueue->device(), "invalid device");
+
+	assertM(false, "Unimplemented rectangulary read/write");
+
+}
+
+opencl::FillBufferEvent::FillBufferEvent(CommandQueue * commandQueue,
+	BufferObject * buffer,
+	const void * pattern,
+	size_t             pattern_size,
+	size_t             offset,
+	size_t             size,
+	cl_uint            num_events_in_wait_list,
+	const cl_event *   event_wait_list,
+	cl_event *         event) :
+	Event(CL_COMMAND_FILL_BUFFER, commandQueue,
+		commandQueue->context(), num_events_in_wait_list,
+		event_wait_list, event),
+	_buffer(buffer), _pattern(pattern), 
+	_patternSize(pattern_size), _size(size) {
+
+
+	//To do: boundary check
+
+	_buffer->retain();
+
+	commandQueue->queueEvent(this, false);
+}
+
+opencl::FillBufferEvent::~FillBufferEvent() {
+	_buffer->release();
+}
+
+void opencl::FillBufferEvent::execute(Device * device) {
+	//To do
+}
+
+opencl::CopyBufferEvent::CopyBufferEvent(CommandQueue * commandQueue,
+            BufferObject * src_buffer,
+            BufferObject * dst_buffer,
+            size_t              src_offset,
+            size_t              dst_offset,
+            size_t              size,   
+            cl_uint             num_events_in_wait_list,
+            const cl_event *    event_wait_list,
+            cl_event *          event) :
+	Event(CL_COMMAND_COPY_BUFFER, commandQueue,
+		commandQueue->context(), num_events_in_wait_list,
+		event_wait_list, event),
+	_src(src_buffer), _dst(dst_buffer), 
+	_srcOffset(src_offset), _dstOffset(dst_offset),
+	_size(size) {
+
+	//To do: boundary check
+
+	_src->retain();
+	_dst->retain();
+
+	commandQueue->queueEvent(this, false);
+
+}
+
+opencl::CopyBufferEvent::~CopyBufferEvent() {
+	_src->release();
+	_dst->release();
+}
+
+void opencl::CopyBufferEvent::execute(Device * device) {
+	//TO do
+}
+
+opencl::CopyBufferRectEvent::CopyBufferRectEvent(CommandQueue * commandQueue,
+	BufferObject * src_buffer,
+	BufferObject * dst_buffer,
+	const size_t *       src_origin,
+	const size_t *       dst_origin,
+	const size_t *       region,
+	size_t               src_row_pitch,
+	size_t               src_slice_pitch,
+	size_t               dst_row_pitch,
+	size_t               dst_slice_pitch,
+	cl_uint              num_events_in_wait_list,
+	const cl_event *     event_wait_list,
+	cl_event *           event) :
+	Event(CL_COMMAND_COPY_BUFFER_RECT, commandQueue,
+        commandQueue->context(), num_events_in_wait_list,
+        event_wait_list, event),
+	_src(src_buffer), _dst(dst_buffer),
+	_srcOrigin(src_origin), _dstOrigin(dst_origin), _region(region),
+	_srcRowPitch(src_row_pitch), _srcSlicePitch(src_slice_pitch),
+	_dstRowPitch(dst_row_pitch), _dstSlicePitch(dst_slice_pitch) {
+	
+	//To do: boundary check
+
+	_src->retain();
+	_dst->retain();
+
+	commandQueue->queueEvent(this, false);
+}
+
+opencl::CopyBufferRectEvent::~CopyBufferRectEvent() {
+	_src->release();
+	_dst->release();
+}
+
+void opencl::CopyBufferRectEvent::execute(Device * device) {
+	//To do
+}
+
+opencl::MapBufferEvent::MapBufferEvent(CommandQueue * commandQueue,
+	BufferObject * buffer,
+    cl_bool blocking,
+    cl_map_flags map_flags,
+	void ** 			  mappedPtr,
+    size_t            offset,
+    size_t            size,
+    cl_uint           num_events_in_wait_list,
+    const cl_event *  event_wait_list,
+    cl_event *        event):
+	Event(CL_COMMAND_MAP_BUFFER, commandQueue, 
+	commandQueue->context(), num_events_in_wait_list,
+	event_wait_list, event),
+	_buffer(buffer),_flags(map_flags), _offset(offset), _size(size) {
+
+	if(size == 0 || size + offset > buffer->size())
+		throw CL_INVALID_VALUE;
+
+	if(!buffer->isAllocatedOnDevice(commandQueue->device()))
+		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+	buffer->retain();
+
+	_ptr = buffer->createNewMapPtr(offset, size);
+
+	commandQueue->queueEvent(this, blocking);
+
+	*mappedPtr = _ptr;
+
+}
+
+opencl::MapBufferEvent::~MapBufferEvent() {
+	_buffer->release();
+}
+
+void opencl::MapBufferEvent::execute(Device * device) {
+	assertM(device == _commandQueue->device(), "invalid device");
+	_buffer->mapPtr(device, _ptr);
+}
+
+opencl::UnmapMemObjectEvent::UnmapMemObjectEvent(CommandQueue * commandQueue,
+	MemoryObject * memobj,
+	void * mappedPtr,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event):
+	Event(CL_COMMAND_UNMAP_MEM_OBJECT, commandQueue,
+    commandQueue->context(), num_events_in_wait_list,
+    event_wait_list, event), 
+	_memobj(memobj), _ptr(mappedPtr) {
+
+	if(!memobj->isValidMemoryObject(CL_MEM_OBJECT_BUFFER)) //not buffer object
+		assertM(false, "Unimplemented unmapping for non-buffer object\n");
+
+	memobj->retain();
+
+	commandQueue->queueEvent(this, false);
+	
+}
+
+opencl::UnmapMemObjectEvent::~UnmapMemObjectEvent() {
+	_memobj->release();
+}
+
+void opencl::UnmapMemObjectEvent::execute(Device * device) {
+
+	if(!_memobj->isValidMemoryObject(CL_MEM_OBJECT_BUFFER)) //not buffer object
+		assertM(false, "Unimplemented unmapping for non-buffer object\n");
+
+	((BufferObject *)_memobj)->unmapPtr(device, _ptr);
 }
 
 opencl::KernelEvent::KernelEvent(cl_command_type type,
@@ -261,6 +499,24 @@ opencl::KernelEvent::~KernelEvent() {
 void opencl::KernelEvent::execute(Device * device) {
 	assertM(device == _commandQueue->device(), "invalid device");
 	_kernel->launchOnDevice(device);
+}
+
+opencl::MarkerBarrierEvent::MarkerBarrierEvent(cl_command_type type,
+	CommandQueue * commandQueue,
+	cl_uint num_events_in_wait_list,
+	const cl_event * event_wait_list,
+	cl_event * event) :
+	Event(type, commandQueue,
+    commandQueue->context(), num_events_in_wait_list,
+    event_wait_list, event) {
+
+	commandQueue->queueEvent(this, false);
+}
+
+opencl::MarkerBarrierEvent::~MarkerBarrierEvent() {
+}
+
+void opencl::MarkerBarrierEvent::execute(Device * device) {
 }
 
 opencl::UserEvent::UserEvent(Context * context) :

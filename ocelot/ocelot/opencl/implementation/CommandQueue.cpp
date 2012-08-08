@@ -31,7 +31,7 @@ void opencl::QueueThread::_executeEvent(Event * e) {
 	report("  event '" << e << "' finished.");
 
 	e->setStatus(CL_COMPLETE);
-
+	e->callBack();
 
 }
 

@@ -103,28 +103,12 @@ private:
 			are convergent */
 	bool _discoverBlocksWithConvergentPredecessors(
 		const DataflowGraph::iterator &block);
-	/*!\brief Marks a block as never-divergent if all predecessors
-			are convergent, not using control dependence analysis */
-	bool _discoverBlocksWithSimpleConvergentPredecessors(
-		const DataflowGraph::iterator &block);
-	/*!\brief Marks a block as never-divergent if the predecessor
-		is convergent, and the other block is the exit */
-	bool _discoverBlocksWithSimplePathsToTheExit(
-		const DataflowGraph::iterator &block);
 
 private:
 	/*! \brief Get the set of possibly divergent branches */
 	void _findBranches(branch_set& branches);
 	/*! \brief Add divergence graph edges for control dependences */
 	void _propagateDivergenceAlongControlDependences(branch_set& branches);
-	/*! \brief Convert divergent blocks to convergent by examining
-		control dependences, consider all blocks */
-	void _discoverNewConvergentBlocks();
-
-	/*! \brief Convert divergent blocks to convergent by examining
-		control dependences, only consider blocks influenced by
-		divergent branches */
-	void _discoverNewConvergentBlocksUsingBranchInfo(branch_set& branches);
 	/*! \brief Attempt to prove that divergent branches are actually convergent,
 		update the divergence graph on success */
 	bool _promoteDivergentBranchesToConvergent(branch_set& branches);

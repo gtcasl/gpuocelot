@@ -19,8 +19,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
-#define REPORT_PTX  0
+#define REPORT_BASE 1
+#define REPORT_PTX  1
 #define REPORT_ALL_DEPENDENCES 0
 
 namespace analysis
@@ -62,10 +62,7 @@ void DivergenceAnalysis::analyze(ir::IRKernel &k)
 	#endif
 
 	DivergenceGraph::node_set predicates;
-	
-	/* 0) Identify blocks that can never be divergent */ 
-	_convergenceAnalysis();
-	
+		
 	/* 1) Makes data flow analysis that detects divergent variables and blocks
 		based on divergent sources, such as t.id, laneId */
 	_analyzeDataFlow();
@@ -129,12 +126,6 @@ bool DivergenceAnalysis::isPossibleDivBranch(
 		// Branches with only a single target cannot be divergent
 		if (instruction.block->successors().size() < 2) return false;
 		
-		// Branches where all paths hit convergent blocks before the
-		//  reconvergence point cannot be divergent
-		if (_doAllPathsConvergeBeforeReconvergencePoint(instruction.block)) {
-			return false;
-		}
-
 		return true;
 	}
 	
@@ -191,6 +182,8 @@ void DivergenceAnalysis::setConditionalConvergence(bool doIt)
 
 void DivergenceAnalysis::_convergenceAnalysis()
 {
+	report("Running convergence analysis.");
+
 	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(dfgAnalysis != 0);
 
@@ -200,40 +193,77 @@ void DivergenceAnalysis::_convergenceAnalysis()
 	PostdominatorTree *dtree;
 	dtree = (PostdominatorTree*) (getAnalysis(Type::PostDominatorTreeAnalysis));
 	
-	/* 1) mark all blocks that are post dominators of the entry point as 
-	      convergent.  
-	      
-	      TODO: Use opptimistic algorithm
-	*/
-	report(" Marking never-divergent blocks using conservative analysis.");
-	auto block     = dfg.begin();
-	for (; block != dfg.end(); ++block) {
-		if(dtree->postDominates(block->block(),
-			_kernel->cfg()->get_entry_block())) {
-
-			report("  " << block->label()
-				<< " post-dominates the entry point.");
+	/* Assume all blocks are convergent */
+	block_set divergentBlocks;
+	
+	/* 1) mark all blocks in the post-dominance frontier of divergent branches
+		as divergent.  This is an optimistic analysis. */
+	report(" Marking divergent blocks.");
+	for (auto block = dfg.begin() ; block != dfg.end(); ++block) {
+		if (!isDivBlock(block) || _hasTrivialPathToExit(block)) continue;
+		
+		auto postDominator = dfg.getCFGtoDFGMap()[
+			dtree->getPostDominator(block->block())];
+		
+		block_set frontier;
+		
+		for (auto successor = block->successors().begin();
+			successor != block->successors().end(); ++successor) {
+			if (*successor == postDominator) continue;
+		
+			frontier.insert(*successor);
+		}
+	
+		block_set visited = frontier;
+	
+		while (!frontier.empty()) {
+			auto frontierBlock = *frontier.begin();
+			frontier.erase(frontier.begin());
+			
+			report("  " << frontierBlock->label()
+				<< " is in the post dominance frontier of divergence source "
+				<< block->label());
+			
+			for (auto successor = frontierBlock->successors().begin();
+				successor != frontierBlock->successors().end(); ++successor) {
+				if (*successor == postDominator) continue;
+			
+				if (visited.insert(*successor).second) {
+					frontier.insert(*successor);
+				}
+			}
+		}
+		
+		divergentBlocks.insert(visited.begin(), visited.end());
+	}
+	
+	report(" Marking convergent blocks.");
+	_notDivergentBlocks.clear();
+	for (auto block = dfg.begin(); block != dfg.end(); ++block) {
+		if (divergentBlocks.count(block) == 0) {
+			report("  " << block->label() << " is assumed convergent.");
 			_notDivergentBlocks.insert(block);
 		}
 	}
 	
-	/* 2) mark all blocks with barriers as convergent.  
-	*/
-	block = dfg.begin();
-	for (; block != dfg.end(); ++block) {
+	/* 2) mark all divergent blocks with barriers as convergent.  */
+	report(" Marking asserted convergent blocks.");
+	for (auto block = divergentBlocks.begin();
+		block != divergentBlocks.end(); ++block) {
+		
 		ir::PTXInstruction *ptxInstruction = NULL;
 
 		DataflowGraph::InstructionVector::const_iterator
-			ii = block->instructions().begin();
+			ii = (*block)->instructions().begin();
 		DataflowGraph::InstructionVector::const_iterator
-			iiEnd = block->instructions().end();
+			iiEnd = (*block)->instructions().end();
 		for (; ii != iiEnd; ++ii) {
 			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
 				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
 				
 				if (ptxInstruction->opcode == ir::PTXInstruction::Bar) {
-					report("  " << block->label() << " includes a barrier.");
-					_assignAndPropagateConvergence(block);
+					report("  " << (*block)->label() << " includes a barrier.");
+					_assignAndPropagateConvergence(*block);
 					break;
 				}
 			}
@@ -245,14 +275,15 @@ void DivergenceAnalysis::_convergenceAnalysis()
 	*/
 	bool changed = true;
 	
+	report(" Propagating convergent assertion.");
 	while(changed) {
 		changed = false;
 		
-		block = dfg.begin();
-		for (; block != dfg.end(); ++block) {		
-			if (!isEntryDiv(block)) continue;
+		for (auto block = divergentBlocks.begin();
+			block != divergentBlocks.end(); ++block) {		
+			if (!isEntryDiv(*block)) continue;
 			
-			changed = _discoverBlocksWithSimpleConvergentPredecessors(block);
+			changed = _discoverBlocksWithConvergentPredecessors(*block);
 		}
 	}
 }
@@ -438,19 +469,17 @@ void DivergenceAnalysis::_analyzeControlFlow()
 	_findBranches(branches);
 
 	/* 2) i)   Propagate divergence along control dependence edges.
-	      ii)  Discover any remaining convergent blocks, these may prove
+	      ii)  Perform convergence analysis, these may prove
 	           that some divergent branches are actually convergent.
 	      iii) If any divergent branches were removed, update their influence.
 	*/
 	_propagateDivergenceAlongControlDependences(branches);
-	_discoverNewConvergentBlocks();
 	
-	while (true) {
-		bool changed = _promoteDivergentBranchesToConvergent(branches);
+	bool changed = true;
 	
-		if(!changed) break;
-
-		_discoverNewConvergentBlocksUsingBranchInfo(branches);
+	while (changed) {
+		_convergenceAnalysis();
+		changed = _promoteDivergentBranchesToConvergent(branches);
 	}
 }
 
@@ -621,31 +650,8 @@ bool DivergenceAnalysis::_assignAndPropagateConvergence(
 	if (!_notDivergentBlocks.insert(block).second) {
 		return false;
 	}
-
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
-	assert(dfgAnalysis != 0);
-
-	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
 	
-	/* Post-dominator tree */
-	PostdominatorTree *dtree;
-	dtree = (PostdominatorTree*) (getAnalysis(Type::PostDominatorTreeAnalysis));
-	
-	// The immediate post dominator is also convergent
-	DataflowGraph::iterator postDomBlock = dfg.getCFGtoDFGMap()[
-		dtree->getPostDominator(block->block())];
-	
-	if (postDomBlock != dfg.end()) {
-		if (isEntryDiv(postDomBlock)) {
-			report("   " << postDomBlock->label()
-				<< " post dominates convergent block "
-				<< block->label() << ".");
-			_assignAndPropagateConvergence(postDomBlock);
-			return true;
-		}
-	}
-	
-	// All paths lead to convergence blocks before reconvergence points
+	// TODO add rules
 	
 	return false;
 }
@@ -670,48 +676,6 @@ bool DivergenceAnalysis::_discoverBlocksWithConvergentPredecessors(
 	
 		// skip self loops
 		if (*predecessor == block) continue;	
-		
-		if (isEntryDiv(*predecessor)) {
-			report("  (divergent) " << block->label()
-				<< " has a non-convergent predecessor "
-				<< (*predecessor)->label() << ".");
-			allPredecessorsConvergent = false;
-			break;
-		}
-	}
-
-	if (allPredecessorsConvergent) {
-		report("  " << block->label()
-			<< " has only convergent predecessors.");
-		
-		_assignAndPropagateConvergence(block);
-		return true;
-	}
-	
-	return false;
-}
-
-bool DivergenceAnalysis::_discoverBlocksWithSimpleConvergentPredecessors(
-	const DataflowGraph::iterator &block)
-{		
-	// Try to move blocks with convergent predecessors
-	bool allPredecessorsConvergent = true;
-
-	for (analysis::DataflowGraph::BlockPointerSet::iterator
-		predecessor =  block->predecessors().begin();
-		predecessor != block->predecessors().end(); ++predecessor) {
-		
-		if (_isPossibleDivBlock(*predecessor) &&
-			!_hasTrivialPathToExit(*predecessor)) {
-			report("  (divergent) " << block->label()
-				<< " has a predecessor with a possibly divergent branch "
-				<< (*predecessor)->label() << ".");
-			allPredecessorsConvergent = false;
-			break;
-		}
-	
-		// skip self loops
-		if (*predecessor == block) continue;
 		
 		if (isEntryDiv(*predecessor)) {
 			report("  (divergent) " << block->label()
@@ -886,50 +850,6 @@ void DivergenceAnalysis::_propagateDivergenceAlongControlDependences(
 				}
 				branch++;
 			}
-		}
-	}
-}
-
-void DivergenceAnalysis::_discoverNewConvergentBlocks()
-{
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
-	assert(dfgAnalysis != 0);
-
-	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
-
-	// TODO use a worklist
-	bool changed = true;
-
-	report(" Searching for convergent blocks using "
-		"control flow information...");
-	
-	while(changed) {
-		changed = false;
-		
-		auto block = dfg.begin();
-		for (; block != dfg.end(); ++block) {		
-			if (!isEntryDiv(block)) continue;
-			
-			changed = _discoverBlocksWithConvergentPredecessors(block);
-		}
-	}
-}
-
-void DivergenceAnalysis::_discoverNewConvergentBlocksUsingBranchInfo(
-	branch_set& branches)
-{
-	report(" Searching for convergent blocks along branches...");
-	
-	for (auto branch = branches.begin(); branch != branches.end(); ++branch) {
-		// scan all successors
-		for (auto successor = branch->block()->successors().begin();
-			successor != branch->block()->successors().end(); ++successor) {
-
-			// skip already convergent blocks
-			if (isEntryDiv(*successor)) continue;
-		
-			// attempt to show that this block is convergent
-			_discoverBlocksWithConvergentPredecessors(*successor);
 		}
 	}
 }

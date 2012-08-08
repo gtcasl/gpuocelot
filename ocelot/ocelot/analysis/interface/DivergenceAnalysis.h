@@ -84,12 +84,16 @@ private:
 	bool _isOperandAnArgument( const ir::PTXOperand& operand );
 	/*! \brief Does an operand reference local memory? */
 	bool _doesOperandUseLocalMemory( const ir::PTXOperand& operand );
-	/*!\brief Tests if a block can end with a divergent branch instruction,
+	/*! \brief Tests if a block can end with a divergent branch instruction,
 		without using control dependence analysis */
 	bool _isPossibleDivBlock(const DataflowGraph::iterator &block) const;
-	/*!\brief Tests if this block has at most 1 path that does not reach
+	/*! \brief Tests if this block has at most 1 path that does not reach
 		the exit without executing another instruction */
 	bool _hasTrivialPathToExit(const DataflowGraph::iterator &block) const;
+	/*! \brief Tests if all paths hit convergent blocks before the
+		reconvergence point */
+	bool _doAllPathsConvergeBeforeReconvergencePoint(
+		const DataflowGraph::iterator &block) const;
 	
 	/*!\brief Marks a block as never-divergent and propagates
 		this property */

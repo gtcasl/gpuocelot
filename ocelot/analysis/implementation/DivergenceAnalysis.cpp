@@ -128,6 +128,12 @@ bool DivergenceAnalysis::isPossibleDivBranch(
 		
 		// Branches with only a single target cannot be divergent
 		if (instruction.block->successors().size() < 2) return false;
+		
+		// Branches where all paths hit convergent blocks before the
+		//  reconvergence point cannot be divergent
+		if (_doAllPathsConvergeBeforeReconvergencePoint(instruction.block)) {
+			return false;
+		}
 
 		return true;
 	}
@@ -554,6 +560,61 @@ bool DivergenceAnalysis::_hasTrivialPathToExit(
 	return false;
 }
 
+bool DivergenceAnalysis::_doAllPathsConvergeBeforeReconvergencePoint(
+	const DataflowGraph::iterator &block) const {
+	
+	const Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(dfgAnalysis != 0);
+
+	const DataflowGraph &cdfg = static_cast<const DataflowGraph&>(*dfgAnalysis);
+	DataflowGraph &dfg = const_cast<DataflowGraph&>(cdfg);
+	
+	/* Post-dominator tree */
+	PostdominatorTree *dtree = (PostdominatorTree*)
+		(getAnalysis(Type::PostDominatorTreeAnalysis));
+	
+	// The immediate post dominator is the reconvergence point
+	auto postDomBlock = dfg.getCFGtoDFGMap()[
+		dtree->getPostDominator(block->block())];
+	
+	if (isEntryDiv(postDomBlock)) return false;
+	
+	block_set frontier;
+		
+	for (auto successor = block->successors().begin();
+		successor != block->successors().end(); ++successor) {
+		
+		if (isEntryDiv(*successor)) {
+			frontier.insert(*successor);
+		}
+	}
+	
+	block_set visited = frontier;
+	
+	while (!frontier.empty()) {
+		auto block = *frontier.begin();
+		frontier.erase(frontier.begin());
+				
+		for (auto successor = block->successors().begin();
+			successor != block->successors().end(); ++successor) {
+			
+			if (isEntryDiv(*successor)) {
+				if (visited.insert(*successor).second) {
+					frontier.insert(*successor);
+				}
+			}
+			else if (*successor != postDomBlock) {
+				// we found a convergent block before the reconvergence point, 
+				//  this is a contradiction
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+	
+
 bool DivergenceAnalysis::_assignAndPropagateConvergence(
 	const DataflowGraph::iterator &block)
 {		
@@ -583,6 +644,8 @@ bool DivergenceAnalysis::_assignAndPropagateConvergence(
 			return true;
 		}
 	}
+	
+	// All paths lead to convergence blocks before reconvergence points
 	
 	return false;
 }
@@ -736,6 +799,8 @@ void DivergenceAnalysis::_findBranches(branch_set& branches)
 void DivergenceAnalysis::_propagateDivergenceAlongControlDependences(
 	branch_set& branches)
 {
+	typedef std::unordered_set<const DataflowGraph::Block*> BlockSet;
+	
 	/* 2) Obtain all branch instructions that depend on a divergent predicate
 	* List of branches that are divergent, so their controlflow
 	influence must be tested */
@@ -761,6 +826,7 @@ void DivergenceAnalysis::_propagateDivergenceAlongControlDependences(
 		}
 		branch++;
 	}
+	
 	/*  3) For each divergent branch
 	 * Test for divergence on the post-dominator block of every
 	 	divergent branch instruction */
@@ -770,15 +836,21 @@ void DivergenceAnalysis::_propagateDivergenceAlongControlDependences(
 		report("  for branch " << branchInfo.instruction().i->toString());
 		/* 3.1) Compute the controlflow dependency. populate is O(E) */
 		branchInfo.populate();
-		/* 3.2) Search the postdominator block for new divergent variables */
+
+		/* 3.2) Search the postdominator blocks for
+			new divergent variables */
+		bool newDivergences = false;
 		const DataflowGraph::PhiInstructionVector&
-			phis = branchInfo.postDominator()->phis();
+				phis = branchInfo.postDominator()->phis();
 		DataflowGraph::PhiInstructionVector::const_iterator
 			phi = phis.begin();
 		DataflowGraph::PhiInstructionVector::const_iterator
 			endphi = phis.end();
-
-		bool newDivergences = false;
+	
+		report("   checking block " <<
+			branchInfo.postDominator()->label()
+			<< " in the post-dominator frontier");
+	
 		for (; phi != endphi; phi++) {
 			DataflowGraph::RegisterVector::const_iterator
 				source = phi->s.begin();
@@ -787,13 +859,13 @@ void DivergenceAnalysis::_propagateDivergenceAlongControlDependences(
 
 			for (; source != endSource; source++) {
 				if (branchInfo.isTainted(source->id)) {
-					report("   adding dependence r" << source->id
+					report("    adding dependence r" << phi->d.id
 						<< " <- r" << branchInfo.predicate());
 					_addPredicate(*phi, branchInfo.predicate());
 					newDivergences = true;
 				}
 			}
-		}
+		}	
 		
 		worklist.erase(branchInfo);
 		/* 3.3) If new divergent variables were found*/
@@ -885,7 +957,7 @@ bool DivergenceAnalysis::_promoteDivergentBranchesToConvergent(
 
 				for (; source != endSource; source++) {
 					if (branch->isTainted(source->id)) {
-						report("   removing dependence r" << source->id
+						report("   removing dependence r" << phi->d.id
 							<< " <- r" << branch->predicate());
 						_removePredicate(*phi, branch->predicate());
 						

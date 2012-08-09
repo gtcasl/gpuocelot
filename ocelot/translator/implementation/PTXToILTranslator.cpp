@@ -142,7 +142,9 @@ namespace translator
 	void PTXToILTranslator::_translate(const CT::IfThenNode* node)
 	{
 		// translate condition
-		assertM(node->cond()->rtype() == CT::Inst, "Invalid condition node");
+		assertM(node->cond()->rtype() == CT::Inst || 
+				node->cond()->rtype() == CT::Block,
+				"Invalid condition node " << node->cond()->rtype());
 		_translate(node->cond());
 
 		// translate branch
@@ -254,6 +256,7 @@ namespace translator
 			case ir::PTXInstruction::Sin:    _translateSin(i);    break;
 			case ir::PTXInstruction::Shl:    _translateShl(i);    break;
 			case ir::PTXInstruction::Shr:    _translateShr(i);    break;
+			case ir::PTXInstruction::SlCt:   _translateSlct(i);   break;
 			case ir::PTXInstruction::Sqrt:   _translateSqrt(i);   break;
  			case ir::PTXInstruction::St:     _translateSt(i);     break;
 			case ir::PTXInstruction::Sub:    _translateSub(i);    break;
@@ -306,6 +309,7 @@ namespace translator
 						break;
 					}
 					case ir::PTXOperand::f32:
+					case ir::PTXOperand::f64:
 					{
 						union { float f; int i; } convert;
 						convert.f = o.imm_float;
@@ -1113,6 +1117,14 @@ namespace translator
 						}
 						break;
 					}
+					case ir::PTXOperand::f64: 
+					{
+						ir::ILMov mov;
+						mov.d = d;
+						mov.a = a;
+						_add(mov);
+						return;
+					}
 					default: break;
 				}
 				break;
@@ -1701,6 +1713,7 @@ namespace translator
 						switch (ir::PTXOperand::bytes(i.type))
 						{
 							case 1: _translateLdSharedByte(i);  break;
+							case 2: _translateLdSharedWord(i); break;
 							case 4: _translateLdSharedDword(i); break;
 							default:
 							{
@@ -1855,6 +1868,107 @@ namespace translator
 			ishr.d = _translate(i.d);
 			ishr.a = _translate(i.d);
 			ishr.b = _translateLiteral(24);
+			_add(ishr);
+		}
+	}
+
+	void PTXToILTranslator::_translateLdSharedWord(const ir::PTXInstruction &i)
+	{
+		// LDS is byte-addressable and the result of a load is a dword. 
+		// However, the two least significant bits of the address must be set to 
+		// zero. Therefore, we need to extract the correct word from the dword:
+		//
+		// iadd temp3, i.a, i.a.offset
+		// iand temp1, temp3, 3
+		// imul temp1, temp1, 8
+		// iand temp2, temp3, 0xFFFFFFFC
+		// lds_load_id(1) i.d, temp2
+		// ishr i.d, i.d, temp1
+		// ishl i.d, i.d, 16
+		// ishr i.d, i.d, 16
+
+		ir::ILOperand temp1 = _tempRegister();
+		ir::ILOperand temp2 = _tempRegister();
+		ir::ILOperand temp3 = _tempRegister();
+
+		// iadd temp3, i.a, i.a.offset
+		{
+			if (i.a.offset == 0)
+			{
+				ir::ILMov mov;
+				mov.d = temp3;
+				mov.a = _translate(i.a);
+				_add(mov);
+			} else
+			{
+				ir::ILIadd iadd;
+				iadd.d = temp3;
+				iadd.a = _translate(i.a);
+				iadd.b = _translateLiteral(i.a.offset);
+				_add(iadd);
+			}
+		}
+
+		// iand temp1, temp3, 3
+		{
+			ir::ILIand iand;
+
+			iand.d = temp1;
+			iand.a = temp3;
+			iand.b = _translateLiteral(3);
+			_add(iand);
+		}
+
+		// imul temp1, temp1, 8
+		{
+			ir::ILImul imul;
+			imul.d = temp1;
+			imul.a = temp1;
+			imul.b = _translateLiteral(8);
+			_add(imul);
+		}
+
+		// iand temp2, temp3, 0xFFFFFFFC
+		{
+			ir::ILIand iand;
+			iand.d = temp2;
+			iand.a = temp3;
+			iand.b = _translateLiteral(0xFFFFFFFC);
+			_add(iand);
+		}
+
+		// lds_load_id(1) i.d, temp2
+		{
+			ir::ILLds_Load_Id lds_load_id;
+			lds_load_id.d = _translate(i.d).x();
+			lds_load_id.a = temp2;
+			_add(lds_load_id);
+		}
+
+		// ishr i.d, i.d, temp1
+		{
+			ir::ILIshr ishr;
+			ishr.d = _translate(i.d);
+			ishr.a = _translate(i.d);
+			ishr.b = temp1;
+			_add(ishr);
+		}
+
+		// ishl i.d, i.d, 16
+		{
+			ir::ILIshl ishl;
+			ishl.d = _translate(i.d);
+			ishl.a = _translate(i.d);
+			ishl.b = _translateLiteral(16);
+			_add(ishl);
+		}
+
+		// ishr i.d, i.d, 16
+		{
+			ir::ILIshr ishr;
+			ishr.d = _translate(i.d);
+			ishr.a = _translate(i.d);
+			ishr.b = _translateLiteral(16);
 			_add(ishr);
 		}
 	}
@@ -3064,7 +3178,8 @@ namespace translator
 			case ir::PTXOperand::s32:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64: _translateISetP(i); break;
-			case ir::PTXOperand::f32: _translateFSetP(i); break;
+			case ir::PTXOperand::f32:
+			case ir::PTXOperand::f64: _translateFSetP(i); break;
 			default:
 			{
 				assertM(false, "Opcode \"" << i.toString()
@@ -3217,6 +3332,18 @@ namespace translator
 
 				break;
 			}
+			case ir::PTXInstruction::Neu:
+			{
+				ir::ILNe ne;
+
+				ne.a = _translate(i.a);
+				ne.b = _translate(i.b);
+				ne.d = _translate(i.d);
+
+				_add(ne);
+
+				break;
+			}
 			default:
 			{
 				assertM(false, "comparisonOperator "
@@ -3284,6 +3411,24 @@ namespace translator
 						<< i.toString());
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateSlct(const ir::PTXInstruction& i)
+	{
+		ir::ILOperand temp = _tempRegister();
+
+		ir::ILGe ge;
+		ge.d = temp;
+		ge.a = _translate(i.c);
+		ge.b = _translateLiteral(0);
+		_add(ge);
+
+		ir::ILCmov_Logical cmov_logical;
+		cmov_logical.d = _translate(i.d);
+		cmov_logical.a = temp;
+		cmov_logical.b = _translate(i.a);
+		cmov_logical.c = _translate(i.b);
+		_add(cmov_logical);
 	}
 
 	void PTXToILTranslator::_translateSqrt(const ir::PTXInstruction &i)
@@ -3424,6 +3569,7 @@ namespace translator
 						switch(ir::PTXOperand::bytes(i.type))
 						{
 							case 1: _translateStSharedByte(i);  break;
+							case 2: _translateStSharedWord(i); break;
 							case 4: _translateStSharedDword(i); break;
 							default:
 							{
@@ -3584,6 +3730,99 @@ namespace translator
 		lds_or_id.a = _translate(i.d).x();
 		lds_or_id.b = temp2.x();
 		_add(lds_or_id);
+	}
+
+	void PTXToILTranslator::_translateStSharedWord(const ir::PTXInstruction& i)
+	{
+		// LDS is byte-addressable but the result of a store is a dword. 
+		// Therefore, we need to merge the word with the dword:
+		//
+		// and temp1, i.a, 0x0000FFFF
+		// and temp2, i.d, 3
+		// ishr temp2, temp2, 1
+		// cmov_logical temp3, temp2, 0x0000FFFF, 0xFFFF0000
+		// cmov_logical temp2, temp2, 16, 0
+		// ishl temp1, temp1, temp2
+		// lds_and_id(1) i.d, temp3
+		// lds_or_ir(1) i.d, temp1
+
+		assertM(i.a.offset == 0, "St Shared Byte from offset not supported");
+
+		ir::ILOperand temp1  = _tempRegister();
+		ir::ILOperand temp2  = _tempRegister();
+		ir::ILOperand temp3  = _tempRegister();
+		
+		// and temp1, i.a, 0x0000FFFF
+		{
+			ir::ILAnd and1;
+			and1.d = temp1;
+			and1.a = _translate(i.a);
+			and1.b = _translateLiteral(0x0000FFFF);
+			_add(and1);
+		}
+
+		// and temp2, i.d, 3
+		{
+			ir::ILAnd and2;
+			and2.d = temp2;
+			and2.a = _translate(i.d);
+			and2.b = _translateLiteral(3);
+			_add(and2);
+		}
+
+		// ishr temp2, temp2, 1
+		{
+			ir::ILIshr ishr;
+			ishr.d = temp2;
+			ishr.a = temp2;
+			ishr.b = _translateLiteral(1);
+			_add(ishr);
+		}
+
+		// cmov_logical temp3, temp2, 0x0000FFFF, 0xFFFF0000
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = temp3;
+			cmov_logical.a = temp2;
+			cmov_logical.b = _translateLiteral(0x0000FFFF);
+			cmov_logical.c = _translateLiteral(0xFFFF0000);
+			_add(cmov_logical);
+		}
+
+		// cmov_logical temp2, temp2, 16, 0
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = temp2;
+			cmov_logical.a = temp2;
+			cmov_logical.b = _translateLiteral(16);
+			cmov_logical.c = _translateLiteral(0);
+			_add(cmov_logical);
+		}
+
+		// ishl temp1, temp1, temp2
+		{
+			ir::ILIshl ishl;
+			ishl.d = temp1;
+			ishl.a = temp1;
+			ishl.b = temp2;
+			_add(ishl);
+		}
+
+		// lds_and_id(1) i.d, temp3
+		{
+			ir::ILLds_And_Id lds_and_id;
+			lds_and_id.a = _translate(i.d).x();
+			lds_and_id.b = temp3.x();
+			_add(lds_and_id);
+		}
+
+		// lds_or_ir(1) i.d, temp1
+		{
+			ir::ILLds_Or_Id lds_or_id;
+			lds_or_id.a = _translate(i.d).x();
+			lds_or_id.b = temp1.x();
+			_add(lds_or_id);
+		}
 	}
 
 	void PTXToILTranslator::_translateStSharedDword(const ir::PTXInstruction& i)

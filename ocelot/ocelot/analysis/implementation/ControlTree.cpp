@@ -78,8 +78,11 @@ namespace analysis
 
 	ControlTree::~ControlTree()
 	{
-		for (NodeVector::iterator i = _nodes.begin() ; i != _nodes.end() ; ++i) 
-			delete *i;
+		for (NodeVector::iterator node = _nodes.begin() ; 
+				node != _nodes.end() ; ++node) 
+		{
+			delete *node;
+		}
 		
 		_nodes.clear();
 	}
@@ -944,7 +947,7 @@ namespace analysis
 				for (NodeList::const_iterator child = node->children().begin();
 						child != node->children().end(); ++child)
 				{
-					_nodes.push_back(_clone_node(*child));
+					_clone_node(*child);
 				}
 
 				const BlockNode* bnode = static_cast<const BlockNode*>(node);
@@ -954,10 +957,10 @@ namespace analysis
 			{
 				const IfThenNode* ifnode = static_cast<const IfThenNode*>(node);
 
-				_nodes.push_back(_clone_node(ifnode->cond()));
-				_nodes.push_back(_clone_node(ifnode->ifTrue()));
+				_clone_node(ifnode->cond());
+				_clone_node(ifnode->ifTrue());
 				if (ifnode->ifFalse() != NULL) 
-					_nodes.push_back(_clone_node(ifnode->ifFalse()));
+					_clone_node(ifnode->ifFalse());
 
 				return _insert_node(new IfThenNode(ifnode->label(), 
 							ifnode->cond(), ifnode->ifTrue(), 
@@ -969,7 +972,7 @@ namespace analysis
 				for (NodeList::const_iterator child = node->children().begin();
 						child != node->children().end(); ++child)
 				{
-					_nodes.push_back(_clone_node(*child));
+					_clone_node(*child);
 				}
 
 				const NaturalNode* nnode = 

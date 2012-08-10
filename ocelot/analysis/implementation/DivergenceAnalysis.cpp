@@ -536,6 +536,9 @@ void PathTree::traverseUntil(const DataflowGraph::iterator &postDominator) {
 		// stop at the post dominator
 		if (*successor == postDominator) continue;
 		
+		// stop at loops
+		if (isParent(*successor)) continue;
+		
 		children.push_back(PathTree(*successor, this));
 		
 		children.back().traverseUntil(postDominator);

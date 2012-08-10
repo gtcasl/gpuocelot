@@ -70,6 +70,13 @@ const char* DataflowGraph::NoProducerException::what() const throw()
 	return _message.c_str();
 }
 
+DataflowGraph::PhiInstruction::PhiInstruction(const Register& destination,
+	const RegisterVector& source)
+: d(destination), s(source)
+{
+
+}
+
 DataflowGraph::Instruction DataflowGraph::convert( ir::PTXInstruction& i )
 {
 	Instruction result;

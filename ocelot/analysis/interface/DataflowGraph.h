@@ -166,6 +166,10 @@ class DataflowGraph : public KernelAnalysis
 		class PhiInstruction
 		{
 			public:
+				PhiInstruction(const Register& d = 0,
+					const RegisterVector& s = RegisterVector());
+			
+			public:
 				/*! \brief Destination register */
 				Register d;
 				/*! \brief Source registers */

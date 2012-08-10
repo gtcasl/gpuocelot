@@ -60,7 +60,7 @@ public:
     */
 	void setConditionalConvergence(bool includeConditionalConvergence);
 	
-private:
+protected:
 	/*!\brief Performs convergence analysis, identifies blocks that can
 		never be divergent */
 	void _convergenceAnalysis();
@@ -79,7 +79,8 @@ private:
 	void _removePredicate(const DataflowGraph::PhiInstruction &phi,
 		const DivergenceGraph::node_type &predicate);
 	
-private:
+	
+protected:
 	/*! \brief Is an operand a function call operand? */
 	bool _isOperandAnArgument( const ir::PTXOperand& operand );
 	/*! \brief Does an operand reference local memory? */
@@ -90,25 +91,17 @@ private:
 	/*! \brief Tests if this block has at most 1 path that does not reach
 		the exit without executing another instruction */
 	bool _hasTrivialPathToExit(const DataflowGraph::iterator &block) const;
-	/*! \brief Tests if all paths hit convergent blocks before the
-		reconvergence point */
-	bool _doAllPathsConvergeBeforeReconvergencePoint(
-		const DataflowGraph::iterator &block) const;
-	
-	/*! \brief Marks a block as never-divergent and propagates
-		this property */
-	bool _assignAndPropagateConvergence(
-		const DataflowGraph::iterator &block);
-	/*! \brief Marks a block as never-divergent if all predecessors
-			are convergent */
-	bool _discoverBlocksWithConvergentPredecessors(
-		const DataflowGraph::iterator &block);
-	/*! \brief Marks a block as never-divergent if paths converge before the
-		reconvergence point */
-	bool _discoverBlocksThatConvergeBeforeReconvergence(
-		const DataflowGraph::iterator &block);
 
-private:
+	/*! \brief Get the number of successors with paths to the post dominator
+		that do not encounter convergent blocks */
+	unsigned int _numberOfDivergentPathsToPostDominator(
+		const DataflowGraph::iterator &block) const;
+	/*! \brief Gets the set of divergent blocks contained in a block's
+		post-dominance frontier */
+	block_set _getDivergentBlocksInPostdominanceFrontier(
+		const DataflowGraph::iterator &block);
+	
+protected:
 	/*! \brief Get the set of possibly divergent branches */
 	void _findBranches(branch_set& branches);
 	/*! \brief Add divergence graph edges for control dependences */
@@ -117,7 +110,7 @@ private:
 		update the divergence graph on success */
 	bool _promoteDivergentBranchesToConvergent(branch_set& branches);
 
-private:
+protected:
 	ir::IRKernel *_kernel;
 	/*!\brief Holds the variables marks of divergent blocks */
 	DivergenceGraph _divergGraph;

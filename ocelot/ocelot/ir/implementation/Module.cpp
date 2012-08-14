@@ -365,6 +365,15 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	stream << "\n\n";
 }
 
+
+std::string ir::Module::toString() const {
+	std::stringstream stream;
+	
+	writeIR(stream);
+
+	return stream.str();
+}
+
 ir::Texture* ir::Module::getTexture(const std::string& name) {
 	loadNow();
 	TextureMap::iterator texture = _textures.find(name);

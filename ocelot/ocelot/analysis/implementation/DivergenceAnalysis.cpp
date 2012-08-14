@@ -484,6 +484,7 @@ public:
 	PathTree*               parent;
 	PathTree*               root;
 	PathTreeList            children;
+	unsigned int            level;
 
 public:
 	DataflowGraph* graph;
@@ -494,6 +495,7 @@ public:
 public:
 	DivergenceAnalysis::block_set getAllUniqueBlocks();
 	bool isDivergent() const;
+	bool isRoot() const;
 	bool isParent(const DataflowGraph::iterator &block) const; 
 };
 
@@ -503,9 +505,11 @@ PathTree::PathTree(const DataflowGraph::iterator &b, PathTree* p)
 	if (parent != 0) {
 		root  = parent->root;
 		graph = parent->graph;
+		level = parent->level + 1;
 	}
 	else {
 		parent = this;
+		level  = 0;
 	}
 }
 
@@ -527,6 +531,9 @@ static bool hasBarrier(const DataflowGraph::iterator &block) {
 
 void PathTree::traverseUntil(const DataflowGraph::iterator &postDominator) {
 	
+	// stop after 15 levels (32 thousand possible paths)
+	if(level == 15) return;
+	
 	// include, but don't continue past barriers
 	if (hasBarrier(block)) return;
 	
@@ -538,7 +545,7 @@ void PathTree::traverseUntil(const DataflowGraph::iterator &postDominator) {
 		
 		// stop at loops
 		if (isParent(*successor)) continue;
-		
+				
 		children.push_back(PathTree(*successor, this));
 		
 		children.back().traverseUntil(postDominator);
@@ -581,12 +588,18 @@ bool PathTree::isDivergent() const {
 	return false;
 }
 
-bool PathTree::isParent(const DataflowGraph::iterator &block) const {
-	if (parent == this) return false;
+bool PathTree::isRoot() const {
 	
-	if (parent->block == block) return true;
+	return this == root;
+}
+
+bool PathTree::isParent(const DataflowGraph::iterator &b) const {
+	if (block == b) return true;
+	if (isRoot())   return false;
 	
-	return parent->isParent(block);
+	assert(parent != this);
+
+	return parent->isParent(b);
 }
 
 unsigned int DivergenceAnalysis::_numberOfDivergentPathsToPostDominator(

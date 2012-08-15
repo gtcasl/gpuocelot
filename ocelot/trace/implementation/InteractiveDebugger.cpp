@@ -19,7 +19,7 @@
 #include <ocelot/executive/interface/Device.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 #include <hydrazine/interface/Casts.h>
 
 #ifdef REPORT_BASE
@@ -566,15 +566,7 @@ void InteractiveDebugger::_printAssembly(unsigned int PC,
 			++pc)
 		{
 			std::cout << "(" << pc << ") - " 
-				<< kernel.instructions[pc].toString();
-				
-			if(kernel.instructions[pc].opcode == ir::PTXInstruction::Bra)
-			{
-				std::cout << " (target "
-					<< kernel.instructions[pc].branchTargetInstruction << ")";
-			}
-			
-			std::cout << "\n";
+				<< kernel.instructions[pc].toString() << "\n";
 		}
 	}
 	break;

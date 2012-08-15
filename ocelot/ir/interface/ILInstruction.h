@@ -17,7 +17,6 @@ namespace ir
 	class ILInstruction : public Instruction
 	{
 		public:
-			/*! \brief The opcode of the instruction */
 			enum Opcode
 			{
 				Abs,
@@ -25,7 +24,6 @@ namespace ir
 				And,
 				Break,
 				Cmov_Logical,
-				Cos_Vec,
 				Div,
 				Else,
 				End,
@@ -36,7 +34,6 @@ namespace ir
 				Ffb_Hi,
 				Fence,
 				Fma,
-				FtoI,
 				FtoU,
 				Ge,
 				Iadd,
@@ -68,12 +65,9 @@ namespace ir
 				Mad,
 				Mov,
 				Mul,
-				Ne,
 				Rcp,
 				Round_Nearest,
-				Round_Neginf,
 				Rsq_Vec,
-				Sin_Vec,
 				Sub,
 				Sqrt_Vec,
 				Uav_Arena_Load_Id,
@@ -231,13 +225,6 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILCos_Vec : public ILUnaryInstruction
-	{
-		public:
-			ILCos_Vec();
-			Instruction *clone(bool copy=true) const;
-	};
-
 	class ILDiv : public ILBinaryInstruction
 	{
 		public:
@@ -321,13 +308,6 @@ namespace ir
 	{
 		public:
 			ILFma();
-			Instruction *clone(bool copy=true) const;
-	};
-
-	class ILFtoI: public ILUnaryInstruction
-	{
-		public:
-			ILFtoI();
 			Instruction *clone(bool copy=true) const;
 	};
 
@@ -587,13 +567,6 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILNe : public ILBinaryInstruction
-	{
-		public:
-			ILNe();
-			Instruction *clone(bool copy=true) const;
-	};
-
 	class ILRcp : public ILUnaryInstruction
 	{
 		public:
@@ -608,24 +581,10 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILRound_Neginf: public ILUnaryInstruction
-	{
-		public:
-			ILRound_Neginf();
-			Instruction *clone(bool copy=true) const;
-	};
-
 	class ILRsq_Vec : public ILUnaryInstruction
 	{
 		public:
 			ILRsq_Vec();
-			Instruction *clone(bool copy=true) const;
-	};
-
-	class ILSin_Vec : public ILUnaryInstruction
-	{
-		public:
-			ILSin_Vec();
 			Instruction *clone(bool copy=true) const;
 	};
 

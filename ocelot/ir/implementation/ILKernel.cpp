@@ -8,7 +8,7 @@
 #include <ocelot/ir/interface/ILKernel.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -26,7 +26,7 @@ namespace ir
 		ISA = Instruction::CAL;
 	}
 
-	ILKernel::ILKernel(const IRKernel &k) : IRKernel(k)
+	ILKernel::ILKernel(const Kernel &k) : Kernel(k)
 	{
 		ISA = Instruction::CAL;
 	}

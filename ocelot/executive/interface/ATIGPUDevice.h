@@ -114,9 +114,6 @@ namespace executive
 			/*! \brief Make this a host memory allocation */
 			Device::MemoryAllocation *allocateHost(size_t size, 
 				unsigned int flags);
-			/*! \brief Register a host memory allocation */
-			Device::MemoryAllocation *registerHost(void* pointer, size_t size, 
-				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void *pointer);
 			/*! \brief Get nearby allocations to a pointer */
@@ -145,8 +142,7 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void** resource, int count, 
-                    unsigned int streamID);
+			void unmapGraphicsResource(void** resource, int count, unsigned int streamID);
 
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module *irModule);
@@ -180,6 +176,14 @@ namespace executive
 			/*! \brief Sets the current stream */
 			void setStream(unsigned int stream);
 			
+			/*! \brief Select this device as the current device.
+			 *  Only one device is allowed to be selected at any time. */
+			void select();
+			/*! \brief Is this device selected? */
+			bool selected() const;
+			/*! \brief Deselect this device */
+			void unselect();
+			
 			/*! \brief Binds a texture to a memory allocation at a pointer */
 			void bindTexture(void* pointer, const std::string& moduleName,
 				const std::string& textureName, 
@@ -208,8 +212,7 @@ namespace executive
 					const ir::Dim3& block, size_t sharedMemory, 
 					const void *argumentBlock, size_t argumentBlockSize, 
 					const trace::TraceGeneratorVector& 
-					traceGenerators = trace::TraceGeneratorVector(),
-					const ir::ExternalFunctionSet* externals = 0);
+					traceGenerators = trace::TraceGeneratorVector());
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& path, 
 				const std::string& kernelName);
@@ -228,9 +231,6 @@ namespace executive
 			static const size_t Uav0Size = 150000000;
 
 		private:
-			/*! \brief Run PTX optimization on the kernel k in the module m */
-			void _optimizePTX(Module* m, const std::string& k);
-
 			/*! \brief A map of registered modules */
 			typedef std::unordered_map<std::string, Module*> ModuleMap;
 
@@ -288,6 +288,9 @@ namespace executive
 
 			/*! \brief The modules that have been loaded */
 			ModuleMap _modules;
+
+			/*! \brief Has this device been selected? */
+			bool _selected;
 
 			/*! \brief Returns a pointer to an instance to the 
 				CalDriver singleton */

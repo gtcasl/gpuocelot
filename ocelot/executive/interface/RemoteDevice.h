@@ -37,6 +37,7 @@ namespace executive
 	class RemoteDevice : public Device
 	{
 		public:
+			friend class RemoteDevice::MemoryAllocation;
 			/*! \brief An interface to a managed memory allocation */
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
@@ -86,8 +87,6 @@ namespace executive
 					void copy(Device::MemoryAllocation* allocation, 
 						size_t toOffset, size_t fromOffset, size_t size) const;				
 			};
-
-			friend class RemoteDevice::MemoryAllocation;
 
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
@@ -160,9 +159,6 @@ namespace executive
 			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
 			Device::MemoryAllocation* allocateHost(size_t size, 
-				unsigned int flags);
-			/*! \brief Register a host memory allocation */
-			Device::MemoryAllocation* registerHost(void* pointer, size_t size, 
 				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);
@@ -269,8 +265,7 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-					traceGenerators = trace::TraceGeneratorVector(),
-				const ir::ExternalFunctionSet* externals = 0);
+					traceGenerators = trace::TraceGeneratorVector());
 					
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& module, 

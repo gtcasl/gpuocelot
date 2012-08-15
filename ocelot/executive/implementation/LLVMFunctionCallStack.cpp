@@ -25,14 +25,11 @@ void LLVMFunctionCallStack::call(unsigned int l, unsigned int a, unsigned int i,
 
 unsigned int LLVMFunctionCallStack::returned()
 {
-	if (_sizes.size()) {
-		const ParameterAndLocalSize& sizes = _sizes.back();
-		_stack.resize(_stack.size() - sizes.localSize - sizes.parameterSize);
-		unsigned int resumePoint = sizes.resumePoint;
-		_sizes.pop_back();
-		return resumePoint;
-	}
-	return 0xffffffff;
+	const ParameterAndLocalSize& sizes = _sizes.back();
+	_stack.resize(_stack.size() - sizes.localSize - sizes.parameterSize);
+	unsigned int resumePoint = sizes.resumePoint;
+	_sizes.pop_back();
+	return resumePoint;
 }
 
 void LLVMFunctionCallStack::setKernelArgumentMemory(

@@ -18,12 +18,12 @@ namespace executive
 	class ATIExecutableKernel : public executive::ExecutableKernel {
 		public:
 			/*! \brief Constructor */
-			ATIExecutableKernel(ir::IRKernel &k, CALcontext *context, 
+			ATIExecutableKernel(ir::Kernel &k, CALcontext *context, 
 					CALevent *event, CALresource *uav0, CALresource *cb0, 
 					CALresource *cb1, Device* d);
 
 			/*!	\brief Launch a kernel on a 2D grid */
-			void launchGrid(int width, int height, int depth);
+			void launchGrid(int width, int height);
 
 			/*!	\brief Sets the shape of a kernel */
 			void setKernelShape(int x, int y, int z);
@@ -53,12 +53,6 @@ namespace executive
 
 			/*!	\brief removes a trace generator from an EmulatedKernel */
 			void removeTraceGenerator(trace::TraceGenerator* generator);
-
-			/*! sets an external function table for the emulated kernel */
-			void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
-
-			/*! clear the external function table for the emulated kernel */
-			void clearExternalFunctionSet();
 
 			/*! \brief Copies data from global objects into const and global
 			 * memory */

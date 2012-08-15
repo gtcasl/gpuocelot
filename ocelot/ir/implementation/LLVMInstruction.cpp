@@ -9,7 +9,7 @@
 #define LLVM_INSTRUCTION_CPP_INCLUDED
 
 #include <ocelot/ir/interface/LLVMInstruction.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 namespace ir
 {
@@ -1424,8 +1424,8 @@ namespace ir
 	{
 		std::stringstream stream;
 		stream << d.toString() << " = ";
-		stream << LLVMInstruction::toString( opcode ) << " " 	
-			<< (isVolatile ? "volatile " : "")
+		if( isVolatile ) stream << "volatile ";
+		stream << LLVMInstruction::toString( opcode ) << " " 
 			<< a.type.toString() << " " << a.toString();
 		if( alignment != 1 ) stream << ", align " << alignment;
 		return stream.str();
@@ -1795,8 +1795,8 @@ namespace ir
 	std::string LLVMStore::toString() const
 	{
 		std::stringstream stream;
-		stream << LLVMInstruction::toString( opcode ) << " "
-			<< (isVolatile ? "volatile " : "")
+		if( isVolatile ) stream << "volatile ";
+		stream << LLVMInstruction::toString( opcode ) << " " 
 			<< a.type.toString() << " " << a.toString() << ", " 
 			<< d.type.toString() << " " << d.toString();
 		if( alignment != 1 ) stream << ", align " << alignment;

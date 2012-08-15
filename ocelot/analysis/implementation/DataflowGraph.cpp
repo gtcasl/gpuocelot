@@ -10,8 +10,6 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/SSAGraph.h>
 
-#include <ocelot/ir/interface/IRKernel.h>
-
 #include <hydrazine/implementation/string.h>
 
 #include <unordered_map>
@@ -20,7 +18,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE    0
+#define REPORT_BASE 0
 #define REPORT_CONVERT 0
 
 namespace analysis
@@ -99,25 +97,8 @@ namespace analysis
 
 		for( unsigned int j = 0; j < limit; ++j )
 		{
-			if( !( i.*sources[ j ] ).array.empty() )
-			{
-				for( ir::PTXOperand::Array::iterator 
-					fi = ( i.*sources[ j ] ).array.begin(); 
-					fi != ( i.*sources[ j ] ).array.end(); ++fi )
-				{
-					if( !fi->isRegister() )
-					{
-						continue;
-					}
-					reportE( REPORT_CONVERT, "  Converting register \"" 
-						<< fi->identifier << "\" to id " << fi->reg
-						<< " type " << ir::PTXOperand::toString( fi->type ) );
-					_maxRegister = std::max( _maxRegister, fi->reg );
-					result.s.push_back( 
-						RegisterPointer( &fi->reg, fi->type ) );
-				}
-			}			
-			else if( ( i.*sources[ j ] ).isRegister() )
+			if( ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Register 
+				|| ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Indirect )
 			{
 				if( ( i.*sources[ j ] ).type == ir::PTXOperand::pred )
 				{
@@ -128,16 +109,31 @@ namespace analysis
 						continue;
 					}
 				}
-
-				reportE( REPORT_CONVERT, "  Converting register \"" 
-					<< ( i.*sources[ j ] ).identifier 
-					<< "\" to id " << ( i.*sources[ j ] ).reg << " type "
-					<< ir::PTXOperand::toString( ( i.*sources[ j ] ).type ) );
-				_maxRegister = std::max( _maxRegister, 
-					( i.*sources[ j ] ).reg );
-				result.s.push_back( 
-					RegisterPointer( &( i.*sources[ j ] ).reg, 
-					( i.*sources[ j ] ).type ) );
+			
+				if( !( i.*sources[ j ] ).array.empty() )
+				{
+					for( ir::PTXOperand::Array::iterator 
+						fi = ( i.*sources[ j ] ).array.begin(); 
+						fi != ( i.*sources[ j ] ).array.end(); ++fi )
+					{
+						reportE( REPORT_CONVERT, "  Converting register \"" 
+							<< fi->identifier << "\" to id " << fi->reg );
+						_maxRegister = std::max( _maxRegister, fi->reg );
+						result.s.push_back( 
+							RegisterPointer( &fi->reg, fi->type ) );
+					}
+				}
+				else
+				{
+					reportE( REPORT_CONVERT, "  Converting register \"" 
+						<< ( i.*sources[ j ] ).identifier 
+						<< "\" to id " << ( i.*sources[ j ] ).reg );
+					_maxRegister = std::max( _maxRegister, 
+						( i.*sources[ j ] ).reg );
+					result.s.push_back( 
+						RegisterPointer( &( i.*sources[ j ] ).reg, 
+						( i.*sources[ j ] ).type ) );
+				}
 			}
 		}
 
@@ -160,26 +156,8 @@ namespace analysis
 
 		for( unsigned int j = 0; j < limit; ++j )
 		{
-			if( !( i.*destinations[ j ] ).array.empty() )
-			{
-				for( ir::PTXOperand::Array::iterator 
-					fi =  ( i.*destinations[ j ] ).array.begin(); 
-					fi != ( i.*destinations[ j ] ).array.end(); ++fi )
-				{
-					if( !fi->isRegister() )
-					{
-						continue;
-					}
-					reportE( REPORT_CONVERT, "  Converting register \"" 
-						<< fi->identifier 
-						<< "\" to id " << fi->reg
-						<< " type " << ir::PTXOperand::toString( fi->type ) );
-					_maxRegister = std::max( _maxRegister, fi->reg );
-					result.d.push_back( 
-						RegisterPointer( &fi->reg, fi->type ) );
-				}
-			} 
-			else if( ( i.*destinations[ j ] ).isRegister() )
+			if( ( i.*destinations[ j ] ).addressMode 
+				== ir::PTXOperand::Register )
 			{
 				if( ( i.*destinations[ j ] ).type == ir::PTXOperand::pred )
 				{
@@ -189,33 +167,38 @@ namespace analysis
 					{
 						continue;
 					}
-				}			
-
-				_maxRegister = std::max( _maxRegister, 
-					( i.*destinations[ j ] ).reg );
-				if( ir::PTXInstruction::Cvt == i.opcode )
+				}
+			
+				if( !( i.*destinations[ j ] ).array.empty() )
 				{
-					result.d.push_back( 
-						RegisterPointer( &( i.*destinations[ j ] ).reg, 
-						i.type ) );
+					for( ir::PTXOperand::Array::iterator 
+						fi = ( i.*destinations[ j ] ).array.begin(); 
+						fi != ( i.*destinations[ j ] ).array.end(); ++fi )
+					{
+						reportE( REPORT_CONVERT, "  Converting register \"" 
+							<< fi->identifier 
+							<< "\" to id " << fi->reg );
+						_maxRegister = std::max( _maxRegister, fi->reg );
+						result.d.push_back( 
+							RegisterPointer( &fi->reg, fi->type ) );
+					}
 				}
 				else
 				{
+					reportE( REPORT_CONVERT, "  Converting register \"" 
+						<< ( i.*destinations[ j ] ).identifier 
+						<< "\" to id " << ( i.*destinations[ j ] ).reg );
+					_maxRegister = std::max( _maxRegister, 
+						( i.*destinations[ j ] ).reg );
 					result.d.push_back( 
 						RegisterPointer( &( i.*destinations[ j ] ).reg, 
 						( i.*destinations[ j ] ).type ) );
 				}
-				
-				reportE( REPORT_CONVERT, "  Converting register \"" 
-					<< ( i.*destinations[ j ] ).identifier 
-					<< "\" to id " << *result.d.back().pointer << " type "
-					<< ir::PTXOperand::toString(
-						result.d.back().type ) );
 			}
-
 		}
 		
 		result.i = &i;
+		result.label = i.toString();
 		
 		return result;
 	}
@@ -228,10 +211,7 @@ namespace analysis
 		for( RegisterSet::const_iterator fi = one.begin(); 
 			fi != one.end(); ++fi )
 		{
-			RegisterSet::const_iterator ti = two.find( *fi );
-			if( ti == two.end() ) return false;
-			
-			if( ti->type != fi->type ) return false;
+			if( two.count( *fi ) == 0 ) return false;
 		}
 		
 		return true;
@@ -256,15 +236,6 @@ namespace analysis
 		_fallthrough( dfg.end() ), _type( t )
 	{
 		
-	}
-	
-	void DataflowGraph::Block::_resolveTypes( DataflowGraph::Type& d,
-		const DataflowGraph::Type& s )
-	{
-		if( ir::PTXOperand::relaxedValid( d, s ) )
-		{
-			d = s;
-		}
 	}
 	
 	bool DataflowGraph::Block::compute( bool hasFallthrough )
@@ -306,24 +277,13 @@ namespace analysis
 			for( RegisterPointerVector::iterator di = ii->d.begin(); 
 				di != ii->d.end(); ++di )
 			{
-				RegisterSet::iterator ai = _aliveIn.find( *di );
-				if( ai != _aliveIn.end() )
-				{
-					_resolveTypes( di->type, ai->type );
-					_aliveIn.erase( *ai );
-				}
+				_aliveIn.erase( *di );
 			}
 			
 			for( RegisterPointerVector::iterator si = ii->s.begin(); 
 				si != ii->s.end(); ++si )
 			{
-				std::pair<RegisterSet::iterator, bool> insertion =
-					_aliveIn.insert( *si );
-				
-				if( !insertion.second )
-				{
-					_resolveTypes( si->type, insertion.first->type );
-				}
+				_aliveIn.insert( *si );
 			}
 		}
 		
@@ -350,16 +310,6 @@ namespace analysis
 	{
 		return _aliveOut;
 	}
-
-	DataflowGraph::Block::RegisterSet& DataflowGraph::Block::aliveIn()
-	{
-		return _aliveIn;
-	}
-	
-	DataflowGraph::Block::RegisterSet& DataflowGraph::Block::aliveOut()
-	{
-		return _aliveOut;
-	}
 	
 	DataflowGraph::BlockVector::iterator 
 		DataflowGraph::Block::fallthrough() const
@@ -379,16 +329,6 @@ namespace analysis
 		return _predecessors;
 	}
 	
-	DataflowGraph::BlockPointerSet& DataflowGraph::Block::targets()
-	{
-		return _targets;
-	}
-	
-	DataflowGraph::BlockPointerSet& DataflowGraph::Block::predecessors()
-	{
-		return _predecessors;
-	}
-	
 	DataflowGraph::Block::Type DataflowGraph::Block::type() const
 	{
 		return _type;
@@ -400,18 +340,8 @@ namespace analysis
 		return _instructions;
 	}
 	
-	DataflowGraph::InstructionVector& DataflowGraph::Block::instructions()
-	{
-		return _instructions;
-	}
-	
 	const DataflowGraph::PhiInstructionVector& 
 		DataflowGraph::Block::phis() const
-	{
-		return _phis;
-	}
-	
-	DataflowGraph::PhiInstructionVector& DataflowGraph::Block::phis()
 	{
 		return _phis;
 	}
@@ -421,7 +351,7 @@ namespace analysis
 		return _block->label;
 	}
 
-	const std::string* DataflowGraph::Block::producer( const Register& r ) const
+	const std::string& DataflowGraph::Block::producer( const Register& r ) const
 	{
 		assertM( aliveIn().count( r ) != 0, "Register " << r.id 
 			<< " is not in the alive-in set of block " << label() );
@@ -441,10 +371,10 @@ namespace analysis
 		
 		if( predecessor == predecessors().end() )
 		{
-			return 0;
+			throw NoProducerException( r.id );
 		}
 		
-		return &(*predecessor)->label();
+		return (*predecessor)->label();
 	}
 	
 	DataflowGraph::Block::RegisterSet DataflowGraph::Block::alive( 
@@ -484,31 +414,13 @@ namespace analysis
 		return _block;
 	}
 
-	DataflowGraph::DataflowGraph()  
-		: KernelAnalysis(Analysis::DataflowGraphAnalysis,
-			"DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 
-			_ssa( false ), _maxRegister( 0 )
+	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& cfg )  
+		: _cfg( &cfg ), _consistent( cfg.empty() ), 
+		_ssa( false ), _maxRegister( 0 )
 	{
-	}
-	
-	DataflowGraph::~DataflowGraph()
-	{
-		if( _ssa ) fromSsa();	
-	}
-
-	void DataflowGraph::analyze(ir::IRKernel& kernel)
-	{
-		_cfg	    = kernel.cfg();
-		_consistent = _cfg->empty();
-		
-		_blocks.clear();
-		_maxRegister = 0;
-		
 		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
 			iterator > BlockMap;
 		BlockMap map;
-		
-		ir::ControlFlowGraph& cfg = *_cfg;
 		
 		ir::ControlFlowGraph::BlockPointerVector blocks 
 			= cfg.executable_sequence();
@@ -576,7 +488,7 @@ namespace analysis
 				}
 				else
 				{
-					/* assertM( false, "Got invalid edge type between " 
+/*					assertM( false, "Got invalid edge type between " 
 						<< begin->second->label() << " and " 
 						<< bi->second->label() );*/
 					begin->second->_targets.insert( bi->second );
@@ -584,8 +496,6 @@ namespace analysis
 				}
 			}
 		}
-		
-		compute();
 	}
 	
 	DataflowGraph::iterator DataflowGraph::begin()
@@ -795,83 +705,6 @@ namespace analysis
 		return added;
 	}
 
-	DataflowGraph::iterator DataflowGraph::split( iterator block, 
-		InstructionVector::iterator position, bool isFallthrough, const std::string& l )
-	{
-		_consistent = false;
-		report( "Splitting block " << block->label()); 
-		InstructionVector::iterator begin = position; 
-
-		InstructionVector::iterator end = block->_instructions.end();
-		if (begin == end)
-		{
-			return block;	
-		}
-		unsigned int index = std::distance(block->_instructions.begin(), position);
-
-		iterator added = _blocks.insert( ++iterator( block ), 
-			Block( *this, Block::Body ) );
-		if( isFallthrough )
-		{
-			added->_block = _cfg->split_block( block->_block, index, 
-				ir::ControlFlowGraph::Edge::FallThrough, l );
-		}
-		else
-		{
-			added->_block = _cfg->split_block( block->_block, index, 
-				ir::ControlFlowGraph::Edge::Branch, l );
-		}
-		
-		added->_predecessors.insert( block );
-		
-		added->_instructions.insert( added->_instructions.end(), begin, end );
-		block->_instructions.erase( begin, end );
-		
-		added->_fallthrough = block->_fallthrough;
-		for (BlockPointerSet::iterator i = added->_fallthrough->_predecessors.begin();
-			i != added->_fallthrough->_predecessors.end(); ++i) 
-		{
-			report ("predecessors to the the fallthrough edge to this  block " << (*i)->label() << 
- 			" id " << (*i)->id());
-		}	
-
-		if( added->_fallthrough != this->end() )
-		{
-			BlockPointerSet::iterator predecessor = 
-				added->_fallthrough->_predecessors.find( block );
-			assert( predecessor != added->_fallthrough->_predecessors.end() );
-			added->_fallthrough->_predecessors.erase( block );
-			added->_fallthrough->_predecessors.insert( added );
-		}
-		
-		for( BlockPointerSet::iterator target = block->_targets.begin(); 
-			target != block->_targets.end(); ++target )
-		{
-			BlockPointerSet::iterator predecessor = 
-				(*target)->_predecessors.find( block );
-			assert( predecessor != (*target)->_predecessors.end() );
-			(*target)->_predecessors.erase( block );
-			(*target)->_predecessors.insert( added );
-		}
-		
-		added->_targets = std::move( block->_targets );
-		block->_targets.clear();
-		
-		if( isFallthrough )
-		{
-			report("  Joining block via a fallthrough edge.");
-			block->_fallthrough = added;
-		}
-		else
-		{
-			report("  Joining block via a branch edge.");
-			block->_fallthrough = this->end();
-			block->_targets.insert( added );
-		}
-		
-		return added;
-	}
-
 	void DataflowGraph::redirect( iterator source, 
 		iterator destination, iterator newTarget )
 	{
@@ -934,28 +767,6 @@ namespace analysis
 		
 		block->_block->instructions.insert( bbPosition, ptx );
 	}
-	
-	 DataflowGraph::InstructionVector::iterator DataflowGraph::insert(
-	 	iterator block, const ir::Instruction& instruction,
-	 	InstructionVector::iterator position )
-	{
-		_consistent = false;
-
-		  int index = std::distance(block->_instructions.begin(), position);
-				    
-		ir::PTXInstruction* ptx = static_cast< ir::PTXInstruction* >( 
-			instruction.clone() );
-		
-		  InstructionVector::iterator new_position = 
-			   block->_instructions.insert( position, convert( *ptx ) );
-		
-		ir::ControlFlowGraph::InstructionList::iterator 
-			bbPosition = block->_block->instructions.begin();
-		std::advance( bbPosition, index );
-		
-		block->_block->instructions.insert( bbPosition, ptx );
-		  return new_position;
-	}
 
 	void DataflowGraph::insert( iterator block, 
 		const ir::Instruction& instruction )
@@ -1011,7 +822,7 @@ namespace analysis
 		_consistent = true;
 		_blocks.clear();
 		_blocks.push_back( Block( *this, Block::Entry ) );
-		_blocks.push_back( Block( *this, Block::Exit  ) );
+		_blocks.push_back( Block( *this, Block::Exit ) );
 		
 		_cfg->clear();
 		
@@ -1032,35 +843,6 @@ namespace analysis
 		std::advance( position, index );
 		
 		block->_instructions.erase( position );
-		
-		// Erase from the CFG
-		ir::ControlFlowGraph::iterator cfgBlock = block->_block;
-		
-		ir::BasicBlock::InstructionList::iterator instruction =
-			cfgBlock->instructions.begin();
-			
-		std::advance( instruction, index );
-		
-		cfgBlock->instructions.erase( instruction );
-	}
-
-	void DataflowGraph::erase( iterator block, InstructionVector::iterator position )
-	{
-		_consistent = false;
-		  
-		  int index = std::distance(block->_instructions.begin(), position);
-		
-		block->_instructions.erase( position );
-		
-		// Erase from the CFG
-		ir::ControlFlowGraph::iterator cfgBlock = block->_block;
-		
-		ir::BasicBlock::InstructionList::iterator instruction =
-			cfgBlock->instructions.begin();
-			
-		std::advance( instruction, index );
-		
-		cfgBlock->instructions.erase( instruction );
 	}
 	
 	void DataflowGraph::compute()
@@ -1114,101 +896,17 @@ namespace analysis
 			for( Block::RegisterSet::iterator ri = fi->_aliveIn.begin(); 
 				ri != fi->_aliveIn.end(); ++ri )
 			{
-				report( "   r" << ri->id << " "
-					<< ir::PTXOperand::toString( ri->type ) );
+				report( "   r" << ri->id );
 			}
 			report( "  Alive Out" );
 			for( Block::RegisterSet::iterator ri = fi->_aliveOut.begin(); 
 				ri != fi->_aliveOut.end(); ++ri )
 			{
-				report( "   r" << ri->id << " "
-					<< ir::PTXOperand::toString( ri->type ) );
+				report( "   r" << ri->id );
 			}
 		}
 		#endif
-
-		constructDUChains();
-	}
-
-	void DataflowGraph::constructDUChains()
-	{
-		for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
-		{
-			for (InstructionVector::iterator
-				instIter = blockIter->instructions().begin();
-				instIter != blockIter->instructions().end(); ++instIter)
-			{
-				instIter->defs.clear();
-				instIter->uses.clear();
-			}
-		}
-
-		for(iterator blockIter = begin(); blockIter != end(); ++blockIter) 
-		{
-			for (InstructionVector::iterator
-				instIter = blockIter->instructions().begin();
-				instIter != blockIter->instructions().end(); ++instIter)
-			{
-				InstructionVector::reverse_iterator instRIter(instIter);   
-				for( ; instRIter != blockIter->instructions().rend();
-					++instRIter) 
-				{
-					for(RegisterPointerVector::iterator
-						src = instIter->s.begin();
-						src != instIter->s.end(); ++src)
-					{		 
-						for (RegisterPointerVector::iterator
-							dest = instRIter->d.begin();
-							dest != instRIter->d.end();++dest)
-						{		 
-							if(*dest->pointer == *src->pointer)
-							{
-								InstructionVector::iterator tempIter =
-									instRIter.base();
-								instIter->defs.push_back(--tempIter);
-								instRIter->uses.push_back(instIter);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	 
-	void DataflowGraph::constructBlockDUChains(iterator blockIter)
-	{
-		for(InstructionVector::iterator instIter =
-			blockIter->instructions().begin();
-			instIter != blockIter->instructions().end(); ++instIter)
-		{
-			instIter->defs.clear();
-			instIter->uses.clear();
-		}
-
-		for(InstructionVector::iterator instIter =
-			blockIter->instructions().begin();
-			instIter != blockIter->instructions().end(); ++instIter)
-		{
-			InstructionVector::reverse_iterator instRIter(instIter);   
-			for(; instRIter != blockIter->instructions().rend(); ++instRIter) 
-			{					  
-				for (RegisterPointerVector::iterator dest =
-					instRIter->d.begin(); dest != instRIter->d.end();++dest)
-				{
-					for(RegisterPointerVector::iterator src =
-						instIter->s.begin(); src != instIter->s.end(); ++src)
-					{
-						if(*dest->pointer == *src->pointer)
-						{
-							InstructionVector::iterator tempIter =
-								instRIter.base();
-							instIter->defs.push_back(--tempIter);
-							instRIter->uses.push_back(instIter);
-						}
-					}
-				}
-			}
-		}
+		
 	}
 
 	DataflowGraph::RegisterId DataflowGraph::maxRegister() const
@@ -1382,8 +1080,7 @@ namespace analysis
 				}
 				
 				out << "\t\t" << instructionPrefix.str() << "[ label = \"{ " 
-					<< hydrazine::toGraphVizParsableLabel(
-						ii->i->toString() )
+					<< hydrazine::toGraphVizParsableLabel( ii->label )
 					<< " | { ";
 				
 				bool any = false;

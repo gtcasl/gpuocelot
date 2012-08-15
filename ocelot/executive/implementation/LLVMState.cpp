@@ -11,13 +11,13 @@
 #include <ocelot/executive/interface/LLVMState.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 // LLVM Includes
 #include <configure.h>
 
-#if HAVE_LLVM
-#include <llvm/Support/TargetSelect.h>
+#ifdef HAVE_LLVM
+#include <llvm/Target/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/LLVMContext.h>
@@ -46,7 +46,7 @@ LLVMState::StateWrapper::StateWrapper() : _jit(0), _module(0)
 
 llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 {
-	#if HAVE_LLVM
+	#ifdef HAVE_LLVM
 	if(_jit == 0)
 	{
 		report("Bringing the LLVM JIT-Compiler online.");

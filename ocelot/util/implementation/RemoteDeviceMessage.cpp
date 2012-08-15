@@ -12,12 +12,11 @@
 #include <ocelot/util/interface/RemoteDeviceMessage.h>
 
 // Boost includes
-#include <boost/array.hpp>
 
 // Hydrazine includes
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/string.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

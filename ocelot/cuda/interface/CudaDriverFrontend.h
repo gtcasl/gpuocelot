@@ -36,9 +36,6 @@ namespace cuda {
 	*/
 	class CudaDriverFrontend : public CudaDriverInterface {
 	public:
-	
-		typedef std::set< CUevent > EventSet;
-		typedef std::set< CUstream > StreamSet;
 
 		//! \brief CUDA Driver API context
 		class Context {
@@ -97,12 +94,6 @@ namespace cuda {
 
 			//! maps symbol pointers onto their device names
 			RegisteredGlobalMap _globals;
-			
-			//! set of live events
-			EventSet _events;
-			
-			//! set of live streams
-			StreamSet _streams;
 		
 			//! The dimensions for multi-dimensional allocations
 			DimensionMap _dimensions;
@@ -138,7 +129,7 @@ namespace cuda {
 	public:
 
 		CudaDriverFrontend();
-		virtual ~CudaDriverFrontend();
+		~CudaDriverFrontend();
 
 		static CudaDriverFrontend *get();
 
@@ -256,8 +247,6 @@ namespace cuda {
 			const void *srcHost, unsigned int ByteCount );
 		CUresult cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, 
 			unsigned int ByteCount );
-		CUresult cuMemcpyHtoH (void *dstHost, const void *srcHost, 
-			unsigned int ByteCount );
 
 		// device <-> device memory
 		CUresult cuMemcpyDtoD (CUdeviceptr dstDevice, 
@@ -356,11 +345,13 @@ namespace cuda {
 		**
 		***********************************/
 
-		CUresult cuFuncSetBlockShape (CUfunction hfunc, int x, int y, int z);
-		CUresult cuFuncSetSharedSize (CUfunction hfunc, unsigned int bytes);
-		CUresult cuFuncGetAttribute (int *pi, CUfunction_attribute attrib, 
-			CUfunction hfunc);
-		CUresult cuFuncSetCacheConfig(CUfunction hfunc, CUfunc_cache pconfig);
+
+		CUresult cuFuncSetBlockShape (CUfunction hfunc, int x, 
+			int y, int z);
+		CUresult cuFuncSetSharedSize (CUfunction hfunc, 
+			unsigned int bytes);
+		CUresult cuFuncGetAttribute (int *pi, 
+			CUfunction_attribute attrib, CUfunction hfunc);
 
 		/************************************
 		**

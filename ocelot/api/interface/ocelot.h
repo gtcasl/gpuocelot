@@ -11,15 +11,12 @@
 #include <istream>
 #include <unordered_map>
 
-// Forward Declarations
+// Ocelot includes
+#include <ocelot/analysis/interface/Pass.h>
+
 namespace trace
 {
 	class TraceGenerator;
-}
-
-namespace transforms
-{
-	class Pass;
 }
 
 /*! \brief A namespace for ocelot API functions */
@@ -48,10 +45,10 @@ namespace ocelot
 	
 		\param pass reference to the PTX pass to be added
 	*/
-	void addPTXPass(transforms::Pass& pass);
+	void addPTXPass(analysis::Pass &pass);
 	
 	/*! \brief removes the specified pass */
-	void removePTXPass(transforms::Pass& pass);
+	void removePTXPass(analysis::Pass &pass);
 	
 	/*! \brief clears all PTX->PTX passes */
 	void clearPTXPasses();
@@ -69,11 +66,6 @@ namespace ocelot
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
 	
-	/*! \brief Register a texture with the cuda runtime */
-	void registerTexture(const void* texref,
-		const std::string& moduleName,
-		const std::string& textureName, bool normalize);
-	
 	/*! \brief Clear all errors in the Cuda Runtime */
 	void clearErrors();
 	
@@ -89,15 +81,6 @@ namespace ocelot
 
 	/*! \brief Launch a cuda kernel by name */
 	void launch(const std::string& moduleName, const std::string& kernelName);
-
-	/*! \brief Register a callable host function with Ocelot 
-
-		This function will be callable as a PTX function.
-	*/
-	void registerExternalFunction(const std::string& name, void* function);
-
-	/*! \brief Remove a previously registered host function */
-	void removeExternalFunction(const std::string& name);
 }
 
 #endif

@@ -14,10 +14,10 @@
 
 #include <hydrazine/interface/Test.h>
 
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/macros.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/debug.h>
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
@@ -25,7 +25,7 @@
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <hydrazine/interface/Timer.h>
+#include <hydrazine/implementation/Timer.h>
 
 #include <iostream>
 
@@ -87,7 +87,7 @@ public:
 		using namespace ir;
 		using namespace executive;
 
-		IRKernel *rawKernel = 0;
+		Kernel *rawKernel = 0;
 		
 		bool result = true;
 		
@@ -165,7 +165,7 @@ public:
 			// launch the kernel
 			try {
 				kernel->setKernelShape(ThreadCount,1,1);
-				kernel->launchGrid(1,1,1);
+				kernel->launchGrid(1,1);
 			}
 			catch (RuntimeException &exp) {
 				out << "[looping test] Runtime exception on instruction [ " 
@@ -267,7 +267,7 @@ public:
 			// launch the kernel
 			try {
 				kernel->setKernelShape(ThreadCount,1,1);
-				kernel->launchGrid(1,1,1);
+				kernel->launchGrid(1,1);
 			}
 			catch (RuntimeException &exp) {
 				out << "[m-v test] Runtime exception on instruction [ " 

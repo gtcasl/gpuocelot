@@ -6,22 +6,13 @@
 */
 
 #include <ocelot/ir/interface/PTXInstruction.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 #include <sstream>
 
 std::string ir::PTXInstruction::toString( Level l ) {
 	switch( l ) {
 		case CtaLevel:    return "cta"; break;
 		case GlobalLevel: return "gl";  break;
-		default: break;
-	}
-	return "";
-}
-
-std::string ir::PTXInstruction::toString(CacheLevel cache) {
-	switch (cache) {
-		case L1: return "L1";
-		case L2: return "L2";
 		default: break;
 	}
 	return "";
@@ -64,13 +55,12 @@ std::string ir::PTXInstruction::toString( Vec v ) {
 
 std::string ir::PTXInstruction::toString( AddressSpace space ) {
 	switch( space ) {
-		case Const:    return "const";   break;
-		case Global:   return "global";  break;
-		case Local:    return "local";   break;
-		case Param:    return "param";   break;
-		case Shared:   return "shared";  break;
-		case Texture:  return "tex";     break;
-		case Generic:  return "generic"; break;
+		case Const:   return "const";  break;
+		case Global:  return "global"; break;
+		case Local:   return "local";  break;
+		case Param:   return "param";  break;
+		case Shared:  return "shared"; break;
+		case Texture: return "tex";    break;
 		default: break;
 	}
 	return "";
@@ -110,27 +100,27 @@ std::string ir::PTXInstruction::toString( ReductionOperation operation ) {
 
 std::string ir::PTXInstruction::toString( SurfaceQuery query ) {
 	switch (query) {
-		case Width:                  return "width";
-		case Height:                 return "height";
-		case Depth:                  return "depth";
-		case ChannelDataType:        return "channel_data_type";
-		case ChannelOrder:           return "channel_order";
+		case Width: return "width";
+		case Height: return "height";
+		case Depth: return "depth";
+		case ChannelDataType: return "channel_data_type";
+		case ChannelOrder: return "channel_order";
 		case NormalizedCoordinates:  return "normalized_coords";
-		case SamplerFilterMode:      return "filter_mode";
-		case SamplerAddrMode0:       return "addr_mode_0";
-		case SamplerAddrMode1:       return "addr_mode_1";
-		case SamplerAddrMode2:       return "addr_mode_2";
-		default:                     break;
+		case SamplerFilterMode: return "filter_mode";
+		case SamplerAddrMode0: return "addr_mode_0";
+		case SamplerAddrMode1: return "addr_mode_1";
+		case SamplerAddrMode2: return "addr_mode_2";
+		default: break;
 	}
 	return "";
 }
 
 std::string ir::PTXInstruction::toString( FormatMode mode ) {
 	switch (mode) {
-		case Unformatted:        return ".b";
-		case Formatted:          return ".p";
+		case Unformatted: return ".b";
+		case Formatted:   return ".p";
 		case FormatMode_Invalid: break;
-		default:                 break;
+		default: break;
 	}
 	return "";
 }
@@ -142,7 +132,7 @@ std::string ir::PTXInstruction::toString( ClampOperation clamp ) {
 		case Zero:                   return ".zero";
 		case Mirror:                 return ".mirror";
 		case ClampOperation_Invalid: break;
-		default:                     break;
+		default: break;
 	}
 	return "";
 }
@@ -218,9 +208,9 @@ std::string ir::PTXInstruction::toString( Modifier modifier ) {
 
 std::string ir::PTXInstruction::toString( BarrierOperation operation) {
 	switch (operation) {
-		case BarSync:      return "sync";
-		case BarArrive:    return "arrive";
-		case BarReduction: return "red";
+		case BarSync:      return ".sync";
+		case BarArrive:    return ".arrive";
+		case BarReduction: return ".red";
 		default: break;
 	}
 	return "";
@@ -266,10 +256,6 @@ std::string ir::PTXInstruction::toString( Geometry geometry ) {
 		case _1d: return "1d"; break;
 		case _2d: return "2d"; break;
 		case _3d: return "3d"; break;
-		case _a1d: return "a1d"; break;
-		case _a2d: return "a2d"; break;
-		case _cube: return "cube"; break;
-		case _acube: return "acube"; break;		
 		default: break;
 	}
 	return "";
@@ -281,17 +267,6 @@ std::string ir::PTXInstruction::toString( VoteMode mode ) {
 		case Any:    return "any";    break;
 		case Uni:    return "uni";    break;
 		case Ballot: return "ballot"; break;
-		default: break;
-	}
-	return "";
-}
-
-std::string ir::PTXInstruction::toString( ColorComponent color ) {
-	switch( color ) {
-		case red:   return "r"; break;
-		case green: return "g"; break;
-		case blue:  return "b"; break;
-		case alpha: return "a"; break;
 		default: break;
 	}
 	return "";
@@ -365,7 +340,6 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Suq:        return "suq";        break;
 		case TestP:      return "testp";      break;
 		case Tex:        return "tex";        break;
-		case Tld4:       return "tld4";       break;
 		case Txq:        return "txq";        break;
 		case Trap:       return "trap";       break;
 		case Vabsdiff:   return "vabsdiff";   break;
@@ -382,7 +356,6 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Reconverge: return "reconverge"; break;
 		case Phi:        return "phi";        break;
 		case Nop:        return "nop";        break;
-		case Invalid_Opcode: break;
 	}
 	return "INVALID";
 }
@@ -405,7 +378,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	pg.type = PTXOperand::pred;
 	barrierOperation = BarSync;
 	carry = None;
-	statementIndex = -1;
+	statementIndex = 0;
 	cc = 0;
 	addressSpace = AddressSpace_Invalid;
 }
@@ -571,36 +544,6 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
-        case Bfe: {
-            if( !( type == PTXOperand::u32 
-                   || type == PTXOperand::s32 
-                   || type == PTXOperand::u64
-                   || type == PTXOperand::s64 ) ){
-				return "invalid instruction type " 
-					+ PTXOperand::toString( type );
-            }
-            if( !PTXOperand::valid( type, d.type ) ) {
-                return "operand D type " + PTXOperand::toString( d.type )
-                    + " cannot be assigned to " + PTXOperand::toString( type );
-            }
-            if( !PTXOperand::valid( type, a.type )
-                && a.addressMode != PTXOperand::Immediate ) {
-                return "operand 1 type " + PTXOperand::toString( a.type )
-                    + " cannot be assigned to " + PTXOperand::toString( type );
-            }
-            if( !PTXOperand::valid( PTXOperand::u32, b.type )
-                && a.addressMode != PTXOperand::Immediate ) {
-                return "operand 1 type " + PTXOperand::toString( b.type )
-                    + " cannot be assigned to " + PTXOperand::toString( PTXOperand::u32 );
-            }
-            if( !PTXOperand::valid( PTXOperand::u32, c.type )
-                && a.addressMode != PTXOperand::Immediate ) {
-                return "operand 1 type " + PTXOperand::toString( c.type )
-                    + " cannot be assigned to " + PTXOperand::toString( PTXOperand::u32 );
-            }
-
-            break;
-        }
 		case Bfi: {
 			if( !( type == PTXOperand::b32 || type == PTXOperand::b64 ) ) {
 				return "invalid instruction type " 
@@ -685,16 +628,12 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand A must be a function name or register.";
 			}
 			if( d.addressMode != PTXOperand::ArgumentList 
-				&& d.addressMode != PTXOperand::Register 
 				&& d.addressMode != PTXOperand::Invalid ) {
-				return "operand D must be an argument/register "
-					"list if it is specified.";
+				return "operand D must be an argument list if it is specified.";
 			}
 			if( b.addressMode != PTXOperand::ArgumentList
-				&& b.addressMode != PTXOperand::Register 
 				&& b.addressMode != PTXOperand::Invalid ) {
-				return "operand B must be an argument/register "
-					"list if it is specified.";
+				return "operand B must be an argument list if it is specified.";
 			}
 			if( a.addressMode == PTXOperand::Register
 				&& c.addressMode != PTXOperand::FunctionName ) {
@@ -807,8 +746,7 @@ std::string ir::PTXInstruction::valid() const {
 			if (!(type == PTXOperand::u32 || type == PTXOperand::u64)) {
 				return "invalid instruction type " + PTXOperand::toString(type);
 			}
-			if (!(addressSpace == Global || addressSpace == Local
-				|| addressSpace == Shared)) {
+			if (!(addressSpace == Global || addressSpace == Local || addressSpace == Shared)) {
 				return "invalid address space " + toString(addressSpace);
 			}
 			break;
@@ -1266,34 +1204,6 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
-		case Prefetch: {
-			if (!(cacheLevel == L1 || cacheLevel == L2)) {
-				return "cache level must be L1 or L2";
-			}
-			if (!(addressSpace == Local || addressSpace == Global)) {
-				return "address space must be .local or .global, not " + toString(addressSpace);
-			}
-			if (!(d.addressMode == PTXOperand::Indirect || d.addressMode == PTXOperand::Address ||
-				d.addressMode == PTXOperand::Immediate)) {
-				
-				return "address mode of destination operand must be Indirect, Address, or Immediate. Not " +
-					PTXOperand::toString(d.addressMode);
-			}
-		}
-		break;
-		case Prefetchu: {
-		
-			if (!(cacheLevel == L1)) {
-				return "cache level must be L1, not " + toString(cacheLevel);
-			}
-			if (!(d.addressMode == PTXOperand::Indirect || d.addressMode == PTXOperand::Address ||
-				d.addressMode == PTXOperand::Immediate)) {
-				
-				return "address mode of destination operand must be Indirect, Address, or Immediate. Not " +
-					PTXOperand::toString(d.addressMode);
-			}
-		}
-		break;
 		case Prmt: {
 			if( type != PTXOperand::b32 ) {
 				return "invalid instruction type " 
@@ -1875,21 +1785,6 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
-		case Tld4: {
-			if( type != PTXOperand::f32 && type != PTXOperand::s32
-				&& type != PTXOperand::u32 ) {
-				return "invalid instruction type " 
-					+ PTXOperand::toString( type );
-			}
-			if( c.type != PTXOperand::f32 ) {
-				return "source C type must be f32 " 
-					+ PTXOperand::toString( c.type );
-			}
-			if( c.vec != PTXOperand::v2 ) {
-				return "operand C must be a 2-component vector ";
-			}
-			break;
-		}
 		case Txq: {
 			if (type != ir::PTXOperand::b32) {
 				return "data type must be .b32";
@@ -2044,7 +1939,7 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Bar: {
-			std::string result = guard() + "bar." + toString(barrierOperation);
+			std::string result = guard() + "bar" + toString(barrierOperation);
 			ir::PTXOperand ir::PTXInstruction::* instrMembers [] = { 
 				&ir::PTXInstruction::d, 
 				&ir::PTXInstruction::a, 
@@ -2055,8 +1950,7 @@ std::string ir::PTXInstruction::toString() const {
 			switch (barrierOperation) {
 				case BarReduction: 
 				{
-					result += toString(reductionOperation)
-						+ PTXOperand::toString(type);
+					result += toString(reductionOperation) + PTXOperand::toString(type);
 				}
 				break;
 				default: break;
@@ -2067,11 +1961,6 @@ std::string ir::PTXInstruction::toString() const {
 				}
 			}
 			return result;
-		}
-        case Bfe: {
-			return guard() + "bfe." + PTXOperand::toString( type ) + " " 
-				+ d.toString() + ", " + a.toString()
-				+ ", " + b.toString() + ", " + c.toString();
 		}
 		case Bfi: {
 			return guard() + "bfi." + PTXOperand::toString( type ) + " " 
@@ -2155,10 +2044,6 @@ std::string ir::PTXInstruction::toString() const {
 				} else if( modifier & rp ) {
 					result += "rpi.";
 				}
-
-				if( modifier & ftz ) {
-					result += "ftz.";
-				}
 				if( modifier & sat ) {
 					result += "sat.";
 				}
@@ -2169,13 +2054,7 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Cvta: {
-			std::string result = guard() + "cvta.";
-			
-			if (toAddrSpace) {
-				result += "to.";
-			}
-			
-			result += toString(addressSpace)
+			std::string result = guard() + "cvta." + toString(addressSpace)
 				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", "
 				+ a.toString();
 			return result;
@@ -2309,13 +2188,6 @@ std::string ir::PTXInstruction::toString() const {
 		case Popc: {
 			return guard() + "popc." + PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
-		}
-		case Prefetch: {
-			return guard() + "prefetch." + toString(addressSpace) + "." + 
-				PTXInstruction::toString(cacheLevel) + " [" + d.toString() + "]";
-		}
-		case Prefetchu: {
-			return guard() + "prefetchu.L1 [" + d.toString() + "]";
 		}
 		case Prmt: {
 			std::string result = guard() + "prmt." 
@@ -2492,16 +2364,10 @@ std::string ir::PTXInstruction::toString() const {
 				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString();
 		}
-		case Tex: {			
+		case Tex: {
 			return guard() + "tex." + toString( geometry ) + ".v4." 
 				+ PTXOperand::toString( d.type ) + "." 
 				+ PTXOperand::toString( type ) + " " + d.toString() + ", [" 
-				+ a.toString() + ", " + c.toString() + "]"; 
-		}
-		case Tld4: {
-			return guard() + "tld4." + toString( colorComponent ) + ".2d.v4." 
-				+ PTXOperand::toString( d.type ) + "." 
-				+ PTXOperand::toString( c.type ) + " " + d.toString() + ", [" 
 				+ a.toString() + ", " + c.toString() + "]"; 
 		}
 		case Trap: {
@@ -2528,8 +2394,6 @@ std::string ir::PTXInstruction::toString() const {
 	}
 	assertM(false, "Instruction opcode " << toString(opcode) 
 		<< " not implemented.");
-		
-	return "";
 }
 
 ir::Instruction* ir::PTXInstruction::clone(bool copy) const {
@@ -2540,33 +2404,4 @@ ir::Instruction* ir::PTXInstruction::clone(bool copy) const {
 		return new PTXInstruction;
 	}
 }
-
-bool ir::PTXInstruction::isBranch() const {
-	return opcode == Bra || opcode == Call;
-}
-
-bool ir::PTXInstruction::mayHaveAddressableOperand() const {
-	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
-		|| opcode == Atom || opcode == Ldu;
-}
-
-bool ir::PTXInstruction::hasSideEffects() const {
-	return opcode == St || opcode == Atom || opcode == Bar
-		|| opcode == Bra || opcode == Call || opcode == Exit || opcode == Ldu
-		|| opcode == Membar || opcode == Tex || opcode == Tld4
-		|| opcode == Prefetch || opcode == Sust || opcode == Suq
-		|| opcode == Trap || opcode == Reconverge || opcode == Ret;
-}
-
-bool ir::PTXInstruction::isMemoryInstruction() const {
-	return opcode == St || opcode == Atom
-		|| opcode == Ldu
-		|| opcode == Tex || opcode == Tld4
-		|| opcode == Prefetch || opcode == Sust || opcode == Ld;
-}
-
-bool ir::PTXInstruction::isExit() const {
-	return opcode == Exit || opcode == Trap || opcode == Ret;
-}
-
 

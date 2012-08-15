@@ -59,13 +59,12 @@ namespace parser
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
-					typedef std::unordered_set< std::string > StringSet;
-					typedef std::vector< StringSet > StringSetStack;
 					typedef std::vector< unsigned int > UintStack;
 					typedef std::vector< unsigned int > DimensionVector;
 					typedef std::vector< double > DoubleVector;
 					typedef std::unordered_map< std::string, 
 						OperandWrapper > OperandMap;
+					typedef std::unordered_set< std::string > StringSet;
 					typedef std::vector< ir::PTXOperand > OperandVector;
 					typedef std::unordered_map< std::string, 
 						FunctionPrototype > PrototypeMap;
@@ -104,10 +103,10 @@ namespace parser
 					
 					StringList identifiers;
 					OperandMap operands;
-					StringSetStack localOperands;
+					StringList localOperands;
 
 					PrototypeMap prototypes;
-					StringSetStack localPrototypes;
+					StringList localPrototypes;
 					
 					bool inEntry;
 					bool inArgumentList;
@@ -121,7 +120,6 @@ namespace parser
 					FunctionPrototype prototype;
 					
 					ir::PTXStatement::Directive directive;
-					std::string comment;
 									
 				private:
 					static ir::PTXInstruction::AddressSpace _toAddressSpace( 
@@ -145,13 +143,10 @@ namespace parser
 				public:
 					void preprocessor( int token );
 					void version( double version, YYLTYPE& location );
-					void addressSize( unsigned int size );
 					void identifierList( const std::string& identifier );
 					void identifierList2( const std::string& identifier );
 					void decimalListSingle( long long int value );
 					void decimalListSingle2( long long int value );
-					void symbolListSingle( const std::string& identifier );
-					void symbolListSingle2( const std::string& identifier );
 					void floatList( double value );
 					void floatList1( double value );
 					void singleList( float value );
@@ -203,7 +198,6 @@ namespace parser
 					void entry( const std::string& name, YYLTYPE& location );
 					void entryDeclaration( YYLTYPE& location );
 					void entryStatement( YYLTYPE& location );
-					void metadata( const std::string& comment );
 					
 					void locationAddress( int token );
 					void uninitializableDeclaration( const std::string& name );
@@ -251,28 +245,25 @@ namespace parser
 					void instruction( const std::string& opcode, int dataType );
 					void instruction( const std::string& opcode );
 					void tex( int dataType );
-					void tld4( int dataType );
 					void callPrototypeName( const std::string& identifier );
 					void call( const std::string& identifier,
 						YYLTYPE& location );
 					void carryIn();
 					void relaxedConvert( int token, YYLTYPE& location );
-					void cvtaTo();
+					void cvtaTo(int token, YYLTYPE& location);
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );
 					void barrierOperation( int token, YYLTYPE & location);
 					void cacheOperation(int token );
-					void cacheLevel(int token );
 					void clampOperation(int token);
 					void formatMode(int token);
 					void surfaceQuery(int token);
-					void colorComponent(int token);
 					
 					void returnType( int token );
 					void argumentType( int token );
 					void callPrototype( const std::string& name, 
-						const std::string& identifier, YYLTYPE& location );
+						YYLTYPE& location );
 					void callTargets( const std::string& name, 
 						YYLTYPE& location );
 			};
@@ -313,12 +304,9 @@ namespace parser
 			static ir::PTXInstruction::CmpOp tokenToCmpOp( int );
 			static ir::PTXInstruction::BarrierOperation tokenToBarrierOp(int);
 			static ir::PTXInstruction::CacheOperation tokenToCacheOperation(int);
-			static ir::PTXInstruction::CacheLevel tokenToCacheLevel(int);
 			static ir::PTXInstruction::ClampOperation tokenToClampOperation(int);
 			static ir::PTXInstruction::FormatMode tokenToFormatMode(int);
 			static ir::PTXInstruction::SurfaceQuery tokenToSurfaceQuery(int);
-			static ir::PTXInstruction::ColorComponent
-				tokenToColorComponent(int);
 			static ir::PTXInstruction::BoolOp tokenToBoolOp( int );
 			static ir::PTXInstruction::Geometry tokenToGeometry( int );
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );

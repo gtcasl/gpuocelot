@@ -17,11 +17,13 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 // hydrazine includes
-#include <hydrazine/interface/SystemCompatibility.h>
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
+
+// opengl includes
+#include <GL/glx.h>
 
 // standard library includes
 #include <cstring>
@@ -48,7 +50,7 @@
 #define REPORT_PTX 0
 
 // if 1, adds line numbers to reported PTX
-#define REPORT_PTX_WITH_LINENUMBERS 0
+#define REPORT_PTX_WITH_LINENUMBERS 1
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -111,25 +113,6 @@ namespace executive
 		_hostPointer(0), _external(true)
 	{
 	
-	}
-
-	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(
-		void* pointer, size_t size, unsigned int flags) :
-		Device::MemoryAllocation(false, true), 
-		_flags(flags), _size(size), 
-		_devicePointer(0), 
-		_hostPointer(pointer), _external(true)
-	{
-		checkError(driver::cuMemHostRegister(_hostPointer, size, _flags));
-		if(CUDA_SUCCESS != driver::cuMemHostGetDevicePointer(&_devicePointer, 
-			_hostPointer, 0)) 
-		{
-			_devicePointer = 0;
-		}
-		report("MemoryAllocation::MemoryAllocation() - registered " << _size 
-			<< " bytes of host-allocated memory");
-		report("  host: " << (const void *)_hostPointer << ", device pointer: "
-			<< (const void *)_devicePointer);
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::~MemoryAllocation()
@@ -386,7 +369,6 @@ namespace executive
 	void NVIDIAGPUDevice::Module::load()
 	{
 		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
-		
 		assert(!loaded());
 		std::stringstream stream;
 		
@@ -412,7 +394,7 @@ namespace executive
 		void* optionValues[3] = {
 			(void*)CU_TARGET_COMPUTE_20,
 			(void*)errorLogBuffer, 
-			hydrazine::bit_cast<void*>(errorLogActualSize), 
+			(void*)errorLogActualSize, 
 		};
 		
 		std::string ptxModule = stream.str();
@@ -608,9 +590,6 @@ namespace executive
 	}
 
 	NVIDIAGPUDevice::Array3D::Array3D() : array(0)
-
-
-
 	{
 		
 	}
@@ -648,6 +627,7 @@ namespace executive
 		memcpy.dstXInBytes = 0;
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
+
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -659,13 +639,10 @@ namespace executive
 	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags,
 		int computeCapability)
 	{
-		report("NVIDIAGPUDevice::createDevices()");
 		if(!_cudaDriverInitialized)
 		{
 			driver::cuInit(0);
 			_cudaDriverInitialized = true;
-			
-			report("driver::cuInit(0) called");
 		}
 
 		DeviceVector devices;
@@ -737,22 +714,18 @@ namespace executive
 		CUdevice device;
 		checkError(driver::cuDeviceGet(&device, id));
 		
-		_opengl = hydrazine::isAnOpenGLContextAvailable();
-
-		report(" creating context");
-		if(_opengl)
+		GLXContext openglContext = glXGetCurrentContext();
+		if(openglContext != 0)
 		{
-			report(" creating GL context - flags: " << flags << ", device: " << device);
 			checkError(driver::cuGLCtxCreate(&_context, flags, device));
+			_opengl = true;
 		}
 		else
 		{
-			report(" creating context - flags: " << flags << ", device: " << device);
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
-		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context."
-			"_opengl = " << _opengl);		
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);		
 		checkError(driver::cuCtxPopCurrent(&_context));
 				
 		checkError(driver::cuDeviceGetName(_properties.name, 255, device));
@@ -805,22 +778,6 @@ namespace executive
 			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
 			&_properties.minor, device));
-		
-		int unifiedAddressing = false;
-		checkError(driver::cuDeviceGetAttribute(&unifiedAddressing, 
-			CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING, device));
-			
-		_properties.unifiedAddressing = unifiedAddressing;
-		
-		checkError(driver::cuDeviceGetAttribute(&_properties.memoryClockRate, 
-			CU_DEVICE_ATTRIBUTE_MEMORY_CLOCK_RATE, device));
-		checkError(driver::cuDeviceGetAttribute(&_properties.memoryBusWidth, 
-			CU_DEVICE_ATTRIBUTE_GLOBAL_MEMORY_BUS_WIDTH, device));
-		checkError(driver::cuDeviceGetAttribute(&_properties.l2CacheSize, 
-			CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, device));
-		checkError(driver::cuDeviceGetAttribute(
-			&_properties.maxThreadsPerMultiProcessor, 
-			CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, device));
 	}
 
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()
@@ -948,20 +905,6 @@ namespace executive
 
 		report("NVIDIAGPUDevice::allocateHost() - adding key "
 			<< allocation->mappedPointer());
-
-		return allocation;
-	}
-
-	Device::MemoryAllocation* NVIDIAGPUDevice::registerHost(void* pointer,
-		size_t size, unsigned int flags)
-	{
-		MemoryAllocation* allocation =
-			new MemoryAllocation(pointer, size, flags);
-		_hostAllocations.insert(std::make_pair(allocation->pointer(),
-			allocation));
-
-		report("NVIDIAGPUDevice::registerHost() - adding key "
-			<< allocation->pointer());
 
 		return allocation;
 	}
@@ -1105,14 +1048,12 @@ namespace executive
 
 			id = stream->second;
 		}
-		CUgraphicsResource * graphicsResources =
-			(CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		report("NVIDIAGPUDevice::mapGraphicsResource() - count = " << count );
-		CUresult result = driver::cuGraphicsMapResources(count,
-			graphicsResources, id);
+		CUresult result = driver::cuGraphicsMapResources(count,	graphicsResources, id);
 		report("driver::cuGraphicsMapresources() - " << result << ", " 
 			<< cuda::CudaDriver::toString(result));
 		
@@ -1128,8 +1069,8 @@ namespace executive
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
-		CUresult result = driver::cuGraphicsResourceGetMappedPointer(
-			&pointer, &bytes, (CUgraphicsResource)resource);
+		CUresult result = driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
+			(CUgraphicsResource)resource);
 		report("  cuGraphicsResourceGetMappedPointer() returned " << result)
 		checkError(result);
 			
@@ -1173,8 +1114,7 @@ namespace executive
 		CUdeviceptr pointer;
 		size_t bytes = 0;
 
-		CUgraphicsResource * graphicsResources =
-			(CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
 		
 		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer,
 			&bytes, graphicsResources[0]));
@@ -1383,18 +1323,21 @@ namespace executive
 			
 	void NVIDIAGPUDevice::select()
 	{
-		Device::select();
-		
-		report("NVIDIAGPUDevice::select()");
+		assert(!selected());
+		_selected = true;
 		checkError(driver::cuCtxPushCurrent(_context));
 	}
 	
+	bool NVIDIAGPUDevice::selected() const
+	{
+		return _selected;
+	}
+
 	void NVIDIAGPUDevice::unselect()
 	{
-		Device::unselect();
-		
+		assert(selected());
+		_selected = false;
 		checkError(driver::cuCtxPopCurrent(&_context));
-		report("NVIDIAGPUDevice::unselect()");
 	}
 		
 	void NVIDIAGPUDevice::bindTexture(void* pointer, 
@@ -1490,8 +1433,6 @@ namespace executive
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())
 		{
-
-
 			Throw("Invalid Module - " << moduleName);
 		}
 		
@@ -1522,10 +1463,9 @@ namespace executive
 
 	void NVIDIAGPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
-		const ir::Dim3& block, size_t sharedMemory,
+		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize,
-		const trace::TraceGeneratorVector& traceGenerators,
-		const ir::ExternalFunctionSet* externals)
+		const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		
@@ -1559,18 +1499,15 @@ namespace executive
 				<< kernel->name << "\" : \n\tpreallocated "
 				<< kernel->constMemorySize() << " is greater than available " 
 				<< properties().totalConstantMemory << " for device " 
-
 				<< properties().name);
 		}
 		
-		kernel->device = this;
 		kernel->setKernelShape(block.x, block.y, block.z);
 		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
 			argumentBlockSize);
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
-		kernel->setTraceGenerators(traceGenerators);
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)
@@ -1578,9 +1515,8 @@ namespace executive
 			if(array->second != 0) array->second->update();
 		}
 		
-		kernel->launchGrid(grid.x, grid.y, grid.z);
+		kernel->launchGrid(grid.x, grid.y);
 		synchronize();
-		
 	}
 
 	cudaFuncAttributes NVIDIAGPUDevice::getAttributes(const std::string& path, 
@@ -1683,7 +1619,6 @@ namespace executive
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif
-

@@ -28,6 +28,15 @@
 namespace executive
 {
 
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
+static unsigned int threadId(LLVMContext& context)
+{
+	return context.tid.x + context.tid.y * context.ntid.x
+		+ context.tid.z * context.ntid.y * context.ntid.z;
+}
+////////////////////////////////////////////////////////////////////////////////
+
 LLVMCooperativeThreadArray::LLVMCooperativeThreadArray(LLVMWorkerThread* w) :
 	_warpSize(std::max(api::OcelotConfiguration::get().executive.warpSize, 1)),
 	_worker(w)
@@ -58,8 +67,6 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	_stacks.resize(threads);
 	_sharedMemory.resize(kernel.externSharedMemorySize()
 		+ _functions[_entryPoint]->sharedSize);
-	_globallyScopedLocalMemory.resize(
-		threads*_functions[_entryPoint]->globalLocalSize);
 	_kernel = &kernel;
 
 	_freeContexts.resize(threads);
@@ -250,7 +257,7 @@ void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 	LLVMModuleManager::MetaData* metadata = _functions[_nextFunction];
 	context.metadata = (char*) metadata;
 	
-	report("   executing thread " << _threadId(context)
+	report("   executing thread " << threadId(context) 
 		<< " in context " << contextId << " of " << _contexts.size() 
 		<< ", _nextFunction: " << _nextFunction << " of " << _functions.size());
 	
@@ -294,8 +301,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.nctaid.z  = _kernel->gridDim().z;
 		context.ctaid.x   = ctaId % context.nctaid.x;
 		context.ctaid.y   = (ctaId / context.nctaid.x) % context.nctaid.y;
-		context.ctaid.z   = ((ctaId / context.nctaid.x) / context.nctaid.y) %
-			context.nctaid.z;
+		context.ctaid.z   = 0;
 		context.ntid.x    = _kernel->blockDim().x;
 		context.ntid.y    = _kernel->blockDim().y;
 		context.ntid.z    = _kernel->blockDim().z;
@@ -307,11 +313,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.local     = stack.localMemory();
 		context.parameter = stack.parameterMemory();
 		context.constant  = _kernel->constantMemory();
-		context.globallyScopedLocal =
-			reinterpret_cast<char*>(_globallyScopedLocalMemory.data()) +
-			metadata.globalLocalSize * threadId;
-		context.externalSharedSize  = _kernel->externSharedMemorySize();
-		context.metadata            = reinterpret_cast<char*>(&metadata);
+		context.metadata  = reinterpret_cast<char*>(&metadata);
 	}
 	else
 	{
@@ -340,9 +342,9 @@ void LLVMCooperativeThreadArray::_computeNextFunction()
 	}
 	else
 	{
-		_nextFunction      = 1;
-		unsigned int total = 0;
-		unsigned int count = _queuedThreads[1].size();
+		_nextFunction        = 1;
+		unsigned int total   = 0;
+		unsigned int count   = _queuedThreads[1].size();
 		
 		ThreadListVector::iterator queue = _queuedThreads.begin();
 		
@@ -489,16 +491,12 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	}
 
 	_guessFunction = nextFunction;
-	if (nextFunction != 0xffffffff) {
-		assertM(nextFunction < _queuedThreads.size(), "Next function " 
-			<< nextFunction << " is out of range of function table with "
-			<< _queuedThreads.size() << " entries.");
-		_queuedThreads[nextFunction].push_back(contextId);
-	}
-	else {
-		return true;
-	}
 
+	assertM(nextFunction < _queuedThreads.size(), "Next function " 
+		<< nextFunction << " is out of range of function table with "
+		<< _queuedThreads.size() << " entries.");
+	_queuedThreads[nextFunction].push_back(contextId);
+	
 	return false;
 }
 
@@ -515,12 +513,6 @@ void LLVMCooperativeThreadArray::_destroyContexts()
 		_reclaimedContexts.end());
 
 	_reclaimedContexts.clear();
-}
-
-unsigned int LLVMCooperativeThreadArray::_threadId(const LLVMContext& context)
-{
-	return context.tid.x + context.tid.y * context.ntid.x
-		+ context.tid.z * context.ntid.y * context.ntid.z;
 }
 
 }

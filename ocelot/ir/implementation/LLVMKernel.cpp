@@ -9,8 +9,8 @@
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/string.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 #include <configure.h>
 
@@ -24,16 +24,6 @@ namespace ir
 	LLVMKernel::LLVMKernel( const Kernel& k ) : Kernel( k )
 	{
 		ISA = Instruction::LLVM;
-	}
-	
-	void LLVMKernel::push_back(const LLVMStatement& statement)
-	{
-		_statements.push_back(statement);
-	}
-	
-	void LLVMKernel::push_front(const LLVMStatement& statement)
-	{
-		_statements.push_front(statement);
 	}
 	
 	void LLVMKernel::assemble()

@@ -9,19 +9,11 @@
 
 // hydrazine includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
 
 // Linux system headers
-#if __GNUC__
-	#include <dlfcn.h>
-#else 
-	// TODO Add dynamic loading support on windows
-	#define dlopen(a,b) 0
-	#define dlclose(a) -1
-	#define dlerror() "Unknown error"
-	#define dlsym(a,b) 0
-#endif
+#include <dlfcn.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -40,7 +32,6 @@ namespace cal
 	CalDriver::CalDriver() : _driver(0), _compiler(0)
 	{
 		report("Loading libaticalrt.so");
-		#if __GNUC__
 		_driver = dlopen("libaticalrt.so", RTLD_LAZY);
 		if (_driver == 0) {
 			Throw("Failed to load cal driver: " << dlerror());
@@ -86,16 +77,12 @@ namespace cal
 		hydrazine::bit_cast(_calclFreeImage,  dlsym(_compiler, "calclFreeImage"));
 
 		calInit();
-		#else
-		assertM(false, "CAL Driver support not compiled into Ocelot.");
-		#endif
 	}
 
 	CalDriver::~CalDriver()
 	{
 		calShutdown();
 
-		#if __GNUC__
 		if (_driver) {
 			dlclose(_driver);
 		}
@@ -103,9 +90,6 @@ namespace cal
 		if (_compiler) {
 			dlclose(_compiler);
 		}
-		#else
-		assertM(false, "CAL Driver support not compiled into Ocelot.");
-		#endif
 
         // don't delete _instance as this would call the destructor again
         // let the memory be reclaimed when the program terminates

@@ -88,29 +88,23 @@ namespace ir
 			static std::string toString(AddressMode type);
 			static std::string toString(Type type);
 			
-			static Type typeFromString(const std::string&);
-			static AddressMode modeFromString(const std::string&);
-			static Interpolation interpolationFromString(const std::string&);
-			
-			static ir::PTXOperand::DataType
-				convertFromChannelDataType(ChannelDataType);
-			static ChannelDataType
-				convertFromPTXDataType(ir::PTXOperand::DataType);
+			static ir::PTXOperand::DataType convertFromChannelDataType(ChannelDataType);
+			static ChannelDataType convertFromPTXDataType(ir::PTXOperand::DataType);
 
 		public:
-			unsigned int pitch() const {
+			unsigned int pitch() {
 				return ((x + y + z + w) / 8) * size.x;
 			}
 
-			unsigned int bytes() const {
+			unsigned int bytes() {
 				return pitch() * size.y * size.z;
 			}
 
-			unsigned int components() const {
+			unsigned int components() {
 				return (x ? 1 : 0) + (y ? 1 : 0) + (z ? 1 : 0) 
 					+ (w ? 1 : 0);
 			}
-			unsigned int dimensions() const {
+			unsigned int dimensions() {
 				return (size.x - 1 ? 1 : 0) + (size.y - 1 ? 1 : 0) 
 					+ (size.z - 1 ? 1 : 0);
 			}
@@ -137,8 +131,7 @@ namespace ir
 			void* data; //! Pointer to mapped variable
 			
 		public:
-			Texture(const std::string& n = "", SurfaceType surfType = Texref,
-				Type type = Float);
+			Texture(const std::string& n = "", SurfaceType surfType = Texref);
 
 		public:
 			std::string toString() const;

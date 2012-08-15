@@ -14,11 +14,9 @@
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 
-#include <ocelot/transforms/interface/SubkernelFormationPass.h>
-#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/analysis/interface/SubkernelFormationPass.h>
+#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/analysis/interface/RemoveBarrierPass.h>
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -31,7 +29,7 @@
 #include <hydrazine/interface/Casts.h>
 
 // LLVM Includes
-#if HAVE_LLVM
+#ifdef HAVE_LLVM
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
@@ -88,23 +86,11 @@ hydrazine::Thread::Id LLVMModuleManager::id()
 {
 	return _database.id();
 }
-
-void LLVMModuleManager::setExternalFunctionSet(
-	const ir::ExternalFunctionSet& s)
-{
-	_database.setExternalFunctionSet(s);
-}
-
-void LLVMModuleManager::clearExternalFunctionSet()
-{
-	_database.clearExternalFunctionSet();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
-#if HAVE_LLVM
+#ifdef HAVE_LLVM
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
 	unsigned int padding = alignment - (size % alignment);
@@ -126,7 +112,7 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel,
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 
-			if(ptx.mayHaveAddressableOperand()
+			if(ptx.opcode == ir::PTXInstruction::Mov 
 				&& (ptx.a.addressMode == ir::PTXOperand::Address
 				|| ptx.a.addressMode == ir::PTXOperand::Indirect))
 			{
@@ -177,7 +163,9 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.mayHaveAddressableOperand())
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -207,7 +195,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 
 static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent, const ir::ExternalFunctionSet& externals)
+	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	report("  Setting up parameter memory references.");
@@ -227,11 +215,7 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 			if(ptx.opcode != ir::PTXInstruction::Call) continue;
-			if(&externals != 0)
-			{
-				if(externals.find(ptx.a.identifier) != 0)  continue;
-			}
-					
+			
 			unsigned int offset = 0;
 			
 			report("   For arguments of call instruction '"
@@ -276,7 +260,9 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.mayHaveAddressableOperand())
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -414,7 +400,10 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.mayHaveAddressableOperand())
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St
+				|| ptx.opcode == ir::PTXInstruction::Cvta)
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -501,7 +490,9 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.mayHaveAddressableOperand())
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -584,8 +575,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	// [0] == subkernel-id
 	// [1] == call type
 	// [2] == barrier resume point if it exists
-	// [3] == resume point if it exists
-	metadata->localSize = 16;
+	metadata->localSize = 8;
 	
 	// give preference to barrier resume point
 	ir::Kernel::LocalMap::const_iterator local = kernel.locals.find(
@@ -598,7 +588,10 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
 			
-			offsets.insert(std::make_pair(local->second.name, 8));
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
 		}
 	}
 
@@ -612,7 +605,10 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
 			
-			offsets.insert(std::make_pair(local->second.name, 12));
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
 		}
 	}
 
@@ -664,7 +660,9 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 	
-			if(ptx.mayHaveAddressableOperand())
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -675,7 +673,6 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 						if(offsets.end() != offset) 
 						{
 							ptx.addressSpace = ir::PTXInstruction::Local;
-							operands[i]->isGlobalLocal = false;
 							operands[i]->offset += offset->second;
 							report("   For instruction " 
 								<< ptx.toString() << ", mapping local label " 
@@ -690,115 +687,43 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
     report("   Total local memory size is " << metadata->localSize << ".");
 }
 
-static void setupGlobalLocalMemoryReferences(ir::PTXKernel& kernel,
-	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent)
-{
-	report( "  Setting up globally scoped local memory references." );
-	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
-
-	OffsetMap offsets;
-	metadata->globalLocalSize = 0;
-	
-	for(ir::Module::GlobalMap::const_iterator global =
-		kernel.module->globals().begin();
-		global != kernel.module->globals().end(); ++global)
-	{
-		if(global->second.statement.directive == ir::PTXStatement::Local)
-		{
-			report("   Found globally scoped local variable " 
-				<< global->second.statement.name << " of size " 
-				<< global->second.statement.bytes());
-			
-			pad(metadata->globalLocalSize,
-				global->second.statement.accessAlignment());
-			offsets.insert(std::make_pair(global->second.statement.name,
-				metadata->globalLocalSize));
-			metadata->globalLocalSize += global->second.statement.bytes();
-		}
-	}
-    
-	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
-		block != kernel.cfg()->end(); ++block)
-	{
-		for(ir::ControlFlowGraph::InstructionList::iterator 
-			instruction = block->instructions.begin(); 
-			instruction != block->instructions.end(); ++instruction)
-		{
-			ir::PTXInstruction& ptx = static_cast<
-				ir::PTXInstruction&>(**instruction);
-			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
-	
-			if(ptx.mayHaveAddressableOperand())
-			{
-				for(unsigned int i = 0; i != 4; ++i)
-				{
-					if(operands[i]->addressMode == ir::PTXOperand::Address)
-					{
-						OffsetMap::iterator offset = offsets.find( 
-							operands[i]->identifier);
-						if(offsets.end() != offset) 
-						{
-							ptx.addressSpace = ir::PTXInstruction::Local;
-							operands[i]->isGlobalLocal = true;
-							operands[i]->offset += offset->second;
-							report("   For instruction " 
-								<< ptx.toString()
-								<< ", mapping globally scoped local label " 
-								<< offset->first << " to " << offset->second);
-						}
-					}
-				}
-			}
-		}
-	}
-
-    report("   Total globally scoped local memory size is "
-    	<< metadata->globalLocalSize << ".");
-}
-
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent, executive::Device* device,
-	const ir::ExternalFunctionSet& externals)
+	const ir::PTXKernel& parent, executive::Device* device)
 {
 	report(" Setting up memory references for kernel variables.");
 	
 	setupGlobalMemoryReferences(kernel, parent);
 	setupArgumentMemoryReferences(kernel, metadata, parent);
-	setupParameterMemoryReferences(kernel, metadata, parent, externals);
+	setupParameterMemoryReferences(kernel, metadata, parent);
 	setupSharedMemoryReferences(kernel, metadata, parent);
 	setupConstantMemoryReferences(kernel, metadata, parent);
 	setupTextureMemoryReferences(kernel, metadata, parent, device);
 	setupLocalMemoryReferences(kernel, metadata, parent);
-	setupGlobalLocalMemoryReferences(kernel, metadata, parent);
 }
 
 static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	translator::Translator::OptimizationLevel optimization,
-	LLVMModuleManager::FunctionId id, const ir::ExternalFunctionSet& externals)
+	LLVMModuleManager::FunctionId id)
 {
+	report(" Building dataflow graph.");
+	kernel.dfg();
+
 	report(" Optimizing PTX");
-	transforms::PassManager manager(const_cast<ir::Module*>(kernel.module));
-
-	transforms::SimplifyExternalCallsPass simplifyExternals(externals);
-
-	if(&externals != 0)
-	{
-		report("  Adding simplify externals pass");
-		manager.addPass(simplifyExternals);
-	}
+	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
+	analysis::RemoveBarrierPass              removeBarriers(id);
 	
-	transforms::ConvertPredicationToSelectPass convertPredicationToSelect;
-	transforms::RemoveBarrierPass              removeBarriers(id, &externals);
+	report("  Running convert predication to select pass");
+	convertPredicationToSelect.initialize(*kernel.module);
+	convertPredicationToSelect.runOnKernel(kernel);
+	convertPredicationToSelect.finalize();
 	
-	report("  Adding convert predication to select pass");
-	manager.addPass(convertPredicationToSelect);
-
-	report("  Adding remove barriers pass");
-	manager.addPass(removeBarriers);
+	report("  Running remove barriers pass");
+	removeBarriers.initialize(*kernel.module);
+	removeBarriers.runOnKernel(kernel);
+	removeBarriers.finalize();
 	
-	manager.runOnKernel(kernel);
+	kernel.dfg()->toSsa();
 
 	return removeBarriers.usesBarriers;
 }
@@ -819,19 +744,7 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			if(ptx.opcode != ir::PTXInstruction::Call 
 				&& ptx.opcode != ir::PTXInstruction::Mov) continue;
-
-			if(ptx.opcode == ir::PTXInstruction::Call)
-			{
-				if(ptx.tailCall) continue;
-				
-				const ir::ExternalFunctionSet& externals =
-					database.getExternalFunctionSet();
-
-				if(&externals != 0)
-				{
-					if(externals.find(ptx.a.identifier) != 0) continue;
-				}
-			}
+			if(ptx.tailCall) continue;
 			
 			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
 			{
@@ -847,23 +760,16 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 }
 
 static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
-	translator::Translator::OptimizationLevel optimization,
-	const ir::ExternalFunctionSet& externals)
+	translator::Translator::OptimizationLevel optimization)
 {
 	assert(module == 0);
 
 	report(" Translating kernel.");
 	
 	report("  Converting from PTX IR to LLVM IR.");
-	translator::PTXToLLVMTranslator translator(optimization, &externals);
-
-	transforms::PassManager manager(const_cast<ir::Module*>(kernel.module));
-	
-	manager.addPass(translator);
-	manager.runOnKernel(kernel);
-
+	translator::PTXToLLVMTranslator translator(optimization);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
-		translator.translatedKernel());
+		translator.translate(&kernel));
 	
 	report("  Assembling LLVM kernel.");
 	llvmKernel->assemble();
@@ -884,7 +790,9 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		std::string m;
 		llvm::raw_string_ostream message(m);
 		message << "LLVM Parser failed: ";
-		error.print(kernel.name.c_str(), message);
+		error.Print(kernel.name.c_str(), message);
+
+		kernel.dfg()->fromSsa();
 
 		throw hydrazine::Exception(message.str());
 	}
@@ -899,6 +807,8 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		delete llvmKernel;
 		delete module;
 		module = 0;
+
+		kernel.dfg()->fromSsa();
 
 		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
 			+ kernel.name + " : \"" + verifyError + "\"");
@@ -920,11 +830,12 @@ static LLVMModuleManager::KernelAndTranslation::MetaData* generateMetadata(
 		report("  Adding debugging symbols");
 		ir::ControlFlowGraph::BasicBlock::Id id = 0;
 		
-		for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin();
-			block != kernel.cfg()->end(); ++block)
+		for(analysis::DataflowGraph::iterator block = kernel.dfg()->begin();
+			block != kernel.dfg()->end(); ++block)
 		{
-			block->id = id++;
-			metadata->blocks.insert(std::make_pair(block->id, block));
+			block->block()->id = id++;
+			metadata->blocks.insert(std::make_pair(block->id(), 
+				block->block()));
 		}
 	}
 	
@@ -1012,10 +923,8 @@ static void optimize(llvm::Module& module,
 
 
 static void link(llvm::Module& module, const ir::PTXKernel& kernel, 
-	Device* device, const ir::ExternalFunctionSet& externals,
-	const LLVMModuleManager::ModuleDatabase& database)
+	Device* device)
 {
-	// Add global variables
 	report("  Linking global variables.");
 	
 	for(ir::Module::GlobalMap::const_iterator 
@@ -1032,78 +941,21 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
 				kernel.module->path(), global->first);
 			assert(allocation != 0);
-			report("   Binding global variable " << global->first 
+			report("  Binding global variable " << global->first 
 				<< " to " << allocation->pointer());
 			LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
-		}
-	}
-	
-	// Add global references to function entry points
-	report("  Linking global references to function entry points.");
-	for(ir::Module::GlobalMap::const_iterator 
-		global = kernel.module->globals().begin(); 
-		global != kernel.module->globals().end(); ++global) 
-	{
-		for(ir::PTXStatement::SymbolVector::const_iterator symbol =
-			global->second.statement.symbols.begin(); symbol !=
-			global->second.statement.symbols.end(); ++symbol)
-		{
-			assert(device != 0);
-			
-			size_t size = ir::PTXOperand::bytes(global->second.statement.type);
-			size_t offset = symbol->offset * size;
-			
-			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
-				kernel.module->path(), global->first);
-			assert(allocation != 0);
-			report("   Adding symbol " << symbol->name 
-				<< " to global " << global->first << " at byte-offset "
-				<< offset);
-			
-			LLVMModuleManager::FunctionId id = database.getFunctionId(
-				kernel.module->path(), symbol->name);
-			
-			std::memcpy((char*)allocation->pointer() + offset, &id, size);
-		}
-	}
-	
-	// Add externals
-	report("  Linking global pointers to external (host) functions.");
-	if(&externals == 0) return;
-	
-	for(ir::Module::FunctionPrototypeMap::const_iterator
-		prototype = kernel.module->prototypes().begin();
-		prototype != kernel.module->prototypes().end(); ++prototype)
-	{
-		ir::ExternalFunctionSet::ExternalFunction* external = externals.find(
-			prototype->second.identifier);
-	
-		if(external != 0)
-		{
-			// Would you ever want to call into address 0?
-			assert(external->functionPointer() != 0);
-			
-			llvm::GlobalValue* value = module.getNamedValue(external->name());
-			assertM(value != 0, "Global function " << external->name() 
-				<< " not found in llvm module.");
-			report("   Binding global variable " << external->name() 
-				<< " to " << external->functionPointer());
-			LLVMState::jit()->addGlobalMapping(value,
-				external->functionPointer());
 		}
 	}
 }
 
 static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
-	const ir::PTXKernel& kernel, Device* device,
-	const ir::ExternalFunctionSet& externals,
-	const LLVMModuleManager::ModuleDatabase& database)
+	const ir::PTXKernel& kernel, Device* device)
 {
 	report(" Generating native code.");
 	
 	LLVMState::jit()->addModule(&module);
 
-	link(module, kernel, device, externals, database);
+	link(module, kernel, device);
 
 	report("  Invoking LLVM to Native JIT");
 
@@ -1132,7 +984,7 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
-	#if HAVE_LLVM
+	#ifdef HAVE_LLVM
 	if(_metadata == 0)
 	{
 		delete _kernel;
@@ -1149,16 +1001,14 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	delete _module;
 	delete _metadata;
 	#else
-	// Is it possible this is called when LLVMModuleManager is being destructed even with no LLVM
-	// device present?
-//	assertM(false, "LLVM support not compiled into ocelot. You should use a different device.");
+	assertM(false, "LLVM support not compiled into ocelot.");
 	#endif
 }
 
 LLVMModuleManager::KernelAndTranslation::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
-	#if HAVE_LLVM
+	#ifdef HAVE_LLVM
 	report("Getting metadata for kernel '" << _kernel->name << "'");
 
 	if(_metadata != 0) return _metadata;
@@ -1166,7 +1016,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	report("Translating PTX");
 	
 	unsigned int barriers = optimizePTX(*_kernel,
-		_optimizationLevel, _offsetId, _database->getExternalFunctionSet());
+		_optimizationLevel, _offsetId);
 	
 	try
 	{
@@ -1174,11 +1024,16 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 		
 		_metadata->subkernels = barriers + _subkernels;
 		
-		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device,
-			_database->getExternalFunctionSet());
+		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device);
 		setupCallTargets(*_kernel, *_database);
-		translate(_module, *_kernel, _optimizationLevel,
-			_database->getExternalFunctionSet());
+		translate(_module, *_kernel, _optimizationLevel);
+
+		// Converting out of ssa makes the assembly easier to read
+		if(_optimizationLevel == translator::Translator::ReportOptimization 
+			|| _optimizationLevel == translator::Translator::DebugOptimization)
+		{
+			_kernel->dfg()->fromSsa();
+		}
 	}
 	catch(...)
 	{
@@ -1190,8 +1045,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	try
 	{
 		optimize(*_module, _optimizationLevel);
-		codegen(_metadata->function, *_module, *_kernel, _device,
-			_database->getExternalFunctionSet(), *_database);
+		codegen(_metadata->function, *_module, *_kernel, _device);
 	}
 	catch(...)
 	{
@@ -1210,7 +1064,6 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	return _metadata;
 	#else
 	assertM(false, "LLVM support not compiled into ocelot.");
-	return 0;
 	#endif
 }
 
@@ -1223,19 +1076,13 @@ const std::string& LLVMModuleManager::KernelAndTranslation::name() const
 ////////////////////////////////////////////////////////////////////////////////
 // Module
 LLVMModuleManager::Module::Module(const KernelVector& kernels,
-	FunctionId nextFunctionId, ir::Module* m)
-: _originalModule(m)
+	FunctionId nextFunctionId)
 {	
 	for(KernelVector::const_iterator kernel = kernels.begin();
 		kernel != kernels.end(); ++kernel)
 	{
 		_ids.insert(std::make_pair(kernel->name(), nextFunctionId++));
 	}
-}
-
-void LLVMModuleManager::Module::destroy()
-{
-	delete _originalModule;
 }
 
 LLVMModuleManager::FunctionId LLVMModuleManager::Module::getFunctionId(
@@ -1296,74 +1143,66 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
+	std::stringstream ptx;
+	
+	ptx << 
+		".entry _ZOcelotBarrierKernel()\n"
+		"{\t\n"
+		"\t.reg .u32 %r<2>;\n"
+		"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
+		"\tentry:\n"
+		"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
+		"\tld.local.u32 %r1, [%r0];\n"
+		"BarrierPrototype: .callprototype _ ();\n"
+		"\tcall.tail %r1, BarrierPrototype;\n"
+		"\texit;\n"
+		"}\n";
+	
+	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
+	
+	loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 {
-	if(!killed())
-	{
-		DatabaseMessage message;
+	DatabaseMessage message;
 	
-		message.type = DatabaseMessage::KillThread;
+	message.type = DatabaseMessage::KillThread;
 	
-		send(&message);
+	send(&message);
 
-		DatabaseMessage* reply;	
-		receive(reply);
-	}
+	DatabaseMessage* reply;	
+	receive(reply);
 	
 	for(KernelVector::iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel)
 	{
 		kernel->unload();
 	}
-	
-	for(ModuleMap::iterator module = _modules.begin();
-		module != _modules.end(); ++module)
-	{
-		module->second.destroy();
-	}
 }
 
 void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module, 
 	translator::Translator::OptimizationLevel level, Device* device)
 {
-	if(!_barrierModule.loaded())
-	{
-		std::stringstream ptx;
-	
-		ptx << 
-			".entry _ZOcelotBarrierKernel()\n"
-			"{\t\n"
-			"\t.reg .u32 %r<2>;\n"
-			"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
-			"\tentry:\n"
-			"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
-			"\tld.local.u32 %r1, [%r0];\n"
-			"BarrierPrototype: .callprototype _ ();\n"
-			"\tcall.tail %r1, BarrierPrototype;\n"
-			"\texit;\n"
-			"}\n";
-	
-		_barrierModule.load(ptx, "_ZOcelotBarrierModule");
-
-		loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
-	}
-	
 	typedef api::OcelotConfiguration config;
 
 	assert(!isModuleLoaded(module->path()));
 
 	report("Loading module '" << module->path() << "'");
 
-	ir::Module* newModule = new ir::Module(*module);
-
-	typedef transforms::SubkernelFormationPass::ExtractKernelsPass Pass;
+	typedef analysis::SubkernelFormationPass::ExtractKernelsPass Pass;
 	Pass pass(config::get().optimizations.subkernelSize);
-	transforms::PassManager manager(newModule);
 
-	manager.addPass(pass);
-	manager.runOnModule();
+	pass.initialize(*module);
+
+	for(ir::Module::KernelMap::const_iterator
+		kernel = module->kernels().begin(); 
+		kernel != module->kernels().end(); ++kernel)
+	{
+		pass.runOnKernel(*kernel->second);
+	}
+
+	pass.finalize();
 
 	KernelVector subkernels;
 
@@ -1371,7 +1210,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 		kernel = pass.kernels.begin(); 
 		kernel != pass.kernels.end(); ++kernel)
 	{
-		for(transforms::SubkernelFormationPass::KernelVector::const_iterator 
+		for(analysis::SubkernelFormationPass::KernelVector::const_iterator 
 			subkernel = kernel->second.begin();
 			subkernel != kernel->second.end(); ++subkernel)
 		{
@@ -1385,7 +1224,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 	}
 
 	_modules.insert(std::make_pair(module->path(),
-		Module(subkernels, _kernels.size(), newModule)));
+		Module(subkernels, _kernels.size())));
 	_kernels.insert(_kernels.end(), subkernels.begin(), subkernels.end());
 }
 
@@ -1435,8 +1274,6 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 
 	_kernels = std::move(newKernels);
 	
-	module->second.destroy();
-	
 	_modules.erase(module);
 	
 	for(ModuleMap::iterator module = _modules.begin();
@@ -1461,23 +1298,6 @@ LLVMModuleManager::FunctionId LLVMModuleManager::ModuleDatabase::getFunctionId(
 
 	assert(module != _modules.end());
 	return module->second.getFunctionId(kernelName);
-}
-
-void LLVMModuleManager::ModuleDatabase::setExternalFunctionSet(
-	const ir::ExternalFunctionSet& s)
-{
-	_externals = &s;
-}
-
-void LLVMModuleManager::ModuleDatabase::clearExternalFunctionSet()
-{
-	_externals = 0;
-}
-
-const ir::ExternalFunctionSet& 
-	LLVMModuleManager::ModuleDatabase::getExternalFunctionSet() const
-{
-	return *_externals;
 }
 
 void LLVMModuleManager::ModuleDatabase::execute()

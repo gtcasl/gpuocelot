@@ -14,76 +14,34 @@
 #include <cassert>
 #include <cstring>
 
-static const unsigned int globalAlignment = 16;
-
-template<typename T>
-static T align(T address, unsigned int alignment = globalAlignment)
-{
-	typedef long long unsigned int Address;
-	Address a = (Address) address;
-	
-	Address remainder = a % alignment;
-
-	Address aligned = remainder == 0 ? a : a + (alignment - remainder);
-	return (T)(size_t)aligned;
-}
-
 namespace executive
 {
 	EmulatorCallStack::EmulatorCallStack(unsigned int threads,
 		unsigned int initialArgumentSize,
 		unsigned int initialFrameSize, unsigned int registers, 
-		unsigned int localSize, unsigned int globalLocalSize,
-		unsigned int sharedSize) :
+		unsigned int localSize, unsigned int sharedSize) :
 		_stackPointer(0),
 		_threadCount(threads),
-		_localMemoryBase(align(3 * sizeof(unsigned int))
-			+ align(initialFrameSize) * threads),
-		_registerFileBase(_localMemoryBase + align(localSize) * threads),
-		_stackFrameSizes(1, align(initialArgumentSize)),
-		_localMemorySizes(1, align(localSize)),
-		_registerFileSizes(1, align(registers,
-			globalAlignment / sizeof(RegisterType))),
+		_localMemoryBase(3 * sizeof(unsigned int) + initialFrameSize * threads),
+		_registerFileBase(_localMemoryBase + localSize * threads),
+		_stackFrameSizes(1, initialArgumentSize),
+		_localMemorySizes(1, localSize),
+		_registerFileSizes(1, registers),
 		_sharedMemorySizes(1, sharedSize),
-		_globalLocalMemory(align(globalLocalSize) * threads +
-			globalAlignment, 0),
-		_globalLocalSize(align(globalLocalSize))
+		_stack(threads * initialFrameSize 
+			+ threads * registers * sizeof( RegisterType )
+			+ threads * localSize + 3 * sizeof(unsigned int)),
+		_sharedMemory(sharedSize)
 	{
-		// Reserve 1MB so that the stack never gets realloced
-		// unless it overflows
-		_stack.reserve(1 << 20);
-	
-		_stackFrameSizes.push_back(align(initialFrameSize));
-		
-		_resizeSharedMemory(sharedSize);
-		
-		_resizeStack(threads * align(initialFrameSize)
-			+ threads * registerCount() * sizeof(RegisterType)
-			+ threads * localMemorySize() + align(3 * sizeof(unsigned int)));
+		_stackFrameSizes.push_back(initialFrameSize);
 	}
 
 	void* EmulatorCallStack::stackFramePointer(unsigned int thread)
 	{
 		assert(thread < _threadCount);
 		assert(!_stack.empty());
-		return _stackBase(_stackPointer + align(3 * sizeof(unsigned int))
+		return &_stack.at(_stackPointer + 3 * sizeof(unsigned int) 
 			+ thread * stackFrameSize());
-	}
-
-	void* EmulatorCallStack::stackBase()
-	{
-		return _stackBase(0);
-	}
-
-	unsigned int EmulatorCallStack::totalStackSize() const
-	{
-		return _stackSize();
-	}
-
-	void* EmulatorCallStack::savedStackFramePointer(unsigned int thread)
-	{
-		assert(!_stack.empty());
-		return _stackBase(_savedOffset + thread * _savedFrameSize);
 	}
 
 	void* EmulatorCallStack::previousStackFramePointer(unsigned int thread)
@@ -91,30 +49,23 @@ namespace executive
 		assert(thread < _threadCount);
 		assert(_stackFrameSizes.size() > 1);
 		unsigned int previousIndex = _stackFrameSizes.size() - 2;
-		unsigned int totalPreviousSize =
-			(_stackFrameSizes.at(previousIndex)
+		unsigned int totalPreviousSize = (_stackFrameSizes.at(previousIndex)
 			+ _registerFileSizes.at(previousIndex - 1) * sizeof(RegisterType)
 			+ _localMemorySizes.at(previousIndex - 1)) * _threadCount
-			+ align(3 * sizeof(unsigned int));
-		return _stackBase(_stackPointer + align(3 * sizeof(unsigned int))
+			+ 3 * sizeof(unsigned int);
+		return &_stack.at(_stackPointer + 3 * sizeof(unsigned int) 
 			- totalPreviousSize + thread * previousFrameSize());
 	}
 
-	void* EmulatorCallStack::callerFramePointer(unsigned int thread)
+	void* EmulatorCallStack::offsetToPointer(unsigned int offset)
 	{
-		assert(thread < _threadCount);
-		return _stackBase(callerOffset() + thread * callerFrameSize());
-	}
-
-	unsigned int EmulatorCallStack::offset() const
-	{
-		return _stackPointer + align(3 * sizeof(unsigned int));
+		assert(offset < _stack.size());
+		return &_stack.at(offset);
 	}
 	
-	void EmulatorCallStack::saveFrame()
+	unsigned int EmulatorCallStack::offset() const
 	{
-		_savedOffset    = offset();
-		_savedFrameSize = stackFrameSize();
+		return _stackPointer + 3 * sizeof(unsigned int);
 	}
 	
 	EmulatorCallStack::RegisterType* EmulatorCallStack::registerFilePointer(
@@ -122,7 +73,7 @@ namespace executive
 	{
 		assert(thread < _threadCount);
 		assert(!_registerFileSizes.empty());
-		return (RegisterType*)_stackBase(_registerFileBase 
+		return (RegisterType*)&_stack.at(_registerFileBase 
 			+ thread * registerCount() * sizeof(RegisterType));
 	}
 
@@ -131,7 +82,7 @@ namespace executive
 	{
 		assert(thread < _threadCount);
 		assert(!_registerFileSizes.empty());
-		return (RegisterType*)_stackBase(_registerFileBase 
+		return (RegisterType*)&_stack.at(_registerFileBase 
 			+ thread * registerCount() * sizeof(RegisterType));
 	}
 	
@@ -139,18 +90,13 @@ namespace executive
 	{
 		assert(thread < _threadCount);
 		assert(!_registerFileSizes.empty());
-		return (RegisterType*)_stackBase(_localMemoryBase 
+		return (RegisterType*)&_stack.at(_localMemoryBase 
 			+ thread * localMemorySize());
 	}
 	
 	void* EmulatorCallStack::sharedMemoryPointer()
 	{
-		return align(_sharedMemory.data());
-	}
-
-	void* EmulatorCallStack::globalLocalMemoryPointer(unsigned int thread)
-	{
-		return (char*)_globalLocalMemory.data() + thread * _globalLocalSize;
+		return _sharedMemory.data();
 	}
 
 	unsigned int EmulatorCallStack::registerCount() const
@@ -163,11 +109,6 @@ namespace executive
 	{
 		assert(!_localMemorySizes.empty());
 		return _localMemorySizes.back();
-	}
-	
-	unsigned int EmulatorCallStack::globalLocalMemorySize() const
-	{
-		return _globalLocalSize;
 	}
 	
 	unsigned int EmulatorCallStack::sharedMemorySize() const
@@ -188,27 +129,27 @@ namespace executive
 		return _stackFrameSizes.at(_stackFrameSizes.size() - 2);
 	}
 
+	unsigned int EmulatorCallStack::stackSize() const
+	{
+		return _stack.size();
+	}
+
 	unsigned int EmulatorCallStack::returnPC() const
 	{
 		// The first value on a stack frame is the return address
-		return *(unsigned int*)_stackBase(_stackPointer);
+		return *(unsigned int*)&_stack.at( _stackPointer );
 	}
 
 	unsigned int EmulatorCallStack::callerOffset() const
 	{
-		return *(unsigned int*)_stackBase(
+		return *(unsigned int*)&_stack.at(
 			_stackPointer + sizeof(unsigned int) );
 	}
 
 	unsigned int EmulatorCallStack::callerFrameSize() const
 	{
-		return *(unsigned int*)_stackBase(
+		return *(unsigned int*)&_stack.at(
 		_stackPointer + 2 * sizeof(unsigned int) );
-	}
-	
-	bool EmulatorCallStack::isTheCurrentFrameMain() const
-	{
-		return _sharedMemorySizes.size() == 1;
 	}
 	
 	void EmulatorCallStack::pushFrame(unsigned int stackSize, 
@@ -216,22 +157,17 @@ namespace executive
 		unsigned int returnPC, unsigned int callerStackFrame,
 		unsigned int callerFrameSize)
 	{
-		stackSize = align(stackSize);
-		registers = align(registers, globalAlignment / sizeof(RegisterType));
-		localSize = align(localSize);
-		
 		unsigned int totalPreviousSize = (stackFrameSize()
 			+ registerCount() * sizeof(RegisterType)
-			+ localMemorySize()) * _threadCount
-			+ align(3 * sizeof(unsigned int));
+			+ localMemorySize()) * _threadCount + 3 * sizeof(unsigned int);
 
 		unsigned int totalNewSize = (stackSize + localSize
 			+ registers * sizeof(RegisterType)) * _threadCount
-			+ align(3 * sizeof(unsigned int));
+			+ 3 * sizeof(unsigned int);
 		
 		_stackPointer += totalPreviousSize;
-		_localMemoryBase = _stackPointer
-			+ stackSize * _threadCount + align(3 * sizeof(unsigned int));
+		_localMemoryBase = _stackPointer + 3 * sizeof(unsigned int) 
+			+ stackSize * _threadCount;
 		_registerFileBase = _localMemoryBase + localSize * _threadCount;
 		
 		_stackFrameSizes.push_back(stackSize);
@@ -239,16 +175,15 @@ namespace executive
 		_registerFileSizes.push_back(registers);
 		_sharedMemorySizes.push_back(sharedSize);
 		
-		_resizeStack(_stackSize() + totalNewSize);
+		_stack.resize(_stack.size() + totalNewSize);
 		
-		*((unsigned int*) _stackBase(_stackPointer)) = returnPC;	
-		*((unsigned int*) _stackBase(
+		*((unsigned int*) &_stack.at(_stackPointer)) = returnPC;	
+		*((unsigned int*) &_stack.at(
 			_stackPointer + sizeof(unsigned int))) = callerStackFrame;	
-		*((unsigned int*) _stackBase(
+		*((unsigned int*) &_stack.at(
 			_stackPointer + 2 * sizeof(unsigned int))) = callerFrameSize;	
 		
-		_resizeSharedMemory(std::max(_sharedMemorySize(),
-			sharedSize));
+		_sharedMemory.resize(std::max(_sharedMemory.size(), (size_t)sharedSize));
 	}
 
 	void EmulatorCallStack::popFrame()
@@ -256,7 +191,7 @@ namespace executive
 		assert(!_stackFrameSizes.empty());
 		unsigned int totalSize = (stackFrameSize() 
 			+ registerCount() * sizeof(RegisterType) + localMemorySize()) 
-			* _threadCount + align(3 * sizeof(unsigned int));
+			* _threadCount + 3 * sizeof(unsigned int);
 
 		_stackFrameSizes.pop_back();
 		_localMemorySizes.pop_back();
@@ -265,55 +200,14 @@ namespace executive
 
 		unsigned int totalPreviousSize = (stackFrameSize() 
 			+ registerCount() * sizeof(RegisterType) + localMemorySize()) 
-			* _threadCount + align(3 * sizeof(unsigned int));
+			* _threadCount + 3 * sizeof(unsigned int);
 		_stackPointer -= totalPreviousSize;
 		
-		_localMemoryBase = _stackPointer + align(3 * sizeof(unsigned int)) 
+		_localMemoryBase = _stackPointer + 3 * sizeof(unsigned int) 
 			+ _threadCount * stackFrameSize();
 		_registerFileBase = _localMemoryBase + localMemorySize() * _threadCount;
 		
-		_resizeStack(_stackSize() - totalSize);
-	}
-
-	void* EmulatorCallStack::_stackBase(unsigned int byteOffset) const
-	{
-		return (char*)align(_stack.data()) + byteOffset;
-	}
-	
-	void EmulatorCallStack::_resizeStack(unsigned int size)
-	{
-		void* data = _stackBase(0);
-		unsigned int previousSize = _stack.size();
-		size_t previousOffset = (size_t)data - (size_t)_stack.data();
-		_stack.resize(size + globalAlignment);
-		if(data != _stackBase(0))
-		{
-			std::memmove(_stackBase(0),
-				(char*)_stack.data() + previousOffset, previousSize);
-		}
-	}
-	
-	unsigned int EmulatorCallStack::_stackSize() const
-	{
-		return _stack.size() - globalAlignment;
-	}
-	
-	void EmulatorCallStack::_resizeSharedMemory(unsigned int size)
-	{
-		void* data = sharedMemoryPointer();
-		unsigned int previousSize = _sharedMemory.size();
-		size_t previousOffset = (size_t)data - (size_t)_sharedMemory.data();
-		_sharedMemory.resize(size + globalAlignment);
-		if(data != sharedMemoryPointer())
-		{
-			std::memmove(sharedMemoryPointer(),
-				(char*)_sharedMemory.data() + previousOffset, previousSize);
-		}
-	}
-	
-	unsigned int EmulatorCallStack::_sharedMemorySize() const
-	{
-		return _sharedMemory.size() - globalAlignment;
+		_stack.resize(_stack.size() - totalSize);
 	}
 
 }

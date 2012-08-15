@@ -10,7 +10,7 @@
 
 #include <ocelot/ir/interface/Local.h>
 
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 namespace ir
 {

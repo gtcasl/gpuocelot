@@ -10,11 +10,10 @@
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutionManager.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/Device.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 // Standard Library Includes
 #include <cstring>
@@ -36,7 +35,7 @@ static unsigned int pad(unsigned int& size, unsigned int alignment)
 	return padding;
 }
 
-LLVMExecutableKernel::LLVMExecutableKernel(const ir::IRKernel& k, 
+LLVMExecutableKernel::LLVMExecutableKernel(const ir::Kernel& k, 
 	executive::Device* d, translator::Translator::OptimizationLevel l) : 
 	ExecutableKernel(d), _optimizationLevel(l), _argumentMemory(0),
 	_constantMemory(0)
@@ -45,6 +44,8 @@ LLVMExecutableKernel::LLVMExecutableKernel(const ir::IRKernel& k,
 	assertM(k.ISA == ir::Instruction::PTX, 
 		"LLVMExecutable kernel must be constructed from a PTXKernel");
 	ISA = ir::Instruction::LLVM;
+	
+	_gridDim.z = 1;
 	
 	name = k.name;
 	arguments = k.arguments;
@@ -59,20 +60,15 @@ LLVMExecutableKernel::~LLVMExecutableKernel()
 	delete[] _constantMemory;
 }
 
-void LLVMExecutableKernel::launchGrid(int x, int y, int z)
+void LLVMExecutableKernel::launchGrid(int x, int y)
 {	
 	report( "Launching kernel \"" << name << "\" on grid ( x = " 
 		<< x << ", y = " << y << " )"  );
 	
 	_gridDim.x = x;
 	_gridDim.y = y;
-	_gridDim.z = z;
-	
-	initializeTraceGenerators();
 	
 	LLVMExecutionManager::launch(*this);
-	
-	finalizeTraceGenerators();
 }
 
 void LLVMExecutableKernel::setKernelShape( int x, int y, int z )
@@ -181,17 +177,6 @@ void LLVMExecutableKernel::removeTraceGenerator(
 	trace::TraceGenerator *generator)
 {
 	assertM(false, "No trace generation support in LLVM kernel.");	
-}
-
-void LLVMExecutableKernel::setExternalFunctionSet(
-	const ir::ExternalFunctionSet& s)
-{
-	LLVMModuleManager::setExternalFunctionSet(s);
-}
-
-void LLVMExecutableKernel::clearExternalFunctionSet()
-{
-	LLVMModuleManager::clearExternalFunctionSet();
 }
 
 void LLVMExecutableKernel::_allocateMemory()

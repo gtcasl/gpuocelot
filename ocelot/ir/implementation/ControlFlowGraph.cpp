@@ -7,8 +7,8 @@
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/string.h>
+#include <hydrazine/implementation/debug.h>
 
 #include <set>
 #include <unordered_set>
@@ -22,7 +22,7 @@
 
 #define REPORT_BASE 0
 
-#define FAST_RANDOM_LAYOUT     1
+#define FAST_RANDOM_LAYOUT 1
 #define PRESERVE_SOURCE_LAYOUT 2
 
 #define LAYOUT_SCHEME PRESERVE_SOURCE_LAYOUT
@@ -104,8 +104,7 @@ BasicBlock::Edge::Edge(BlockList::iterator h,
 }
 
 BasicBlock::BasicBlock(const std::string& l, Id i, 
-	const InstructionList& is, const std::string& c) 
-: label(l), comment(c), id(i) {
+	const InstructionList& is) : label(l), id(i) {
 	for (InstructionList::const_iterator instruction = is.begin();
 		instruction != is.end(); ++instruction ) {
 		instructions.push_back((*instruction)->clone(true));
@@ -255,11 +254,10 @@ bool ControlFlowGraph::empty() const {
 ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	const BasicBlock& block) {
 	report("Inserting block '" << block.label << "' (" << block.id << ")" );
-	return _blocks.insert(end(), block);
+	return _blocks.insert(_exit, block);
 }
 
-ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block,
-	std::string suffix)
+ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block, std::string suffix)
 {
 	return insert_block(BasicBlock(block->label + "_cloned" + suffix,
 		newId(), block->instructions));
@@ -304,8 +302,7 @@ ControlFlowGraph::edge_iterator
 }
 
 void ControlFlowGraph::remove_edge(edge_iterator edge) {
-	report( "Removed " << toString(edge->type)
-		<< " edge from " << edge->head->label 
+	report( "Removed edge from " << edge->head->label 
 		<< " -> " << edge->tail->label );
 	edge_pointer_iterator out = std::find(edge->head->out_edges.begin(), 
 		edge->head->out_edges.end(), edge);
@@ -469,9 +466,8 @@ void ControlFlowGraph::clear() {
 	}
 	_blocks.clear();
 	_edges.clear();
-	
-	_entry = insert_block(BasicBlock("entry", 0));
-	_exit = insert_block(BasicBlock("exit", 1));
+	_entry = _blocks.insert(end(), BasicBlock("entry", 0));
+	_exit =  _blocks.insert(end(), BasicBlock("exit", 1));
 	_nextId = 2;
 }
 
@@ -731,76 +727,11 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 	return sequence;
 }
 
-ControlFlowGraph::ConstBlockPointerVector
-	ControlFlowGraph::executable_sequence() const {
-	typedef std::unordered_set<const_iterator> BlockSet;
-	ConstBlockPointerVector sequence;
-	BlockSet unscheduled;
-
-	for(const_iterator i = begin(); i != end(); ++i) {
-		unscheduled.insert(i);
-	}
-
-	report("Getting executable sequence.");
-
-	sequence.push_back(get_entry_block());
-	unscheduled.erase(get_entry_block());
-	report(" added " << get_entry_block()->label);
-
-	while (!unscheduled.empty()) {
-		if (sequence.back()->has_fallthrough_edge()) {
-			const_edge_iterator fallthroughEdge 	
-				= sequence.back()->get_fallthrough_edge();
-			sequence.push_back(fallthroughEdge->tail);
-			unscheduled.erase(fallthroughEdge->tail);
-		}
-		else {
-			// find a new block, favor branch targets over random blocks
-			const_iterator next = *unscheduled.begin();
-			
-			for(const_edge_pointer_iterator
-				edge = sequence.back()->out_edges.begin();
-				edge != sequence.back()->out_edges.end(); ++edge)
-			{
-				if(unscheduled.count((*edge)->tail) != 0)
-				{
-					next = (*edge)->tail;
-				}
-			}
-			
-			// rewind through fallthrough edges to find the beginning of the 
-			// next chain of fall throughs
-			report("  restarting at " << next->label);
-			bool rewinding = true;
-			while (rewinding) {
-				rewinding = false;
-				for (const_edge_pointer_iterator
-					edge = next->in_edges.begin(); 
-					edge != next->in_edges.end(); ++edge) {
-					if ((*edge)->type == Edge::FallThrough) {
-						assertM(unscheduled.count((*edge)->head) != 0, 
-							(*edge)->head->label 
-							<< " has multiple fallthrough branches.");
-						next = (*edge)->head;
-						report("   rewinding to " << next->label );
-						rewinding = true;
-						break;
-					}
-				}
-			}
-			sequence.push_back(next);
-			unscheduled.erase(next);
-		}
-		
-		report(" added " << sequence.back()->label);
-	}
-
-	return sequence;
-}
-
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
-	report("Copying cfg " << &cfg << " to " << this );
+	report( "Copying cfg" );
+	
+	report("\nControlFlowGraph::operator=()");
 	
 	typedef std::unordered_map<const_iterator, iterator> BlockMap;
 	BlockMap block_map;
@@ -819,8 +750,7 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		}
 		else {
 			iterator newBlock = insert_block(
-				BasicBlock(bl_it->label, bl_it->id, bl_it->instructions,
-				bl_it->comment));
+				BasicBlock(bl_it->label, bl_it->id, bl_it->instructions));
 			block_map[bl_it] = newBlock;
 		}
 	}
@@ -833,8 +763,7 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		assert( block_map.count( e_it->head ) );
 		assert( block_map.count( e_it->tail ) );
 		
-		report("\n  " << e_it->head->label << " -> " << e_it->tail->label
-			<< " [" << e_it->type << "]");
+		report("\n  " << e_it->head->label << " -> " << e_it->tail->label << " [" << e_it->type << "]");
 		
 		insert_edge(Edge(block_map[e_it->head], 
 			block_map[e_it->tail], e_it->type));

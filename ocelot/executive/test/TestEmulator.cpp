@@ -11,10 +11,10 @@
 
 #include <hydrazine/interface/Test.h>
 
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/macros.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/debug.h>
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
@@ -28,7 +28,7 @@ namespace test {
 class TestEmulator: public Test {
 public:
 	ir::Module module;
-	ir::IRKernel* rawKernel;	
+	ir::Kernel* rawKernel;	
 
 public:
 	TestEmulator() {
@@ -433,7 +433,7 @@ public:
 		// launch the kernel
 		try {
 			kernel->setKernelShape(N,1,1);
-			kernel->launchGrid(1,1,1);
+			kernel->launchGrid(1,1);
 			// context.synchronize();
 		}
 		catch (RuntimeException &exp) {

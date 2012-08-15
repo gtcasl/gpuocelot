@@ -27,6 +27,7 @@ namespace executive {
 		typedef std::map<int, std::string> ProgramCounterBlockMap;
 		typedef std::unordered_map<std::string, int> FunctionNameMap;
 		typedef std::map< std::string, std::pair<int, int> > BlockRangeMap;
+		typedef std::map< int, std::pair< int, int > > ThreadFrontierMap;
 		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
 		typedef CooperativeThreadArray::RegisterFile RegisterFile;
 
@@ -35,17 +36,17 @@ namespace executive {
 			unsigned int& offset, unsigned int& totalOffset);
 
 	public:
-		EmulatedKernel(ir::IRKernel* kernel, Device* d = 0, 
+		EmulatedKernel(ir::Kernel* kernel, Device* d = 0, 
 			bool initialize = true);
 		EmulatedKernel(Device *c);
 		EmulatedKernel();
 		virtual ~EmulatedKernel();
 	
 		/*!	\brief Determines whether kernel is executable */
-		bool executable() const;
+		bool executable();
 		
 		/*!	Launch a kernel on a 2D grid */
-		void launchGrid(int width, int height, int depth);
+		void launchGrid(int width, int height);
 	
 		/*!	Sets the shape of a kernel */
 		void setKernelShape(int x, int y, int z);
@@ -68,12 +69,11 @@ namespace executive {
 		TextureVector textureReferences() const;
 
 	public:
-
-		/*! sets an external function table for the emulated kernel */
-		void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+		/*!	adds a trace generator to the EmulatedKernel */
+		void addTraceGenerator(trace::TraceGenerator *generator);
 		
-		/*! clear the external function table for the emulated kernel */
-		void clearExternalFunctionSet();
+		/*!	removes a trace generator from an EmulatedKernel */
+		void removeTraceGenerator(trace::TraceGenerator *generator);
 
 		/*! \brief Initialize the kernel */
 		void initialize();
@@ -81,22 +81,10 @@ namespace executive {
 		/*!	Maps identifiers to global memory allocations. */
 		void initializeGlobalMemory();
 		
-	public:
 		/*! Lazily sets the target of a call instruction to the entry point
 			of the specified function.  This function will be inserted into
 			the instruction sequence if it does not already exist */
 		void lazyLink(int callPC, const std::string& functionName);
-
-		/*! Code that was linked in still uses absolute branch targets, they
-			need to be updated now that the code is located in a different
-			place.
-		*/
-		void fixBranchTargets(size_t newPC);
-
-		/*! Looks up a named function in the module and inserts it into the
-			instruction stream if it does not exist.  Returns the PC of the
-			function in the instruction stream. */
-		size_t link(const std::string& functionName);
 
 		/*! Finds the kernel beginning at the specified PC */
 		const EmulatedKernel* getKernel(int PC) const;
@@ -104,7 +92,6 @@ namespace executive {
 		/*! If the kernel is executing, jump to the specified PC */
 		void jumpToPC(int PC);
 
-	public:
 		/* Get a snapshot of the current register file */
 		RegisterFile getCurrentRegisterFile() const;
 
@@ -115,25 +102,11 @@ namespace executive {
 			for the specified thread */
 		const char* getLocalMemory(unsigned int threadId) const;
 
-		/* Get a pointer to the base of the current global local memory block
-
-			for the specified thread */
-		const char* getGlobalLocalMemory(unsigned int threadId) const;
-
 		/* Get the argument memory size of the current frame */
 		unsigned int getCurrentFrameArgumentMemorySize() const;
 
-		/* Get the local memory size of the current frame */
-		unsigned int getCurrentFrameLocalMemorySize() const;
-
 		/* Get the parameter memory size of the current frame */
 		unsigned int getCurrentFrameParameterMemorySize() const;
-
-		/* Get a pointer to the base of stack memory for the specified thread */
-		const char* getStackBase(unsigned int threadId) const;
-
-		/* Get the total stack size for the specified thread */
-		unsigned int getTotalStackSize(unsigned int threadId) const;
 
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
@@ -164,10 +137,6 @@ namespace executive {
 			allocations. */
 		void initializeLocalMemory();
 
-		/*!	Allocates arrays in globally scoped memory and maps identifiers to 
-			allocations. */
-		void initializeGlobalLocalMemory();
-
 		/*!	Maps identifiers to const memory allocations. */
 		void initializeConstMemory();
 
@@ -180,10 +149,6 @@ namespace executive {
 		/*!	Scans the kernel and builds the set of textures using references 
 				in tex instructions */
 		void initializeTextureMemory();
-
-		/*! Setup symbols that are referenced in global variables.		
-		*/
-		void initializeSymbolReferences();
 
 		/*! Sets the target of call instructions to invalid pcs so that they
 			can be lazily compiled and allocated */
@@ -198,23 +163,24 @@ namespace executive {
 
 		/*!	Pointer to byte-addressable const memory */
 		char* ConstMemory;
-		
+
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 
 		/*! Maps program counters of header instructions to basic block label */
 		ProgramCounterBlockMap branchTargetsToBlock;
 		
-		/*! maps the program counter of the terminating
-			instructions to owning basic block */
+		/*! maps the program counter of the terminating instructions to owning basic block */
 		ProgramCounterBlockMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
 		ProgramCounterBlockMap basicBlockPC;
 		
-		/*! maps a block label to the PCs of the first
-			and last instructions in the block */
+		/*! maps a block label to the PCs of the first and last instructions in the block */
 		BlockRangeMap blockPCRange;
+		
+		/*! maps a basic block terminator PC onto that block's thread frontier */
+		ThreadFrontierMap threadFrontiers;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
@@ -251,8 +217,7 @@ namespace executive {
 			specified by the PC */
 		std::string getInstructionBlock(int PC) const;
 		
-		/*! \brief accessor for obtaining PCs of first and
-			last instructions in a block */
+		/*! \brief accessor for obtaining PCs of first and last instructions in a block */
 		std::pair<int,int> getBlockRange(const std::string &label) const;
 	};
 

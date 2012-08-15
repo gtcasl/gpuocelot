@@ -18,15 +18,14 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
 
-#include <ocelot/transforms/interface/RemoveBarrierPass.h>
-#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 
 #include <ocelot/parser/interface/PTXParser.h>
 
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/macros.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -88,6 +87,7 @@ namespace test
 	{
 		report( " Loading file " << ptxFile );
 		
+		translator::PTXToLLVMTranslator translator;
 		ir::Module module;
 		
 		try 
@@ -113,25 +113,26 @@ namespace test
 
 		for (; k_it != module.kernels().end(); ++k_it) 
 		{
-			ir::IRKernel* kernel = module.getKernel( k_it->first );
+			ir::Kernel* kernel = module.getKernel( k_it->first );
 
-			transforms::PassManager manager(&module);
+			kernel->dfg();
 
-			transforms::ConvertPredicationToSelectPass pass1;
-			transforms::RemoveBarrierPass pass2;
-			translator::PTXToLLVMTranslator translator;
+			analysis::ConvertPredicationToSelectPass pass1;
+		
+			pass1.initialize( module );
+			pass1.runOnKernel( *kernel );
+			pass1.finalize();
+		
+			analysis::RemoveBarrierPass pass2;
+		
+			pass2.initialize( module );
+			pass2.runOnKernel( *kernel );
+			pass2.finalize();
 
-			manager.addPass(pass1);
-			manager.addPass(pass2);
-
-			manager.runOnKernel(*kernel);
-			manager.clear();
-			
-			manager.addPass(translator);
-			manager.runOnKernel(*kernel);
+			kernel->dfg()->toSsa();
 
 			ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
-				translator.translatedKernel() );
+				translator.translate( kernel ) );
 			translatedKernel->assemble();
 			
 			std::string outputFile = ptxFile + "." + kernel->name + ".ll";

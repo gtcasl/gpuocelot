@@ -62,6 +62,15 @@ int main(int argc, char *arg[]) {
 
 	size_t bytes = sizeof(int)*N;
 	
+	void *driverApiHandle = dlopen("libcuda.so", RTLD_NOW);
+	if (driverApiHandle) {
+		printf("Loaded libcuda.so explicitly; unloading now.\n");
+		dlclose(driverApiHandle);
+	}
+	else {
+		printf("Error: %s\n", dlerror());
+	}	
+
 	cudaError_t result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {
 		printf("cudaThreadSynchronize() = %s\n", cudaGetErrorString(result));
@@ -81,11 +90,16 @@ int main(int argc, char *arg[]) {
 	
 	cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
 	
+	printf("A_host = 0x%x\n", (void *)A_host);
+	printf("A_gpu = 0x%x\n", (void *)A_gpu);
+
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
 	
+
 	sequence<<< grid, block >>>(A_gpu, N);
 	
+	printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (void *)A_host, (void *)A_gpu);
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	for (int i = 0; i < N && errors < 5; i++) {
 		if (A_host[i] != 2*i) {

@@ -11,20 +11,12 @@
 
 // hydrazine includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 // Linux system headers
-#if __GNUC__
-	#include <dlfcn.h>
-#else 
-	// TODO Add dynamic loading support on windows
-	#define dlopen(a,b) 0
-	#define dlclose(a) -1
-	#define dlerror() "Unknown error"
-	#define dlsym(a,b) 0
-#endif
+#include <dlfcn.h>
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Macros
 #define CHECK() {assertM(_interface.loaded(), __FUNCTION__ \
@@ -36,9 +28,9 @@
 #endif
 
 #define REPORT_BASE 0
-#define REPORT_ALL_CALLS 1
+#define REPORT_ALL_CALLS 0
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 // Dynamic linking
 
 #define DynLink( function ) hydrazine::bit_cast( function, dlsym(_driver, #function))
@@ -50,7 +42,7 @@
 #define DynLinkV( function ) hydrazine::bit_cast( function, dlsym(_driver, #function))
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace cuda
 {
@@ -64,17 +56,14 @@ namespace cuda
 		unload();
 	}
 	
+
 	/*! \brief unloads the driver */
 	void CudaDriver::Interface::unload() {
 	
 		if( _driver )
 		{
 			report( "Closing " << _libname );
-			#if __GNUC__
 			dlclose( _driver );
-			#else
-			assertM(false, "CUDA Driver support not compiled into Ocelot.");
-			#endif
 			report("closed.");
 		}
 	}
@@ -82,7 +71,6 @@ namespace cuda
 	void CudaDriver::Interface::load()
 	{
 		if( _driver != 0 ) return;
-		#if __GNUC__
 		report( "Loading " << _libname );
 		_driver = dlopen( _libname.c_str(), RTLD_LAZY );
 		if( _driver == 0 )
@@ -131,10 +119,6 @@ namespace cuda
 		DynLinkV(cuMemFree);
 		DynLinkV(cuMemGetAddressRange);
 		DynLinkV(cuMemAllocHost);
-
-		DynLinkV(cuMemAllocHost);
-		DynLinkV(cuMemHostRegister);
-		DynLinkV(cuMemHostUnregister);
 		
 		DynLink(cuMemFreeHost);
 		DynLink(cuMemHostAlloc);
@@ -168,7 +152,6 @@ namespace cuda
 		DynLink(cuFuncSetBlockShape);
 		DynLink(cuFuncSetSharedSize);
 		DynLink(cuFuncGetAttribute);
-		DynLink(cuFuncSetCacheConfig);
 		
 		DynLinkV(cuArrayCreate);
 		DynLinkV(cuArrayGetDescriptor);
@@ -233,10 +216,6 @@ namespace cuda
 		else {
 			report("cuDriverGetVersion() returned " << result);
 		}
-
-		#else
-		assertM(false, "CUDA Driver support not compiled into Ocelot.");
-		#endif
 	}
 
 	bool CudaDriver::Interface::loaded() const
@@ -491,19 +470,6 @@ namespace cuda
 		return (*_interface.cuMemHostAlloc)(pp, bytesize, Flags);
 	}
 
-	CUresult CudaDriver::cuMemHostRegister(void *pp, 
-		unsigned long long bytesize, unsigned int Flags )
-	{
-		CHECK();
-		return (*_interface.cuMemHostRegister)(pp, bytesize, Flags);
-	}
-
-	CUresult CudaDriver::cuMemHostUnregister(void *pp)
-	{
-		CHECK();
-		return (*_interface.cuMemHostUnregister)(pp);
-	}
-
 	CUresult CudaDriver::cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 
 		void *p, unsigned int Flags )
 	{
@@ -711,12 +677,6 @@ namespace cuda
 	{
 		CHECK();
 		return (*_interface.cuFuncGetAttribute)(pi, attrib, hfunc);
-	}
-	
-	CUresult CudaDriver::cuFuncSetCacheConfig(CUfunction hFunc, CUfunc_cache config)
-	{
-		CHECK();
-		return (*_interface.cuFuncSetCacheConfig)(hFunc, config);
 	}
 
 	CUresult CudaDriver::cuArrayCreate( CUarray *pHandle, 
@@ -1070,8 +1030,7 @@ namespace cuda
 		return (*_interface.cuGLRegisterBufferObject)(bufferobj);
 	}
 	
-	CUresult CudaDriver::cuGLSetBufferObjectMapFlags(GLuint buffer,
-		unsigned int flags) {
+	CUresult CudaDriver::cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags) {
 		CHECK();
 		return (*_interface.cuGLSetBufferObjectMapFlags)(buffer, flags);
 	}

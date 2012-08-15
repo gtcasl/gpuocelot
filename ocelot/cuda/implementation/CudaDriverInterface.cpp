@@ -239,16 +239,13 @@ CUresult cuda::CudaDriverInterface::cuMemcpyDtoH (void *dstHost, CUdeviceptr src
 	return CUDA_ERROR_NOT_FOUND;
 }
 
+
 // device <-> device memory
 CUresult cuda::CudaDriverInterface::cuMemcpyDtoD (CUdeviceptr dstDevice, 
 	CUdeviceptr srcDevice, unsigned int ByteCount ) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverInterface::cuMemcpyHtoH (void *dstHost, const void *srcHost, 
-	unsigned int ByteCount ) {
-	return CUDA_ERROR_NOT_FOUND;
-}
 
 // device <-> array memory
 CUresult cuda::CudaDriverInterface::cuMemcpyDtoA ( CUarray dstArray, 
@@ -419,15 +416,6 @@ CUresult cuda::CudaDriverInterface::cuFuncGetAttribute (int *pi,
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-/*
-CUresult cuda::CudaDriverInterface::cuCtxGetCacheConfig(CUfunc_cache *pconfig) {
-	return CUDA_ERROR_NOT_FOUND;
-}
-*/
-
-CUresult cuda::CudaDriverInterface::cuFuncSetCacheConfig(CUfunction hfunc, CUfunc_cache config) {
-	return CUDA_ERROR_NOT_FOUND;
-}
 
 /************************************
 **

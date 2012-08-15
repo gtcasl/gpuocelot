@@ -18,17 +18,12 @@
 
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
-#include <ocelot/cuda/interface/FatBinaryContext.h>
-#include <ocelot/cuda/interface/CudaWorkerThread.h>
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/ir/interface/ExternalFunctionSet.h>
+#include <ocelot/analysis/interface/PassManager.h>
+#include <ocelot/cuda/interface/FatBinaryContext.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
-
-// Forward Declarations
-
-namespace transforms { class Pass; }
 
 namespace cuda {
 
@@ -89,6 +84,14 @@ namespace cuda {
 		//! Sizes for individual parameters
 		SizeVector parameterSizes;
 		
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector persistentTraceGenerators;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector nextTraceGenerators;
+		
+		int ptxPasses;
+			
 	public:
 		HostThreadContext();
 		~HostThreadContext();
@@ -101,10 +104,10 @@ namespace cuda {
 
 		void clearParameters();
 		void clear();
-		unsigned int mapParameters(const ir::Kernel* kernel);
+		void mapParameters(const ir::Kernel* kernel);
 	};
 	
-	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
+	typedef std::map< boost::thread::id, HostThreadContext > HostThreadContextMap;
 	
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
@@ -175,9 +178,6 @@ namespace cuda {
 			cudaChannelFormatDesc format;
 	};
 	
-	/*! \brief Set of PTX passes */
-	typedef std::set< transforms::Pass* > PassSet;
-
 	typedef std::vector< FatBinaryContext > FatBinaryVector;
 	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
@@ -186,10 +186,7 @@ namespace cuda {
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
 
-	/*! \brief List of worker threads */
-	typedef std::vector<CudaWorkerThread> ThreadVector;
-
-	////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	/*! Cuda runtime context */
 	class CudaRuntime: public CudaRuntimeInterface {
 	private:
@@ -215,12 +212,8 @@ namespace cuda {
 		void _acquire();
 		/*! \brief Unbind the thread and unlock the mutex */
 		void _release();
-		/*! \brief Wait for all running kernels to finish */
-		void _wait();
 		//! \brief gets the current device for the current thread
 		executive::Device& _getDevice();
-		//! \brief gets the current worker thread for the current thread
-		CudaWorkerThread& _getWorkerThread();
 		//! \brief returns an Ocelot-formatted error message
 		std::string _formatError(const std::string & message);
 		// Get the current thread, create it if it doesn't exist
@@ -235,9 +228,6 @@ namespace cuda {
 	private:
 		//! locking object for cuda runtime
 		boost::mutex _mutex;
-		
-		//! worker threads for each device
-		ThreadVector _workers;
 		
 		//! Registered modules
 		ModuleMap _modules;
@@ -286,18 +276,6 @@ namespace cuda {
 		
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
-	
-		//! external functions
-		ir::ExternalFunctionSet _externals;
-		
-		//! PTX passes
-		PassSet _passes;
-
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector _persistentTraceGenerators;
-
-		//! set of trace generators to be inserted into emulated kernels
-		trace::TraceGeneratorVector _nextTraceGenerators;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 
@@ -378,18 +356,12 @@ namespace cuda {
 		virtual cudaError_t  cudaMalloc3DArray(struct cudaArray** arrayPtr, 
 			const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 
-		// Host Interface
-
 		virtual cudaError_t  cudaHostAlloc(void **pHost, size_t bytes, 
 			unsigned int flags);
 		virtual cudaError_t  cudaHostGetDevicePointer(void **pDevice, 
 			void *pHost, unsigned int flags);
 		virtual cudaError_t  cudaHostGetFlags(unsigned int *pFlags, 
 			void *pHost);
-		virtual cudaError_t cudaHostRegister(void *pHost, size_t bytes, 
-			unsigned int flags);
-		virtual cudaError_t cudaHostUnregister(void *pHost);
-
 
 	public:
 		//
@@ -497,7 +469,6 @@ namespace cuda {
 
 	public:
 		virtual cudaError_t cudaGetLastError(void);
-		virtual cudaError_t cudaPeekAtLastError(void);
 
 	public:
 		//
@@ -543,21 +514,6 @@ namespace cuda {
 		*/
 		virtual cudaError_t cudaDriverGetVersion(int *driverVersion);
 		virtual cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
-	
-	public:
-		/*
-			Device synchronization
-		*/
-		virtual cudaError_t cudaDeviceReset(void);
-		virtual cudaError_t cudaDeviceSynchronize(void);
-		virtual cudaError_t cudaDeviceSetLimit(enum cudaLimit limit,
-			size_t value);
-		virtual cudaError_t cudaDeviceGetLimit(size_t *pValue,
-			enum cudaLimit limit);
-		virtual cudaError_t cudaDeviceGetCacheConfig(
-			enum cudaFuncCache *pCacheConfig);
-		virtual cudaError_t cudaDeviceSetCacheConfig(
-			enum cudaFuncCache cacheConfig);
 	
 	public:
 		//
@@ -613,15 +569,12 @@ namespace cuda {
 			bool persistent = false );
 		virtual void clearTraceGenerators();
 
-		virtual void addPTXPass(transforms::Pass &pass);
-		virtual void removePTXPass(transforms::Pass &pass);
+		virtual void addPTXPass(analysis::Pass &pass);
+		virtual void removePTXPass(analysis::Pass &pass);
 		virtual void clearPTXPasses();
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
-		virtual void registerTexture(const void* texref,
-			const std::string& moduleName,
-			const std::string& textureName, bool normalize);
 		virtual void clearErrors();
 		virtual void reset();
 		virtual ocelot::PointerMap contextSwitch( 
@@ -631,9 +584,7 @@ namespace cuda {
 			const std::string& kernelName);
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);
-		virtual void registerExternalFunction(const std::string& name,
-			void* function);
-		virtual void removeExternalFunction(const std::string& name);
+
 	};
 
 }

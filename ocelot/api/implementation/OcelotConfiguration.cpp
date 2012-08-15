@@ -3,22 +3,20 @@
 	\brief configuration class for GPU Ocelot
 */
 
+// C stdlib includes
+#include <assert.h>
+
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
-
-#include <ocelot/executive/interface/ReconvergenceMechanism.h>
 
 #include <ocelot/ir/interface/Instruction.h>
 #include <ocelot/translator/interface/Translator.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/json.h>
+#include <hydrazine/implementation/json.h>
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
-
-// C stdlib includes
-#include <cassert>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -45,7 +43,7 @@ void api::OcelotConfiguration::destroy() {
 ////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::Checkpoint::Checkpoint():
-	enabled(false), path("./"), prefix("check"), suffix(".binary"), verify(false)
+	enabled(false), path("."), prefix("check"), suffix(".binary"), verify(false)
 {
 	
 }
@@ -142,8 +140,7 @@ api::OcelotConfiguration::Executive::Executive():
 	enableEmulated(true),
 	enableNVIDIA(true),
 	enableAMD(true),
-	enableRemote(false),
-	asynchronousKernelLaunch(false),
+	enableRemote(true),
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
@@ -153,12 +150,7 @@ api::OcelotConfiguration::Executive::Executive():
 }
 
 api::OcelotConfiguration::Optimizations::Optimizations():
-	subkernelSize(50),
-	structuralTransform(false),
-	predicateToSelect(false),
-	linearScanAllocation(false),
-	mimdThreadScheduling(false),
-	syncElimination(false)
+	subkernelSize(50)
 {
 
 }
@@ -170,9 +162,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		"preferredISA", "emulated");
 	std::string strOptLevel = config.parse<std::string>(
 		"optimizationLevel", "full");
-	std::string strReconvMech = config.parse<std::string>(
-		"reconvergenceMechanism", "ipdom");
-		
+
 	executive.preferredISA = (int)ir::Instruction::Emulated;
 	if (strPrefISA == "emulated" || strPrefISA == "Emulated") {
 		executive.preferredISA = (int)ir::Instruction::Emulated;
@@ -234,37 +224,13 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		report("Unknown optimization level - using none");
 	}
 
-	executive.reconvergenceMechanism
-		= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;
-	if (strReconvMech == "ipdom") {
-		executive.reconvergenceMechanism
-			= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;
-	}
-	else if (strReconvMech == "barrier") {
-		executive.reconvergenceMechanism
-			= (int)executive::ReconvergenceMechanism::Reconverge_Barrier;
-	}
-	else if (strReconvMech == "tf-gen6") {
-		executive.reconvergenceMechanism
-			= (int)executive::ReconvergenceMechanism::Reconverge_TFGen6;
-	}
-	else if (strReconvMech == "tf-stack") {
-		executive.reconvergenceMechanism
-			= (int)executive::ReconvergenceMechanism::Reconverge_TFSortedStack;
-	}
-	else {
-		report("Unknown reconvergence mechanism - ipdom");
-	}
-
 	executive.defaultDeviceID = config.parse<int>("defaultDeviceID", 0);
 	executive.required = config.parse<bool>("required", false);
 	executive.enableLLVM = config.parse<bool>("enableLLVM", true);
 	executive.enableEmulated = config.parse<bool>("enableEmulated", true);
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
-	executive.enableRemote = config.parse<bool>("enableRemote", false);
-	executive.asynchronousKernelLaunch =
-		config.parse<bool>("asynchronousKernelLaunch", false);
+	executive.enableRemote = config.parse<bool>("enableRemote", true);
 	executive.port = config.parse<int>("port", 2011);
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
@@ -308,27 +274,6 @@ static void initializeOptimizations(
 	hydrazine::json::Visitor config) {
 
 	optimizations.subkernelSize = config.parse<int>("subkernelSize", 50);
-
-	optimizations.structuralTransform =
-		config.parse<bool>("structuralTransform", false);
-			
-	optimizations.predicateToSelect =
-		config.parse<bool>("predicateToSelect", false);
-			
-	optimizations.linearScanAllocation =
-		config.parse<bool>("linearScanAllocation", false);
-			
-	optimizations.mimdThreadScheduling =
-		config.parse<bool>("mimdThreadScheduling", false);
-	
-	optimizations.syncElimination =
-		config.parse<bool>("syncElimination", false);	
-	
-	optimizations.hoistSpecialValues =
-		config.parse<bool>("hoistSpecialValues", false);	
-	
-	optimizations.simplifyCFG =
-		config.parse<bool>("simplifyCFG", false);			
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {
@@ -345,24 +290,7 @@ api::OcelotConfiguration::OcelotConfiguration(
 	initialize(file);
 }
 
-//! \brief parses and returns configuration object
-void *api::OcelotConfiguration::configuration() const {
-	std::ifstream file(path.c_str());
-	hydrazine::json::Parser parser;
-	hydrazine::json::Object *config = 0;
-	try {
-		config = parser.parse_object(file);
-	}
-	catch (hydrazine::Exception exp) {
-		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
-			<< path << "', loading defaults.\n" << std::endl;
-			
-		std::cerr << "exception:\n" << exp.what() << std::endl;
-	}
-	return config;
-}
-
-void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) {
+void api::OcelotConfiguration::initialize(std::istream &stream) {
 	hydrazine::json::Parser parser;
 	hydrazine::json::Object *config = 0;
 	try {
@@ -394,11 +322,7 @@ void *api::OcelotConfiguration::initialize(std::istream &stream, bool preserve) 
 			
 		std::cerr << "exception:\n" << exp.what() << std::endl;
 	}
-	if (!preserve) {
-		delete config;
-		config = 0;
-	}
-	return config;
+	delete config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

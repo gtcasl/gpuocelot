@@ -8,7 +8,7 @@
 #include <ocelot/ir/interface/ILStatement.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -96,8 +96,6 @@ namespace ir
 				break;
 			}
 		}
-		
-		return "";
 	}
 }
 

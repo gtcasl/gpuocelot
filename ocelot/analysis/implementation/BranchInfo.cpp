@@ -4,28 +4,24 @@
 	\brief The source file for the BranchInfo class, the class that holds informations of branches required to do the divergence analysis
 */
 
-// Ocelot Includes
 #include <ocelot/analysis/interface/BranchInfo.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
-#include <ocelot/analysis/interface/DivergenceGraph.h>
+#include <ocelot/graphs/interface/DivergenceGraph.h>
 
-namespace analysis 
-{
+namespace analysis {
 
 BranchInfo::BranchInfo(const Block *block, const Block *postDominator,
     const DataflowGraph::Instruction &dfgInstruction,
-    DivergenceGraph &divergGraph) :
+    graph_utils::DivergenceGraph &divergGraph) :
 	_block(block), _postDominator(postDominator),
         _dfgInstruction(dfgInstruction), _divergGraph( divergGraph)
 {
 	_fallThrough = &(*_block->fallthrough());
 	const DataflowGraph::BlockPointerSet targets = _block->targets();
-	DataflowGraph::BlockPointerSet::const_iterator
-		targetBlock = targets.begin();
-	DataflowGraph::BlockPointerSet::const_iterator
-		endTargetBlock = targets.end();
+	DataflowGraph::BlockPointerSet::const_iterator targetBlock = targets.begin();
+	DataflowGraph::BlockPointerSet::const_iterator endTargetBlock = targets.end();
 	for (; targetBlock != endTargetBlock; targetBlock++) {
 		DataflowGraph::BlockVector::const_iterator targetBlockI = *targetBlock;
 		if (block->fallthrough() != targetBlockI) {
@@ -34,30 +30,10 @@ BranchInfo::BranchInfo(const Block *block, const Block *postDominator,
 	}
 }
 
-bool BranchInfo::operator<(const BranchInfo& x) const
+bool BranchInfo::isTainted(const graph_utils::DivergenceGraph::node_type &node) const
 {
-  return _block->id() < x.block()->id();
-}
-
-bool BranchInfo::operator<=(const BranchInfo& x) const
-{
-  return _block->id() <= x.block()->id();
-}
-
-bool BranchInfo::operator>(const BranchInfo& x) const
-{
-  return _block->id() > x.block()->id();
-}
-
-bool BranchInfo::operator>=(const BranchInfo& x) const
-{
-  return _block->id() >= x.block()->id();
-}
-
-bool BranchInfo::isTainted(const DivergenceGraph::node_type &node) const
-{
-	return ((_branchVariables.find(node) != _branchVariables.end()) ||
-	    (_fallThroughVariables.find(node) != _fallThroughVariables.end()));
+	return ((_branchVariables.find(node) != _branchVariables.end()) || (_fallThroughVariables.find(node)
+	    != _fallThroughVariables.end()));
 }
 
 void BranchInfo::populate()
@@ -73,17 +49,14 @@ void BranchInfo::populate()
 
 void BranchInfo::_insertVariable(node_type &variable, node_set &variables)
 {
-	if ((variables.find(variable) != variables.end())
-		|| (_divergGraph.isDivNode(variable))) 
-	{
+	if ((variables.find(variable) != variables.end()) || (_divergGraph.isDivNode(variable))) {
 		return;
 	}
 
 	node_set newVariables;
 	newVariables.insert(variable);
 
-	while (newVariables.size() > 0)
-	{
+	while (newVariables.size() > 0) {
 		node_type newVar = *newVariables.begin();
 
 		variables.insert(newVar);
@@ -94,8 +67,7 @@ void BranchInfo::_insertVariable(node_type &variable, node_set &variables)
 		node_set::const_iterator endDepend = dependences.end();
 
 		for (; depend != endDepend; depend++) {
-			if ((variables.find(*depend) == variables.end())
-				&& (!_divergGraph.isDivNode(*depend))) {
+			if ((variables.find(*depend) == variables.end()) && (!_divergGraph.isDivNode(*depend))) {
 				newVariables.insert(*depend);
 			}
 		}
@@ -106,22 +78,18 @@ void BranchInfo::_taintVariables(const Block *block, node_set &variables)
 {
 	const DataflowGraph::InstructionVector instructions = block->instructions();
 	DataflowGraph::InstructionVector::const_iterator ins = instructions.begin();
-	DataflowGraph::InstructionVector::const_iterator
-		endIns = instructions.end();
+	DataflowGraph::InstructionVector::const_iterator endIns = instructions.end();
 
 	for (; ins != endIns; ins++) {
-		DataflowGraph::RegisterPointerVector::const_iterator
-			destination = ins->d.begin();
-		DataflowGraph::RegisterPointerVector::const_iterator
-			endDestination = ins->d.end();
-		for (; destination != endDestination; destination++) {
-			_insertVariable(*destination->pointer, variables);
+		DataflowGraph::RegisterPointerVector::const_iterator destiny = ins->d.begin();
+		DataflowGraph::RegisterPointerVector::const_iterator endDestiny = ins->d.end();
+		for (; destiny != endDestiny; destiny++) {
+			_insertVariable(*destiny->pointer, variables);
 		}
 	}
 }
 
-void BranchInfo::_taintBlocks(const Block *start,
-	touched_blocks &blocks, node_set &variables)
+void BranchInfo::_taintBlocks(const Block *start, touched_blocks &blocks, node_set &variables)
 {
 	touched_blocks toCompute;
 	toCompute.insert(start);
@@ -131,10 +99,8 @@ void BranchInfo::_taintBlocks(const Block *start,
 		if (blocks.find(block) == blocks.end()) {
 			blocks.insert(block);
 
-			DataflowGraph::BlockPointerSet::const_iterator
-				newBlock = block->targets().begin();
-			DataflowGraph::BlockPointerSet::const_iterator
-				endNewBlock = block->targets().end();
+			DataflowGraph::BlockPointerSet::const_iterator newBlock = block->targets().begin();
+			DataflowGraph::BlockPointerSet::const_iterator endNewBlock = block->targets().end();
 
 			for (; newBlock != endNewBlock; newBlock++) {
 				toCompute.insert(&(*(*newBlock)));
@@ -144,6 +110,4 @@ void BranchInfo::_taintBlocks(const Block *start,
 		_taintVariables(block, variables);
 	}
 }
-
 }
-

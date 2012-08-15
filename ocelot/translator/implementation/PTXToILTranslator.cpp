@@ -9,7 +9,7 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -30,7 +30,6 @@ namespace translator
 	ir::Kernel* PTXToILTranslator::translate(const ir::Kernel* k)
 	{
 		assertM(0, "Translator needs the kernel to be an executable kernel");
-		return 0;
 	}
 
 	ir::Kernel* PTXToILTranslator::translate(const ATIExecutableKernel* k)
@@ -50,10 +49,7 @@ namespace translator
 	void PTXToILTranslator::_translateInstructions()
 	{
 		// translate instructions iterating thru the control tree
-		
-		analysis::ControlTree controlTree(_ilKernel->cfg());
-		
-		_translate(controlTree.get_root_node());
+		_translate(_ilKernel->ctrl_tree()->get_root_node());
 	}
 
 	void PTXToILTranslator::_translate(const CT::Node* node)
@@ -131,8 +127,6 @@ namespace translator
 			}
 			default: assertM(false, "Invalid region type " << node->rtype());
 		}
-		
-		return 0;
 	}
 
 	void PTXToILTranslator::_translate(const CT::IfThenNode* node)
@@ -243,7 +237,6 @@ namespace translator
 			case ir::PTXInstruction::Bar:    _translateBar(i);    break;
 			case ir::PTXInstruction::Bra:    /* control tree */   break;
 			case ir::PTXInstruction::Clz:    _translateClz(i);    break;
-			case ir::PTXInstruction::Cos:    _translateCos(i);    break;
  			case ir::PTXInstruction::Cvt:    _translateCvt(i);    break;
 			case ir::PTXInstruction::Div:    _translateDiv(i);    break;
 			case ir::PTXInstruction::Ex2:    _translateEx2(i);    break;
@@ -269,7 +262,6 @@ namespace translator
 			case ir::PTXInstruction::SelP:   _translateSelP(i);   break;
 			case ir::PTXInstruction::Set:    _translateSet(i);    break;
 			case ir::PTXInstruction::SetP:   _translateSetP(i);   break;
-			case ir::PTXInstruction::Sin:    _translateSin(i);    break;
 			case ir::PTXInstruction::Shl:    _translateShl(i);    break;
 			case ir::PTXInstruction::Shr:    _translateShr(i);    break;
 			case ir::PTXInstruction::Sqrt:   _translateSqrt(i);   break;
@@ -524,8 +516,6 @@ namespace translator
 				assertM(false, "DataType " << d << " not supported");
 			}
 		}
-		
-		return ir::ILInstruction::Byte;
 	}
 
 	ir::ILOperand PTXToILTranslator::_tempRegister()
@@ -1081,15 +1071,6 @@ namespace translator
 						_add(ftou);
 						return;
 					}
-					case ir::PTXOperand::s32:
-					{
-						// f2i
-						ir::ILFtoI ftoi;
-						ftoi.d = d;
-						ftoi.a = a;
-						_add(ftoi);
-						return;
-					}
 					case ir::PTXOperand::f32: 
 					{
 						if (i.modifier & ir::PTXInstruction::sat) 
@@ -1116,14 +1097,6 @@ namespace translator
 							round_nearest.d = d;
 							round_nearest.a = a;
 							_add(round_nearest);
-							return;
-						}
-						if (i.modifier & ir::PTXInstruction::rm)
-						{
-							ir::ILRound_Neginf round_neginf;
-							round_neginf.d = d;
-							round_neginf.a = a;
-							_add(round_neginf);
 							return;
 						}
 						break;
@@ -1360,14 +1333,6 @@ namespace translator
 			cmov_logical.c = r0;
 			_add(cmov_logical);
 		}
-	}
-
-	void PTXToILTranslator::_translateCos(const ir::PTXInstruction &i)
-	{
-		ir::ILCos_Vec cos_vec;
-		cos_vec.d = _translate(i.d);
-		cos_vec.a = _translate(i.a);
-		_add(cos_vec);
 	}
 
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
@@ -3241,14 +3206,6 @@ namespace translator
 		}
 	}
 
-	void PTXToILTranslator::_translateSin(const ir::PTXInstruction &i)
-	{
-		ir::ILSin_Vec sin_vec;
-		sin_vec.d = _translate(i.d);
-		sin_vec.a = _translate(i.a);
-		_add(sin_vec);
-	}
-
 	void PTXToILTranslator::_translateShl(const ir::PTXInstruction &i)
 	{
 		assertM(i.type == ir::PTXOperand::b32, 
@@ -3852,5 +3809,10 @@ namespace translator
 	{
 		report("Added instruction '" << i.toString() << "'");
 		_ilKernel->_statements.push_back(ir::ILStatement(i));
+	}
+
+	void PTXToILTranslator::addProfile(const ProfilingData &d)
+	{
+		assertM(false, "Not implemented yet");
 	}
 }

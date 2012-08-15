@@ -8,7 +8,7 @@
 #include <ocelot/ir/interface/ILOperand.h>
 
 // Hydrazine includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 // Boost includes
 #include <boost/lexical_cast.hpp>
@@ -41,8 +41,6 @@ namespace ir
 			case RegType_Generic_Mem:        return "mem";
 			default: assertM(false, "Invalid register type " << rt);
 		}
-		
-		return "";
 	}
 
 	ILOperand::Dst_Mod::Dst_Mod() :

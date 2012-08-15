@@ -44,9 +44,6 @@ namespace ir
 			
 			/*! \brief Get the address space of the global */
 			PTXInstruction::AddressSpace space() const;
-			
-			/*! \brief Get the identifier of the global */
-			const std::string& name() const;
 	
 	};
 

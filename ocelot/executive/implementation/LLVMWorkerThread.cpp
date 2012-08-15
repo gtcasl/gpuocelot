@@ -14,7 +14,7 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 // Preprocessor Defines
 #ifdef REPORT_BASE

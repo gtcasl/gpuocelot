@@ -10,12 +10,11 @@
 // Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/ATIExecutableKernel.h>
-#include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
 
 // TODO Temporarily. Shouldn't be here
 #include <ocelot/cuda/interface/cuda_runtime.h>
@@ -42,7 +41,8 @@ namespace executive
 			_status(),
 			_attribs(),
 			_context(0), 
-			_event(0)
+			_event(0),
+			_selected(false)
     {
 		report("Creating new ATIGPUDevice");
 
@@ -207,6 +207,26 @@ namespace executive
 		return 0;
     }
 
+    void ATIGPUDevice::select()
+    {
+		// Multiple devices is not supported yet
+		assert(!selected());
+		_selected = true;
+    }
+
+    bool ATIGPUDevice::selected() const
+    {
+		// Multiple devices is not supported yet
+        return _selected;
+    }
+
+    void ATIGPUDevice::unselect()
+    {
+		// Multiple devices is not supported yet
+		assert(selected());
+		_selected = false;
+    }
+
 	Device::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
 			const void *address, AllocationType type) const
 	{
@@ -320,14 +340,6 @@ namespace executive
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
-	}
-
-	Device::MemoryAllocation *ATIGPUDevice::registerHost(void* pointer,
-		size_t size, unsigned int flags)
-	{
-		assertM(false, "Not implemented yet");
-		return 0;
 	}
 
 	void ATIGPUDevice::free(void *pointer)
@@ -354,13 +366,11 @@ namespace executive
 		void *pointer) const
 	{
 		assertM(false, "Not implemented yet");
-		return Device::MemoryAllocationVector();
 	}
 
 	Device::MemoryAllocationVector ATIGPUDevice::getAllAllocations() const
 	{
 		assertM(false, "Not implemented yet");
-		return Device::MemoryAllocationVector();
 	}
 
 	void ATIGPUDevice::clearMemory()
@@ -372,14 +382,12 @@ namespace executive
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void *ATIGPUDevice::glRegisterImage(unsigned int image, unsigned int target, 
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void ATIGPUDevice::unRegisterGraphicsResource(void* resource)
@@ -397,7 +405,6 @@ namespace executive
 			void* resource)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void ATIGPUDevice::setGraphicsResourceFlags(void* resource, 
@@ -425,7 +432,6 @@ namespace executive
 	bool ATIGPUDevice::queryEvent(unsigned int event)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void ATIGPUDevice::recordEvent(unsigned int event, unsigned int stream)
@@ -447,7 +453,6 @@ namespace executive
 	unsigned int ATIGPUDevice::createStream()
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void ATIGPUDevice::destroyStream(unsigned int stream)
@@ -458,7 +463,6 @@ namespace executive
 	bool ATIGPUDevice::queryStream(unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void ATIGPUDevice::synchronizeStream(unsigned int stream)
@@ -488,19 +492,8 @@ namespace executive
 		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
-	void ATIGPUDevice::_optimizePTX(Module* m, const std::string& k)
-	{
-		using namespace transforms;
-
-		PassManager manager(const_cast<ir::Module*>(m->ir));
-
-		manager.runOnKernel(k);
-		manager.destroyPasses();
-	}
-	
 	void ATIGPUDevice::launch(
 			const std::string& moduleName,
 			const std::string& kernelName, 
@@ -509,8 +502,7 @@ namespace executive
 			size_t sharedMemory, 
 			const void *argumentBlock, 
 			size_t argumentBlockSize, 
-			const trace::TraceGeneratorVector& traceGenerators,
-			const ir::ExternalFunctionSet* externals)
+			const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 
@@ -548,7 +540,7 @@ namespace executive
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
 		kernel->setVoteMemorySize(_properties.maxThreadsPerBlock / 32 * 4); 
-		kernel->launchGrid(grid.x, grid.y, grid.z);
+		kernel->launchGrid(grid.x, grid.y);
 	}
 
 	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& path, 
@@ -584,7 +576,6 @@ namespace executive
 	unsigned int ATIGPUDevice::getLastError()
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void ATIGPUDevice::synchronize()
@@ -618,13 +609,11 @@ namespace executive
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void *ATIGPUDevice::MemoryAllocation::mappedPointer() const
 	{
 		assertM(false, "Not implemented yet");
-        return 0;
 	}
 
 	void *ATIGPUDevice::MemoryAllocation::pointer() const

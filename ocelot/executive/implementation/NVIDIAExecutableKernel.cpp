@@ -6,9 +6,9 @@
 
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
 
-#include <hydrazine/interface/debug.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/macros.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/macros.h>
 
 
 #ifdef REPORT_BASE
@@ -34,7 +34,7 @@ executive::NVIDIAExecutableKernel::~NVIDIAExecutableKernel() {
 	Construct a NVIDIAExecutableKernel from an existing kernel
 */
 executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
-	ir::IRKernel& kernel, const CUfunction& function, 
+	ir::Kernel& kernel, const CUfunction& function, 
 	executive::Device* d ): ExecutableKernel(kernel, d), 
 	cuFunction(function) {
 	
@@ -59,41 +59,13 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	report("  constructed new NVIDIAExecutableKernel");
 }
 
-static CUfunc_cache _translateCacheConfiguration(executive::ExecutableKernel::CacheConfiguration config) {
-	switch (config) {
-		case executive::ExecutableKernel::CachePreferShared:
-			return CU_FUNC_CACHE_PREFER_SHARED;
-		case executive::ExecutableKernel::CachePreferL1:
-			return CU_FUNC_CACHE_PREFER_L1;
-		default:
-			break;
-	}
-	return CU_FUNC_CACHE_PREFER_NONE;
-}
-
 /*!
 	Launch a kernel on a 2D grid
 */
-void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
-	int depth) {
+void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 	report("executive::NVIDIAExecutableKernel::launchGrid(" << width 
 		<< ", " << height << ")");
 	CUresult result;
-
-	if (depth != 1) {
-		throw hydrazine::Exception("Requested grid depth gretaer than 1, "
-			"Ocelot does not support the new cuda driver interface for this "
-			"feature, please file a bug against Ocelot.");
-	}
-	
-	if (_cacheConfiguration != ExecutableKernel::CacheConfigurationDefault) {
-		result = cuda::CudaDriver::cuFuncSetCacheConfig(cuFunction, 
-			_translateCacheConfiguration(_cacheConfiguration));
-		report("  - cuFuncSetCacheConfig() failed: " << result);
-		throw hydrazine::Exception("cuFuncSetCacheConfig() failed ");
-	}
-
-	initializeTraceGenerators();
 
 	result = cuda::CudaDriver::cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
@@ -112,8 +84,6 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 	else {
 		report("  - cuCtxSynchronize() after cuLaunchGrid() succeeded!");
 	}
-	
-	finalizeTraceGenerators();
 }
 
 /*!
@@ -156,8 +126,6 @@ void executive::NVIDIAExecutableKernel::updateMemory() {
 executive::ExecutableKernel::TextureVector 
 	executive::NVIDIAExecutableKernel::textureReferences() const {
 	assertM(false, "no support for getting texture references");
-	
-	return executive::ExecutableKernel::TextureVector();
 }
 
 void executive::NVIDIAExecutableKernel::updateGlobalMemory() {
@@ -179,18 +147,6 @@ void executive::NVIDIAExecutableKernel::removeTraceGenerator(
 {
 	assertM(false, "No trace generation support in GPU kernel.");	
 }
-
-
-void executive::NVIDIAExecutableKernel::setExternalFunctionSet(
-	const ir::ExternalFunctionSet& s) {
-	assertM(false, "No external function support in GPU kernel.");	
-
-}
-
-void executive::NVIDIAExecutableKernel::clearExternalFunctionSet() {
-	assertM(false, "No external function support in GPU kernel.");	
-}
-
 
 void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 

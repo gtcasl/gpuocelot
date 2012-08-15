@@ -33,14 +33,15 @@ namespace ir {
 
 		typedef std::unordered_map< std::string, PTXKernel* > KernelMap;
 		
+		typedef std::vector< std::string > NameVector;
+		
 		typedef std::vector< PTXKernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::unordered_map< std::string, Global > GlobalMap;
 		
 		/*! \brief map from unique identifier to function prototype */
-		typedef std::unordered_map< std::string,
-			ir::PTXKernel::Prototype > FunctionPrototypeMap;
+		typedef std::unordered_map< std::string, ir::PTXKernel::Prototype > FunctionPrototypeMap;
 				
 	public:
 
@@ -48,7 +49,7 @@ namespace ir {
 			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(const std::string& path, bool dontLoad = false);
+		Module(const std::string& path);
 
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
@@ -61,13 +62,7 @@ namespace ir {
 
 		/*!	Construct an empty module */
 		Module();
-		
-		/*!	Construct a module from an existing one */
-		Module(const Module& m);
-		
-		/*! \brief copy a module */
-		const Module& operator=(const Module& m);
-		
+
 		/*!	Deconstruct a module */
 		~Module();
 		
@@ -119,10 +114,8 @@ namespace ir {
 		/*! \brief Adds a new kernel.
 			\param kernel The kernel being inserted, it will be owned
 				by the module.
-			
-			\return A pointer to the newly inserted kernel.
 		*/
-		PTXKernel* insertKernel(PTXKernel* kernel);		
+		void insertKernel(PTXKernel* kernel);		
 		
 		/*! \brief Gets a texture instance by name. 
 
@@ -133,15 +126,6 @@ namespace ir {
 		*/
 		Texture* getTexture(const std::string& name);
 
-		/*! \brief Insert a texture into the module.
-
-			\param texture the texture being inserted, it will be
-				owned by the module.
-
-			\return pointer to texture instance being inserted
-		*/
-		Texture* insertTexture(const Texture& texture);
-
 		/*! \brief Gets a global instance by name. 
 
 			\param name [mangled] name of global
@@ -150,24 +134,6 @@ namespace ir {
 				or 0 if it does not exist
 		*/
 		Global* getGlobal(const std::string& name);
-
-		/*! \brief Gets a global instance by name. 
-
-			\param name [mangled] name of global
-
-			\return pointer to global instance with (name) 
-				or 0 if it does not exist
-		*/
-		const Global* getGlobal(const std::string& name) const;
-
-		/*! \brief Insert a global into the module.
-
-			\param global the global being inserted, it will be
-				owned by the module.
-
-			\return pointer to global instance being inserted
-		*/
-		Global* insertGlobal(const Global& global);
 
 		/*! \brief Gets the module path */
 		const std::string& path() const;
@@ -185,14 +151,10 @@ namespace ir {
 		const StatementVector& statements() const;
 		
 		/*! \brief gets all declared function prototypes */
-		const FunctionPrototypeMap& prototypes() const;
+		const FunctionPrototypeMap & prototypes() const;
+		
+		void addPrototype(const std::string &identifier, const ir::PTXKernel::Prototype &prototype);
 	
-		/*! \brief get the address size */
-		unsigned int addressSize() const;
-		
-		void addPrototype(const std::string &identifier,
-			const ir::PTXKernel::Prototype &prototype);
-		
 	private:
 		/*! After a successful parse; constructs all kernels for PTX isa. */
 		void extractPTXKernels();
@@ -219,6 +181,9 @@ namespace ir {
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
 		KernelMap _kernels;	
 		
+		/*! The original sequence of PTX kernels must be preserved */
+		NameVector _kernelSequence;
+		
 		/*! Set of textures in the module */
 		TextureMap _textures;
 
@@ -230,9 +195,6 @@ namespace ir {
 		
 		/*! Target string */
 		std::string _target;
-
-		/*! \brief The address size */
-		unsigned int _addressSize;
 		
 		/*! Is the module currently loaded? */
 		bool _loaded;

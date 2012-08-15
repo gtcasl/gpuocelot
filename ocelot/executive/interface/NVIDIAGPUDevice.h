@@ -9,7 +9,7 @@
 
 // ocelot includes
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/cuda/interface/cuda_internal.h>
+#include <ocelot/cuda/interface/cuda.h>
 
 namespace executive
 {
@@ -48,9 +48,6 @@ namespace executive
 					MemoryAllocation(CUmodule module, const ir::Global& global);
 					/*! \brief Construct an external allocaton */
 					MemoryAllocation(void* pointer, size_t size);
-					/*! \brief Construct an external host allocaton */
-					MemoryAllocation(void* pointer, size_t size,
-						unsigned int flags);
 					/*! \brief Desructor */
 					~MemoryAllocation();
 
@@ -248,9 +245,6 @@ namespace executive
 			/*! \brief Make this a host memory allocation */
 			Device::MemoryAllocation* allocateHost(size_t size, 
 				unsigned int flags);
-			/*! \brief Register a host memory allocation */
-			Device::MemoryAllocation* registerHost(void* pointer, size_t size, 
-				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */
@@ -320,6 +314,8 @@ namespace executive
 			/*! \brief Select this device as the current device. 
 				Only one device is allowed to be selected at any time. */
 			void select();
+			/*! \brief is this device selected? */
+			bool selected() const;
 			/*! \brief Deselect this device. */
 			void unselect();
 		
@@ -353,8 +349,7 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-				traceGenerators = trace::TraceGeneratorVector(),
-				const ir::ExternalFunctionSet* externals = 0);
+				traceGenerators = trace::TraceGeneratorVector());
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);

@@ -15,20 +15,18 @@
 #include <algorithm>
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda_internal.h>
+#include <ocelot/cuda/interface/cuda.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/cuda/interface/CudaRuntimeContext.h>
 #include <ocelot/cuda/interface/CudaDriverFrontend.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/Casts.h>
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/string.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/string.h>
+#include <hydrazine/implementation/debug.h>
 
 // GL includes
 //#include <GL/glew.h>
@@ -83,7 +81,6 @@ public:
 cuda::CudaDriverFrontend::CudaDriverFrontend():
 	_devicesLoaded(false), _computeCapability(2)
 {
-	_flags = 0;
 	_enumerateDevices();
 }
 
@@ -173,11 +170,7 @@ cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
 	std::cout << "  _bind()" << std::endl;
 #endif
 	_lock();
-	cuda::CudaDriverFrontend::Context *ctx = _getContext();
-	if (!ctx->_getDevice().selected()) {
-		ctx->_getDevice().select();
-	}
-	return ctx;
+	return _getContext();
 }
 
 //! \brief unlocks thread's active context
@@ -265,7 +258,7 @@ CUresult cuda::CudaDriverFrontend::cuInit(unsigned int Flags) {
 ** Driver Version Query
 *********************************/
 CUresult cuda::CudaDriverFrontend::cuDriverGetVersion(int *driverVersion) {
-	*driverVersion = 0x3002;
+	*driverVersion = 0x3001;
 	return CUDA_SUCCESS;
 }
 
@@ -346,24 +339,12 @@ CUresult cuda::CudaDriverFrontend::cuDeviceGetProperties(CUdevprop *prop, CUdevi
 
 	int ordinal = (int)dev;
 	executive::Device *device = _devices.at(ordinal);
-	if (device) {
-		executive::Device::PropertiesData properties = device->properties();
-		prop->maxThreadsPerBlock = properties.maxThreadsPerBlock;
-		for (int i = 0; i < 3; i++) {
-			prop->maxThreadsDim[i] = properties.maxThreadsDim[i];
-			prop->maxGridSize[i] = properties.maxGridSize[i];
-		}
-		prop->sharedMemPerBlock = properties.sharedMemPerBlock;
-		prop->totalConstantMemory = properties.totalConstantMemory;
-		prop->SIMDWidth = properties.SIMDWidth;
-		prop->regsPerBlock = properties.regsPerBlock;
-		prop->clockRate = properties.clockRate;
-		prop->textureAlign = properties.textureAlign;
-		result = CUDA_SUCCESS;
-	}
-	else {
-		result = CUDA_ERROR_UNKNOWN;
-	}
+	//
+	// TODO
+	//
+	assert(device);
+	assert(0 && "cuDeviceGetProperties() not implemented yet");
+	result = CUDA_ERROR_UNKNOWN;
 
 	_unlock();
 	return result;
@@ -651,9 +632,9 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *cuModule, const char *
 	if (context) {
 		std::ifstream file(fname);
 		if (file.good()) {
-			ModuleMap::iterator module = context->_modules.insert(
-				std::make_pair(fname, ir::Module())).first;
+			ModuleMap::iterator module = context->_modules.insert(std::make_pair(fname, ir::Module())).first;
 			if (module->second.load(fname)) {
+				//ir::Module *modPtr = & module->second;
 				*cuModule = reinterpret_cast<CUmodule>(& module->second);
 				context->_getDevice().load(&module->second);
 				context->_getDevice().setOptimizationLevel(context->_optimization);
@@ -840,27 +821,8 @@ CUresult cuda::CudaDriverFrontend::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule
 
 CUresult cuda::CudaDriverFrontend::cuMemGetInfo(size_t *free, 
 	size_t *total) {
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		*total = context->_getDevice().properties().totalMemory;
-
-		size_t consumed = 0;
-		executive::Device::MemoryAllocationVector allocationVector = 
-			context->_getDevice().getAllAllocations();
-		for (executive::Device::MemoryAllocationVector::iterator alloc_it = allocationVector.begin();
-			alloc_it != allocationVector.end(); ++alloc_it) {
-			consumed += (*alloc_it)->size();
-		}
-		*free = *total - consumed;
-		result = CUDA_SUCCESS;
-	}
-	else {
-		report("cuMemGetInfo() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
 
@@ -898,29 +860,8 @@ CUresult cuda::CudaDriverFrontend::cuMemAllocPitch( CUdeviceptr *dptr,
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemFree(CUdeviceptr dptr) {
-
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		executive::Device &device = context->_getDevice();
-		
-		executive::Device::MemoryAllocation *allocation = device.getMemoryAllocation((void *)dptr);
-		if (allocation) {
-			device.free((void *)dptr);
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuMemFree() - invalid value");
-			result = CUDA_ERROR_INVALID_VALUE;
-		}
-	}
-	else {
-		report("cuModuleGetFunction() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
-
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemGetAddressRange( CUdeviceptr *pbase, 
@@ -943,26 +884,8 @@ CUresult cuda::CudaDriverFrontend::cuMemFreeHost(void *p) {
 
 CUresult cuda::CudaDriverFrontend::cuMemHostAlloc(void **pp, 
 	unsigned long long bytesize, unsigned int Flags ) {
-
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		executive::Device &device = context->_getDevice();
-		executive::Device::MemoryAllocation * allocation = device.allocateHost(bytesize, Flags);
-		if (allocation) {
-			*pp = allocation->mappedPointer();
-			result = CUDA_SUCCESS;
-		}
-		else {
-			result = CUDA_ERROR_INVALID_VALUE;
-		}
-	}
-	else {
-		report("cuMemHostAlloc() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
 
@@ -1043,40 +966,10 @@ CUresult cuda::CudaDriverFrontend::cuMemcpyDtoH (void *dstHost, CUdeviceptr srcD
 // device <-> device memory
 CUresult cuda::CudaDriverFrontend::cuMemcpyDtoD (CUdeviceptr dstDevice, 
 	CUdeviceptr srcDevice, unsigned int ByteCount ) {
-	
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		executive::Device &device = context->_getDevice();
-		executive::Device::MemoryAllocation * destAllocation = 
-			device.getMemoryAllocation((void *)dstDevice);
-		executive::Device::MemoryAllocation * srcAllocation = 
-			device.getMemoryAllocation((void *)srcDevice);
-			
-		if (destAllocation && srcAllocation) {
-			long int destOffset = (char *)dstDevice - (char *)destAllocation->pointer();
-			long int srcOffset = (char *)srcDevice - (char *)srcAllocation->pointer();
-			
-			srcAllocation->copy(destAllocation, destOffset, srcOffset, ByteCount);
-			result = CUDA_SUCCESS;
-		}
-		else {
-			result = CUDA_ERROR_INVALID_VALUE;
-		}
-	}
-	else {
-		report("cuModuleGetFunction() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverFrontend::cuMemcpyHtoH (void *dstHost, const void *srcHost, 
-	unsigned int ByteCount ) {
-	std::memcpy(dstHost, srcHost, ByteCount);
-	return CUDA_SUCCESS;
-}
 
 // device <-> array memory
 CUresult cuda::CudaDriverFrontend::cuMemcpyDtoA ( CUarray dstArray, 
@@ -1166,6 +1059,7 @@ CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream ) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
+
 // system <-> array memory
 CUresult cuda::CudaDriverFrontend::cuMemcpyHtoAAsync( CUarray dstArray, 
 	unsigned int dstIndex, const void *pSrc, 
@@ -1250,8 +1144,7 @@ CUresult cuda::CudaDriverFrontend::cuMemsetD2D32( CUdeviceptr dstDevice,
 **
 ***********************************/
 
-CUresult cuda::CudaDriverFrontend::cuFuncSetBlockShape(
-	CUfunction hfunc, int x, int y, int z) {
+CUresult cuda::CudaDriverFrontend::cuFuncSetBlockShape (CUfunction hfunc, int x, int y, int z) {
 
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
@@ -1263,8 +1156,7 @@ CUresult cuda::CudaDriverFrontend::cuFuncSetBlockShape(
 			context->_launchConfiguration.blockDim.z = z;
 
 			result = CUDA_SUCCESS;
-			report("cuFuncSetBlockShape() - setting block dim to: " 
-				<< context->_launchConfiguration.blockDim.x << ", "
+			report("cuFuncSetBlockShape() - setting block dim to: " << context->_launchConfiguration.blockDim.x << ", "
 				<< context->_launchConfiguration.blockDim.y << ", "
 				<< context->_launchConfiguration.blockDim.z);
 		}
@@ -1281,8 +1173,7 @@ CUresult cuda::CudaDriverFrontend::cuFuncSetBlockShape(
 	return result;
 }
 
-CUresult cuda::CudaDriverFrontend::cuFuncSetSharedSize(
-	CUfunction hfunc, unsigned int bytes) {
+CUresult cuda::CudaDriverFrontend::cuFuncSetSharedSize (CUfunction hfunc, unsigned int bytes) {
 
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
@@ -1319,46 +1210,19 @@ CUresult cuda::CudaDriverFrontend::cuFuncGetAttribute (int *pi, CUfunction_attri
 			// thsi function isn't needed
 		}
 		else {
-			report("cuFuncGetAttribute() - kernel not found");
+			report("cuParamSetSize() - kernel not found");
 			result = CUDA_ERROR_INVALID_CONTEXT;
 		}
 	}
 	else {
-		report("cuFuncGetAttribute() - context not valid");
+		report("cuParamSetSize() - context not valid");
 		result = CUDA_ERROR_INVALID_CONTEXT;
 	}
 	_unbind();
 	return result;
-}
-
-static executive::ExecutableKernel::CacheConfiguration _translateCacheConfiguration(CUfunc_cache config) {
-	switch (config) {
-		case CU_FUNC_CACHE_PREFER_SHARED:
-			return executive::ExecutableKernel::CachePreferShared;
-		case CU_FUNC_CACHE_PREFER_L1:
-			return executive::ExecutableKernel::CachePreferL1;
-		default:
-			break;
-	}
-	return executive::ExecutableKernel::CacheConfigurationDefault;
-}
-
-CUresult cuda::CudaDriverFrontend::cuFuncSetCacheConfig(CUfunction hfunc, CUfunc_cache config) {
-
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
-		executive::ExecutableKernel *executableKernel = context->_getDevice().getKernel(
-			ptxKernel->module->path(), ptxKernel->name);
-		executableKernel->setCacheConfiguration(_translateCacheConfiguration(config));
-	}
-	else {
-		report("cuFuncSetCacheConfig() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
 /************************************
@@ -1510,7 +1374,8 @@ CUresult cuda::CudaDriverFrontend::cuParamSetSize (CUfunction hfunc,
 	if (context) {
 		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
 		if (ptxKernel) {
-			result = CUDA_SUCCESS;	// this function isn't needed
+			result = CUDA_SUCCESS;
+			// thsi function isn't needed
 		}
 		else {
 			report("cuParamSetSize() - kernel not found");
@@ -1586,75 +1451,10 @@ static ir::Dim3 convert(const dim3& d) {
 	return std::move(ir::Dim3(d.x, d.y, d.z));
 }
 
-CUresult cuda::CudaDriverFrontend::cuLaunch(CUfunction hfunc) {
+CUresult cuda::CudaDriverFrontend::cuLaunch ( CUfunction hfunc ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
-		if (ptxKernel) {
-	
-			context->_hostThreadContext.mapParameters(ptxKernel);
-			
-			report("kernel launch (" << ptxKernel->name 
-				<< ") on thread " << boost::this_thread::get_id());
-	
-			try {
-				trace::TraceGeneratorVector traceGens;
-
-				traceGens = context->_hostThreadContext.persistentTraceGenerators;
-				traceGens.insert(traceGens.end(),
-					context->_hostThreadContext.nextTraceGenerators.begin(), 
-					context->_hostThreadContext.nextTraceGenerators.end());
-
-				context->_getDevice().launch(ptxKernel->module->path(), 
-					ptxKernel->name, 
-					convert(context->_launchConfiguration.gridDim), 
-					convert(context->_launchConfiguration.blockDim), 
-					context->_launchConfiguration.sharedMemory, 
-					context->_hostThreadContext.parameterBlock, 
-					context->_hostThreadContext.parameterBlockSize, traceGens);
-					
-				report(" launch completed successfully");	
-			}
-			catch( const executive::RuntimeException& e ) {
-				std::cerr << "==Ocelot== PTX Emulator failed to run kernel \"" 
-					<< ptxKernel->name 
-					<< "\" with exception: \n";
-				std::cerr << e.toString()  
-					<< "\n" << std::flush;
-				_unbind();
-				throw;
-			}
-			catch( const std::exception& e ) {
-				std::cerr << "==Ocelot== " << context->_getDevice().properties().name
-					<< " failed to run kernel \""
-					<< ptxKernel->name
-					<< "\" with exception: \n";
-				std::cerr << e.what()
-					<< "\n" << std::flush;
-				_unbind();
-				throw;
-			}
-			catch(...) {
-				_unbind();
-				throw;
-			}
-
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuLaunch() - kernel not found");
-			result = CUDA_ERROR_INVALID_CONTEXT;
-		}
-	}
-	else {
-		report("cuLaunch() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
-
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction hfunc, int grid_width, 
@@ -1734,7 +1534,8 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction hfunc, int grid_widt
 
 CUresult cuda::CudaDriverFrontend::cuLaunchGridAsync( CUfunction f, int grid_width, 
 	int grid_height, CUstream hStream ) {
-	return cuLaunchGrid(f, grid_width, grid_height);
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
 }
 
 
@@ -1745,148 +1546,33 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGridAsync( CUfunction f, int grid_wid
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuEventCreate( CUevent *phEvent, 
 	unsigned int Flags ) {
-	
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		unsigned int eventHandle = context->_getDevice().createEvent(Flags);
-		*phEvent = hydrazine::bit_cast<CUevent>(eventHandle);
-		context->_events.insert(*phEvent);
-		result = CUDA_SUCCESS;
-	}
-	else {
-		report("cuEventCreate() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventRecord( CUevent hEvent, CUstream hStream ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		unsigned int eventHandle = hydrazine::bit_cast<unsigned int, CUevent>(hEvent);
-		unsigned int streamHandle = hydrazine::bit_cast<unsigned int, CUstream>(hStream);
-		if (context->_events.find(hEvent) != context->_events.end() &&
-			(!streamHandle || context->_streams.find(hStream) != context->_streams.end())) {
-			context->_getDevice().recordEvent(eventHandle, streamHandle);
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuEventRecord() - event not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuParamSetSize() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventQuery( CUevent hEvent ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		unsigned int eventHandle = hydrazine::bit_cast<unsigned int, CUevent>(hEvent);
-		if (context->_events.find(hEvent) != context->_events.end()) {
-			bool eventResult = context->_getDevice().queryEvent(eventHandle);
-			if (eventResult) {
-				result = CUDA_SUCCESS;
-			}
-			else {
-				result = CUDA_ERROR_NOT_READY;
-			}
-		}
-		else {
-			report("cuEventRecord() - event not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuParamSetSize() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventSynchronize( CUevent hEvent ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		unsigned int eventHandle = hydrazine::bit_cast<unsigned int, CUevent>(hEvent);
-		if (context->_events.find(hEvent) != context->_events.end()) {
-			context->_getDevice().synchronizeEvent(eventHandle);
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuEventSynchronize() - event not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuEventSynchronize() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventDestroy( CUevent hEvent ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		if (context->_events.find(hEvent) != context->_events.end()) {
-			unsigned int eventHandle = hydrazine::bit_cast<unsigned int, CUevent>(hEvent);
-			context->_getDevice().destroyEvent(eventHandle);
-			context->_events.erase(context->_events.find(hEvent));
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuEventDestroy() - event not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuEventDestroy() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventElapsedTime( float *pMilliseconds, 
 	CUevent hStart, CUevent hEnd ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		if (context->_events.find(hStart) != context->_events.end() &&
-			context->_events.find(hEnd) != context->_events.end()) {
-			
-			unsigned int startHandle = hydrazine::bit_cast<unsigned int, CUevent>(hStart);
-			unsigned int endHandle = hydrazine::bit_cast<unsigned int, CUevent>(hEnd);
-			*pMilliseconds = context->_getDevice().getEventTime(startHandle, endHandle);
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuEventElapsedTime() - event not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuEventElapsedTime() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 
@@ -1897,96 +1583,23 @@ CUresult cuda::CudaDriverFrontend::cuEventElapsedTime( float *pMilliseconds,
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuStreamCreate( CUstream *phStream, 
 	unsigned int Flags ) {
-
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		unsigned int streamHandle = context->_getDevice().createStream();
-		*phStream = hydrazine::bit_cast<CUstream>(streamHandle);
-		context->_streams.insert(*phStream);
-		result = CUDA_SUCCESS;
-	}
-	else {
-		report("cuEventElapsedTime() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+//	assert(0 && "unimplemented");
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamQuery( CUstream hStream ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		if (context->_streams.find(hStream) != context->_streams.end()) {
-			unsigned int streamHandle = hydrazine::bit_cast<unsigned int, CUstream>(hStream);
-			bool streamResult = context->_getDevice().queryStream(streamHandle);
-			if (streamResult) {
-				result = CUDA_SUCCESS;
-			}
-			else {
-				result = CUDA_ERROR_NOT_READY;
-			}
-		}
-		else {
-			report("cuStreamQuery() - stream not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuStreamQuery() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamSynchronize( CUstream hStream ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		if (context->_streams.find(hStream) != context->_streams.end()) {
-			unsigned int streamHandle = hydrazine::bit_cast<unsigned int, CUstream>(hStream);
-			context->_getDevice().synchronizeStream(streamHandle);
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuStreamSynchronize() - stream not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuStreamSynchronize() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamDestroy( CUstream hStream ) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
-	Context *context = _bind();
-	if (context) {
-		if (context->_streams.find(hStream) != context->_streams.end()) {
-			unsigned int streamHandle = hydrazine::bit_cast<unsigned int, CUstream>(hStream);
-			context->_getDevice().destroyStream(streamHandle);
-			context->_streams.erase(context->_streams.find(hStream));
-			result = CUDA_SUCCESS;
-		}
-		else {
-			report("cuStreamDestroy() - stream not found");
-			result = CUDA_ERROR_NOT_FOUND;
-		}
-	}
-	else {
-		report("cuStreamDestroy() - context not valid");
-		result = CUDA_ERROR_INVALID_CONTEXT;
-	}
-	_unbind();
-	return result;
+	return CUDA_SUCCESS;
 }
 
 

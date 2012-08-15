@@ -14,8 +14,6 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 
-#include <configure.h>
-
 // Standard Library Includes
 #include <cmath>
 
@@ -39,7 +37,7 @@ namespace test
 			return false;
 		}
 		
-		ir::IRKernel* kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
+		ir::Kernel* kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel _Z17k_sequenceLoopingPfi\n";
@@ -91,7 +89,7 @@ namespace test
 		kernel->updateArgumentMemory();
 
 		kernel->setKernelShape( 8, 1, 1 );
-		kernel->launchGrid( 1, 1, 1 );
+		kernel->launchGrid( 1, 1 );
 
 		for( unsigned int i = 0; i < N; ++i ) 
 		{
@@ -171,7 +169,7 @@ namespace test
 		kernel->updateArgumentMemory();
 
 		kernel->setKernelShape( 8, 1, 1 );
-		kernel->launchGrid( 1, 1, 1 );
+		kernel->launchGrid( 1, 1 );
 
 		bool pass = true;
 		status << "R = [\n";

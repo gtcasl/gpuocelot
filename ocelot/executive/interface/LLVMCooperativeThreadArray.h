@@ -57,7 +57,6 @@ private:
 	void _destroyContext(unsigned int context);
 	bool _finishContext(unsigned int context);
 	void _destroyContexts();
-	unsigned int _threadId(const LLVMContext& context);
 
 private:
 	LLVMModuleManager::FunctionId _entryPoint;
@@ -66,7 +65,6 @@ private:
 	FunctionTable                 _functions;
 	const LLVMExecutableKernel*   _kernel;
 	DataVector                    _sharedMemory;
-	DataVector                    _globallyScopedLocalMemory;
 	LLVMContextVector             _contexts;
 	StackVector                   _stacks;
 	ThreadListVector              _queuedThreads;

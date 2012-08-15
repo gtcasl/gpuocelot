@@ -42,14 +42,14 @@ public:
 
 public:
 	/*! \brief Creates a new instance of the runtime bound to a kernel*/
-	LLVMExecutableKernel(const ir::IRKernel& kernel, Device* d = 0,
+	LLVMExecutableKernel(const ir::Kernel& kernel, Device* d = 0,
 		OptimizationLevel l = translator::Translator::NoOptimization);
 	/*! \brief Clean up the runtime */
 	~LLVMExecutableKernel();
 
 public:
 	/*! \brief Launch a kernel on a 2D grid */
-	void launchGrid(int width, int height, int depth);
+	void launchGrid(int width, int height);
 	/*! \brief Sets the shape of a cta in the kernel */
 	void setKernelShape(int x, int y, int z);
 	/*! \brief Declare an amount of external shared memory */
@@ -76,10 +76,6 @@ public:
 	void addTraceGenerator(trace::TraceGenerator *generator);
 	/*!	removes a trace generator from an EmulatedKernel */
 	void removeTraceGenerator(trace::TraceGenerator *generator);
-	/*! sets an external function table for the emulated kernel */
-	void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
-	/*! clear the external function table for the emulated kernel */
-	void clearExternalFunctionSet();
 
 private:
 	typedef std::unordered_map<std::string, size_t> AllocationMap;

@@ -37,19 +37,8 @@
 template<typename T>
 bool issubnormal(T r0)
 {
-	return false;
-}
-
-bool issubnormal(float r0)
-{
 	return !std::isnormal(r0) && !std::isnan(r0)
-		&& !std::isinf(r0) && r0 != (float)0;
-}
-
-bool issubnormal(double r0)
-{
-	return !std::isnormal(r0) && !std::isnan(r0)
-		&& !std::isinf(r0) && r0 != (double)0;
+		&& !std::isinf(r0) && r0 != (T)0;
 }
 
 bool compareFloat(float a, float b, int eps)
@@ -204,274 +193,6 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// TEST Function Pointer Array
-std::string testFunctionPointerArray_PTX()
-{
-	std::stringstream ptx;
-
-	ptx << ".version 2.3\n";
-	ptx << "\n";
-
-	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a)\n";
-	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a)\n";
-	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a)\n";
-	ptx << ".visible .func (.param .u32 return) add3(.param .u32 a)\n";
-	ptx << "\n";
-
-	ptx << ".global .u64 functionPointerArray[4] ="
-		" { add0, add1, add2, add3 };\n";
-	ptx << "\n";
-	
-	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
-	ptx << "{\t                                            \n";
-	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
-	ptx << "\t.reg .u32 %r<3>;                             \n";
-	ptx << "\t.reg .u64 %functionPointerArrayBase;         \n";
-	ptx << "\t.reg .u64 %functionPointer;                  \n";
-	ptx << "\t.reg .u64 %offset;                           \n";
-	ptx << "\t.param .u32 operandA;                        \n";
-	ptx << "\t.param .u32 result;                          \n";
-	ptx << "\tld.param.u64 %rIn, [in];                     \n";
-	ptx << "\tld.param.u64 %rOut, [out];                   \n";
-	ptx << "\tld.global.u32 %r0, [%rIn];                   \n";
-	ptx << "\tst.param.u32 [operandA], %r0;                \n";
-	ptx << "\tcvt.u64.u32 %offset, %tid.x;                 \n";
-	ptx << "\tmul.lo.u64 %offset, %offset, 8;              \n";
-	ptx << "\tmov.u64 %functionPointerArrayBase, functionPointerArray;\n";
-	ptx << "\tadd.u64 %functionPointerArrayBase, "
-		"%functionPointerArrayBase, %offset;\n";
-	ptx << "\tld.global.u64 %functionPointer, [%functionPointerArrayBase];\n";
-	ptx << "\tprototype: .callprototype (.param .u32 _)    \n";
-	ptx << "\t    _ (.param .u32 _);                       \n";
-	ptx << "\tcall (result), %functionPointer,             \n";
-	ptx << "\t    (operandA), prototype;                   \n";
-	ptx << "\tld.param.u32 %r2, [result];                  \n";
-	ptx << "\tcvt.u64.u32 %offset, %tid.x;                 \n";
-	ptx << "\tmul.lo.u64 %offset, %offset, 4;              \n";
-	ptx << "\tadd.u64 %rOut, %offset, %rOut;               \n";
-	ptx << "\tst.global.u32 [%rOut], %r2;                  \n";
-	ptx << "\texit;                                        \n";
-	ptx << "}                                              \n";
-	ptx << "                                               \n";
-
-	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a) \n";
-	ptx << "{\t                                 \n";
-	ptx << "\t.reg .u32 %r<3>;                  \n";
-	ptx << "\tld.param.u32 %r0, [a];            \n";
-	ptx << "\tadd.u32 %r0, %r0, 0;              \n";
-	ptx << "\tst.param.u32 [return], %r0;       \n";
-	ptx << "\tret 0;                            \n";
-	ptx << "}                                   \n";
-
-	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a) \n";
-	ptx << "{\t                                 \n";
-	ptx << "\t.reg .u32 %r<3>;                  \n";
-	ptx << "\tld.param.u32 %r0, [a];            \n";
-	ptx << "\tadd.u32 %r0, %r0, 1;              \n";
-	ptx << "\tst.param.u32 [return], %r0;       \n";
-	ptx << "\tret 0;                            \n";
-	ptx << "}                                   \n";
-
-	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a) \n";
-	ptx << "{\t                                 \n";
-	ptx << "\t.reg .u32 %r<3>;                  \n";
-	ptx << "\tld.param.u32 %r0, [a];            \n";
-	ptx << "\tadd.u32 %r0, %r0, 2;              \n";
-	ptx << "\tst.param.u32 [return], %r0;       \n";
-	ptx << "\tret 0;                            \n";
-	ptx << "}                                   \n";
-
-	ptx << ".visible .func (.param .u32 return) add3(.param .u32 a) \n";
-	ptx << "{\t                                 \n";
-	ptx << "\t.reg .u32 %r<3>;                  \n";
-	ptx << "\tld.param.u32 %r0, [a];            \n";
-	ptx << "\tadd.u32 %r0, %r0, 3;              \n";
-	ptx << "\tst.param.u32 [return], %r0;       \n";
-	ptx << "\tret 0;                            \n";
-	ptx << "}                                   \n";
-	
-	return ptx.str();
-}
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-// TEST CVTA
-std::string testCvta_PTX(ir::PTXOperand::DataType type, 
-	ir::PTXInstruction::AddressSpace space)
-{
-	std::stringstream ptx;
-
-	std::string typeString   = "." + ir::PTXOperand::toString(type);
-	std::string addressSpace = "." + ir::PTXInstruction::toString(space);
-	
-	ptx << ".version 2.1\n";
-	ptx << "\n";
-
-	if(space != ir::PTXInstruction::Local)
-	{	
-		ptx << addressSpace << " " << typeString << " variable;\n";
-	}
-
-	ptx << "\n";
-	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
-	ptx << "{\t                                            \n";
-	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
-	ptx << "\t.reg .u64 %address;                          \n";
-	ptx << "\t.reg " << typeString    << " %rt;            \n";
-	ptx << "\t.reg .pred %pd;                              \n";
-	if(space == ir::PTXInstruction::Local)
-	{	
-		ptx << addressSpace << " " << typeString << " variable;\n";
-	}
-
-	ptx << "\tld.param.u64 %rIn, [in];                     \n";
-	ptx << "\tld.param.u64 %rOut, [out];                   \n";
-	ptx << "\tld.global" << typeString << " %rt, [%rIn];   \n";
-	
-	ptx << "\tst" << addressSpace << typeString << " [variable], %rt;     \n";
-	ptx << "\tcvta" << addressSpace << typeString << " %address, variable;\n";
-	ptx << "\tld" << typeString << " %rt, [%address];     \n";
-
-	ptx << "\tst" << addressSpace << typeString << " [variable], %rt;     \n";
-	ptx << "\tcvta.to" << addressSpace << typeString << " %address, %address;\n";
-	ptx << "\tld" << addressSpace << typeString << " %rt, [%address];     \n";
-
-	ptx << "\tst.global" << typeString << " [%rOut], %rt; \n";
-	ptx << "\texit;                                        \n";
-	ptx << "}                                              \n";
-	ptx << "                                               \n";
-	
-	return ptx.str();
-}
-
-template<typename dtype>
-void testCvta_REF(void* output, void* input)
-{
-	dtype r0 = getParameter<dtype>(input, 0);
-
-	setParameter(output, 0, r0);
-}
-
-test::TestPTXAssembly::TypeVector testCvta_INOUT(
-	test::TestPTXAssembly::DataType type)
-{
-	return test::TestPTXAssembly::TypeVector(1, type);
-}
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-// TEST LOCAL MEMORY
-std::string testLocalMemory_PTX(ir::PTXOperand::DataType dtype,
-	bool global, bool scoped)
-{
-	std::stringstream ptx;
-
-	std::string dTypeString = "." + ir::PTXOperand::toString(dtype);
-
-	ptx << ".version 2.3\n";
-
-	std::stringstream local;
-
-	local << ".local " << dTypeString << " localMemory";
-
-	if(global)
-	{
-		ptx << local.str() << ";\n";
-	}
-
-	if(scoped)
-	{
-		if(global)
-		{
-			ptx << ".visible .func (.param " << dTypeString
-				<< " return) function() \n";
-			ptx << "{\t                                                 \n";
-			ptx << "\t.reg " << dTypeString << " %r<4>;                 \n";
-			ptx << "\t                                                  \n";
-			ptx << "\tld.local" << dTypeString << " %r0, [localMemory]; \n";
-			ptx << "\tst.param" << dTypeString << " [return], %r0;      \n";
-			ptx << "\tret;                                              \n";
-			ptx << "}\t                                                 \n";
-		}
-		else
-		{
-			ptx << ".visible .func () function()                        \n";
-			ptx << "{\t                                                 \n";
-			ptx << "\t" << local.str() << ";                            \n";
-			ptx << "\t.reg " << dTypeString << " %r<4>;                 \n";
-			ptx << "\t                                                  \n";
-			ptx << "\tst.local" << dTypeString << " [localMemory], 0;   \n";
-			ptx << "\tret;                                              \n";
-			ptx << "}\t                                                 \n";
-		}
-	}
-
-	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
-	ptx << "{\t                                            \n";
-	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
-	ptx << "\t.reg " << dTypeString << " %r<4>;            \n";
-
-	if(scoped && global)
-	{
-		ptx << "\t.param " << dTypeString << " result;\n";
-	}
-
-	if(!global)
-	{
-		ptx << "\t" << local.str() << ";                   \n";
-	}
-	
-	ptx << "\t                                             \n";
-	ptx << "\tld.param.u64 %rIn, [in];                     \n";
-	ptx << "\tld.param.u64 %rOut, [out];                   \n";
-	ptx << "\tld.global" << dTypeString << " %r0, [%rIn];  \n";
-
-
-	if(scoped)
-	{
-		if(global)
-		{
-			ptx << "\tst.local" << dTypeString << " [localMemory], %r0;  \n";
-			ptx << "\tcall.uni (result), function;                       \n";
-			ptx << "\tld.param" << dTypeString << " %r0, [result];       \n";
-		}
-		else
-		{
-			ptx << "\tst.local" << dTypeString << " [localMemory], %r0;  \n";
-			ptx << "\tcall.uni function;                                 \n";
-			ptx << "\tld.local" << dTypeString << " %r0, [localMemory];  \n";
-		}
-	}
-	else
-	{
-		ptx << "\tst.local" << dTypeString << " [localMemory], %r0; \n";
-		ptx << "\tld.local" << dTypeString << " %r0, [localMemory]; \n";
-	}
-
-	ptx << "\tst.global" << dTypeString << " [%rOut], %r0; \n";
-	ptx << "\texit;                                        \n";
-	ptx << "}                                              \n";
-	ptx << "                                               \n";
-	
-	return ptx.str();
-}
-
-template<typename dtype>
-void testLocalMemory_REF(void* output, void* input)
-{
-	dtype r0 = getParameter<dtype>(input, 0);
-	
-	setParameter(output, 0, r0);
-}
-
-test::TestPTXAssembly::TypeVector testLocalMemory_INOUT(
-	test::TestPTXAssembly::DataType type)
-{
-	return test::TestPTXAssembly::TypeVector(1, type);
-}
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 // TEST TEXTURES
 std::string testTex_PTX(ir::PTXInstruction::Geometry dim,
 	ir::PTXOperand::DataType dtype,
@@ -597,8 +318,7 @@ test::TestPTXAssembly::TypeVector testTex_OUT(
 ////////////////////////////////////////////////////////////////////////////////
 // TEST CVT
 std::string testCvt_PTX(ir::PTXOperand::DataType dtype, 
-	ir::PTXOperand::DataType stype, bool ftz, bool sat, bool round,
-	bool rmi = false)
+	ir::PTXOperand::DataType stype, bool ftz, bool sat, bool round)
 {
 	std::stringstream ptx;
 
@@ -631,25 +351,11 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 	{
 		if(ir::PTXOperand::isFloat(stype))
 		{
-			if(rmi)
-			{
-				ptx << ".rm";
-			}
-			else
-			{
-				ptx << ".rz";
-			}
+			ptx << ".rz";
 		}
 		else
 		{
-			if(rmi)
-			{
-				ptx << ".rmi";
-			}
-			else
-			{
-				ptx << ".rzi";
-			}
+			ptx << ".rzi";
 		}
 	}
 	
@@ -666,8 +372,7 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 	return ptx.str();
 }
 
-template<typename dtype, typename stype, bool ftz, bool sat, bool round,
-	bool rmi = false>
+template<typename dtype, typename stype, bool ftz, bool sat, bool round>
 void testCvt_REF(void* output, void* input)
 {
 	stype r0 = getParameter<stype>(input, 0);
@@ -682,33 +387,16 @@ void testCvt_REF(void* output, void* input)
 		if(issubnormal(r0)) r0 = (stype)0;
 	}
 
-	dtype r1 = r0;
-
 	if(sat)
 	{
 		if(typeid(float) != typeid(dtype) && typeid(double) != typeid(dtype))
 		{
-			r1 = (stype)std::numeric_limits<dtype>::max() > r0
-				? r0 : std::numeric_limits<dtype>::max();
-			r1 = (stype)std::numeric_limits<dtype>::min() < r0
-				? r0 : std::numeric_limits<dtype>::min();
+			r0 = std::min((stype)std::numeric_limits<dtype>::max(), r0);
+			r0 = std::max((stype)std::numeric_limits<dtype>::min(), r0);
 		}
 	}
 
-	if(round)
-	{
-		if(typeid(float) == typeid(dtype) && typeid(float) == typeid(stype))
-		{
-			if(rmi)
-			{
-				r1 = floor(r0);
-			}
-			else
-			{
-				r1 = trunc(r0);
-			}
-		}
-	}
+	dtype r1 = r0;
 
 	if(isFloat<stype>() && !isFloat<dtype>())
 	{
@@ -763,8 +451,7 @@ std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index,
 	
 	ptx << ".version 2.1\n";
 
-	if(space != ir::PTXInstruction::Param
-		&& space != ir::PTXInstruction::Local)
+	if(space != ir::PTXInstruction::Param)
 	{	
 		if(index)
 		{
@@ -781,8 +468,7 @@ std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index,
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
 	ptx << "{\t                                            \n";
 
-	if(space == ir::PTXInstruction::Param
-		|| space == ir::PTXInstruction::Local)
+	if(space == ir::PTXInstruction::Param)
 	{	
 		if(index)
 		{
@@ -4599,16 +4285,6 @@ namespace test
 			if(devices > 0) device = random() % devices;
 			cudaSetDevice(device);
 			
-			if(veryVerbose)
-			{
-				cudaDeviceProp properties;
-				cudaGetDeviceProperties(&properties, device);
-			
-				std::cout << " Running Test '" << test.name 
-					<< "' on device - " << device << " - '" 
-					<< properties.name << "'\n";
-			}
-			
 			cudaMalloc((void**)&deviceInput, inputSize);
 			cudaMalloc((void**)&deviceOutput, outputSize);
 			
@@ -5295,11 +4971,6 @@ namespace test
 		add("TestCall-Indirect", testIndirectFunctionCall_REF, 
 			testIndirectFunctionCall_PTX(), testIndirectFunctionCall_OUT(), 
 			testIndirectFunctionCall_IN(), 
-			uniformRandom<unsigned int, 1>, 4, 1);
-
-		add("TestFunctionPointerArray", testIndirectFunctionCall_REF, 
-			testFunctionPointerArray_PTX(), testIndirectFunctionCall_OUT(), 
-			testIndirectFunctionCall_IN(),
 			uniformRandom<unsigned int, 1>, 4, 1);
 
 		add("TestTestP-f32-Finite", 
@@ -6686,18 +6357,6 @@ namespace test
 				ir::PTXOperand::f32, false, false, true),
 			testCvt_INOUT(I32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
-		add("TestCvt-u32-f32-ftz-sat-rzi",
-			testCvt_REF<unsigned int, float, true, true, true>,
-			testCvt_PTX(ir::PTXOperand::u32,
-				ir::PTXOperand::f32, true, true, true),
-			testCvt_INOUT(I32), testCvt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
-		add("TestCvt-u32-f32-rmi",
-			testCvt_REF<unsigned int, float, false, false, true, true>,
-			testCvt_PTX(ir::PTXOperand::u32,
-				ir::PTXOperand::f32, false, false, true, true),
-			testCvt_INOUT(I32), testCvt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-u32-f64",
 			testCvt_REF<unsigned int, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::u32,
@@ -7072,12 +6731,6 @@ namespace test
 				ir::PTXOperand::f32, false, false, false),
 			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
-		add("TestCvt-f32-f32-rz",
-			testCvt_REF<float, float, false, false, true>,
-			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::f32, false, false, true),
-			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-f32-f64",
 			testCvt_REF<float, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
@@ -7146,66 +6799,6 @@ namespace test
 				ir::PTXOperand::f64, false, false, false),
 			testCvt_INOUT(FP64), testCvt_INOUT(FP64),
 			uniformFloat<double, 1>, 1, 1);
-	
-		add("TestLocalMemory-u8",
-			testLocalMemory_REF<unsigned char>,
-			testLocalMemory_PTX(ir::PTXOperand::u8, false, false),
-			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
-			uniformFloat<unsigned char, 1>, 1, 1);
-		add("TestLocalMemory-u8-global",
-			testLocalMemory_REF<unsigned char>,
-			testLocalMemory_PTX(ir::PTXOperand::u8, true, false),
-			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
-			uniformFloat<unsigned char, 1>, 1, 1);
-		add("TestLocalMemory-u8-scoped",
-			testLocalMemory_REF<unsigned char>,
-			testLocalMemory_PTX(ir::PTXOperand::u8, false, true),
-			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
-			uniformFloat<unsigned char, 1>, 1, 1);
-		add("TestLocalMemory-u8-global-scoped",
-			testLocalMemory_REF<unsigned char>,
-			testLocalMemory_PTX(ir::PTXOperand::u8, true, true),
-			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
-			uniformFloat<unsigned char, 1>, 1, 1);
-
-		if(sizeof(size_t) == 4)
-		{
-			add("TestCvta-local-u32",
-				testCvta_REF<unsigned int>,
-				testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Local),
-				testCvta_INOUT(I32), testCvta_INOUT(I32),
-				uniformFloat<unsigned int, 1>, 1, 1);
-			add("TestCvta-global-u32",
-				testCvta_REF<unsigned int>,
-				testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Global),
-				testCvta_INOUT(I32), testCvta_INOUT(I32),
-				uniformFloat<unsigned int, 1>, 1, 1);
-			add("TestCvta-shared-u32",
-				testCvta_REF<unsigned int>,
-				testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Shared),
-				testCvta_INOUT(I32), testCvta_INOUT(I32),
-				uniformFloat<unsigned int, 1>, 1, 1);
-		}
-		
-		add("TestCvta-local-u64",
-			testCvta_REF<long long unsigned int>,
-			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Local),
-			testCvta_INOUT(I64), testCvta_INOUT(I64),
-			uniformFloat<long long unsigned int, 1>, 1, 1);
-
-		add("TestCvta-global-u64",
-			testCvta_REF<long long unsigned int>,
-			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Global),
-			testCvta_INOUT(I64), testCvta_INOUT(I64),
-			uniformFloat<long long unsigned int, 1>, 1, 1);
-
-		
-		add("TestCvta-shared-u64",
-			testCvta_REF<long long unsigned int>,
-			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Shared),
-			testCvta_INOUT(I64), testCvta_INOUT(I64),
-			uniformFloat<long long unsigned int, 1>, 1, 1);
-
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
@@ -7301,8 +6894,6 @@ int main(int argc, char** argv)
 
 	parser.parse("-v", "--verbose", test.verbose, false,
 		"Print out status info after the test.");
-	parser.parse("-V", "--very-verbose", test.veryVerbose, false,
-		"Print out information as the test is running.");
 	parser.parse("-p", "--print-ptx", test.print, false,
 		"Print test kernels as they are added.");
 	parser.parse("-e", "--enumerate", test.enumerate, false,

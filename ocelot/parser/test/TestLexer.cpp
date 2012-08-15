@@ -23,9 +23,9 @@
 #include <FlexLexer.h>
 #include <ocelot/parser/interface/PTXLexer.h>
 
-#include <hydrazine/interface/ArgumentParser.h>
-#include <hydrazine/interface/macros.h>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/implementation/macros.h>
+#include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -155,8 +155,7 @@ namespace test
 		{
 		
 			status << "First pass did not consume all of the file, the " 
-				<< "following was rejected:\n'" << temp.str() << "'\n";
-			status << " remaining characters:" << temp.str().size() << "\n";
+				<< "following was rejected:\n" << temp.str() << "\n";
 			return false;
 		
 		}

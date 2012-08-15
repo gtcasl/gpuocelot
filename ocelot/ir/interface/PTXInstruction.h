@@ -89,7 +89,6 @@ namespace ir {
 			Suq,
 			TestP,
 			Tex,
-			Tld4,
 			Txq,
 			Trap,
 			Vabsdiff,
@@ -107,8 +106,7 @@ namespace ir {
 			// Special instructions inserted by the analysis procedures
 			Reconverge,
 			Phi,
-			Nop,
-			Invalid_Opcode
+			Nop
 		};
 
 		/*!
@@ -196,26 +194,12 @@ namespace ir {
 			CacheOperation_Invalid
 		};
 		
-		enum CacheLevel {
-			L1,
-			L2,
-			CacheLevel_invalid
-		};
-		
 		enum ClampOperation {
-			TrapOOB,
+			TrapOOB,	// avoid colliding with PTXInstruction::Opcode::Trap
 			Clamp,
 			Zero,
 			Mirror,
 			ClampOperation_Invalid
-		};
-
-		enum ColorComponent {
-			red,
-			green,
-			blue,
-			alpha,
-			ColorComponent_Invalid
 		};
 
 		/*! comparison operator */
@@ -284,10 +268,6 @@ namespace ir {
 			_1d = 1,
 			_2d = 2,
 			_3d = 3,
-			_a1d = 4,
-			_a2d = 5,
-			_cube = 6,
-			_acube = 7,
 			Geometry_Invalid
 		};
 
@@ -315,7 +295,6 @@ namespace ir {
 		
 	public:
 		static std::string toString( Level );
-		static std::string toString(CacheLevel cache);
 		static std::string toString( PermuteMode );
 		static std::string toString( FloatingPointMode );
 		static std::string toString( Vec );
@@ -333,7 +312,6 @@ namespace ir {
 		static std::string toString( Geometry );
 		static std::string modifierString( unsigned int, CarryFlag = None );
 		static std::string toString( VoteMode );
-		static std::string toString( ColorComponent );
 		static std::string toString( Opcode );
 		static bool isPt( const PTXOperand& );
 
@@ -363,18 +341,6 @@ namespace ir {
 		Instruction* clone( bool copy = true ) const;
 
 	public:
-		/*! \brief Is the instruction a branch */
-		bool isBranch() const;
-		/*! \brief Does the instruction accept an address as an operand */
-		bool mayHaveAddressableOperand() const;
-		/*! \brief Can the instruction affect state other than destinations? */
-		bool hasSideEffects() const;
-		/*! \brief Does the instruction trigger a memory operation */
-		bool isMemoryInstruction() const;
-		/*! \brief Can the instruction exit the kernel/function */
-		bool isExit() const;
-
-	public:
 		/*! Opcode of PTX instruction */
 		Opcode opcode;
 
@@ -385,6 +351,7 @@ namespace ir {
 		unsigned int modifier;
 
 		union {
+
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
@@ -413,9 +380,6 @@ namespace ir {
 			
 			/*! Indicates which type of bar. instruction should be used */
 			BarrierOperation barrierOperation;
-			
-			/*! For tld4 instructions, the color component */
-			ColorComponent colorComponent;
 		};
 	
 		/*! If the instruction is predicated, the guard */
@@ -463,9 +427,6 @@ namespace ir {
 			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
-			
-			/*! cache level */
-			CacheLevel cacheLevel;
 		};
 		
 		/*! Geometry if this is a texture or surface instruction */
@@ -496,18 +457,12 @@ namespace ir {
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
-				at analysis time for use at runtime
+				at analysis time
 		*/
 		
-		union
-		{
-			/*! \brief Index of post dominator instruction at which possibly 
-				divergent branches reconverge */
-			int reconvergeInstruction;
-			/*! \brief If this is a branch, is a check for re-convergence with
-				threads waiting at the target necessary */
-			bool needsReconvergenceCheck;
-		};
+		/*! \brief Index of post dominator instruction at which possibly 
+			divergent branches reconverge */
+		int reconvergeInstruction;
 
 		union
 		{
@@ -518,7 +473,6 @@ namespace ir {
 			/*! \brief Is this a kernel argument in the parameter space? */
 			bool isArgument;
 		};
-		
 		/*!	The following are used for debugging information at runtime. */
 	public:
 		/*! \brief The index of the statement that this instruction was 
@@ -526,11 +480,6 @@ namespace ir {
 		unsigned int statementIndex;
 		/*! \brief The program counter of the instruction */
 		unsigned int pc;
-
-		/*!	The following are used for debugging meta-data. */
-	public:
-		/*! \brief Meta-data attached to the instruction */
-		std::string metadata;
 	};
 
 }

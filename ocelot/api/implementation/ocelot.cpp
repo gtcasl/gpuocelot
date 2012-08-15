@@ -28,12 +28,12 @@ namespace ocelot
 		get()->clearTraceGenerators( );
 	}
 
-	void addPTXPass(transforms::Pass &pass) 
+	void addPTXPass(analysis::Pass &pass) 
 	{
 		get()->addPTXPass(pass);
 	}
 
-	void removePTXPass(transforms::Pass &pass) 
+	void removePTXPass(analysis::Pass &pass) 
 	{
 		get()->removePTXPass(pass);
 	}
@@ -51,13 +51,6 @@ namespace ocelot
 	void registerPTXModule(std::istream& stream, const std::string& name)
 	{
 		get()->registerPTXModule( stream, name );
-	}
-
-	void registerTexture(const void* texref,
-		const std::string& moduleName,
-		const std::string& textureName, bool normalize)
-	{
-		get()->registerTexture(texref, moduleName, textureName, normalize);
 	}
 	
 	void clearErrors()
@@ -85,16 +78,6 @@ namespace ocelot
 	void launch(const std::string& module, const std::string& name)
 	{
 		get()->launch(module, name);
-	}
-
-	void registerExternalFunction(const std::string& name, void* function)
-	{
-		get()->registerExternalFunction(name, function);
-	}
-
-	void removeExternalFunction(const std::string& name)
-	{
-		get()->removeExternalFunction(name);
 	}
 }
 

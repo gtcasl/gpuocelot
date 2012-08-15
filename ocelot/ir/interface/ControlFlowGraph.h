@@ -22,9 +22,8 @@ class Instruction;
 class BasicBlock {
 public:
 	/*! \brief A list of blocks */
-	typedef std::list< BasicBlock >   BlockList;
-	typedef BlockList::iterator       Pointer;
-	typedef BlockList::const_iterator ConstPointer;
+	typedef std::list< BasicBlock > BlockList;
+	typedef BlockList::iterator Pointer;
 
 	/*! \brief An edge connects two basic blocks */
 	class Edge {
@@ -37,9 +36,9 @@ public:
 		};
 	
 	public:
-		Edge(BlockList::iterator h = BlockList::iterator(), 
+		Edge( BlockList::iterator h = BlockList::iterator(), 
 			BlockList::iterator t = BlockList::iterator(), 
-			Type y = FallThrough);
+			Type y = FallThrough );
 
 		/*!	pointer to head node of edge */
 		BlockList::iterator head;
@@ -49,19 +48,15 @@ public:
 		Type type;
 	};
 
-	typedef std::list<Edge>                 EdgeList;
-	typedef std::vector<Pointer>            BlockPointerVector;
-	typedef std::vector<ConstPointer>       ConstBlockPointerVector;
-	typedef std::vector<EdgeList::iterator> EdgePointerVector;
-	typedef std::list<Instruction*>         InstructionList;
-	typedef InstructionList::iterator       instruction_iterator;
-	typedef InstructionList::const_iterator const_instruction_iterator;
-	typedef unsigned int                    Id;
+	typedef std::list< Edge > EdgeList;
+	typedef std::vector< Pointer > BlockPointerVector;
+	typedef std::vector< EdgeList::iterator > EdgePointerVector;
+	typedef std::list< Instruction* > InstructionList;
+	typedef unsigned int Id;
 
 public:
 	BasicBlock(const std::string& l = "", Id i = 0, 
-		const InstructionList& instructions = InstructionList(),
-		const std::string& c = "");
+		const InstructionList& instructions = InstructionList());
 	~BasicBlock();
 
 	/*! \brief Clear/delete all instructions owned by the block */
@@ -156,8 +151,6 @@ public:
 	typedef BasicBlock::EdgePointerVector EdgePointerVector;
 	/*! \brief A vector of block pointers */
 	typedef BasicBlock::BlockPointerVector BlockPointerVector;
-	/*! \brief A const vector of block pointers */
-	typedef BasicBlock::ConstBlockPointerVector ConstBlockPointerVector;
 	
 	/*! \brief An iterator over basic blocks */
 	typedef BlockList::iterator iterator;
@@ -166,8 +159,6 @@ public:
 	
 	/*! \brief A pointer to an iterator */
 	typedef BlockPointerVector::iterator pointer_iterator;
-	/*! \brief A pointer to an iterator */
-	typedef BlockPointerVector::const_iterator const_pointer_iterator;
 	/*! \brief A pointer to an iterator */
 	typedef BlockPointerVector::reverse_iterator reverse_pointer_iterator;	
 	
@@ -190,8 +181,6 @@ public:
 
 	/*! \brief An instruction list */
 	typedef BasicBlock::InstructionList InstructionList;
-	/*! \brief An iterator over instructions */
-	typedef InstructionList::iterator instruction_iterator;
 
 	/*! \brief maps a basic block [by label] to a coloring */
 	typedef std::unordered_map<std::string, unsigned int> BasicBlockColorMap;
@@ -318,8 +307,7 @@ public:
 	/*! Returns an ordered sequence of basic blocks such that the entry node 
 		is first and all fall-through edges produce adjacencies
 	*/
-	BlockPointerVector      executable_sequence();
-	ConstBlockPointerVector	executable_sequence() const;
+	BlockPointerVector executable_sequence();
 	
 	/*!	deep copy of ControlFlowGraph */
 	ControlFlowGraph& operator=(const ControlFlowGraph &);
@@ -360,45 +348,44 @@ private:
 namespace std
 {
 	template<> 
-	struct hash<ir::ControlFlowGraph::iterator>
+	class hash< ir::ControlFlowGraph::iterator >
 	{
 	public:
-		size_t operator()(const ir::ControlFlowGraph::iterator& it) const
+		size_t operator()( ir::ControlFlowGraph::iterator it ) const
 		{
-			return (size_t)it->id;
+			return ( size_t )it->id;
 		}
 	};
 
 	template<> 
-	struct hash<ir::ControlFlowGraph::const_iterator>
+	class hash< ir::ControlFlowGraph::const_iterator >
 	{
 	public:
-		size_t operator()(const ir::ControlFlowGraph::const_iterator& it) const
+		size_t operator()( ir::ControlFlowGraph::const_iterator it ) const
 		{
-			return (size_t)it->id;
+			return ( size_t )it->id;
 		}
 	};
 
 	template<> 
-	struct hash<ir::ControlFlowGraph::InstructionList::iterator>
+	class hash< ir::ControlFlowGraph::InstructionList::iterator >
 	{
 	public:
 		size_t operator()( 
-			const ir::ControlFlowGraph::InstructionList::iterator& it) const
+			ir::ControlFlowGraph::InstructionList::iterator it ) const
 		{
-			return (size_t)&(*it);
+			return ( size_t )&( *it );
 		}
 	};
 
 	template<> 
-	struct hash<ir::ControlFlowGraph::InstructionList::const_iterator>
+	class hash< ir::ControlFlowGraph::InstructionList::const_iterator >
 	{
 	public:
-		typedef ir::ControlFlowGraph::InstructionList::const_iterator type;
-	
-		size_t operator()(const type& it) const
+		size_t operator()( 
+			ir::ControlFlowGraph::InstructionList::const_iterator it ) const
 		{
-			return (size_t)&(*it);
+			return ( size_t )&( *it );
 		}
 	};
 }

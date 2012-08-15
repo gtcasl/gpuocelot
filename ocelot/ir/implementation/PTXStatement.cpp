@@ -10,19 +10,11 @@
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <cstring>
 #include <stack>
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
 namespace ir {
 
-	PTXStatement::Symbol::Symbol(const std::string& n, unsigned int o)
-	: name(n), offset(o)
-	{
-	
-	}
-
-	static void write(std::ostream &out,
-		const ir::PTXStatement::ArrayVector & values,
-		ir::PTXOperand::DataType type) {
+	static void write(std::ostream &out, const ir::PTXStatement::ArrayVector & values, ir::PTXOperand::DataType type) {
 		ir::PTXStatement::ArrayVector::const_iterator it = values.begin();
 		for (int n = 0; it != values.end(); ++it, ++n) {
 			out << (n ? ", " : "");
@@ -295,12 +287,7 @@ namespace ir {
 	
 		switch( directive ) {
 			case Instr: {
-				return instruction.toString() + ";" + instruction.metadata;
-				break;
-			}
-			case AddressSize: {
-				std::stringstream stream;
-				stream << ".address_size " << addressSize;
+				return instruction.toString() + ";";
 				break;
 			}
 			case CallTargets: {
@@ -356,20 +343,13 @@ namespace ir {
 				break;
 			}
 			case FunctionPrototype: {
-				std::string result = name + ": .callprototype ";
-				
-				if(!returnTypes.empty()) {
-					result += "(";
-					for(TypeVector::const_iterator type = returnTypes.begin(); 
-						type != returnTypes.end(); ++type) {
-						if( type != returnTypes.begin() ) result += ", ";
-						result += ".param ." +
-							PTXOperand::toString( *type ) + " _";
-					}
-					result += ") ";
+				std::string result = name + ": .callprototype (";
+				for(TypeVector::const_iterator type = returnTypes.begin(); 
+					type != returnTypes.end(); ++type) {
+					if( type != returnTypes.begin() ) result += ", ";
+					result += ".param ." + PTXOperand::toString( *type ) + " _";
 				}
-				
-				result += name + " (";
+				result += ") _ (";
 				for(TypeVector::const_iterator type = argumentTypes.begin(); 
 					type != argumentTypes.end(); ++type) {
 					if( type != argumentTypes.begin() ) result += ", ";
@@ -400,7 +380,7 @@ namespace ir {
 				break;
 			}
 			case Label: {
-				return name + ":" + instruction.metadata;
+				return name + ":";
 				break;
 			}
 			case Local: {

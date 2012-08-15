@@ -7,13 +7,10 @@
 #ifndef SSA_GRAPH_CPP_INCLUDED
 #define SSA_GRAPH_CPP_INCLUDED
 
-// Ocelot Includes
 #include <ocelot/analysis/interface/SSAGraph.h>
 
-// Hydrazine Includes
-#include <hydrazine/interface/debug.h>
+#include <hydrazine/implementation/debug.h>
 
-// Standard Library Includes
 #include <stack>
 
 #ifdef REPORT_BASE
@@ -45,8 +42,7 @@ namespace analysis
 			instruction = block->_instructions.begin(); 
 			instruction != block->_instructions.end(); ++instruction )
 		{
-			report( "   Initializing instruction: "
-				<< instruction->i->toString() );
+			report( "   Initializing instruction: " << instruction->label );
 			for( DataflowGraph::RegisterPointerVector::iterator 
 				reg = instruction->s.begin(); 
 				reg != instruction->s.end(); ++reg )

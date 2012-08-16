@@ -13,6 +13,13 @@
  *  4. The edges of the tree represent the relationship between each abstract
  *  node and the regions that are its descendants (and that were abstracted to
  *  form it).
+ *
+ *  In the case of unstructured control flow graphs, a forward copy
+ *  transformation is applied to deal with interacting forward branches, as
+ *  explained in [1].
+ *
+ *  [1] Fubo Zhang and Erik H. D.Hollander. Using hammock graphs to structure 
+ *      programs. IEEE Trans. Softw. Eng., 30(4):231.245, 2004.
  */
 
 #ifndef IR_CONTROLTREE_H_INCLUDED
@@ -23,6 +30,7 @@
 
 // STL includes
 #include <list>
+#include <vector>
 #include <unordered_set>
 
 typedef ir::ControlFlowGraph CFG;
@@ -43,17 +51,26 @@ namespace ir
 				Inst,           // Instructions (e.g. basic block)
 				Block,          // Block of nodes
 				IfThen,         // If-Then
-				While,          // While loop
-				Natural,        // Natural loop with side exits
-				Invalid
+				Natural         // Natural loop with side exits
 			};
+
+			class Node;
+			typedef std::list<Node*> NodeList;
+			typedef std::unordered_set<Node*> NodeSet;
+			typedef std::vector<Node*> NodeVector;
+			typedef std::pair<Node*, Node*> Edge;
+			typedef std::vector<Edge> EdgeVector;
 
 			/*! \brief A polymorphic base class that represents any node */
 			class Node
 			{
 				public:
-					typedef std::list<Node*> NodeList;
-					typedef std::unordered_set<Node*> NodeSet;
+					/*! \brief Constructor */
+					Node(const std::string& label, RegionType rtype, 
+							const NodeList& children);
+
+					/*! \brief Destructor */
+					virtual ~Node() = 0;
 
 					/*! \brief Get the label */
 					const std::string& label() const;
@@ -67,14 +84,10 @@ namespace ir
 					NodeSet& preds();
 					/*! \brief Get fallthrough node */
 					Node*& fallthrough();
-
-					/*! \brief Destructor (virtual because polymorphic) */
-					virtual ~Node();
-
-				protected:
-					/*! \brief Constructor (protected to avoid instantiation) */
-					Node(const std::string& label, RegionType rtype, 
-							const NodeList& children);
+					/*! \brief Does this node have a branch edge */
+					bool has_branch_edge() const;
+					/*! \brief Get the branch edge */
+					Edge get_branch_edge();
 
 				private:
 					/*! \brief Node label */
@@ -91,9 +104,6 @@ namespace ir
 					Node* _fallthrough;
 			};
 
-			typedef Node::NodeList NodeList;
-			typedef Node::NodeSet NodeSet;
-
 			/*! \brief A representation of the cfg basic block */
 			class InstNode : public Node
 			{
@@ -103,8 +113,8 @@ namespace ir
 					/*! \brief Constructor */
 					InstNode(const CFG::const_iterator& bb);
 
-					/*! /brief Get the instruction list */
-					const InstructionList& insts() const;
+					/*! /brief Get the basic block in the cfg */
+					const CFG::const_iterator& bb() const;
 
 				private:
 					/*! \brief Iterator to the basic block in the cfg */
@@ -119,7 +129,8 @@ namespace ir
 				public:
 					/*! \brief Constructor */
 					BlockNode(const std::string& label, 
-						const NodeList& children);
+							const NodeList& children);
+
 			};
 
 			/*! \brief If-Then node */
@@ -131,23 +142,15 @@ namespace ir
 							Node* ifTrue, Node* ifFalse = NULL);
 
 					/*! \brief Get condition node */
-					const Node* cond() const;
+					Node* cond() const;
 					/*! \brief Get if-true node */
-					const Node* ifTrue() const;
+					Node* ifTrue() const;
 					/*! \brief Get if-false node */
-					const Node* ifFalse() const;
+					Node* ifFalse() const;
 
 				private:
 					const NodeList buildChildren(Node* cond, 
 							Node* ifTrue, Node* ifFalse) const;
-			};
-
-			class WhileNode : public Node
-			{
-				public:
-					/*! \brief Constructor */
-					WhileNode(const std::string& label, 
-						const NodeList& children);
 			};
 
 			class NaturalNode : public Node
@@ -155,15 +158,8 @@ namespace ir
 				public:
 					/*! \brief Constructor */
 					NaturalNode(const std::string& label, 
-						const NodeList& children);
-			};
+							const NodeList& children);
 
-			/*! \brief Invalid node */
-			class InvalidNode : public Node
-			{
-				public:
-					/*! \brief Constructor */
-					InvalidNode();
 			};
 
 			/*! \brief write a graphviz-compatible file for visualizing the 
@@ -175,23 +171,61 @@ namespace ir
 
 		private:
 			Node* _insert_node(Node* node);
+
+			/*! \brief depth first search */
 			void _dfs_postorder(Node* x);
+			/*! \brief determines whether node is the entry node of an acyclic
+			 * control structure and returns its region. Stores in nset the set
+			 * of nodes in the identified control structure */
 			Node* _acyclic_region_type(Node* node, NodeSet& nset);
+			/*! \brief is this a cyclic region? */
 			bool _isCyclic(Node* node);
-			bool _backedge(Node* head, Node* tail);
+			// bool _isBackedge(Node* head, Node* tail);
+			/*! \brief is this a back edge? */
+			bool _isBackedge(const Edge& edge);
+			/*! \brief adds node to the control tree, inserts node into _post
+			 * at the highest-numbered position of a node in nodeSet, removes
+			 * the nodes in nodeSet from _post, compacts the remaining nodes at
+			 * the beginning of _post, and sets _postCtr to the index of node
+			 * in the resulting postorder */
 			void _compact(Node* node, NodeSet nodeSet);
+			/*! \brief link region node into abstract flowgraph, adjust the
+			 * predecessor and successor functions, and augment the control
+			 * tree */
 			void _reduce(Node* node, NodeSet nodeSet);
+			/*! \brief returns true if there is a (possibly empty) path from m
+			 * to k that does not pass through n */
 			bool _path(Node* m, Node* k, Node* n = NULL);
+			/*! \brief returns true if there is a node k such that there is a
+			 * (possibly empty) path from m to k that does not pass through n
+			 * and an edge k->n that is a back edge, and false otherwise. */
 			bool _path_back(Node* m, Node* n);
+			/*! \brief determines whether node is the entry node of a cyclic
+			 * control structure and returns its region. Stores in nset the set
+			 * of nodes in the identified control structure */
 			Node* _cyclic_region_type(Node* node, NodeList& nset);
 			void _structural_analysis(Node* entry);
 
-			NodeList _nodes;
+			NodeVector _executable_sequence(Node* entry);
+			EdgeVector _find_forward_branches();
+			bool _lexicographical_compare(const Node* a, const Node* b);
+			NodeVector _control_graph(const Edge& nb);
+			bool _interact(const NodeVector& CGi0, const NodeVector& CGm0);
+			bool _interact(const EdgeVector::iterator& e1, 
+					const EdgeVector::iterator& e2); 
+			NodeVector _minimal_hammock_graph(const Edge& nb);
+			Node* _clone_node(const Node* node);
+			void _forward_copy_transform(const Edge& iFwdBranch, 
+					const NodeVector& true_part);
+			void _elim_unreach_code(ControlTree::Node* en);
+			bool _forward_copy(Node* entry);
+
+			NodeVector _nodes;
 			NodeList _post;
 			NodeList::iterator _postCtr;
 			NodeSet _visit;
 			Node* _root;
-			unsigned int _size;
+			NodeVector _lexical;
 	};
 }
 
@@ -199,17 +233,17 @@ namespace std
 {
 	template<> inline size_t hash< 
 		ir::ControlTree::NodeList::iterator >::operator()( 
-		ir::ControlTree::NodeList::iterator it ) const
-	{
-		return ( size_t )&( *it );
-	}
+				ir::ControlTree::NodeList::iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
 
 	template<> inline size_t hash< 
 		ir::ControlTree::NodeList::const_iterator >::operator()( 
-		ir::ControlTree::NodeList::const_iterator it ) const
-	{
-		return ( size_t )&( *it );
-	}
+				ir::ControlTree::NodeList::const_iterator it ) const
+		{
+			return ( size_t )&( *it );
+		}
 }
 #endif
 

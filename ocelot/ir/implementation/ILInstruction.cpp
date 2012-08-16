@@ -66,6 +66,7 @@ namespace ir
 			case Mad:                   return "mad";
 			case Mov:                   return "mov";
 			case Mul:                   return "mul";
+			case Ne:                    return "ne";
 			case Rcp:                   return "rcp";
 			case Round_Nearest:         return "round_nearest";
 			case Rsq_Vec:               return "rsq_vec";
@@ -614,6 +615,15 @@ namespace ir
 	Instruction *ILMul::clone(bool copy) const
 	{
 		return new ILMul(*this);
+	}
+
+	ILNe::ILNe() : ILBinaryInstruction(Ne)
+	{
+	}
+
+	Instruction *ILNe::clone(bool copy) const
+	{
+		return new ILNe(*this);
 	}
 
 	ILRcp::ILRcp() : ILUnaryInstruction(Rcp)

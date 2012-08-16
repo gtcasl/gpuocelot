@@ -60,7 +60,6 @@ namespace translator
 			void _translate(const CT::InstNode*    node);
 			void _translate(const CT::BlockNode*   node);
 			void _translate(const CT::IfThenNode*  node);
-			void _translate(const CT::WhileNode*   node);
 			void _translate(const CT::NaturalNode* node);
 
 			void _translate(const ir::PTXInstruction &i); 
@@ -109,6 +108,7 @@ namespace translator
 			void _translateSetP  (const ir::PTXInstruction& i);
 			void _translateShl   (const ir::PTXInstruction& i);
 			void _translateShr   (const ir::PTXInstruction& i);
+			void _translateSlct  (const ir::PTXInstruction& i);
 			void _translateSqrt  (const ir::PTXInstruction& i);
 			void _translateSt    (const ir::PTXInstruction& i);
 			void _translateSub   (const ir::PTXInstruction& i);
@@ -117,8 +117,10 @@ namespace translator
 
 			void _translateLdParam      (const ir::PTXInstruction& i);
 			void _translateLdSharedByte (const ir::PTXInstruction& i);
+			void _translateLdSharedWord (const ir::PTXInstruction &i);
 			void _translateLdSharedDword(const ir::PTXInstruction& i);
 			void _translateStSharedByte (const ir::PTXInstruction& i);
+			void _translateStSharedWord (const ir::PTXInstruction& i);
 			void _translateStSharedDword(const ir::PTXInstruction& i);
 
 			void _translateIDiv(const ir::PTXInstruction& i);

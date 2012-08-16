@@ -65,6 +65,7 @@ namespace ir
 				Mad,
 				Mov,
 				Mul,
+				Ne,
 				Rcp,
 				Round_Nearest,
 				Rsq_Vec,
@@ -564,6 +565,13 @@ namespace ir
 	{
 		public:
 			ILMul();
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILNe : public ILBinaryInstruction
+	{
+		public:
+			ILNe();
 			Instruction *clone(bool copy=true) const;
 	};
 

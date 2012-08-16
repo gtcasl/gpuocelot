@@ -13,7 +13,6 @@
 #include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
-#include <hydrazine/interface/Stringable.h>
 
 namespace trace {
 	class TraceGenerator;

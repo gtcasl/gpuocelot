@@ -282,6 +282,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return TOKEN_PARAM; }
 ".pragma"                       { yylval->value = TOKEN_PRAGMA; \
                                     return TOKEN_PRAGMA; }
+".ptr"                        { yylval->value = TOKEN_PTR; \
+																		return TOKEN_PTR; }
 ".reg"                          { yylval->value = TOKEN_REG; \
                                     return TOKEN_REG; }
 ".samplerref"                   { yylval->value = TOKEN_SAMPLERREF; \
@@ -325,6 +327,10 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return TOKEN_SM35; }
 "map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
                                     return TOKEN_MAP_F64_TO_F32; }
+"texmode_independent"           { yylval->value = TOKEN_TEXMODE_INDEPENDENT; 
+                                    return TOKEN_TEXMODE_INDEPENDENT; }
+"texmode_unified"         		  { yylval->value = TOKEN_TEXMODE_UNIFIED; 
+                                    return TOKEN_TEXMODE_UNIFIED; }
 
 ".u32"				            { yylval->value = TOKEN_U32; return TOKEN_U32; }
 ".s32"				            { yylval->value = TOKEN_S32; return TOKEN_S32; }

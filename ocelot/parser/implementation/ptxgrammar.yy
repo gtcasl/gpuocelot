@@ -78,8 +78,9 @@
 %token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM 
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
 %token<value> TOKEN_SM21 TOKEN_SM10 TOKEN_SM30 TOKEN_SM35
+%token<value> TOKEN_TEXMODE_INDEPENDENT TOKEN_TEXMODE_UNIFIED
 
-%token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
+%token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA TOKEN_PTR
 %token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA TOKEN_SURFREF 
 %token<value> TOKEN_GL TOKEN_SYS TOKEN_SAMPLERREF
 
@@ -261,8 +262,9 @@ shaderModel : TOKEN_SM10 | TOKEN_SM11 | TOKEN_SM12 | TOKEN_SM13 | TOKEN_SM20
 	| TOKEN_SM21 | TOKEN_SM30 | TOKEN_SM35;
 	
 floatingPointOption : TOKEN_MAP_F64_TO_F32;
+textureOption: TOKEN_TEXMODE_INDEPENDENT | TOKEN_TEXMODE_UNIFIED;
 
-targetOption : shaderModel | floatingPointOption;
+targetOption : shaderModel | floatingPointOption | textureOption;
 targetElement : targetOption
 {
 	state.targetElement( $<value>1 );
@@ -319,6 +321,12 @@ instructionVectorType : vectorToken
 
 alignment : TOKEN_ALIGN TOKEN_DECIMAL_CONSTANT { state.alignment = $<value>2; };
 
+kernelParameterPtrSpace: TOKEN_GLOBAL | TOKEN_CONST | TOKEN_LOCAL | TOKEN_SHARED;
+parameterAttribute: TOKEN_PTR kernelParameterPtrSpace
+{
+	state.paramArgumentDeclaration($<value>2);
+}
+
 addressableVariablePrefix : dataType statementVectorType {state.alignment = 1;};
 addressableVariablePrefix : statementVectorType dataType {state.alignment = 1;};
 addressableVariablePrefix : dataType { state.alignment = 1; };
@@ -330,6 +338,7 @@ addressableVariablePrefix : statementVectorType dataType alignment;
 addressableVariablePrefix : statementVectorType alignment dataType;
 addressableVariablePrefix : dataType alignment;
 addressableVariablePrefix : alignment dataType;
+addressableVariablePrefix : dataType parameterAttribute alignment;
 
 arrayDimensionSet : '[' TOKEN_DECIMAL_CONSTANT ']'
 {

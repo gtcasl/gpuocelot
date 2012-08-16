@@ -201,6 +201,7 @@ namespace parser
 						const std::string &name, YYLTYPE &location);
 					void argumentDeclaration( const std::string& name, 
 						YYLTYPE& location );
+					void paramArgumentDeclaration(int token);
 					
 					void openBrace( YYLTYPE& location );
 					void closeBrace( YYLTYPE& location );

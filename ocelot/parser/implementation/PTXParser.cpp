@@ -579,6 +579,12 @@ namespace parser
 		{
 			statement.targets.push_back( "map_f64_to_f32" );
 		}
+		else if (token == TOKEN_TEXMODE_INDEPENDENT) {
+			statement.targets.push_back("texmode_independent");
+		}
+		else if (token == TOKEN_TEXMODE_UNIFIED) {
+			statement.targets.push_back("texmode_unified");
+		}
 		else
 		{
 			assertM(false, "Ocelot internal error - invalid token.");
@@ -977,6 +983,13 @@ namespace parser
 		}
 
 		statementEnd( location );
+	}
+		
+	void PTXParser::State::paramArgumentDeclaration(int token)
+	{
+		report(" Rule: parameterAttribute: TOKEN_PTR kernelParameterPtrSpace");
+		ir::PTXInstruction::AddressSpace addressSpace = tokenToAddressSpace(token);
+		report("    address space: " << ir::PTXInstruction::toString(addressSpace));
 	}
 
 	void PTXParser::State::fileDeclaration( unsigned int file, 

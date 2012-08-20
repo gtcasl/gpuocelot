@@ -856,7 +856,8 @@ unsigned int ir::PTXOperand::bytes() const {
 }
 
 bool ir::PTXOperand::isRegister() const {
-	return addressMode == Register || addressMode == Indirect;
+	return addressMode == Register || addressMode == Indirect
+		|| addressMode == BitBucket;
 }
 
 

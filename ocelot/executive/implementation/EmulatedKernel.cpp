@@ -4,19 +4,12 @@
 	\brief implements the Kernel base class
 */
 
-// C++ includes
-#include <assert.h>
-#include <math.h>
-#include <vector>
-#include <map>
-#include <unordered_set>
-#include <cstring>
-
 // Ocelot includes
 #include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/EmulatorDevice.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
+#include <ocelot/executive/interface/EmulatedKernelScheduler.h>
 
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
@@ -33,6 +26,14 @@
 
 #include <ocelot/trace/interface/TraceGenerator.h>
 
+// C++ includes
+#include <cassert>
+#include <cmath>
+#include <vector>
+#include <map>
+#include <unordered_set>
+#include <cstring>
+
 // Hydrazine includes
 #include <hydrazine/interface/debug.h>
 
@@ -42,9 +43,9 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 0 
 
-#define REPORT_KERNEL_INSTRUCTIONS  1
+#define REPORT_KERNEL_INSTRUCTIONS  0
 #define REPORT_LAUNCH_CONFIGURATION 1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,19 +125,12 @@ void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 		<< ", " << blockDim().z);
 #endif
 
-	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
-	CTA = &cta;
-	for (int z = 0; z < depth; ++z) {
-		for (int y = 0; y < height; ++y) {
-			for (int x = 0; x < width; ++x) {	
-				report("  cta: " << x << ", " << y << ", " << z);	
-				cta.execute(ir::Dim3(x,y,z));
-			}
-		}
-	}
+	EmulatedKernelScheduler kernelScheduler(
+		static_cast<EmulatorDevice*>(device));
+	
+	kernelScheduler.launch(this, gridDim(), &_generators);
 	
 	finalizeTraceGenerators();
-	CTA = 0;
 }
 
 void executive::EmulatedKernel::setKernelShape(int x, int y, int z) {
@@ -286,7 +280,8 @@ void executive::EmulatedKernel::updateParamReferences() {
 					report("For instruction '" << instr.toString() 
 							<< "' setting source parameter '"
 							<< instr.a.toString() 
-							<< "' offset to " << param.offset << " " 
+							<< "' offset to "
+							<< (param.offset + instr.a.offset) << " " 
 							<< ( instr.a.isArgument ? "(argument)" : "" ) );
 					instr.a.offset += param.offset;
 					instr.a.imm_uint = 0;
@@ -301,7 +296,8 @@ void executive::EmulatedKernel::updateParamReferences() {
 					report("For instruction '" << instr.toString() 
 							<< "' setting destination parameter '"
 							<< instr.d.toString() 
-							<< "' offset to " << param.offset << " " 
+							<< "' offset to "
+							<< (instr.d.offset + param.offset) << " " 
 							<< ( instr.d.isArgument ? "(argument)" : "" ) );
 
 					instr.d.offset += param.offset;
@@ -821,6 +817,10 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	}
 }
 
+void executive::EmulatedKernel::setCTA(CooperativeThreadArray* cta) {
+	CTA = cta;
+}
+
 void executive::EmulatedKernel::fixBranchTargets(size_t basePC) {
 	for (size_t pc = basePC; pc != instructions.size(); ++pc) {
 		ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
@@ -1004,28 +1004,67 @@ void executive::EmulatedKernel::initializeStackMemory() {
 		
 			for (ir::PTXOperand::Array::iterator argument = fi->d.array.begin(); 
 				argument != fi->d.array.end(); ++argument) {
-				offset = align(offset, ir::PTXOperand::bytes(argument->type));
-				argument->offset = offset;
-				report("   For return argument '" << argument->identifier 
-					<< "' stack offset " << offset << " -> argument offset " 
-					<< argument->offset);
 
-				offsets.insert(std::make_pair(argument->identifier, offset));
+				if(argument->isRegister())
+				{
+					unsigned int size = ir::PTXOperand::bytes(argument->type);
+					
+					offset = align(offset, size);
+					argument->offset = offset;
+					report("   For return argument '" << argument->toString() 
+						<< "' stack offset " << offset);
 
-				offset += ir::PTXOperand::bytes(argument->type);
+					offsets.insert(std::make_pair(argument->identifier, offset));
+
+					offset += size;
+				}
+				else
+				{
+					auto parameter = parameters.find(argument->identifier);
+					assert(parameter != parameters.end());
+
+					offset = align(offset, parameter->second.getSize());
+					argument->offset = offset;
+					report("   For return argument '" << argument->identifier 
+						<< "' stack offset " << offset << " -> argument offset " 
+						<< argument->offset);
+
+					offsets.insert(std::make_pair(argument->identifier, offset));
+
+					offset += parameter->second.getSize();
+				}
 			}
 			
 			for (ir::PTXOperand::Array::iterator argument = fi->b.array.begin(); 
 				argument != fi->b.array.end(); ++argument) {
-				offset = align(offset, ir::PTXOperand::bytes(argument->type));
-				argument->offset = offset;
-				
-				offsets.insert(std::make_pair(argument->identifier, offset));
+				if(argument->isRegister())
+				{
+					unsigned int size = ir::PTXOperand::bytes(argument->type);
+					
+					offset = align(offset, size);
+					argument->offset = offset;
+					report("   For call argument '" << argument->toString() 
+						<< "' stack offset " << offset);
 
-				report( "   For call argument '" << argument->identifier 
-					<< "' argument offset " << argument->offset 
-					<< " -> stack offset " << offset );
-				offset += ir::PTXOperand::bytes(argument->type);
+					offsets.insert(std::make_pair(argument->identifier, offset));
+
+					offset += size;
+				}
+				else
+				{
+					auto parameter = parameters.find(argument->identifier);
+					assert(parameter != parameters.end());
+
+					offset = align(offset, parameter->second.getSize());
+					argument->offset = offset;
+					report("   For call argument '" << argument->identifier 
+						<< "' stack offset " << offset << " -> argument offset " 
+						<< argument->offset);
+
+					offsets.insert(std::make_pair(argument->identifier, offset));
+
+					offset += parameter->second.getSize();
+				}
 			}
 			
 			_parameterMemorySize = std::max(_parameterMemorySize,

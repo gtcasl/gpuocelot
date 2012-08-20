@@ -30,7 +30,8 @@ namespace executive {
 		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	public:
-		/*! Constructs a cooperative thread array from an EmulatedKernel instance
+		/*! Constructs a cooperative thread array from an EmulatedKernel
+				instance
 
 			\param kernel pointer to EmulatedKernel to which this CTA belongs
 			\param gridDim The dimensions of the kernel
@@ -38,6 +39,13 @@ namespace executive {
 		*/
 		CooperativeThreadArray(EmulatedKernel *kernel, 
 			const ir::Dim3& gridDim, bool trace);
+		
+		CooperativeThreadArray(EmulatedKernel *kernel, 
+			const ir::Dim3& gridDim, const ir::Dim3& ctaDim,
+			unsigned int argumentMemorySize, unsigned int parameterMemorySize,
+			unsigned int registerCount, unsigned int localMemorySize,
+			unsigned int globalLocalMemorySize,
+			unsigned int totalSharedMemorySize, bool trace);
 
 		CooperativeThreadArray();
 
@@ -47,7 +55,7 @@ namespace executive {
 		void reset();
 
 		/*! Initializes the CTA and executes the kernel for a given block */
-		void execute(const ir::Dim3& block);
+		void execute(const ir::Dim3& block, int PC = 0);
 		
 		/*! Jump to a specific PC for the current context */
 		void jumpToPC(int PC);
@@ -57,9 +65,11 @@ namespace executive {
 
 		/*! gets the active context of the cooperative thread array */
 		CTAContext& getActiveContext();
+
+		/*! gets the context state of the currently active context */
+		CTAContext::ExecutionState getExecutionState() const;
 		
 	protected:
-	
 		/*! initializes elements of the CTA */
 		void initialize(const ir::Dim3 & block);
 		
@@ -119,7 +129,8 @@ namespace executive {
 		
 	protected:
 		// execution helper functions
-
+		
+		// Implement saturation
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
 		ir::PTXF64 sat(int modifier, ir::PTXF64 f);
 		
@@ -414,6 +425,14 @@ namespace executive {
 		bool operandAsPredicate(int, const ir::PTXOperand&);
 
 	private:
+		template<typename T>
+		T getFunctionParameter(int threadID,
+			const ir::PTXInstruction& i, int index);
+		template<typename T>
+		void setFunctionParameter(int threadID,
+			const ir::PTXInstruction& i, int index, T value);
+
+	private:
 		void normalStore(int, const ir::PTXInstruction &, char*);
 		void vectorStore(int, const ir::PTXInstruction &, char*, unsigned int);
 		void normalLoad(int, const ir::PTXInstruction &, const char*);
@@ -437,7 +456,8 @@ namespace executive {
 		void eval_Call(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Clz(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_CNot(CTAContext &context, const ir::PTXInstruction &instr);
-		void eval_CopySign(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_CopySign(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Cos(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cvt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cvta(CTAContext &context, const ir::PTXInstruction &instr);
@@ -445,7 +465,8 @@ namespace executive {
 		void eval_Ex2(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Exit(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Fma(CTAContext &context, const ir::PTXInstruction &instr);
-		void eval_Isspacep(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Isspacep(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Ld(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Ldu(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Lg2(CTAContext &context, const ir::PTXInstruction &instr);
@@ -462,8 +483,10 @@ namespace executive {
 		void eval_Or(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Pmevent(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Popc(CTAContext &context, const ir::PTXInstruction &instr);
-		void eval_Prefetch(CTAContext &context, const ir::PTXInstruction &instr);
-		void eval_Prefetchu(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Prefetch(CTAContext &context,
+			const ir::PTXInstruction &instr);
+		void eval_Prefetchu(CTAContext &context,
+			const ir::PTXInstruction &instr);
 		void eval_Prmt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rcp(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Red(CTAContext &context, const ir::PTXInstruction &instr);
@@ -492,7 +515,15 @@ namespace executive {
 		void eval_Txq(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Vote(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Xor(CTAContext &context, const ir::PTXInstruction &instr);		
-		void eval_Reconverge(CTAContext &context, const ir::PTXInstruction &instr);	
+		void eval_Reconverge(CTAContext &context,
+			const ir::PTXInstruction &instr);	
+
+		// CNP support
+		void eval_cudaLaunchDevice(CTAContext &context,
+			const ir::PTXInstruction &instr);
+		void eval_cudaSynchronizeDevice(CTAContext &context,
+			const ir::PTXInstruction &instr);	
+	
 
 	protected:
 		
@@ -511,6 +542,10 @@ namespace executive {
 
 		void copyArgument(const ir::PTXOperand& s, CTAContext& context);
 
+	private:
+		// CNP Support
+		ir::PTXU64 getNewParameterBuffer(ir::PTXU64 alignment, ir::PTXU64 size);
+		void freeParameterBuffer(ir::PTXU64 );
 	};
 
 }

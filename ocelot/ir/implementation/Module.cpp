@@ -219,6 +219,9 @@ void ir::Module::loadNow() {
 	}
 	else
 	{
+		if (!_ptxPointer) {
+			report("Module::loadNow() - path: '" << path() << "' contains no PTX");
+		}
 		assert( _ptxPointer != 0 );
 		std::stringstream stream( _ptxPointer );
 		_ptxPointer = 0;

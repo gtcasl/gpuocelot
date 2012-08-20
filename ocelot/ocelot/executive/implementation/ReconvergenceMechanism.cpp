@@ -307,7 +307,7 @@ void executive::ReconvergenceIPDOM::eval_Reconverge(
 void executive::ReconvergenceIPDOM::eval_Exit(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 	eval_Bar(context, instr);
-	context.running = false;
+	context.executionState = CTAContext::Exit;
 }
 
 bool executive::ReconvergenceIPDOM::nextInstruction(
@@ -323,7 +323,7 @@ bool executive::ReconvergenceIPDOM::nextInstruction(
 		context.PC++;
 	}
 	
-	return context.running;
+	return context.running();
 }
 
 executive::CTAContext& executive::ReconvergenceIPDOM::getContext() {
@@ -435,7 +435,7 @@ void executive::ReconvergenceBarrier::eval_Reconverge(
 void executive::ReconvergenceBarrier::eval_Exit(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 	if (runtimeStack.size() == 1) {
-		context.running = false;
+		context.executionState = CTAContext::Exit;
 	}
 	else {
 		eval_Bar(context, instr);
@@ -454,7 +454,7 @@ bool executive::ReconvergenceBarrier::nextInstruction(
 		&& opcode != ir::PTXInstruction::Exit) {
 		context.PC++;
 	}
-	return context.running;
+	return context.running();
 }
 
 executive::CTAContext& executive::ReconvergenceBarrier::getContext() {
@@ -576,7 +576,7 @@ void executive::ReconvergenceTFGen6::eval_Exit(executive::CTAContext &context,
 	}
 	if (runtimeStack.size() == 1
 		|| context.active.count() == context.active.size()) {
-		context.running = false;
+		context.executionState = CTAContext::Exit;
 	}
 	else {	void initialize();
 
@@ -610,7 +610,7 @@ bool executive::ReconvergenceTFGen6::nextInstruction(
 			}
 		}
 	}
-	return context.running;
+	return context.running();
 }
 
 executive::CTAContext& executive::ReconvergenceTFGen6::getContext() {
@@ -744,7 +744,7 @@ void executive::ReconvergenceTFSortedStack::eval_Exit(
 	executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 	if (stack.back().size() == 1) {
-		context.running = false;
+		context.executionState= CTAContext::Exit;
 	}
 	else {
 		throw RuntimeException("not all threads hit the exit: ",
@@ -762,7 +762,7 @@ bool executive::ReconvergenceTFSortedStack::nextInstruction(
 		&& opcode != ir::PTXInstruction::Ret) {
 		context.PC++;
 	}
-	return context.running;
+	return context.running();
 }
 
 executive::CTAContext& executive::ReconvergenceTFSortedStack::getContext() {
@@ -923,7 +923,7 @@ void executive::ReconvergenceTFSoftware::eval_Exit(
 	const ir::PTXInstruction &instr) {
 	if (stack.size() == 1 &&
 		context.active.count() == context.active.size()) {
-		context.running = false;
+		context.executionState = CTAContext::Exit;
 	}
 	else {
 		throw RuntimeException("not all threads hit the exit: ",
@@ -981,7 +981,7 @@ bool executive::ReconvergenceTFSoftware::nextInstruction(
 		context.PC++;
 	}
 	
-	return context.running;
+	return context.running();
 }
 
 executive::CTAContext& executive::ReconvergenceTFSoftware::getContext() {

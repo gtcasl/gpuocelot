@@ -63,6 +63,15 @@ FunctionInliningPass::StringVector
 	return StringVector(1, "SimplifyExternalCallsPass");	
 }
 
+static bool isBuiltin(const std::string& functionName)
+{
+	if(functionName.find("_Z") == 0) return true;
+
+	if(functionName == "cudaLaunchDevice") return true;
+
+	return false;
+}
+
 void FunctionInliningPass::_getFunctionsToInline(ir::IRKernel& k)
 {
 	report(" Finding functions that are eligible for inlining...");
@@ -97,7 +106,7 @@ void FunctionInliningPass::_getFunctionsToInline(ir::IRKernel& k)
 			}
 			
 			// Skip kernels that are built-in functions
-			if(ptx.a.identifier.find("_Z") == 0)
+			if(isBuiltin(ptx.a.identifier))
 			{
 				report("   skipping because it is a reserved keyword.");
 				continue;

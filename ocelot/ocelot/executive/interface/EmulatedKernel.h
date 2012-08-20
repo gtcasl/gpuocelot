@@ -7,6 +7,7 @@
 #ifndef EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 #define EXECUTIVE_EMULATEDKERNEL_H_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 
@@ -14,9 +15,9 @@
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
-namespace trace {
-	class TraceGenerator;
-}
+// Forward Declarations
+namespace trace     { class TraceGenerator;          }
+namespace executive { class EmulatedKernelScheduler; }
 
 namespace executive {
 		
@@ -79,7 +80,10 @@ namespace executive {
 
 		/*!	Maps identifiers to global memory allocations. */
 		void initializeGlobalMemory();
-		
+	
+		/*! \brief Sets the CTA */
+		void setCTA(CooperativeThreadArray* cta);
+	
 	public:
 		/*! Lazily sets the target of a call instruction to the entry point
 			of the specified function.  This function will be inserted into
@@ -218,6 +222,9 @@ namespace executive {
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
 
+		/*! A handle to the current scheduler, or 0 if none is executing */
+		EmulatedKernelScheduler* scheduler;
+
 	private:
 		/*! Maps program counter to the kernel that begins there */
 		PCToKernelMap kernelEntryPoints;
@@ -226,7 +233,7 @@ namespace executive {
 		FunctionNameMap functionEntryPoints;
 
 		/*! A handle to the current CTA, or 0 if none is executing */
-		executive::CooperativeThreadArray* CTA;
+		CooperativeThreadArray* CTA;
 
 	public:
 		/*! \brief Check to see if a memory access is valid */

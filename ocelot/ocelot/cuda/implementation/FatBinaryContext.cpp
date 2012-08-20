@@ -4,24 +4,30 @@
 	\brief object for interacting with CUDA Fat Binaries
 */
 
+
 // Ocelot Includes
 #include <ocelot/cuda/interface/FatBinaryContext.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/ELFFile.h>
 
 // Standard Library Includes
 #include <cstring>
+#include <sstream>
+#include <fstream>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////
 cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
+
+	report("FatBinaryContext(" << ptr << ")");
 
 	if(*(int*)cubin_ptr == __cudaFatMAGIC) {
 		__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
@@ -66,20 +72,19 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 				
 		char* base = (char*)(header + 1);
 		long long unsigned int offset = 0;
-		__cudaFatCudaBinary2EntryRec* entry
-			= (__cudaFatCudaBinary2EntryRec*)(base);
+		__cudaFatCudaBinary2EntryRec* entry = (__cudaFatCudaBinary2EntryRec*)(base);
 		
-		// find the PTX
-		while(!(entry->type & FATBIN_2_PTX) && offset < header->length)
-		{
+		while (!(entry->type & FATBIN_2_PTX) && offset < header->length) {
 			entry = (__cudaFatCudaBinary2EntryRec*)(base + offset);
-			offset = entry->binary + entry->binarySize;
+			offset += entry->binary + entry->binarySize;
 		}
-		
-		assertM(entry->type & FATBIN_2_PTX, "Binary contains no PTX.");
-		
-		_name = (char*)entry + entry->name;
-		_ptx  = (char*)entry + entry->binary;
+		_name = (char*)entry + entry->name;		
+		if (entry->type & FATBIN_2_PTX) {
+			_ptx  = (char*)entry + entry->binary;
+		}
+		else {
+			_ptx = 0;
+		}
 	}
 	else {
 		assertM(false, "unknown fat binary magic number "
@@ -87,7 +92,12 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 		_name = 0;
 		_ptx = 0;
 	}
-
+	if (!_ptx) {
+		report("registered, contains NO PTX");
+	}
+	else {
+		report("registered, contains PTX");	
+	}
 }
 
 cuda::FatBinaryContext::FatBinaryContext(): cubin_ptr(0), _name(0), _ptx(0) {

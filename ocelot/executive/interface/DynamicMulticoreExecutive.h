@@ -37,6 +37,32 @@ namespace executive {
 			EventTimer compilation;
 		};
 		
+		class EventsCache {
+		public:
+			enum Cache {
+				L1_data, L1_instruction, L2, L3
+			};
+		public:
+		
+			EventsCache(Cache _cache = L1_data);
+			void start();
+			void stop();
+		
+			Cache cache;
+			size_t accesses, misses;
+			bool valid;
+		};
+		
+		class CacheEventSet {
+		public:
+			CacheEventSet();
+		public:
+			EventsCache eventsL1D;
+			EventsCache eventsL1I;
+			EventsCache eventsL2;
+			EventsCache eventsL3;
+		};
+		
 	public:
 		DynamicMulticoreExecutive(const executive::DynamicMulticoreKernel &kernel, size_t sharedMemory);
 		~DynamicMulticoreExecutive();

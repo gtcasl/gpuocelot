@@ -5,8 +5,15 @@
 	\brief executes a kernel over one or more CTAs
 */
 
+#define PROFILE_PERF_COUNTERS 1
+
 // C++ includes
 #include <iomanip>
+
+#if PROFILE_PERF_COUNTERS
+// PAPI includes
+#include <papi.h>
+#endif
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
@@ -132,6 +139,71 @@ void executive::DynamicMulticoreExecutive::CTAEventTimer::write(std::ostream &ou
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+executive::DynamicMulticoreExecutive::EventsCache::EventsCache(Cache _cache): 
+	cache(_cache), accesses(0), misses(0), valid(false) {
+
+}
+
+void executive::DynamicMulticoreExecutive::EventsCache::start() {
+	accesses = misses = 0;
+#if PROFILE_PERF_COUNTERS
+	int events[2] = {0, 0};
+	switch (cache) {
+	case L1_data:
+		events[0] = PAPI_L1_DCA;
+		events[1] = PAPI_L1_DCM;
+		break;
+	case L1_instruction:
+		events[0] = PAPI_L1_ICA;
+		events[1] = PAPI_L1_ICM;
+		break;
+	case L2:
+		events[0] = PAPI_L2_DCA;
+		events[1] = PAPI_L2_DCM;
+		break;
+	case L3:
+		events[0] = PAPI_L3_DCA;
+		events[1] = PAPI_L3_DCM;
+		break;
+	default:
+		break;
+	}
+	if (PAPI_start_counters(events, 2) != PAPI_OK) {
+		report("Failed to start counters");
+		valid = false;
+	}
+	else {
+		valid = true;
+	}
+#endif
+}
+
+void executive::DynamicMulticoreExecutive::EventsCache::stop() {
+	long long values[2] = {0, 0};
+#if PROFILE_PERF_COUNTERS
+	if (PAPI_read_counters(values, 2) != PAPI_OK) {
+		report("Failed to read counters");
+		valid = false;
+	}
+	else {
+		valid = true;
+		accesses = values[0];
+		misses = values[1];
+	}
+#endif
+}
+
+
+executive::DynamicMulticoreExecutive::CacheEventSet::CacheEventSet():
+	eventsL1D(EventsCache::L1_data),
+	eventsL1I(EventsCache::L1_instruction),
+	eventsL2(EventsCache::L2),
+	eventsL3(EventsCache::L3) {
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	const executive::DynamicMulticoreKernel &_kernel, size_t _sharedMemorySize
 ):
@@ -171,7 +243,8 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	_timerFirstKernelExecution.clearAccumulated();
 	_timerFirstKernelExecution.setMaxEvents(1);
 	_timerFirstKernelExecution.setEvents(0);
-		
+
+	
 }
 
 executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {

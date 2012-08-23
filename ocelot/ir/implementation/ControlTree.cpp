@@ -9,13 +9,14 @@
 #include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/string.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/string.h>
+#include <hydrazine/interface/debug.h>
 
 // STL includes
 #include <functional>
 #include <algorithm>
 #include <queue>
+#include <iterator>
 
 // Boost includes
 #include <boost/bind.hpp>
@@ -935,8 +936,8 @@ namespace ir
 			case Inst:
 			{
 				assert(node->children().size() == 0);
-				const InstNode* ifnode = static_cast<const InstNode*>(node);
-				return _insert_node(new InstNode(ifnode->bb()));
+				const InstNode* inode = static_cast<const InstNode*>(node);
+				return _insert_node(new InstNode(inode->bb()));
 			}
 			case Block:
 			{
@@ -992,11 +993,6 @@ namespace ir
 		for (NodeVector::const_iterator node = true_part.begin() ;
 				node != true_part.end() ; ++node)
 		{
-			// TODO Handle clonning of other region types
-			// assert((*node)->rtype() == Inst);
-			// bmap[*node] = _insert_node(new InstNode( 
-			// 			static_cast<InstNode *>(*node)->bb()));
-			
 			// Clone the node
 			bmap[*node] = _clone_node(*node);
 			

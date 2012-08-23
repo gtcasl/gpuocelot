@@ -5,8 +5,8 @@
  */
 
 #include <hydrazine/interface/Version.h>
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/debug.h>
 #include <ocelot/translator/test/PtxToIlTranslator.h>
 #include <ocelot/translator/interface/PTXToILTranslator.h>
 #include <ocelot/ir/interface/Module.h>

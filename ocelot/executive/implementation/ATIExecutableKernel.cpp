@@ -9,8 +9,8 @@
 #include <ocelot/translator/interface/PTXToILTranslator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Exception.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

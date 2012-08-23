@@ -22,6 +22,10 @@
 			enabled: true,
 			outputFile: "applicationKernelRuntime.json"
 		},
+		performanceCounters: {
+			enabled: false,
+			cacheLevel: "L1D"
+		},
 		branch: false,
 		memory: false
 	},

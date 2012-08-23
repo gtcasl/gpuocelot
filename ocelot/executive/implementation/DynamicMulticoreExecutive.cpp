@@ -139,29 +139,33 @@ void executive::DynamicMulticoreExecutive::CTAEventTimer::write(std::ostream &ou
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::DynamicMulticoreExecutive::EventsCache::EventsCache(Cache _cache): 
+executive::DynamicMulticoreExecutive::CacheEvents::CacheEvents(Set _cache): 
 	cache(_cache), accesses(0), misses(0), valid(false) {
 
 }
 
-void executive::DynamicMulticoreExecutive::EventsCache::start() {
-	accesses = misses = 0;
+void executive::DynamicMulticoreExecutive::CacheEvents::start(Set _cache) {
+	
+	if (_cache != PC::Set_unknown) {
+		cache = _cache;
+	}
+
 #if PROFILE_PERF_COUNTERS
 	int events[2] = {0, 0};
 	switch (cache) {
-	case L1_data:
+	case PC::Cache_L1D:
 		events[0] = PAPI_L1_DCA;
 		events[1] = PAPI_L1_DCM;
 		break;
-	case L1_instruction:
+	case PC::Cache_L1I:
 		events[0] = PAPI_L1_ICA;
 		events[1] = PAPI_L1_ICM;
 		break;
-	case L2:
+	case PC::Cache_L2:
 		events[0] = PAPI_L2_DCA;
 		events[1] = PAPI_L2_DCM;
 		break;
-	case L3:
+	case PC::Cache_L3:
 		events[0] = PAPI_L3_DCA;
 		events[1] = PAPI_L3_DCM;
 		break;
@@ -178,7 +182,12 @@ void executive::DynamicMulticoreExecutive::EventsCache::start() {
 #endif
 }
 
-void executive::DynamicMulticoreExecutive::EventsCache::stop() {
+void executive::DynamicMulticoreExecutive::CacheEvents::clear() {
+	accesses = 0;
+	misses = 0;
+}
+			
+void executive::DynamicMulticoreExecutive::CacheEvents::stop() {
 	long long values[2] = {0, 0};
 #if PROFILE_PERF_COUNTERS
 	if (PAPI_read_counters(values, 2) != PAPI_OK) {
@@ -187,19 +196,10 @@ void executive::DynamicMulticoreExecutive::EventsCache::stop() {
 	}
 	else {
 		valid = true;
-		accesses = values[0];
-		misses = values[1];
+		accesses += values[0];
+		misses += values[1];
 	}
 #endif
-}
-
-
-executive::DynamicMulticoreExecutive::CacheEventSet::CacheEventSet():
-	eventsL1D(EventsCache::L1_data),
-	eventsL1I(EventsCache::L1_instruction),
-	eventsL2(EventsCache::L2),
-	eventsL3(EventsCache::L3) {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +244,11 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	_timerFirstKernelExecution.setMaxEvents(1);
 	_timerFirstKernelExecution.setEvents(0);
 
+	_ctaCacheEvents.clear();
 	
+	if (api::OcelotConfiguration::get().trace.performanceCounters.enabled) {
+		
+	}
 }
 
 executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
@@ -490,7 +494,8 @@ void executive::DynamicMulticoreExecutive::_executeIterateSubkernelBarriers(cons
 					_executeWarp(&contexts[tid], warpsize);
 				
 					for (int i = 0; i < warpsize; i++) {
-						if (_getResumeStatus(&contexts[tid + i]) == analysis::KernelPartitioningPass::Thread_barrier) {
+						if (_getResumeStatus(&contexts[tid + i]) == 
+							analysis::KernelPartitioningPass::Thread_barrier) {
 							++barrierThreads;
 						}
 					}

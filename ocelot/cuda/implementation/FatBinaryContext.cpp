@@ -72,14 +72,18 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 		// find the PTX
 		while(!(entry->type & FATBIN_2_PTX) && offset < header->length)
 		{
+			report("offset: " << offset << ", entry: " << (void *)entry << ", binary size: " << entry->binarySize);
 			entry = (__cudaFatCudaBinary2EntryRec*)(base + offset);
 			offset = entry->binary + entry->binarySize;
 		}
 		
-		assertM(entry->type & FATBIN_2_PTX, "Binary contains no PTX.");
+		if (offset < header->length) {
+			report("offset: " << offset << ", entry: " << (void *)entry << ", binary size: " << entry->binarySize);
+			_name = (char*)entry + entry->name;
+			_ptx  = (char*)entry + entry->binary;
+		}
 		
-		_name = (char*)entry + entry->name;
-		_ptx  = (char*)entry + entry->binary;
+		assertM((entry->type & FATBIN_2_PTX) && _ptx, "Binary contains no PTX.");
 	}
 	else {
 		assertM(false, "unknown fat binary magic number "
@@ -87,7 +91,12 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 		_name = 0;
 		_ptx = 0;
 	}
-
+	if (_ptx) {
+		report("FOUND PTX!\n\n" << _ptx << "\n");
+	}
+	else {
+		report("NO PTX! Shut it down.");
+	}
 }
 
 cuda::FatBinaryContext::FatBinaryContext(): cubin_ptr(0), _name(0), _ptx(0) {

@@ -96,6 +96,21 @@ namespace api {
 				KernelTimer();
 				bool enabled;
 				std::string outputFile;
+				
+				bool enableCacheProfiling;
+				std::string cacheLevel;
+			};
+			
+			class PerformanceCounters {
+			public:
+				enum Set {
+					Set_unknown, Cache_L1D, Cache_L1I, Cache_L2, Cache_L3
+				};
+			public:
+				PerformanceCounters();
+				
+				bool enabled;
+				Set set;
 			};
 			
 		public:
@@ -111,6 +126,9 @@ namespace api {
       
       //! \brief measures the total runtime of kernels launched by the application
       KernelTimer kernelTimer;
+      
+      //! \brief configures hardware performance counters
+      PerformanceCounters performanceCounters;
 		};
 
 		class CudaRuntimeImplementation {

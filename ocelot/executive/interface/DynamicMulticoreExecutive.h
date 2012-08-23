@@ -10,6 +10,7 @@
 
 // Ocelot includes
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/DynamicMulticoreKernel.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/executive/interface/LLVMContext.h>
@@ -37,30 +38,22 @@ namespace executive {
 			EventTimer compilation;
 		};
 		
-		class EventsCache {
+		class CacheEvents {
 		public:
-			enum Cache {
-				L1_data, L1_instruction, L2, L3
-			};
+			typedef api::OcelotConfiguration::TraceGeneration::PerformanceCounters PC;
+			typedef api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Set Set;
 		public:
 		
-			EventsCache(Cache _cache = L1_data);
-			void start();
+			CacheEvents(Set _cache = 
+				api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Cache_L1D);
+			void start(Set _cache = 
+				api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Set_unknown);
 			void stop();
+			void clear();
 		
-			Cache cache;
+			Set cache;
 			size_t accesses, misses;
 			bool valid;
-		};
-		
-		class CacheEventSet {
-		public:
-			CacheEventSet();
-		public:
-			EventsCache eventsL1D;
-			EventsCache eventsL1I;
-			EventsCache eventsL2;
-			EventsCache eventsL3;
 		};
 		
 	public:
@@ -98,6 +91,7 @@ namespace executive {
 		EventTimer _timerFirstKernelExecution;
 		
 		CTAEventTimer _ctaEvents;
+		CacheEvents _ctaCacheEvents;
 		
 	protected:
 	

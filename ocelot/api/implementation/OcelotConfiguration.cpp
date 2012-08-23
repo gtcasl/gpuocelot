@@ -100,6 +100,12 @@ api::OcelotConfiguration::TraceGeneration::KernelTimer::KernelTimer(): enabled(f
 
 }
 
+
+api::OcelotConfiguration::TraceGeneration::PerformanceCounters::PerformanceCounters():
+	enabled(false), set(Cache_L1D) {
+
+}
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
 
@@ -138,6 +144,31 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
   	trace.kernelTimer.enabled = kernelTimer.parse<bool>("enabled", false);
   	trace.kernelTimer.outputFile = kernelTimer.parse<std::string>("outputFile", 
   		"applicationKernelRuntime.json");
+  }
+  
+  hydrazine::json::Visitor perfCounter = config["performanceCounters"];
+  if (!perfCounter.is_null()) {
+  	trace.performanceCounters.enabled = perfCounter.parse<bool>("enabled", false);
+  	std::string set = perfCounter.parse<std::string>("set", "unknown");
+  	if (set == "L1D") {
+  		trace.performanceCounters.set = 
+  			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Cache_L1D;
+		}
+		else if (set == "L1I") {
+  		trace.performanceCounters.set = 
+  			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Cache_L1I;
+		}
+		else if (set == "L2") {
+  		trace.performanceCounters.set = 
+  			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Cache_L2;
+		}
+		else if (set == "L3") {
+  		trace.performanceCounters.set = 
+  			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Cache_L3;
+		}
+		else {
+			trace.performanceCounters.enabled = false;
+		}
   }
 }
 

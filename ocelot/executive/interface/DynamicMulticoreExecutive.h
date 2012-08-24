@@ -50,7 +50,10 @@ namespace executive {
 				api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Set_unknown);
 			void stop();
 			void clear();
+			void write(std::ostream &out) const;
+			static std::string toString(Set set);
 		
+		public:
 			Set cache;
 			size_t accesses, misses;
 			bool valid;
@@ -86,6 +89,7 @@ namespace executive {
 	public:
 		EventTimer getFirstKernelExecutionTimer() const { return _timerFirstKernelExecution; }
 		CTAEventTimer getCtaTimer() const { return _ctaEvents; }
+		CacheEvents getCacheEvents() const { return _ctaCacheEvents; }
 	protected:
 	
 		EventTimer _timerFirstKernelExecution;

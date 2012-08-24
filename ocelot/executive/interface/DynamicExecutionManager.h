@@ -61,8 +61,9 @@ namespace executive {
 	
 	protected:
 		void _reportFirstLaunchLatency(executive::DynamicMulticoreKernel &kernel, const EventTimer &timer);
-		void _reportSubkernelCoverage(executive::DynamicMulticoreKernel &kernel, 
-			const DynamicMulticoreExecutive::CTAEventTimer &ctaTimer, double runtime = 0.0);
+		void _reportSubkernelCoverage(executive::DynamicMulticoreKernel &kernel,
+			const DynamicMulticoreExecutive::CTAEventTimer &ctaTimer, 
+			const DynamicMulticoreExecutive::CacheEvents &cache, double runtime = 0.0);
 	};
 
 }

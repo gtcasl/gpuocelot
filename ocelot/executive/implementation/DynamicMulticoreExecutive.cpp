@@ -156,29 +156,54 @@ void executive::DynamicMulticoreExecutive::CacheEvents::start(Set _cache) {
 	case PC::Cache_L1D:
 		events[0] = PAPI_L1_DCA;
 		events[1] = PAPI_L1_DCM;
+		report("Initiating counters for Cache_L1D");
 		break;
 	case PC::Cache_L1I:
 		events[0] = PAPI_L1_ICA;
 		events[1] = PAPI_L1_ICM;
+		report("Initiating counters for Cache_L1I");
 		break;
 	case PC::Cache_L2:
-		events[0] = PAPI_L2_DCA;
-		events[1] = PAPI_L2_DCM;
+		events[0] = PAPI_L2_TCA;
+		events[1] = PAPI_L2_TCM;
+		report("Initiating counters for Cache_L2");
 		break;
 	case PC::Cache_L3:
-		events[0] = PAPI_L3_DCA;
-		events[1] = PAPI_L3_DCM;
+		events[0] = PAPI_L3_TCA;
+		events[1] = PAPI_L3_TCM;
+		report("Initiating counters for Cache_L3");
+		break;
+	case PC::IPC:
+		events[0] = PAPI_TOT_CYC;
+		events[1] = PAPI_TOT_INS;
+		report("Initiating counters for IPC measurements");
+		break;
+	case PC::BranchMispredictions:
+		events[0] = PAPI_BR_CN;
+		events[1] = PAPI_BR_MSP;
+		report("Initiating counters for conditional branch mispredictions");
 		break;
 	default:
+		report("Invalid counter set specified");
 		break;
 	}
-	if (PAPI_start_counters(events, 2) != PAPI_OK) {
-		report("Failed to start counters");
+	int numCounters = PAPI_num_counters();
+	if (numCounters < 2) {
+		report("There are too few counters available (" << numCounters << " available, 2 needed)");
+	}
+	else {
+		report("PAPI reports " << numCounters << " counters available");
+	}
+	int result = PAPI_start_counters(events, 2);
+	if (result != PAPI_OK) {
+		report("Failed to start counters (error " << result << ")");
 		valid = false;
 	}
 	else {
 		valid = true;
 	}
+#else
+	valid = false;
 #endif
 }
 
@@ -199,7 +224,48 @@ void executive::DynamicMulticoreExecutive::CacheEvents::stop() {
 		accesses += values[0];
 		misses += values[1];
 	}
+#else
+	valid = false;
 #endif
+}
+
+void executive::DynamicMulticoreExecutive::CacheEvents::write(std::ostream &out) const {
+	out << "{ \"valid\": " << (valid ? "true" : "false")
+		<< ", \"metric\": \"" << toString(cache) << "\"";
+	switch (cache) {
+		case PC::Cache_L1D:
+		case PC::Cache_L1I:
+		case PC::Cache_L2:
+		case PC::Cache_L3:
+			out << ", \"accesses\": " << accesses 
+				<< ", \"misses\": " << misses 
+				<< ", \"missRate\": " << (double)misses / (double)accesses;
+			break;
+		case PC::IPC:
+			out << ", \"cycles\": " << accesses << ", \"instructions\": " << misses;
+			out << ", \"IPC\": " << (double)misses / (double)accesses;
+			break;
+		case PC::BranchMispredictions:
+			out << ", \"branches\": " << accesses << ", \"mispredictions\": " << misses;
+			out << ", \"rate\": " << (double)misses / (double)accesses;
+		default:
+			break;
+	}
+	out << " }";	
+}
+
+std::string executive::DynamicMulticoreExecutive::CacheEvents::toString(Set set) {
+	switch (set) {
+		case PC::Set_unknown: return "unknown"; break;
+		case PC::Cache_L1D: return "L1D"; break;
+		case PC::Cache_L1I: return "L1I"; break;
+		case PC::Cache_L2: return "L2"; break;
+		case PC::Cache_L3: return "L3"; break;
+		case PC::IPC: return "IPC"; break;
+		case PC::BranchMispredictions: return "branchMispredictions"; break;
+		default:
+			return "unknown";
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,10 +311,6 @@ executive::DynamicMulticoreExecutive::DynamicMulticoreExecutive(
 	_timerFirstKernelExecution.setEvents(0);
 
 	_ctaCacheEvents.clear();
-	
-	if (api::OcelotConfiguration::get().trace.performanceCounters.enabled) {
-		
-	}
 }
 
 executive::DynamicMulticoreExecutive::~DynamicMulticoreExecutive() {
@@ -347,6 +409,13 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	_ctaEvents.total.start();
 	_ctaEvents.initialize.start();
 #endif
+
+	if (api::OcelotConfiguration::get().trace.performanceCounters.enabled) {
+		_ctaCacheEvents.start(api::OcelotConfiguration::get().trace.performanceCounters.set);		
+	}
+	else {
+		report("  no performance counters");
+	}
 	
 	_initializeThreadContexts(block);
 	
@@ -363,6 +432,13 @@ void executive::DynamicMulticoreExecutive::execute(const ir::Dim3 &block) {
 	
 	//_executeDefault(block);
 	_executeIterateSubkernelBarriers(block);
+		
+	if (api::OcelotConfiguration::get().trace.performanceCounters.enabled) {
+		_ctaCacheEvents.stop();		
+	}
+	else {
+		report("  no performance counters");
+	}
 	
 #if ENABLE_CTA_TIMER
 	_ctaEvents.total.stop();

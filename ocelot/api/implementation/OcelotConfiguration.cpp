@@ -166,9 +166,22 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
   		trace.performanceCounters.set = 
   			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::Cache_L3;
 		}
+		else if (set == "IPC") {
+  		trace.performanceCounters.set = 
+  			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::IPC;
+		}
+		else if (set == "branchMispredictions") {
+  		trace.performanceCounters.set = 
+  			api::OcelotConfiguration::TraceGeneration::PerformanceCounters::BranchMispredictions;
+}
 		else {
 			trace.performanceCounters.enabled = false;
 		}
+  	report("configure.ocelot DOES contain performanceCounters");
+  	report("  enabled = " << trace.performanceCounters.enabled);
+  }
+  else {
+  	report("configure.ocelot DOES NOT contain performanceCounters");
   }
 }
 

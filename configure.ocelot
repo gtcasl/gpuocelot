@@ -23,8 +23,8 @@
 			outputFile: "applicationKernelRuntime.json"
 		},
 		performanceCounters: {
-			enabled: false,
-			cacheLevel: "L1D"
+			enabled: true,
+			set: "IPC"
 		},
 		branch: false,
 		memory: false

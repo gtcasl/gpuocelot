@@ -104,7 +104,7 @@ namespace api {
 			class PerformanceCounters {
 			public:
 				enum Set {
-					Set_unknown, Cache_L1D, Cache_L1I, Cache_L2, Cache_L3
+					Set_unknown, Cache_L1D, Cache_L1I, Cache_L2, Cache_L3, IPC, BranchMispredictions
 				};
 			public:
 				PerformanceCounters();

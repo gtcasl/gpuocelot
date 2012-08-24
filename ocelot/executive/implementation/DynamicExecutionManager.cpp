@@ -163,6 +163,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	report("  externSharedMemorySize() = " << kernel.externSharedMemorySize());
 	report("  totalSharedMemorySize() = " << kernel.totalSharedMemorySize());
 
+	DynamicMulticoreExecutive::CacheEvents ctaCacheEvents;
 	DynamicMulticoreExecutive::CTAEventTimer ctaTimer;		
 	EventTimer firstKernelExecutionTimer;
 	if (workerThreads == 1) {
@@ -185,6 +186,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 			}
 		}
 		ctaTimer = executive.getCtaTimer();
+		ctaCacheEvents = executive.getCacheEvents();
 	}
 	else {
 		//
@@ -215,7 +217,7 @@ void executive::DynamicExecutionManager::launch(executive::DynamicMulticoreKerne
 	
 	if (REPORT_SUBKERNEL_COVERAGE) {
 		milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
-		_reportSubkernelCoverage(kernel, ctaTimer, ms.count());
+		_reportSubkernelCoverage(kernel, ctaTimer, ctaCacheEvents, ms.count());
 	}
 	if (REPORT_SUBKERNEL_FIRSTLAUNCH_LATENCY) {
 		_reportFirstLaunchLatency(kernel, firstKernelExecutionTimer);
@@ -251,7 +253,8 @@ void executive::DynamicExecutionManager::_reportFirstLaunchLatency(
 
 void executive::DynamicExecutionManager::_reportSubkernelCoverage(
 	executive::DynamicMulticoreKernel &kernel, 
-	const DynamicMulticoreExecutive::CTAEventTimer &ctaTimer, double runtime) {
+	const DynamicMulticoreExecutive::CTAEventTimer &ctaTimer,
+	const DynamicMulticoreExecutive::CacheEvents &cacheEvents, double runtime) {
 	
 	typedef DynamicTranslationCache::SubkernelId SubkernelId;
 	
@@ -274,7 +277,9 @@ void executive::DynamicExecutionManager::_reportSubkernelCoverage(
 		<< ", \"gridDim\": [" << kernel.gridDim() << "], \"blockDim\": [" << kernel.blockDim() << "]"
 		<< ",\n   \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit 
 		<< ", \"maxWarpSize\": " << api::OcelotConfiguration::get().executive.warpSize
-		<< ", \"ctaTime\": ";
+		<< ", \"cachePerformance\": ";
+	cacheEvents.write(file);
+	file << ", \"ctaTime\": ";
 	ctaTimer.write(file);
 		
 	file << ",\n   \"partitioning\": \"" << analysis::KernelPartitioningPass::toString(

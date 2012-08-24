@@ -5,6 +5,14 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Kernel.h>
 
+#include <hydrazine/interface/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 bool opencl::Kernel::_isBuiltOnDevice(Device * device) {
 	if(_deviceInfo.find(device) != _deviceInfo.end())
 		return true;

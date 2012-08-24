@@ -155,7 +155,7 @@ do { \
 }
 
 void opencl::Event::callBack() {
-	if(!_eventNotify)
+	if(_eventNotify)
 		_eventNotify((cl_event)this, _status, _userData);
 }
 

@@ -44,7 +44,7 @@ namespace ir
 		for (bb = cfg->begin() ; bb != cfg->end() ; bb++)
 		{
 			report("Inserting node " << bb->label);
-			Node *node = _insert_node(new InstNode(bb));
+			Node *node = _insert_node(new InstNode(bb->label, bb));
 			bmap[bb] = node;
 		}
 
@@ -216,8 +216,9 @@ namespace ir
 		return _root;
 	}
 
-	ControlTree::InstNode::InstNode(const CFG::const_iterator& bb)
-		: Node(bb->label, Inst, NodeList()), _bb(bb)
+	ControlTree::InstNode::InstNode(const std::string& label, 
+			const CFG::const_iterator& bb) 
+		: Node(label, Inst, NodeList()), _bb(bb)
 	{
 	}
 
@@ -935,9 +936,14 @@ namespace ir
 		{
 			case Inst:
 			{
-				assert(node->children().size() == 0);
+				std::string label("InstNode_");
+
+				std::stringstream ss;
+				ss << _nodes.size();
+				label += ss.str();
+
 				const InstNode* inode = static_cast<const InstNode*>(node);
-				return _insert_node(new InstNode(inode->bb()));
+				return _insert_node(new InstNode(label, inode->bb()));
 			}
 			case Block:
 			{
@@ -948,8 +954,13 @@ namespace ir
 					_clone_node(*child);
 				}
 
-				const BlockNode* bnode = static_cast<const BlockNode*>(node);
-				return _insert_node(new BlockNode(bnode->label(), children));
+				std::string label("BlockNode_");
+
+				std::stringstream ss;
+				ss << _nodes.size();
+				label += ss.str();
+
+				return _insert_node(new BlockNode(label, children));
 			}
 			case IfThen:
 			{
@@ -960,7 +971,13 @@ namespace ir
 				if (ifnode->ifFalse() != NULL) 
 					_clone_node(ifnode->ifFalse());
 
-				return _insert_node(new IfThenNode(ifnode->label(), 
+				std::string label("IfThenNode_");
+
+				std::stringstream ss;
+				ss << _nodes.size();
+				label += ss.str();
+
+				return _insert_node(new IfThenNode(label, 
 							ifnode->cond(), ifnode->ifTrue(), 
 							ifnode->ifFalse()));
 			}
@@ -973,9 +990,13 @@ namespace ir
 					_clone_node(*child);
 				}
 
-				const NaturalNode* nnode = 
-					static_cast<const NaturalNode*>(node);
-				return _insert_node(new NaturalNode(nnode->label(), children));
+				std::string label("NaturalNode_");
+
+				std::stringstream ss;
+				ss << _nodes.size();
+				label += ss.str();
+
+				return _insert_node(new NaturalNode(label, children));
 
 			}
 			default: 

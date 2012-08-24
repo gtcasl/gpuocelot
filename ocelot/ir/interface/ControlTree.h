@@ -111,7 +111,8 @@ namespace ir
 					typedef CFG::InstructionList InstructionList;
 
 					/*! \brief Constructor */
-					InstNode(const CFG::const_iterator& bb);
+					InstNode(const std::string& label,
+							const CFG::const_iterator& bb);
 
 					/*! /brief Get the basic block in the cfg */
 					const CFG::const_iterator& bb() const;

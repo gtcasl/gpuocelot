@@ -707,6 +707,28 @@ std::string ir::PTXInstruction::valid() const {
 				&& c.addressMode != PTXOperand::FunctionName ) {
 				return "operand C must be function name if A is a register.";
 			}
+			
+			for( auto operand = d.array.begin();
+				operand != d.array.end(); ++operand )
+			{
+				if (operand->addressMode != PTXOperand::Register &&
+					operand->addressMode != PTXOperand::BitBucket &&
+					operand->addressMode != PTXOperand::Address) {
+					return "return arguments must be registers or parameters.";
+				}
+			}
+			
+			for( auto operand = b.array.begin();
+				operand != b.array.end(); ++operand )
+			{
+				if (operand->addressMode != PTXOperand::Register &&
+					operand->addressMode != PTXOperand::BitBucket &&
+					operand->addressMode != PTXOperand::Address) {
+					return "function arguments must be registers"
+						" or parameters.";
+				}
+			}
+			
 			break;
 		}
 		case Clz: {

@@ -631,9 +631,6 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	Context * ctx = NULL;
 
 	try {
-		if(properties == NULL)
-			throw CL_INVALID_PROPERTY;
-
 		if(devices == 0 || num_devices == 0
 			|| (pfn_notify == 0 && user_data != 0))
 			throw CL_INVALID_VALUE;

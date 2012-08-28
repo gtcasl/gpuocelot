@@ -73,6 +73,10 @@ namespace opencl {
 					void *             param_value,
 					size_t *           param_value_size_ret);
 
+	private:
+		/* \breif create context, check input properties and platform */
+		void _createContext(const cl_context_properties * properties);
+
 
 	private:
 		//! platform

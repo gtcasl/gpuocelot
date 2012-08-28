@@ -21,13 +21,7 @@ opencl::Context::Context(const cl_context_properties * properties,
 
 	report("Creating new context ");
 
-	if(properties[0] != CL_CONTEXT_PLATFORM 
-		|| properties[2] != 0 /*properties terminates with 0*/ )
-		throw CL_INVALID_PROPERTY;
-	
-	if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
-			throw CL_INVALID_PLATFORM;
-	_platform = (Platform *)properties[1];
+	_createContext(properties);
 
 	for (cl_uint i = 0; i < num_devices; i++) {
 		if(devices[i] == NULL  	
@@ -39,10 +33,6 @@ opencl::Context::Context(const cl_context_properties * properties,
 		devices[i]->retain();
 	}
 
-	_properties = new cl_context_properties[3];
-	memcpy(_properties, properties, 3*sizeof(cl_context_properties));
-
-	_platform->retain();
 }
 
 opencl::Context::Context(const cl_context_properties * properties,
@@ -52,16 +42,7 @@ opencl::Context::Context(const cl_context_properties * properties,
 
 	report("Creating new context ");
 
-	if(properties[0] != CL_CONTEXT_PLATFORM 
-		|| properties[2] != 0 /*properties terminates with 0*/ )
-		throw CL_INVALID_PROPERTY;
-	
-	if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
-			throw CL_INVALID_PLATFORM;
-	_platform = (Platform *)properties[1];
-
-	_properties = new cl_context_properties[3];
-	memcpy(_properties, properties, 3*sizeof(cl_context_properties));
+	_createContext(properties);
 
 	cl_uint deviceNum;
 	Device::getDevices((cl_platform_id)_platform, device_type, 0, NULL, &deviceNum);
@@ -74,7 +55,6 @@ opencl::Context::Context(const cl_context_properties * properties,
 	}
 	delete[] devices;
 
-	_platform->retain();
 
 }
 
@@ -160,4 +140,29 @@ void opencl::Context::getInfo(cl_context_info    param_name,
 
 	if(needsFree)
 		delete[] (const unsigned char *)ptr;
+}
+
+void opencl::Context::_createContext(const cl_context_properties * properties) {
+	
+	if(properties == NULL) {
+		report("Detect properties = NULL, using default platform!\n");
+		Platform::getPlatforms(1, (cl_platform_id *)(&_platform), NULL);
+		_properties = NULL;
+	}
+	else {
+	
+		if(properties[0] != CL_CONTEXT_PLATFORM 
+			|| properties[2] != 0 /*properties terminates with 0*/ )
+			throw CL_INVALID_PROPERTY;
+		
+		if(!((Platform *)properties[1])->isValidObject(Object::OBJTYPE_PLATFORM))
+				throw CL_INVALID_PLATFORM;
+		_platform = (Platform *)properties[1];
+
+		_properties = new cl_context_properties[3];
+		memcpy(_properties, properties, 3*sizeof(cl_context_properties));
+	}
+
+	_platform->retain();
+
 }

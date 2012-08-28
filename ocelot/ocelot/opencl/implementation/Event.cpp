@@ -483,6 +483,8 @@ opencl::KernelEvent::KernelEvent(cl_command_type type,
 	commandQueue->context(), num_events_in_wait_list,
 	event_wait_list, event), _kernel(kernel) {
 
+	report("Create Kernel Event\n");
+
 	kernel->mapParametersOnDevice(commandQueue->device());
 	kernel->setConfiguration(work_dim, global_work_offset, global_work_size, local_work_size);
 	kernel->retain();

@@ -13,24 +13,24 @@ void opencl::QueueThread::_executeEvent(Event * e) {
 	report(" Executing event '" << e << "' now.");
 	e->setStatus(CL_RUNNING);
 
+	cl_uint completeStatus = CL_COMPLETE;
+
 	try {
 		e->execute(_device);
 	}
 	catch(cl_int exception) {
 
 		report("  event '" << e << "' failed.");
-		e->setStatus(exception);
-		return;
+		completeStatus = exception;
 	}
 	catch(...) {
 		report("  event '" << e << "' failed.");
-		e->setStatus(CL_OUT_OF_RESOURCES);
-		return;
+		completeStatus = CL_OUT_OF_RESOURCES;
 	}
 
 	report("  event '" << e << "' finished.");
 
-	e->setStatus(CL_COMPLETE);
+	e->setStatus(completeStatus);
 	e->callBack();
 
 }
@@ -240,7 +240,7 @@ void opencl::CommandQueue::queueEvent(Event * event, cl_bool blocking) {
 	event->setStatus(CL_QUEUED);
 
 	_clearCompletedEvents();
-	_submitEvents();
+	//_submitEvents();
 
 	if(blocking) {
 		report(" Blocking event " << event);

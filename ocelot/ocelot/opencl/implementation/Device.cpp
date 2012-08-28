@@ -601,9 +601,15 @@ void opencl::Device::launch(const std::string& module,
                 const ir::ExternalFunctionSet* externals) {
 
 	_exeDevice->select();
-	_exeDevice->launch(module, kernel, grid, block, sharedMemory,
-		argumentBlock, argumentBlockSize, traceGenerators,
-		externals);
+	try {
+		_exeDevice->launch(module, kernel, grid, block, sharedMemory,
+			argumentBlock, argumentBlockSize, traceGenerators,
+			externals);
+	}
+	catch(...) {
+		_exeDevice->unselect();
+		throw;
+	}
 	_exeDevice->unselect();
 }
 

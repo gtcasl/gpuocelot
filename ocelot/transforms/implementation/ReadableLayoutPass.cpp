@@ -6,7 +6,9 @@
 
 // Ocelot Includes
 #include <ocelot/transforms/interface/ReadableLayoutPass.h>
+#include <ocelot/analysis/interface/DominatorTree.h>
 #include <ocelot/ir/interface/IRKernel.h>
+
 
 // Hydrazine Includes
 #include <hydrazine/interface/debug.h>
@@ -26,7 +28,7 @@ namespace transforms
 {
 
 ReadableLayoutPass::ReadableLayoutPass()
-: KernelPass(Analysis::NoAnalysis, "ReadableLayoutPass")
+: KernelPass(Analysis::DominatorTreeAnalysis, "ReadableLayoutPass")
 {
 
 }
@@ -36,92 +38,116 @@ void ReadableLayoutPass::initialize(const ir::Module& m)
 
 }
 
+
 void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 {
 	blocks.clear();
-	
+
 	typedef ir::ControlFlowGraph::iterator iterator;
+	typedef std::list<iterator>            BlockChain;
+	typedef std::list<BlockChain>          BlockChainList;
+	typedef BlockChainList::iterator       chain_iterator;
 	typedef std::unordered_set<iterator>   BlockSet;
-	typedef std::stack<iterator>           Stack;
+	typedef std::unordered_map<iterator,
+		chain_iterator> BlockToChainMap;
 	
-	BlockSet visited;
-	BlockSet scheduled;
-	Stack    stack;
+	// Form chains of basic blocks
+	BlockChainList  chains;
+	BlockToChainMap blockToChains;
 	
-	if(!k.cfg()->empty())
+	for(auto block = k.cfg()->begin(); block != k.cfg()->end(); ++block)
 	{
-		stack.push(k.cfg()->get_entry_block());
-		visited.insert(k.cfg()->get_entry_block());
+		auto chain = chains.insert(chains.end(), BlockChain(1, block));
+		blockToChains.insert(std::make_pair(block, chain));
 	}
 	
-	while(!stack.empty())
+	bool changed = true;
+	
+	while(changed)
 	{
-		iterator current = stack.top();
-		stack.pop();
+		changed = false;
 		
-		report("  starting at " << current->label());
-		
-		// Make sure no unscheduled blocks that fallthrough into this one
-		bool rewinding = true;
-		while(rewinding)
+		for(auto chain = blockToChains.begin();
+			chain != blockToChains.end(); ++chain)
 		{
-			rewinding = false;
-			for(auto edge = current->in_edges.begin(); 
-				edge != current->in_edges.end(); ++edge)
+			auto chainTail = chain->second->back();
+			
+			if(chainTail->successors.size() != 1) continue;
+			
+			for(auto successor = chainTail->successors.begin();
+				successor != chainTail->successors.end(); ++chainTail)
 			{
-				if((*edge)->type == ir::Edge::FallThrough)
+				if((*successor)->predecessors.size() != 1) continue;
+			
+				auto successorChain = blockToChains.find(*successor);
+				assert(successorChain != blockToChains.end());
+				
+				auto chainHead = successorChain->second->front();
+				
+				if(chainHead != *successor) continue;
+				
+				chain->second->splice(chain->second->end(),
+					*successorChain->second);
+				
+				blockToChains.erase(successorChain);
+				
+				changed = true;
+			}
+			
+			if(changed) break;
+		}
+	}
+	
+	// Topologically schedule the chains
+	BlockSet scheduled;
+	BlockSet ready;
+	
+	ready.insert(k.cfg()->get_entry_block());
+	
+	while(!ready.empty())
+	{
+		auto node = *ready.begin();
+		ready.erase(*ready.begin());
+
+		auto chain = blockToChains.find(node);
+		assert(chain != blockToChains.end());
+		
+		// emit the blocks in the chain, in order
+		for(auto block = chain->second->begin();
+			block != chain->second->end(); ++block)
+		{
+			scheduled.insert(*block);
+			blocks.push_back(*block);
+		}
+		
+		// free up any dependent blocks
+		for(auto block = chain->second->begin();
+			block != chain->second->end(); ++block)
+		{
+			for(auto successor = (*block)->successors.begin();
+				successor != (*block)->successors.end(); ++successor)
+			{
+				// are all dependencies satisfied
+				bool allDependenciesSatisfied = true;
+				
+				for(auto predecessor = (*successor)->predecessors.begin();
+					predecessor != (*successor)->predecessors.end();
+					++predecessor)
 				{
-					if(scheduled.count((*edge)->head) == 0)
+					if(_isCyclicDependency(*predecessor, *successor)) continue;
+					
+					if(scheduled.count(*predecessor) == 0)
 					{
-						visited.erase(current);
-						current = (*edge)->head;
-						report("   rewinding to " << current->label());
-						rewinding = true;
+						allDependenciesSatisfied = false;
+						break;
 					}
-					break;
+				}
+				
+				if(allDependenciesSatisfied)
+				{
+					ready.insert(*successor);
 				}
 			}
-		}
-		
-		if(scheduled.insert(current).second)
-		{
-			// Accept the block
-			blocks.push_back(current);
-			visited.insert(current);
-		}
-		else
-		{
-			continue;
-		}
-		
-		// Now queue up successors for exploration
-		//  favor the fallthrough
-		iterator fallthrough = k.cfg()->end();
-		
-		if(current->has_fallthrough_edge())
-		{
-			auto fallthroughEdge = blocks.back()->get_fallthrough_edge();
-			
-			fallthrough = fallthroughEdge->tail;
-			
-			assert(scheduled.count(fallthrough) == 0);
-			
-			visited.insert(fallthrough);
-		}
-		
-		// Explore the remaining targets
-		for(auto block = current->successors.begin(); 
-			block != current->successors.end(); ++block)
-		{
-			if(visited.insert(*block).second)
-			{
-				stack.push(*block);
-			}
-		}
-		
-		if(fallthrough != k.cfg()->end())
-		{
-			stack.push(fallthrough);
 		}
 	}
 }
@@ -129,6 +155,17 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 void ReadableLayoutPass::finalize()
 {
 
+}
+
+bool ReadableLayoutPass::_isCyclicDependency(iterator predecessor,
+	iterator successor)
+{
+	auto domAnalysis = getAnalysis(Analysis::DominatorTreeAnalysis);
+	assert(domAnalysis != 0);
+	
+	auto dominatorTree = static_cast<analysis::DominatorTree&>(*domAnalysis);
+	
+	return dominatorTree.dominates(successor, predecessor);	
 }
 
 }

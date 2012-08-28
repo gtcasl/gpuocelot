@@ -713,8 +713,10 @@ std::string ir::PTXInstruction::valid() const {
 			{
 				if (operand->addressMode != PTXOperand::Register &&
 					operand->addressMode != PTXOperand::BitBucket &&
-					operand->addressMode != PTXOperand::Address) {
-					return "return arguments must be registers or parameters.";
+					operand->addressMode != PTXOperand::Address &&
+					operand->addressMode != PTXOperand::Immediate) {
+					return "return arguments must be registers, parameters, "
+						"or immediates.";
 				}
 			}
 			
@@ -723,9 +725,10 @@ std::string ir::PTXInstruction::valid() const {
 			{
 				if (operand->addressMode != PTXOperand::Register &&
 					operand->addressMode != PTXOperand::BitBucket &&
-					operand->addressMode != PTXOperand::Address) {
+					operand->addressMode != PTXOperand::Address &&
+					operand->addressMode != PTXOperand::Immediate) {
 					return "function arguments must be registers"
-						" or parameters.";
+						", parameters, or immediates.";
 				}
 			}
 			

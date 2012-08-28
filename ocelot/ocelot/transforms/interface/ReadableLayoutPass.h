@@ -20,6 +20,7 @@ class ReadableLayoutPass : public KernelPass
 {
 public:
 	typedef ir::ControlFlowGraph::BlockPointerVector BlockPointerVector;
+	typedef ir::ControlFlowGraph::iterator           iterator;
 
 public:
 	/*! \brief The constructor sets the type */
@@ -35,6 +36,9 @@ public:
 	
 public:
 	BlockPointerVector blocks;
+
+private:
+	bool _isCyclicDependency(iterator predecessor, iterator successor);
 };
 
 }

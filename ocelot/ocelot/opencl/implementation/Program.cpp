@@ -5,6 +5,9 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Program.h>
 
+#undef REPORT_BASE
+#define REPORT_BASE 0
+
 unsigned int opencl::Program::_id = 0;
 
 
@@ -108,8 +111,9 @@ void opencl::Program::_buildOnDevice(Device * device, std::string backdoorBinary
 			assert(!backdoorBinary.empty());
 			_deviceBuiltInfo[device]._binary = backdoorBinary;
 		}
-	
-		_deviceBuiltInfo[device]._module->lazyLoad(_deviceBuiltInfo[device]._binary,
+
+		std::string binaries = _deviceBuiltInfo[device]._binary;
+		_deviceBuiltInfo[device]._module->lazyLoad(binaries,
 			moduleName.str());
 
 		device->load(_deviceBuiltInfo[device]._module);
@@ -130,14 +134,18 @@ char * opencl::Program::_getBinarySizes(size_t & bufferLen) {
 	if(_type == PROGRAM_SOURCE) {
 		Device::DeviceList & validDevices = _context->getValidDevices();
 		entries = validDevices.size();
+		report("Find " << entries << " binary entries.");
 		sizes = new char[entries * sizeof(size_t)];
 	
 		size_t i = 0;
 		for(Device::DeviceList::iterator device = validDevices.begin();
 				device != validDevices.end(); device++) {
 		
-			if(_deviceBuiltInfo.find(*device) != _deviceBuiltInfo.end())
+			if(_deviceBuiltInfo.find(*device) != _deviceBuiltInfo.end()) {
+				report("Find device " << *device);
 				((size_t *)sizes)[i] = _deviceBuiltInfo[*device]._binary.size();
+				report("binary size " << ((size_t *)sizes)[i]);
+			}
 			else
 				((size_t *)sizes)[i] = 0;
 			i++;

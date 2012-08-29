@@ -69,7 +69,13 @@ namespace ir {
 		
 		/*! \brief Return a parsable string representing the parameter */
 		std::string toString() const;
+		
+		/*! \brief returns true if the parameter is declared to be a pointer to
+			some state space (i.e., ptrAddressSpace != AddressSpace_invalid */
+		bool isPtrDeclaration() const;
 
+	public:
+	
 		/*!	Data type of parameter */
 		PTXOperand::DataType type;
 
@@ -87,6 +93,10 @@ namespace ir {
 		
 		/*! \brief is this a return argument? */
 		bool returnArgument;
+		
+		/*! \brief if not equal to AddressSpace_invalid, indicates parameter is a ptr to
+			the indicated address space*/
+		PTXInstruction::AddressSpace ptrAddressSpace;
 
 		/*	Runtime bindings */
 	public:

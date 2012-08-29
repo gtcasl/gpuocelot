@@ -168,6 +168,8 @@ namespace ir {
 		
 		bool isReturnArgument;
 		
+		PTXInstruction::AddressSpace ptrAddressSpace;
+		
 		SymbolVector symbols;
 
 	public:

@@ -1220,11 +1220,9 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 		statement = instructions[++PC].statementIndex;
 	}
 	
-	ir::Module::StatementVector::const_iterator s_it 
-		= module->statements().begin();
+	auto s_it = module->statements().begin();
 	std::advance(s_it, statement);
-	ir::Module::StatementVector::const_reverse_iterator s_rit 
-		= ir::Module::StatementVector::const_reverse_iterator(s_it);
+	auto s_rit = ir::Module::StatementVector::const_reverse_iterator(s_it);
 	unsigned int program = 0;
 	unsigned int line = 0;
 	unsigned int col = 0;

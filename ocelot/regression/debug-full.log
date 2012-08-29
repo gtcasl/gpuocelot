@@ -30,13 +30,39 @@ INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_buil
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
-INFO     Test completed in 0.12769317627 seconds
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall
+INFO     Test completed in 0.115988969803 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator
+INFO     Test completed in 0.129166126251 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1346275301
+Test time : 0.0112057
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions
-INFO     Test completed in 0.129323959351 seconds
+INFO     Test completed in 0.138586997986 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -50,8 +76,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1346194548
-Test time : 0.0016737
+Test Seed : 1346275301
+Test time : 0.00163531
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -182,13 +208,15 @@ Zext Instruction Passed
 
 
 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall
-INFO     Test completed in 0.134465932846 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
+INFO     Test completed in 0.146393060684 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching
-INFO     Test completed in 0.130393981934 seconds
+INFO     Test completed in 0.16991686821 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -207,8 +235,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1346194548
-Test time : 0.0161469
+Test Seed : 1346275301
+Test time : 0.0189543
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -216,49 +244,15 @@ Test Point 3 Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer -i ../tests/ptx 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator
-INFO     Test completed in 0.144917964935 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1346194548
-Test time : 0.0217772
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D
-INFO     Test completed in 0.222221851349 seconds
+INFO     Test completed in 0.209019184113 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence
-INFO     Test completed in 0.132770061493 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions
-INFO     Test completed in 0.172283887863 seconds
+INFO     Test completed in 0.143275976181 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -268,8 +262,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1346194549
-Test time : 0.00450253
+Test Seed : 1346275301
+Test time : 0.00457835
 
 Status : Test output:
 Accessors test passed.
@@ -284,9 +278,15 @@ pass: predicated Add and Ld isntructions
 
 
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence
+INFO     Test completed in 0.145576953888 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
-INFO     Test completed in 0.175926923752 seconds
+INFO     Test completed in 0.184769868851 seconds
 INFO      It produced the following output:
 Hello CUDA 2
 Pass/Fail : Pass
@@ -300,21 +300,21 @@ Description: A unit test for calling an external host function from PTX 1)
              user defined function from a PTX kernel. 
 
 
-Test Seed : 1346194549
-Test time : 0.0793085
+Test Seed : 1346275301
+Test time : 0.0615602
 
 Status : 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray
-INFO     Test completed in 0.20067691803 seconds
+INFO     Test completed in 0.156324148178 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels
-INFO     Test completed in 0.171624183655 seconds
+INFO     Test completed in 0.161681890488 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -324,8 +324,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1346194549
-Test time : 0.0542121
+Test Seed : 1346275302
+Test time : 0.058069
 
 Status : Test output:
 looping kernel succeeded
@@ -335,7 +335,7 @@ matrix vector kernel succeeded
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc
-INFO     Test completed in 0.598790884018 seconds
+INFO     Test completed in 0.584137916565 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -354,13 +354,13 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals
-INFO     Test completed in 0.194142103195 seconds
+INFO     Test completed in 0.112110137939 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
 Pass/Fail : Pass
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels
-INFO     Test completed in 0.766318798065 seconds
+INFO     Test completed in 0.694629192352 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -371,8 +371,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1346194549
-Test time : 0.640035
+Test Seed : 1346275302
+Test time : 0.553971
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -408,7 +408,7 @@ R = [
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly
-INFO     Test completed in 11.0082809925 seconds
+INFO     Test completed in 10.9558918476 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -419,451 +419,451 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1346194549
-Test time : 10.8455
+Test Seed : 1346275302
+Test time : 10.849
 
-Status : Ran 'TestVectorElements-u32' for 3 iterations.
-Ran 'TestAdd-u16' for 4 iterations.
+Status : Ran 'TestVectorElements-u32' for 4 iterations.
+Ran 'TestAdd-u16' for 6 iterations.
 Ran 'TestAdd-s16' for 6 iterations.
-Ran 'TestAdd-u32' for 2 iterations.
+Ran 'TestAdd-u32' for 6 iterations.
 Ran 'TestAdd-s32' for 7 iterations.
-Ran 'TestAdd-s32-sat' for 7 iterations.
+Ran 'TestAdd-s32-sat' for 5 iterations.
 Ran 'TestAdd-u64' for 7 iterations.
-Ran 'TestAdd-s64' for 6 iterations.
-Ran 'TestSub-u16' for 6 iterations.
+Ran 'TestAdd-s64' for 7 iterations.
+Ran 'TestSub-u16' for 7 iterations.
 Ran 'TestSub-s16' for 6 iterations.
-Ran 'TestSub-u32' for 7 iterations.
-Ran 'TestSub-s32' for 7 iterations.
-Ran 'TestSub-s32-sat' for 7 iterations.
-Ran 'TestSub-u64' for 7 iterations.
-Ran 'TestSub-s64' for 7 iterations.
+Ran 'TestSub-u32' for 6 iterations.
+Ran 'TestSub-s32' for 6 iterations.
+Ran 'TestSub-s32-sat' for 6 iterations.
+Ran 'TestSub-u64' for 6 iterations.
+Ran 'TestSub-s64' for 6 iterations.
 Ran 'TestSub-Carry-s32' for 6 iterations.
 Ran 'TestSub-Carry-u32' for 6 iterations.
 Ran 'TestAdd-Carry-s32' for 6 iterations.
-Ran 'TestAdd-Carry-u32' for 5 iterations.
-Ran 'TestMul-Lo-u16' for 7 iterations.
+Ran 'TestAdd-Carry-u32' for 6 iterations.
+Ran 'TestMul-Lo-u16' for 6 iterations.
 Ran 'TestMul-Hi-u16' for 6 iterations.
 Ran 'TestMul-Wide-u16' for 7 iterations.
-Ran 'TestMul-Lo-s16' for 7 iterations.
-Ran 'TestMul-Hi-s16' for 7 iterations.
-Ran 'TestMul-Wide-s16' for 7 iterations.
+Ran 'TestMul-Lo-s16' for 6 iterations.
+Ran 'TestMul-Hi-s16' for 4 iterations.
+Ran 'TestMul-Wide-s16' for 10 iterations.
 Ran 'TestMul-Lo-u32' for 7 iterations.
 Ran 'TestMul-Hi-u32' for 7 iterations.
 Ran 'TestMul-Wide-u32' for 7 iterations.
-Ran 'TestMul-Lo-s32' for 7 iterations.
-Ran 'TestMul-Hi-s32' for 6 iterations.
-Ran 'TestMul-Wide-s32' for 7 iterations.
-Ran 'TestMul-Lo-u64' for 6 iterations.
+Ran 'TestMul-Lo-s32' for 6 iterations.
+Ran 'TestMul-Hi-s32' for 5 iterations.
+Ran 'TestMul-Wide-s32' for 6 iterations.
+Ran 'TestMul-Lo-u64' for 7 iterations.
 Ran 'TestMul-Hi-u64' for 7 iterations.
-Ran 'TestMul-Lo-s64' for 5 iterations.
-Ran 'TestMul-Hi-s64' for 5 iterations.
+Ran 'TestMul-Lo-s64' for 6 iterations.
+Ran 'TestMul-Hi-s64' for 6 iterations.
 Ran 'TestMad-Lo-u16' for 6 iterations.
-Ran 'TestMad-Hi-u16' for 7 iterations.
+Ran 'TestMad-Hi-u16' for 6 iterations.
 Ran 'TestMad-Wide-u16' for 6 iterations.
 Ran 'TestMad-Lo-s16' for 6 iterations.
-Ran 'TestMad-Hi-s16' for 6 iterations.
+Ran 'TestMad-Hi-s16' for 5 iterations.
 Ran 'TestMad-Wide-s16' for 6 iterations.
 Ran 'TestMad-Lo-u32' for 6 iterations.
 Ran 'TestMad-Hi-u32' for 6 iterations.
 Ran 'TestMad-Wide-u32' for 6 iterations.
-Ran 'TestMad-Lo-s32' for 7 iterations.
+Ran 'TestMad-Lo-s32' for 6 iterations.
 Ran 'TestMad-Hi-s32' for 6 iterations.
 Ran 'TestMad-Sat-Hi-s32' for 6 iterations.
 Ran 'TestMad-Wide-s32' for 6 iterations.
 Ran 'TestMad-Lo-u64' for 6 iterations.
-Ran 'TestMad-Hi-u64' for 7 iterations.
-Ran 'TestMad-Lo-s64' for 7 iterations.
-Ran 'TestMad-Hi-s64' for 7 iterations.
-Ran 'TestSad-u16' for 6 iterations.
+Ran 'TestMad-Hi-u64' for 6 iterations.
+Ran 'TestMad-Lo-s64' for 6 iterations.
+Ran 'TestMad-Hi-s64' for 6 iterations.
+Ran 'TestSad-u16' for 7 iterations.
 Ran 'TestSad-s16' for 7 iterations.
-Ran 'TestSad-u32' for 6 iterations.
-Ran 'TestSad-s32' for 6 iterations.
+Ran 'TestSad-u32' for 7 iterations.
+Ran 'TestSad-s32' for 7 iterations.
 Ran 'TestSad-u64' for 7 iterations.
-Ran 'TestSad-s64' for 6 iterations.
+Ran 'TestSad-s64' for 7 iterations.
 Ran 'TestDiv-u16' for 7 iterations.
 Ran 'TestDiv-s16' for 7 iterations.
-Ran 'TestDiv-u32' for 6 iterations.
+Ran 'TestDiv-u32' for 7 iterations.
 Ran 'TestDiv-s32' for 7 iterations.
 Ran 'TestDiv-u64' for 7 iterations.
-Ran 'TestDiv-s64' for 6 iterations.
-Ran 'TestRem-u16' for 5 iterations.
-Ran 'TestRem-s16' for 7 iterations.
-Ran 'TestRem-u32' for 7 iterations.
-Ran 'TestRem-s32' for 7 iterations.
-Ran 'TestRem-u64' for 7 iterations.
-Ran 'TestRem-s64' for 7 iterations.
-Ran 'TestAbs-s16' for 7 iterations.
-Ran 'TestAbs-s32' for 7 iterations.
-Ran 'TestAbs-s64' for 7 iterations.
+Ran 'TestDiv-s64' for 7 iterations.
+Ran 'TestRem-u16' for 7 iterations.
+Ran 'TestRem-s16' for 6 iterations.
+Ran 'TestRem-u32' for 6 iterations.
+Ran 'TestRem-s32' for 6 iterations.
+Ran 'TestRem-u64' for 6 iterations.
+Ran 'TestRem-s64' for 6 iterations.
+Ran 'TestAbs-s16' for 6 iterations.
+Ran 'TestAbs-s32' for 6 iterations.
+Ran 'TestAbs-s64' for 6 iterations.
 Ran 'TestNeg-s16' for 7 iterations.
 Ran 'TestNeg-s32' for 7 iterations.
-Ran 'TestNeg-s64' for 5 iterations.
+Ran 'TestNeg-s64' for 7 iterations.
 Ran 'TestMax-u16' for 7 iterations.
 Ran 'TestMax-u32' for 7 iterations.
-Ran 'TestMax-u64' for 7 iterations.
-Ran 'TestMax-s16' for 6 iterations.
-Ran 'TestMax-s32' for 7 iterations.
-Ran 'TestMax-s64' for 7 iterations.
-Ran 'TestMin-u16' for 7 iterations.
-Ran 'TestMin-u32' for 7 iterations.
-Ran 'TestMin-u64' for 7 iterations.
-Ran 'TestMin-s16' for 7 iterations.
-Ran 'TestMin-s32' for 7 iterations.
+Ran 'TestMax-u64' for 6 iterations.
+Ran 'TestMax-s16' for 5 iterations.
+Ran 'TestMax-s32' for 5 iterations.
+Ran 'TestMax-s64' for 6 iterations.
+Ran 'TestMin-u16' for 6 iterations.
+Ran 'TestMin-u32' for 4 iterations.
+Ran 'TestMin-u64' for 6 iterations.
+Ran 'TestMin-s16' for 6 iterations.
+Ran 'TestMin-s32' for 6 iterations.
 Ran 'TestMin-s64' for 7 iterations.
 Ran 'TestPopc-b32' for 7 iterations.
-Ran 'TestPopc-b64' for 7 iterations.
-Ran 'TestClz-b32' for 7 iterations.
-Ran 'TestClz-b64' for 7 iterations.
-Ran 'TestBfind-u32' for 7 iterations.
-Ran 'TestBfind-u64' for 7 iterations.
-Ran 'TestBfind-s32' for 7 iterations.
-Ran 'TestBfind-s64' for 6 iterations.
-Ran 'TestBfind-shiftamount-u32' for 7 iterations.
-Ran 'TestBfind-shiftamount-u64' for 5 iterations.
-Ran 'TestBfind-shiftamount-s32' for 7 iterations.
-Ran 'TestBfind-shiftamount-s64' for 7 iterations.
-Ran 'TestBrev-b32' for 7 iterations.
-Ran 'TestBrev-b64' for 7 iterations.
-Ran 'TestBfi-b32' for 6 iterations.
+Ran 'TestPopc-b64' for 9 iterations.
+Ran 'TestClz-b32' for 9 iterations.
+Ran 'TestClz-b64' for 10 iterations.
+Ran 'TestBfind-u32' for 10 iterations.
+Ran 'TestBfind-u64' for 10 iterations.
+Ran 'TestBfind-s32' for 9 iterations.
+Ran 'TestBfind-s64' for 9 iterations.
+Ran 'TestBfind-shiftamount-u32' for 11 iterations.
+Ran 'TestBfind-shiftamount-u64' for 10 iterations.
+Ran 'TestBfind-shiftamount-s32' for 9 iterations.
+Ran 'TestBfind-shiftamount-s64' for 11 iterations.
+Ran 'TestBrev-b32' for 10 iterations.
+Ran 'TestBrev-b64' for 9 iterations.
+Ran 'TestBfi-b32' for 9 iterations.
 Ran 'TestBfi-b64' for 6 iterations.
-Ran 'TestPrmt-b32' for 7 iterations.
-Ran 'TestPrmt-f4e-b32' for 6 iterations.
-Ran 'TestPrmt-b4e-b32' for 6 iterations.
-Ran 'TestPrmt-rc8-b32' for 7 iterations.
-Ran 'TestPrmt-ecl-b32' for 7 iterations.
-Ran 'TestPrmt-ecr-b32' for 7 iterations.
-Ran 'TestPrmt-rc16-b32' for 7 iterations.
+Ran 'TestPrmt-b32' for 10 iterations.
+Ran 'TestPrmt-f4e-b32' for 5 iterations.
+Ran 'TestPrmt-b4e-b32' for 3 iterations.
+Ran 'TestPrmt-rc8-b32' for 6 iterations.
+Ran 'TestPrmt-ecl-b32' for 6 iterations.
+Ran 'TestPrmt-ecr-b32' for 6 iterations.
+Ran 'TestPrmt-rc16-b32' for 6 iterations.
 Ran 'TestCudaNestedParallelism' for 1 iterations.
-Ran 'TestCall-Uni' for 5 iterations.
+Ran 'TestCall-Uni' for 4 iterations.
 Ran 'TestCall-Nondivergent' for 4 iterations.
 Ran 'TestCall-Divergent' for 4 iterations.
-Ran 'TestCall-Recursive' for 4 iterations.
-Ran 'TestCall-Indirect' for 2 iterations.
-Ran 'TestFunctionPointerArray' for 2 iterations.
-Ran 'TestTestP-f32-Finite' for 6 iterations.
-Ran 'TestTestP-f32-Infinite' for 6 iterations.
-Ran 'TestTestP-f32-Number' for 7 iterations.
-Ran 'TestTestP-f32-NotANumber' for 6 iterations.
-Ran 'TestTestP-f32-Normal' for 6 iterations.
-Ran 'TestTestP-f32-SubNormal' for 6 iterations.
-Ran 'TestTestP-f64-Finite' for 7 iterations.
-Ran 'TestTestP-f64-Infinite' for 7 iterations.
+Ran 'TestCall-Recursive' for 5 iterations.
+Ran 'TestCall-Indirect' for 3 iterations.
+Ran 'TestFunctionPointerArray' for 3 iterations.
+Ran 'TestTestP-f32-Finite' for 10 iterations.
+Ran 'TestTestP-f32-Infinite' for 9 iterations.
+Ran 'TestTestP-f32-Number' for 8 iterations.
+Ran 'TestTestP-f32-NotANumber' for 10 iterations.
+Ran 'TestTestP-f32-Normal' for 9 iterations.
+Ran 'TestTestP-f32-SubNormal' for 8 iterations.
+Ran 'TestTestP-f64-Finite' for 9 iterations.
+Ran 'TestTestP-f64-Infinite' for 10 iterations.
 Ran 'TestTestP-f64-Number' for 6 iterations.
-Ran 'TestTestP-f64-NotANumber' for 5 iterations.
-Ran 'TestTestP-f64-Normal' for 6 iterations.
-Ran 'TestTestP-f64-SubNormal' for 6 iterations.
-Ran 'TestCopysign-f32' for 6 iterations.
-Ran 'TestCopysign-f64' for 6 iterations.
-Ran 'TestAdd-f32' for 6 iterations.
-Ran 'TestAdd-f32-sat' for 6 iterations.
-Ran 'TestAdd-f32-ftz' for 7 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 6 iterations.
-Ran 'TestAdd-f64' for 6 iterations.
-Ran 'TestSub-f32' for 6 iterations.
-Ran 'TestSub-f32-sat' for 6 iterations.
-Ran 'TestSub-f32-ftz' for 6 iterations.
-Ran 'TestSub-f32-ftz-sat' for 6 iterations.
-Ran 'TestSub-f64' for 6 iterations.
-Ran 'TestMul-f32' for 7 iterations.
-Ran 'TestMul-f32-sat' for 7 iterations.
-Ran 'TestMul-f32-ftz' for 7 iterations.
-Ran 'TestMul-f32-ftz-sat' for 7 iterations.
-Ran 'TestMul-f64' for 7 iterations.
+Ran 'TestTestP-f64-NotANumber' for 10 iterations.
+Ran 'TestTestP-f64-Normal' for 10 iterations.
+Ran 'TestTestP-f64-SubNormal' for 10 iterations.
+Ran 'TestCopysign-f32' for 7 iterations.
+Ran 'TestCopysign-f64' for 8 iterations.
+Ran 'TestAdd-f32' for 10 iterations.
+Ran 'TestAdd-f32-sat' for 11 iterations.
+Ran 'TestAdd-f32-ftz' for 11 iterations.
+Ran 'TestAdd-f32-ftz-sat' for 10 iterations.
+Ran 'TestAdd-f64' for 10 iterations.
+Ran 'TestSub-f32' for 11 iterations.
+Ran 'TestSub-f32-sat' for 10 iterations.
+Ran 'TestSub-f32-ftz' for 10 iterations.
+Ran 'TestSub-f32-ftz-sat' for 10 iterations.
+Ran 'TestSub-f64' for 11 iterations.
+Ran 'TestMul-f32' for 11 iterations.
+Ran 'TestMul-f32-sat' for 10 iterations.
+Ran 'TestMul-f32-ftz' for 10 iterations.
+Ran 'TestMul-f32-ftz-sat' for 9 iterations.
+Ran 'TestMul-f64' for 8 iterations.
 Ran 'TestMad-f32' for 7 iterations.
-Ran 'TestMad-f32-sat' for 7 iterations.
-Ran 'TestMad-f32-ftz' for 7 iterations.
-Ran 'TestMad-f32-ftz-sat' for 6 iterations.
-Ran 'TestMad-f64' for 7 iterations.
-Ran 'TestFma-f32' for 7 iterations.
+Ran 'TestMad-f32-sat' for 9 iterations.
+Ran 'TestMad-f32-ftz' for 9 iterations.
+Ran 'TestMad-f32-ftz-sat' for 9 iterations.
+Ran 'TestMad-f64' for 8 iterations.
+Ran 'TestFma-f32' for 6 iterations.
 Ran 'TestFma-f32-sat' for 6 iterations.
-Ran 'TestFma-f32-ftz' for 7 iterations.
+Ran 'TestFma-f32-ftz' for 6 iterations.
 Ran 'TestFma-f32-ftz-sat' for 6 iterations.
-Ran 'TestFma-f64' for 7 iterations.
-Ran 'TestDiv-f32' for 7 iterations.
-Ran 'TestDiv-f32-ftz' for 7 iterations.
+Ran 'TestFma-f64' for 6 iterations.
+Ran 'TestDiv-f32' for 6 iterations.
+Ran 'TestDiv-f32-ftz' for 6 iterations.
 Ran 'TestDiv-f32-approx' for 7 iterations.
-Ran 'TestDiv-f32-full' for 7 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 8 iterations.
-Ran 'TestDiv-f32-full-ftz' for 8 iterations.
-Ran 'TestDiv-f64' for 8 iterations.
+Ran 'TestDiv-f32-full' for 6 iterations.
+Ran 'TestDiv-f32-approx-ftz' for 6 iterations.
+Ran 'TestDiv-f32-full-ftz' for 7 iterations.
+Ran 'TestDiv-f64' for 7 iterations.
 Ran 'TestAbs-f32' for 7 iterations.
-Ran 'TestAbs-f32-ftz' for 8 iterations.
-Ran 'TestAbs-f64' for 8 iterations.
-Ran 'TestNeg-f32' for 8 iterations.
-Ran 'TestNeg-f32-ftz' for 7 iterations.
-Ran 'TestNeg-f64' for 9 iterations.
-Ran 'TestMin-f32' for 9 iterations.
-Ran 'TestMin-f32-ftz' for 10 iterations.
-Ran 'TestMin-f64' for 10 iterations.
-Ran 'TestMax-f32' for 9 iterations.
-Ran 'TestMax-f32-ftz' for 10 iterations.
-Ran 'TestMax-f64' for 7 iterations.
+Ran 'TestAbs-f32-ftz' for 7 iterations.
+Ran 'TestAbs-f64' for 6 iterations.
+Ran 'TestNeg-f32' for 6 iterations.
+Ran 'TestNeg-f32-ftz' for 9 iterations.
+Ran 'TestNeg-f64' for 8 iterations.
+Ran 'TestMin-f32' for 7 iterations.
+Ran 'TestMin-f32-ftz' for 6 iterations.
+Ran 'TestMin-f64' for 6 iterations.
+Ran 'TestMax-f32' for 6 iterations.
+Ran 'TestMax-f32-ftz' for 6 iterations.
+Ran 'TestMax-f64' for 6 iterations.
 Ran 'TestRcp-f32' for 7 iterations.
 Ran 'TestRcp-f32-approx' for 7 iterations.
-Ran 'TestRcp-f32-ftz' for 7 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 7 iterations.
+Ran 'TestRcp-f32-ftz' for 6 iterations.
+Ran 'TestRcp-f32-approx-ftz' for 6 iterations.
 Ran 'TestRcp-f64' for 7 iterations.
 Ran 'TestRcp-f64-approx-ftz' for 7 iterations.
-Ran 'TestSqrt-f32' for 8 iterations.
-Ran 'TestSqrt-f32-approx' for 9 iterations.
-Ran 'TestSqrt-f32-ftz' for 9 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 8 iterations.
-Ran 'TestSqrt-f64' for 8 iterations.
-Ran 'TestRsqrt-f32' for 6 iterations.
-Ran 'TestRsqrt-f32-ftz' for 7 iterations.
-Ran 'TestRsqrt-f64' for 7 iterations.
-Ran 'TestCos-f32' for 7 iterations.
+Ran 'TestSqrt-f32' for 7 iterations.
+Ran 'TestSqrt-f32-approx' for 6 iterations.
+Ran 'TestSqrt-f32-ftz' for 7 iterations.
+Ran 'TestSqrt-f32-approx-ftz' for 6 iterations.
+Ran 'TestSqrt-f64' for 7 iterations.
+Ran 'TestRsqrt-f32' for 7 iterations.
+Ran 'TestRsqrt-f32-ftz' for 6 iterations.
+Ran 'TestRsqrt-f64' for 6 iterations.
+Ran 'TestCos-f32' for 6 iterations.
 Ran 'TestCos-f32-ftz' for 6 iterations.
 Ran 'TestSin-f32' for 7 iterations.
-Ran 'TestSin-f32-ftz' for 7 iterations.
-Ran 'TestEx2-f32' for 7 iterations.
-Ran 'TestEx2-f32-ftz' for 7 iterations.
+Ran 'TestSin-f32-ftz' for 5 iterations.
+Ran 'TestEx2-f32' for 6 iterations.
+Ran 'TestEx2-f32-ftz' for 6 iterations.
 Ran 'TestLg2-f32' for 6 iterations.
 Ran 'TestLg2-f32-ftz' for 7 iterations.
 Ran 'TestSet-lt-u32-u16' for 6 iterations.
-Ran 'TestSet-lt-s32-u16' for 5 iterations.
-Ran 'TestSet-lt-f32-u16' for 6 iterations.
-Ran 'TestSet-lt-s32-u32' for 6 iterations.
+Ran 'TestSet-lt-s32-u16' for 6 iterations.
+Ran 'TestSet-lt-f32-u16' for 5 iterations.
+Ran 'TestSet-lt-s32-u32' for 5 iterations.
 Ran 'TestSet-lt-s32-u64' for 6 iterations.
-Ran 'TestSet-lt-s32-s16' for 7 iterations.
-Ran 'TestSet-lt-s32-s32' for 7 iterations.
-Ran 'TestSet-lt-s32-s64' for 8 iterations.
-Ran 'TestSet-lt-s32-f32' for 8 iterations.
-Ran 'TestSet-lt-s32-f64' for 8 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 8 iterations.
-Ran 'TestSet-Eq-s32-s32' for 8 iterations.
-Ran 'TestSet-Ne-s32-s32' for 9 iterations.
-Ran 'TestSet-Le-s32-s32' for 8 iterations.
-Ran 'TestSet-Gt-s32-s32' for 8 iterations.
-Ran 'TestSet-Ge-s32-s32' for 9 iterations.
-Ran 'TestSet-Lo-s32-u32' for 9 iterations.
-Ran 'TestSet-Ls-s32-u32' for 9 iterations.
-Ran 'TestSet-Hi-s32-u32' for 5 iterations.
+Ran 'TestSet-lt-s32-s16' for 6 iterations.
+Ran 'TestSet-lt-s32-s32' for 6 iterations.
+Ran 'TestSet-lt-s32-s64' for 6 iterations.
+Ran 'TestSet-lt-s32-f32' for 6 iterations.
+Ran 'TestSet-lt-s32-f64' for 5 iterations.
+Ran 'TestSet-lt-ftz-s32-f32' for 5 iterations.
+Ran 'TestSet-Eq-s32-s32' for 6 iterations.
+Ran 'TestSet-Ne-s32-s32' for 6 iterations.
+Ran 'TestSet-Le-s32-s32' for 6 iterations.
+Ran 'TestSet-Gt-s32-s32' for 6 iterations.
+Ran 'TestSet-Ge-s32-s32' for 6 iterations.
+Ran 'TestSet-Lo-s32-u32' for 6 iterations.
+Ran 'TestSet-Ls-s32-u32' for 6 iterations.
+Ran 'TestSet-Hi-s32-u32' for 6 iterations.
 Ran 'TestSet-Hs-s32-u32' for 6 iterations.
 Ran 'TestSet-Eq-s32-f32' for 6 iterations.
-Ran 'TestSet-Ne-s32-f32' for 7 iterations.
+Ran 'TestSet-Ne-s32-f32' for 6 iterations.
 Ran 'TestSet-Lt-s32-f32' for 6 iterations.
 Ran 'TestSet-Le-s32-f32' for 6 iterations.
-Ran 'TestSet-Gt-s32-f32' for 7 iterations.
-Ran 'TestSet-Ge-s32-f32' for 7 iterations.
-Ran 'TestSet-Lo-s32-u32' for 7 iterations.
-Ran 'TestSet-Ls-s32-u32' for 7 iterations.
-Ran 'TestSet-Hi-s32-u32' for 9 iterations.
-Ran 'TestSet-Hs-s32-u32' for 9 iterations.
-Ran 'TestSet-Equ-s32-f32' for 9 iterations.
-Ran 'TestSet-Neu-s32-f32' for 9 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 9 iterations.
-Ran 'TestSet-Leu-s32-f32' for 9 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 9 iterations.
-Ran 'TestSet-Geu-s32-f32' for 9 iterations.
-Ran 'TestSet-Num-s32-f32' for 9 iterations.
-Ran 'TestSet-Nan-s32-f32' for 9 iterations.
+Ran 'TestSet-Gt-s32-f32' for 6 iterations.
+Ran 'TestSet-Ge-s32-f32' for 6 iterations.
+Ran 'TestSet-Lo-s32-u32' for 6 iterations.
+Ran 'TestSet-Ls-s32-u32' for 6 iterations.
+Ran 'TestSet-Hi-s32-u32' for 6 iterations.
+Ran 'TestSet-Hs-s32-u32' for 5 iterations.
+Ran 'TestSet-Equ-s32-f32' for 6 iterations.
+Ran 'TestSet-Neu-s32-f32' for 6 iterations.
+Ran 'TestSet-Ltu-s32-f32' for 7 iterations.
+Ran 'TestSet-Leu-s32-f32' for 4 iterations.
+Ran 'TestSet-Gtu-s32-f32' for 8 iterations.
+Ran 'TestSet-Geu-s32-f32' for 6 iterations.
+Ran 'TestSet-Num-s32-f32' for 6 iterations.
+Ran 'TestSet-Nan-s32-f32' for 6 iterations.
 Ran 'TestSet-Lt-s32-s32-And' for 6 iterations.
 Ran 'TestSet-Lt-s32-s32-Or' for 6 iterations.
 Ran 'TestSet-Lt-s32-s32-Xor' for 6 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 7 iterations.
-Ran 'TestSetP-lt-u16' for 6 iterations.
-Ran 'TestSetP-lt-u32' for 6 iterations.
+Ran 'TestSet-Lt-s32-s32-And-Inv' for 6 iterations.
+Ran 'TestSetP-lt-u16' for 5 iterations.
+Ran 'TestSetP-lt-u32' for 5 iterations.
 Ran 'TestSetP-lt-u32-pq' for 5 iterations.
-Ran 'TestSetP-lt-u64' for 6 iterations.
-Ran 'TestSetP-lt-s16' for 6 iterations.
-Ran 'TestSetP-lt-s32' for 8 iterations.
-Ran 'TestSetP-lt-s64' for 7 iterations.
-Ran 'TestSetP-lt-f32' for 8 iterations.
+Ran 'TestSetP-lt-u64' for 5 iterations.
+Ran 'TestSetP-lt-s16' for 5 iterations.
+Ran 'TestSetP-lt-s32' for 5 iterations.
+Ran 'TestSetP-lt-s64' for 5 iterations.
+Ran 'TestSetP-lt-f32' for 4 iterations.
 Ran 'TestSetP-lt-f64' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 6 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 5 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 5 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 6 iterations.
-Ran 'TestSelp-u16' for 6 iterations.
-Ran 'TestSelp-u32' for 6 iterations.
-Ran 'TestSelp-u64' for 6 iterations.
-Ran 'TestSelp-s16' for 6 iterations.
-Ran 'TestSelp-s32' for 6 iterations.
-Ran 'TestSelp-s64' for 6 iterations.
-Ran 'TestSelp-f32' for 6 iterations.
-Ran 'TestSelp-f64' for 5 iterations.
-Ran 'TestSlct-u16-s32' for 5 iterations.
+Ran 'TestSetP-lt-u32-pq-and' for 8 iterations.
+Ran 'TestSetP-lt-u32-pq-or' for 8 iterations.
+Ran 'TestSetP-lt-u32-pq-xor' for 7 iterations.
+Ran 'TestSetP-lt-f32-pq-and-ftz' for 8 iterations.
+Ran 'TestSelp-u16' for 9 iterations.
+Ran 'TestSelp-u32' for 9 iterations.
+Ran 'TestSelp-u64' for 9 iterations.
+Ran 'TestSelp-s16' for 8 iterations.
+Ran 'TestSelp-s32' for 8 iterations.
+Ran 'TestSelp-s64' for 9 iterations.
+Ran 'TestSelp-f32' for 9 iterations.
+Ran 'TestSelp-f64' for 6 iterations.
+Ran 'TestSlct-u16-s32' for 7 iterations.
 Ran 'TestSlct-u32-s32' for 5 iterations.
-Ran 'TestSlct-u64-s32' for 6 iterations.
-Ran 'TestSlct-s16-s32' for 6 iterations.
+Ran 'TestSlct-u64-s32' for 8 iterations.
+Ran 'TestSlct-s16-s32' for 9 iterations.
 Ran 'TestSlct-s32-s32' for 7 iterations.
-Ran 'TestSlct-s64-s32' for 6 iterations.
-Ran 'TestSlct-f32-s32' for 6 iterations.
+Ran 'TestSlct-s64-s32' for 9 iterations.
+Ran 'TestSlct-f32-s32' for 10 iterations.
 Ran 'TestSlct-f64-s32' for 6 iterations.
-Ran 'TestSlct-u16-f32' for 6 iterations.
-Ran 'TestSlct-u32-f32' for 6 iterations.
-Ran 'TestSlct-u64-f32' for 7 iterations.
-Ran 'TestSlct-s16-f32' for 6 iterations.
-Ran 'TestSlct-s32-f32' for 5 iterations.
-Ran 'TestSlct-s64-f32' for 7 iterations.
-Ran 'TestSlct-f32-f32' for 7 iterations.
-Ran 'TestSlct-f64-f32' for 7 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 7 iterations.
-Ran 'TestAnd-pred' for 6 iterations.
-Ran 'TestAnd-b16' for 7 iterations.
+Ran 'TestSlct-u16-f32' for 10 iterations.
+Ran 'TestSlct-u32-f32' for 8 iterations.
+Ran 'TestSlct-u64-f32' for 10 iterations.
+Ran 'TestSlct-s16-f32' for 10 iterations.
+Ran 'TestSlct-s32-f32' for 10 iterations.
+Ran 'TestSlct-s64-f32' for 9 iterations.
+Ran 'TestSlct-f32-f32' for 8 iterations.
+Ran 'TestSlct-f64-f32' for 6 iterations.
+Ran 'TestSlct-f32-f32-ftz' for 6 iterations.
+Ran 'TestAnd-pred' for 5 iterations.
+Ran 'TestAnd-b16' for 6 iterations.
 Ran 'TestAnd-b32' for 7 iterations.
-Ran 'TestAnd-b64' for 6 iterations.
-Ran 'TestOr-pred' for 5 iterations.
-Ran 'TestOr-b16' for 6 iterations.
-Ran 'TestOr-b32' for 7 iterations.
-Ran 'TestOr-b64' for 7 iterations.
-Ran 'TestXor-pred' for 6 iterations.
-Ran 'TestXor-b16' for 6 iterations.
-Ran 'TestXor-b32' for 7 iterations.
-Ran 'TestXor-b64' for 6 iterations.
-Ran 'TestNot-pred' for 6 iterations.
-Ran 'TestNot-b16' for 7 iterations.
+Ran 'TestAnd-b64' for 8 iterations.
+Ran 'TestOr-pred' for 9 iterations.
+Ran 'TestOr-b16' for 11 iterations.
+Ran 'TestOr-b32' for 11 iterations.
+Ran 'TestOr-b64' for 11 iterations.
+Ran 'TestXor-pred' for 9 iterations.
+Ran 'TestXor-b16' for 9 iterations.
+Ran 'TestXor-b32' for 6 iterations.
+Ran 'TestXor-b64' for 9 iterations.
+Ran 'TestNot-pred' for 9 iterations.
+Ran 'TestNot-b16' for 6 iterations.
 Ran 'TestNot-b32' for 6 iterations.
-Ran 'TestNot-b64' for 7 iterations.
-Ran 'TestCNot-b16' for 7 iterations.
-Ran 'TestCNot-b32' for 7 iterations.
+Ran 'TestNot-b64' for 6 iterations.
+Ran 'TestCNot-b16' for 6 iterations.
+Ran 'TestCNot-b32' for 6 iterations.
 Ran 'TestCNot-b64' for 6 iterations.
 Ran 'TestShl-b16' for 6 iterations.
 Ran 'TestShl-b32' for 6 iterations.
 Ran 'TestShl-b64' for 6 iterations.
 Ran 'TestShr-u16' for 6 iterations.
-Ran 'TestShr-u32' for 7 iterations.
+Ran 'TestShr-u32' for 6 iterations.
 Ran 'TestShr-u64' for 6 iterations.
 Ran 'TestShr-s16' for 6 iterations.
 Ran 'TestShr-s32' for 6 iterations.
 Ran 'TestShr-s64' for 6 iterations.
 Ran 'TestMov-pred' for 6 iterations.
-Ran 'TestMov-u16' for 7 iterations.
-Ran 'TestMov-u32' for 7 iterations.
-Ran 'TestMov-u64' for 7 iterations.
-Ran 'TestMov-s16' for 7 iterations.
-Ran 'TestMov-s32' for 7 iterations.
-Ran 'TestMov-s64' for 7 iterations.
-Ran 'TestMov-f32' for 7 iterations.
-Ran 'TestMov-f64' for 7 iterations.
-Ran 'TestMovLabel-global-v1' for 5 iterations.
-Ran 'TestMovLabel-global-v1-index' for 4 iterations.
-Ran 'TestMovLabel-global-v2' for 9 iterations.
-Ran 'TestMovLabel-global-v4' for 8 iterations.
-Ran 'TestMovLabel-local-v1' for 6 iterations.
-Ran 'TestMovLabel-local-v1-index' for 6 iterations.
-Ran 'TestMovLabel-local-v2' for 6 iterations.
-Ran 'TestMovLabel-local-v4' for 6 iterations.
-Ran 'TestMovLabel-shared-v1' for 6 iterations.
-Ran 'TestMovLabel-shared-v1-index' for 6 iterations.
-Ran 'TestMovLabel-shared-v4' for 6 iterations.
-Ran 'TestCvt-u8-u8' for 7 iterations.
-Ran 'TestCvt-u8-u16' for 8 iterations.
-Ran 'TestCvt-u8-u32' for 7 iterations.
-Ran 'TestCvt-u8-u64' for 8 iterations.
-Ran 'TestCvt-u8-s8' for 9 iterations.
-Ran 'TestCvt-u8-s16' for 8 iterations.
-Ran 'TestCvt-u8-s32' for 8 iterations.
+Ran 'TestMov-u16' for 6 iterations.
+Ran 'TestMov-u32' for 3 iterations.
+Ran 'TestMov-u64' for 4 iterations.
+Ran 'TestMov-s16' for 6 iterations.
+Ran 'TestMov-s32' for 9 iterations.
+Ran 'TestMov-s64' for 8 iterations.
+Ran 'TestMov-f32' for 10 iterations.
+Ran 'TestMov-f64' for 10 iterations.
+Ran 'TestMovLabel-global-v1' for 9 iterations.
+Ran 'TestMovLabel-global-v1-index' for 10 iterations.
+Ran 'TestMovLabel-global-v2' for 10 iterations.
+Ran 'TestMovLabel-global-v4' for 9 iterations.
+Ran 'TestMovLabel-local-v1' for 10 iterations.
+Ran 'TestMovLabel-local-v1-index' for 10 iterations.
+Ran 'TestMovLabel-local-v2' for 9 iterations.
+Ran 'TestMovLabel-local-v4' for 9 iterations.
+Ran 'TestMovLabel-shared-v1' for 10 iterations.
+Ran 'TestMovLabel-shared-v1-index' for 10 iterations.
+Ran 'TestMovLabel-shared-v4' for 9 iterations.
+Ran 'TestCvt-u8-u8' for 11 iterations.
+Ran 'TestCvt-u8-u16' for 11 iterations.
+Ran 'TestCvt-u8-u32' for 9 iterations.
+Ran 'TestCvt-u8-u64' for 6 iterations.
+Ran 'TestCvt-u8-s8' for 7 iterations.
+Ran 'TestCvt-u8-s16' for 7 iterations.
+Ran 'TestCvt-u8-s32' for 7 iterations.
 Ran 'TestCvt-u8-s64' for 7 iterations.
-Ran 'TestCvt-u8-f32' for 7 iterations.
+Ran 'TestCvt-u8-f32' for 6 iterations.
 Ran 'TestCvt-u8-f64' for 7 iterations.
-Ran 'TestCvt-u16-u8' for 8 iterations.
+Ran 'TestCvt-u16-u8' for 6 iterations.
 Ran 'TestCvt-u16-u16' for 7 iterations.
 Ran 'TestCvt-u16-u32' for 7 iterations.
-Ran 'TestCvt-u16-u64' for 7 iterations.
-Ran 'TestCvt-u16-s8' for 7 iterations.
-Ran 'TestCvt-u16-s16' for 7 iterations.
-Ran 'TestCvt-u16-s32' for 7 iterations.
-Ran 'TestCvt-u16-s64' for 7 iterations.
-Ran 'TestCvt-u16-f32' for 7 iterations.
-Ran 'TestCvt-u16-f64' for 7 iterations.
-Ran 'TestCvt-u32-u8' for 7 iterations.
-Ran 'TestCvt-u32-u16' for 7 iterations.
+Ran 'TestCvt-u16-u64' for 4 iterations.
+Ran 'TestCvt-u16-s8' for 3 iterations.
+Ran 'TestCvt-u16-s16' for 1 iterations.
+Ran 'TestCvt-u16-s32' for 6 iterations.
+Ran 'TestCvt-u16-s64' for 10 iterations.
+Ran 'TestCvt-u16-f32' for 10 iterations.
+Ran 'TestCvt-u16-f64' for 10 iterations.
+Ran 'TestCvt-u32-u8' for 11 iterations.
+Ran 'TestCvt-u32-u16' for 10 iterations.
 Ran 'TestCvt-u32-u32' for 7 iterations.
-Ran 'TestCvt-u32-u64' for 8 iterations.
-Ran 'TestCvt-u32-s8' for 8 iterations.
-Ran 'TestCvt-u32-s16' for 7 iterations.
-Ran 'TestCvt-u32-s32' for 8 iterations.
-Ran 'TestCvt-u32-s64' for 7 iterations.
-Ran 'TestCvt-u32-f32' for 7 iterations.
-Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 6 iterations.
-Ran 'TestCvt-u32-f32-rmi' for 5 iterations.
-Ran 'TestCvt-u32-f64-rzi' for 5 iterations.
-Ran 'TestCvt-u64-u8' for 4 iterations.
-Ran 'TestCvt-u64-u16' for 6 iterations.
-Ran 'TestCvt-u64-u32' for 6 iterations.
-Ran 'TestCvt-u64-u64' for 6 iterations.
-Ran 'TestCvt-u64-s8' for 6 iterations.
-Ran 'TestCvt-u64-s16' for 6 iterations.
-Ran 'TestCvt-u64-s32' for 6 iterations.
-Ran 'TestCvt-u64-s64' for 6 iterations.
-Ran 'TestCvt-u64-f32' for 6 iterations.
-Ran 'TestCvt-u64-f64' for 6 iterations.
+Ran 'TestCvt-u32-u64' for 9 iterations.
+Ran 'TestCvt-u32-s8' for 11 iterations.
+Ran 'TestCvt-u32-s16' for 11 iterations.
+Ran 'TestCvt-u32-s32' for 10 iterations.
+Ran 'TestCvt-u32-s64' for 10 iterations.
+Ran 'TestCvt-u32-f32' for 10 iterations.
+Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 9 iterations.
+Ran 'TestCvt-u32-f32-rmi' for 10 iterations.
+Ran 'TestCvt-u32-f64-rzi' for 10 iterations.
+Ran 'TestCvt-u64-u8' for 11 iterations.
+Ran 'TestCvt-u64-u16' for 11 iterations.
+Ran 'TestCvt-u64-u32' for 11 iterations.
+Ran 'TestCvt-u64-u64' for 11 iterations.
+Ran 'TestCvt-u64-s8' for 11 iterations.
+Ran 'TestCvt-u64-s16' for 10 iterations.
+Ran 'TestCvt-u64-s32' for 11 iterations.
+Ran 'TestCvt-u64-s64' for 11 iterations.
+Ran 'TestCvt-u64-f32' for 10 iterations.
+Ran 'TestCvt-u64-f64' for 8 iterations.
 Ran 'TestCvt-s8-u8' for 6 iterations.
-Ran 'TestCvt-s8-u16' for 5 iterations.
-Ran 'TestCvt-s8-u32' for 7 iterations.
-Ran 'TestCvt-s8-u64' for 6 iterations.
-Ran 'TestCvt-s8-s8' for 7 iterations.
-Ran 'TestCvt-s8-s16' for 7 iterations.
-Ran 'TestCvt-s8-s32' for 8 iterations.
-Ran 'TestCvt-s8-s64' for 8 iterations.
-Ran 'TestCvt-s8-f32' for 7 iterations.
-Ran 'TestCvt-s8-f64' for 7 iterations.
+Ran 'TestCvt-s8-u16' for 3 iterations.
+Ran 'TestCvt-s8-u32' for 6 iterations.
+Ran 'TestCvt-s8-u64' for 5 iterations.
+Ran 'TestCvt-s8-s8' for 6 iterations.
+Ran 'TestCvt-s8-s16' for 6 iterations.
+Ran 'TestCvt-s8-s32' for 5 iterations.
+Ran 'TestCvt-s8-s64' for 7 iterations.
+Ran 'TestCvt-s8-f32' for 6 iterations.
+Ran 'TestCvt-s8-f64' for 6 iterations.
 Ran 'TestCvt-s16-u8' for 7 iterations.
 Ran 'TestCvt-s16-u16' for 7 iterations.
 Ran 'TestCvt-s16-u32' for 7 iterations.
 Ran 'TestCvt-s16-u64' for 7 iterations.
-Ran 'TestCvt-s16-s8' for 8 iterations.
+Ran 'TestCvt-s16-s8' for 7 iterations.
 Ran 'TestCvt-s16-s16' for 7 iterations.
-Ran 'TestCvt-s16-s32' for 7 iterations.
+Ran 'TestCvt-s16-s32' for 6 iterations.
 Ran 'TestCvt-s16-s64' for 7 iterations.
-Ran 'TestCvt-s16-f32' for 7 iterations.
+Ran 'TestCvt-s16-f32' for 6 iterations.
 Ran 'TestCvt-s16-f64' for 6 iterations.
-Ran 'TestCvt-s32-u8' for 6 iterations.
-Ran 'TestCvt-s32-u16' for 7 iterations.
-Ran 'TestCvt-s32-u32' for 6 iterations.
+Ran 'TestCvt-s32-u8' for 7 iterations.
+Ran 'TestCvt-s32-u16' for 6 iterations.
+Ran 'TestCvt-s32-u32' for 7 iterations.
 Ran 'TestCvt-s32-u64' for 6 iterations.
-Ran 'TestCvt-s32-s8' for 5 iterations.
-Ran 'TestCvt-s32-s16' for 6 iterations.
-Ran 'TestCvt-s32-s32' for 8 iterations.
-Ran 'TestCvt-s32-s64' for 7 iterations.
-Ran 'TestCvt-s32-f32' for 7 iterations.
-Ran 'TestCvt-s32-f64' for 7 iterations.
+Ran 'TestCvt-s32-s8' for 6 iterations.
+Ran 'TestCvt-s32-s16' for 7 iterations.
+Ran 'TestCvt-s32-s32' for 7 iterations.
+Ran 'TestCvt-s32-s64' for 6 iterations.
+Ran 'TestCvt-s32-f32' for 6 iterations.
+Ran 'TestCvt-s32-f64' for 6 iterations.
 Ran 'TestCvt-s64-u8' for 7 iterations.
-Ran 'TestCvt-s64-u16' for 7 iterations.
+Ran 'TestCvt-s64-u16' for 6 iterations.
 Ran 'TestCvt-s64-u32' for 7 iterations.
 Ran 'TestCvt-s64-u64' for 7 iterations.
-Ran 'TestCvt-s64-s8' for 7 iterations.
-Ran 'TestCvt-s64-s16' for 7 iterations.
-Ran 'TestCvt-s64-s32' for 8 iterations.
-Ran 'TestCvt-s64-s64' for 7 iterations.
-Ran 'TestCvt-s64-f32' for 7 iterations.
-Ran 'TestCvt-s64-f64' for 8 iterations.
-Ran 'TestCvt-f32-u8' for 7 iterations.
-Ran 'TestCvt-f32-u16' for 7 iterations.
-Ran 'TestCvt-f32-u32' for 7 iterations.
-Ran 'TestCvt-f32-u64' for 7 iterations.
-Ran 'TestCvt-f32-s8' for 7 iterations.
-Ran 'TestCvt-f32-s16' for 7 iterations.
+Ran 'TestCvt-s64-s8' for 6 iterations.
+Ran 'TestCvt-s64-s16' for 6 iterations.
+Ran 'TestCvt-s64-s32' for 7 iterations.
+Ran 'TestCvt-s64-s64' for 6 iterations.
+Ran 'TestCvt-s64-f32' for 6 iterations.
+Ran 'TestCvt-s64-f64' for 6 iterations.
+Ran 'TestCvt-f32-u8' for 6 iterations.
+Ran 'TestCvt-f32-u16' for 6 iterations.
+Ran 'TestCvt-f32-u32' for 6 iterations.
+Ran 'TestCvt-f32-u64' for 6 iterations.
+Ran 'TestCvt-f32-s8' for 6 iterations.
+Ran 'TestCvt-f32-s16' for 5 iterations.
 Ran 'TestCvt-f32-s32' for 7 iterations.
 Ran 'TestCvt-f32-s64' for 7 iterations.
 Ran 'TestCvt-f32-f32-sat' for 7 iterations.
 Ran 'TestCvt-f32-f32-rmi' for 7 iterations.
 Ran 'TestCvt-f32-f32-rzi' for 7 iterations.
-Ran 'TestCvt-f32-f64' for 7 iterations.
+Ran 'TestCvt-f32-f64' for 6 iterations.
 Ran 'TestCvt-f64-u8' for 7 iterations.
 Ran 'TestCvt-f64-u16' for 7 iterations.
-Ran 'TestCvt-f64-u32' for 7 iterations.
+Ran 'TestCvt-f64-u32' for 6 iterations.
 Ran 'TestCvt-f64-u64' for 7 iterations.
-Ran 'TestCvt-f64-s8' for 7 iterations.
-Ran 'TestCvt-f64-s16' for 7 iterations.
+Ran 'TestCvt-f64-s8' for 6 iterations.
+Ran 'TestCvt-f64-s16' for 6 iterations.
 Ran 'TestCvt-f64-s32' for 7 iterations.
 Ran 'TestCvt-f64-s64' for 7 iterations.
-Ran 'TestCvt-f64-f32' for 7 iterations.
-Ran 'TestCvt-f64-f64-rzi' for 7 iterations.
-Ran 'TestLocalMemory-u8' for 7 iterations.
-Ran 'TestLocalMemory-u8-global' for 7 iterations.
+Ran 'TestCvt-f64-f32' for 6 iterations.
+Ran 'TestCvt-f64-f64-rzi' for 5 iterations.
+Ran 'TestLocalMemory-u8' for 6 iterations.
+Ran 'TestLocalMemory-u8-global' for 6 iterations.
 Ran 'TestLocalMemory-u8-scoped' for 5 iterations.
-Ran 'TestLocalMemory-u8-global-scoped' for 5 iterations.
-Ran 'TestCvta-local-u64' for 6 iterations.
-Ran 'TestCvta-global-u64' for 6 iterations.
+Ran 'TestLocalMemory-u8-global-scoped' for 4 iterations.
+Ran 'TestCvta-local-u64' for 5 iterations.
+Ran 'TestCvta-global-u64' for 5 iterations.
 Ran 'TestCvta-shared-u64' for 6 iterations.
 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer
-INFO     Test completed in 19.963501215 seconds
+INFO     Test completed in 19.7706289291 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -875,8 +875,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1346194549
-Test time : 19.8582
+Test Seed : 1346275301
+Test time : 19.6426
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Scan): Passed
@@ -1026,9 +1026,545 @@ For file ../tests/ptx/parboil/spmv-main.ptx, Test Point 1 (Scan): Passed
 
 
 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser
-INFO     Test completed in 81.5461130142 seconds
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestOptimizations
+INFO     Test completed in 60.6946749687 seconds
 INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestOptimizations
+
+Description: A unit test framework for PTX optimizations. Runs random 
+             optimization passes on random PTX files until a timer expires.
+
+
+Test Seed : 1346275301
+Test time : 60.5804
+
+Status :  Enumerated 580 tests
+ Running test '../tests/ptx/sdk2.2/simpleVote_kernel.ptx|loop-unrolling'
+ Running test '../tests/ptx/thrust/Unique.ptx|function-inlining'
+ Running test '../tests/ptx/rodinia/track_ellipse_kernel.ptx|function-inlining'
+ Running test '../tests/ptx/sdk2.2/bisect_util.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/convolutionSeparable.ptx|global-value-numbering'
+ Running test '../tests/ptx/rodinia/srad_kernel.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/scan_naive_kernel.ptx|dead-code-elimination'
+ Running test '../tests/ptx/thrust/Sort.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/main.ptx|global-value-numbering'
+ Running test '../tests/ptx/synthetic/generic.ptx|dead-code-elimination'
+ Running test '../tests/ptx/parboil/crys_kernel.ptx|function-inlining'
+ Running test '../tests/ptx/unstructured/MC-GPU_v1.1.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/convolutionTexture_kernel.ptx|function-inlining'
+ Running test '../tests/ptx/unstructured/vm.ptx|function-inlining'
+ Running test '../tests/ptx/sdk2.2/template.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/bisect_kernel_large.ptx|global-value-numbering'
+ Running test '../tests/ptx/synthetic/scoped-variables.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/convolutionSeparable_kernel.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/tests.ptx|global-value-numbering'
+ Running test '../tests/ptx/thrust/Unique.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/convolutionSeparable_kernel.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/binomialOptions_SM13.ptx|loop-unrolling'
+ Running test '../tests/ptx/thrust/bfs.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/imageDenoising.ptx|function-inlining'
+ Running test '../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/matrixMul.ptx|function-inlining'
+ Running test '../tests/ptx/sdk2.2/simpleTemplates.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/sobol_gpu.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/bandwidthTest.ptx|loop-unrolling'
+ Running test '../tests/ptx/rodinia/lud_kernel.ptx|global-value-numbering'
+ Running test '../tests/ptx/rodinia/track_ellipse_kernel.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/bicubicTexture.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/simpleCUFFT.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/MersenneTwister.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/binomialOptions_SM13.ptx|function-inlining'
+ Running test '../tests/ptx/unstructured/mcx_core.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/clock.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/simpleVote_kernel.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/simpleTexture_kernel.ptx|function-inlining'
+ Running test '../tests/ptx/synthetic/generic.ptx|function-inlining'
+ Running test '../tests/ptx/parboil/largerBlocks.ptx|loop-unrolling'
+ Running test '../tests/ptx/thrust/bfs.ptx|function-inlining'
+ Running test '../tests/ptx/rodinia/find_ellipse_kernel.ptx|loop-unrolling'
+ Running test '../tests/ptx/rodinia/hwt.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/bisect_kernel_large_multi.ptx|loop-unrolling'
+ Running test '../tests/ptx/parboil/spmv-main.ptx|global-value-numbering'
+ Running test '../tests/ptx/rodinia/hotspot.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/imageDenoising.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx|loop-unrolling'
+ Running test '../tests/ptx/rodinia/track_ellipse_kernel.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/bisect_kernel_large_onei.ptx|dead-code-elimination'
+ Running test '../tests/ptx/synthetic/3dmark.ptx|global-value-numbering'
+ Running test '../tests/ptx/rodinia/lud_kernel.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/transposeNew.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx|global-value-numbering'
+ Running test '../tests/ptx/unstructured/vm.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/simpleAtomicIntrinsics_kernel.ptx|dead-code-elimination'
+ Running test '../tests/ptx/parboil/mri-q.ptx|function-inlining'
+ Running test '../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx|function-inlining'
+ Running test '../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx|global-value-numbering'
+ Running test '../tests/ptx/rodinia/needle.ptx|loop-unrolling'
+ Running test '../tests/ptx/rodinia/srad.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/dxtc.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/sobol_gpu.ptx|dead-code-elimination'
+ Running test '../tests/ptx/unstructured/renderer.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/scalarProd.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/bisect_large.ptx|dead-code-elimination'
+ Running test '../tests/ptx/sdk2.2/asyncAPI.ptx|dead-code-elimination'
+ Running test '../tests/ptx/parboil/spmv-main.ptx|dead-code-elimination'
+ Running test '../tests/ptx/optix/zoneplate_megakernel.ptx|loop-unrolling'
+ Running test '../tests/ptx/parboil/scan_largearray_kernel.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/fastWalshTransform.ptx|loop-unrolling'
+ Running test '../tests/ptx/sdk2.2/simpleAtomicIntrinsics_kernel.ptx|loop-unrolling'
+ Running test '../tests/ptx/thrust/histogram.ptx|loop-unrolling'
+ Running test '../tests/ptx/parboil/tpacf.ptx|global-value-numbering'
+ Running test '../tests/ptx/sdk2.2/threadFenceReduction_kernel.ptx|function-inlining'
+Finished running 78 tests...
+
+
+
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser
+INFO     Test completed in 84.5723941326 seconds
+INFO      It produced the following output:
+(0.002578) TestParser.cpp:173:  Parsing the following files:
+ ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx
+ ../tests/ptx/optix/zoneplate_megakernel.ptx
+(0.002617) TestParser.cpp:82:    Parsing file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx
+(0.056763) TestParser.cpp:102:    - parsing first
+(0.112794) TestParser.cpp:115:    - parsing second
+(0.178053) TestParser.cpp:82:    Parsing file ../tests/ptx/optix/zoneplate_megakernel.ptx
+(0.569597) TestParser.cpp:102:    - parsing first
+(0.885868) TestParser.cpp:115:    - parsing second
+(1.297989) TestParser.cpp:82:    Parsing file ../tests/ptx/optix/kernel_trace_device0_1.ptx
+(1.653939) TestParser.cpp:102:    - parsing first
+(1.951261) TestParser.cpp:115:    - parsing second
+(2.366463) TestParser.cpp:82:    Parsing file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
+(2.425798) TestParser.cpp:102:    - parsing first
+(2.476956) TestParser.cpp:115:    - parsing second
+(2.535675) TestParser.cpp:82:    Parsing file ../tests/ptx/thrust/histogram.ptx
+(5.590637) TestParser.cpp:102:    - parsing first
+(8.536721) TestParser.cpp:115:    - parsing second
+(10.912938) TestParser.cpp:82:    Parsing file ../tests/ptx/thrust/bfs.ptx
+(11.153599) TestParser.cpp:102:    - parsing first
+(11.390114) TestParser.cpp:115:    - parsing second
+(11.648098) TestParser.cpp:82:    Parsing file ../tests/ptx/thrust/Sort.ptx
+(18.789675) TestParser.cpp:102:    - parsing first
+(26.193199) TestParser.cpp:115:    - parsing second
+(34.488399) TestParser.cpp:82:    Parsing file ../tests/ptx/thrust/Unique.ptx
+(34.931351) TestParser.cpp:102:    - parsing first
+(35.349452) TestParser.cpp:115:    - parsing second
+(35.803440) TestParser.cpp:82:    Parsing file ../tests/ptx/thrust/histogram_sliced.ptx
+(35.915395) TestParser.cpp:102:    - parsing first
+(36.024793) TestParser.cpp:115:    - parsing second
+(36.150136) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
+(36.601356) TestParser.cpp:102:    - parsing first
+(37.028849) TestParser.cpp:115:    - parsing second
+(37.535323) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/vm.ptx
+(37.806311) TestParser.cpp:102:    - parsing first
+(38.074670) TestParser.cpp:115:    - parsing second
+(38.387450) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/complex.ptx
+(39.058066) TestParser.cpp:102:    - parsing first
+(39.760881) TestParser.cpp:115:    - parsing second
+(40.556439) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
+(40.581758) TestParser.cpp:102:    - parsing first
+(40.605669) TestParser.cpp:115:    - parsing second
+(40.632440) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/renderer.ptx
+(46.400762) TestParser.cpp:102:    - parsing first
+(52.136193) TestParser.cpp:115:    - parsing second
+(58.685641) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/mcx_core.ptx
+(58.863070) TestParser.cpp:102:    - parsing first
+(59.033724) TestParser.cpp:115:    - parsing second
+(59.232630) TestParser.cpp:82:    Parsing file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx
+(59.387467) TestParser.cpp:102:    - parsing first
+(59.540376) TestParser.cpp:115:    - parsing second
+(59.714828) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx
+(59.784575) TestParser.cpp:102:    - parsing first
+(59.846948) TestParser.cpp:115:    - parsing second
+(59.917709) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx
+(59.933260) TestParser.cpp:102:    - parsing first
+(59.948143) TestParser.cpp:115:    - parsing second
+(59.964699) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/radixsort.ptx
+(60.031719) TestParser.cpp:102:    - parsing first
+(60.097444) TestParser.cpp:115:    - parsing second
+(60.169520) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_util.ptx
+(60.187437) TestParser.cpp:102:    - parsing first
+(60.203355) TestParser.cpp:115:    - parsing second
+(60.222328) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/histogram64.ptx
+(60.237695) TestParser.cpp:102:    - parsing first
+(60.251455) TestParser.cpp:115:    - parsing second
+(60.267122) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scan.ptx
+(60.287148) TestParser.cpp:102:    - parsing first
+(60.305605) TestParser.cpp:115:    - parsing second
+(60.326494) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx
+(60.332023) TestParser.cpp:102:    - parsing first
+(60.336710) TestParser.cpp:115:    - parsing second
+(60.341849) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/radixsort_kernel.ptx
+(60.408358) TestParser.cpp:102:    - parsing first
+(60.470652) TestParser.cpp:115:    - parsing second
+(60.541791) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx
+(61.213295) TestParser.cpp:102:    - parsing first
+(61.870714) TestParser.cpp:115:    - parsing second
+(62.623086) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/clock.ptx
+(62.630918) TestParser.cpp:102:    - parsing first
+(62.637752) TestParser.cpp:115:    - parsing second
+(62.645347) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/sobol_gpu.ptx
+(62.654634) TestParser.cpp:102:    - parsing first
+(62.663390) TestParser.cpp:115:    - parsing second
+(62.673132) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx
+(62.677937) TestParser.cpp:102:    - parsing first
+(62.682393) TestParser.cpp:115:    - parsing second
+(62.687207) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bandwidthTest.ptx
+(62.689520) TestParser.cpp:102:    - parsing first
+(62.691515) TestParser.cpp:115:    - parsing second
+(62.693611) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bitonic.ptx
+(62.699856) TestParser.cpp:102:    - parsing first
+(62.705149) TestParser.cpp:115:    - parsing second
+(62.711124) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/convolutionTexture_kernel.ptx
+(62.738943) TestParser.cpp:102:    - parsing first
+(62.763574) TestParser.cpp:115:    - parsing second
+(62.791526) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/recursiveGaussian_kernel.ptx
+(62.831795) TestParser.cpp:102:    - parsing first
+(62.871166) TestParser.cpp:115:    - parsing second
+(62.915676) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_small.ptx
+(63.006967) TestParser.cpp:102:    - parsing first
+(63.094247) TestParser.cpp:115:    - parsing second
+(63.192134) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/particles_kernel.ptx
+(63.267564) TestParser.cpp:102:    - parsing first
+(63.338298) TestParser.cpp:115:    - parsing second
+(63.417590) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx
+(63.442975) TestParser.cpp:102:    - parsing first
+(63.467434) TestParser.cpp:115:    - parsing second
+(63.495131) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/threadFenceReduction.ptx
+(63.938151) TestParser.cpp:102:    - parsing first
+(64.371589) TestParser.cpp:115:    - parsing second
+(64.867064) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/nbody_kernel.ptx
+(64.880596) TestParser.cpp:102:    - parsing first
+(64.893385) TestParser.cpp:115:    - parsing second
+(64.907641) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/histogram256_SM11.ptx
+(64.918831) TestParser.cpp:102:    - parsing first
+(64.929161) TestParser.cpp:115:    - parsing second
+(64.940815) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scan_workefficient_kernel.ptx
+(64.949021) TestParser.cpp:102:    - parsing first
+(64.956773) TestParser.cpp:115:    - parsing second
+(64.965388) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_large.ptx
+(65.230174) TestParser.cpp:102:    - parsing first
+(65.486030) TestParser.cpp:115:    - parsing second
+(65.774620) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleTemplates_kernel.ptx
+(65.777095) TestParser.cpp:102:    - parsing first
+(65.779125) TestParser.cpp:115:    - parsing second
+(65.781221) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx
+(65.928282) TestParser.cpp:102:    - parsing first
+(66.068741) TestParser.cpp:115:    - parsing second
+(66.228504) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx
+(66.273455) TestParser.cpp:102:    - parsing first
+(66.316401) TestParser.cpp:115:    - parsing second
+(66.365063) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/Mandelbrot_kernel.ptx
+(66.367477) TestParser.cpp:102:    - parsing first
+(66.369455) TestParser.cpp:115:    - parsing second
+(66.371557) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/dct8x8_kernel_short.ptx
+(66.441753) TestParser.cpp:102:    - parsing first
+(66.511076) TestParser.cpp:115:    - parsing second
+(66.589614) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/main.ptx
+(66.592023) TestParser.cpp:102:    - parsing first
+(66.593993) TestParser.cpp:115:    - parsing second
+(66.596090) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/template.ptx
+(66.600275) TestParser.cpp:102:    - parsing first
+(66.604025) TestParser.cpp:115:    - parsing second
+(66.608153) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx
+(66.683320) TestParser.cpp:102:    - parsing first
+(66.757796) TestParser.cpp:115:    - parsing second
+(66.841773) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/cppIntegration.ptx
+(66.846979) TestParser.cpp:102:    - parsing first
+(66.851581) TestParser.cpp:115:    - parsing second
+(66.856655) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/dct8x8_kernel_quantization.ptx
+(66.865177) TestParser.cpp:102:    - parsing first
+(66.873280) TestParser.cpp:115:    - parsing second
+(66.882371) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bicubicTexture.ptx
+(66.926480) TestParser.cpp:102:    - parsing first
+(66.969927) TestParser.cpp:115:    - parsing second
+(67.018991) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_kernel_large_onei.ptx
+(67.048339) TestParser.cpp:102:    - parsing first
+(67.075273) TestParser.cpp:115:    - parsing second
+(67.105477) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/reduction.ptx
+(67.107878) TestParser.cpp:102:    - parsing first
+(67.109851) TestParser.cpp:115:    - parsing second
+(67.112008) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx
+(67.147574) TestParser.cpp:102:    - parsing first
+(67.180177) TestParser.cpp:115:    - parsing second
+(67.216992) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleTemplates.ptx
+(67.222924) TestParser.cpp:102:    - parsing first
+(67.228356) TestParser.cpp:115:    - parsing second
+(67.234915) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx
+(67.246725) TestParser.cpp:102:    - parsing first
+(67.254793) TestParser.cpp:115:    - parsing second
+(67.263761) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleTexture.ptx
+(67.307773) TestParser.cpp:102:    - parsing first
+(67.351381) TestParser.cpp:115:    - parsing second
+(67.400211) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx
+(67.405647) TestParser.cpp:102:    - parsing first
+(67.410630) TestParser.cpp:115:    - parsing second
+(67.416055) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scalarProd_kernel.ptx
+(67.425185) TestParser.cpp:102:    - parsing first
+(67.433355) TestParser.cpp:115:    - parsing second
+(67.442482) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/tests.ptx
+(67.448672) TestParser.cpp:102:    - parsing first
+(67.454390) TestParser.cpp:115:    - parsing second
+(67.460515) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bitonic_kernel.ptx
+(67.466523) TestParser.cpp:102:    - parsing first
+(67.471816) TestParser.cpp:115:    - parsing second
+(67.477664) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx
+(67.490535) TestParser.cpp:102:    - parsing first
+(67.502342) TestParser.cpp:115:    - parsing second
+(67.515497) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/dxtc.ptx
+(67.685467) TestParser.cpp:102:    - parsing first
+(67.846701) TestParser.cpp:115:    - parsing second
+(68.018429) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/dct8x8_kernel2.ptx
+(68.058658) TestParser.cpp:102:    - parsing first
+(68.099227) TestParser.cpp:115:    - parsing second
+(68.144685) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx
+(68.394644) TestParser.cpp:102:    - parsing first
+(68.620796) TestParser.cpp:115:    - parsing second
+(68.885640) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bodysystemcuda.ptx
+(68.944965) TestParser.cpp:102:    - parsing first
+(69.002489) TestParser.cpp:115:    - parsing second
+(69.065971) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleStreams.ptx
+(69.070535) TestParser.cpp:102:    - parsing first
+(69.074453) TestParser.cpp:115:    - parsing second
+(69.078755) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scalarProd.ptx
+(69.087713) TestParser.cpp:102:    - parsing first
+(69.095937) TestParser.cpp:115:    - parsing second
+(69.104838) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/asyncAPI.ptx
+(69.108386) TestParser.cpp:102:    - parsing first
+(69.111581) TestParser.cpp:115:    - parsing second
+(69.115081) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx
+(69.190679) TestParser.cpp:102:    - parsing first
+(69.265282) TestParser.cpp:115:    - parsing second
+(69.351012) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_kernel_small.ptx
+(69.442900) TestParser.cpp:102:    - parsing first
+(69.531333) TestParser.cpp:115:    - parsing second
+(69.631043) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleVote_kernel.ptx
+(69.639773) TestParser.cpp:102:    - parsing first
+(69.647886) TestParser.cpp:115:    - parsing second
+(69.656956) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx
+(70.322162) TestParser.cpp:102:    - parsing first
+(70.976564) TestParser.cpp:115:    - parsing second
+(71.734739) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/convolutionTexture.ptx
+(71.957433) TestParser.cpp:102:    - parsing first
+(72.183547) TestParser.cpp:115:    - parsing second
+(72.436657) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics_kernel.ptx
+(72.441883) TestParser.cpp:102:    - parsing first
+(72.446525) TestParser.cpp:115:    - parsing second
+(72.451627) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/BlackScholes.ptx
+(72.461337) TestParser.cpp:102:    - parsing first
+(72.470559) TestParser.cpp:115:    - parsing second
+(72.481445) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/histogram256_SM12.ptx
+(72.493846) TestParser.cpp:102:    - parsing first
+(72.505411) TestParser.cpp:115:    - parsing second
+(72.518442) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scanLargeArray.ptx
+(72.600413) TestParser.cpp:102:    - parsing first
+(72.680225) TestParser.cpp:115:    - parsing second
+(72.771918) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scan_naive_kernel.ptx
+(72.778376) TestParser.cpp:102:    - parsing first
+(72.784056) TestParser.cpp:115:    - parsing second
+(72.790378) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/MersenneTwister.ptx
+(72.815423) TestParser.cpp:102:    - parsing first
+(72.840033) TestParser.cpp:115:    - parsing second
+(72.867113) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/postProcessGL.ptx
+(72.892346) TestParser.cpp:102:    - parsing first
+(72.917452) TestParser.cpp:115:    - parsing second
+(72.945017) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/transposeNew.ptx
+(72.987170) TestParser.cpp:102:    - parsing first
+(73.027402) TestParser.cpp:115:    - parsing second
+(73.073959) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/recursiveGaussian.ptx
+(73.115433) TestParser.cpp:102:    - parsing first
+(73.155090) TestParser.cpp:115:    - parsing second
+(73.200203) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx
+(73.204485) TestParser.cpp:102:    - parsing first
+(73.208364) TestParser.cpp:115:    - parsing second
+(73.212592) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/matrixMul.ptx
+(73.222633) TestParser.cpp:102:    - parsing first
+(73.232102) TestParser.cpp:115:    - parsing second
+(73.242720) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/threadFenceReduction_kernel.ptx
+(73.686333) TestParser.cpp:102:    - parsing first
+(74.118587) TestParser.cpp:115:    - parsing second
+(74.617270) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/histogram256_SM10.ptx
+(74.631636) TestParser.cpp:102:    - parsing first
+(74.645031) TestParser.cpp:115:    - parsing second
+(74.659923) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx
+(74.676284) TestParser.cpp:102:    - parsing first
+(74.691459) TestParser.cpp:115:    - parsing second
+(74.708710) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_kernel_large_multi.ptx
+(74.809611) TestParser.cpp:102:    - parsing first
+(74.908426) TestParser.cpp:115:    - parsing second
+(75.019524) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/fluidsGL.ptx
+(75.044520) TestParser.cpp:102:    - parsing first
+(75.068248) TestParser.cpp:115:    - parsing second
+(75.094760) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/convolutionSeparable.ptx
+(75.195602) TestParser.cpp:102:    - parsing first
+(75.295604) TestParser.cpp:115:    - parsing second
+(75.408128) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/bisect_kernel_large.ptx
+(75.576195) TestParser.cpp:102:    - parsing first
+(75.739670) TestParser.cpp:115:    - parsing second
+(75.924227) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/dwtHaar1D.ptx
+(75.933877) TestParser.cpp:102:    - parsing first
+(75.942758) TestParser.cpp:115:    - parsing second
+(75.952621) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleCUFFT.ptx
+(75.957837) TestParser.cpp:102:    - parsing first
+(75.962725) TestParser.cpp:115:    - parsing second
+(75.968462) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/reduction_kernel.ptx
+(76.645877) TestParser.cpp:102:    - parsing first
+(77.310468) TestParser.cpp:115:    - parsing second
+(78.070673) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx
+(78.096715) TestParser.cpp:102:    - parsing first
+(78.121724) TestParser.cpp:115:    - parsing second
+(78.149958) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/fastWalshTransform.ptx
+(78.165702) TestParser.cpp:102:    - parsing first
+(78.180711) TestParser.cpp:115:    - parsing second
+(78.197757) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/clock_kernel.ptx
+(78.205115) TestParser.cpp:102:    - parsing first
+(78.211957) TestParser.cpp:115:    - parsing second
+(78.219504) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx
+(78.257092) TestParser.cpp:102:    - parsing first
+(78.294896) TestParser.cpp:115:    - parsing second
+(78.335211) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx
+(78.444865) TestParser.cpp:102:    - parsing first
+(78.547378) TestParser.cpp:115:    - parsing second
+(78.666138) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/cppIntegration_kernel.ptx
+(78.671441) TestParser.cpp:102:    - parsing first
+(78.676116) TestParser.cpp:115:    - parsing second
+(78.681273) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scanLargeArray_kernel.ptx
+(78.692868) TestParser.cpp:102:    - parsing first
+(78.703792) TestParser.cpp:115:    - parsing second
+(78.715942) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/imageDenoising.ptx
+(78.780419) TestParser.cpp:102:    - parsing first
+(78.840425) TestParser.cpp:115:    - parsing second
+(78.908927) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx
+(78.918882) TestParser.cpp:102:    - parsing first
+(78.928205) TestParser.cpp:115:    - parsing second
+(78.938590) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/scan_best_kernel.ptx
+(78.948448) TestParser.cpp:102:    - parsing first
+(78.957751) TestParser.cpp:115:    - parsing second
+(78.968298) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/dct8x8.ptx
+(79.096877) TestParser.cpp:102:    - parsing first
+(79.224710) TestParser.cpp:115:    - parsing second
+(79.374597) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/convolutionSeparable_kernel.ptx
+(79.394287) TestParser.cpp:102:    - parsing first
+(79.413123) TestParser.cpp:115:    - parsing second
+(79.434292) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/particleSystem.ptx
+(79.574058) TestParser.cpp:102:    - parsing first
+(79.707789) TestParser.cpp:115:    - parsing second
+(79.861101) TestParser.cpp:82:    Parsing file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx
+(80.118030) TestParser.cpp:102:    - parsing first
+(80.370945) TestParser.cpp:115:    - parsing second
+(80.651025) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/scoped-variables.ptx
+(80.653693) TestParser.cpp:102:    - parsing first
+(80.656100) TestParser.cpp:115:    - parsing second
+(80.658770) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/nested-brackets.ptx
+(80.661169) TestParser.cpp:102:    - parsing first
+(80.663571) TestParser.cpp:115:    - parsing second
+(80.666159) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/generic.ptx
+(80.669126) TestParser.cpp:102:    - parsing first
+(80.672028) TestParser.cpp:115:    - parsing second
+(80.675240) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/saxpy.ptx
+(80.678080) TestParser.cpp:102:    - parsing first
+(80.680908) TestParser.cpp:115:    - parsing second
+(80.684052) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/barrier-deadlock.ptx
+(80.688111) TestParser.cpp:102:    - parsing first
+(80.691866) TestParser.cpp:115:    - parsing second
+(80.696136) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/sequence2.ptx
+(80.698551) TestParser.cpp:102:    - parsing first
+(80.700848) TestParser.cpp:115:    - parsing second
+(80.703452) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/register-calling-convention.ptx
+(80.706098) TestParser.cpp:102:    - parsing first
+(80.708794) TestParser.cpp:115:    - parsing second
+(80.711600) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/3dmark.ptx
+(80.771413) TestParser.cpp:102:    - parsing first
+(80.830010) TestParser.cpp:115:    - parsing second
+(80.895367) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/cnp.ptx
+(80.902011) TestParser.cpp:102:    - parsing first
+(80.908311) TestParser.cpp:115:    - parsing second
+(80.915393) TestParser.cpp:82:    Parsing file ../tests/ptx/synthetic/texture.ptx
+(80.919100) TestParser.cpp:102:    - parsing first
+(80.922424) TestParser.cpp:115:    - parsing second
+(80.926160) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/hwt.ptx
+(81.021757) TestParser.cpp:102:    - parsing first
+(81.114410) TestParser.cpp:115:    - parsing second
+(81.220417) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/backprop_cuda_kernel.ptx
+(81.234551) TestParser.cpp:102:    - parsing first
+(81.247757) TestParser.cpp:115:    - parsing second
+(81.262807) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/track_ellipse_kernel.ptx
+(81.305112) TestParser.cpp:102:    - parsing first
+(81.344481) TestParser.cpp:115:    - parsing second
+(81.390271) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/needle.ptx
+(81.423627) TestParser.cpp:102:    - parsing first
+(81.456221) TestParser.cpp:115:    - parsing second
+(81.493455) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/needle_kernel.ptx
+(81.526569) TestParser.cpp:102:    - parsing first
+(81.559253) TestParser.cpp:115:    - parsing second
+(81.596085) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/lud_kernel.ptx
+(81.659344) TestParser.cpp:102:    - parsing first
+(81.721008) TestParser.cpp:115:    - parsing second
+(81.793674) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/lud.ptx
+(81.796003) TestParser.cpp:102:    - parsing first
+(81.797859) TestParser.cpp:115:    - parsing second
+(81.799860) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/hotspot.ptx
+(81.816216) TestParser.cpp:102:    - parsing first
+(81.832135) TestParser.cpp:115:    - parsing second
+(81.849933) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/backprop_cuda.ptx
+(81.865112) TestParser.cpp:102:    - parsing first
+(81.878413) TestParser.cpp:115:    - parsing second
+(81.893236) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/mummergpu.ptx
+(81.963171) TestParser.cpp:102:    - parsing first
+(82.032582) TestParser.cpp:115:    - parsing second
+(82.111858) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/srad_kernel.ptx
+(82.142937) TestParser.cpp:102:    - parsing first
+(82.172819) TestParser.cpp:115:    - parsing second
+(82.207502) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/find_ellipse_kernel.ptx
+(82.221560) TestParser.cpp:102:    - parsing first
+(82.234811) TestParser.cpp:115:    - parsing second
+(82.250432) TestParser.cpp:82:    Parsing file ../tests/ptx/rodinia/srad.ptx
+(82.283348) TestParser.cpp:102:    - parsing first
+(82.313264) TestParser.cpp:115:    - parsing second
+(82.347913) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/mri-q.ptx
+(82.411395) TestParser.cpp:102:    - parsing first
+(82.472675) TestParser.cpp:115:    - parsing second
+(82.542149) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/sad4.ptx
+(82.563145) TestParser.cpp:102:    - parsing first
+(82.583383) TestParser.cpp:115:    - parsing second
+(82.606781) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/mri-fhd.ptx
+(82.710404) TestParser.cpp:102:    - parsing first
+(82.815893) TestParser.cpp:115:    - parsing second
+(82.934236) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/scan_largearray_kernel.ptx
+(82.964414) TestParser.cpp:102:    - parsing first
+(82.993251) TestParser.cpp:115:    - parsing second
+(83.025893) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/pns.ptx
+(83.135491) TestParser.cpp:102:    - parsing first
+(83.244019) TestParser.cpp:115:    - parsing second
+(83.370001) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/rpes.ptx
+(83.430566) TestParser.cpp:102:    - parsing first
+(83.487898) TestParser.cpp:115:    - parsing second
+(83.553941) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/crys_kernel.ptx
+(83.613654) TestParser.cpp:102:    - parsing first
+(83.672911) TestParser.cpp:115:    - parsing second
+(83.738815) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/tpacf.ptx
+(83.768553) TestParser.cpp:102:    - parsing first
+(83.798187) TestParser.cpp:115:    - parsing second
+(83.830368) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/computeQ.ptx
+(83.893090) TestParser.cpp:102:    - parsing first
+(83.954739) TestParser.cpp:115:    - parsing second
+(84.023894) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/computeFH.ptx
+(84.127794) TestParser.cpp:102:    - parsing first
+(84.230651) TestParser.cpp:115:    - parsing second
+(84.348433) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/largerBlocks.ptx
+(84.362459) TestParser.cpp:102:    - parsing first
+(84.375812) TestParser.cpp:115:    - parsing second
+(84.390764) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx
+(84.400548) TestParser.cpp:102:    - parsing first
+(84.410062) TestParser.cpp:115:    - parsing second
+(84.420499) TestParser.cpp:82:    Parsing file ../tests/ptx/parboil/spmv-main.ptx
+(84.435795) TestParser.cpp:102:    - parsing first
+(84.450924) TestParser.cpp:115:    - parsing second
 Pass/Fail : Pass
 
 
@@ -1040,8 +1576,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1346194549
-Test time : 81.4434
+Test Seed : 1346275302
+Test time : 84.4672
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Parse): Passed
@@ -1191,149 +1727,8 @@ For file ../tests/ptx/parboil/spmv-main.ptx, Test Point 1 (Parse): Passed
 
 
 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestOptimizations
-INFO     Test completed in 135.573636055 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestOptimizations
-
-Description: A unit test framework for PTX optimizations. Runs random 
-             optimization passes on random PTX files until a timer expires.
-
-
-Test Seed : 1346194548
-Test time : 135.428
-
-Status :  Enumerated 580 tests
- Running test '../tests/ptx/sdk2.2/simpleVote_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/simpleVote_kernel.ptx|function-inlining'
- Running test '../tests/ptx/parboil/rpes.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/asyncAPI.ptx|loop-unrolling'
- Running test '../tests/ptx/thrust/histogram.ptx|loop-unrolling'
- Running test '../tests/ptx/parboil/computeFH.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/volumeRender_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/parboil/computeQ.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/SobelFilter_kernels.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/cppIntegration.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_kernel_large_onei.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/dct8x8.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/parboil/spmv-main.ptx|loop-unrolling'
- Running test '../tests/ptx/unstructured/complex.ptx|loop-unrolling'
- Running test '../tests/ptx/synthetic/texture.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_large.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/matrixMul_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/simpleCUFFT.ptx|function-inlining'
- Running test '../tests/ptx/rodinia/hotspot.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/simpleCUFFT.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/convolutionTexture_kernel.ptx|function-inlining'
- Running test '../tests/ptx/unstructured/MC-GPU_v1.1.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/threadFenceReduction_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_util.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/recursiveGaussian.ptx|dead-code-elimination'
- Running test '../tests/ptx/rodinia/srad_kernel.ptx|function-inlining'
- Running test '../tests/ptx/optix/zoneplate_megakernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/dwtHaar1D.ptx|dead-code-elimination'
- Running test '../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/bodysystemcuda.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/nbody_kernel.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/dct8x8_kernel2.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/convolutionTexture.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/rodinia/srad_kernel.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx|global-value-numbering'
- Running test '../tests/ptx/synthetic/scoped-variables.ptx|function-inlining'
- Running test '../tests/ptx/unstructured/mcx_core.ptx|global-value-numbering'
- Running test '../tests/ptx/thrust/Sort.ptx|global-value-numbering'
- Running test '../tests/ptx/rodinia/lud_kernel.ptx|loop-unrolling'
- Running test '../tests/ptx/synthetic/3dmark.ptx|function-inlining'
- Running test '../tests/ptx/parboil/tpacf.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_util.ptx|loop-unrolling'
- Running test '../tests/ptx/parboil/pns.ptx|loop-unrolling'
- Running test '../tests/ptx/rodinia/lud.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/MersenneTwister.ptx|function-inlining'
- Running test '../tests/ptx/unstructured/vm.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/particles_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/rodinia/srad_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_small.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/scan_workefficient_kernel.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/simpleTemplates_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/oceanFFT_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/scan_best_kernel.ptx|loop-unrolling'
- Running test '../tests/ptx/synthetic/scoped-variables.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/scan.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/SobelFilter_kernels.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/cppIntegration.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/dct8x8_kernel2.ptx|function-inlining'
- Running test '../tests/ptx/thrust/bfs.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx|loop-unrolling'
- Running test '../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/postProcessGL.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/simpleZeroCopy.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/bicubicTexture.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/matrixMul.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx|loop-unrolling'
- Running test '../tests/ptx/rodinia/track_ellipse_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/simpleAtomicIntrinsics_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/histogram64.ptx|function-inlining'
- Running test '../tests/ptx/parboil/largerBlocks.ptx|function-inlining'
- Running test '../tests/ptx/synthetic/saxpy.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/imageDenoising.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/radixsort.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/fluidsGL.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/simpleVote_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_kernel_large_multi.ptx|global-value-numbering'
- Running test '../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/simpleGL_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/threadFenceReduction.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/simpleGL_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/optix/kernel_trace_device0_1.ptx|function-inlining'
- Running test '../tests/ptx/synthetic/3dmark.ptx|global-value-numbering'
- Running test '../tests/ptx/synthetic/generic.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/imageDenoising.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/sobol_gpu.ptx|loop-unrolling'
- Running test '../tests/ptx/thrust/Unique.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/convolutionSeparable.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/radixsort_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/synthetic/cnp.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/dxtc.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/scanLargeArray.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/bitonic.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/dct8x8_kernel_quantization.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/histogram256_SM10.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/scan_workefficient_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/bitonic_kernel.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/bisect_kernel_small.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/cppIntegration_kernel.ptx|loop-unrolling'
- Running test '../tests/ptx/synthetic/texture.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/main.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/simpleTemplates.ptx|function-inlining'
- Running test '../tests/ptx/unstructured/MC-GPU_v1.1.ptx|function-inlining'
- Running test '../tests/ptx/rodinia/backprop_cuda.ptx|function-inlining'
- Running test '../tests/ptx/sdk2.2/simpleTexture.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/radixsort.ptx|global-value-numbering'
- Running test '../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx|loop-unrolling'
- Running test '../tests/ptx/sdk2.2/scan_naive_kernel.ptx|dead-code-elimination'
- Running test '../tests/ptx/sdk2.2/fastWalshTransform.ptx|global-value-numbering'
- Running test '../tests/ptx/parboil/mri-q.ptx|dead-code-elimination'
- Running test '../tests/ptx/synthetic/scoped-variables.ptx|global-value-numbering'
- Running test '../tests/ptx/unstructured/renderer.ptx|global-value-numbering'
-Finished running 121 tests...
-
-
-
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph
-INFO     Test completed in 145.165544033 seconds
+INFO     Test completed in 152.632045984 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1348,8 +1743,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1346194548
-Test time : 145.061
+Test Seed : 1346275301
+Test time : 152.528
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx
@@ -7616,7 +8011,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator
-INFO     Test completed in 284.183619976 seconds
+INFO     Test completed in 286.805284023 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -7629,8 +8024,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1346194549
-Test time : 284.08
+Test Seed : 1346275301
+Test time : 286.704
 
 Status : For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Translate): Passed
@@ -7782,24 +8177,24 @@ For file ../tests/ptx/parboil/spmv-main.ptx, Test Point 1 (Translate): Passed
 
 INFO     
 Passing tests:
- (0.172s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
- (284.184s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
- (0.766s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
- (0.194s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
- (0.133s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
- (145.166s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
- (0.145s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
- (0.129s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
- (0.130s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
- (0.201s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
- (135.574s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestOptimizations : Passed
- (0.599s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
- (0.176s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
- (11.008s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
- (0.128s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
- (81.546s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
- (0.172s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
- (0.222s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
- (19.964s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
- (0.134s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
+ (0.143s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
+ (286.805s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
+ (0.695s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
+ (0.112s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
+ (0.146s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
+ (152.632s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
+ (0.129s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
+ (0.139s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
+ (0.170s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
+ (0.156s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
+ (60.695s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestOptimizations : Passed
+ (0.584s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
+ (0.185s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
+ (10.956s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
+ (0.146s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
+ (84.572s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
+ (0.162s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
+ (0.209s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
+ (19.771s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
+ (0.116s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
 

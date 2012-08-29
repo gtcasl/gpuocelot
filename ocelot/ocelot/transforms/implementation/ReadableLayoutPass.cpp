@@ -14,7 +14,7 @@
 #include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
-#include <stack>
+#include <queue>
 #include <unordered_set>
 
 // Preprocessor Macros
@@ -48,6 +48,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 	typedef std::list<BlockChain>          BlockChainList;
 	typedef BlockChainList::iterator       chain_iterator;
 	typedef std::unordered_set<iterator>   BlockSet;
+	typedef std::queue<iterator>           BlockQueue;
 	typedef std::unordered_map<iterator,
 		chain_iterator> BlockToChainMap;
 	
@@ -63,6 +64,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 	
 	bool changed = true;
 	
+	report("Merging chains of basic blocks");
 	while(changed)
 	{
 		changed = false;
@@ -75,21 +77,36 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 			if(chainTail->successors.size() != 1) continue;
 			
 			for(auto successor = chainTail->successors.begin();
-				successor != chainTail->successors.end(); ++chainTail)
+				successor != chainTail->successors.end(); ++successor)
 			{
 				if((*successor)->predecessors.size() != 1) continue;
 			
 				auto successorChain = blockToChains.find(*successor);
 				assert(successorChain != blockToChains.end());
 				
+				// don't merge chains already in the same chain
+				if(successorChain->second == chain->second) continue;
+				
 				auto chainHead = successorChain->second->front();
 				
 				if(chainHead != *successor) continue;
 				
-				chain->second->splice(chain->second->end(),
-					*successorChain->second);
+				auto successorChainPointer = successorChain->second;
 				
-				blockToChains.erase(successorChain);
+				for(auto chainMember = successorChainPointer->begin();
+					chainMember != successorChainPointer->end(); ++chainMember)
+				{
+					auto member = blockToChains.find(*chainMember);
+					assert(member != blockToChains.end());
+				
+					blockToChains.erase(member);
+					
+					blockToChains.insert(std::make_pair(*chainMember,
+						chain->second));
+				}
+				
+				chain->second->splice(chain->second->end(),
+					*successorChainPointer);
 				
 				changed = true;
 			}
@@ -99,15 +116,22 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 	}
 	
 	// Topologically schedule the chains
-	BlockSet scheduled;
-	BlockSet ready;
+	BlockSet   scheduled;
+	BlockQueue readyQueue;
+	BlockSet   ready;
 	
 	ready.insert(k.cfg()->get_entry_block());
-	
+	readyQueue.push(*ready.begin());
+
+	report("Scheduling basic blocks.");
 	while(!ready.empty())
 	{
-		auto node = *ready.begin();
-		ready.erase(*ready.begin());
+		auto node = readyQueue.front();
+		readyQueue.pop();
+	
+		auto readySetEntry = ready.find(node);
+		assert(readySetEntry != ready.end());
+		ready.erase(readySetEntry);
 
 		auto chain = blockToChains.find(node);
 		assert(chain != blockToChains.end());
@@ -118,6 +142,7 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 		{
 			scheduled.insert(*block);
 			blocks.push_back(*block);
+			report(" scheduled " << (*block)->label());
 		}
 		
 		// free up any dependent blocks
@@ -127,6 +152,8 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 			for(auto successor = (*block)->successors.begin();
 				successor != (*block)->successors.end(); ++successor)
 			{
+				if(scheduled.count(*successor) != 0) continue;
+				
 				// are all dependencies satisfied
 				bool allDependenciesSatisfied = true;
 				
@@ -145,7 +172,11 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 				
 				if(allDependenciesSatisfied)
 				{
-					ready.insert(*successor);
+					if(ready.insert(*successor).second)
+					{
+						readyQueue.push(*successor);
+						report("  " << (*successor)->label() << " is ready.");
+					}
 				}
 			}
 		}

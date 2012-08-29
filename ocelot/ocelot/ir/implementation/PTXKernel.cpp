@@ -40,7 +40,7 @@ std::string PTXKernel::Prototype::toString(const LinkingDirective ld) {
 		case Visible: return ".visible";
 		default: break;
 	}
-	return "invalid";
+	return ""; // internal hidden is a valid state
 }
 std::string PTXKernel::Prototype::toString(const CallType ct) {
 	switch (ct) {
@@ -673,8 +673,8 @@ void PTXKernel::write(std::ostream& stream) const
 		//
 	
 		int blockIndex = 1;
-		for (ControlFlowGraph::BlockPointerVector::iterator 
-			block = blocks.begin(); block != blocks.end(); 
+
+		for (auto block = blocks.begin(); block != blocks.end(); 
 			++block, ++blockIndex) {
 			std::string label = (*block)->label();
 			std::string comment = (*block)->comment;
@@ -692,8 +692,7 @@ void PTXKernel::write(std::ostream& stream) const
 				stream << "\n";
 			}
 			
-			for( ControlFlowGraph::InstructionList::iterator 
-				instruction = (*block)->instructions.begin(); 
+			for (auto instruction = (*block)->instructions.begin(); 
 				instruction != (*block)->instructions.end();
 				++instruction ) {
 				ir::PTXInstruction* inst =

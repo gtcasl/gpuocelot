@@ -742,6 +742,13 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId) {
 
+	std::cout << "cudaGetExportTable() GUID: ";
+	for (size_t i = 0; i < 16; i++) {
+		std::cout << std::hex << " 0x" << ((unsigned int)((const char *)pExportTableId)[i] & 0x0ff);
+	}
+	std::cout << std::endl;
+
+
 	assertM(false, "cudaGetExportTable is actually a backdoor to the NVIDIA "
 		"driver.  Ocelot cannot support this because it requires the NVIDIA "
 			"driver to be installed.  If you want to run an application that "

@@ -73,10 +73,13 @@ namespace ir {
 		
 		/*! Write the module to an assembly file using statements */
 		void write(std::ostream& stream) const;
-
+		
 		/*! \brief Write the module to an assembly file from the IR */
 		void writeIR(std::ostream& stream) const;
-
+		
+		/*! \brief Write the module to a string from the IR */
+		std::string toString() const;
+		
 		/*!	Deletes everything associated with this particular module */
 		void unload();
 

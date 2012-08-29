@@ -22,7 +22,7 @@ class GlobalValueNumberingPass : public KernelPass
 {
 public:
 	/*! \brief Create the pass, create dependencies */
-	GlobalValueNumberingPass();
+	GlobalValueNumberingPass(bool eliminateInstructions = true);
 
 public:
 	/*! \brief Initialize the pass using a specific module */
@@ -32,11 +32,20 @@ public:
 	/*! \brief Finalize the pass */
 	void finalize();
 
+public:
+	/*! \brief Should the pass attempt to eliminate redundant instructions,
+		or just renumber values */
+	bool eliminateInstructions;
+
 private:
 	typedef unsigned int Number;
 	typedef analysis::DataflowGraph::instruction_iterator InstructionIterator;
+	typedef analysis::DataflowGraph::phi_iterator         PhiIterator;
 	typedef analysis::DataflowGraph::iterator             BlockIterator;
 	typedef analysis::DataflowGraph::BlockPointerVector   BlockPointerVector;
+
+	typedef analysis::DataflowGraph::register_pointer_iterator
+		RegisterPointerIterator;
 
 	class Expression
 	{
@@ -68,9 +77,24 @@ private:
 	public:
 		bool operator==(const Immediate& imm) const;
 	};
-
-	struct ExpressionHash
+	
+	class SpecialValue
 	{
+	public:
+		ir::PTXOperand::SpecialRegister special;
+		ir::PTXOperand::VectorIndex     vectorIndex;
+		
+	public:
+		SpecialValue(ir::PTXOperand::SpecialRegister special,
+			ir::PTXOperand::VectorIndex vectorIndex);
+
+	public:
+		bool operator==(const SpecialValue& imm) const;
+	};
+
+	class ExpressionHash
+	{
+	public:
 		inline size_t operator()(const Expression& e) const
 		{
 			return e.opcode ^ e.type ^ e.arguments[0] ^
@@ -79,11 +103,21 @@ private:
 		}
 	};
 
-	struct ImmediateHash
+	class ImmediateHash
 	{
+	public:
 		inline size_t operator()(const Immediate& i) const
 		{
 			return i.type ^ i.value;
+		}
+	};
+
+	class SpecialValueHash
+	{
+	public:
+		inline size_t operator()(const SpecialValue& s) const
+		{
+			return (s.special << 4) ^ s.vectorIndex;
 		}
 	};
 
@@ -91,9 +125,19 @@ private:
 	{
 	public:
 		GeneratingInstruction(const InstructionIterator& it);
-	
+		GeneratingInstruction(const PhiIterator& it);
+		GeneratingInstruction(bool valid);
+		
+	public:
+		std::string toString() const;
+		
 	public:
 		InstructionIterator instruction;
+		PhiIterator         phi;
+
+	public:
+		bool isPhi;
+		bool valid;
 	};
 
 	typedef std::list<GeneratingInstruction> GeneratingInstructionList;
@@ -105,6 +149,8 @@ private:
 		ExpressionToNumberMap;
 	typedef std::unordered_map<Immediate, Number, ImmediateHash>
 		ImmediateToNumberMap;
+	typedef std::unordered_map<SpecialValue, Number, SpecialValueHash>
+		SpecialValueToNumberMap;
 	typedef std::unordered_map<Number, GeneratingInstructionList>
 		NumberToGeneratingInstructionMap;
 
@@ -122,24 +168,30 @@ private:
 	void _clearValueAssignments();
 
 private:
+	bool _processPhi(const PhiIterator& phi);
 	bool _processInstruction(const InstructionIterator& instruction);
 	bool _processLoad(const InstructionIterator& instruction);
 	void _processEliminatedInstructions();
-
+	
 private:
 	Number _getNextNumber();
 	Number _lookupExistingOrCreateNewNumber(
 		const InstructionIterator& instruction);
-	Number _lookupExistingOrCreateNewNumber(
-		const ir::PTXOperand& instruction);
+	Number _lookupExistingOrCreateNewNumber(const PhiIterator& phi);
+	Number _lookupExistingOrCreateNewNumber(const ir::PTXOperand& operand);
 	
 	void _setGeneratingInstruction(Number n,
 		const InstructionIterator& instruction);
-	InstructionIterator _findGeneratingInstruction(Number n,
+	void _setGeneratingInstruction(Number n, const PhiIterator& phi);
+	GeneratingInstruction _findGeneratingInstruction(Number n,
 		const InstructionIterator& instruction);
-	void _eliminateInstruction(const InstructionIterator& generatingInstruction,
+	void _eliminateInstruction(
+		const GeneratingInstruction& generatingInstruction,
 		const InstructionIterator& instruction);
-
+	void _updateDataflow(const BlockIterator& instruction,
+		const RegisterPointerIterator& replacedValue,
+		const RegisterPointerIterator& generatedValue);
+	
 	Expression _createExpression(const InstructionIterator& instruction);
 	Immediate  _createImmediate(const ir::PTXOperand& operand);
 	
@@ -147,6 +199,7 @@ private:
 	ValueToNumberMap                 _numberedValues;
 	ExpressionToNumberMap            _numberedExpressions;
 	ImmediateToNumberMap             _numberedImmediates;
+	SpecialValueToNumberMap          _numberedSpecials;
 	Number                           _nextNumber;
 	NumberToGeneratingInstructionMap _generatingInstructions;
 	InstructionVector                _eliminatedInstructions;

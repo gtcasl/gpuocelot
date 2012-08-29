@@ -1151,7 +1151,7 @@ bool KernelDrawerPass::_hasDom(
 string KernelDrawerPass::_domName(
 	const analysis::DataflowGraph::iterator & bck) const
 {
-	return _blockName(_dom->getDominator(bck->block())->label);
+	return _blockName(_dom->getDominator(bck->block())->label());
 }
 
 bool KernelDrawerPass::_hasPdom(
@@ -1163,7 +1163,7 @@ bool KernelDrawerPass::_hasPdom(
 string KernelDrawerPass::_pdomName(
 	const analysis::DataflowGraph::iterator & bck) const
 {
-	return _blockName(_pdom->getPostDominator(bck->block())->label);
+	return _blockName(_pdom->getPostDominator(bck->block())->label());
 }
 
 string KernelDrawerPass::_blockName(const string & blockLabel) const

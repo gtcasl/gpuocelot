@@ -25,10 +25,6 @@ SplitBasicBlockPass::SplitBasicBlockPass(unsigned int m)
 void splitBlock(ir::ControlFlowGraph& cfg,
 	ir::ControlFlowGraph::iterator block, unsigned int maxSize)
 {
-	unsigned int count = 0;
-	
-	std::string label = block->label;
-	
 	while(block->instructions.size() > maxSize)
 	{
 		auto splitPoint = block->instructions.begin();
@@ -79,12 +75,7 @@ void splitBlock(ir::ControlFlowGraph& cfg,
 
 		if(split)
 		{
-			std::stringstream stream;
-		
-			stream << label << "_" << count++;
-	
-			block = cfg.split_block(block, splitPoint, ir::Edge::FallThrough,
-				stream.str());
+			block = cfg.split_block(block, splitPoint, ir::Edge::FallThrough);
 		}
 		else
 		{

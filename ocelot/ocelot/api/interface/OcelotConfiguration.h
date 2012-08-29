@@ -40,6 +40,9 @@ namespace api {
 			
 			//! \brief if checkpoints exist, verify allocations match them
 			bool verify;
+
+			//! \brief Only attach to kernels matching this substring
+			std::string kernelFilter;
 		};
 
 		//! Configuration for trace generation facilities

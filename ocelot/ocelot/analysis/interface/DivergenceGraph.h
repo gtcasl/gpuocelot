@@ -23,6 +23,8 @@ class DivergenceGraph: public DirectionalGraph
 		/*!\brief A set of nodes known to be divergent,
 			probably because of creation divergent paths, atomic operands */
 		node_set _divergenceSources;
+		/*!\brief A set of nodes known to be convergent */
+		node_set _convergenceSources;
 		/*!\brief Defines if the divergence graph has been
 			altered since the last computeDivergence() call */
 		bool _upToDate;
@@ -35,6 +37,7 @@ class DivergenceGraph: public DirectionalGraph
 		void insertSpecialSource( const ir::PTXOperand* tid );
 		void eraseSpecialSource( const ir::PTXOperand* tid );
 		void setAsDiv( const node_type &node );
+		void forceConvergent( const node_type &node );
 		void unsetAsDiv( const node_type &node );
 		bool eraseNode( const node_type &nodeId );
 		bool eraseNode( const node_iterator &node );

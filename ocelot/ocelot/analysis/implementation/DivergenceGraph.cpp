@@ -16,7 +16,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE  0
+#define REPORT_GRAPH 0
 
 namespace analysis {
 
@@ -26,6 +27,7 @@ void DivergenceGraph::clear(){
 	_divergentNodes.clear();
 	_specials.clear();
 	_divergenceSources.clear();
+	_convergenceSources.clear();
 	_upToDate = true;
 }
 
@@ -33,8 +35,7 @@ void DivergenceGraph::clear(){
 void DivergenceGraph::insertSpecialSource( const ir::PTXOperand* tid ){
 	_upToDate = false;
 	if( _specials.find(tid) == _specials.end() ){
-		node_set a;
-		_specials[tid] = a;
+		_specials.insert(std::make_pair(tid, node_set()));
 	}
 }
 
@@ -48,14 +49,25 @@ void DivergenceGraph::eraseSpecialSource( const ir::PTXOperand* tid ){
 	not depending on it's predecessors */
 void DivergenceGraph::setAsDiv(const node_type &node)
 {
-  if (_divergenceSources.find(node) == _divergenceSources.end()) {
-    _upToDate = false;
-    _divergenceSources.insert(node);
-  }
-  if (nodes.find(node) == nodes.end()){
-    _upToDate = false;
-    nodes.insert(node);
-  }
+	if (_divergenceSources.find(node) == _divergenceSources.end()) {
+		_upToDate = false;
+		_divergenceSources.insert(node);
+	}
+	if (nodes.find(node) == nodes.end()) {
+		_upToDate = false;
+		nodes.insert(node);
+	}
+}
+
+void DivergenceGraph::forceConvergent(const node_type &node) {
+	if (_convergenceSources.find(node) == _convergenceSources.end()) {
+		_upToDate = false;
+		_convergenceSources.insert(node);
+	}
+	if (nodes.find(node) == nodes.end()) {
+		_upToDate = false;
+		nodes.insert(node);
+	}
 }
 
 /*!\brief Unset a node as being divergent, not depending on it's predecessors */
@@ -99,7 +111,7 @@ int DivergenceGraph::insertEdge( const ir::PTXOperand* origin,
 	const node_type &toNode, const bool createNewNodes ){
 	if( createNewNodes ){
 		insertSpecialSource(origin);
-	}else if( _specials.find(origin) == _specials.end() ){
+	} else if( _specials.find(origin) == _specials.end() ){
 		return 1;
 	}
 
@@ -153,7 +165,7 @@ bool DivergenceGraph::isDivSource( const ir::PTXOperand* srt ) const{
 	return ((srt->addressMode == ir::PTXOperand::Special) &&
 		( (srt->special == ir::PTXOperand::laneId) ||
 		(srt->special == ir::PTXOperand::tid &&
-		srt->vIndex == ir::PTXOperand::ix)));
+		(srt->vIndex == ir::PTXOperand::ix))));
 }
 
 /*!\brief Tests if a special register is present on the graph */
@@ -202,6 +214,9 @@ void DivergenceGraph::computeDivergence(){
 			if( isDivSource(divergence->first) ){
 				const_node_iterator node = divergence->second.begin();
 				const_node_iterator endNode = divergence->second.end();
+				
+				report(" Node r" << *node
+					<< " is a special divergent register.");
 
 				for( ; node != endNode; node++ ){
 					newDivergenceNodes.insert(*node);
@@ -218,11 +233,12 @@ void DivergenceGraph::computeDivergence(){
 
 		for( ; divergence != divergenceEnd; divergence++ ){
 			newDivergenceNodes.insert(*divergence);
-			report(" Node " << *divergence << " is a new divergent register.");
+			report(" Node r" << *divergence << " is a new divergent register.");
 		}
 	}
 
 	/* 4) For each new divergent nodes */
+	report(" Propagating divergence");
 	while( newDivergenceNodes.size() != 0 ){
 		node_type originNode = *newDivergenceNodes.begin();
 		node_set newReachedNodes = getOutNodesSet(originNode);
@@ -235,6 +251,8 @@ void DivergenceGraph::computeDivergence(){
 			if( !isDivNode(*current) ){
 				/* 4.1.1) Go to step 4 after step 4.3 until there are
 					new divergent nodes */
+				report("  propagated from r" << originNode
+					<< " -> r" << *current);
 				newDivergenceNodes.insert(*current);
 			}
 		}
@@ -244,8 +262,105 @@ void DivergenceGraph::computeDivergence(){
 		/* 4.3) Remove the node from the new divergent list */
 		newDivergenceNodes.erase(originNode);
 	}
+	
+	/* 5) propagate convergence from sources */
+	node_set notDivergenceNodes;
+
+	{
+		/* 5.1) Set all nodes that are explicitly defined as convergence
+			that were divergent as not divergent nodes */
+
+		node_iterator convergence = _convergenceSources.begin();
+		node_iterator convergenceEnd = _convergenceSources.end();
+
+		for( ; convergence != convergenceEnd; convergence++ ){
+			notDivergenceNodes.insert(*convergence);
+			node_iterator divergence = _divergentNodes.find(*convergence);
+			
+			if (divergence != _divergentNodes.end()) {
+				notDivergenceNodes.insert(*convergence);
+				report(" Node r" << *convergence <<
+					" is a new convergent register.");
+			}
+		}
+	}
+	
+	report(" Propagating convergence");
+	while( notDivergenceNodes.size() != 0 ) {
+		node_type originNode = *notDivergenceNodes.begin();
+		
+		_divergentNodes.erase(originNode);
+		notDivergenceNodes.erase(originNode);
+
+		/* 5.2) Propagate forward */
+		node_set newReachedNodes = getOutNodesSet(originNode);
+		node_iterator current = newReachedNodes.begin();
+		node_iterator last = newReachedNodes.end();
+		for( ; current != last; current++ ) {
+			if( isDivNode(*current) ) {
+				
+				node_set predecessorNodes = getInNodesSet(*current);
+				
+				bool allConvergent = true;
+				
+				node_iterator predecessor = predecessorNodes.begin();
+				node_iterator lastPredecessor = predecessorNodes.end();
+
+				for( ; predecessor != lastPredecessor; predecessor++ ) {
+					if (isDivNode(*predecessor)) {
+						allConvergent = false;
+						break;
+					}
+				}
+				
+				if (!allConvergent) continue;
+				
+				report("  propagated forward from r" << originNode
+					<< " -> r" << *current);
+				notDivergenceNodes.insert(*current);
+			}
+		}
+		
+		/* 5.3) Propagate backward */
+		newReachedNodes = getInNodesSet(originNode);
+		current         = newReachedNodes.begin();
+		last            = newReachedNodes.end();
+		
+		for( ; current != last; current++ ) {
+			if( isDivNode(*current) ) {
+				
+				node_set successorNodes = getOutNodesSet(*current);
+				
+				bool allConvergent = true;
+				
+				node_iterator successor     = successorNodes.begin();
+				node_iterator lastSuccessor = successorNodes.end();
+
+				for( ; successor != lastSuccessor; successor++ ) {
+					if (isDivNode(*successor)) {
+						allConvergent = false;
+						break;
+					}
+				}
+				
+				report("  propagated backward from r" << originNode
+					<< " -> r" << *current);
+				
+				if (!allConvergent) {
+					_divergentNodes.erase(*current);
+					continue;
+				}
+				
+				notDivergenceNodes.insert(*current);
+			}
+		}
+	}
 
 	_upToDate = true;
+
+	#if REPORT_GRAPH > 0
+	std::cout << *this;
+	#endif
 }
 
 /*!\brief Gives a string as name for a special register */
@@ -283,13 +398,14 @@ std::ostream& DivergenceGraph::print( std::ostream& out ) const{
 
 	for( ; node != endNode; node++ ){
 		out << *node << " [style=filled, fillcolor = \""
-			<< (isDivNode(*node)?((isDivSource(*node))?"tomato":"yellow"):"white") << "\"]" << std::endl;
+			<< (isDivNode(*node)?((isDivSource(*node))?
+			"tomato":"yellow"):"white") << "\"]" << std::endl;
 	}
 
 	out << std::endl;
 
 	/* Print edges coming out of divergence sources */
-	divergence = _specials.begin();
+	divergence    = _specials.begin();
 	divergenceEnd = _specials.end();
 
 	out << "//Divergence out edges:" << std::endl;
@@ -308,7 +424,7 @@ std::ostream& DivergenceGraph::print( std::ostream& out ) const{
 	}
 
 	/* Print arrows between nodes */
-	node = getBeginNode();
+	node    = getBeginNode();
 	endNode = getEndNode();
 
 	out << "//Nodes edges:" << std::endl;

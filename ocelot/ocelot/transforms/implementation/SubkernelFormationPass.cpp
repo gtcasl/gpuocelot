@@ -116,7 +116,7 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	const analysis::DataflowGraph::IteratorMap& cfgToDfgMap,
 	BlockSet& savedBlocks, analysis::DataflowGraph& dfg)
 {
-	report("   Creating restore point for block '" << newBlock->label << "'");
+	report("   Creating restore point for block '" << newBlock->label() << "'");
 
 	analysis::DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
@@ -124,8 +124,7 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	if(dfgBlock->second->aliveIn().empty()) return 0;
 	
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
-		newEdge, ir::BasicBlock(newBlock->label + "_restore",
-		newKernel.cfg()->newId())).second;
+		newEdge, ir::BasicBlock(newKernel.cfg()->newId())).second;
 
 	report("    restoring block wth id '" << splitEdge->head->id << "'");
 	savedBlocks.insert(splitEdge->head);
@@ -170,7 +169,7 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 		ir::PTXInstruction* branch = new ir::PTXInstruction(
 			ir::PTXInstruction::Bra);
 		branch->uni = true;
-		branch->d = std::move(ir::PTXOperand(splitEdge->tail->label));
+		branch->d = std::move(ir::PTXOperand(splitEdge->tail->label()));
 		splitEdge->head->instructions.push_back(branch);
 	}
 	
@@ -187,8 +186,8 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	const analysis::DataflowGraph::IteratorMap& cfgToDfgMap,
 	analysis::DataflowGraph& dfg)
 {
-	report("   Creating save point for edge '" << newEdge->head->label
-		<< "' -> '" << oldBlock->label << "'");
+	report("   Creating save point for edge '" << newEdge->head->label()
+		<< "' -> '" << oldBlock->label() << "'");
 	
 	// Possibly update the branch target
 	if(newEdge->type == ir::Edge::Branch)
@@ -201,7 +200,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	}
 
 	BlockLabelMap::iterator existingBlock = saveBlocks.find(
-		oldBlock->label + "_save");
+		oldBlock->label() + "_save");
 	
 	if(existingBlock != saveBlocks.end())
 	{
@@ -218,8 +217,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	assert(dfgBlock != cfgToDfgMap.end());
 	
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
-		newEdge, ir::BasicBlock(oldBlock->label + "_save", 
-		newKernel.cfg()->newId())).second;
+		newEdge, ir::BasicBlock(newKernel.cfg()->newId())).second;
 
 	unsigned int offset = 0;
 	
@@ -294,7 +292,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	
 	splitEdge->head->instructions.push_back(call);
 	
-	saveBlocks.insert(std::make_pair(oldBlock->label + "_save",
+	saveBlocks.insert(std::make_pair(oldBlock->label() + "_save",
 		splitEdge->head));
 	
 	return offset;
@@ -326,8 +324,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 		block != region.end(); ++block)
 	{
 		ir::ControlFlowGraph::iterator newBlock = newKernel.cfg()->insert_block(
-			ir::BasicBlock((*block)->label, (*block)->id,
-			(*block)->instructions));
+			ir::BasicBlock((*block)->id, (*block)->instructions));
 		
 		oldToNewBlockMap.insert(std::make_pair(*block, newBlock));
 	}
@@ -339,7 +336,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 	for(BlockSet::const_iterator block = region.begin(); 
 		block != region.end(); ++block)
 	{
-		report("   Adding block " << (*block)->label);
+		report("   Adding block " << (*block)->label());
 
 		for(ir::ControlFlowGraph::edge_pointer_iterator 
 			edge = (*block)->out_edges.begin(); 
@@ -391,12 +388,12 @@ static ir::ControlFlowGraph::iterator createRegion(
 					ir::PTXInstruction* branch = new ir::PTXInstruction(
 						ir::PTXInstruction::Bra);
 					branch->uni = true;
-					branch->d = std::move(ir::PTXOperand((*edge)->tail->label));
+					branch->d = std::move(ir::PTXOperand(
+						(*edge)->tail->label()));
 
 					ir::ControlFlowGraph::EdgePair splitEdge = 
 						newKernel.cfg()->split_edge(exitEdge,
-						ir::BasicBlock(newHead->second->label + "_bounce",
-						newKernel.cfg()->newId()));
+						ir::BasicBlock(newKernel.cfg()->newId()));
 					
 					splitEdge.second->type = ir::Edge::Branch;
 					splitEdge.second->head->instructions.push_back(branch);
@@ -428,10 +425,9 @@ static ir::ControlFlowGraph::iterator createRegion(
 
 			if(exit == ptx.cfg()->get_exit_block())
 			{
-				report("   Creating exit point - " 
-					<< ptx.name << "_split_entry" );
-				exit = ptx.cfg()->insert_block(ir::BasicBlock(newKernel.name 
-					+ "_split_entry", ptx.cfg()->newId()));			
+				report("   Creating exit point");
+				exit = ptx.cfg()->insert_block(
+					ir::BasicBlock(ptx.cfg()->newId()));			
 			}
 			
 			ir::ControlFlowGraph::iterator head = (*edge)->head;
@@ -495,10 +491,8 @@ static ir::ControlFlowGraph::iterator createRegion(
 
 		if(exit == ptx.cfg()->get_exit_block())
 		{
-			report("   Creating exit point - " 
-				<< ptx.name << "_split_entry" );
-			exit = ptx.cfg()->insert_block(ir::BasicBlock(newKernel.name 
-				+ "_split_entry", ptx.cfg()->newId()));			
+			report("   Creating exit point" );
+			exit = ptx.cfg()->insert_block(ir::BasicBlock(ptx.cfg()->newId()));			
 		}
 		
 		report("   Moving edge from block " << (*edge)->head->id << " to block " 
@@ -519,7 +513,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 		ptx.cfg()->insert_edge(*edge);
 	}
 
-	report("   Kernel exit point is " << exit->label);
+	report("   Kernel exit point is " << exit->label());
 
 	return exit;
 }
@@ -589,7 +583,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	BlockSet targets;
 	
 	ir::ControlFlowGraph::iterator scheduler = kernel.cfg()->insert_block(
-		ir::BasicBlock(kernel.name + "_scheduler", kernel.cfg()->newId()));
+		ir::BasicBlock(kernel.cfg()->newId()));
 
 	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 
@@ -622,8 +616,8 @@ static void createScheduler(ir::PTXKernel& kernel,
 	{
 		ir::Edge newEdge(scheduler, (*edge)->tail, (*edge)->type);
 
-		report("   scheduling path to block '" << newEdge.tail->label
-			<< "' from block '" << newEdge.head->label << "'");
+		report("   scheduling path to block '" << newEdge.tail->label()
+			<< "' from block '" << newEdge.head->label() << "'");
 		report("      - former edge type [" << (*edge)->type << "]");
 		report("      - new edge type    [" << newEdge.type  << "]");
 
@@ -676,18 +670,15 @@ static void createScheduler(ir::PTXKernel& kernel,
 		ir::PTXInstruction* branch = new ir::PTXInstruction(
 			ir::PTXInstruction::Bra);
 	
-		branch->d = std::move(ir::PTXOperand(target->tail->label));
+		branch->d = std::move(ir::PTXOperand(target->tail->label()));
 		branch->pg = compare->d;
 	
 		scheduler->instructions.push_back(branch);
 
 		ir::BasicBlock::Id id = kernel.cfg()->newId();
 
-		std::stringstream stream;
-		stream << kernel.name << "_scheduler_" << id;
-
 		ir::ControlFlowGraph::iterator newScheduler =
-			kernel.cfg()->insert_block(ir::BasicBlock(stream.str(), id));
+			kernel.cfg()->insert_block(ir::BasicBlock(id));
 			
 		ir::Edge newFallthrough(scheduler, newScheduler, ir::Edge::FallThrough);
 		
@@ -730,8 +721,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	
 	// add dummy block to enable the scheduler to branch anywhere
 	ir::ControlFlowGraph::iterator trampoline = kernel.cfg()->insert_block(
-		ir::BasicBlock(kernel.name + "_scheduler_trampoline",
-		kernel.cfg()->newId()));
+		ir::BasicBlock(kernel.cfg()->newId()));
 		
 	ir::ControlFlowGraph::iterator fallthroughTarget = fallthrough->tail;
 	
@@ -743,7 +733,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	
 	ir::PTXInstruction *trampolineBra = 
 		new ir::PTXInstruction(ir::PTXInstruction::Bra);
-	trampolineBra->d = std::move(ir::PTXOperand(fallthroughTarget->label));
+	trampolineBra->d = std::move(ir::PTXOperand(fallthroughTarget->label()));
 	trampoline->instructions.push_back(trampolineBra);
 	
 	ir::PTXInstruction* compare = new ir::PTXInstruction(
@@ -776,7 +766,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	ir::PTXInstruction* branch = new ir::PTXInstruction(
 		ir::PTXInstruction::Bra);
 	
-	branch->d = std::move(ir::PTXOperand(target->tail->label));
+	branch->d = std::move(ir::PTXOperand(target->tail->label()));
 	branch->pg = compare->d;
 	
 	scheduler->instructions.push_back(branch);

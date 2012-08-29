@@ -188,6 +188,10 @@ namespace parser
 			OperandMap::iterator operand = context->operands.find( name );
 			
 			if( operand != context->operands.end() ) return &operand->second;
+			
+			operand = context->operands.find( strip( name ) );
+
+			if( operand != context->operands.end() ) return &operand->second;
 		}
 		
 		return 0;
@@ -199,6 +203,10 @@ namespace parser
 		assert( !contexts.empty() );
 		
 		OperandMap::iterator operand = contexts.back().operands.find( name );
+		
+		if( operand != contexts.back().operands.end() ) return &operand->second;
+		
+		operand = contexts.back().operands.find( strip( name ) );
 		
 		if( operand != contexts.back().operands.end() ) return &operand->second;
 		
@@ -578,6 +586,12 @@ namespace parser
 		else if( token == TOKEN_MAP_F64_TO_F32 )
 		{
 			statement.targets.push_back( "map_f64_to_f32" );
+		}
+		else if (token == TOKEN_TEXMODE_INDEPENDENT) {
+			statement.targets.push_back("texmode_independent");
+		}
+		else if (token == TOKEN_TEXMODE_UNIFIED) {
+			statement.targets.push_back("texmode_unified");
 		}
 		else
 		{
@@ -977,6 +991,13 @@ namespace parser
 		}
 
 		statementEnd( location );
+	}
+		
+	void PTXParser::State::paramArgumentDeclaration(int token)
+	{
+		report(" Rule: parameterAttribute: TOKEN_PTR kernelParameterPtrSpace");
+		ir::PTXInstruction::AddressSpace addressSpace = tokenToAddressSpace(token);
+		report("    address space: " << ir::PTXInstruction::toString(addressSpace));
 	}
 
 	void PTXParser::State::fileDeclaration( unsigned int file, 
@@ -1850,7 +1871,7 @@ namespace parser
 				<< "Function/Prototype '" 
 				<< prototype.name
 				<< "' not declared in this scope.", 
-				NoDeclaration );	
+				NoDeclaration );
 		}
 
 		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
@@ -1869,17 +1890,32 @@ namespace parser
 		{
 			ir::PTXOperand& operand = operandVector[ operandIndex ];
 
+			report( "    " << operand.toString() );	
+
 			if( operand.addressMode == ir::PTXOperand::BitBucket )
 			{
 				operand.type = pi->returnTypes[	proto.returnTypes.size() ];
+			}
+			
+			if( operand.addressMode == ir::PTXOperand::Address )
+			{
+				OperandWrapper* mode = _getOperand( operand.identifier );
+				assert( mode != 0 );
+				
+				if( mode->space != ir::PTXInstruction::Param )
+				{
+					throw_exception( toString( location, *this ) 
+						<< "Function call return argument '" 
+						<< operand.identifier
+						<< "' is NOT in the parameter address space.", 
+						InvalidInstruction );
+				}
 			}
 
 			proto.returnTypes.push_back( operand.type );
 
 			statement.instruction.d.array.push_back( 
-				operandVector[ operandIndex ] );
-
-			report( "    " << operand.toString() );				
+				operandVector[ operandIndex ] );			
 		}
 
 		report( "   operands:" );
@@ -1888,18 +1924,33 @@ namespace parser
 		{
 			ir::PTXOperand& operand = operandVector[ operandIndex ];
 
+			report( "    " << operand.toString() );	
+
 			if( operand.addressMode == ir::PTXOperand::BitBucket )
 			{
 				operand.type = pi->argumentTypes[
 					proto.argumentTypes.size() ];
 			}
+			
+			if( operand.addressMode == ir::PTXOperand::Address )
+			{
+				OperandWrapper* mode = _getOperand( operand.identifier );
+				assert( mode != 0 );
+				
+				if( mode->space != ir::PTXInstruction::Param )
+				{
+					throw_exception( toString( location, *this ) 
+						<< "Function call argument '" 
+						<< operand.identifier
+						<< "' is NOT in the parameter address space.", 
+						InvalidInstruction );
+				}
+			}
 
 			proto.argumentTypes.push_back( operand.type );
 
 			statement.instruction.b.array.push_back(
-				operandVector[ operandIndex ] );
-
-			report( "    " << operand.toString() );				
+				operandVector[ operandIndex ] );			
 		}
 				
 		if( !pi->compare( proto ) )

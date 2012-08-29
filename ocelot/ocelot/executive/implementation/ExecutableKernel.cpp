@@ -30,6 +30,7 @@
 
 namespace executive 
 {
+
 ExecutableKernel::ExecutableKernel( const ir::IRKernel& k, 
 	executive::Device* d ) : ir::IRKernel( k ), device( d ), 
 	_constMemorySize( 0 ), _localMemorySize( 0 ), _globalLocalMemorySize( 0 ),

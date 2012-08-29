@@ -114,7 +114,8 @@ executive::DeviceVector executive::Device::createDevices(
 		for(DeviceVector::iterator device = devices.begin();
 			device != devices.end(); ++device)
 		{
-			*device = new PassThroughDevice(*device);
+			*device = new PassThroughDevice(*device, 0,
+				config::get().checkpoint.kernelFilter);
 		}
 	}
 	

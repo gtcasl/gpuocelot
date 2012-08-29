@@ -15,6 +15,7 @@
 
 // Hydrazine includes
 #include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/Casts.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -27,6 +28,16 @@ static void* cudaMallocWrapper(size_t bytes)
 	void* pointer = 0;
 	cudaMalloc(&pointer, bytes);
 	return pointer;
+}
+
+static uint64_t cudaGetParameterBufferWrapper(uint64_t alignment, uint64_t bytes)
+{
+	void* pointer = 0;
+	cudaMalloc(&pointer, bytes);
+	uint64_t address = hydrazine::bit_cast<uint64_t>(pointer);
+	assert(address % alignment == 0);
+
+	return address;
 }
 
 static void cudaFreeWrapper(void* pointer)
@@ -202,6 +213,10 @@ namespace ocelot
 		registerExternalFunction("malloc",  (void*)(cudaMallocWrapper));
 		registerExternalFunction("free",    (void*)(cudaFreeWrapper));
 		registerExternalFunction("vprintf", (void*)(printfWrapper));
+
+		// CNP support
+		registerExternalFunction("cudaGetParameterBuffer",
+			(void*)(cudaGetParameterBufferWrapper));
 	}
 
 }

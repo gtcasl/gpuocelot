@@ -105,6 +105,10 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::vector< RegisterPointer > RegisterPointerVector;
 		/*! \brief A vector of registers */
 		typedef std::vector< Register > RegisterVector;
+		/*! \brief register iterator */
+		typedef RegisterVector::iterator register_iterator;
+		/*! \brief register iterator */
+		typedef RegisterPointerVector::iterator register_pointer_iterator;
 		
 		/*! \brief An exception for potentially uninitialized regs */
 		class NoProducerException : public std::exception
@@ -138,7 +142,6 @@ class DataflowGraph : public KernelAnalysis
 		typedef BlockVector::iterator iterator;
 		/*! \brief const_iterator */
 		typedef BlockVector::const_iterator const_iterator;
-		/*! \brief instruction iterator */
 		
 		/*! \brief A class for referring to a generic instruction. */
 		class Instruction
@@ -162,6 +165,10 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief A class for referring to a phi instruction. */
 		class PhiInstruction
 		{
+			public:
+				PhiInstruction(const Register& d = 0,
+					const RegisterVector& s = RegisterVector());
+			
 			public:
 				/*! \brief Destination register */
 				Register d;
@@ -282,7 +289,7 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief Get an ordered set of phis in the block*/
 				PhiInstructionVector& phis();
 				/*! \brief Get the block label */
-				const std::string& label() const;
+				std::string label() const;
 				/*! \brief Get the id of the block */
 				ir::ControlFlowGraph::BasicBlock::Id id() const;
 				/*! \brief Get a pointer to the underlying block */
@@ -294,7 +301,7 @@ class DataflowGraph : public KernelAnalysis
 
 			public:
 				/*! \brief Determine the block that produced a register */
-				const std::string* producer( const Register& r ) const;
+				BlockVector::const_iterator producer( const Register& r ) const;
 				/*! \brief Determine the alive registers immediately
 					before a given instruction in the block */
 				RegisterSet alive( const 
@@ -302,13 +309,17 @@ class DataflowGraph : public KernelAnalysis
 		};
 		
 	public:
+		/*! \brief Iterator over phi instructions */
+		typedef PhiInstructionVector::iterator phi_iterator;
+		
+		/*! \brief Iterator over normal instructions */
 		typedef InstructionIterator instruction_iterator;
 		/*! \brief Value type */
 		typedef BlockVector::value_type value_type;
 		/*! \brief Size type */
 		typedef BlockVector::size_type size_type;
 		/*! \brief Register set iterator */
-		typedef RegisterSet::const_iterator register_iterator;
+		typedef RegisterSet::const_iterator const_register_iterator;
 
 		/*! \brief A vector of iterators */
 		typedef std::vector< iterator >	BlockPointerVector;
@@ -377,7 +388,7 @@ class DataflowGraph : public KernelAnalysis
 			
 			Note that this insert splits the fallthrough edge
 		*/
-		iterator insert( iterator predecessor, const std::string& label );
+		iterator insert( iterator predecessor );
 		/*! \brief Insert a Block between two existing blocks.
 			\param predecessor An iterator to the previous block.
 			\param successor An iterator to the next block.
@@ -386,8 +397,7 @@ class DataflowGraph : public KernelAnalysis
 			Note that this insert splits the edge 
 				between predecessor and successor.
 		*/
-		iterator insert( iterator predecessor, iterator successor, 
-			const std::string& label );
+		iterator insert( iterator predecessor, iterator successor );
 		/*! \brief Split a block into two starting at a given instruction,
 			the split instruction goes in the first block */
 		iterator split( iterator block, unsigned int instruction, 
@@ -395,7 +405,7 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief Split a block into two starting at a given instruction iterator,
 			the split instruction goes in the first block */
 		iterator split( iterator block, InstructionVector::iterator position, 
-			bool isFallthrough, const std::string& l );
+			bool isFallthrough );
 		/*! \brief Redirect an edge between two blocks to a third */
 		void redirect( iterator source, 
 			iterator destination, iterator newTarget );

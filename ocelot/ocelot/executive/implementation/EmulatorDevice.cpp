@@ -997,7 +997,8 @@ namespace executive
 		const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
-		report("EmulatorDevice::launch() - " << moduleName << "::" << kernelName);
+		report("EmulatorDevice::launch() - " << moduleName << "::"
+			<< kernelName);
 		
 		if(module == _modules.end())
 		{
@@ -1130,7 +1131,7 @@ namespace executive
 	{
 		// This is emulation so we probably don't ever want to do optimization
 	}
-
+	
 }
 
 #endif

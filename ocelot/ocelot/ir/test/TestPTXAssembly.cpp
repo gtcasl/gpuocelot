@@ -3090,6 +3090,228 @@ test::TestPTXAssembly::TypeVector testTestp_OUT()
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST CUDA NESTED PARALLELISM
+std::string testCudaNestedParallelism_PTX()
+{
+	std::stringstream ptx;
+
+	ptx <<
+		".version 3.1\n"
+		".target sm_35\n"
+		".address_size 64\n"
+		"\n"
+		".extern .func  (.param .b64 func_retval0) cudaGetParameterBuffer\n"
+		"(\n"
+		"	.param .b64 cudaGetParameterBuffer_param_0,\n"
+		"	.param .b64 cudaGetParameterBuffer_param_1\n"
+		");\n"
+		"\n"
+		".extern .func  (.param .b32 func_retval0) cudaLaunchDevice\n"
+		"(\n"
+		"	.param .b64 cudaLaunchDevice_param_0,\n"
+		"	.param .b64 cudaLaunchDevice_param_1,\n"
+		"	.param .align 4 .b8 cudaLaunchDevice_param_2[12],\n"
+		"	.param .align 4 .b8 cudaLaunchDevice_param_3[12],\n"
+		"	.param .b32 cudaLaunchDevice_param_4,\n"
+		"	.param .b64 cudaLaunchDevice_param_5\n"
+		");\n"
+		"\n"
+		".visible .entry _Z10nestedCalliPi(\n"
+		"	.param .u32 _Z10nestedCalliPi_param_0,\n"
+		"	.param .u64 _Z10nestedCalliPi_param_1\n"
+		")\n"
+		"{\n"
+		"	.reg .pred 	%p<3>;\n"
+		"	.reg .s32 	%r<9>;\n"
+		"	.reg .s64 	%rd<10>;\n"
+		"\n"
+		"\n"
+		"	ld.param.u32 	%r1, [_Z10nestedCalliPi_param_0];\n"
+		"	ld.param.u64 	%rd2, [_Z10nestedCalliPi_param_1];\n"
+		"	cvta.to.global.u64 	%rd3, %rd2;\n"
+		"	mul.wide.s32 	%rd4, %r1, 4;\n"
+		"	add.s64 	%rd5, %rd3, %rd4;\n"
+		"	st.global.u32 	[%rd5], %r1;\n"
+		"	setp.lt.s32 	%p1, %r1, 1;\n"
+		"	@%p1 bra 	BB0_3;\n"
+		"\n"
+		"	mov.u64 	%rd6, 4;\n"
+		"	mov.u64 	%rd7, 16;\n"
+		"	// Callseq Start 0\n"
+		"	{\n"
+		"	.reg .b32 temp_param_reg;\n"
+		"	.param .b64 param0;\n"
+		"	st.param.b64	[param0+0], %rd6;\n"
+		"	.param .b64 param1;\n"
+		"	st.param.b64	[param1+0], %rd7;\n"
+		"	.param .b64 retval0;\n"
+		"	call.uni (retval0), \n"
+		"	cudaGetParameterBuffer, \n"
+		"	(\n"
+		"	param0,\n" 
+		"	param1\n"
+		"	);\n"
+		"	ld.param.b64	%rd1, [retval0+0];\n"
+		"	}\n"
+		"	// Callseq End 0\n"
+		"	setp.eq.s64 	%p2, %rd1, 0;\n"
+		"	@%p2 bra 	BB0_3;\n"
+		"\n"
+		"	add.s32 	%r3, %r1, -1;\n"
+		"	st.u32 	[%rd1], %r3;\n"
+		"	st.u64 	[%rd1+8], %rd2;\n"
+		"	mov.u32 	%r6, 1;\n"
+		"	mov.u32 	%r7, 0;\n"
+		"	mov.u64 	%rd8, 0;\n"
+		"	mov.u64 	%rd9, _Z10nestedCalliPi;\n"
+		"	// Callseq Start 1\n"
+		"	{\n"
+		"	.reg .b32 temp_param_reg;\n"
+		"	.param .b64 param0;\n"
+		"	st.param.b64	[param0+0], %rd9;\n"
+		"	.param .b64 param1;\n"
+		"	st.param.b64	[param1+0], %rd1;\n"
+		"	.param .align 4 .b8 param2[12];\n"
+		"	st.param.b32	[param2+0], %r6;\n"
+		"	st.param.b32	[param2+4], %r6;\n"
+		"	st.param.b32	[param2+8], %r6;\n"
+		"	.param .align 4 .b8 param3[12];\n"
+		"	st.param.b32	[param3+0], %r6;\n"
+		"	st.param.b32	[param3+4], %r6;\n"
+		"	st.param.b32	[param3+8], %r6;\n"
+		"	.param .b32 param4;\n"
+		"	st.param.b32	[param4+0], %r7;\n"
+		"	.param .b64 param5;\n"
+		"	st.param.b64	[param5+0], %rd8;\n"
+		"	.param .b32 retval0;\n"
+		"	call.uni (retval0), \n"
+		"	cudaLaunchDevice, \n"
+		"	(\n"
+		"	param0, \n"
+		"	param1, \n"
+		"	param2, \n"
+		"	param3, \n"
+		"	param4,\n" 
+		"	param5\n"
+		"	);\n"
+		"	ld.param.b32	%r8, [retval0+0];\n"
+		"	}\n"
+		"	// Callseq End 1\n"
+		"\n"
+		"BB0_3:\n"
+		"	ret;\n"
+		"}\n"
+		"\n"
+		".visible .entry test(\n"
+		"	.param .u64 out, .param .u64 in)\n"
+		"{\n"
+		"	.reg .pred 	%p<2>;\n"
+		"	.reg .s32 	%r<8>;\n"
+		"	.reg .s64 	%rd<8>;\n"
+		"\n"
+		"\n"
+		"	ld.param.u64 	%rd2, [out];\n"
+		"	mov.u64 	%rd3, 4;\n"
+		"	mov.u64 	%rd4, 16;\n"
+		"	// Callseq Start 2\n"
+		"	{\n"
+		"	.reg .b32 temp_param_reg;\n"
+		"	.param .b64 param0;\n"
+		"	st.param.b64	[param0+0], %rd3;\n"
+		"	.param .b64 param1;\n"
+		"	st.param.b64	[param1+0], %rd4;\n"
+		"	.param .b64 retval0;\n"
+		"	call.uni (retval0), \n"
+		"	cudaGetParameterBuffer, \n"
+		"	(\n"
+		"	param0,\n" 
+		"	param1\n"
+		"	);\n"
+		"	ld.param.b64	%rd1, [retval0+0];\n"
+		"	}\n"
+		"	// Callseq End 2\n"
+		"	setp.eq.s64 	%p1, %rd1, 0;\n"
+		"	@%p1 bra 	BB1_2;\n"
+		"\n"
+		"   ld.param.u64 %rd7, [in];\n"
+		"   ld.global.u32 %r7, [%rd7];\n"
+		"   rem.u32 %r7, %r7, 10;\n"
+		"	mov.u32 	%r1, %r7;\n"
+		"	st.u32 	[%rd1], %r1;\n"
+		"	st.u64 	[%rd1+8], %rd2;\n"
+		"	mov.u32 	%r4, 1;\n"
+		"	mov.u32 	%r5, 0;\n"
+		"	mov.u64 	%rd5, 0;\n"
+		"	mov.u64 	%rd6, _Z10nestedCalliPi;\n"
+		"	// Callseq Start 3\n"
+		"	{\n"
+		"	.reg .b32 temp_param_reg;\n"
+		"	.param .b64 param0;\n"
+		"	st.param.b64	[param0+0], %rd6;\n"
+		"	.param .b64 param1;\n"
+		"	st.param.b64	[param1+0], %rd1;\n"
+		"	.param .align 4 .b8 param2[12];\n"
+		"	st.param.b32	[param2+0], %r4;\n"
+		"	st.param.b32	[param2+4], %r4;\n"
+		"	st.param.b32	[param2+8], %r4;\n"
+		"	.param .align 4 .b8 param3[12];\n"
+		"	st.param.b32	[param3+0], %r4;\n"
+		"	st.param.b32	[param3+4], %r4;\n"
+		"	st.param.b32	[param3+8], %r4;\n"
+		"	.param .b32 param4;\n"
+		"	st.param.b32	[param4+0], %r5;\n"
+		"	.param .b64 param5;\n"
+		"	st.param.b64	[param5+0], %rd5;\n"
+		"	.param .b32 retval0;\n"
+		"	call.uni (retval0), \n"
+		"	cudaLaunchDevice, \n"
+		"	(\n"
+		"	param0, \n"
+		"	param1, \n"
+		"	param2, \n"
+		"	param3, \n"
+		"	param4,\n" 
+		"	param5\n"
+		"	);\n"
+		"	ld.param.b32	%r6, [retval0+0];\n"
+		"	}\n"
+		"	// Callseq End 3\n"
+		"\n"
+		"BB1_2:\n"
+		"	ret;\n"
+		"}\n"; 
+   
+	return ptx.str();
+}
+
+void testCudaNestedParallelism_REF(void* output, void* input)
+{
+	for(uint32_t i = 0; i < 10; ++i)
+	{
+		setParameter(output, i * sizeof(uint32_t), 0);
+	}
+	
+	uint32_t limit = getParameter<uint32_t>(input, 0) % 10;
+
+	for(uint32_t i = 0; i <= limit; ++i)
+	{
+		setParameter(output, i * sizeof(uint32_t), i);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testCudaNestedParallelism_IN()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+
+test::TestPTXAssembly::TypeVector testCudaNestedParallelism_OUT()
+{
+	return test::TestPTXAssembly::TypeVector(10, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST INDIRECT FUNCTION CALLS
 std::string testIndirectFunctionCall_PTX()
 {
@@ -4644,6 +4866,7 @@ namespace test
 			
 			cudaMalloc((void**)&deviceInput, inputSize);
 			cudaMalloc((void**)&deviceOutput, outputSize);
+			cudaMemset((void*)deviceOutput, 0, outputSize);
 			
 			cudaMemcpy((void*)deviceInput, inputBlock, 
 				inputSize, cudaMemcpyHostToDevice);
@@ -5311,6 +5534,10 @@ namespace test
 			testPrmt_PTX(ir::PTXInstruction::ReplicateSixteen), testPrmt_OUT(), 
 			testPrmt_IN(), uniformRandom<uint32_t, 3>, 1, 1);
 			
+		add("TestCudaNestedParallelism", testCudaNestedParallelism_REF, 
+			testCudaNestedParallelism_PTX(), testCudaNestedParallelism_OUT(), 
+			testCudaNestedParallelism_IN(), uniformRandom<uint32_t, 1>, 1, 1);
+		
 		add("TestCall-Uni", testFunctionCalls_REF, 
 			testFunctionCalls_PTX(true), testFunctionCalls_OUT(), 
 			testFunctionCalls_IN(), uniformRandom<uint32_t, 2>, 1, 1);

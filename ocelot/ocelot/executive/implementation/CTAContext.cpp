@@ -20,21 +20,18 @@
 executive::CTAContext::CTAContext(
 	const executive::EmulatedKernel *k, 
 	executive::CooperativeThreadArray *c)
-		: kernel(k), cta(c) 
+		: PC(0), executionState(Running), kernel(k), cta(c)
 {
 	
-	using namespace boost;
-	using namespace std;
-
 	ir::Dim3 blockDim = kernel->blockDim();
-	active = dynamic_bitset<>(blockDim.x * blockDim.y * blockDim.z, 1);
-	PC = 0;
-	running = true;
+	active = boost::dynamic_bitset<>(blockDim.x * blockDim.y * blockDim.z, 1);
+
 	for (int i = 0; i < blockDim.x*blockDim.y*blockDim.z; i++) {
 		active[i] = 1;
 	}
-	report("CTAContext(0x" << hex << (unsigned long)k << ", 0x" 
-		<< (unsigned long)c << ")" << dec);
+
+	report("CTAContext(0x" << std::hex << (unsigned long)k << ", 0x" 
+		<< (unsigned long)c << ")" << std::dec);
 }
 
 executive::CTAContext::~CTAContext() {
@@ -79,6 +76,10 @@ boost::dynamic_bitset<> executive::CTAContext::predicateMask(
 	}
 	
 	return result;
+}
+
+bool executive::CTAContext::running() const {
+	return executionState == Running;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

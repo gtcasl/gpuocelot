@@ -505,7 +505,7 @@ def Environment():
 	
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
-
+	
 	# get the absolute path to the directory containing
 	# this source file
 	thisFile = inspect.getabsfile(Environment)
@@ -599,7 +599,8 @@ def Environment():
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
 
 	if env['install']:
-		env.AppendUnique(LIBPATH = os.path.abspath(os.path.join(env['install_path'], 'lib')))
+		env.AppendUnique(LIBPATH = os.path.abspath(
+			os.path.join(env['install_path'], 'lib')))
 	
 	if os.name == 'nt':      
                env.AppendUnique(CFLAGS   = "-DYY_NO_UNISTD_H")

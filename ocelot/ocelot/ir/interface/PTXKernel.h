@@ -46,9 +46,11 @@ namespace ir
 				};
 				
 				enum LinkingDirective {
-					Extern,		//!< externally-defined function
-					Visible,	//!< visible outside this module
-					LinkingDirective_invalid
+					Visible,	      //!< visible outside this module
+					Extern,		      //!< externally-defined function
+					InternalHidden,   //!< not external and not visible ==
+					                  //  internal hidden ==
+					                  // 'static' module scope
 				};
 			
 			public:
@@ -135,16 +137,13 @@ namespace ir
 			PTXOperand::RegisterType getUnusedRegister() const;
 			
 			/*! \brief returns a prototype for this kernel */
-			Prototype getPrototype() const;
+			const Prototype& getPrototype() const;
 
 		public:
 			/* \brief Gets the currently selected program structure graph */
 			analysis::ProgramStructureGraph* getProgramStructureGraph();
 
 		public:
-			/*! \brief renames all the blocks with canonical names */
-			virtual void canonicalBlockLabels();
-
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */
 			virtual bool executable() const;

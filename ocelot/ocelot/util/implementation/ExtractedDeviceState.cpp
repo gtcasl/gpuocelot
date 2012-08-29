@@ -8,8 +8,9 @@
 // C++ includes
 #include <iomanip>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
+#include <cstring>
 
 // Boost includes
 #include  <boost/lexical_cast.hpp>
@@ -83,16 +84,26 @@ static std::ostream & serialize(std::ostream &out,
 
 static void deserialize(std::vector<int>& ints,
 	const hydrazine::json::Visitor& array) {
-	for (hydrazine::json::Array::const_iterator i_it = array.begin_array();
-		i_it != array.end_array(); ++i_it) {
-		ints.push_back(hydrazine::json::Visitor(*i_it));
-	}
+	
+	const hydrazine::json::DenseArray& denseArray =
+		static_cast<const hydrazine::json::DenseArray&>(*array.value);
+	
+	size_t size = denseArray.sequence.size();
+	
+	ints.clear();
+	ints.resize(size);
+	
+	std::memcpy(ints.data(), denseArray.sequence.data(), size);
 }
 
 static void serializeBinary(std::ostream &out, const size_t size,
 	const char *bytes, bool raw) {
 	const size_t wordSize = 4;
-	out << std::setbase(16);
+	if (!raw) {
+		out << std::setbase(16);
+		out << std::setw(2*wordSize)
+			<< std::setfill('0');
+	}
 	for (size_t n = 0; n < size; n += wordSize) {
 		unsigned int word = 0;
 		for (size_t j = 0; j < wordSize; j++) {
@@ -102,15 +113,16 @@ static void serializeBinary(std::ostream &out, const size_t size,
 		}
 
 		if (n) {
-			out << (raw ? " " : ", ");
+			out << ", ";
 		}
 
 		if (!((n) % (8 * wordSize))) {
 			out << "\n";
 		}
 		
-		out << (raw ? "" : "\"0x") << std::setw(2*wordSize)
-			<< std::setfill('0') << word << (raw ? "" : "\"");
+		out << (raw ? "" : "\"0x");
+		
+		out << word << (raw ? "" : "\"");
 	}	
 	out << std::setbase(10);
 }
@@ -118,7 +130,7 @@ static void serializeBinary(std::ostream &out, const size_t size,
 static void serializeBinary(std::ostream &out, const size_t size,
 	const char *bytes) {
 	out << "{ \"bytes\": " << std::setbase(10) << size << ", \"image\": [\n";
-	serializeBinary(out, size, bytes, false);
+	serializeBinary(out, size, bytes, true);
 	out << std::setbase(10) << "\n] }";
 }
 
@@ -141,11 +153,24 @@ static void deserializeBinary(util::ByteVector &bytes,
 }
 
 static void deserializeBinary(util::ByteVector &bytes,
+	const hydrazine::json::DenseArray *arrayPtr, size_t size) {
+	bytes.resize(size);
+	
+	std::memcpy(bytes.data(), arrayPtr->sequence.data(), size);
+}
+
+static void deserializeBinary(util::ByteVector &bytes,
 	const hydrazine::json::Visitor &object) {
 	size_t size = object.parse<int>("bytes", 0);
 	if (hydrazine::json::Value *arrayValue = object.find("image")) {
-		deserializeBinary(bytes,
-			static_cast<hydrazine::json::Array *>(arrayValue), size);
+		if (arrayValue->type == hydrazine::json::Value::DenseArray) {
+			deserializeBinary(bytes,
+				static_cast<hydrazine::json::DenseArray *>(arrayValue), size);
+		}
+		else {
+			deserializeBinary(bytes,
+				static_cast<hydrazine::json::Array *>(arrayValue), size);
+		}
 	}
 }
 

@@ -130,14 +130,14 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 		// this block can no longer have a divergent warp
 		outstandingWarps.erase(block);
 		
-		report(" " << block->label);
+		report(" " << block->label());
 		
 		BlockVector frontier;
 		
 		for(BlockSet::const_iterator b = outstandingWarps.begin();
 			b != outstandingWarps.end(); ++b)
 		{
-			report("  " << (*b)->label);
+			report("  " << (*b)->label());
 			frontier.push_back(*b);	
 		}
 		
@@ -160,7 +160,7 @@ void ThreadFrontierAnalysis::_visitNode(NodeMap& nodes, node_iterator node)
 {
 	assert(nodes.count(node->block) == 0);
 	
-	report(" Visiting basic block '" << node->block->label << "'");
+	report(" Visiting basic block '" << node->block->label() << "'");
 	
 	nodes.insert(std::make_pair(node->block, node));
 	
@@ -175,9 +175,9 @@ void ThreadFrontierAnalysis::_visitNode(NodeMap& nodes, node_iterator node)
 		{
 			node_iterator child = node->children.insert(node->children.end(),
 				Node(predecessor, node, node->root, node->priority + 1));
-			report("  adding child '" << child->block->label << "'...");
+			report("  adding child '" << child->block->label() << "'...");
 			_visitNode(nodes, child);
-			report(" Returned to basic block '" << node->block->label << "'");
+			report(" Returned to basic block '" << node->block->label() << "'");
 		}
 		else
 		{
@@ -189,7 +189,7 @@ void ThreadFrontierAnalysis::_visitNode(NodeMap& nodes, node_iterator node)
 					!node->isThisMyParent(predecessorNode->second))
 				{
 					report("  adding subtree rooted at '"
-						<< predecessorNode->second->block->label << "'");
+						<< predecessorNode->second->block->label() << "'");
 			
 					predecessorNode->second->updatePriority(node->priority + 1);
 					node->children.splice(node->children.end(),
@@ -217,7 +217,7 @@ void ThreadFrontierAnalysis::_breakPriorityTies()
 	
 	for(auto entry = priorities.begin(); entry != priorities.end(); ++entry)
 	{
-		report(" Assigning basic block '" << entry->second->label
+		report(" Assigning basic block '" << entry->second->label()
 			<< "' (" << entry->second->id << ") priority " << priority);	
 		_priorities[entry->second] = priority++;
 	}

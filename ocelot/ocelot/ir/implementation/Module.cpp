@@ -113,7 +113,7 @@ const ir::Module& ir::Module::operator=(const Module& m) {
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	Deletes everything associated with this particular module
@@ -219,6 +219,9 @@ void ir::Module::loadNow() {
 	}
 	else
 	{
+		if (!_ptxPointer) {
+			report("Module::loadNow() - path: '" << path() << "' contains no PTX");
+		}
 		assert( _ptxPointer != 0 );
 		std::stringstream stream( _ptxPointer );
 		_ptxPointer = 0;
@@ -236,7 +239,7 @@ bool ir::Module::loaded() const {
 	return _loaded;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void ir::Module::write( std::ostream& stream ) const {
 	assert( loaded() );
@@ -322,7 +325,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 		for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
 			prot_it != _prototypes.end(); ++prot_it) {
 		
-			if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry
+			if (prot_it->second.callType != PTXKernel::Prototype::Entry
 				&& prot_it->second.identifier != "") {
 				stream << prot_it->second.toString() << "\n";
 				encounteredPrototypes.insert(prot_it->second.identifier);
@@ -363,6 +366,15 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	}
 	
 	stream << "\n\n";
+}
+
+
+std::string ir::Module::toString() const {
+	std::stringstream stream;
+	
+	writeIR(stream);
+
+	return stream.str();
 }
 
 ir::Texture* ir::Module::getTexture(const std::string& name) {
@@ -456,17 +468,10 @@ unsigned int ir::Module::addressSize() const {
 }
 
 void ir::Module::addPrototype(const std::string &identifier,
-	const ir::PTXKernel::Prototype &prototype) {
+	const PTXKernel::Prototype &prototype) {
 	report("adding prototype: " << prototype.toString());
 	
-	FunctionPrototypeMap::iterator proto = _prototypes.find(identifier);
-	
-	if (proto == _prototypes.end()) {
-		_prototypes.insert(proto, std::make_pair(identifier, prototype));
-	}
-	else {
-		//assert(prototype == proto->second);
-	}
+	_prototypes.insert(std::make_pair(identifier, prototype));
 }
 		
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
@@ -511,7 +516,8 @@ ir::PTXKernel* ir::Module::insertKernel(PTXKernel* kernel) {
 }
 
 /*!
-	After parsing, construct a set of Kernels with ISA equal to PTX from the statements vector.
+	After parsing, construct a set of Kernels with ISA equal to PTX
+	 from the statements vector.
 */
 void ir::Module::extractPTXKernels() {
 
@@ -524,7 +530,7 @@ void ir::Module::extractPTXKernels() {
 	unsigned int kernelInstance = 1;
 	bool isFunction = false;
 	unsigned int depth = 0;
-	ir::PTXKernel::Prototype functionPrototype;
+	PTXKernel::Prototype functionPrototype;
 	
 	report("extractPTXKernels()");
 	
@@ -573,12 +579,17 @@ void ir::Module::extractPTXKernels() {
 					}
 					functionPrototype.callType = 
 						(isFunction ? 
-							ir::PTXKernel::Prototype::Func : 
-							ir::PTXKernel::Prototype::Entry);
-					functionPrototype.linkingDirective = 
-						(statement.attribute == PTXStatement::Extern ? 
-							ir::PTXKernel::Prototype::Extern : 
-							ir::PTXKernel::Prototype::Visible);
+							PTXKernel::Prototype::Func : 
+							PTXKernel::Prototype::Entry);
+					functionPrototype.linkingDirective =
+						(PTXKernel::Prototype::LinkingDirective)
+						statement.attribute;
+					static_assert((int)PTXKernel::Prototype::Visible ==
+						(int)ir::PTXStatement::Visible, "Mismatched flag");
+					static_assert((int)PTXKernel::Prototype::Extern ==
+						(int)ir::PTXStatement::Extern, "Mismatched flag");
+					static_assert((int)PTXKernel::Prototype::InternalHidden ==
+						(int)ir::PTXStatement::NoAttribute, "Mismatched flag");
 					prototypeState = PS_Params;
 				}
 			}
@@ -609,7 +620,6 @@ void ir::Module::extractPTXKernels() {
 							    endIterator, isFunction, kernelInstance++);
 						kernel->module = this;
 						_kernels[kernel->name] = (kernel);
-						kernel->canonicalBlockLabels();
 					}
 				}
 			}
@@ -621,9 +631,7 @@ void ir::Module::extractPTXKernels() {
 				assert(inKernel);
 				inKernel   = false;
 				isFunction = false;
-				if (prototypeState != PS_NoState &&
-					functionPrototype.callType !=
-					ir::PTXKernel::Prototype::Entry) {
+				if (prototypeState != PS_NoState) {
 					addPrototype(functionPrototype.identifier,
 						functionPrototype);
 					prototypeState = PS_NoState;
@@ -634,9 +642,7 @@ void ir::Module::extractPTXKernels() {
 			case PTXStatement::StartScope:
 			{
 				report("  start scope: '{'");
-				if (prototypeState != PS_NoState &&
-					functionPrototype.callType !=
-					ir::PTXKernel::Prototype::Entry) {
+				if (prototypeState != PS_NoState) {
 					addPrototype(functionPrototype.identifier,
 						functionPrototype);
 					prototypeState = PS_NoState;
@@ -718,7 +724,7 @@ void ir::Module::extractPTXKernels() {
 				if (!inKernel) {
 					assert(_textures.count(statement.name) == 0);
 					_textures.insert(std::make_pair(statement.name, 
-									Texture(statement.name, Texture::Samplerref)));
+								Texture(statement.name, Texture::Samplerref)));
 				}
 			}
 			break;

@@ -1593,7 +1593,7 @@ void StructuralAnalysis::dumpNode(std::ostream& stream, NodeTy *node) const {
 	findBB(node, BBVec);
 
 	for (BBSetTy::iterator i = BBVec->begin(), e = BBVec->end(); i != e; ++i)
-		stream << (*i)->label << "\t";
+		stream << (*i)->label() << "\t";
 }
 
 // findUnstructuredBR - Record the branch and remove it from CFG 
@@ -1665,7 +1665,8 @@ void StructuralAnalysis::dumpUnstructuredBR(std::ostream& stream) const {
 	
 	for (EdgeVecTy::const_iterator i = unstructuredBRVec.begin(),
 		e = unstructuredBRVec.end(); i != e; ++i) {
-		 stream << "\t" << i->first->label << "\t" << i->second->label << "\n";
+		 stream << "\t" << i->first->label()
+		 	<< "\t" << i->second->label() << "\n";
 	}
 	
 	stream << "\n";

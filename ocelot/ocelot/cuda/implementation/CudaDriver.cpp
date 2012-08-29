@@ -130,7 +130,6 @@ namespace cuda
 		DynLinkV(cuMemAllocPitch);
 		DynLinkV(cuMemFree);
 		DynLinkV(cuMemGetAddressRange);
-		DynLinkV(cuMemAllocHost);
 
 		DynLinkV(cuMemAllocHost);
 		DynLinkV(cuMemHostRegister);

@@ -702,10 +702,18 @@ namespace parser
 		statements.push_back( statement );
 
 		operand = ir::PTXOperand();
+		
+		/*
+		//
+		// There is no reason why the PTXStatement constructor shouldn't 'reset' the
+		// statement object. If there is, it should be made explicit.
+		//
 		statement.array.values.clear();
 		statement.symbols.clear();
 		alignment = 1;
 		statement.array.vec = ir::PTXOperand::v1;
+		*/
+		statement = ir::PTXStatement();
 		statement.instruction.statementIndex = statements.size();
 	}
 	
@@ -996,8 +1004,8 @@ namespace parser
 	void PTXParser::State::paramArgumentDeclaration(int token)
 	{
 		report(" Rule: parameterAttribute: TOKEN_PTR kernelParameterPtrSpace");
-		ir::PTXInstruction::AddressSpace addressSpace = tokenToAddressSpace(token);
-		report("    address space: " << ir::PTXInstruction::toString(addressSpace));
+		statement.ptrAddressSpace = tokenToAddressSpace(token);
+		report("    address space: " << ir::PTXInstruction::toString(statement.ptrAddressSpace));
 	}
 
 	void PTXParser::State::fileDeclaration( unsigned int file, 
@@ -2266,6 +2274,7 @@ namespace parser
 	
 	void PTXParser::reset()
 	{
+		report("PTXParser::reset() called");
 		state.inEntry = false;
 		state.inReturnList = false;
 		state.inArgumentList = false;

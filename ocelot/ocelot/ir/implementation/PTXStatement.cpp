@@ -221,6 +221,7 @@ namespace ir {
 		alignment = 1;
 		array.vec = PTXOperand::v1;
 		attribute = NoAttribute;
+		ptrAddressSpace = PTXInstruction::AddressSpace_Invalid;
 	
 	}
 	
@@ -488,15 +489,26 @@ namespace ir {
 				if( attribute != NoAttribute ) {
 					stream << "." << toString( attribute ) << " ";
 				}
-				stream << ".param";
-				assert( alignment != 0);
+				stream << ".param ";
+	
+				stream << " ." << PTXOperand::toString( type );
+	
+				if (ptrAddressSpace != PTXInstruction::AddressSpace_Invalid) {
+					if (ptrAddressSpace == PTXInstruction::Generic) {
+						stream << " .ptr";
+					}
+					else {
+						stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);
+					}
+				}
 				if( alignment != 1 ) {
 					stream << " .align " << alignment;
 				}
 				if( array.vec != PTXOperand::v1 ) {
 					stream << " ." << PTXInstruction::toString( array.vec );
 				}
-				stream << " ." << PTXOperand::toString( type ) << " " << name;
+	
+				stream << " " << name;
 				stream << array.dimensions();
 				return stream.str();
 				break;

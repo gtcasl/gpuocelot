@@ -63,7 +63,8 @@ std::string ir::Parameter::value( const Parameter& p ) {
 
 ir::Parameter::Parameter(const std::string& s, ir::PTXOperand::DataType t,
 	unsigned int a, ir::PTXInstruction::Vec v, bool arg, bool r) 
-: type(t), name(s), alignment(a), vector(v), argument(arg), returnArgument(r)
+: type(t), name(s), alignment(a), vector(v), argument(arg), returnArgument(r), 
+	ptrAddressSpace(PTXInstruction::AddressSpace_Invalid)
 {
 
 }
@@ -73,7 +74,9 @@ ir::Parameter::~Parameter() {
 }
 
 ir::Parameter::Parameter(const PTXStatement& statement,
-	bool arg, bool isReturn) : argument(arg), returnArgument(isReturn) {
+	bool arg, bool isReturn) : argument(arg), returnArgument(isReturn), 
+		ptrAddressSpace(PTXInstruction::AddressSpace_Invalid) 
+{
 	type = PTXOperand::u64;
 	offset = 0;
 	
@@ -84,6 +87,7 @@ ir::Parameter::Parameter(const PTXStatement& statement,
 	alignment = statement.alignment;
 	arrayValues.resize(statement.elements());
 	vector = statement.array.vec;
+	ptrAddressSpace = statement.ptrAddressSpace;
 }
 
 unsigned int ir::Parameter::getSize() const {
@@ -128,16 +132,36 @@ bool ir::Parameter::isArgument() const {
 std::string ir::Parameter::toString() const {
 	std::stringstream stream;
 	stream << ".param ";
+	
+	
+	stream << " ." << PTXOperand::toString( type );
+	
+	if (isPtrDeclaration()) {
+		if (ptrAddressSpace == PTXInstruction::Generic) {
+			stream << " .ptr";
+		}
+		else {
+			stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);
+		}
+	}
+	
 	if( alignment != 1 ) {
-		stream << ".align " << alignment;
+		stream << " .align " << alignment;
 	}
 	if( vector != PTXOperand::v1 ) {
 		stream << "." << PTXInstruction::toString( vector );
 	}
-	stream << " ." << PTXOperand::toString( type ) << " " << name;
+	
+	stream << " " << name;
 	if (arrayValues.size() > 1 && vector == ir::PTXOperand::v1) {
 		stream << "[" << arrayValues.size() << "]";
 	}
 	return stream.str();
+}
+
+/*! \brief returns true if the parameter is declared to be a pointer to
+	some state space (i.e., ptrAddressSpace != AddressSpace_Invalid */
+bool ir::Parameter::isPtrDeclaration() const {
+	return ptrAddressSpace != PTXInstruction::AddressSpace_Invalid;
 }
 

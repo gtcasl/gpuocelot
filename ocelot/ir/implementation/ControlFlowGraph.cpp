@@ -723,8 +723,10 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 		if (sequence.back()->has_fallthrough_edge()) {
 			edge_iterator fallthroughEdge 	
 				= sequence.back()->get_fallthrough_edge();
-			sequence.push_back(fallthroughEdge->tail);
-			unscheduled.erase(fallthroughEdge->tail);
+			if (unscheduled.count(fallthroughEdge->tail) != 0) {
+				sequence.push_back(fallthroughEdge->tail);
+				unscheduled.erase(fallthroughEdge->tail);
+			}
 		}
 		else {
 			// find a new block, favor branch targets over random blocks

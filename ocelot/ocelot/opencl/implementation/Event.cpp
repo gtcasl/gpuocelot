@@ -175,6 +175,11 @@ void opencl::Event::waitForEvents(cl_uint num_events,
 			throw CL_INVALID_CONTEXT;
 	}
 
+	// flush command queues associated with events
+	for(cl_uint i = 0; i < num_events; i++) {
+		((CommandQueue *)(event_list[i]->_commandQueue))->flushEvents();
+	}
+
 	// wait for events
 	while(true) {
 		cl_uint i = 0;

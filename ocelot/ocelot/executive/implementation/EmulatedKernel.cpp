@@ -5,17 +5,20 @@
 */
 
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/EmulatorDevice.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 #include <ocelot/executive/interface/EmulatedKernelScheduler.h>
 
-#include <ocelot/api/interface/OcelotConfiguration.h>
-
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+
+#include <ocelot/trace/interface/TraceGenerator.h>
 
 #include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
@@ -24,7 +27,6 @@
 #include <ocelot/transforms/interface/EnforceLockStepExecutionPass.h>
 #include <ocelot/transforms/interface/PriorityLayoutPass.h>
 
-#include <ocelot/trace/interface/TraceGenerator.h>
 
 // C++ includes
 #include <cassert>
@@ -402,25 +404,6 @@ void executive::EmulatedKernel::registerAllocation() {
 	report(" Allocated " << _registerCount << " registers");
 }
 
-void executive::EmulatedKernel::_computeOffset(
-	const ir::PTXStatement& statement, unsigned int& offset, 
-	unsigned int& totalOffset) {
-	
-	offset = align(totalOffset, statement.accessAlignment());
-
-	totalOffset = offset;
-	if(statement.array.stride.empty()) {
-		totalOffset += statement.array.vec * 
-			ir::PTXOperand::bytes(statement.type);
-	}
-	else {
-		for (int i = 0; i < (int)statement.array.stride.size(); i++) {
-			totalOffset += statement.array.stride[i] * statement.array.vec * 
-				ir::PTXOperand::bytes(statement.type);
-		}
-	}
-}
-
 /*!
 	Allocates arrays in shared memory and maps identifiers to allocations.
 */
@@ -482,7 +465,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 			else {
 				unsigned int offset;
 
-				_computeOffset(it->second.statement(), offset, sharedOffset);
+				ir::PTXKernel::computeOffset(it->second.statement(), offset, sharedOffset);
 				label_map[it->second.name] = offset;
 				report("Found local shared variable " << it->second.name 
 					<< " at offset " << offset << " with alignment " 
@@ -525,7 +508,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 
 						report("Found global shared variable " 
 							<< it->second.statement.name);
-						_computeOffset(it->second.statement, 
+						ir::PTXKernel::computeOffset(it->second.statement, 
 							offset, sharedOffset);						
 						label_map[it->second.statement.name] = offset;
 					}
@@ -586,8 +569,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 
 			report("  found local local variable " 
 				<< it->second.name);
-			_computeOffset(it->second.statement(), 
-				offset, localOffset);						
+			ir::PTXKernel::computeOffset(it->second.statement(), offset, localOffset);						
 			label_map[it->second.name] = offset;
 		}
 	}
@@ -640,7 +622,7 @@ void executive::EmulatedKernel::initializeGlobalLocalMemory() {
 
 				report(" Found globally scoped local variable " 
 					<< it->second.statement.name);
-				_computeOffset(it->second.statement, 
+				ir::PTXKernel::computeOffset(it->second.statement, 
 					offset, localOffset);						
 				label_map[it->second.statement.name] = offset;
 			}
@@ -699,7 +681,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 			report("  Found global const variable " 
 				<< it->second.statement.name);
-			_computeOffset(it->second.statement, 
+			ir::PTXKernel::computeOffset(it->second.statement, 
 				offset, constantOffset);						
 			constant[it->second.statement.name] = offset;
 		}

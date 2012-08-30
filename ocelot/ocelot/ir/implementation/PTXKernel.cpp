@@ -7,6 +7,9 @@
 #ifndef PTX_KERNEL_H_INCLUDED
 #define PTX_KERNEL_H_INCLUDED
 
+// C++ includes
+#include <cmath>
+
 // Ocelot Includes
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
@@ -522,6 +525,90 @@ PTXKernel::RegisterMap PTXKernel::assignRegisters( ControlFlowGraph& cfg )
 	}
 
 	return map;
+}
+
+
+static unsigned int align(unsigned int offset, unsigned int _size) {
+	unsigned int size = _size == 0 ? 1 : _size;
+	unsigned int difference = offset % size;
+	unsigned int alignedOffset = difference == 0 
+		? offset : offset + size - difference;
+	return alignedOffset;
+}
+
+void PTXKernel::computeOffset(
+	const ir::PTXStatement& statement, unsigned int& offset, 
+	unsigned int& totalOffset) {
+	
+	offset = align(totalOffset, statement.accessAlignment());
+
+	totalOffset = offset;
+	if(statement.array.stride.empty()) {
+		totalOffset += statement.array.vec * ir::PTXOperand::bytes(statement.type);
+	}
+	else {
+		for (int i = 0; i < (int)statement.array.stride.size(); i++) {
+			totalOffset += statement.array.stride[i] * statement.array.vec * 
+				ir::PTXOperand::bytes(statement.type);
+		}
+	}
+}
+
+unsigned int PTXKernel::getSharedMemoryLayout(std::map<std::string, unsigned int> &globalOffsets, 
+	std::map<std::string, unsigned int> &localOffsets) const {
+	
+	using namespace std;
+	typedef std::unordered_map<std::string, 
+		ir::Module::GlobalMap::const_iterator> GlobalMap;
+	typedef std::	unordered_set<std::string> StringSet;
+	typedef std::deque<ir::PTXOperand*> OperandVector;
+	
+	unsigned int sharedOffset = 0;
+
+	report( "Initializing shared memory for kernel " << name );
+	GlobalMap sharedGlobals;
+
+	OperandVector externalOperands;
+	
+	if(module != 0) {
+		for(ir::Module::GlobalMap::const_iterator it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
+			
+			if (it->second.statement.directive == ir::PTXStatement::Shared) {
+				if(it->second.statement.attribute == ir::PTXStatement::Extern) {
+				
+					report("Found global external shared variable " << it->second.statement.name);
+				} 
+				else {
+					report("Found global shared variable " << it->second.statement.name);
+					unsigned int offset;
+					computeOffset(it->second.statement, offset, sharedOffset);
+					globalOffsets[it->second.name()] = offset;
+				}
+			}
+		}
+	}
+	
+	LocalMap::const_iterator it = locals.begin();
+	for (; it != locals.end(); ++it) {
+		if (it->second.space == ir::PTXInstruction::Shared) {
+			if(it->second.attribute == ir::PTXStatement::Extern) {
+			
+				report("Found local external shared variable " << it->second.name);
+			}
+			else {
+				unsigned int offset;
+				computeOffset(it->second.statement(), offset, sharedOffset);
+				localOffsets[it->second.name] = offset;
+				
+				report("Found local shared variable " << it->second.name 
+					<< " at offset " << offset << " with alignment " 
+					<< it->second.getAlignment() << " of size " 
+					<< (sharedOffset - offset ));
+			}
+		}
+	}
+	return sharedOffset;
 }
 
 void PTXKernel::write(std::ostream& stream) const 

@@ -11,6 +11,12 @@
 #include <dlfcn.h>
 
 #if 1
+
+extern "C" __global__ void simple(int *A) {
+	int i = threadIdx.x + blockIdx.x * blockDim.x;
+	A[i] = i;
+}
+
 extern "C" __global__ void sequence(int *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	if (i < N) {
@@ -83,6 +89,8 @@ int main(int argc, char *arg[]) {
 	
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
+	
+	simple<<< grid, block >>>(A_gpu);
 	
 	sequence<<< grid, block >>>(A_gpu, N);
 	

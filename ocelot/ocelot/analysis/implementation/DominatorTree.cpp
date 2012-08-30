@@ -8,6 +8,7 @@
 
 // Ocelot Includes
 #include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine Includes
@@ -23,13 +24,18 @@
 namespace analysis
 {
 
+DominatorTree::DominatorTree()
+: KernelAnalysis(Analysis::DominatorTreeAnalysis,
+	"DominatorTreeAnalysis", Analysis::NoAnalysis) {
+}
+
 DominatorTree::~DominatorTree() {
 }
 
-DominatorTree::DominatorTree(ir::ControlFlowGraph *c) {
+void DominatorTree::analyze(ir::IRKernel& kernel) {
 	
 	report("Building dominator tree.");
-	cfg = c;
+	cfg = kernel.cfg();
 	report(" Starting with post order sequence");
 	// form a vector of the basic blocks in reverse post-order
 	ir::ControlFlowGraph::BlockPointerVector 

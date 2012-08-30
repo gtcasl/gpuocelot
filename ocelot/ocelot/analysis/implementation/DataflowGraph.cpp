@@ -77,6 +77,22 @@ DataflowGraph::PhiInstruction::PhiInstruction(const Register& destination,
 
 }
 
+std::string DataflowGraph::PhiInstruction::toString() const
+{
+	std::stringstream stream;
+	
+	stream << "phi [r" << d.id << "] <- ";
+	
+	for(auto source = s.begin(); source != s.end(); ++source)
+	{
+		if(source != s.begin()) stream << ", ";
+		
+		stream << "r" << source->id;
+	}
+	
+	return stream.str();
+}
+
 DataflowGraph::Instruction DataflowGraph::convert( ir::PTXInstruction& i )
 {
 	Instruction result;

@@ -1,7 +1,7 @@
 #include <ocelot/opencl/interface/CommandQueue.h>
 
 #undef REPORT_BASE
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 opencl::QueueThread::QueueMessage::QueueMessage(Type t, void * d):
 	type(t), data(d) {
@@ -187,8 +187,8 @@ opencl::CommandQueue::CommandQueue(Context * context,
 	
 	if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
 		||(properties & CL_QUEUE_PROFILING_ENABLE)) {
-		assertM(false, "unimplemented queue properties");
-		throw CL_UNIMPLEMENTED;
+		std::cerr << "Ocelot OpenCL Warning: unimplemented command \
+queue properties detected\n";
 	}
 	
 	_context->retain();

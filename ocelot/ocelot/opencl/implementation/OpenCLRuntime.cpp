@@ -1168,8 +1168,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 			throw CL_INVALID_VALUE;
 
 		if(options && options[0]!=0) {
-			assertM(false, "unspported building options");
-			throw CL_UNIMPLEMENTED;
+			std::cerr << "Ocelot OpenCL Warning: build options unsupported\n";
 		}
 
 		if(pfn_notify || user_data) {

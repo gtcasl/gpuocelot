@@ -174,6 +174,9 @@ class DataflowGraph : public KernelAnalysis
 				Register d;
 				/*! \brief Source registers */
 				RegisterVector s;
+				
+			public:
+				std::string toString() const;
 		};
 
 		struct BlockVector_Hash

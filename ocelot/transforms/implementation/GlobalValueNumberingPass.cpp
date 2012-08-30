@@ -25,7 +25,6 @@
 #endif
 
 #define REPORT_BASE 0
-#define GVN_ENABLE  0
 
 namespace transforms
 {
@@ -63,15 +62,6 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 	else
 	{
 		// convert out of SSA, this renumbers registers
-		auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
-		assert(analysis != 0);
-		
-		auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
-
-		assert(dfg->ssa() != analysis::DataflowGraph::None);
-		
-		dfg->fromSsa();
-		
 		invalidateAnalysis(Analysis::StaticSingleAssignment);
 		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 	}
@@ -470,7 +460,9 @@ void GlobalValueNumberingPass::_updateDataflow(
 		{
 			if(potentiallyUsedValue->id == *replacedValue->pointer)
 			{
+				report("     updating " << phi->toString());
 				potentiallyUsedValue->id = *generatedValue->pointer;
+				report("      to " << phi->toString());
 			}
 		}
 	}
@@ -487,7 +479,9 @@ void GlobalValueNumberingPass::_updateDataflow(
 		{
 			if(*potentiallyUsedValue->pointer == *replacedValue->pointer)
 			{
+				report("     updating " << instruction->i->toString());
 				usedValue = potentiallyUsedValue;
+				report("      to " << instruction->i->toString());
 				break;
 			}
 		}

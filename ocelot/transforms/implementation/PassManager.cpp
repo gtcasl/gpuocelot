@@ -4,8 +4,6 @@
 	\brief The source file for the PassManager class
 */
 
-#ifndef PASS_MANAGER_CPP_INCLUDED
-#define PASS_MANAGER_CPP_INCLUDED
 
 // Ocelot Includes
 #include <ocelot/transforms/interface/PassManager.h>
@@ -90,6 +88,20 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 			{
 				report("   Destroying " << structure->second->name
 					<< " for kernel " << k->name);
+				
+				if(structure->second->type ==
+					analysis::Analysis::DataflowGraphAnalysis)
+				{
+					auto dfgp = static_cast<analysis::DataflowGraph*>(
+						structure->second);
+					
+					if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+					{
+						report("   converting out of SSA form.");
+						dfgp->fromSsa();
+					}
+				}
+				
 				delete structure->second;
 				analyses.erase(structure);
 			}
@@ -117,11 +129,16 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 		if(analyses.count(analysis::Analysis::DominatorTreeAnalysis) == 0)
 		{
 			report("   Allocating dominator tree for kernel " << k->name);
-			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
-				analysis::Analysis::DominatorTreeAnalysis,
-				new analysis::DominatorTree(k->cfg()))).first;
 			
-			analysis->second->setPassManager(manager);
+			auto domTree = new analysis::DominatorTree;
+			
+			analyses.insert(std::make_pair(
+				analysis::Analysis::DominatorTreeAnalysis, domTree));
+			
+			domTree->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, domTree->required, manager);
+				
+			domTree->analyze(*k);
 		}
 	}
 	if(type & analysis::Analysis::PostDominatorTreeAnalysis)
@@ -164,7 +181,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			analysis::Analysis::DataflowGraphAnalysis);
 
 		auto dfgp = static_cast<analysis::DataflowGraph*>(dfg->second);
-
+		
 		if(type & analysis::Analysis::StaticSingleAssignment)
 		{
 			assertM(!(type & (analysis::Analysis::MinimalStaticSingleAssignment
@@ -178,6 +195,8 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 					dfgp->fromSsa();
 				}
 		
+				report("    converting to default SSA form.");
+			
 				dfgp->toSsa();
 			}
 		}
@@ -191,6 +210,8 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				{
 					dfgp->fromSsa();
 				}
+
+				report("    converting to minimal SSA form.");
 		
 				dfgp->toSsa(analysis::DataflowGraph::SsaType::Minimal);
 			}
@@ -204,6 +225,8 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 					dfgp->fromSsa();
 				}
 		
+				report("    converting to gated SSA form.");
+
 				dfgp->toSsa(analysis::DataflowGraph::SsaType::Gated);
 			}
 		}
@@ -609,6 +632,8 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 		_analyses = 0;
 		_kernel   = 0;
 	}
+	
+	_previouslyRunPasses.clear();
 }
 
 void PassManager::runOnModule()
@@ -640,7 +665,9 @@ void PassManager::runOnModule()
 				allocateNewDataStructures(*analyses,
 					kernel->second, (*pass)->analyses, this);
 			}
-		
+			
+			_previouslyRunPasses[(*pass)->name] = *pass;
+			
 			runModulePass(_module, *pass);
 		}
 	
@@ -683,6 +710,8 @@ void PassManager::runOnModule()
 			_kernel   = 0;
 		}
 	}
+	
+	_previouslyRunPasses.clear();
 }
 
 analysis::Analysis* PassManager::getAnalysis(int type)
@@ -720,9 +749,39 @@ void PassManager::invalidateAnalysis(int type)
 	AnalysisMap::iterator analysis = _analyses->find(type);
 	if(analysis != _analyses->end())
 	{
+		report("   Invalidating " << analysis->second->name);
+				
+		if(type == analysis::Analysis::DataflowGraphAnalysis)
+		{
+			auto dfgp = static_cast<analysis::DataflowGraph*>(
+				analysis->second);
+			
+			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+			{
+				report("   converting out of SSA form.");
+				dfgp->fromSsa();
+			}
+		}
+		
 		delete analysis->second;
 		_analyses->erase(analysis);
 	}
+}
+
+Pass* PassManager::getPass(const std::string& name)
+{
+	PassNameMap::iterator pass = _previouslyRunPasses.find(name);
+	if(pass == _previouslyRunPasses.end()) return 0;
+	
+	return pass->second;
+}
+
+const Pass* PassManager::getPass(const std::string& name) const
+{
+	PassNameMap::const_iterator pass = _previouslyRunPasses.find(name);
+	if(pass == _previouslyRunPasses.end()) return 0;
+	
+	return pass->second;
 }
 
 PassManager::PassWaveList PassManager::_schedulePasses()
@@ -750,15 +809,7 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 
 		report("   for pass '" << pass->first << "'");
 		
-		auto dependentPasses = pass->second->getDependentPasses();
-		
-		auto extraDependences = _extraDependences.equal_range(pass->first);
-		
-		for(auto dependentPass = extraDependences.first;
-			dependentPass != extraDependences.second; ++dependentPass)
-		{
-			dependentPasses.push_back(dependentPass->second);
-		}
+		auto dependentPasses = _getAllDependentPasses(pass->second);
 		
 		needDependencyCheck.erase(pass);
 		
@@ -778,51 +829,40 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 		}
 	}
 	
-	report("  Final schedule:");
-	
+	// Create waves by splitting transitions between different pass types
+	//  in the dependence graph
 	PassWaveList scheduled;
 	
-	while(!unscheduled.empty())
+	PassMap unscheduledInWaves = unscheduled;
+
+	while(!unscheduledInWaves.empty())
 	{
-		report("   Wave " << scheduled.size());
-		
 		scheduled.push_back(PassVector());
 		
-		for(auto pass = unscheduled.begin(); pass != unscheduled.end(); )
+		for(auto pass = unscheduledInWaves.begin();
+			pass != unscheduledInWaves.end(); )
 		{
-			auto dependentPasses = pass->second->getDependentPasses();
+			bool unscheduledPredecessorsTransition = false;
 			
-			auto extraDependences = _extraDependences.equal_range(pass->first);
+			auto dependentPasses = _getAllDependentPasses(pass->second);
 		
-			for(auto dependentPass = extraDependences.first;
-				dependentPass != extraDependences.second; ++dependentPass)
+			for(auto dependentPassName = dependentPasses.begin();
+				dependentPassName != dependentPasses.end(); ++dependentPassName)
 			{
-				dependentPasses.push_back(dependentPass->second);
-			}
-			
-			bool dependenciesSatisfied = true;
-			
-			for(auto dependentPass = dependentPasses.begin();
-				dependentPass != dependentPasses.end(); ++dependentPass)
-			{
-				for(auto pass = unscheduled.begin();
-					pass != unscheduled.end(); ++pass)
-				{
-					if(*dependentPass == pass->second->name)
-					{
-						dependenciesSatisfied = false;
-						break;
-					}
-				}
+				if(unscheduledInWaves.count(*dependentPassName) == 0) continue;
+
+				Pass* dependentPass = _findPass(*dependentPassName);
 				
-				if(!dependenciesSatisfied) break;
+				if(pass->second->type == dependentPass->type) continue;
+				
+				unscheduledPredecessorsTransition = true;
+				break;
 			}
 			
-			if(dependenciesSatisfied)
+			if(!unscheduledPredecessorsTransition)
 			{
-				report("    " << pass->second->name);
 				scheduled.back().push_back(pass->second);
-				unscheduled.erase(pass++);
+				unscheduledInWaves.erase(pass++);
 				continue;
 			}
 			
@@ -835,13 +875,103 @@ PassManager::PassWaveList PassManager::_schedulePasses()
 		}
 	}
 	
+	// TODO sort unscheduled passes by weight
+	
+	report("  Final schedule:");
+	
+	for(auto wave = scheduled.begin(); wave != scheduled.end(); ++wave)
+	{
+		report("   Wave " << std::distance(scheduled.begin(), wave));
+				
+		PassVector newOrder;
+		PassMap    unscheduledInThisWave;
+
+		for(auto pass = wave->begin(); pass != wave->end(); ++pass)
+		{
+			unscheduledInThisWave.insert(std::make_pair((*pass)->name, *pass));		
+		}
+		
+		while(!unscheduledInThisWave.empty())
+		{
+			bool scheduledAny = false;
+			
+			for(auto pass = unscheduledInThisWave.begin();
+				pass != unscheduledInThisWave.end(); )
+			{
+				auto dependentPasses = _getAllDependentPasses(pass->second);
+			
+				bool dependenciesSatisfied = true;
+			
+				for(auto dependentPassName = dependentPasses.begin();
+					dependentPassName != dependentPasses.end();
+					++dependentPassName)
+				{
+					if(unscheduled.count(*dependentPassName) != 0)
+					{
+						dependenciesSatisfied = false;
+						break;
+					}
+				}
+			
+				if(dependenciesSatisfied)
+				{
+					report("    " << pass->first);
+					newOrder.push_back(pass->second);
+
+					auto unscheduledPass = unscheduled.find(pass->first);
+					assert(unscheduledPass != unscheduled.end());
+					
+					unscheduled.erase(unscheduledPass);
+
+					unscheduledInThisWave.erase(pass++);
+					scheduledAny = true;
+					continue;
+				}
+				
+				++pass;
+			}
+
+			if(!scheduledAny)
+			{
+				throw std::runtime_error("Passes have circular dependencies!");
+			}
+		}
+		
+		*wave = newOrder;
+	}
+	
 	report("  Finished scheduling");
 	
 	return scheduled;
 }
 
+Pass::StringVector PassManager::_getAllDependentPasses(Pass* pass)
+{
+	Pass::StringVector dependentPasses = pass->getDependentPasses();
+		
+	auto extraDependences = _extraDependences.equal_range(pass->name);
+
+	for(auto dependentPass = extraDependences.first;
+		dependentPass != extraDependences.second; ++dependentPass)
+	{
+		dependentPasses.push_back(dependentPass->second);
+	}
+	
+	return dependentPasses;
+}
+
+Pass* PassManager::_findPass(const std::string& name)
+{
+	for(auto pass = _passes.begin(); pass != _passes.end(); ++pass)
+	{
+		if(pass->second->name == name) return pass->second;
+	}
+	
+	assertM(false, "No pass named " << name);
+	
+	return 0;
+}
 
 }
 
-#endif
 

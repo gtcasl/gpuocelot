@@ -74,13 +74,23 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 		{
 			auto chainTail = chain->second->back();
 			
-			if(chainTail->successors.size() != 1) continue;
-			
 			for(auto successor = chainTail->successors.begin();
 				successor != chainTail->successors.end(); ++successor)
 			{
-				if((*successor)->predecessors.size() != 1) continue;
-			
+				bool isFallthrough = false;
+				
+				if(chainTail->has_fallthrough_edge())
+				{
+					isFallthrough =
+						chainTail->get_fallthrough_edge()->tail == *successor;
+				}
+				
+				if(!isFallthrough && ((*successor)->predecessors.size() != 1
+					|| chainTail->successors.size() != 1))
+				{
+					continue;
+				}
+				
 				auto successorChain = blockToChains.find(*successor);
 				assert(successorChain != blockToChains.end());
 				
@@ -104,6 +114,9 @@ void ReadableLayoutPass::runOnKernel(ir::IRKernel& k)
 					blockToChains.insert(std::make_pair(*chainMember,
 						chain->second));
 				}
+				
+				report(" connecting " << chainTail->label() << " -> "
+					<< chainHead->label());
 				
 				chain->second->splice(chain->second->end(),
 					*successorChainPointer);

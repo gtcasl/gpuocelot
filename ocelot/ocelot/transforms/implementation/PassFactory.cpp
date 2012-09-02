@@ -24,6 +24,7 @@
 #include <ocelot/transforms/interface/FunctionInliningPass.h>
 #include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
 #include <ocelot/transforms/interface/GlobalValueNumberingPass.h>
+#include <ocelot/transforms/interface/SharedPtrAttribute.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -100,6 +101,9 @@ Pass* PassFactory::createPass(const std::string& name)
 		|| name == "GlobalValueNumberingPass" )
 	{
 		return new transforms::GlobalValueNumberingPass;
+	}
+	else if (name == "shared-ptr-attribute") {
+		return new transforms::SharedPtrAttribute;
 	}
 	else
 	{

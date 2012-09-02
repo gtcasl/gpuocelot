@@ -160,6 +160,10 @@ OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
 
+LoadPtx = env.Program('LoadPtx', \
+	['ocelot/tools/LoadPtx.cpp'], LIBS=ocelot_libs)
+env.Depends(LoadPtx, libocelot)
+
 if enableKernelExtractor and os.name != 'nt':		
 	kernelExtractorSources = [
 		'ocelot/tools/KernelExtractor.cpp',
@@ -302,6 +306,8 @@ if env['install']:
 		env['install_path'], "bin"), OcelotServer))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotHarness))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), LoadPtx))
 		
 	if enableKernelExtractor and os.name != 'nt':
 		installed.append(env.Install(os.path.join(env['install_path'], "lib"), KernelExtractorLib))

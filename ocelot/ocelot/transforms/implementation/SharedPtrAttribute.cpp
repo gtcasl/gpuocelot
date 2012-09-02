@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,7 +54,7 @@ std::string transforms::SharedPtrAttribute::_getOrInsertExternShared(ir::Module 
 		}
 	}
 	
-	ir::PTXStatement statement(ir::PTXStatement::Global);
+	ir::PTXStatement statement(ir::PTXStatement::Shared);
 	statement.type = ir::PTXOperand::u8;
 	statement.name = "externSharedBasePtr";
 	statement.attribute = ir::PTXStatement::Extern;

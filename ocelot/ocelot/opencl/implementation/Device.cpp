@@ -632,6 +632,23 @@ void * opencl::Device::allocate(size_t size) {
 	return ptr;
 }
 
+void * opencl::Device::allocateHost(size_t size) {
+	void * ptr;
+
+	_exeDevice->select();
+	try {
+		ptr = _exeDevice->allocateHost(size)->pointer();
+	}
+	catch(...) {
+		_exeDevice->unselect();
+		throw;
+	}
+	
+	_exeDevice->unselect();
+
+	return ptr;
+}
+
 bool opencl::Device::read(const void * src, void * host, size_t offset, size_t size) {
 	
 
@@ -639,7 +656,7 @@ bool opencl::Device::read(const void * src, void * host, size_t offset, size_t s
 		return false;
 
 	_exeDevice->select();
-	_exeDevice->getMemoryAllocation(src)->copy(host, offset, size);
+	_exeDevice->getMemoryAllocation(src, executive::Device::AnyAllocation)->copy(host, offset, size);
 	_exeDevice->unselect();
 
 	return true;
@@ -653,7 +670,29 @@ bool opencl::Device::write(void * dest, const void * host, size_t offset, size_t
 	}
 
 	_exeDevice->select();
-	_exeDevice->getMemoryAllocation(dest)->copy(offset, host, size);
+	_exeDevice->getMemoryAllocation(dest, executive::Device::AnyAllocation)->copy(offset, host, size);
+	_exeDevice->unselect();
+
+	return true;
+}
+
+bool opencl::Device::copy(void * src, void * dst, size_t srcOffset, size_t dstOffset, size_t size) {
+	if(!_exeDevice->checkMemoryAccess((char *)src + srcOffset, size))
+		return false;
+
+	if(!_exeDevice->checkMemoryAccess((char *)dst + dstOffset, size))
+		return false;
+
+	_exeDevice->select();
+	try {
+		_exeDevice->getMemoryAllocation(src, executive::Device::AnyAllocation)->copy(
+			_exeDevice->getMemoryAllocation(dst, executive::Device::AnyAllocation),
+			dstOffset, srcOffset, size);
+	}
+	catch(...) {
+		_exeDevice->unselect();
+		throw;
+	}
 	_exeDevice->unselect();
 
 	return true;

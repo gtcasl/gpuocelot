@@ -361,7 +361,8 @@ opencl::CopyBufferEvent::~CopyBufferEvent() {
 }
 
 void opencl::CopyBufferEvent::execute(Device * device) {
-	//TO do
+	_dst->copyFromBufferOnDevice(device, _srcOffset,
+		_dstOffset, _size, _src);
 }
 
 opencl::CopyBufferRectEvent::CopyBufferRectEvent(CommandQueue * commandQueue,

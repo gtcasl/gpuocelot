@@ -100,6 +100,10 @@ namespace opencl {
 		void writeOnDevice(Device * device,
         	size_t offset, size_t cb, const void * ptr);
 
+		//! copy to another buffer on device
+		void copyFromBufferOnDevice(Device * device,
+			size_t srcOffset, size_t dstOffset, size_t size, BufferObject * srcBuffer);
+
 		//! create new mapping pointer
 		void * createNewMapPtr(size_t offset, size_t size);
 

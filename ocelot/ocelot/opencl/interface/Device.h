@@ -87,11 +87,17 @@ namespace opencl {
 		//Allocate memory
 		void * allocate(size_t size);
 
+		//Allocate host memory
+		void * allocateHost(size_t size);
+
 		//Read memory
 		bool read(const void * src, void * host, size_t offset, size_t size);
 
 		//Write memory
 		bool write(void * dest, const void * host, size_t offset, size_t size);
+
+		//Copy memory
+		bool copy(void * src, void * dst, size_t srcOffset, size_t dstOffset, size_t size); 
 
 		//create sub devices
 		void createSubDevices(const cl_device_partition_property * properties,

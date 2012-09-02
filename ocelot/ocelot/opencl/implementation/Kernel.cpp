@@ -37,7 +37,8 @@ std::string & opencl::Kernel::_getArgumentName(cl_uint arg_index) {
 
 opencl::Kernel::Kernel(const std::string &n, 
 	Program * p, bool builtIn): Object(OBJTYPE_KERNEL),
-	_name(n), _isBuiltIn(builtIn), _program(p) {
+	_name(n), _isBuiltIn(builtIn), _program(p),
+	_sharedBase((void *)0),	_sharedOffset(0)/*hard-coded according to NVIDIA GPU*/ {
 	_parameterBlock = NULL;
 	_program->retain();
 }
@@ -81,10 +82,20 @@ void opencl::Kernel::addDeviceInfo(Device * device, std::string moduleName,
 
 void opencl::Kernel::setArg(cl_uint arg_index, size_t arg_size, const void * arg_value) {
 
-	_parameterSizes[arg_index] = arg_size;
-	char * paramVal = new char[arg_size];
-	memcpy(paramVal, arg_value, arg_size);
-	_parameterPointers[arg_index] = paramVal;
+	if(arg_value != NULL) {
+		_parameterSizes[arg_index] = arg_size;
+		char * paramVal = new char[arg_size];
+		memcpy(paramVal, arg_value, arg_size);
+		_parameterPointers[arg_index] = paramVal;
+	}
+	else { //a null pointer for buffer object, or argument has __local qualifier
+		_parameterSizes[arg_index] = sizeof(void *); //pointer size
+		char * paramVal = new char[sizeof(void *)];
+		*((void **)paramVal) = (void *)((size_t)_sharedBase + _sharedOffset);
+		_sharedOffset += arg_size;
+		report("Found shared parameter, shared offset = " << _sharedOffset);
+		_parameterPointers[arg_index] = paramVal;
+	}
 
 }
 
@@ -144,6 +155,8 @@ void opencl::Kernel::mapParametersOnDevice(Device * device) {
 		//check if it is a memory address argument
 		if(oriSize == sizeof(cl_mem) &&  
 			(*(MemoryObject **)pointer)->isValidObject(Object::OBJTYPE_MEMORY)) {//pointer is memory object
+
+			report("Memory object arg size = " << argSize);
 		
 			if(argSize != sizeof(void *))
 				throw CL_INVALID_KERNEL_ARGS;
@@ -156,6 +169,7 @@ void opencl::Kernel::mapParametersOnDevice(Device * device) {
 			memcpy(_parameterBlock + offset, &addr, argSize);
 		}
 		else { //non-memory argument
+			report("Non-Memory object arg size = " << argSize << ", value = " << *(size_t *)pointer);
 			if(oriSize != argSize)
 				throw CL_INVALID_KERNEL_ARGS;
 
@@ -238,7 +252,7 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //		_inExecute = true;
 
 		device->launch(_deviceInfo[device]._moduleName, _name, convert(_workGroupNum), 
-			convert(_localWorkSize), /*launch.sharedMemory*/0, 
+			convert(_localWorkSize), _sharedOffset, 
 			_parameterBlock, _parameterBlockSize, traceGens, NULL/*&_externals*/);
 //		_inExecute = false;
 		report(" launch completed successfully");	

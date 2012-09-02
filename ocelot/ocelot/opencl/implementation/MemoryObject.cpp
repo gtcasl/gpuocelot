@@ -1,6 +1,12 @@
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/MemoryObject.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 opencl::MemoryObject::MemoryObject(Context * context, cl_mem_object_type type, 
 	cl_mem_flags flags, void * host_ptr, bool isSubBuffer)
 	:Object(OBJTYPE_MEMORY),
@@ -57,19 +63,29 @@ void opencl::MemoryObject::allocate() {
 		if(isAllocatedOnDevice(*device))
 			continue;
 
-		void * ptr =  (*device)->allocate(size());
-		if(ptr == NULL)
-			throw CL_OUT_OF_RESOURCES;
+		void * ptr;
+
+		if((_flags & CL_MEM_ALLOC_HOST_PTR) == CL_MEM_ALLOC_HOST_PTR) {
+			ptr = (*device)->allocateHost(size());
+			if(ptr == NULL)
+				throw CL_OUT_OF_HOST_MEMORY;
+		}
+		else {
+			ptr =  (*device)->allocate(size());
+			if(ptr == NULL)
+				throw CL_OUT_OF_RESOURCES;
+
+			if((_flags & CL_MEM_COPY_HOST_PTR) == CL_MEM_COPY_HOST_PTR ||
+				(_flags & CL_MEM_USE_HOST_PTR) == CL_MEM_USE_HOST_PTR) {
+				assert(_hostPtr);
+				report("copy host_ptr of buffer object on device with size " << size());
+				(*device)->write(ptr, _hostPtr, 0, size());
+			}
+		}
 
 		_allocations.insert(std::make_pair(*device, ptr));
 		report("memory object allocate on Device " << *device 
 			<< ", address = " <<  ptr << ", size = " << size());
-
-		//Cache content of host_ptr to device ptr
-		if(_hostPtr) {
-			report("cache host_ptr of buffer object on device ");
-			(*device)->write(ptr, _hostPtr, 0, size());
-		}
 	}
 }
 
@@ -148,8 +164,9 @@ void opencl::BufferObject::readOnDevice(Device * device,
 	if(!device->read(devicePtr, ptr, offset, cb))
 		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-	//Copy device ptr to host ptr
-	if(_hostPtr)
+	//Copy device ptr to host ptr for CL_MEM_USE_HOST_PTR
+	//to make it like a cached host ptr
+	if((_flags && CL_MEM_USE_HOST_PTR) == CL_MEM_USE_HOST_PTR)
 		if(!device->read(devicePtr, _hostPtr, offset, cb))
 			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
@@ -162,9 +179,27 @@ void opencl::BufferObject::writeOnDevice(Device * device,
 	if(!device->write(devicePtr, ptr, offset, cb))
 		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
-	//Copy ptr to host ptr
-	if(_hostPtr)
+	//Copy ptr to host ptr for CL_MEM_USE_HOST_PTR
+	//to make it like a cached host ptr
+	if((_flags && CL_MEM_USE_HOST_PTR) == CL_MEM_USE_HOST_PTR)
 		std::memcpy(((uint8_t *)_hostPtr) + offset, ptr, cb);
+}
+
+void opencl::BufferObject::copyFromBufferOnDevice(Device * device,
+	size_t srcOffset, size_t dstOffset, size_t size, BufferObject * srcBuffer) {
+
+	void * srcDevicePtr = srcBuffer->getPtrOnDevice(device);
+	void * dstDevicePtr = getPtrOnDevice(device);
+
+	if(!device->copy(srcDevicePtr, dstDevicePtr, srcOffset, dstOffset, size))
+		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+
+	//Copy ptr to host ptr for CL_MEM_USE_HOST_PTR
+	// to make it like a cached host ptr
+	if((_flags && CL_MEM_USE_HOST_PTR) == CL_MEM_USE_HOST_PTR) {
+		if(!device->read(srcDevicePtr, (uint8_t *)_hostPtr + dstOffset, srcOffset, size))
+			throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
+	}
 }
 
 void * opencl::BufferObject::createNewMapPtr(size_t offset, size_t size) {

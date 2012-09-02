@@ -129,6 +129,12 @@ namespace opencl {
 		//! number of work groups
 		size_t _workGroupNum[3];
 
+		//! shared memory base pointer
+		void * _sharedBase;
+
+		//! shared memory offset
+		size_t _sharedOffset;
+
 	private:
 		//! check if built on device
 		bool _isBuiltOnDevice(Device * device);

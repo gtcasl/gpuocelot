@@ -4,6 +4,8 @@
 
 // Ocelot includes
 #include <ocelot/opencl/interface/Device.h>
+#include <ocelot/transforms/interface/SharedPtrAttribute.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 opencl::Device::DeviceList opencl::Device::_deviceList = opencl::Device::DeviceList();
 
@@ -580,6 +582,12 @@ void opencl::Device::load(ir::Module * module) {
 		return;
 
 	module->loadNow();
+
+	transforms::PassManager manager(module);
+	transforms::SharedPtrAttribute sharedPass;
+	manager.addPass(sharedPass);
+	manager.runOnModule();
+	
 
 	_exeDevice->select();
 	_exeDevice->load(module);

@@ -24,12 +24,16 @@ namespace analysis {
 	control flow graph such that each node's block is immediately dominated
 	by its parent. Each node is owned by its parent.
 */
-class DominatorTree : public Analysis {
+class DominatorTree : public KernelAnalysis {
 	
 public:
-	DominatorTree(ir::ControlFlowGraph *cfg);
+	DominatorTree();
 	~DominatorTree();
-	
+
+public:
+	void analyze(ir::IRKernel& kernel);
+
+public:		
 	/*! Writes a representation of the DominatorTree to an output stream */
 	std::ostream& write(std::ostream &out);
 

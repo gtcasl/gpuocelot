@@ -141,7 +141,15 @@ std::string ir::Parameter::toString() const {
 			stream << " .ptr";
 		}
 		else {
-			stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);
+			if (ptrAddressSpace == PTXInstruction::Global) {
+				stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);
+			}
+			else {
+				// TEMPORARY WORKAROUND: suppress .ptr .shared tokens to accommodate cuModuleLoadData()
+				//
+				stream << " .ptr ." << PTXInstruction::toString(PTXInstruction::Global);
+				// intentionally blank
+			}
 		}
 	}
 	

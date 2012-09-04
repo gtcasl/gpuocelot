@@ -142,6 +142,18 @@ namespace ir
 		public:
 			/* \brief Gets the currently selected program structure graph */
 			analysis::ProgramStructureGraph* getProgramStructureGraph();
+			
+		public:
+		
+			/*! \brief */
+			static void computeOffset(const ir::PTXStatement& statement, unsigned int& offset, 
+				unsigned int& totalOffset);
+		
+			/*! \brief computes layout of global and local shared memory objects 
+				\return total size of static shared memory allocations 
+			*/
+			unsigned int getSharedMemoryLayout(std::map<std::string, unsigned int> &globals, 
+				std::map<std::string, unsigned int> &locals) const;
 
 		public:
 			/*!	Returns true if the kernel instance is derived from 

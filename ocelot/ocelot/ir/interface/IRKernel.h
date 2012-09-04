@@ -36,6 +36,11 @@ namespace ir {
 		/*! \brief Gets the const cfg */
 		const ControlFlowGraph* cfg() const;
 	
+	public:
+		/*! \brief Get a string representation of the nearest line to
+			an instruction */
+		std::string getLocationString(const Instruction&) const;
+	
 	public:	
 		/*!	Returns true if the kernel instance is derived from 
 			ExecutableKernel */

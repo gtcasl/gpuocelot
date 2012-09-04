@@ -101,6 +101,13 @@ public:
 	void invalidateAnalysis(int type);
 
 public:
+	/*! \brief Get a previously run pass by name */
+	Pass* getPass(const std::string& name);
+
+	/*! \brief Get a previously run pass by name (const) */
+	const Pass* getPass(const std::string& name) const;
+
+public:
 	// Come on MSVS, get your act together!		
 	#if !defined(_MSC_VER)
 	/*! \brief Disallow the copy constructor */
@@ -112,11 +119,15 @@ public:
 private:
 	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
 	typedef std::multimap<std::string, std::string> DependenceMap;
+	typedef std::unordered_map<std::string, Pass*> PassNameMap;
 	typedef std::vector<Pass*> PassVector;
 	typedef std::list<PassVector> PassWaveList;
+	typedef std::vector<std::string> StringVector;
 
 private:
 	PassWaveList _schedulePasses();
+	StringVector _getAllDependentPasses(Pass* p);
+	Pass* _findPass(const std::string& name);
 
 private:
 	PassMap       _passes;
@@ -124,6 +135,7 @@ private:
 	ir::IRKernel* _kernel;
 	AnalysisMap*  _analyses;
 	PassVector    _ownedTemporaryPasses;
+	PassNameMap   _previouslyRunPasses;
 	DependenceMap _extraDependences;
 };
 

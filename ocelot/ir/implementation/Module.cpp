@@ -300,7 +300,7 @@ void ir::Module::write( std::ostream& stream ) const {
 	stream << "\n";
 }
 
-void ir::Module::writeIR( std::ostream& stream ) const {
+void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget) const {
 	assert( loaded() );
 	report("Writing module (IR) - " << _modulePath << " - to output stream.");
 
@@ -327,7 +327,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 		
 			if (prot_it->second.callType != PTXKernel::Prototype::Entry
 				&& prot_it->second.identifier != "") {
-				stream << prot_it->second.toString() << "\n";
+				stream << prot_it->second.toString(emitterTarget) << "\n";
 				encounteredPrototypes.insert(prot_it->second.identifier);
 			}
 		}
@@ -338,7 +338,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 				encounteredPrototypes.find((kernel->second)->name) ==
 				encounteredPrototypes.end()) {
 			
-				stream << kernel->second->getPrototype().toString() << "\n";
+				stream << kernel->second->getPrototype().toString(emitterTarget) << "\n";
 				encounteredPrototypes.insert(kernel->second->name);
 			}
 		}
@@ -362,17 +362,17 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	stream << "/* Kernels */\n";
 	for (KernelMap::const_iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel) {
-		(kernel->second)->write(stream);
+		(kernel->second)->write(stream, emitterTarget);
 	}
 	
 	stream << "\n\n";
 }
 
 
-std::string ir::Module::toString() const {
+std::string ir::Module::toString(PTXEmitter::Target emitterTarget) const {
 	std::stringstream stream;
 	
-	writeIR(stream);
+	writeIR(stream, emitterTarget);
 
 	return stream.str();
 }

@@ -13,6 +13,7 @@
 #include <set>
 #include <unordered_map>
 
+#include <ocelot/ir/interface/PTXEmitter.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Instruction.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -75,10 +76,11 @@ namespace ir {
 		void write(std::ostream& stream) const;
 		
 		/*! \brief Write the module to an assembly file from the IR */
-		void writeIR(std::ostream& stream) const;
+		void writeIR(std::ostream& stream, 
+			PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
 		
 		/*! \brief Write the module to a string from the IR */
-		std::string toString() const;
+		std::string toString(PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
 		
 		/*!	Deletes everything associated with this particular module */
 		void unload();

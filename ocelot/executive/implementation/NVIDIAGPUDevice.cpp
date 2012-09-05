@@ -390,7 +390,7 @@ namespace executive
 		assert(!loaded());
 		std::stringstream stream;
 		
-		ir->writeIR(stream);
+		ir->writeIR(stream, ir::PTXEmitter::Target_NVIDIA_PTX30);
 
 #if REPORT_PTX_WITH_LINENUMBERS == 1		
 		reportE(REPORT_PTX, " Binary is:\n" 

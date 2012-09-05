@@ -92,7 +92,7 @@ void PTXOptimizer::optimize()
 			+ output + " for writing." );
 	}
 	
-	module.writeIR( out );
+	module.writeIR( out, ir::PTXEmitter::Target_NVIDIA_PTX30 );
 
 	if(!cfg) return;
 	

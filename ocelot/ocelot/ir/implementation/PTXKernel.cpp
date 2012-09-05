@@ -61,7 +61,7 @@ void PTXKernel::Prototype::clear() {
 
 /*!
 */
-std::string PTXKernel::Prototype::toString() const {
+std::string PTXKernel::Prototype::toString(PTXEmitter::Target emitterTarget) const {
 	std::stringstream ss;
 	
 	if (callType == Func) {
@@ -613,7 +613,7 @@ unsigned int PTXKernel::getSharedMemoryLayout(std::map<std::string, unsigned int
 	return sharedOffset;
 }
 
-void PTXKernel::write(std::ostream& stream) const 
+void PTXKernel::write(std::ostream& stream, PTXEmitter::Target emitterTarget) const 
 {
 	std::stringstream strReturnArguments;
 	std::stringstream strArguments;
@@ -624,11 +624,11 @@ void PTXKernel::write(std::ostream& stream) const
 		parameter != arguments.end(); ++parameter) {
 		if (parameter->returnArgument) {
 			strReturnArguments << (returnArgCount++ ? ",\n\t\t" : "")
-				<< parameter->toString();
+				<< parameter->toString(emitterTarget);
 		}
 		else {
 			strArguments << (argCount++ ? ",\n\t\t" : "")
-				<< parameter->toString();
+				<< parameter->toString(emitterTarget);
 		}
 	}
 	

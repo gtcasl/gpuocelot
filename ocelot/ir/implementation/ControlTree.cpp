@@ -34,7 +34,9 @@ namespace ir
 			_nodes(NodeVector()),
 			_post(NodeList()),
 			_visit(NodeSet()),
-			_root(0)
+			_root(0),
+			_lexical(NodeVector()),
+			_fwdBranches(EdgeVector())
 	{
 		Node* start = 0;
 		Node* end = 0;
@@ -757,11 +759,11 @@ namespace ir
 
 		while (!unscheduled.empty()) 
 		{
-			if (sequence.back()->fallthrough() != 0) 
+			Node* fallthrough = sequence.back()->fallthrough();
+			if (fallthrough != 0 && unscheduled.count(fallthrough) != 0)
 			{
-				Node* tail = sequence.back()->fallthrough();
-				sequence.push_back(tail);
-				unscheduled.erase(tail);
+				sequence.push_back(fallthrough);
+				unscheduled.erase(fallthrough);
 			}
 			else 
 			{
@@ -851,6 +853,9 @@ namespace ir
 		head = find(_lexical.begin(), _lexical.end(), nb.first);
 		tail = find(_lexical.begin(), _lexical.end(), nb.second);
 
+		assertM(head != _lexical.end(), "Invalid node " << nb.first->label());
+		assertM(tail != _lexical.end(), "Invalid node " << nb.second->label());
+
 		if (head < tail) return NodeVector(head, ++tail);
 
 		return NodeVector(tail, ++head);
@@ -898,27 +903,22 @@ namespace ir
 	{
 		NodeVector mhg = _control_graph(nb);
 
-		// TODO Consider keeping a vector of edges in the class
-		for (NodeVector::iterator node = _lexical.begin() ;
-				node != _lexical.end() ; ++node)
+		for (EdgeVector::iterator ib = _fwdBranches.begin() ;
+				ib != _fwdBranches.end() ; ++ib)
 		{
-			if ((*node)->has_branch_edge())
-			{
-				Edge ib = (*node)->get_branch_edge();
-				NodeVector CGib = _control_graph(ib);
+			NodeVector CGib = _control_graph(*ib);
 
-				if (_interact(CGib, mhg))
-				{
-					NodeVector result;
-					std::set_union(
-							mhg.begin(), mhg.end(), 
-							CGib.begin(), CGib.end(), 
-							std::back_inserter(result), 
-							boost::bind(
-								&ir::ControlTree::_lexicographical_compare, 
-								boost::ref(this), _1, _2));
-					mhg = result;
-				}
+			if (_interact(CGib, mhg))
+			{
+				NodeVector result;
+				std::set_union(
+						mhg.begin(), mhg.end(), 
+						CGib.begin(), CGib.end(), 
+						std::back_inserter(result), 
+						boost::bind(
+							&ir::ControlTree::_lexicographical_compare, 
+							boost::ref(this), _1, _2));
+				mhg = result;
 			}
 		}
 
@@ -930,8 +930,6 @@ namespace ir
 
 	ControlTree::Node* ControlTree::_clone_node(const Node* node)
 	{
-		report("Clonning " << node->label());
-
 		switch(node->rtype())
 		{
 			case Inst:
@@ -941,6 +939,8 @@ namespace ir
 				std::stringstream ss;
 				ss << _nodes.size();
 				label += ss.str();
+
+				report("Clonning " << node->label() << " as " << label);
 
 				const InstNode* inode = static_cast<const InstNode*>(node);
 				return _insert_node(new InstNode(label, inode->bb()));
@@ -960,6 +960,8 @@ namespace ir
 				ss << _nodes.size();
 				label += ss.str();
 
+				report("Clonning " << node->label() << " as " << label);
+
 				return _insert_node(new BlockNode(label, children));
 			}
 			case IfThen:
@@ -976,6 +978,8 @@ namespace ir
 				std::stringstream ss;
 				ss << _nodes.size();
 				label += ss.str();
+
+				report("Clonning " << node->label() << " as " << label);
 
 				return _insert_node(new IfThenNode(label, 
 							ifnode->cond(), ifnode->ifTrue(), 
@@ -996,6 +1000,8 @@ namespace ir
 				ss << _nodes.size();
 				label += ss.str();
 
+				report("Clonning " << node->label() << " as " << label);
+
 				return _insert_node(new NaturalNode(label, children));
 
 			}
@@ -1014,7 +1020,7 @@ namespace ir
 		for (NodeVector::const_iterator node = true_part.begin() ;
 				node != true_part.end() ; ++node)
 		{
-			// Clone the node
+			// clone the node
 			bmap[*node] = _clone_node(*node);
 			
 			// adjust the postorder traversal
@@ -1116,18 +1122,18 @@ namespace ir
 		bool changed = false;
 
 		_lexical = _executable_sequence(entry);
-		EdgeVector fwdBranches = _find_forward_branches();
+		_fwdBranches = _find_forward_branches();
 
-		while (!fwdBranches.empty())
+		while (!_fwdBranches.empty())
 		{
-			EdgeVector::iterator iFwdBranch = fwdBranches.begin();
+			EdgeVector::iterator iFwdBranch = _fwdBranches.begin();
 
 			report("iFwdBranch = " 
 					<< iFwdBranch->first->label() << " -> "
 					<< iFwdBranch->second->label());
 
 			for (EdgeVector::iterator fwdBranch = iFwdBranch + 1 ;
-					fwdBranch != fwdBranches.end() ; ++fwdBranch)
+					fwdBranch != _fwdBranches.end() ; ++fwdBranch)
 			{
 				if (_interact(iFwdBranch, fwdBranch))
 				{
@@ -1191,7 +1197,7 @@ namespace ir
 				}
 			}
 
-			fwdBranches.erase(iFwdBranch);
+			_fwdBranches.erase(iFwdBranch);
 		}
 
 		return changed;

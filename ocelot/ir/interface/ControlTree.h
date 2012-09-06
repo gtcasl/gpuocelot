@@ -227,6 +227,7 @@ namespace ir
 			NodeSet _visit;
 			Node* _root;
 			NodeVector _lexical;
+			EdgeVector _fwdBranches;
 	};
 }
 

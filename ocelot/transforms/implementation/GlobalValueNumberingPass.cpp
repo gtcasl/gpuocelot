@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -424,7 +424,7 @@ void GlobalValueNumberingPass::_eliminateInstruction(
 		
 	assert(generatingInstruction->d.size() == instruction->d.size());
 
-	report("    eliminating the instruction...");
+	report("     eliminating the instruction...");
 
 	// Replace all of the uses with the generated value
 	for(auto generatedValue = generatingInstruction->d.begin(),
@@ -446,7 +446,7 @@ void GlobalValueNumberingPass::_updateDataflow(
 	const RegisterPointerIterator& generatedValue)
 {
 	// Replace all uses in the block
-	report("    replacing all uses of value r" << *replacedValue->pointer
+	report("      replacing all uses of value r" << *replacedValue->pointer
 			<< " with r" << *generatedValue->pointer << " in block "
 			<< block->label());
 	
@@ -460,9 +460,9 @@ void GlobalValueNumberingPass::_updateDataflow(
 		{
 			if(potentiallyUsedValue->id == *replacedValue->pointer)
 			{
-				report("     updating " << phi->toString());
+				report("       updating " << phi->toString());
 				potentiallyUsedValue->id = *generatedValue->pointer;
-				report("      to " << phi->toString());
+				report("        to " << phi->toString());
 			}
 		}
 	}
@@ -479,9 +479,9 @@ void GlobalValueNumberingPass::_updateDataflow(
 		{
 			if(*potentiallyUsedValue->pointer == *replacedValue->pointer)
 			{
-				report("     updating " << instruction->i->toString());
+				report("      updating " << instruction->i->toString());
 				usedValue = potentiallyUsedValue;
-				report("      to " << instruction->i->toString());
+				report("       to " << instruction->i->toString());
 				break;
 			}
 		}
@@ -498,7 +498,8 @@ void GlobalValueNumberingPass::_updateDataflow(
 	
 	if(replacedValueIsAliveOut)
 	{
-		report("    the value is live out of the block, updating dataflow...");
+		report("      the value is live out of the block, "
+			"updating dataflow...");
 		
 		// Update live-outs
 		block->aliveOut().erase(aliveOutEntry);
@@ -515,12 +516,13 @@ void GlobalValueNumberingPass::_updateDataflow(
 			
 			if(replacedValueIsAliveIn)
 			{
-				report("     updating using successor: " << block->label());
+				report("       updating using successor: "
+					<< (*successor)->label());
 				
 				(*successor)->aliveIn().erase(aliveInEntry);
 				(*successor)->aliveIn().insert(*generatedValue);
 	
-				_updateDataflow(block, replacedValue, generatedValue);
+				_updateDataflow(*successor, replacedValue, generatedValue);
 			}
 		}
 	}

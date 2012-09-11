@@ -3,11 +3,11 @@
 	trace: { 
 		database: "traces-ipdom/database.trace",
 		memoryChecker: {
-			enabled: true,
+			enabled: false,
 			checkInitialization: false
 		},
 		raceDetector: {
-			enabled: true,
+			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
@@ -23,7 +23,7 @@
 			outputFile: "applicationKernelRuntime.json"
 		},
 		performanceCounters: {
-			enabled: true,
+			enabled: false,
 			set: "IPC"
 		},
 		branch: false,
@@ -34,8 +34,8 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ "dynamic" ],
-		partitioningHeuristic: "minimum",
+		devices: [ "emulated" ],
+		partitioningHeuristic: "maximum",
 		workerThreadLimit: 1,
 		warpSize: 1,
 		optimizationLevel: full,
@@ -48,7 +48,7 @@
 		subkernelSize: 1000,
 		vectorizeConvergent: false,
 		vectorizeAffineMemory: false,
-		lazyDynamicCompilation: true
+		lazyDynamicCompilation: false
 	},
 	checkpoint: {
 		enabled: false,

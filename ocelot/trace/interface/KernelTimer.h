@@ -21,6 +21,7 @@ namespace trace {
 		virtual ~KernelTimer();
 		
 		virtual void initialize(const executive::ExecutableKernel& kernel);
+		virtual void event(const TraceEvent &);
 		virtual void finish();
 		
 		std::string outputFile;
@@ -28,6 +29,7 @@ namespace trace {
 	protected:
 		const executive::ExecutableKernel *kernel;
 		executive::EventTimer kernelTimer;
+		size_t dynamicInstructions;
 	};
 }
 

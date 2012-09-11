@@ -24,7 +24,12 @@ trace::KernelTimer::~KernelTimer() {
 
 void trace::KernelTimer::initialize(const executive::ExecutableKernel& kernel) {
 	this->kernel = &kernel;
+	dynamicInstructions = 0;
 	kernelTimer.start();
+}
+
+void trace::KernelTimer::event(const TraceEvent &) {
+	++dynamicInstructions;
 }
 
 void trace::KernelTimer::finish() {
@@ -54,6 +59,7 @@ void trace::KernelTimer::finish() {
 		<< "\"ISA\": \"" << ir::Instruction::toString(kernel->device->properties().ISA) << "\", "
 		<< "\"device\": \"" << kernel->device->properties().name << "\", "
 		<< "\"kernel\": \"" << kernel->name << "\", "
+		<< "\"instructions\": " << dynamicInstructions << ", "
 		<< "\"kernelRuntime\": " << kernelCycles << " }, " << std::endl;
 }
 

@@ -11,6 +11,13 @@
 #include <dlfcn.h>
 
 #if 1
+extern "C" __global__ 
+void simple(int *A) {
+  int i = threadIdx.x + 
+    blockIdx.x * blockDim.x;
+  A[i] = i;
+}
+
 extern "C" __global__ void sequence(int *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	if (i < N) {

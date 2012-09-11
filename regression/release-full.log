@@ -25,120 +25,120 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
-INFO     Test completed in 0.00311493873596 seconds
-INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions
-INFO     Test completed in 0.00217819213867 seconds
+INFO     Test completed in 0.00200796127319 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
-INFO     Test completed in 0.00152897834778 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching
+INFO     Test completed in 0.0052649974823 seconds
 INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall
-INFO     Test completed in 0.00295090675354 seconds
+INFO     Test completed in 0.00268888473511 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
-INFO     Test completed in 0.00189995765686 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D
+INFO     Test completed in 0.0020899772644 seconds
 INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
-
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0018138885498 seconds
-INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence
-INFO     Test completed in 0.00325512886047 seconds
+INFO     Test completed in 0.00133800506592 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions
+INFO     Test completed in 0.00242495536804 seconds
+INFO      It produced the following output:
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer -i ../tests/ptx 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator
+INFO     Test completed in 0.00271105766296 seconds
+INFO      It produced the following output:
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer
-INFO     Test completed in 0.00284790992737 seconds
+INFO     Test completed in 0.00283002853394 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0018949508667 seconds
-INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray
-INFO     Test completed in 0.00212812423706 seconds
+INFO     Test completed in 0.00200486183167 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall
+INFO     Test completed in 0.00283813476562 seconds
+INFO      It produced the following output:
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels
-INFO     Test completed in 0.00233817100525 seconds
+INFO     Test completed in 0.00346207618713 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser -i ../tests/ptx 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
-INFO     Test completed in 0.00196409225464 seconds
-INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale
-INFO     Test completed in 0.00349593162537 seconds
+INFO     Test completed in 0.00211405754089 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser
-INFO     Test completed in 0.00183010101318 seconds
+INFO     Test completed in 0.00297784805298 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
+INFO     Test completed in 0.00180816650391 seconds
+INFO      It produced the following output:
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+
+INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels
+INFO     Test completed in 0.00533199310303 seconds
+INFO      It produced the following output:
+/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
+
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions
-INFO     Test completed in 0.00193214416504 seconds
+INFO     Test completed in 0.00404500961304 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals
-INFO     Test completed in 0.00287008285522 seconds
-INFO      It produced the following output:
-/home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
-
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator
-INFO     Test completed in 0.00210690498352 seconds
+INFO     Test completed in 0.00221490859985 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly
-INFO     Test completed in 0.00179100036621 seconds
+INFO     Test completed in 0.00197005271912 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc
-INFO     Test completed in 0.00235390663147 seconds
+INFO     Test completed in 0.00252413749695 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
 INFO     Test /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph
-INFO     Test completed in 0.00173187255859 seconds
+INFO     Test completed in 0.00137805938721 seconds
 INFO      It produced the following output:
 /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph: error while loading shared libraries: libpapi.so: cannot open shared object file: No such file or directory
 
@@ -146,24 +146,24 @@ INFO
 Passing tests:
 
 Failing tests:
- (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Did not complete.
+ (0.001s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaSequence : Did not complete.
  (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXAssembly : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Did not complete.
+ (0.001s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDataflowGraph : Did not complete.
  (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTexture2D : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Did not complete.
- (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Did not complete.
+ (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestIndirectFunctionCall : Did not complete.
+ (0.005s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMKernels : Did not complete.
+ (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaGlobals : Did not complete.
  (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaTextureArray : Did not complete.
  (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLexer : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Did not complete.
- (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Did not complete.
+ (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestPTXToLLVMTranslator : Did not complete.
+ (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCudaMalloc : Did not complete.
+ (0.004s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestExternalFunctions : Did not complete.
+ (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestParser : Did not complete.
+ (0.005s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestDeviceSwitching : Did not complete.
  (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestInstructions : Did not complete.
  (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestLLVMInstructions : Did not complete.
- (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Did not complete.
+ (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestCalVectorScale : Did not complete.
  (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestEmulator : Did not complete.
  (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestFunctionCall : Did not complete.
- (0.002s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Did not complete.
+ (0.003s) : /home/andrew/repositories/gpuocelot/branch/ocelot-vector-subkernel/.release_build/TestKernels : Did not complete.
 

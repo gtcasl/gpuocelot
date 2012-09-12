@@ -48,13 +48,13 @@ int main(int argc, char **arg) {
 		return 1;
 	}
 	
-	if (argc < 2) {
+	if (argc < 2 || (argc == 2 && std::string(arg[1]) == "-h")) {
 		std::cout << "usage: LoadPtx [ptx file] [type] [identifier]\n\n";
 		std::cout << "  Loads a given PTX file. If an object is specified, attempts to obtain a handle\n\n";
 		std::cout << "    type:\n";
-		std::cout << "       t - texture\n";
-		std::cout << "       k - kernel\n";
-		std::cout << "       g - global\n";
+		std::cout << "       -t - texture\n";
+		std::cout << "       -k - kernel\n";
+		std::cout << "       -g - global\n";
 		std::cout << "\n\n" << count << " CUDA devices available. Using " << devName << std::endl;
 		return 0;
 	}
@@ -83,7 +83,7 @@ int main(int argc, char **arg) {
 	
 	result = cuModuleLoad(&module, arg[1]);
 	if (result != CUDA_SUCCESS) {
-		report("cuModuleLoad() failed: " << result);
+		report("cuModuleLoad() failed: " << result << " on module '" << arg[1] << "'");
 		return 1;
 	}
 	
@@ -92,7 +92,7 @@ int main(int argc, char **arg) {
 	for (int i = 2; i < argc; i+=2) {
 		if (i + 1 < argc) {
 			std::string type = arg[i];
-			if (type == "g") {
+			if (type == "-g") {
 				CUdeviceptr object;
 				size_t bytes = 0;
 				result = cuModuleGetGlobal(&object, &bytes,module, arg[i+1]);
@@ -101,10 +101,10 @@ int main(int argc, char **arg) {
 						<< "' with result : " << result);
 					return 1;
 				}
-				std::cout << "obtained handle to global " << arg[i+1] << " at address " 
+				std::cout << "obtained handle to global '" << arg[i+1] << "' at address " 
 					<< (void *)object << " of size " << bytes << " bytes" << std::endl;
 			}
-			else if (type == "k") {
+			else if (type == "-k") {
 				CUfunction object;
 				result = cuModuleGetFunction(&object, module, arg[i+1]);
 				if (result != CUDA_SUCCESS) {
@@ -112,9 +112,9 @@ int main(int argc, char **arg) {
 						<< " with result: " << result);
 					return 1;
 				}
-				std::cout << "obtained handle to kernel " << arg[i+1] << std::endl;
+				std::cout << "obtained handle to kernel '" << arg[i+1] << "'" << std::endl;
 			}
-			else if (type == "t") {
+			else if (type == "-t") {
 				CUtexref object;
 				result = cuModuleGetTexRef(&object, module, arg[i+1]);
 				if (result != CUDA_SUCCESS) {
@@ -122,7 +122,7 @@ int main(int argc, char **arg) {
 						arg[i+1] << "' with result : " << result);
 					return 1;
 				}
-				std::cout << "obtained handle to texture " << arg[i+1] << std::endl;
+				std::cout << "obtained handle to texture '" << arg[i+1] << "'" << std::endl;
 			}
 			else {
 				std::cout << "Unknown definition type '" << type << "'" << std::endl;

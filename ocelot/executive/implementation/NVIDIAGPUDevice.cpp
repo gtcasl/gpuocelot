@@ -15,6 +15,8 @@
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/SharedPtrAttribute.h>
 
 // hydrazine includes
 #include <hydrazine/interface/SystemCompatibility.h>
@@ -387,10 +389,17 @@ namespace executive
 	{
 		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
 		
+		// deal with .ptr.shared kernel parameter attributes
+		ir::Module copyModule = *ir;
+		transforms::PassManager manager(&copyModule);
+		transforms::SharedPtrAttribute ptrAttributePass;
+		manager.addPass(ptrAttributePass);
+		manager.runOnModule(); 
+		
 		assert(!loaded());
 		std::stringstream stream;
 		
-		ir->writeIR(stream, ir::PTXEmitter::Target_NVIDIA_PTX30);
+		copyModule.writeIR(stream, ir::PTXEmitter::Target_NVIDIA_PTX30);
 
 #if REPORT_PTX_WITH_LINENUMBERS == 1		
 		reportE(REPORT_PTX, " Binary is:\n" 

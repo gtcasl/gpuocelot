@@ -10,6 +10,7 @@
 #include <sstream>
 #include <vector>
 
+#include <ocelot/ir/interface/PTXEmitter.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 
@@ -68,7 +69,7 @@ namespace ir {
 		bool isArgument() const;
 		
 		/*! \brief Return a parsable string representing the parameter */
-		std::string toString() const;
+		std::string toString(PTXEmitter::Target = PTXEmitter::Target_OcelotIR) const;
 		
 		/*! \brief returns true if the parameter is declared to be a pointer to
 			some state space (i.e., ptrAddressSpace != AddressSpace_invalid */

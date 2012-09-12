@@ -8,6 +8,7 @@
 #define IR_PTX_KERNEL_H_INCLUDED
 
 // Ocelot Includes
+#include <ocelot/ir/interface/PTXEmitter.h>
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
@@ -61,7 +62,8 @@ namespace ir
 				Prototype();
 				
 				/*! \brief emits a PTX form of the prototype */
-				std::string toString() const;
+				std::string toString(
+					PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
 				
 				/*! \brief emits a mangled form of the function prototype */
 				std::string getMangledName() const;
@@ -161,7 +163,8 @@ namespace ir
 			virtual bool executable() const;
 
 			/*! \brief Write this kernel to a parseable string */
-			virtual void write(std::ostream& stream) const;
+			virtual void write(std::ostream& stream, 
+				PTXEmitter::Target = PTXEmitter::Target_OcelotIR) const;
 			
 	};
 

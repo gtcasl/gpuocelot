@@ -129,7 +129,7 @@ bool ir::Parameter::isArgument() const {
 	return argument;
 }
 
-std::string ir::Parameter::toString() const {
+std::string ir::Parameter::toString(PTXEmitter::Target emitterTarget) const {
 	std::stringstream stream;
 	stream << ".param ";
 	
@@ -141,14 +141,27 @@ std::string ir::Parameter::toString() const {
 			stream << " .ptr";
 		}
 		else {
-			if (ptrAddressSpace == PTXInstruction::Global) {
+			switch (emitterTarget) {
+			case PTXEmitter::Target_OcelotIR:
+			{
 				stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);
-			}
-			else {
-				// TEMPORARY WORKAROUND: suppress .ptr .shared tokens to accommodate cuModuleLoadData()
-				//
-				stream << " .ptr ." << PTXInstruction::toString(PTXInstruction::Global);
-				// intentionally blank
+			} break;
+			case PTXEmitter::Target_NVIDIA_PTX30:
+			{
+				if (ptrAddressSpace != PTXInstruction::Global) {
+					// Explanation: as of September 4, 2012, the NVIDIA CUDA driver does not accept
+					// .ptr .shared as kernel parameter attributes. It only permits .ptr and .ptr.global.
+					// Thus, I've defined the PTXEmitter class which provides an enumeration defining the
+					// target for the emitter.
+					//
+					stream << " /* .ptr ." << PTXInstruction::toString(ptrAddressSpace) << " */ ";
+				}
+				else {
+					stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);
+				}
+			} break;
+			default:
+				break;
 			}
 		}
 	}

@@ -136,6 +136,9 @@ namespace opencl {
 		//! load ptx through backdoor
 		std::string _loadBackDoor();
 
+		//! compile source to ptx binary
+		std::string _compileToBinary();
+
 		//! check if built for a device
 		bool _isBuiltOnDevice(Device * device);
 

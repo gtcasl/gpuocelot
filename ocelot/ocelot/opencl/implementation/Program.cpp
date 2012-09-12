@@ -14,7 +14,7 @@ unsigned int opencl::Program::_id = 0;
 std::string opencl::Program::_loadBackDoor() {
 
 	//Temorarily load ptx file as built binary
-	std::ifstream binary("buildout.ptx", std::ifstream::in); 
+	std::ifstream binary("buildout.ptx"); 
 	if(binary.fail()) {
 		assertM(false, "using build backdoor but buildout.ptx not found");
 		throw CL_BUILD_PROGRAM_FAILURE;
@@ -38,6 +38,58 @@ std::string opencl::Program::_loadBackDoor() {
 
 	return temp;
 
+}
+
+std::string opencl::Program::_compileToBinary() {
+
+	std::string clName = _name;
+	clName += ".cl";
+	std::string ptxName = _name;
+	ptxName += ".ptx";
+
+	//Temporarily store source to cl file
+	std::ofstream clFile(clName.c_str());
+	if(clFile.fail()) {
+		throw CL_OUT_OF_HOST_MEMORY;
+	}
+	clFile << _source;
+	clFile.close();
+
+	//Compile cl to ptx
+	std::string compileCommand = "clang -ccc-host-triple nvptx64--nvidiacl \
+   -Xclang -mlink-bitcode-file \
+   -Xclang $HOME/libclc/nvptx64--nvidiacl/lib/builtins.bc \
+   -I$HOME/libclc/generic/include -I$HOME/libclc/ptx-nvidiacl/include \
+   -include clc/clc.h -Dcl_clang_storage_class_specifiers \
+   -Dcl_khr_fp64 -O3 ";
+	compileCommand += clName;
+	compileCommand += " -S -o ";
+	compileCommand += ptxName;
+
+	report(compileCommand);
+	int result = system(compileCommand.c_str());
+	if(result != 0)
+		throw CL_BUILD_PROGRAM_FAILURE;
+
+	//Read in ptx
+	std::ifstream ptxFile(ptxName.c_str());
+	if(ptxFile.fail())
+		throw CL_OUT_OF_HOST_MEMORY;
+	
+	//Get file size
+	ptxFile.seekg(0, std::ios::end);
+	size_t size = ptxFile.tellg();
+	ptxFile.seekg(0, std::ios::beg);
+	
+	if(!size) 
+		throw CL_BUILD_PROGRAM_FAILURE;
+
+	//Read file to temporary buffer	
+	std::string temp;
+	temp.resize(size);
+	ptxFile.read((char*)temp.data(), size);
+
+	return temp;
 }
 
 bool opencl::Program::_isBuiltOnDevice(Device * device) {
@@ -93,7 +145,7 @@ void opencl::Program::_loadBinaryOnDevice(Device * device, const size_t length,
 	_deviceBuiltInfo[device]._binary = std::move(binaryStr.str());
 }
 
-void opencl::Program::_buildOnDevice(Device * device, std::string backdoorBinary) {
+void opencl::Program::_buildOnDevice(Device * device, std::string binary) {
 
 	std::stringstream moduleName;
 	moduleName << _name;
@@ -108,8 +160,8 @@ void opencl::Program::_buildOnDevice(Device * device, std::string backdoorBinary
 		}
 
 		if(_deviceBuiltInfo[device]._binary.empty()) {
-			assert(!backdoorBinary.empty());
-			_deviceBuiltInfo[device]._binary = backdoorBinary;
+			assert(!binary.empty());
+			_deviceBuiltInfo[device]._binary = binary;
 		}
 
 		std::string binaries = _deviceBuiltInfo[device]._binary;
@@ -368,7 +420,8 @@ void opencl::Program::build(const char * options,
 	if(_type == PROGRAM_SOURCE) {//source code
 		
 		// Load backdoor ptx
-		std::string binary = _loadBackDoor();	
+//		std::string binary = _loadBackDoor();	
+		std::string binary = _compileToBinary();	
 
 		for(Device::DeviceList::iterator d = _buildDevices.begin(); d != _buildDevices.end(); d++) {
 

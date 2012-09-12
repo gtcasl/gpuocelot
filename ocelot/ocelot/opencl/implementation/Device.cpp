@@ -4,8 +4,6 @@
 
 // Ocelot includes
 #include <ocelot/opencl/interface/Device.h>
-#include <ocelot/transforms/interface/SharedPtrAttribute.h>
-#include <ocelot/transforms/interface/PassManager.h>
 
 opencl::Device::DeviceList opencl::Device::_deviceList = opencl::Device::DeviceList();
 
@@ -54,7 +52,7 @@ void opencl::Device::_enumerateDevices(cl_platform_id platform) {
 		if(config::get().executive.enableLLVM) {
 			executive::DeviceVector	d = executive::Device::createDevices(ir::Instruction::LLVM, _flags,
 				_computeCapability);
-			type = CL_DEVICE_TYPE_CPU;
+			type = CL_DEVICE_TYPE_GPU;
 			vendor = "OCELOT";
 			report(" - Added " << d.size() << " llvm-cpu devices." );
 			if (config::get().executive.workerThreadLimit > 0) {
@@ -582,12 +580,6 @@ void opencl::Device::load(ir::Module * module) {
 		return;
 
 	module->loadNow();
-
-	transforms::PassManager manager(module);
-	transforms::SharedPtrAttribute sharedPass;
-	manager.addPass(sharedPass);
-	manager.runOnModule();
-	
 
 	_exeDevice->select();
 	_exeDevice->load(module);

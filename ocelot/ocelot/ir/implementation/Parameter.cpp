@@ -154,7 +154,7 @@ std::string ir::Parameter::toString(PTXEmitter::Target emitterTarget) const {
 					// Thus, I've defined the PTXEmitter class which provides an enumeration defining the
 					// target for the emitter.
 					//
-					stream << " /* .ptr ." << PTXInstruction::toString(ptrAddressSpace) << " */ ";
+					stream << " .ptr ." << PTXInstruction::toString(PTXInstruction::Global);
 				}
 				else {
 					stream << " .ptr ." << PTXInstruction::toString(ptrAddressSpace);

@@ -15,7 +15,7 @@
  *  form it).
  *
  *  In the case of unstructured control flow graphs, a forward copy
- *  transformation is applied to deal with interacting forward branches, as
+ *  transformation is applied to handle interacting forward branches, as
  *  explained in [1].
  *
  *  [1] Fubo Zhang and Erik H. D.Hollander. Using hammock graphs to structure 
@@ -32,6 +32,8 @@
 #include <list>
 #include <vector>
 #include <unordered_set>
+#include <string>
+#include <ostream>
 
 typedef ir::ControlFlowGraph CFG;
 
@@ -166,6 +168,10 @@ namespace ir
 			/*! \brief write a graphviz-compatible file for visualizing the 
 			 * control tree */
 			std::ostream& write(std::ostream& out) const;
+
+			/*! \brief write a graphviz-compatible file for visualizing the 
+			 * abstract flowgraph */
+			std::ostream& write_abstract(std::ostream& out) const;
 
 			/*! \brief returns the root node of the control tree */
 			const Node* get_root_node() const;

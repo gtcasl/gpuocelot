@@ -155,7 +155,7 @@ namespace ir
 
 	std::ostream& ControlTree::write(std::ostream& out) const
 	{
-		std::unordered_map<Node*, unsigned int> bmap;
+		std::unordered_map<Node*, unsigned int> nmap;
 
 		out << "digraph {" << std::endl;
 
@@ -163,14 +163,15 @@ namespace ir
 		out << "  // nodes" << std::endl;
 
 		int i = 0;
-		for (NodeVector::const_iterator n = _nodes.begin() ; n != _nodes.end() ; 
-				++n, ++i)
+		for (NodeVector::const_iterator n = _nodes.begin() ; 
+				n != _nodes.end() ; ++n, ++i)
 		{
-			bmap[*n] = i;
+			nmap[*n] = i;
 			if ((*n)->rtype() == Inst)
 			{
 				out << "  bb_" << i;
-				out	<< " [shape=record,label=\"{" << (*n)->label();
+				out << " [shape=record,label=\"{";
+				out << (*n)->label();
 
 				// emit instructions
 				InstNode* m = static_cast<InstNode *>(*n);
@@ -184,10 +185,13 @@ namespace ir
 				}
 
 				out << "}\"];";
-			} else 
+			} 
+			else 
 			{
 				out << "  bb_" << i;
-				out << " [label=\"" << (*n)->label() << "\"];";
+				out << " [label=\"";
+				out << (*n)->label();
+				out << "\"];";
 			}
 			out << std::endl;
 		}
@@ -202,14 +206,63 @@ namespace ir
 			NodeList::const_iterator child;
 			for (child = children.begin() ; child != children.end() ; child++)
 			{
-				out << "  bb_" << bmap[*n];
+				out << "  bb_" << nmap[*n];
 				out	<< " -> ";
-				out	<< "bb_" << bmap[*child];
+				out	<< "bb_" << nmap[*child];
 				out << ";" << std::endl;
 			}
 		}
 		out << "}" << std::endl;
 
+		return out;
+	}
+
+	std::ostream& ControlTree::write_abstract(std::ostream &out) const
+	{
+		std::unordered_map<Node*, unsigned int> nmap;
+	
+		out << "digraph {" << std::endl;
+	
+		// emit abstract nodes
+		out << "  // abstract nodes" << std::endl;
+
+		int i = 0;
+		for (NodeList::const_reverse_iterator n = _post.rbegin();
+				n != _post.rend() ; ++n, ++i)
+		{
+			nmap[*n] = i;
+
+			out << "  n" << i;
+			out << " [label=\"";
+			out << (*n)->label();
+			out << "\"];";
+			out << std::endl;
+		}
+	
+		// emit abstract edges
+		out << std::endl << "  // abstract edges" << std::endl;
+
+		for (NodeList::const_reverse_iterator n = _post.rbegin() ; 
+				n != _post.rend() ; ++n)
+		{
+			for (NodeSet::iterator s = (*n)->succs().begin() ;
+					s != (*n)->succs().end() ; ++s)
+			{
+				const Edge e(*n, *s);
+
+				out << "  n" << nmap[e.first];
+				out << " -> ";
+				out << "n" << nmap[e.second];
+
+				if (e.first->fallthrough() == e.second) 
+					out << "[color=blue]";
+				
+				out << ";" << std::endl;
+			}
+		}
+		
+		out << "}" << std::endl;
+	
 		return out;
 	}
 
@@ -730,11 +783,7 @@ namespace ir
 				}
 			}
 
-			if (!changed)
-			{
-				changed = _forward_copy(entry);
-			}
-
+			changed = changed || _forward_copy(entry);
 			assertM(changed, "Irreducible CFG");
 		} while (_post.size() > 1);
 

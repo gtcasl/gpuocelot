@@ -12,6 +12,7 @@
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
 #include <ocelot/trace/interface/InteractiveDebugger.h>
+#include <ocelot/trace/interface/KernelTimer.h>
 
 #include <ocelot/transforms/interface/StructuralTransform.h>
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
@@ -31,6 +32,7 @@ namespace ocelot
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
 		trace::InteractiveDebugger _debugger;
+		trace::KernelTimer _kernelTimer;
 
 		transforms::StructuralTransform _structuralTransform;
 		transforms::ConvertPredicationToSelectPass _predicationToSelect;

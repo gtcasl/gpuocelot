@@ -1518,9 +1518,11 @@ namespace executive
 			<< " in module " << moduleName);
 		
 		ArrayMap::iterator array = _arrays.find(textureName);
-		assert(array != _arrays.end());
-		delete array->second;
-		_arrays.erase(array);		
+		if (array != _arrays.end()) {
+			assert(array != _arrays.end());
+			delete array->second;
+			_arrays.erase(array);
+		}
 	}
 	
 	void* NVIDIAGPUDevice::getTextureReference(const std::string& moduleName, 

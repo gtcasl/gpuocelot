@@ -3,7 +3,7 @@
 	\brief CUDA Driver API version of the sequence program
 */
 
-#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/CudaDriver.h>
 #include <iostream>
 
 #define report(x) std::cout << x << std::endl
@@ -13,36 +13,38 @@ std::ostream & operator<<(std::ostream &out, CUresult r) {
 	return out;
 }
 
+typedef cuda::CudaDriver driver;
+
 int main(int argc, char **arg) {
 	
-	CUresult result = cuInit(0);
+	CUresult result = driver::cuInit(0);
 	if (result != CUDA_SUCCESS) {
 		report("cuInit() failed: " << result);
 		return 1;
 	}
 	
 	int driverVersion = 0;
-	result = cuDriverGetVersion(&driverVersion);
+	result = driver::cuDriverGetVersion(&driverVersion);
 	if (result != CUDA_SUCCESS) {
 		report("cuDriverGetVersion() failed: " << result);
 	}
 	
 	int count = 0;
-	result = cuDeviceGetCount(&count);
+	result = driver::cuDeviceGetCount(&count);
 	if (result != CUDA_SUCCESS) {
 		report("cuDeviceGetCount() failed: " << result);
 		return 1;
 	}
 	
 	CUdevice device;
-	result = cuDeviceGet(&device, 0);
+	result = driver::cuDeviceGet(&device, 0);
 	if (result != CUDA_SUCCESS) {
 		report("cuDeviceGet() failed: " << result);
 		return 1;
 	}
 	
 	char devName[256] = {0};
-	result = cuDeviceGetName(devName, 255, device);
+	result = driver::cuDeviceGetName(devName, 255, device);
 	if (result != CUDA_SUCCESS) {
 		report("cuDeviceGetName() failed: " << result);
 		return 1;
@@ -60,7 +62,7 @@ int main(int argc, char **arg) {
 	}
 	
 	int major, minor;
-	result = cuDeviceComputeCapability(&major, &minor, device);
+	result = driver::cuDeviceComputeCapability(&major, &minor, device);
 	if (result != CUDA_SUCCESS) {
 		report("cuDeviceComputeCapability() failed: " << result);
 		return 1;
@@ -69,19 +71,19 @@ int main(int argc, char **arg) {
 	CUcontext ctx;
 	CUmodule module;
 
-	result = cuCtxCreate(&ctx, 0, device);
+	result = driver::cuCtxCreate(&ctx, 0, device);
 	if (result != CUDA_SUCCESS) {
 		report("cuCtxCreate() failed: " << result);
 		return 1;
 	}
 	
 	int pi = 0;
-	result = cuDeviceGetAttribute(&pi, CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, device);
+	result = driver::cuDeviceGetAttribute(&pi, CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, device);
 	if (result != CUDA_SUCCESS) {
 		report("cuDeviceGetAttribute() failed: " << result);
 	}
 	
-	result = cuModuleLoad(&module, arg[1]);
+	result = driver::cuModuleLoad(&module, arg[1]);
 	if (result != CUDA_SUCCESS) {
 		report("cuModuleLoad() failed: " << result << " on module '" << arg[1] << "'");
 		return 1;
@@ -95,7 +97,7 @@ int main(int argc, char **arg) {
 			if (type == "-g") {
 				CUdeviceptr object;
 				size_t bytes = 0;
-				result = cuModuleGetGlobal(&object, &bytes,module, arg[i+1]);
+				result = driver::cuModuleGetGlobal(&object, &bytes,module, arg[i+1]);
 				if (result != CUDA_SUCCESS) {
 					report("cuModuleGetGlobal() failed to obtain handle to global '" << arg[i+1]
 						<< "' with result : " << result);
@@ -106,7 +108,7 @@ int main(int argc, char **arg) {
 			}
 			else if (type == "-k") {
 				CUfunction object;
-				result = cuModuleGetFunction(&object, module, arg[i+1]);
+				result = driver::cuModuleGetFunction(&object, module, arg[i+1]);
 				if (result != CUDA_SUCCESS) {
 					report("cuModuleGetFunction() failed to obtain handle to function " << arg[i+1]
 						<< " with result: " << result);
@@ -116,7 +118,7 @@ int main(int argc, char **arg) {
 			}
 			else if (type == "-t") {
 				CUtexref object;
-				result = cuModuleGetTexRef(&object, module, arg[i+1]);
+				result = driver::cuModuleGetTexRef(&object, module, arg[i+1]);
 				if (result != CUDA_SUCCESS) {
 					report("cuModuleGetTexRef() failed to obtain handle to texture '" << 
 						arg[i+1] << "' with result : " << result);

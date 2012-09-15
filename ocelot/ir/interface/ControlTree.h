@@ -14,8 +14,9 @@
  *  node and the regions that are its descendants (and that were abstracted to
  *  form it).
  *
- *  In the case of unstructured control flow graphs, a forward copy
- *  transformation is applied to handle interacting forward branches, as
+ *  In the case of unstructured control flow graphs, a cut copy transformation
+ *  is applied to handle loops with outgoing forward branches and a forward copy
+ *  transformation is applied to handle interacting forward branches, as 
  *  explained in [1].
  *
  *  [1] Fubo Zhang and Erik H. D.Hollander. Using hammock graphs to structure 
@@ -110,21 +111,17 @@ namespace ir
 			class InstNode : public Node
 			{
 				public:
-					typedef CFG::InstructionList InstructionList;
-
 					/*! \brief Constructor */
 					InstNode(const std::string& label,
-							const CFG::const_iterator& bb);
+							const CFG::InstructionList& bb);
 
 					/*! /brief Get the basic block in the cfg */
-					const CFG::const_iterator& bb() const;
+					const CFG::InstructionList& ins() const;
 
 				private:
 					/*! \brief Iterator to the basic block in the cfg */
-					const CFG::const_iterator _bb;
+					const CFG::InstructionList _ins;
 			};
-
-			typedef InstNode::InstructionList InstructionList;
 
 			/*! \brief A sequence of nodes */
 			class BlockNode : public Node
@@ -227,13 +224,18 @@ namespace ir
 			void _elim_unreach_code(ControlTree::Node* en);
 			bool _forward_copy(Node* entry);
 
+			EdgeVector _find_backward_branches();
+			EdgeVector _find_exit_branches(const Edge& loop);
+			void _cut_copy_transform(Edge& l, EdgeVector& exitBranches);
+			bool _cut_copy(Node* entry);
+
 			NodeVector _nodes;
 			NodeList _post;
 			NodeList::iterator _postCtr;
 			NodeSet _visit;
 			Node* _root;
 			NodeVector _lexical;
-			EdgeVector _fwdBranches;
+			EdgeVector _fwdBranches, _bwdBranches;
 	};
 }
 

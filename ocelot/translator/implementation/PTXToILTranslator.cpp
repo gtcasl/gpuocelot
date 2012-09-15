@@ -84,10 +84,8 @@ namespace translator
 
 	void PTXToILTranslator::_translate(const CT::InstNode* node)
 	{
-		for (CT::InstructionList::const_iterator
-				ins = node->bb()->instructions.begin(), 
-				end = node->bb()->instructions.end() ;
-				ins != end ; ins++)
+		for (CFG::InstructionList::const_iterator ins = node->ins().begin(), 
+				end = node->ins().end() ; ins != end ; ins++)
 		{
 			_translate(static_cast<ir::PTXInstruction &>(**ins));
 		}
@@ -111,8 +109,7 @@ namespace translator
 				const CT::InstNode* inode = 
 					static_cast<const CT::InstNode*>(node);
 
-				return static_cast<ir::PTXInstruction*>(
-						inode->bb()->instructions.back());
+				return static_cast<ir::PTXInstruction*>(inode->ins().back());
 			}
 			case CT::Block:
 			{

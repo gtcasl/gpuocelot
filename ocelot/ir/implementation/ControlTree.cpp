@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <queue>
 #include <iterator>
+#include <fstream>
 
 // Boost includes
 #include <boost/bind.hpp>
@@ -25,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace ir
 {
@@ -42,11 +43,11 @@ namespace ir
 		Node* end = 0;
 		std::unordered_map<CFG::const_iterator, Node*> bmap;
 
-		CFG::const_iterator bb;
-		for (bb = cfg->begin() ; bb != cfg->end() ; bb++)
+		for (CFG::const_iterator bb = cfg->begin() ; bb != cfg->end() ; bb++)
 		{
 			report("Inserting node " << bb->label);
-			Node *node = _insert_node(new InstNode(bb->label, bb));
+			Node *node = _insert_node(
+					new InstNode(bb->label, bb->instructions));
 			bmap[bb] = node;
 		}
 
@@ -175,9 +176,9 @@ namespace ir
 
 				// emit instructions
 				InstNode* m = static_cast<InstNode *>(*n);
-				for (InstructionList::const_iterator 
-						ins = m->bb()->instructions.begin(), 
-						end = m->bb()->instructions.end() ;
+				for (CFG::InstructionList::const_iterator 
+						ins = m->ins().begin(), 
+						end = m->ins().end() ;
 						ins != end ; ins++)
 				{
 					out << " | " << 
@@ -272,14 +273,14 @@ namespace ir
 	}
 
 	ControlTree::InstNode::InstNode(const std::string& label, 
-			const CFG::const_iterator& bb) 
-		: Node(label, Inst, NodeList()), _bb(bb)
+			const CFG::InstructionList& ins) 
+		: Node(label, Inst, NodeList()), _ins(ins)
 	{
 	}
 
-	const CFG::const_iterator& ControlTree::InstNode::bb() const
+	const CFG::InstructionList& ControlTree::InstNode::ins() const
 	{
-		return _bb;
+		return _ins;
 	}
 
 	ControlTree::BlockNode::BlockNode(const std::string& label, 
@@ -783,7 +784,10 @@ namespace ir
 				}
 			}
 
-			changed = changed || _forward_copy(entry);
+			// create hammock graphs
+			if (!changed) changed = _cut_copy(entry);
+			if (!changed) changed = _forward_copy(entry);
+
 			assertM(changed, "Irreducible CFG");
 		} while (_post.size() > 1);
 
@@ -873,8 +877,8 @@ namespace ir
 			{
 				Edge branch = (*node)->get_branch_edge();
 
-				NodeVector::iterator head = node;
-				NodeVector::iterator tail = find(++head, _lexical.end(), 
+				// TODO call _isBackedge
+				NodeVector::iterator tail = find(node + 1, _lexical.end(), 
 						branch.second);
 
 				if (tail != _lexical.end()) 
@@ -992,7 +996,7 @@ namespace ir
 				report("Clonning " << node->label() << " as " << label);
 
 				const InstNode* inode = static_cast<const InstNode*>(node);
-				return _insert_node(new InstNode(label, inode->bb()));
+				return _insert_node(new InstNode(label, inode->ins()));
 			}
 			case Block:
 			{
@@ -1000,7 +1004,7 @@ namespace ir
 				for (NodeList::const_iterator child = node->children().begin();
 						child != node->children().end(); ++child)
 				{
-					_clone_node(*child);
+					children.push_back(_clone_node(*child));
 				}
 
 				std::string label("BlockNode_");
@@ -1017,10 +1021,11 @@ namespace ir
 			{
 				const IfThenNode* ifnode = static_cast<const IfThenNode*>(node);
 
-				_clone_node(ifnode->cond());
-				_clone_node(ifnode->ifTrue());
+				Node* cond = _clone_node(ifnode->cond());
+				Node* ifTrue = _clone_node(ifnode->ifTrue());
+				Node* ifFalse = NULL;
 				if (ifnode->ifFalse() != NULL) 
-					_clone_node(ifnode->ifFalse());
+					ifFalse = _clone_node(ifnode->ifFalse());
 
 				std::string label("IfThenNode_");
 
@@ -1030,9 +1035,8 @@ namespace ir
 
 				report("Clonning " << node->label() << " as " << label);
 
-				return _insert_node(new IfThenNode(label, 
-							ifnode->cond(), ifnode->ifTrue(), 
-							ifnode->ifFalse()));
+				return _insert_node(
+						new IfThenNode(label, cond, ifTrue, ifFalse));
 			}
 			case Natural:
 			{
@@ -1040,7 +1044,7 @@ namespace ir
 				for (NodeList::const_iterator child = node->children().begin();
 						child != node->children().end(); ++child)
 				{
-					_clone_node(*child);
+					children.push_back(_clone_node(*child));
 				}
 
 				std::string label("NaturalNode_");
@@ -1173,6 +1177,7 @@ namespace ir
 		_lexical = _executable_sequence(entry);
 		_fwdBranches = _find_forward_branches();
 
+		// TODO use for loop instead
 		while (!_fwdBranches.empty())
 		{
 			EdgeVector::iterator iFwdBranch = _fwdBranches.begin();
@@ -1247,6 +1252,208 @@ namespace ir
 			}
 
 			_fwdBranches.erase(iFwdBranch);
+		}
+
+		return changed;
+	}
+
+	ControlTree::EdgeVector ControlTree::_find_backward_branches()
+	{
+		EdgeVector bwdBranches;
+
+		for (NodeList::reverse_iterator node = _post.rbegin() ;
+				node != _post.rend() ; ++node)
+		{
+			if ((*node)->has_branch_edge())
+			{
+				Edge branch = (*node)->get_branch_edge();
+
+				if (_isBackedge(branch))
+				{
+					report("Found backward branch " << branch.first->label() 
+							<< " -> " << branch.second->label());
+					bwdBranches.push_back(branch);
+				}
+			}
+		}
+
+		return bwdBranches;
+	}
+
+	ControlTree::EdgeVector ControlTree::_find_exit_branches(const Edge& l)
+	{
+		EdgeVector exitBranches;
+
+		NodeList::iterator lstart = find(_post.begin(), _post.end(), l.second);
+		NodeList::iterator lend   = find(_post.begin(), _post.end(), l.first);
+
+		assertM(lstart != _post.end(), "Invalid node " << l.second->label());
+		assertM(lend   != _post.end(), "Invalid node " << l.first->label());
+
+		for(NodeList::iterator node = lstart ; node != lend ; --node)
+		{
+			if ((*node)->has_branch_edge())
+			{
+				Edge branch = (*node)->get_branch_edge();
+
+				NodeList::iterator lnext = ++lstart;
+				--lstart;
+				if (find(lend, lnext, branch.second) == lnext)
+				{
+					report("Found exit branch " << branch.first->label() << " -> " 
+							<< branch.second->label());
+					exitBranches.push_back(branch);
+				}
+			}
+		}
+
+		return exitBranches;
+	}
+
+	void ControlTree::_cut_copy_transform(Edge& l, EdgeVector& exitBranches)
+	{
+		// Before loop l, insert:
+		// 1. fpi = false
+		std::string label = "InstNode_";
+
+		std::stringstream ss;
+		ss << _nodes.size();
+		label += ss.str();
+
+		report("Inserting preCut node " << label);
+		Node* preCut = _insert_node(new InstNode(label, CFG::InstructionList()));
+
+		// adjust the postorder traversal
+		_post.insert(++find(_post.begin(), _post.end(), l.second), preCut);
+
+		// link preCut node into abstract flowgraph
+		NodeSet preds(l.second->preds());
+		for (NodeSet::iterator pred = preds.begin() ; 
+				pred != preds.end() ; ++pred)
+		{
+			if (*pred == l.first) continue;
+
+			report("Del " << (*pred)->label() << " -> " << l.second->label());
+			(*pred)->succs().erase(l.second);
+			l.second->preds().erase(*pred);
+
+			(*pred)->succs().insert(preCut);
+			preCut->preds().insert(*pred);
+
+			preCut->succs().insert(l.second);
+			l.second->preds().insert(preCut);
+
+			if ((*pred)->fallthrough() == l.second)
+			{
+				report("Add " << (*pred)->label() << " --> " << preCut->label());
+				(*pred)->fallthrough() = preCut;
+
+				report("Add " << preCut->label() << " --> " << l.second->label());
+				preCut->fallthrough() = l.second;
+			} 
+			else 
+			{
+				report("Add " << (*pred)->label() << " -> " << preCut->label());
+				report("Add " << preCut->label() << " -> " << l.second->label());
+			}
+		}
+		
+		// For each outgoing branch i with guard condition Bi,
+		// replace branch i to target ti by:
+		// 2. if (Bi) then { fpi = true; exit }
+		for (EdgeVector::iterator branch = exitBranches.begin() ;
+				branch != exitBranches.end() ; ++branch)
+		{
+			std::string label = "InstNode_";
+
+			std::stringstream ss;
+			ss << _nodes.size();
+			label += ss.str();
+
+			report("Inserting Cut node " << label);
+			Node* cut = _insert_node(new InstNode(label, CFG::InstructionList()));
+
+			// adjust the postorder traversal
+			_post.insert(find(_post.begin(), _post.end(), branch->first), cut);
+
+			// link cut node into abstract flowgraph
+			report("Del " << branch->first->label() << " -> " << branch->second->label());
+			branch->first->succs().erase(branch->second);
+			branch->second->preds().erase(branch->first);
+
+			report("Add " << cut->label() << " --> " << branch->first->fallthrough()->label());
+			cut->succs().insert(branch->first->fallthrough());
+			cut->fallthrough() = branch->first->fallthrough();
+			branch->first->fallthrough()->preds().insert(cut);
+
+			report("Add " << branch->first->label() << " -> " << cut->label());
+			branch->first->succs().insert(cut);
+			cut->preds().insert(branch->first);
+		}
+		
+		// After loop l insert:
+		// 3. if (fpi) then goto ti
+		for (EdgeVector::iterator branch = exitBranches.begin() ;
+				branch != exitBranches.end() ; ++branch)
+		{
+			std::string label = "InstNode_";
+
+			std::stringstream ss;
+			ss << _nodes.size();
+			label += ss.str();
+
+			report("Inserting postCut node " << label);
+			Node* postCut = _insert_node(new InstNode(label, CFG::InstructionList()));
+
+			// adjust the postorder traversal
+			_post.insert(find(_post.begin(), _post.end(), l.first), postCut);
+
+			// link postCut node into abstract flowgraph
+			report("Del " << l.first->label() << " -> " << l.first->fallthrough()->label());
+			l.first->succs().erase(l.first->fallthrough());
+			l.first->fallthrough()->preds().erase(l.first);
+
+			report("Add " << postCut->label() << " --> " << l.first->fallthrough()->label());
+			postCut->succs().insert(l.first->fallthrough());
+			postCut->fallthrough() = l.first->fallthrough();
+			l.first->fallthrough()->preds().insert(postCut);
+
+			report("Add " << l.first->label() << " --> " << postCut->label());
+			l.first->succs().insert(postCut);
+			l.first->fallthrough() = postCut;
+			postCut->preds().insert(l.first);
+
+			report("Add " << postCut->label() << " -> " << branch->second->label());
+			postCut->succs().insert(branch->second);
+			branch->second->preds().insert(postCut);
+		}
+	}
+
+	bool ControlTree::_cut_copy(Node* entry)
+	{
+		report("Starting Cut Copy Pass...");
+
+		bool changed = false;
+
+		_bwdBranches = _find_backward_branches();
+
+		// for l = the innermost to the outermost loop
+		for (EdgeVector::iterator l = _bwdBranches.begin() ;
+				l != _bwdBranches.end() ; ++l)
+		{
+			report("l = " << l->second->label() << " ... "
+					<< l->first->label());
+
+			// n = the number of exit branches in loop l
+			EdgeVector exitBranches = _find_exit_branches(*l);
+
+			if (exitBranches.size() > 0)
+			{
+				// a cut-copy transformation is applied
+				_cut_copy_transform(*l, exitBranches);
+				
+				changed = true;
+			}
 		}
 
 		return changed;

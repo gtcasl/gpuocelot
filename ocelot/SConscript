@@ -161,7 +161,8 @@ OcelotHarness = env.Program('OcelotKernelTestHarness', \
 env.Depends(OcelotHarness, libocelot)
 
 LoadPtx = env.Program('LoadPtx', ['ocelot/tools/LoadPtx.cpp'], 
-	LIBS=ocelot_dep_libs + ['-lcuda',])
+	LIBS=ocelot_libs)
+env.Depends(LoadPtx, libocelot)
 
 if enableKernelExtractor and os.name != 'nt':		
 	kernelExtractorSources = [

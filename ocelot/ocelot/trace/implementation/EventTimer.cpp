@@ -6,7 +6,14 @@
 */
 
 #include <fstream>
-#include <ocelot/executive/interface/EventTimer.h>
+#include <ocelot/trace/interface/EventTimer.h>
+
+
+#ifdef _WIN32
+	#include <windows.h>
+#elif __APPLE__
+	#include <mach/mach_time.h>
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,13 +22,8 @@ executive::EventTimer::EventTimer(): cycleCount(0),accumulated(0),events(0),maxE
 }
 
 size_t executive::EventTimer::rdtsc() {
-  uint32_t lo, hi;
-  __asm__ __volatile__ (
-  "        xorl %%eax,%%eax \n"
-  "        cpuid"      // serialize
-  ::: "%rax", "%rbx", "%rcx", "%rdx");
-  __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-  return (size_t)(uint64_t)hi << 32 | lo;
+	// revisit later today
+	return 0;
 }
 			
 void executive::EventTimer::start(size_t startCycles) {

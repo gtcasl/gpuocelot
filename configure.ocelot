@@ -4,21 +4,17 @@
 	trace: {
 		database: "traces/database.trace",
 		memoryChecker: {
-			enabled:             true,
-			checkInitialization: false
+			enabled:             True,
+			checkInitialization: False
 		},
 		raceDetector: {
-			enabled:                false,
-			ignoreIrrelevantWrites: false
+			enabled:                False,
+			ignoreIrrelevantWrites: False
 		},
 		debugger: {
-			enabled:      false,
+			enabled:      False,
 			kernelFilter: "",
-			alwaysAttach: true
-		},
-		kernelTimer: {
-			enabled: false,
-			outputFile: "traceKernelTimer.json"
+			alwaysAttach: True
 		}
 	},
 	cuda: {
@@ -31,28 +27,28 @@
 		optimizationLevel:        "full",
 		reconvergenceMechanism:   "ipdom",
 		defaultDeviceID:          0,
-		required:                 false,
-		asynchronousKernelLaunch: true,
+		required:                 False,
+		asynchronousKernelLaunch: True,
 		port:                     2011,
 		host:                     "127.0.0.1",
 		workerThreadLimit:        8,
 		warpSize:                 1
 	},
 	checkpoint: {
-		enabled:  false,
+		enabled:  False,
 		path:   ".",
 		prefix: "kernel_trace_",
 		suffix: ".trace",
-		verify:   false
+		verify:   False
 	},
 	optimizations: {
 		subkernelSize:        10000,
-		simplifyCFG:          true,
-		structuralTransform:  false,
-		predicateToSelect:    false,
-		linearScanAllocation: false,
-		mimdThreadScheduling: false,
-		syncElimination:      false,
-		hoistSpecialValues:   false
+		simplifyCFG:          True,
+		structuralTransform:  False,
+		predicateToSelect:    False,
+		linearScanAllocation: False,
+		mimdThreadScheduling: False,
+		syncElimination:      False,
+		hoistSpecialValues:   False
 	}
 }

@@ -62,7 +62,7 @@ namespace analysis
 
 		/*! Does a particular block post-dominate another block? */
 		bool postDominates(ir::ControlFlowGraph::iterator block, 
-			ir::ControlFlowGraph::iterator potentialPredecessor);
+			ir::ControlFlowGraph::iterator potentialSuccessor);
 
 		/*! Given a block known to be in the control flow graph, 
 			return the post dominator */

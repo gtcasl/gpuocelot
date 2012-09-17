@@ -53,8 +53,11 @@ def build(options):
 	command += " " + options.build_target
 
 	if options.test_level != "none":
-		command += " tests"
-	
+		if options.debug:
+			command += " .debug_build/tests"
+		else:
+			command += " .release_build/tests"
+			
 	command += " test_level=" + options.test_level
 	command += " -j" + options.threads
 

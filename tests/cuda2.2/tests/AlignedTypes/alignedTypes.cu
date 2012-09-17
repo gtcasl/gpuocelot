@@ -201,7 +201,7 @@ unsigned char *d_idata, *d_odata;
 //CPU input data and instance of GPU output data
 unsigned char *h_idataCPU, *h_odataGPU;
 unsigned int hTimer;
-
+I was just trying
 
 
 template<class TData> void runTest(int packedElementSize, int memory_size){

@@ -433,6 +433,18 @@ ir::Global* ir::Module::insertGlobal(const Global& global) {
 	return &insertion.first->second;
 }
 
+void ir::Module::insertGlobalAsStatement(const PTXStatement &statement) {
+    loadNow();
+   
+    if(_globals.find(statement.name) != _globals.end())
+        return;
+   
+    if(!_globals.insert(std::make_pair(statement.name, Global(statement))).second) {
+        throw hydrazine::Exception("Inserted duplicated global - "
+            + statement.name);
+    }
+}   
+
 const std::string& ir::Module::path() const {
 	assert( loaded() );
 	return _modulePath;

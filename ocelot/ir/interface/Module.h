@@ -182,6 +182,8 @@ namespace ir {
 			\return pointer to global instance being inserted
 		*/
 		Global* insertGlobal(const Global& global);
+		
+		void insertGlobalAsStatement(const PTXStatement &statement);
 
 		/*! \brief Gets the module path */
 		const std::string& path() const;

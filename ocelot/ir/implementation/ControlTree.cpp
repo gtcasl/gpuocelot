@@ -26,7 +26,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace ir
 {
@@ -255,7 +255,7 @@ namespace ir
 				out << " -> ";
 				out << "n" << nmap[e.second];
 
-				if (e.first->fallthrough() == e.second) 
+				if (e.first->fallthrough() != e.second) 
 					out << "[color=blue]";
 				
 				out << ";" << std::endl;
@@ -645,6 +645,28 @@ namespace ir
 		return false;
 	}
 
+	ControlTree::NodeList ControlTree::_find_cyclic_region(Node* n, 
+			NodeSet& nodeSet)
+	{
+		NodeList reachUnder;
+
+		reachUnder.clear(); nodeSet.clear();
+
+		for (NodeList::const_iterator m = _post.begin() ;
+				m != _post.end() ; m++)
+		{
+			if (*m != n && _path_back(*m, n)) 
+			{
+				report("Add " << (*m)->label() 
+						<< " to reachUnder of " << n->label());
+				reachUnder.push_front(*m); nodeSet.insert(*m);
+			}
+		}
+		reachUnder.push_front(n); nodeSet.insert(n);
+
+		return reachUnder;
+	}
+
 	ControlTree::Node* ControlTree::_cyclic_region_type(Node* node, 
 			NodeList& nset)
 	{
@@ -749,19 +771,7 @@ namespace ir
 				} else
 				{
 					// locate a cyclic region, if present
-					reachUnder.clear(); nodeSet.clear();
-
-					for (NodeList::const_iterator m = _post.begin() ;
-							m != _post.end() ; m++)
-					{
-						if (*m != n && _path_back(*m, n)) 
-						{
-							report("Add " << (*m)->label() 
-									<< " to reachUnder of " << n->label());
-							reachUnder.push_front(*m); nodeSet.insert(*m);
-						}
-					}
-					reachUnder.push_front(n); nodeSet.insert(n);
+					reachUnder = _find_cyclic_region(n, nodeSet);
 
 					report("Looking for cyclic region from " << n->label());
 					region = _cyclic_region_type(n, reachUnder);
@@ -1280,29 +1290,22 @@ namespace ir
 		return bwdBranches;
 	}
 
-	ControlTree::EdgeVector ControlTree::_find_exit_branches(const Edge& l)
+	ControlTree::EdgeVector ControlTree::_find_exit_branches(const NodeList& loop)
 	{
 		EdgeVector exitBranches;
 
-		NodeList::iterator lstart = find(_post.begin(), _post.end(), l.second);
-		NodeList::iterator lend   = find(_post.begin(), _post.end(), l.first);
-
-		assertM(lstart != _post.end(), "Invalid node " << l.second->label());
-		assertM(lend   != _post.end(), "Invalid node " << l.first->label());
-
-		for(NodeList::iterator node = lstart ; node != lend ; --node)
+		// last node can't have exit branches
+		for (NodeList::const_iterator node = loop.begin() ; 
+				node != --loop.end() ; ++node)
 		{
-			if ((*node)->has_branch_edge())
+			for (NodeSet::iterator succ = (*node)->succs().begin() ;
+					succ != (*node)->succs().end() ; ++succ)
 			{
-				Edge branch = (*node)->get_branch_edge();
-
-				NodeList::iterator lnext = ++lstart;
-				--lstart;
-				if (find(lend, lnext, branch.second) == lnext)
+				if (find(loop.begin(), loop.end(), *succ) == loop.end())
 				{
-					report("Found exit branch " << branch.first->label() << " -> " 
-							<< branch.second->label());
-					exitBranches.push_back(branch);
+					report("Found exit branch " << (*node)->label() << " -> " 
+							<< (*succ)->label());
+					exitBranches.push_back(Edge(*node, *succ));
 				}
 			}
 		}
@@ -1381,13 +1384,15 @@ namespace ir
 			branch->first->succs().erase(branch->second);
 			branch->second->preds().erase(branch->first);
 
-			report("Add " << cut->label() << " --> " << branch->first->fallthrough()->label());
-			cut->succs().insert(branch->first->fallthrough());
-			cut->fallthrough() = branch->first->fallthrough();
-			branch->first->fallthrough()->preds().insert(cut);
+			report("Add " << cut->label() << " --> " << l.first->label());
+			cut->succs().insert(l.first);
+			cut->fallthrough() = l.first;
+			l.first->preds().insert(cut);
 
 			report("Add " << branch->first->label() << " -> " << cut->label());
 			branch->first->succs().insert(cut);
+			if (branch->first->fallthrough() == branch->second)
+				branch->first->fallthrough() = cut;
 			cut->preds().insert(branch->first);
 		}
 		
@@ -1444,14 +1449,18 @@ namespace ir
 			report("l = " << l->second->label() << " ... "
 					<< l->first->label());
 
+			// locate a cyclic region, if present
+			NodeSet nodeSet;
+			NodeList reachUnder = _find_cyclic_region(l->second, nodeSet);
+
 			// n = the number of exit branches in loop l
-			EdgeVector exitBranches = _find_exit_branches(*l);
+			EdgeVector exitBranches = _find_exit_branches(reachUnder);
 
 			if (exitBranches.size() > 0)
 			{
 				// a cut-copy transformation is applied
 				_cut_copy_transform(*l, exitBranches);
-				
+
 				changed = true;
 			}
 		}

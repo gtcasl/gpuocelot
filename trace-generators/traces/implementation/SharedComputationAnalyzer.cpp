@@ -14,6 +14,7 @@
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/string.hpp>
 #include <fstream>
 #include <cfloat>
 

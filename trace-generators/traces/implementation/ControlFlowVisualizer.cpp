@@ -67,9 +67,9 @@ public:
 		out << "style=filled,";
 		out << "shape=record,label=\"{";
 
-		std::pair<int,int> blockRange = generator->kernel->getBlockRange(block->label);
+		std::pair<int,int> blockRange = generator->kernel->getBlockRange(block->label());
 		
-		out << hydrazine::toGraphVizParsableLabel(block->label);
+		out << hydrazine::toGraphVizParsableLabel(block->label());
 		out << " | PCs: [" << blockRange.first << " ,  " << blockRange.second << "] ";
 		for (int i = blockRange.first; i <= blockRange.second; i++) {
 			const ir::PTXInstruction & instr = generator->kernel->instructions.at(i);

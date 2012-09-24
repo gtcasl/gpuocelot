@@ -490,14 +490,15 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	const ir::ControlFlowGraph::BasicBlock *block) {
 	std::stringstream ss;
 
-	if (blockCounter.find(block->label) == blockCounter.end()) {
+	std::string label = block->label();
+	if (blockCounter.find(label) == blockCounter.end()) {
 		ss << "[shape=record,label=\"" << 
-			hydrazine::toGraphVizParsableLabel(block->label) << "\"] // no block counter";
+			hydrazine::toGraphVizParsableLabel(block->label()) << "\"] // no block counter";
 		return ss.str();
 	}
 
-	size_t events = blockCounter[block->label].events, 
-		synchronous = blockCounter[block->label].synchronous;
+	size_t events = blockCounter[block->label()].events, 
+		synchronous = blockCounter[block->label()].synchronous;
 	float t = 0.0f;
 	double activity = (events ? (double)synchronous / (double)events : 0);
 
@@ -518,7 +519,7 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	
 	ss << "[";
 	ss << "fillcolor=\"" << colorToString(r,g,b) << "\",style=filled,";
-	ss << "shape=record,label=\"{" << hydrazine::toGraphVizParsableLabel(block->label) 
+	ss << "shape=record,label=\"{" << hydrazine::toGraphVizParsableLabel(block->label()) 
 		<< " | events: " << events << " | synchronous: " << synchronous << " | activity: " 
 		<< activity << "}\"";
 	if (t < 0.5) {

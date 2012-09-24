@@ -169,7 +169,7 @@ namespace trace
 		}
 	}
 	
-	long long unsigned int CacheSimulator::getTag(ir::PTXU64 addressAccessed)
+	ir::PTXU64 CacheSimulator::getTag(ir::PTXU64 addressAccessed)
 	{
 		int shiftAmount = std::log2( cacheSize / (lineSize * associativity) ) 
 			+ std::log2((lineSize * associativity)); 

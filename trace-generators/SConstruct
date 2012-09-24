@@ -1,5 +1,5 @@
 #
-# SConstruct file for building tarce generators
+# SConstruct file for building trace generators
 #
 
 import subprocess
@@ -51,7 +51,7 @@ libocelotTrace = env.StaticLibrary('ocelotTrace', sources)
 #
 #
 
-applicationLibs = ['ocelot', 'boost_serialization-mt', 'z', 'boost_system-mt', 'pthread', libocelotTrace]
+applicationLibs = [libocelotTrace, 'ocelot', 'libboost_filesystem-mt', 'boost_system-mt', 'boost_serialization-mt', 'z', 'pthread']
 
 #
 #

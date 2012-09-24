@@ -14,6 +14,8 @@
 #include <fstream>
 #include <cfloat>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/string.hpp>
+
 
 namespace trace
 {

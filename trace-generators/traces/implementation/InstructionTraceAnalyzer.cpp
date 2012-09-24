@@ -23,6 +23,8 @@
 
 // Boost includes
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/string.hpp>
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,8 +42,10 @@ static const char * toString(boost::archive::archive_exception::exception_code c
 			return "incompatible_native_format";
     case boost::archive::archive_exception::array_size_too_short:
 			return "array_size_too_short";
+		/*
     case boost::archive::archive_exception::stream_error:
 			return "stream_error";
+			*/
     case boost::archive::archive_exception::invalid_class_name:
 			return "invalid_class_name";
     case boost::archive::archive_exception::unregistered_cast:

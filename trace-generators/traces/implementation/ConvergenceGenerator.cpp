@@ -112,7 +112,7 @@ void trace::ConvergenceGenerator::analyzeKernel(const executive::EmulatedKernel 
 				break;
 			}
 		}
-		counterMap[(*bb_it)->label] = counter;
+		counterMap[(*bb_it)->label()] = counter;
 	}
 	
 	Counter counter;
@@ -154,10 +154,10 @@ public:
 		out << "label=";
 		out << "\"{ ENTRY: " << hydrazine::toGraphVizParsableLabel(generator->kernel->name);
 		
-		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
+		if (generator->counterMap.find(block->label()) != generator->counterMap.end()) {
 		
 			const trace::ConvergenceGenerator::Counter & 
-				counter = generator->counterMap[block->label];
+				counter = generator->counterMap[block->label()];
 				
 			size_t ideal = (counter.warpInstructions * counter.threads);
 			double activity = (ideal ? (double)counter.dynInstructions / (double)ideal : 0.0);
@@ -183,15 +183,15 @@ public:
 		out << "[shape=record,";
 
 		out << "label=";
-		out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
+		out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label());
 		
-		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
+		if (generator->counterMap.find(block->label()) != generator->counterMap.end()) {
 		
 			const trace::ConvergenceGenerator::Counter & 
-				counter = generator->counterMap[block->label];
+				counter = generator->counterMap[block->label()];
 				
-			if (blocksToPC.find(block->label) != blocksToPC.end()) {
-				out << " | near " << generator->kernel->location(blocksToPC[block->label]);
+			if (blocksToPC.find(block->label()) != blocksToPC.end()) {
+				out << " | near " << generator->kernel->location(blocksToPC[block->label()]);
 			}	
 			
 			out << counter;

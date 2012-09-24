@@ -165,7 +165,7 @@ void trace::PerformanceBoundGenerator::analyzeKernel(const executive::EmulatedKe
 	ir::ControlFlowGraph::BlockPointerVector::iterator bb_it;
 	for (bb_it = blocks.begin(); bb_it != blocks.end(); ++bb_it) {
 		Counter counter;
-		counterMap[(*bb_it)->label] = counter;
+		counterMap[(*bb_it)->label()] = counter;
 	}
 	
 	Counter counter;
@@ -209,10 +209,10 @@ public:
 		out << "label=";
 		out << "\"{ KERNEL: " << hydrazine::toGraphVizParsableLabel(generator->kernel->name);
 		
-		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
+		if (generator->counterMap.find(block->label()) != generator->counterMap.end()) {
 		
 			const trace::PerformanceBoundGenerator::Counter & 
-				counter = generator->counterMap[block->label];
+				counter = generator->counterMap[block->label()];
 			
 			/*
 			if (blocksToPC.find(block->label) != blocksToPC.end()) {
@@ -242,10 +242,10 @@ public:
 
 		float t = 1.0f;
 		
-		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
+		if (generator->counterMap.find(block->label()) != generator->counterMap.end()) {
 		
 			const trace::PerformanceBoundGenerator::Counter & 
-				counter = generator->counterMap[block->label];
+				counter = generator->counterMap[block->label()];
 				
 			t = 0.0f;
 			// log-scale color intensity based on number of times block has been reached by a warp
@@ -259,12 +259,12 @@ public:
 			out << "fillcolor=\"" << Formatter::colorToString(r,g,b) << "\",style=filled,";
 			out << "shape=record,label=\"{";
 	
-			out << hydrazine::toGraphVizParsableLabel(block->label);
+			out << hydrazine::toGraphVizParsableLabel(block->label());
 		
-			if (blocksToPC.find(block->label) != blocksToPC.end()) {
-				std::string loc = generator->kernel->location(blocksToPC[block->label]);
+			if (blocksToPC.find(block->label()) != blocksToPC.end()) {
+				std::string loc = generator->kernel->location(blocksToPC[block->label()]);
 				if (loc != ":0:0") {
-					out << " | near " << generator->kernel->location(blocksToPC[block->label]);
+					out << " | near " << generator->kernel->location(blocksToPC[block->label()]);
 				}
 			}	
 			out << counter;
@@ -272,7 +272,7 @@ public:
 		else {
 			out << "[shape=record,";
 			out << "label=";
-			out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
+			out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label());
 		}
 		
 		out << "}\"";

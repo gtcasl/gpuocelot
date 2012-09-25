@@ -129,8 +129,8 @@ executive::Device::DeviceVector executive::RemoteDevice::createDevices(
 	
 	report("Getting " << count << " devices.");
 	for(unsigned int i = 0; i < count; ++i) {
-		PropertiesData& props = *(PropertiesData*)(message.data()
-			+ sizeof(unsigned int) + i * sizeof(PropertiesData));
+		DeviceProperties& props = *(DeviceProperties*)(message.data()
+			+ sizeof(unsigned int) + i * sizeof(DeviceProperties));
 		devices.push_back(new RemoteDevice(i, props, flags));
 	}
 	
@@ -175,7 +175,7 @@ unsigned int executive::RemoteDevice::deviceCount(int computeCapability) {
 
 /*! \brief Sets the device properties, bind this to the cuda id */
 executive::RemoteDevice::RemoteDevice(unsigned int id,
-	const PropertiesData& props, 
+	const DeviceProperties& props, 
 	unsigned int flags) : _selected(false), _id(id) {
 	_properties = Properties(props);
 	

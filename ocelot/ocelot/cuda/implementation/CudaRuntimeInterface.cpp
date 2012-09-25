@@ -136,6 +136,11 @@ void cuda::CudaRuntimeInterface::removeExternalFunction(
 	assert(0 && "unimplemented");
 }
 
+void cuda::CudaRuntimeInterface::getDeviceProperties(
+	executive::DeviceProperties &, int deviceIndex) {
+	assert(0 && "unimplemented");
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 void** cuda::CudaRuntimeInterface::cudaRegisterFatBinary(void *fatCubin) {

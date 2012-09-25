@@ -106,23 +106,27 @@ typedef struct CUuuid_st {                                /**< CUDA definition o
  * Context creation flags
  */
 typedef enum CUctx_flags_enum {
-    CU_CTX_SCHED_AUTO  = 0,         /**< Automatic scheduling */
-    CU_CTX_SCHED_SPIN  = 1,         /**< Set spin as default scheduling */
-    CU_CTX_SCHED_YIELD = 2,         /**< Set yield as default scheduling */
-    CU_CTX_SCHED_MASK  = 0x3,
-    CU_CTX_BLOCKING_SYNC = 4,       /**< Use blocking synchronization */
-    CU_CTX_MAP_HOST = 8,            /**< Support mapped pinned allocations */
-    CU_CTX_LMEM_RESIZE_TO_MAX = 16, /**< Keep local memory allocation after launch */
-    CU_CTX_FLAGS_MASK  = 0x1f
+    CU_CTX_SCHED_AUTO          = 0x00, /**< Automatic scheduling */
+    CU_CTX_SCHED_SPIN          = 0x01, /**< Set spin as default scheduling */
+    CU_CTX_SCHED_YIELD         = 0x02, /**< Set yield as default scheduling */
+    CU_CTX_SCHED_BLOCKING_SYNC = 0x04, /**< Set blocking synchronization as default scheduling */
+    CU_CTX_BLOCKING_SYNC       = 0x04, /**< Set blocking synchronization as default scheduling
+                                         *  \deprecated This flag was deprecated as of CUDA 4.0
+                                         *  and was replaced with ::CU_CTX_SCHED_BLOCKING_SYNC. */
+    CU_CTX_SCHED_MASK          = 0x07, 
+    CU_CTX_MAP_HOST            = 0x08, /**< Support mapped pinned allocations */
+    CU_CTX_LMEM_RESIZE_TO_MAX  = 0x10, /**< Keep local memory allocation after launch */
+    CU_CTX_FLAGS_MASK          = 0x1f
 } CUctx_flags;
 
 /**
  * Event creation flags
  */
 typedef enum CUevent_flags_enum {
-    CU_EVENT_DEFAULT        = 0, /**< Default event flag */
-    CU_EVENT_BLOCKING_SYNC  = 1, /**< Event uses blocking synchronization */
-    CU_EVENT_DISABLE_TIMING = 2  /**< Event will not record timing data */
+    CU_EVENT_DEFAULT        = 0x0, /**< Default event flag */
+    CU_EVENT_BLOCKING_SYNC  = 0x1, /**< Event uses blocking synchronization */
+    CU_EVENT_DISABLE_TIMING = 0x2, /**< Event will not record timing data */
+    CU_EVENT_INTERPROCESS   = 0x4  /**< Event is suitable for interprocess use. CU_EVENT_DISABLE_TIMING must be set */
 } CUevent_flags;
 
 /**
@@ -156,7 +160,6 @@ typedef enum CUfilter_mode_enum {
     CU_TR_FILTER_MODE_POINT  = 0, /**< Point filter mode */
     CU_TR_FILTER_MODE_LINEAR = 1  /**< Linear filter mode */
 } CUfilter_mode;
-
 
 /**
  * Device properties
@@ -210,7 +213,35 @@ typedef enum CUdevice_attribute_enum {
     CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING = 41,                /**< Device shares a unified address space with the host */    
     CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LAYERED_WIDTH = 42,   /**< Maximum 1D layered texture width */
     CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LAYERED_LAYERS = 43,  /**< Maximum layers in a 1D layered texture */
-    CU_DEVICE_ATTRIBUTE_PCI_DOMAIN_ID = 50                      /**< PCI domain ID of the device */
+    CU_DEVICE_ATTRIBUTE_CAN_TEX2D_GATHER = 44,                  /**< Deprecated, do not use. */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_GATHER_WIDTH = 45,    /**< Maximum 2D texture width if CUDA_ARRAY3D_TEXTURE_GATHER is set */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_GATHER_HEIGHT = 46,   /**< Maximum 2D texture height if CUDA_ARRAY3D_TEXTURE_GATHER is set */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_WIDTH_ALTERNATE = 47, /**< Alternate maximum 3D texture width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_HEIGHT_ALTERNATE = 48,/**< Alternate maximum 3D texture height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_DEPTH_ALTERNATE = 49, /**< Alternate maximum 3D texture depth */
+    CU_DEVICE_ATTRIBUTE_PCI_DOMAIN_ID = 50,                     /**< PCI domain ID of the device */
+    CU_DEVICE_ATTRIBUTE_TEXTURE_PITCH_ALIGNMENT = 51,           /**< Pitch alignment requirement for textures */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURECUBEMAP_WIDTH = 52,      /**< Maximum cubemap texture width/height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURECUBEMAP_LAYERED_WIDTH = 53,  /**< Maximum cubemap layered texture width/height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURECUBEMAP_LAYERED_LAYERS = 54, /**< Maximum layers in a cubemap layered texture */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_WIDTH = 55,           /**< Maximum 1D surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_WIDTH = 56,           /**< Maximum 2D surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_HEIGHT = 57,          /**< Maximum 2D surface height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE3D_WIDTH = 58,           /**< Maximum 3D surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE3D_HEIGHT = 59,          /**< Maximum 3D surface height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE3D_DEPTH = 60,           /**< Maximum 3D surface depth */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_LAYERED_WIDTH = 61,   /**< Maximum 1D layered surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_LAYERED_LAYERS = 62,  /**< Maximum layers in a 1D layered surface */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_WIDTH = 63,   /**< Maximum 2D layered surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_HEIGHT = 64,  /**< Maximum 2D layered surface height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_LAYERS = 65,  /**< Maximum layers in a 2D layered surface */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACECUBEMAP_WIDTH = 66,      /**< Maximum cubemap surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACECUBEMAP_LAYERED_WIDTH = 67,  /**< Maximum cubemap layered surface width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACECUBEMAP_LAYERED_LAYERS = 68, /**< Maximum layers in a cubemap layered surface */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LINEAR_WIDTH = 69,    /**< Maximum 1D linear texture width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_WIDTH = 70,    /**< Maximum 2D linear texture width */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_HEIGHT = 71,   /**< Maximum 2D linear texture height */
+    CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_PITCH = 72     /**< Maximum 2D linear texture pitch in bytes */
 } CUdevice_attribute;
 
 /**
@@ -228,6 +259,16 @@ typedef struct CUdevprop_st {
     int clockRate;              /**< Clock frequency in kilohertz */
     int textureAlign;           /**< Alignment requirement for textures */
 } CUdevprop;
+
+/**
+ * Pointer information
+ */
+typedef enum CUpointer_attribute_enum {
+    CU_POINTER_ATTRIBUTE_CONTEXT = 1,        /**< The ::CUcontext on which a pointer was allocated or registered */
+    CU_POINTER_ATTRIBUTE_MEMORY_TYPE = 2,    /**< The ::CUmemorytype describing the physical location of a pointer */
+    CU_POINTER_ATTRIBUTE_DEVICE_POINTER = 3, /**< The address at which a pointer's memory may be accessed on the device */
+    CU_POINTER_ATTRIBUTE_HOST_POINTER = 4    /**< The address at which a pointer's memory may be accessed on the host */
+} CUpointer_attribute;
 
 /**
  * Function properties
@@ -290,25 +331,37 @@ typedef enum CUfunction_attribute_enum {
 typedef enum CUfunc_cache_enum {
     CU_FUNC_CACHE_PREFER_NONE    = 0x00, /**< no preference for shared memory or L1 (default) */
     CU_FUNC_CACHE_PREFER_SHARED  = 0x01, /**< prefer larger shared memory and smaller L1 cache */
-    CU_FUNC_CACHE_PREFER_L1      = 0x02  /**< prefer larger L1 cache and smaller shared memory */
+    CU_FUNC_CACHE_PREFER_L1      = 0x02, /**< prefer larger L1 cache and smaller shared memory */
+    CU_FUNC_CACHE_PREFER_EQUAL   = 0x03  /**< prefer equal sized L1 cache and shared memory */
 } CUfunc_cache;
+
+/**
+ * Shared memory configurations
+ */
+typedef enum CUsharedconfig_enum {
+    CU_SHARED_MEM_CONFIG_DEFAULT_BANK_SIZE    = 0x00, /**< set default shared memory bank size */
+    CU_SHARED_MEM_CONFIG_FOUR_BYTE_BANK_SIZE  = 0x01, /**< set shared memory bank width to four bytes */
+    CU_SHARED_MEM_CONFIG_EIGHT_BYTE_BANK_SIZE = 0x02  /**< set shared memory bank width to eight bytes */
+} CUsharedconfig;
 
 /**
  * Memory types
  */
 typedef enum CUmemorytype_enum {
-    CU_MEMORYTYPE_HOST   = 0x01,    /**< Host memory */
-    CU_MEMORYTYPE_DEVICE = 0x02,    /**< Device memory */
-    CU_MEMORYTYPE_ARRAY  = 0x03     /**< Array memory */
+    CU_MEMORYTYPE_HOST    = 0x01,    /**< Host memory */
+    CU_MEMORYTYPE_DEVICE  = 0x02,    /**< Device memory */
+    CU_MEMORYTYPE_ARRAY   = 0x03,    /**< Array memory */
+    CU_MEMORYTYPE_UNIFIED = 0x04     /**< Unified device or host memory */
 } CUmemorytype;
 
 /**
  * Compute Modes
  */
 typedef enum CUcomputemode_enum {
-    CU_COMPUTEMODE_DEFAULT    = 0,  /**< Default compute mode (Multiple contexts allowed per device) */
-    CU_COMPUTEMODE_EXCLUSIVE  = 1,  /**< Compute-exclusive mode (Only one context can be present on this device at a time) */
-    CU_COMPUTEMODE_PROHIBITED = 2   /**< Compute-prohibited mode (No contexts can be created on this device at this time) */
+    CU_COMPUTEMODE_DEFAULT           = 0, /**< Default compute mode (Multiple contexts allowed per device) */
+    CU_COMPUTEMODE_EXCLUSIVE         = 1, /**< Compute-exclusive-thread mode (Only one context used by a single thread can be present on this device at a time) */
+    CU_COMPUTEMODE_PROHIBITED        = 2, /**< Compute-prohibited mode (No contexts can be created on this device at this time) */
+    CU_COMPUTEMODE_EXCLUSIVE_PROCESS = 3  /**< Compute-exclusive-process mode (Only one context used by a single process can be present on this device at a time) */
 } CUcomputemode;
 
 /**
@@ -413,7 +466,8 @@ typedef enum CUjit_target_enum
     CU_TARGET_COMPUTE_12,       /**< Compute device class 1.2 */
     CU_TARGET_COMPUTE_13,       /**< Compute device class 1.3 */
     CU_TARGET_COMPUTE_20,       /**< Compute device class 2.0 */
-    CU_TARGET_COMPUTE_21        /**< Compute device class 2.1 */
+    CU_TARGET_COMPUTE_21,       /**< Compute device class 2.1 */
+    CU_TARGET_COMPUTE_30        /**< Compute device class 3.0 */
 } CUjit_target;
 
 /**
@@ -431,7 +485,11 @@ typedef enum CUjit_fallback_enum
  * Flags to register a graphics resource
  */
 typedef enum CUgraphicsRegisterFlags_enum {
-    CU_GRAPHICS_REGISTER_FLAGS_NONE  = 0x00
+    CU_GRAPHICS_REGISTER_FLAGS_NONE           = 0x00,
+    CU_GRAPHICS_REGISTER_FLAGS_READ_ONLY      = 0x01,
+    CU_GRAPHICS_REGISTER_FLAGS_WRITE_DISCARD  = 0x02,
+    CU_GRAPHICS_REGISTER_FLAGS_SURFACE_LDST   = 0x04,
+    CU_GRAPHICS_REGISTER_FLAGS_TEXTURE_GATHER = 0x08
 } CUgraphicsRegisterFlags;
 
 /**
@@ -498,7 +556,26 @@ typedef enum cudaError_enum {
      */
     CUDA_ERROR_DEINITIALIZED                  = 4,
 
-
+    /**
+     * This indicates profiling APIs are called while application is running
+     * in visual profiler mode. 
+    */
+    CUDA_ERROR_PROFILER_DISABLED           = 5,
+    /**
+     * This indicates profiling has not been initialized for this context. 
+     * Call cuProfilerInitialize() to resolve this. 
+    */
+    CUDA_ERROR_PROFILER_NOT_INITIALIZED       = 6,
+    /**
+     * This indicates profiler has already been started and probably
+     * cuProfilerStart() is incorrectly called.
+    */
+    CUDA_ERROR_PROFILER_ALREADY_STARTED       = 7,
+    /**
+     * This indicates profiler has already been stopped and probably
+     * cuProfilerStop() is incorrectly called.
+    */
+    CUDA_ERROR_PROFILER_ALREADY_STOPPED       = 8,  
     /**
      * This indicates that no CUDA-capable devices were detected by the installed
      * CUDA driver.
@@ -600,6 +677,12 @@ typedef enum cudaError_enum {
      */
     CUDA_ERROR_UNSUPPORTED_LIMIT              = 215,
 
+    /**
+     * This indicates that the ::CUcontext passed to the API call can
+     * only be bound to a single CPU thread at a time but is already 
+     * bound to a CPU thread.
+     */
+    CUDA_ERROR_CONTEXT_ALREADY_IN_USE         = 216,
 
     /**
      * This indicates that the device kernel source is invalid.
@@ -687,7 +770,60 @@ typedef enum cudaError_enum {
      * mode.
      */
     CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING  = 703,
+    
+    /**
+     * This error indicates that a call to ::cuCtxEnablePeerAccess() is
+     * trying to re-enable peer access to a context which has already
+     * had peer access to it enabled.
+     */
+    CUDA_ERROR_PEER_ACCESS_ALREADY_ENABLED    = 704,
 
+    /**
+     * This error indicates that ::cuCtxDisablePeerAccess() is 
+     * trying to disable peer access which has not been enabled yet 
+     * via ::cuCtxEnablePeerAccess(). 
+     */
+    CUDA_ERROR_PEER_ACCESS_NOT_ENABLED        = 705,
+
+    /**
+     * This error indicates that the primary context for the specified device
+     * has already been initialized.
+     */
+    CUDA_ERROR_PRIMARY_CONTEXT_ACTIVE         = 708,
+
+    /**
+     * This error indicates that the context current to the calling thread
+     * has been destroyed using ::cuCtxDestroy, or is a primary context which
+     * has not yet been initialized.
+     */
+    CUDA_ERROR_CONTEXT_IS_DESTROYED           = 709,
+
+    /**
+     * A device-side assert triggered during kernel execution. The context
+     * cannot be used anymore, and must be destroyed. All existing device 
+     * memory allocations from this context are invalid and must be 
+     * reconstructed if the program is to continue using CUDA.
+     */
+    CUDA_ERROR_ASSERT                         = 710,
+
+    /**
+     * This error indicates that the hardware resources required to enable
+     * peer access have been exhausted for one or more of the devices 
+     * passed to ::cuCtxEnablePeerAccess().
+     */
+    CUDA_ERROR_TOO_MANY_PEERS                 = 711,
+
+    /**
+     * This error indicates that the memory range passed to ::cuMemHostRegister()
+     * has already been registered.
+     */
+    CUDA_ERROR_HOST_MEMORY_ALREADY_REGISTERED = 712,
+
+    /**
+     * This error indicates that the pointer passed to ::cuMemHostUnregister()
+     * does not correspond to any currently registered memory region.
+     */
+    CUDA_ERROR_HOST_MEMORY_NOT_REGISTERED     = 713,
 
     /**
      * This indicates that an unknown internal error has occurred.

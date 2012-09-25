@@ -432,6 +432,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	geometry = Geometry_Invalid;
 	cc = 0;
 	addressSpace = AddressSpace_Invalid;
+	tailCall = false;
 }
 
 ir::PTXInstruction::~PTXInstruction() {

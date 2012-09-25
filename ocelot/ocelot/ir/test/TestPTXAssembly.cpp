@@ -9,7 +9,6 @@
 
 #include <ocelot/ir/test/TestPTXAssembly.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
-
 #include <ocelot/executive/interface/TextureOperations.h>
 
 #include <ocelot/api/interface/ocelot.h>
@@ -33,6 +32,10 @@
 #endif 
 
 #define REPORT_BASE 0
+
+#define VERBOSE_TEST_CONFIGURATION 0
+
+#define PTX_VERSION_AND_TARGET ".version 3.0\n.target sm_30\n"
 
 ////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -128,6 +131,7 @@ T getParameter(void* in, uint32_t offset)
 template<typename T>
 void setParameter(void* output, uint32_t offset, T value)
 {
+//	std::cout << "setParameter(offset = " << offset << ", value = " << value << ")" << std::endl;
 	*(T*)((char*)output + offset) = value;
 }
 
@@ -211,7 +215,7 @@ std::string testFunctionPointerArray_PTX()
 {
 	std::stringstream ptx;
 
-	ptx << ".version 2.3\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 
 	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a)\n";
@@ -306,7 +310,7 @@ std::string testCvta_PTX(ir::PTXOperand::DataType type,
 	std::string typeString   = "." + ir::PTXOperand::toString(type);
 	std::string addressSpace = "." + ir::PTXInstruction::toString(space);
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 
 	if(space != ir::PTXInstruction::Local)
@@ -370,7 +374,7 @@ std::string testLocalMemory_PTX(ir::PTXOperand::DataType dtype,
 
 	std::string dTypeString = "." + ir::PTXOperand::toString(dtype);
 
-	ptx << ".version 2.3\n";
+	ptx << PTX_VERSION_AND_TARGET;
 
 	std::stringstream local;
 
@@ -484,7 +488,7 @@ std::string testTex_PTX(ir::PTXInstruction::Geometry dim,
 	std::string samplerTypeString = "." + ir::PTXOperand::toString(samplerType);
 	std::string dTypeString       = "." + ir::PTXOperand::toString(dtype);
 
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << ".global .texref Texture;\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -607,7 +611,7 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 	std::string sTypeString = "." + ir::PTXOperand::toString(stype);
 	std::string dTypeString = "." + ir::PTXOperand::toString(dtype);
 
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -788,7 +792,7 @@ std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index,
 		vecString = "." + ir::PTXInstruction::toString(v);
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 
 	if(space != ir::PTXInstruction::Param
 		&& space != ir::PTXInstruction::Local)
@@ -919,7 +923,7 @@ std::string testMov_PTX(ir::PTXOperand::DataType type)
 
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -993,7 +997,7 @@ std::string testLops_PTX(ir::PTXInstruction::Opcode opcode,
 
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -1266,7 +1270,7 @@ std::string testSlct_PTX(ir::PTXOperand::DataType type,
 		cmpTypeString = ".s32";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -1362,7 +1366,7 @@ std::string testSelP_PTX(ir::PTXOperand::DataType type)
 
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -1439,7 +1443,7 @@ std::string testSetP_PTX(ir::PTXOperand::DataType stype,
 
 	std::string sTypeString = "." + ir::PTXOperand::toString(stype);
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -1672,7 +1676,7 @@ std::string testSet_PTX(ir::PTXOperand::DataType dtype,
 	std::string dTypeString = "." + ir::PTXOperand::toString(dtype);
 	std::string sTypeString = "." + ir::PTXOperand::toString(stype);
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -1886,7 +1890,7 @@ std::string testSpecial_PTX(ir::PTXInstruction::Opcode opcode, bool ftz)
 {
 	std::stringstream ptx;
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2051,7 +2055,7 @@ std::string testRsqrt_PTX(ir::PTXOperand::DataType type, bool ftz)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2133,7 +2137,7 @@ std::string testRcpSqrt_PTX(ir::PTXOperand::DataType type, bool sqrt,
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2272,7 +2276,7 @@ std::string testFMinMax_PTX(ir::PTXOperand::DataType type, bool min, bool ftz)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2381,7 +2385,7 @@ std::string testAbsNeg_PTX(ir::PTXOperand::DataType type, bool neg, bool ftz)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2473,7 +2477,7 @@ std::string testFdiv_PTX(ir::PTXOperand::DataType type, int modifier)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2598,7 +2602,7 @@ std::string testFma_PTX(ir::PTXOperand::DataType type, int modifier, bool mad)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2709,7 +2713,7 @@ std::string testFmul_PTX(ir::PTXOperand::DataType type, int modifier)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2810,7 +2814,7 @@ std::string testFadd_PTX(ir::PTXOperand::DataType type, int modifier, bool add)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -2922,7 +2926,7 @@ std::string testCopysign_PTX(ir::PTXOperand::DataType type)
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -3007,7 +3011,7 @@ std::string testTestp_PTX(ir::PTXOperand::DataType type,
 		typeString = ".f64";
 	}
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << "\n";
 	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
@@ -3096,6 +3100,7 @@ std::string testCudaNestedParallelism_PTX()
 	std::stringstream ptx;
 
 	ptx <<
+		"// testCudaNestedParallelism_PTX()\n"
 		".version 3.1\n"
 		".target sm_35\n"
 		".address_size 64\n"
@@ -3317,7 +3322,7 @@ std::string testIndirectFunctionCall_PTX()
 {
 	std::stringstream ptx;
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a)\n";
 	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a)\n";
 	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a)\n";
@@ -3425,7 +3430,7 @@ std::string testRecursiveFunctionCall_PTX()
 {
 	std::stringstream ptx;
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << ".visible .func (.param .u32 return) count(.param .u32 a)\n";
 	ptx << "\n";
 	
@@ -3489,7 +3494,7 @@ std::string testDivergentFunctionCall_PTX()
 {
 	std::stringstream ptx;
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << ".visible .func (.param .u32 return) " 
 		<< "add(.param .u32 a, .param .u32 b)\n";
 	ptx << "\n";
@@ -3565,7 +3570,7 @@ std::string testFunctionCalls_PTX(bool uni)
 {
 	std::stringstream ptx;
 	
-	ptx << ".version 2.1\n";
+	ptx << PTX_VERSION_AND_TARGET;
 	ptx << ".visible .func (.param .u32 return) " 
 		<< "add(.param .u32 a, .param .u32 b)\n";
 	ptx << "\n";
@@ -3633,7 +3638,7 @@ std::string testVectorElements_PTX()
 {
 	std::stringstream result;
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -3683,7 +3688,7 @@ std::string testAdd_PTX(ir::PTXOperand::DataType type, bool sat, bool sub)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -3772,7 +3777,7 @@ std::string testCarry_PTX(ir::PTXOperand::DataType type, bool sub)
 	std::stringstream stream;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 	
-	stream << ".version 2.1\n";
+	stream << PTX_VERSION_AND_TARGET;
 	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
 	stream << "{\n";
 	stream << "\t.reg .u64 %rIn, %rOut;\n";
@@ -3868,8 +3873,7 @@ std::string testMul_PTX(ir::PTXOperand::DataType type, MulType op)
 			default: assertM(false, "Invalid data type.");
 		}
 	}
-	
-	stream << ".version 2.1\n";
+	stream << PTX_VERSION_AND_TARGET;
 	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
 	stream << "{\n";
 	stream << "\t.reg .u64 %rIn, %rOut;\n";
@@ -3980,7 +3984,7 @@ std::string testMad_PTX(ir::PTXOperand::DataType type, MulType op, bool sat)
 		}
 	}
 	
-	stream << ".version 2.1\n";
+	stream << PTX_VERSION_AND_TARGET;
 	stream << ".entry test(.param .u64 out, .param .u64 in)\n";
 	stream << "{\n";
 	stream << "\t.reg .u64 %rIn, %rOut;\n";
@@ -4130,7 +4134,7 @@ std::string testSad_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4182,7 +4186,7 @@ std::string testDiv_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4231,7 +4235,7 @@ std::string testRem_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4280,7 +4284,7 @@ std::string testAbs_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4326,7 +4330,7 @@ std::string testNeg_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4372,7 +4376,7 @@ std::string testMinMax_PTX(ir::PTXOperand::DataType type, bool max)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4437,7 +4441,7 @@ std::string testPopc_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4484,7 +4488,7 @@ std::string testClz_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4531,7 +4535,7 @@ std::string testBfind_PTX(ir::PTXOperand::DataType type, bool shift)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4584,7 +4588,7 @@ std::string testBrev_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4630,7 +4634,7 @@ std::string testBfi_PTX(ir::PTXOperand::DataType type)
 	std::stringstream result;
 	std::string typeString = "." + ir::PTXOperand::toString(type);
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4704,7 +4708,7 @@ std::string testPrmt_PTX(ir::PTXInstruction::PermuteMode mode)
 	
 	std::stringstream result;
 
-	result << ".version 2.1 \n";
+	result << PTX_VERSION_AND_TARGET;
 	result << ".entry test(.param .u64 out, .param .u64 in) \n";
 	result << "{\t\n";
 	result << "\t.reg .u64 %rIn, %rOut; \n";
@@ -4812,9 +4816,55 @@ namespace test
 		return 1;
 	}
 	
+	void TestPTXAssembly::_writeArguments(std::ostream &out, 
+		const TypeVector &types, char *parameters) {
+		
+		uint32_t index = 0;
+		for(TypeVector::const_iterator type = types.begin(); type != types.end(); ++type)
+		{
+			switch(*type)
+			{
+				case I8:
+				{
+					out << (index ? ", " : "") << getParameter<char>(parameters, index);
+					break;
+				}
+				case I16:
+				{
+					out << (index ? ", " : "") << getParameter<short>(parameters, index);
+					break;
+				}				
+				case I32:
+				{
+					out << (index ? ", " : "") << getParameter<int>(parameters, index);
+					break;
+				}
+				case I64:
+				{
+					out << (index ? ", " : "") << getParameter<int64_t>(parameters, index);
+					break;
+				}
+				case FP32:
+				{
+					out << (index ? ", " : "") << getParameter<float>(parameters, index);
+					break;
+				}
+				case FP64:
+				{
+					out << (index ? ", " : "") << getParameter<double>(parameters, index);
+					break;
+				}
+				default: break;
+			}
+			index += bytes(*type);
+		}
+	}
+	
 	bool TestPTXAssembly::_doOneTest(const TestHandle& test, uint32_t seed)
 	{
 		random.seed(seed);
+		
+		report("::_doOneTest(" << test.name << ", seed = " << seed << ")");
 		
 		uint32_t inputSize = 0;
 		uint32_t outputSize = 0;
@@ -4859,10 +4909,23 @@ namespace test
 				cudaDeviceProp properties;
 				cudaGetDeviceProperties(&properties, device);
 			
+				std::cout << "\n-----------------------\n";
 				std::cout << " Running Test '" << test.name 
 					<< "' on device - " << device << " - '" 
 					<< properties.name << "'\n";
 			}
+			
+			#if VERBOSE_TEST_CONFIGURATION
+			status << "\n---------------------\n";
+			status << "\nBefore test " << test.name << "\n";
+			status << "Input parameters: ";
+			_writeArguments(status, test.inputTypes, inputBlock);
+			status << "\nReference: ";
+			_writeArguments(status, test.outputTypes, referenceBlock);
+			status << "\nOutput parameters: ";
+			_writeArguments(status, test.outputTypes, outputBlock);
+			status << "\n";
+			#endif
 			
 			cudaMalloc((void**)&deviceInput, inputSize);
 			cudaMalloc((void**)&deviceOutput, outputSize);
@@ -4877,11 +4940,20 @@ namespace test
 				dim3( test.threads, 1, 1 ), 0, 0 );
 			ocelot::launch(test.name, "test");
 			
+			cudaThreadSynchronize();
+			
 			cudaMemcpy(outputBlock, (void*)deviceOutput, 
 				outputSize, cudaMemcpyDeviceToHost);
 			
 			cudaFree((void*)deviceInput);
 			cudaFree((void*)deviceOutput);
+			
+			#if VERBOSE_TEST_CONFIGURATION
+			status << "After test\n";
+			status << "Output parameters: ";
+			_writeArguments(status, test.outputTypes, outputBlock);
+			status << "\n";
+			#endif
 			
 			ocelot::unregisterModule(test.name);
 		}
@@ -5058,15 +5130,32 @@ namespace test
 			index += bytes(*type);
 		}
 		
+		if (!pass) {
+			status << "Input parameters: ";
+			_writeArguments(status, test.inputTypes, inputBlock);
+			status << "\nOutput parameters: ";
+			_writeArguments(status, test.outputTypes, outputBlock);
+			status << "\nReference: ";
+			_writeArguments(status, test.outputTypes, referenceBlock);
+			
+			status << "\n\n/* " << test.name << " */\n" << test.ptx << "\n";
+		}
+		
 		delete[] inputBlock;
 		delete[] outputBlock;
 		delete[] referenceBlock;
 	
+	
 		return pass;
 	}
 
-	void TestPTXAssembly::_loadTests()
+	void TestPTXAssembly::_loadTests(ir::Instruction::Architecture ISA)
 	{
+		//
+		// Some tests necessarily fail for particular backends.
+		//
+		report("TestPTXAssembly::_loadTests(" << ir::Instruction::toString(ISA) << ")");
+
 		add("TestVectorElements-u32", testVectorElements_REF, 
 			testVectorElements_PTX(), testVectorElements_OUT(), 
 			testVectorElements_IN(), uniformRandom<uint32_t, 4>, 1, 1);
@@ -5318,14 +5407,21 @@ namespace test
 			testSad_OUT(I64), testSad_IN(I64), 
 			uniformRandom<int64_t, 3>, 1, 1);
 
-		add("TestDiv-u16", testDiv_REF<uint16_t>, 
-			testDiv_PTX(ir::PTXOperand::u16), 
-			testDiv_OUT(I16), testDiv_IN(I16), 
-			uniformNonZero<uint16_t, 2>, 1, 1);
-		add("TestDiv-s16", testDiv_REF<short>, 
-			testDiv_PTX(ir::PTXOperand::s16), 
-			testDiv_OUT(I16), testDiv_IN(I16), 
-			uniformNonZero<short, 2>, 1, 1);
+		if (ISA == ir::Instruction::Emulated || ISA == ir::Instruction::LLVM || 
+			ISA == ir::Instruction::VIR || ISA == ir::Instruction::CAL) {
+			//
+			// NVIDIA driver NVIDIA-Linux-x86_64-304.43 seems to compile PTX incorrectly
+			// causing these tests to fail. div.{s,u}16 seems to be broken.
+			//
+			add("TestDiv-u16", testDiv_REF<uint16_t>, 
+				testDiv_PTX(ir::PTXOperand::u16), 
+				testDiv_OUT(I16), testDiv_IN(I16), 
+				uniformNonZero<uint16_t, 2>, 1, 1);
+			add("TestDiv-s16", testDiv_REF<short>, 
+				testDiv_PTX(ir::PTXOperand::s16), 
+				testDiv_OUT(I16), testDiv_IN(I16), 
+				uniformNonZero<short, 2>, 1, 1);
+		}
 
 		add("TestDiv-u32", testDiv_REF<uint32_t>, 
 			testDiv_PTX(ir::PTXOperand::u32), 
@@ -5344,15 +5440,23 @@ namespace test
 			testDiv_PTX(ir::PTXOperand::s64), 
 			testDiv_OUT(I64), testDiv_IN(I64), 
 			uniformNonZero<int64_t, 2>, 1, 1);
+			
+		if (ISA == ir::Instruction::Emulated || ISA == ir::Instruction::LLVM || 
+			ISA == ir::Instruction::VIR || ISA == ir::Instruction::CAL) {
+			//
+			// NVIDIA driver NVIDIA-Linux-x86_64-304.43 seems to compile PTX incorrectly
+			// causing these tests to fail. rem.{s,u}16 seems to be broken.
+			//
+			add("TestRem-u16", testRem_REF<uint16_t>, 
+				testRem_PTX(ir::PTXOperand::u16), 
+				testRem_OUT(I16), testRem_IN(I16), 
+				uniformNonZero<uint16_t, 2>, 1, 1);
+			add("TestRem-s16", testRem_REF<short>, 
+				testRem_PTX(ir::PTXOperand::s16), 
+				testRem_OUT(I16), testRem_IN(I16), 
+				uniformNonZero<short, 2>, 1, 1);
+		}
 
-		add("TestRem-u16", testRem_REF<uint16_t>, 
-			testRem_PTX(ir::PTXOperand::u16), 
-			testRem_OUT(I16), testRem_IN(I16), 
-			uniformNonZero<uint16_t, 2>, 1, 1);
-		add("TestRem-s16", testRem_REF<short>, 
-			testRem_PTX(ir::PTXOperand::s16), 
-			testRem_OUT(I16), testRem_IN(I16), 
-			uniformNonZero<short, 2>, 1, 1);
 		add("TestRem-u32", testRem_REF<uint32_t>, 
 			testRem_PTX(ir::PTXOperand::u32), 
 			testRem_OUT(I32), testRem_IN(I32), 
@@ -5534,9 +5638,12 @@ namespace test
 			testPrmt_PTX(ir::PTXInstruction::ReplicateSixteen), testPrmt_OUT(), 
 			testPrmt_IN(), uniformRandom<uint32_t, 3>, 1, 1);
 			
-		add("TestCudaNestedParallelism", testCudaNestedParallelism_REF, 
-			testCudaNestedParallelism_PTX(), testCudaNestedParallelism_OUT(), 
-			testCudaNestedParallelism_IN(), uniformRandom<uint32_t, 1>, 1, 1);
+		if (ISA == ir::Instruction::Emulated || ISA == ir::Instruction::LLVM) {
+		
+			add("TestCudaNestedParallelism", testCudaNestedParallelism_REF, 
+				testCudaNestedParallelism_PTX(), testCudaNestedParallelism_OUT(), 
+				testCudaNestedParallelism_IN(), uniformRandom<uint32_t, 1>, 1, 1);
+		}
 		
 		add("TestCall-Uni", testFunctionCalls_REF, 
 			testFunctionCalls_PTX(true), testFunctionCalls_OUT(), 
@@ -5557,11 +5664,16 @@ namespace test
 			testIndirectFunctionCall_IN(), 
 			uniformRandom<uint32_t, 1>, 4, 1);
 
-		add("TestFunctionPointerArray", testIndirectFunctionCall_REF, 
-			testFunctionPointerArray_PTX(), testIndirectFunctionCall_OUT(), 
-			testIndirectFunctionCall_IN(),
-			uniformRandom<uint32_t, 1>, 4, 1);
 
+		if (ISA == ir::Instruction::Emulated || ISA == ir::Instruction::LLVM || 
+			ISA == ir::Instruction::VIR || ISA == ir::Instruction::CAL) {
+			
+			add("TestFunctionPointerArray", testIndirectFunctionCall_REF, 
+				testFunctionPointerArray_PTX(), testIndirectFunctionCall_OUT(), 
+				testIndirectFunctionCall_IN(),
+				uniformRandom<uint32_t, 1>, 4, 1);
+		}
+		
 		add("TestTestP-f32-Finite", 
 			testTestP_REF<float, ir::PTXInstruction::Finite>, 
 			testTestp_PTX(ir::PTXOperand::f32, ir::PTXInstruction::Finite), 
@@ -7326,6 +7438,7 @@ namespace test
 				ir::PTXOperand::s64, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I64),
 			uniformRandom<int64_t, 1>, 1, 1);
+
 		add("TestCvt-f32-f32-sat",
 			testCvt_REF<float, float, false, true, false>,
 			testCvt_PTX(ir::PTXOperand::f32,
@@ -7525,7 +7638,11 @@ namespace test
 	
 	bool TestPTXAssembly::doTest()
 	{
-		_loadTests();
+
+		executive::DeviceProperties properties;
+		ocelot::getDeviceProperties(properties);
+	
+		_loadTests(properties.ISA);
 		
 		hydrazine::Timer::Second perTestTimeLimit = timeLimit / _tests.size();
 		hydrazine::Timer timer;

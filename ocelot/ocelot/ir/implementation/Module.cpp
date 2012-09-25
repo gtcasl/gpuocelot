@@ -222,6 +222,11 @@ void ir::Module::loadNow() {
 		if (!_ptxPointer) {
 			report("Module::loadNow() - path: '" << path() << "' contains no PTX");
 		}
+		else {
+			report("Module::loadNow() - contains PTX string literal:\n\n" << _ptxPointer << "\n");
+		}
+		
+		
 		assert( _ptxPointer != 0 );
 		std::stringstream stream( _ptxPointer );
 		_ptxPointer = 0;
@@ -526,6 +531,9 @@ ir::PTXKernel* ir::Module::insertKernel(PTXKernel* kernel) {
 	
 	return kernel;
 }
+
+ir::PTXStatement ir::Module::version() const { return _version; }
+ir::PTXStatement ir::Module::target() const { return _target; }
 
 /*!
 	After parsing, construct a set of Kernels with ISA equal to PTX

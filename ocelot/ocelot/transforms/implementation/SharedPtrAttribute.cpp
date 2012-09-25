@@ -151,5 +151,20 @@ void transforms::SharedPtrAttribute::_updateSharedPtrUses(ir::PTXKernel &k, std:
 	}
 }
 
+bool transforms::SharedPtrAttribute::testModule(const ir::Module &m) {
+	for (ir::Module::KernelMap::const_iterator kernel = m.kernels().begin(); 
+		kernel != m.kernels().end(); ++kernel) {
+	
+		for (ir::Kernel::ParameterVector::const_iterator it = kernel->second->arguments.begin(); 
+			it != kernel->second->arguments.end(); ++it) {
+		
+			if (it->isPtrDeclaration() && it->ptrAddressSpace == ir::PTXInstruction::Shared) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

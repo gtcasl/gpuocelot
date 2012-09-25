@@ -52,6 +52,12 @@
 // if 1, adds line numbers to reported PTX
 #define REPORT_PTX_WITH_LINENUMBERS 0
 
+// if 1, overrides REPORT_PTX in the event of a JIT compilation error
+#define REPORT_PTX_ON_ERROR 1
+
+// if 1, turns on error reporting for PTX JIT error even when REPORT_BASE is 0
+#define OVERRIDE_REPORT_BASE_ON_PTX_ERROR 1
+
 ////////////////////////////////////////////////////////////////////////////////
 
 typedef cuda::CudaDriver driver;
@@ -390,16 +396,21 @@ namespace executive
 		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
 		
 		// deal with .ptr.shared kernel parameter attributes
-		ir::Module copyModule = *ir;
-		transforms::PassManager manager(&copyModule);
-		transforms::SharedPtrAttribute ptrAttributePass;
-		manager.addPass(ptrAttributePass);
-		manager.runOnModule(); 
+		const ir::Module *module = ir;
+		ir::Module *copyModule = 0;
+		if (transforms::SharedPtrAttribute::testModule(*module)) {
+			transforms::SharedPtrAttribute ptrAttributePass;
+			copyModule = new ir::Module(*ir);
+			transforms::PassManager manager(copyModule);
+			manager.addPass(ptrAttributePass);
+			manager.runOnModule();
+			module = copyModule;
+		}
 		
 		assert(!loaded());
 		std::stringstream stream;
 		
-		copyModule.writeIR(stream, ir::PTXEmitter::Target_NVIDIA_PTX30);
+		module->writeIR(stream, ir::PTXEmitter::Target_NVIDIA_PTX30);
 
 #if REPORT_PTX_WITH_LINENUMBERS == 1		
 		reportE(REPORT_PTX, " Binary is:\n" 
@@ -427,6 +438,10 @@ namespace executive
 			hydrazine::bit_cast<void*>(errorLogActualSize), 
 		};
 		
+		if (module->version().major == 3 && module->version().minor == 0) {
+			optionValues[0] = (void *)CU_TARGET_COMPUTE_30;
+		}
+		
 		std::string ptxModule = stream.str();
 
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
@@ -434,6 +449,21 @@ namespace executive
 		
 		if(result != CUDA_SUCCESS)
 		{
+#if OVERRIDE_REPORT_BASE_ON_PTX_ERROR
+#undef REPORT_BASE
+#define REPORT_BASE 1
+#endif
+#if REPORT_PTX_WITH_LINENUMBERS == 1
+		reportE(REPORT_PTX_ON_ERROR, " Binary is:\n" 
+			<< hydrazine::addLineNumbers(stream.str()));
+#else
+		reportE(REPORT_PTX_ON_ERROR, stream.str());
+#endif
+#if OVERRIDE_REPORT_BASE_ON_PTX_ERROR
+#undef REPORT_BASE
+#define REPORT_BASE 0
+#endif
+
 			Throw("cuModuleLoadDataEx() - returned " << result 
 				<< ". Failed to JIT module - " << ir->path() 
 				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
@@ -442,8 +472,8 @@ namespace executive
 		report(" Module loaded successfully.");
 		
 		for(ir::Module::TextureMap::const_iterator 
-			texture = ir->textures().begin(); 
-			texture != ir->textures().end(); ++texture)
+			texture = module->textures().begin(); 
+			texture != module->textures().end(); ++texture)
 		{
 			unsigned int flags = texture->second.normalizedFloat 
 				? 0 : CU_TRSF_READ_AS_INTEGER;
@@ -451,6 +481,10 @@ namespace executive
 			checkError(driver::cuModuleGetTexRef(&reference, _handle, 
 				texture->first.c_str()));
 			checkError(driver::cuTexRefSetFlags(reference, flags));
+		}
+		
+		if (copyModule) {
+			delete copyModule;
 		}
 	}
 
@@ -772,6 +806,7 @@ namespace executive
 		size_t total;
 		checkError(driver::cuDeviceTotalMem(&total, device));
 		_properties.totalMemory = total;
+		_properties.ISA = ir::Instruction::SASS;
 		
 		checkError(driver::cuDeviceGetAttribute(
 			(int*)&_properties.multiprocessorCount,

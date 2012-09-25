@@ -209,6 +209,9 @@ namespace ir {
 		void addPrototype(const std::string &identifier,
 			const ir::PTXKernel::Prototype &prototype);
 		
+		ir::PTXStatement version() const;
+		ir::PTXStatement target() const;
+		
 	private:
 		/*! After a successful parse; constructs all kernels for PTX isa. */
 		void extractPTXKernels();

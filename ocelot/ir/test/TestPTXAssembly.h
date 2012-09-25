@@ -7,6 +7,7 @@
 #ifndef TEST_PTX_ASSEMBLY_H_INCLUDED
 #define TEST_PTX_ASSEMBLY_H_INCLUDED
 
+#include <ocelot/ir/interface/Instruction.h>
 #include <hydrazine/interface/Test.h>
 #include <vector>
 
@@ -72,8 +73,9 @@ namespace test
 			/*! \brief Perform a single unit test */
 			bool _doOneTest(const TestHandle& test, unsigned int seed);
 			/*! \brief Load the tests */
-			void _loadTests();
-
+			void _loadTests(ir::Instruction::Architecture ISA = ir::Instruction::Emulated);
+			
+			static void _writeArguments(std::ostream &out, const TypeVector &, char *);
 		public:
 			/*! \brief Print out the ptx of each test as it is added */
 			bool print;

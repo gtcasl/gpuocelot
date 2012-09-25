@@ -145,7 +145,7 @@ namespace executive
 		public:
 			/*! \brief Sets the device properties,
 				connects to an ocelot server */
-			RemoteDevice(unsigned int id, const PropertiesData& props, 
+			RemoteDevice(unsigned int id, const DeviceProperties& props, 
 				unsigned int flags = 0);
 			/*! \brief Clears all state */
 			~RemoteDevice();

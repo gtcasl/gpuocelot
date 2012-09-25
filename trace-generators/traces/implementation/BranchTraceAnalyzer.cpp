@@ -9,8 +9,8 @@
 #define BRANCH_TRACE_ANALYZER_CPP_INCLUDED
 
 #include <traces/interface/BranchTraceAnalyzer.h>
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/Exception.h>
 #include <fstream>
 #include <cfloat>
 #include <boost/archive/text_iarchive.hpp>

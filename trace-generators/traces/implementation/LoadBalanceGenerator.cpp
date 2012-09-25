@@ -15,7 +15,7 @@
 #include <traces/interface/LoadBalanceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 // Debugging messages
 #ifdef REPORT_BASE

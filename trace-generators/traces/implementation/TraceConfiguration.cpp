@@ -14,9 +14,9 @@
 #include <ocelot/api/interface/ocelot.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/json.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/json.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

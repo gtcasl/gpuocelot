@@ -19,14 +19,14 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <traces/interface/KernelEntry.h>
 #include <fstream>
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 #include <unistd.h>
 #include <cstring>
 #include <deque>
 #include <boost/interprocess/sync/file_lock.hpp>
 
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

@@ -18,8 +18,8 @@
 #include <traces/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/ArgumentParser.h>
-#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/interface/ArgumentParser.h>
+#include <hydrazine/interface/Exception.h>
 
 // Boost includes
 #include <boost/archive/text_iarchive.hpp>

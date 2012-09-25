@@ -16,9 +16,9 @@
 #include <traces/interface/InstructionTraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/macros.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/macros.h>
 
 // Boost includes
 #include <boost/filesystem.hpp>

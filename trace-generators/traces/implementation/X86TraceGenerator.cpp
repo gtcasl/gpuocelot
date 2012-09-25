@@ -30,8 +30,8 @@
 
 #include <ocelot/ir/interface/Module.h>
 
-#include <hydrazine/implementation/Exception.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/archive/text_oarchive.hpp>

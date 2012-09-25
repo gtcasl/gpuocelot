@@ -19,8 +19,8 @@
 #include <traces/interface/PerformanceBoundGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/string.h>
+#include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/string.h>
 
 // Debugging messages
 #ifdef REPORT_BASE

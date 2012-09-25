@@ -11,7 +11,7 @@
 #define TRACE_CACHESIMULATOR_CPP_INCLUDED
 
 #include <traces/interface/CacheSimulator.h>
-#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/debug.h>
 #include <cmath>
 
 

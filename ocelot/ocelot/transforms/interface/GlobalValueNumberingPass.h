@@ -22,7 +22,7 @@ class GlobalValueNumberingPass : public KernelPass
 {
 public:
 	/*! \brief Create the pass, create dependencies */
-	GlobalValueNumberingPass(bool eliminateInstructions = true);
+	GlobalValueNumberingPass(bool eliminateInstructions =true);
 
 public:
 	/*! \brief Initialize the pass using a specific module */

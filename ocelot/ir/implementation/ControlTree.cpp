@@ -645,28 +645,6 @@ namespace ir
 		return false;
 	}
 
-	ControlTree::NodeList ControlTree::_find_cyclic_region(Node* n, 
-			NodeSet& nodeSet)
-	{
-		NodeList reachUnder;
-
-		reachUnder.clear(); nodeSet.clear();
-
-		for (NodeList::const_iterator m = _post.begin() ;
-				m != _post.end() ; m++)
-		{
-			if (*m != n && _path_back(*m, n)) 
-			{
-				report("Add " << (*m)->label() 
-						<< " to reachUnder of " << n->label());
-				reachUnder.push_front(*m); nodeSet.insert(*m);
-			}
-		}
-		reachUnder.push_front(n); nodeSet.insert(n);
-
-		return reachUnder;
-	}
-
 	ControlTree::Node* ControlTree::_cyclic_region_type(Node* node, 
 			NodeList& nset)
 	{
@@ -704,10 +682,16 @@ namespace ir
 
 		// check for a Natural loop (this includes While loops)
 		NodeList::iterator m;
+		Node* e = NULL;
 		for (m = nset.begin() ; m != nset.end() ; ++m)
 		{
 			if (*m == node && (*m)->preds().size() != 2) break;
 			if (*m != node && (*m)->preds().size() != 1) break;
+			if ((*m)->has_branch_edge())
+			{
+				if (!e) e = (*m)->get_branch_edge().second;
+				else if (e != (*m)->get_branch_edge().second) break;
+			}
 		}
 
 		if (m == nset.end())
@@ -771,7 +755,20 @@ namespace ir
 				} else
 				{
 					// locate a cyclic region, if present
-					reachUnder = _find_cyclic_region(n, nodeSet);
+					reachUnder.clear(); nodeSet.clear();
+
+					for (NodeList::const_iterator m = _post.begin() ;
+							m!= _post.end() ; ++m)
+					{
+						if (*m != n && _path_back(*m, n))
+						{
+							report("Add " << (*m)->label()
+									<< " to reachUnder of " <<
+									n->label());
+							reachUnder.push_front(*m); nodeSet.insert(*m);
+						}
+					}
+					reachUnder.push_front(n); nodeSet.insert(n);
 
 					report("Looking for cyclic region from " << n->label());
 					region = _cyclic_region_type(n, reachUnder);
@@ -1290,6 +1287,32 @@ namespace ir
 		return bwdBranches;
 	}
 
+	ControlTree::NodeList ControlTree::_find_cyclic_region(const Edge& l)
+	{
+		NodeList region;
+
+		region.clear();
+
+		NodeList::const_iterator lstart = find(_post.begin(), _post.end(), l.second);
+		NodeList::const_iterator lend   = find(_post.begin(), _post.end(), l.first);
+
+		assertM(lstart != _post.end(), "Invalid node " << l.second->label());
+		assertM(lend   != _post.end(), "Invalid node " << l.first->label());
+
+
+		for (NodeList::const_iterator node = lend ; node != lstart ; ++node)
+		{
+			if (_path_back(*node, *lstart)) 
+			{
+				report("Add " << (*node)->label() << " to cyclic region");
+				region.push_front(*node);
+			}
+		}
+		region.push_front(*lstart );
+
+		return region;
+	}
+
 	ControlTree::EdgeVector ControlTree::_find_exit_branches(const NodeList& loop)
 	{
 		EdgeVector exitBranches;
@@ -1325,9 +1348,6 @@ namespace ir
 
 		report("Inserting preCut node " << label);
 		Node* preCut = _insert_node(new InstNode(label, CFG::InstructionList()));
-
-		// adjust the postorder traversal
-		_post.insert(++find(_post.begin(), _post.end(), l.second), preCut);
 
 		// link preCut node into abstract flowgraph
 		NodeSet preds(l.second->preds());
@@ -1376,9 +1396,6 @@ namespace ir
 			report("Inserting Cut node " << label);
 			Node* cut = _insert_node(new InstNode(label, CFG::InstructionList()));
 
-			// adjust the postorder traversal
-			_post.insert(find(_post.begin(), _post.end(), branch->first), cut);
-
 			// link cut node into abstract flowgraph
 			report("Del " << branch->first->label() << " -> " << branch->second->label());
 			branch->first->succs().erase(branch->second);
@@ -1410,18 +1427,18 @@ namespace ir
 			report("Inserting postCut node " << label);
 			Node* postCut = _insert_node(new InstNode(label, CFG::InstructionList()));
 
-			// adjust the postorder traversal
-			_post.insert(find(_post.begin(), _post.end(), l.first), postCut);
-
 			// link postCut node into abstract flowgraph
-			report("Del " << l.first->label() << " -> " << l.first->fallthrough()->label());
-			l.first->succs().erase(l.first->fallthrough());
-			l.first->fallthrough()->preds().erase(l.first);
+			if (l.first->fallthrough() != NULL)
+			{
+				report("Del " << l.first->label() << " -> " << l.first->fallthrough()->label());
+				l.first->succs().erase(l.first->fallthrough());
+				l.first->fallthrough()->preds().erase(l.first);
 
-			report("Add " << postCut->label() << " --> " << l.first->fallthrough()->label());
-			postCut->succs().insert(l.first->fallthrough());
-			postCut->fallthrough() = l.first->fallthrough();
-			l.first->fallthrough()->preds().insert(postCut);
+				report("Add " << postCut->label() << " --> " << l.first->fallthrough()->label());
+				postCut->succs().insert(l.first->fallthrough());
+				postCut->fallthrough() = l.first->fallthrough();
+				l.first->fallthrough()->preds().insert(postCut);
+			}
 
 			report("Add " << l.first->label() << " --> " << postCut->label());
 			l.first->succs().insert(postCut);
@@ -1444,22 +1461,34 @@ namespace ir
 
 		// for l = the innermost to the outermost loop
 		for (EdgeVector::iterator l = _bwdBranches.begin() ;
-				l != _bwdBranches.end() ; ++l)
+				l != _bwdBranches.end() ; )
 		{
 			report("l = " << l->second->label() << " ... "
 					<< l->first->label());
 
 			// locate a cyclic region, if present
-			NodeSet nodeSet;
-			NodeList reachUnder = _find_cyclic_region(l->second, nodeSet);
+			NodeList loop = _find_cyclic_region(*l);
 
 			// n = the number of exit branches in loop l
-			EdgeVector exitBranches = _find_exit_branches(reachUnder);
+			EdgeVector exitBranches = _find_exit_branches(loop);
 
-			if (exitBranches.size() > 0)
+			if (exitBranches.empty()) ++l;
+			else
 			{
 				// a cut-copy transformation is applied
 				_cut_copy_transform(*l, exitBranches);
+
+
+				// adjust the postorder traversal
+				_post.clear(); 
+				_visit.clear();
+
+				report("DFS Postorder");
+				_dfs_postorder(entry);
+
+				// adjust backward branches
+				_bwdBranches = _find_backward_branches();
+				l = _bwdBranches.begin();
 
 				changed = true;
 			}

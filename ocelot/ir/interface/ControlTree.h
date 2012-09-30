@@ -204,7 +204,6 @@ namespace ir
 			 * (possibly empty) path from m to k that does not pass through n
 			 * and an edge k->n that is a back edge, and false otherwise. */
 			bool _path_back(Node* m, Node* n);
-			NodeList _find_cyclic_region(Node* n, NodeSet& nodeSet);
 			/*! \brief determines whether node is the entry node of a cyclic
 			 * control structure and returns its region. Stores in nset the set
 			 * of nodes in the identified control structure */
@@ -226,6 +225,7 @@ namespace ir
 			bool _forward_copy(Node* entry);
 
 			EdgeVector _find_backward_branches();
+			NodeList _find_cyclic_region(const Edge& l);
 			EdgeVector _find_exit_branches(const NodeList& loop);
 			void _cut_copy_transform(Edge& l, EdgeVector& exitBranches);
 			bool _cut_copy(Node* entry);

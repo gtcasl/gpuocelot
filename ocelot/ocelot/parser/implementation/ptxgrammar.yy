@@ -291,6 +291,12 @@ addressSpace : addressSpaceIdentifier
 	state.addressSpace( $<value>1 );
 };
 
+optionalAddressSpace : addressSpace;
+optionalAddressSpace : /* empty string */
+{
+	state.noAddressSpace();
+};
+
 pointerDataTypeId: TOKEN_U64 | TOKEN_U32;
 
 dataTypeId : TOKEN_U8 | TOKEN_U16 | TOKEN_U32 | TOKEN_U64 | TOKEN_S8 
@@ -318,6 +324,9 @@ instructionVectorType : vectorToken
 {
 	state.instructionVectorType( $<value>1 );
 };
+
+optionalInstructionVectorType : instructionVectorType;
+optionalInstructionVectorType : /* empty string */;
 
 alignment : TOKEN_ALIGN TOKEN_DECIMAL_CONSTANT { state.alignment = $<value>2; };
 
@@ -1126,7 +1135,6 @@ divRnModifier : /* empty string */;
 divModifier : divFullModifier | divApproxModifier 
 	| divRnModifier;
 
-//OptiX: div.ftz.f32 %pinhole_camera_f5, %pinhole_camera_f1, %pinhole_camera_f2;
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3 );
@@ -1142,43 +1150,20 @@ isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
 	state.instruction( $<text>1, TOKEN_U32 );
 }
 
-ldModifier : TOKEN_VOLATILE
-{
-	state.noAddressSpace();
-	state.volatileFlag( true );
-};
-
-ldModifier : TOKEN_VOLATILE addressSpace
+volatileModifier : TOKEN_VOLATILE
 {
 	state.volatileFlag( true );
 };
 
-ldModifier : TOKEN_VOLATILE addressSpace instructionVectorType
-{
-	state.volatileFlag( true );
-};
+optionalVolatile : volatileModifier;
 
-ldModifier : addressSpace instructionVectorType
+optionalVolatile : /* empty string */
 {
 	state.volatileFlag( false );
 };
 
-ldModifier : instructionVectorType  
-{
-	state.noAddressSpace();
-	state.volatileFlag( false );
-};
-
-ldModifier : addressSpace
-{
-	state.volatileFlag( false );		
-};
-
-ldModifier : /* empty string */
-{
-	state.noAddressSpace();
-	state.volatileFlag( false );		
-};
+ldModifier : optionalVolatile optionalAddressSpace optionalCacheOperation
+	optionalInstructionVectorType;
 
 ld : OPCODE_LD ldModifier dataType arrayOperand ',' '[' memoryOperand ']' ';'
 {

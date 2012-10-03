@@ -76,6 +76,9 @@ namespace trace {
       void writeInstToFile(std::ofstream &file, Inst_info *t_info);
 
     private:
+      int calculate_occupancy(const executive::ExecutableKernel& kernel);
+
+    private:
       bool init;
       int32_t num_warps_per_block;
       int32_t num_total_warps;
@@ -120,7 +123,6 @@ namespace trace {
       int gridDimY;
       int gridDimZ;
 
-      bool can_gen_traces;
       int kernel_count;
 
       unsigned int mem_addr_flag;

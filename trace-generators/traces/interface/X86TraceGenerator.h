@@ -89,6 +89,8 @@ namespace trace {
       std::map<ir::PTXU64, Inst_info *> inst_storage;
       std::map<int, bool> init_block;
 
+      uint64_t total_inst_count;
+
       gzFile gz_config_file;
       std::ofstream txt_config_file;
       std::ofstream info_file;

@@ -12,8 +12,6 @@
 
 #include <ocelot/trace/interface/CacheSimulator.h>
 #include <hydrazine/interface/debug.h>
-#include <cmath>
-
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -23,6 +21,19 @@
 
 namespace trace 
 {
+
+	static unsigned int log2(unsigned int v)
+	{
+		unsigned int value = 0;
+		
+		while(v != 0)
+		{
+			v >>= 1;
+			++value;
+		}
+		
+		return value;
+	}
 
 	CacheSimulator::CacheWay::CacheWay(ir::PTXU64 t, bool d) : dirty(d), tag(t)
 	{
@@ -171,15 +182,15 @@ namespace trace
 	
 	ir::PTXU64 CacheSimulator::getTag(ir::PTXU64 addressAccessed)
 	{
-		int shiftAmount = std::log2( cacheSize / (lineSize * associativity) ) 
-			+ std::log2((lineSize * associativity)); 
+		int shiftAmount = log2( cacheSize / (lineSize * associativity) ) 
+			+ log2((lineSize * associativity)); 
 		addressAccessed >>= shiftAmount;		
 		return addressAccessed;
 	}
 	
 	int CacheSimulator::findSet(ir::PTXU64 addressAccessed)
 	{
-		addressAccessed >>= (int)std::log2((lineSize * associativity));
+		addressAccessed >>= (int)log2((lineSize * associativity));
 
 		ir::PTXU64 mask = (cacheSize / (lineSize * associativity)) - 1;
 		return addressAccessed & mask;

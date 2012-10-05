@@ -25,6 +25,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/string.hpp>
 
+#undef REPORT_BASE
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -199,6 +201,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) c
 		// loop over the kernels
 		for (KernelVector::const_iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
 			InstructionTraceGenerator::Header header;
+			report("Open header file " << k_it->header.c_str());
 			std::ifstream hstream( k_it->header.c_str() );
 			boost::archive::text_iarchive harchive( hstream );
 			InstructionTraceGenerator::FunctionalUnitCountMap counter;
@@ -214,6 +217,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) c
 				continue;
 			}
 
+	
 			// aggregate counts
 			append(appCounter, counter, visitedKernels.find(k_it->name) == visitedKernels.end());
 			visitedKernels.insert(k_it->name);
@@ -229,6 +233,10 @@ void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) c
 			// print the program name
 			std::cout << "  '" << program << "': {" << std::endl;
 		}
+
+		size_t totalDynamicCount = 0;
+		size_t totalStaticCount = 0;
+		double totalActiveCount = 0;
 
 		// print out one bar per functional unit
 		for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		
@@ -248,7 +256,15 @@ void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) c
 					activity += op_it->second.activity;
 					activeFU ++;
 				}
+
 			}
+
+			totalDynamicCount += dynamicCount;
+			totalStaticCount += staticCount;
+			totalActiveCount += activity;
+
+			if(dynamicCount != 0)
+				activity /= (double)dynamicCount;
 			
 			if (pyList) {
 				ssDynamic << (n ? ", " : " ") << dynamicCount;
@@ -259,7 +275,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) c
 			else {
 				// write to stdout
 				std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
-					<< dynamicCount << ", " << staticCount << ", " << 0 << " )," << std::endl;
+					<< dynamicCount << ", " << staticCount << ", " << activity << " )," << std::endl;
 			}
 		}
 
@@ -268,7 +284,12 @@ void trace::InstructionTraceAnalyzer::instructions_by_application(bool pyList) c
 			std::cout << ssDynamic.str() << " ]  # dynamic\n";
 			std::cout << ssStatic.str() << " ]  # static\n";
 		}
-		
+
+		if(totalDynamicCount != 0)
+			totalActiveCount /= (double)totalDynamicCount; 
+		std::cout << "    '" << "total" << "': ( " 
+			<< totalDynamicCount << ", " << totalStaticCount << ", " << totalActiveCount << " )," << std::endl;
+
 		std::cout << "  },\n";
 	}
 	std::cout << "}\n";

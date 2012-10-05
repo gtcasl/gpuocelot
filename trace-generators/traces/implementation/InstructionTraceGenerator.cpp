@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -103,6 +103,7 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 	case ir::PTXInstruction::Add:
 	case ir::PTXInstruction::AddC:
 	case ir::PTXInstruction::Cvt:
+	case ir::PTXInstruction::Cvta:
 	case ir::PTXInstruction::Div:
 	case ir::PTXInstruction::Fma:
 	case ir::PTXInstruction::Mad24:
@@ -412,12 +413,13 @@ void trace::InstructionTraceGenerator::finish() {
 			for (OpcodeCountMap::iterator oc_it = fu_it->second.begin(); oc_it != fu_it->second.end();
 				++oc_it) {
 			
-				if (threadCount != 0 && oc_it->second.dynamic_count != 0) {
-					oc_it->second.activity /= (double)threadCount * (double)oc_it->second.dynamic_count;
-				}
-				else {
-					oc_it->second.activity = 0;
-				}
+	//			if (threadCount != 0 && oc_it->second.dynamic_count != 0) {
+	//				oc_it->second.activity /= (double)threadCount * (double)oc_it->second.dynamic_count;
+	//			}
+	//			else {
+	//				oc_it->second.activity = 0;
+	//			}
+				oc_it->second.dynamic_count *= threadCount;
 			}
 		}
 	}

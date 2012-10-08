@@ -21,6 +21,7 @@
 #include <traces/interface/BasicBlockCountGenerator.h>
 #include <traces/interface/X86TraceGenerator.h>
 #include <traces/interface/TemporalSIMTGenerator.h>
+#include <traces/interface/ActivityFactorGenerator.h>
 
 namespace trace
 {
@@ -189,6 +190,8 @@ namespace trace
 		
 		TemporalSIMT temporalSIMT;
 	
+		bool activityFactor;
+	
 	public:
 		TraceConfiguration();
 
@@ -207,6 +210,7 @@ namespace trace
 		trace::BasicBlockCountGenerator _basicBlockCountGenerator;
 		trace::X86TraceGenerator _x86TraceGenerator;
 		trace::TemporalSIMTGenerator _temporalSIMTGenerator;
+		trace::ActivityFactorGenerator _activityFactorGenerator;
 	};
 }
 

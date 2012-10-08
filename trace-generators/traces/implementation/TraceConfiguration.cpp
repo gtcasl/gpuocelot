@@ -27,6 +27,9 @@
 namespace trace
 {
 
+void ForceTraceConfiguration() {
+}
+
 TraceConfiguration TraceConfiguration::Singleton;
 
 TraceConfiguration::TraceConfiguration()
@@ -197,6 +200,8 @@ TraceConfiguration::TraceConfiguration()
 				temporalSIMT.simdWidth = traceConfig.parse<int>("simdWidth", 16);
 				temporalSIMT.simdIssueCount = traceConfig.parse<int>("simdIssueCount", 2);
 			}
+			
+			activityFactor = traceConfig.parse<bool>("activityFactor", false);
 		}
 	}
 	catch(const hydrazine::Exception& exp) 
@@ -318,6 +323,11 @@ TraceConfiguration::TraceConfiguration()
 		report("Creating x86 trace generator");
 		_x86TraceGenerator.database = database;
 		ocelot::addTraceGenerator(_x86TraceGenerator, true);
+	}
+	
+	if (activityFactor) {
+		report("Creating Activity Factor Generator");
+		ocelot::addTraceGenerator(_activityFactorGenerator, true);
 	}
 }
 

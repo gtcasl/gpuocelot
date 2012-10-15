@@ -732,6 +732,7 @@ DataflowGraph::iterator DataflowGraph::insert( iterator predecessor,
 	predecessor->_successors.insert( current );
 	
 	current->_predecessors.insert( predecessor );
+	current->_successors.insert( successor );
 	successor->_predecessors.insert( current );
 	
 	_cfg->insert_edge( ir::ControlFlowGraph::Edge( current->_block, 

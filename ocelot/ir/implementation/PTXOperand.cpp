@@ -618,9 +618,18 @@ ir::PTXOperand::PTXOperand(AddressMode m, const std::string& i) : identifier(i),
 	reg(0), vec(v1) {
 }
 
-ir::PTXOperand::PTXOperand(long long unsigned int v, DataType t)
-	: addressMode(Immediate), type(t), relaxedType(TypeSpecifier_invalid),
-	offset(0), imm_uint(v), reg(0), vec(v1) {
+namespace ir {
+	template<>
+	PTXOperand::PTXOperand<float>(float v) : addressMode(Immediate), type(f32),
+		relaxedType(TypeSpecifier_invalid),
+		offset(0), imm_single(v), reg(0), vec(v1) {
+	}
+	
+	template<>
+	PTXOperand::PTXOperand<double>(double v) : addressMode(Immediate),
+		type(f64), relaxedType(TypeSpecifier_invalid),
+		offset(0), imm_float(v), reg(0), vec(v1) {
+	}
 }
 
 ir::PTXOperand::~PTXOperand() {

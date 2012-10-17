@@ -179,7 +179,12 @@ namespace ir {
 		PTXOperand(AddressMode m, DataType t, const std::string& identifier, 
 			int o = 0, Vec v = v1);
 		PTXOperand(AddressMode m, const std::string& identifier);
-		PTXOperand(long long unsigned int v, DataType t = u64);
+		
+		template<typename T>
+		PTXOperand(T v, DataType t);
+		template<typename T>
+		explicit PTXOperand(T v);
+		
 		~PTXOperand();
 
 		std::string toString() const;
@@ -236,14 +241,23 @@ namespace ir {
 
 }
 
-namespace std 
-{
+namespace ir {
+	template<typename T>
+	PTXOperand::PTXOperand(T v, DataType t) : addressMode(Immediate), type(t),
+		relaxedType(TypeSpecifier_invalid),
+		offset(0), imm_uint(v), reg(0), vec(v1) {}
+	
+	template<typename T>
+	PTXOperand::PTXOperand(T v) : addressMode(Immediate), type(u64),
+		relaxedType(TypeSpecifier_invalid),
+		offset(0), imm_uint(v), reg(0), vec(v1) {}
+}
+
+namespace std {
 	template<> 
-	struct hash<ir::PTXOperand::DataType>
-	{
+	struct hash<ir::PTXOperand::DataType> {
 	public:
-		size_t operator()(const ir::PTXOperand::DataType& t) const
-		{
+		size_t operator()(const ir::PTXOperand::DataType& t) const {
 			return (size_t)t;
 		}
 	};

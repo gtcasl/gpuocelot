@@ -1005,7 +1005,8 @@ namespace parser
 	{
 		report(" Rule: parameterAttribute: TOKEN_PTR kernelParameterPtrSpace");
 		statement.ptrAddressSpace = tokenToAddressSpace(token);
-		report("    address space: " << ir::PTXInstruction::toString(statement.ptrAddressSpace));
+		report("    address space: " << ir::PTXInstruction::toString(
+			statement.ptrAddressSpace));
 	}
 
 	void PTXParser::State::fileDeclaration( unsigned int file, 
@@ -1272,7 +1273,7 @@ namespace parser
 		statement.name      = _nameInContext(name);
 		statement.alignment = alignment;
 		statement.type      = operand.type;
-	
+		
 		operand.identifier  = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;
 	

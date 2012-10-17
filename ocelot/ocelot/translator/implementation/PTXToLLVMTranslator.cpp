@@ -2748,7 +2748,11 @@ void PTXToLLVMTranslator::_translateEx2( const ir::PTXInstruction& i )
 {
 	ir::LLVMCall call;
 
+	#ifdef _WIN32
+	call.name = "@llvm.pow.f32";
+	#else
 	call.name = "@llvm.exp2.f32";
+	#endif
 	
 	if( i.modifier & ir::PTXInstruction::ftz )
 	{
@@ -2761,8 +2765,14 @@ void PTXToLLVMTranslator::_translateEx2( const ir::PTXInstruction& i )
 		call.d = _destination( i );
 	}
 	
+	#if _WIN32
+	call.parameters.resize( 2 );
+	call.parameters[0] = _translate( 2.0f );
+	call.parameters[1] = _translate( i.a );
+	#else
 	call.parameters.resize( 1 );
 	call.parameters[0] = _translate( i.a );
+	#endif
 	
 	_add( call );
 
@@ -3187,7 +3197,33 @@ void PTXToLLVMTranslator::_translateLdu( const ir::PTXInstruction& i )
 void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
 {
 	ir::LLVMCall call;
+	ir::LLVMInstruction::Operand destination;
+	
+	#ifdef _WIN32
+	
+	//   log2f(float x) = logf(x) * 1.44269504088896340736f
+	call.name = "@llvm.log.f32";
+	call.parameters.resize( 1 );
+	call.d               = _tempRegister();
+	call.d.type.type     = ir::LLVMInstruction::F32;
+	call.d.type.category = ir::LLVMInstruction::Type::Element;
+	call.parameters[0]   = _translate( i.a );
 
+	_add( call );
+
+	ir::LLVMFmul mul;
+
+	mul.d = _destination( i );
+	mul.d.name = _tempRegister();
+	mul.a = call.d;
+	mul.b = _translate( 1.44269504088896340736f );
+
+	_add( mul );
+
+	destination = mul.d;
+		
+	#else
+	
 	call.name = "@llvm.log2.f32";	
 	call.parameters.resize( 1 );
 	
@@ -3210,10 +3246,14 @@ void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
 	
 	_add( call );
 	
+	destination = call.d;
+	#endif
+	
 	if( i.modifier & ir::PTXInstruction::ftz )
 	{
-		_flushToZero( _destination( i ), call.d );
-	}		
+		_flushToZero( _destination( i ), destination );
+	}
+	
 }
 
 void PTXToLLVMTranslator::_translateMad24( const ir::PTXInstruction& i )
@@ -9141,6 +9181,10 @@ void PTXToLLVMTranslator::_addLLVMIntrinsics()
 	cos.label      = "llvm.sin.f32";
 	_llvmKernel->push_front( cos );
 
+	// @llvm.log
+	cos.label      = "llvm.log.f32";
+	_llvmKernel->push_front( cos );
+
 	// @llvm.log2
 	cos.label      = "llvm.log2.f32";
 	_llvmKernel->push_front( cos );
@@ -9148,6 +9192,27 @@ void PTXToLLVMTranslator::_addLLVMIntrinsics()
 	// @llvm.exp2
 	cos.label      = "llvm.exp2.f32";
 	_llvmKernel->push_front( cos );
+
+	// @llvm.pow
+	ir::LLVMStatement pow( ir::LLVMStatement::FunctionDeclaration );
+
+	pow.label      = "llvm.pow.f32";
+	pow.linkage    = ir::LLVMStatement::InvalidLinkage;
+	pow.convention = ir::LLVMInstruction::DefaultCallingConvention;
+	pow.visibility = ir::LLVMStatement::Default;
+	
+	pow.operand.type.category = ir::LLVMInstruction::Type::Element;
+	pow.operand.type.type     = ir::LLVMInstruction::F32;
+	
+	pow.parameters.resize( 2 );
+
+	pow.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+	pow.parameters[0].type.type     = ir::LLVMInstruction::F32;
+	pow.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+	pow.parameters[1].type.type     = ir::LLVMInstruction::F32;
+ 
+ 	_llvmKernel->push_front( pow );	
+
 }
 
 void PTXToLLVMTranslator::_addUtilityCalls()

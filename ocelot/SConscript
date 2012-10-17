@@ -133,6 +133,8 @@ if os.name == 'nt':
 else:
 	ocelot_libs = ['-locelot']
 
+ocelot_libs = ocelot_libs + ocelot_dep_libs
+
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
 	CXXFLAGS = env['OCELOT_CONFIG_FLAGS'])
@@ -291,7 +293,6 @@ for dir in directories:
 		headers.extend(env.Glob(regexp))
 
 # Install rules
-
 if env['install']:
 	print 'Ocelot will be installed at ' + env['install_path']
 	installed = []
@@ -310,9 +311,11 @@ if env['install']:
 		env['install_path'], "bin"), LoadPtx))
 		
 	if enableKernelExtractor and os.name != 'nt':
-		installed.append(env.Install(os.path.join(env['install_path'], "lib"), KernelExtractorLib))
+		installed.append(env.Install(os.path.join(
+			env['install_path'], "lib"), KernelExtractorLib))
 
-	scriptDirectory = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
+	scriptDirectory = os.path.realpath(os.path.dirname(
+		inspect.getfile(inspect.currentframe())))
 
 	for header in headers:
 		(directoryPath, headerName) = os.path.split( \

@@ -44,8 +44,8 @@
 
 %parse-param {parser::PTXLexer& lexer}
 %parse-param {parser::PTXParser::State& state}
-%lex-param {parser::PTXLexer& lexer}
-%lex-param {parser::PTXParser::State& state}
+%lex-param   {parser::PTXLexer& lexer}
+%lex-param   {parser::PTXParser::State& state}
 %pure-parser
 
 %token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING TOKEN_METADATA
@@ -1034,6 +1034,7 @@ bfe : OPCODE_BFE dataType operand ',' operand ',' operand
 {
 	state.instruction( $<text>1, $<value>2 );
 };
+
 bfi : OPCODE_BFI dataType operand ',' operand ',' operand 
 	',' operand ',' operand ';'
 {

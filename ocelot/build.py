@@ -34,6 +34,9 @@ def build(options):
 	if options.no_llvm:
 		command += " enable_llvm=false"
 
+	if options.no_cuda_runtime:
+		command += " enable_cuda_runtime=false"
+
 	if options.build_deb:
 		if not options.install:
 			print "Install must be set for a debian build, setting it"
@@ -109,7 +112,8 @@ def runUnitTests(options, buildSucceeded):
 	
 	print '\nRunning Ocelot Unit Tests...'
 	print command
-	status = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.read()
+	status = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
+		stderr=subprocess.STDOUT).stdout.read()
  	print status
 	
 	# Check for any failing/missing tests
@@ -161,9 +165,11 @@ def main():
 	parser.add_option( "-b", "--build_target", \
 		default = "", help = "build a specific target." )
 	parser.add_option( "-a", "--no_wall", \
-		default = False, action = "store_true", help = "don't display all warnings." )
+		default = False, action = "store_true", help =
+			"don't display all warnings." )
 	parser.add_option( "-w", "--no_werr", \
-		default = False, action = "store_true", help = "don't turn warnings into errors." )
+		default = False, action = "store_true", help =
+			"don't turn warnings into errors." )
 	parser.add_option( "-p", "--install_prefix", \
 		help = "The base path to install ocelot in." )
 	parser.add_option( "--build_deb", \
@@ -171,6 +177,9 @@ def main():
 		help = "Build a .deb package of Ocelot." )
 	parser.add_option( "--no_llvm", \
 		default = False, action = "store_true", help = "Disable llvm support." )
+	parser.add_option( "--no_cuda_runtime", \
+		default = False, action = "store_true",
+		help = "Disable exporting cuda runtime symbols." )
 	parser.add_option( "-m", "--message", default = "", \
 		help = "the message describing the changes being committed." )
 	

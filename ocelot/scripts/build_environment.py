@@ -509,9 +509,9 @@ def Environment():
 	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
 	
-	vars.Add(BoolVariable('disable_cuda_runtime',
-		'Do not export cuda runtime symbols (allows linking Ocelot '
-		'against another version of the CUDA runtime)', 0))
+	vars.Add(BoolVariable('enable_cuda_runtime',
+		'Export cuda runtime symbols (prevents linking Ocelot '
+		'against another version of the CUDA runtime)', 1))
 
 	# add a variable to compile the ocelot unit tests
 	vars.Add(EnumVariable('test_level',
@@ -521,13 +521,15 @@ def Environment():
 	# add a variable to determine the install path
 	if os.name == 'nt':
 		if 'USERPROFILE' in os.environ:
-			default_install_path = os.path.join(os.environ['USERPROFILE'], 'ocelot')
+			default_install_path = os.path.join(
+				os.environ['USERPROFILE'], 'ocelot')
 		else:
 			default_install_path = '/ocelot'
 	elif os.name == 'posix':
 		default_install_path = '/usr/local'
 	else:
-		raise ValueError, 'Error: unknown OS.  Where is Ocelot installed by default?'
+		raise ValueError, 'Error: unknown OS.  " \
+			"Where is Ocelot installed by default?'
 	
 	if 'OCELOT_INSTALL_PATH' in os.environ:
 		default_install_path = os.environ['OCELOT_INSTALL_PATH']
@@ -545,11 +547,10 @@ def Environment():
 		tools = getTools(), variables = vars)
 
 	# disable the cuda runtime
-	if env['disable_cuda_runtime']:
-		env.Replace(EXCLUDE_CUDA_RUNTIME = True)
-	else:
+	if env['enable_cuda_runtime']:
 		env.Replace(EXCLUDE_CUDA_RUNTIME = False)
-		
+	else:
+		env.Replace(EXCLUDE_CUDA_RUNTIME = True)
 
 	# update compiler options with variables in the environment
 	# (such as those from the command line)

@@ -642,9 +642,9 @@ void PassManager::runOnModule()
 
 	_module->loadNow();
 	
-	typedef std::vector<AnalysisMap> AnalysisMapVector;
+	typedef std::map<std::string, AnalysisMap> AnalysisMapMap;
 	
-	AnalysisMapVector kernelAnalyses(_module->kernels().size());
+	AnalysisMapMap kernelAnalyses;
 	
 	PassWaveList passes = _schedulePasses();
 
@@ -657,12 +657,14 @@ void PassManager::runOnModule()
 			if((*pass)->type == Pass::KernelPass)     continue;
 			if((*pass)->type == Pass::BasicBlockPass) continue;
 		
-			AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
 			for(ir::Module::KernelMap::const_iterator 
 				kernel = _module->kernels().begin();
-				kernel != _module->kernels().end(); ++kernel, ++analyses)
+				kernel != _module->kernels().end(); ++kernel)
 			{
-				allocateNewDataStructures(*analyses,
+				auto analyses = kernelAnalyses.insert(std::make_pair(
+					kernel->first, AnalysisMap())).first;
+				
+				allocateNewDataStructures(analyses->second,
 					kernel->second, (*pass)->analyses, this);
 			}
 			
@@ -672,17 +674,19 @@ void PassManager::runOnModule()
 		}
 	
 		// Run all kernel and bb passes
-		AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
 		for(ir::Module::KernelMap::const_iterator 
 			kernel = _module->kernels().begin();
-			kernel != _module->kernels().end(); ++kernel, ++analyses)
+			kernel != _module->kernels().end(); ++kernel)
 		{
 			for(auto pass = wave->begin(); pass != wave->end(); ++pass)
 			{
 				initializeKernelPass(_module, *pass);
 			}
 		
-			_analyses = &*analyses;
+			auto analyses = kernelAnalyses.insert(std::make_pair(
+				kernel->first, AnalysisMap())).first;
+				
+			_analyses = &analyses->second;
 			_kernel = kernel->second;
 		
 			for(auto pass = wave->begin(); pass != wave->end(); ++pass)
@@ -690,15 +694,15 @@ void PassManager::runOnModule()
 				if((*pass)->type == Pass::ImmutablePass) continue;
 				if((*pass)->type == Pass::ModulePass)    continue;
 			
-				freeUnusedDataStructures( *analyses, kernel->second,
+				freeUnusedDataStructures( analyses->second, kernel->second,
 					(*pass)->analyses);
-				allocateNewDataStructures(*analyses, kernel->second,
+				allocateNewDataStructures(analyses->second, kernel->second,
 					(*pass)->analyses, this);
 			
 				runKernelPass(_module, kernel->second, *pass);
 			}
 		
-			freeUnusedDataStructures(*analyses, kernel->second,
+			freeUnusedDataStructures(analyses->second, kernel->second,
 				analysis::Analysis::NoAnalysis);
 
 			for(auto pass = wave->begin(); pass != wave->end(); ++pass)

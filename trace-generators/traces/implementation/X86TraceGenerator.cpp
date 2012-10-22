@@ -49,8 +49,6 @@
 #define GPU_SHARED 60
 
 
-#define LD_INST
-
 #define ST_INST(opcode) \
    (opcode == ir::PTXInstruction::St || \
     opcode == ir::PTXInstruction::Atom || \
@@ -81,7 +79,250 @@ using namespace std;
 // Opcode enumerator
 // These should be exactly matched with the Macsim
 /////////////////////////////////////////////////////////////////////////////////////////////// 
-#ifdef GPU_VALIDATION 
+// numbering is not correct!!
+/*
+   //before matching with enum in trace_read.h in MacSim
+enum TR_OPCODE_ENUM_  {
+  XED_CATEGORY_INVALID   = 0,
+  XED_CATEGORY_3DNOW,
+  XED_CATEGORY_AES,
+  XED_CATEGORY_AVX,
+  XED_CATEGORY_BASE,
+  XED_CATEGORY_BINARY,
+  XED_CATEGORY_BITBYTE,
+  XED_CATEGORY_BROADCAST,
+  XED_CATEGORY_CALL,
+  XED_CATEGORY_CMOV,
+  XED_CATEGORY_COND_BR   = 10, 
+  XED_CATEGORY_CONVERT,
+  XED_CATEGORY_DATAXFER,
+  XED_CATEGORY_DECIMAL,
+  XED_CATEGORY_FCMOV,
+  XED_CATEGORY_FLAGOP,
+  XED_CATEGORY_INTERRUPT,
+  XED_CATEGORY_IO,
+  XED_CATEGORY_IOSTRINGOP,
+  XED_CATEGORY_LOGICAL,
+  XED_CATEGORY_MISC     = 20,
+  XED_CATEGORY_MMX,
+  XED_CATEGORY_NOP,
+  XED_CATEGORY_PCLMULQDQ,
+  XED_CATEGORY_POP,
+  XED_CATEGORY_PREFETCH,
+  XED_CATEGORY_PUSH,
+  XED_CATEGORY_RET,
+  XED_CATEGORY_ROTATE,
+  XED_CATEGORY_SEGOP,
+  XED_CATEGORY_SEMAPHORE = 30,
+  XED_CATEGORY_SHIFT,
+  XED_CATEGORY_SSE,
+  XED_CATEGORY_SSE5,
+  XED_CATEGORY_STRINGOP,
+  XED_CATEGORY_STTNI,
+  XED_CATEGORY_SYSCALL,
+  XED_CATEGORY_SYSRET,
+  XED_CATEGORY_SYSTEM,
+  XED_CATEGORY_UNCOND_BR,
+  XED_CATEGORY_VTX      = 40,
+  XED_CATEGORY_WIDENOP,
+  XED_CATEGORY_X87_ALU,
+  XED_CATEGORY_XSAVE,
+  XED_CATEGORY_XSAVEOPT,
+  TR_MUL,
+  TR_DIV,
+  TR_FMUL,
+  TR_FDIV,
+  TR_NOP,
+  PREFETCH_NTA         = 50,
+  PREFETCH_T0,
+  PREFETCH_T1,
+  PREFETCH_T2,
+  TR_MEM_LD_LM,
+  TR_MEM_LD_SM,
+  TR_MEM_LD_GM,
+  TR_MEM_ST_LM,
+  TR_MEM_ST_SM,
+  TR_MEM_ST_GM,
+  TR_DATA_XFER_LM      = 60,
+  TR_DATA_XFER_SM,
+  TR_DATA_XFER_GM,
+  TR_MEM_LD_CM,
+  TR_MEM_LD_TM,
+  TR_MEM_LD_PM,
+  LD_CM_CA,
+  LD_CM_CG,
+  LD_CM_CS,
+  LD_CM_LU,
+  LD_CM_CU            = 70,
+  LD_GM_CA,
+  LD_GM_CG,
+  LD_GM_CS,
+  LD_GM_LU,
+  LD_GM_CU,
+  LD_LM_CA,
+  LD_LM_CG,
+  LD_LM_CS,
+  LD_LM_LU,
+  LD_LM_CU            = 80,
+  LD_PM_CA,
+  LD_PM_CG,
+  LD_PM_CS,
+  LD_PM_LU,
+  LD_PM_CU,
+  LD_SM_CA,
+  LD_SM_CG,
+  LD_SM_CS,
+  LD_SM_LU,
+  LD_SM_CU           = 90,
+  LDU_GM,
+  ST_GM_WB,
+  ST_GM_CG,
+  ST_GM_CS,
+  ST_GM_WT,
+  ST_LM_WB,
+  ST_LM_CG,
+  ST_LM_CS,
+  ST_LM_WT,
+  ST_SM_WB          = 100,
+  ST_SM_CG,
+  ST_SM_CS,
+  ST_SM_WT,
+  PREF_GM_L1,
+  PREF_GM_L2,
+  PREF_LM_L1,
+  PREF_LM_L2,
+  PREF_UNIFORM,
+  GPU_ABS,
+  GPU_ABS64        = 110,
+  GPU_ADD, 
+  GPU_ADD64, 
+	GPU_ADDC,
+	GPU_AND,
+	GPU_AND64,
+	GPU_ATOM,
+	GPU_ATOM64,
+	GPU_BAR,
+	GPU_BFE,
+	GPU_BFE64        = 120,
+	GPU_BFI,
+	GPU_BFI64,
+	GPU_BFIND,
+	GPU_BFIND64,
+	GPU_BRA,
+	GPU_BREV,
+	GPU_BREV64,
+	GPU_BRKPT,
+	GPU_CALL,
+	GPU_CLZ         = 130,
+	GPU_CLZ64,
+	GPU_CNOT,
+	GPU_CNOT64,
+	GPU_COPYSIGN,
+	GPU_COPYSIGN64,
+	GPU_COS,
+	GPU_CVT,
+	GPU_CVT64,
+	GPU_CVTA,
+	GPU_CVTA64      = 140,
+	GPU_DIV,
+	GPU_DIV64,
+	GPU_EX2,
+	GPU_EXIT,
+	GPU_FMA,
+	GPU_FMA64,
+	GPU_ISSPACEP,
+	GPU_LD,
+	GPU_LD64,
+	GPU_LDU         = 150,
+	GPU_LDU64,
+	GPU_LG2,
+	GPU_MAD24,
+	GPU_MAD,
+	GPU_MAD64,
+	GPU_MAX,
+	GPU_MAX64,
+	GPU_MEMBAR,
+	GPU_MIN,
+	GPU_MIN64      = 160,
+	GPU_MOV,
+	GPU_MOV64,
+	GPU_MUL24,
+	GPU_MUL,
+	GPU_MUL64,
+	GPU_NEG,
+	GPU_NEG64,
+	GPU_NOT,
+	GPU_NOT64,
+	GPU_OR        = 170,
+	GPU_OR64,
+	GPU_PMEVENT,
+	GPU_POPC,
+	GPU_POPC64,
+	GPU_PREFETCH,
+	GPU_PREFETCHU,
+	GPU_PRMT,
+	GPU_RCP,
+	GPU_RCP64,
+	GPU_RED       = 180,
+	GPU_RED64,
+	GPU_REM,
+	GPU_REM64,
+	GPU_RET,
+	GPU_RSQRT,
+	GPU_RSQRT64,
+	GPU_SAD,
+	GPU_SAD64,
+	GPU_SELP,
+	GPU_SELP64    = 190,
+	GPU_SET,
+	GPU_SET64,
+	GPU_SETP,
+	GPU_SETP64,
+	GPU_SHL,
+	GPU_SHL64,
+	GPU_SHR,
+	GPU_SHR64,
+	GPU_SIN,
+	GPU_SLCT     = 200,
+	GPU_SLCT64,
+	GPU_SQRT,
+	GPU_SQRT64,
+	GPU_ST,
+	GPU_ST64,
+	GPU_SUB,
+	GPU_SUB64,
+	GPU_SUBC,
+	GPU_SULD,
+	GPU_SULD64  = 210,
+	GPU_SURED,
+	GPU_SURED64,
+	GPU_SUST,
+	GPU_SUST64,
+	GPU_SUQ,
+  GPU_TESTP,
+  GPU_TESTP64,
+  GPU_TEX,
+  GPU_TLD4,
+  GPU_TXQ     = 220,
+  GPU_TRAP,
+  GPU_VABSDIFF,
+  GPU_VADD,
+  GPU_VMAD,
+  GPU_VMAX,
+  GPU_VMIN,
+  GPU_VSET,
+  GPU_VSHL,
+  GPU_VSHR,
+  GPU_VSUB   = 230,
+  GPU_VOTE,
+  GPU_XOR,
+  GPU_XOR64,
+  GPU_RECONVERGE,
+  GPU_PHI,
+  TR_OPCODE_LAST
+} TR_OPCODE_ENUM;
+*/
+
 enum TR_OPCODE_ENUM_  {
   XED_CATEGORY_INVALID   = 0,
   XED_CATEGORY_3DNOW,
@@ -230,7 +471,6 @@ enum TR_OPCODE_ENUM_  {
 	GPU_FMA,
 	GPU_FMA64,
 	GPU_ISSPACEP,
-	GPU_ISSPACEP64,
 	GPU_LD,
 	GPU_LD64,
 	GPU_LDU,
@@ -321,248 +561,537 @@ enum TR_OPCODE_ENUM_  {
   GPU_PHI,
   TR_OPCODE_LAST
 } TR_OPCODE_ENUM;
-#else
-enum TR_OPCODE_ENUM_  {
-  GPU_INVALID = 0,
-  GPU_ABS,
-  GPU_ABS64,
-  GPU_ADD, 
-  GPU_ADD64, 
-	GPU_ADDC,
-	GPU_AND,
-	GPU_AND64,
-	GPU_ATOM,
-	GPU_ATOM64,
-	GPU_BAR = 10,
-	GPU_BFE,
-	GPU_BFE64,
-	GPU_BFI,
-	GPU_BFI64,
-	GPU_BFIND,
-	GPU_BFIND64,
-	GPU_BRA,
-	GPU_BREV,
-	GPU_BREV64,
-	GPU_BRKPT = 20,
-	GPU_CALL,
-	GPU_CLZ,
-	GPU_CLZ64,
-	GPU_CNOT,
-	GPU_CNOT64,
-	GPU_COPYSIGN,
-	GPU_COPYSIGN64,
-	GPU_COS,
-	GPU_CVT,
-	GPU_CVT64 = 30,
-	GPU_CVTA,
-	GPU_CVTA64,
-	GPU_DIV,
-	GPU_DIV64,
-	GPU_EX2,
-	GPU_EXIT,
-	GPU_FMA,
-	GPU_FMA64,
-	GPU_ISSPACEP,
-	GPU_ISSPACEP64 = 40,
-	GPU_LD,
-	GPU_LD64,
-	GPU_LDU,
-	GPU_LDU64,
-	GPU_LG2,
-	GPU_MAD24,
-	GPU_MAD,
-	GPU_MAD64,
-	GPU_MAX,
-	GPU_MAX64,
-	GPU_MEMBAR,
-	GPU_MIN,
-	GPU_MIN64,
-	GPU_MOV,
-	GPU_MOV64,
-	GPU_MUL24,
-	GPU_MUL,
-	GPU_MUL64,
-	GPU_NEG,
-	GPU_NEG64,
-	GPU_NOT,
-	GPU_NOT64,
-	GPU_OR,
-	GPU_OR64,
-	GPU_PMEVENT,
-	GPU_POPC,
-	GPU_POPC64,
-	GPU_PREFETCH,
-	GPU_PREFETCHU,
-	GPU_PRMT,
-	GPU_RCP = 70,
-	GPU_RCP64,
-	GPU_RED,
-	GPU_RED64,
-	GPU_REM,
-	GPU_REM64,
-	GPU_RET,
-	GPU_RSQRT,
-	GPU_RSQRT64,
-	GPU_SAD,
-	GPU_SAD64 = 80,
-	GPU_SELP,
-	GPU_SELP64,
-	GPU_SET,
-	GPU_SET64,
-	GPU_SETP,
-	GPU_SETP64,
-	GPU_SHL,
-	GPU_SHL64,
-	GPU_SHR,
-	GPU_SHR64 = 90,
-	GPU_SIN,
-	GPU_SLCT,
-	GPU_SLCT64,
-	GPU_SQRT,
-	GPU_SQRT64,
-	GPU_ST,
-	GPU_ST64,
-	GPU_SUB,
-	GPU_SUB64,
-	GPU_SUBC = 100,
-	GPU_SULD,
-	GPU_SULD64,
-	GPU_SURED,
-	GPU_SURED64,
-	GPU_SUST,
-	GPU_SUST64,
-	GPU_SUQ,
-  GPU_TESTP,
-  GPU_TESTP64,
-  GPU_TEX = 110,
-  GPU_TLD4,
-  GPU_TXQ,
-  GPU_TRAP,
-  GPU_VABSDIFF,
-  GPU_VADD,
-  GPU_VMAD,
-  GPU_VMAX,
-  GPU_VMIN,
-  GPU_VSET,
-  GPU_VSHL = 120,
-  GPU_VSHR,
-  GPU_VSUB,
-  GPU_VOTE,
-  GPU_XOR,
-  GPU_XOR64,
-  GPU_RECONVERGE,
-  GPU_PHI,
-
-  GPU_EN,
 
 
-  GPU_MEM_LD_GM,
-  GPU_MEM_LD_LM,
-  GPU_MEM_LD_CM = 130,
-  GPU_MEM_LD_PM,
-  GPU_MEM_LD_SM,
-  GPU_MEM_LD_TM,
-  GPU_MEM_LDU_GM,
-  GPU_MEM_ST_GM,
-  GPU_MEM_ST_LM,
-  GPU_MEM_ST_SM,
-  GPU_DATA_XFER_GM,
-  GPU_DATA_XFER_SM,
-  TR_OPCODE_LAST
-} TR_OPCODE_ENUM;
-#endif
+// Sanity check::
+// We should match with total number of instructions in gpuocelot (ptx)
+//
+// index 0 for integer instruction
+// index 1 for fp instruction
 
+#ifndef GPU_VALIDATION
 
-// Opcode translation
-// missing instruction from PTX manual
-// madc
-// shfl
-int opcode_translator[ir::PTXInstruction::Nop][4] = 
+int ptx_to_x86[2][ir::PTXInstruction::Nop] = 
 {
-  // 32 bit integer     , 64 bit integer      , 32 bit float point  , 64 bit flot point
-  { (int)GPU_ABS        , (int)GPU_ABS64      , (int)GPU_ABS        , (int)GPU_ABS64       }, // Abs
-  { (int)GPU_ADD        , (int)GPU_ADD64      , (int)GPU_ADD        , (int)GPU_ADD64       }, // Add
-  { (int)GPU_ADDC       , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // AddC
-  { (int)GPU_AND        , (int)GPU_AND64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // And
-  { (int)GPU_ATOM       , (int)GPU_ATOM64     , (int)GPU_ATOM       , (int)GPU_INVALID     }, // Atom
-  { (int)GPU_BAR        , (int)GPU_BAR        , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Bar
-  { (int)GPU_BFE        , (int)GPU_BFE64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Bfe
-  { (int)GPU_BFI        , (int)GPU_BFI64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Bfi
-  { (int)GPU_BFIND      , (int)GPU_BFIND64    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Bfind
-  { (int)GPU_BRA        , (int)GPU_BRA        , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Bra
-  { (int)GPU_BREV       , (int)GPU_BREV64     , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Brev
-  { (int)GPU_BRKPT      , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Brkpt
-  { (int)GPU_CALL       , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Call
-  { (int)GPU_CLZ        , (int)GPU_CLZ64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Clz
-  { (int)GPU_CNOT       , (int)GPU_CNOT64     , (int)GPU_INVALID    , (int)GPU_INVALID     }, // CNot
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_COPYSIGN   , (int)GPU_COPYSIGN64  }, // CopySign
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_COS        , (int)GPU_INVALID     }, // Cos
-  { (int)GPU_CVT        , (int)GPU_CVT64      , (int)GPU_CVT        , (int)GPU_CVT64       }, // Cvt
-  { (int)GPU_CVTA       , (int)GPU_CVTA64     , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Cvta
-  { (int)GPU_DIV        , (int)GPU_DIV64      , (int)GPU_DIV        , (int)GPU_DIV64       }, // Div
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_EX2        , (int)GPU_INVALID     }, // Ex2
-  { (int)GPU_EXIT       , (int)GPU_EXIT       , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Exit
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_FMA        , (int)GPU_FMA64       }, // Fma
-  { (int)GPU_ISSPACEP   , (int)GPU_ISSPACEP64 , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Isspacep
-  { (int)GPU_LD         , (int)GPU_LD64       , (int)GPU_LD         , (int)GPU_LD64        }, // Ld
-  { (int)GPU_LDU        , (int)GPU_LDU64      , (int)GPU_LDU        , (int)GPU_LDU64       }, // Ldu
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_LG2        , (int)GPU_INVALID     }, // Lg2
-  { (int)GPU_MAD24      , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Mad24
-  { (int)GPU_MAD        , (int)GPU_MAD64      , (int)GPU_MAD        , (int)GPU_MAD64       }, // Mad
-  { (int)GPU_MAX        , (int)GPU_MAX64      , (int)GPU_MAX        , (int)GPU_MAX64       }, // Max
-  { (int)GPU_MEMBAR     , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Membar
-  { (int)GPU_MIN        , (int)GPU_MIN64      , (int)GPU_MIN        , (int)GPU_MIN64       }, // Min
-  { (int)GPU_MOV        , (int)GPU_MOV64      , (int)GPU_MOV        , (int)GPU_MOV64       }, // Mov
-  { (int)GPU_MUL24      , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Mul24
-  { (int)GPU_MUL        , (int)GPU_MUL64      , (int)GPU_MUL        , (int)GPU_MUL64       }, // Mul
-  { (int)GPU_NEG        , (int)GPU_NEG64      , (int)GPU_NEG        , (int)GPU_NEG64       }, // Neg
-  { (int)GPU_NOT        , (int)GPU_NOT64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Not
-  { (int)GPU_OR         , (int)GPU_OR64       , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Or
-  { (int)GPU_PMEVENT    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Pmevent
-  { (int)GPU_POPC       , (int)GPU_POPC64     , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Popc
-  { (int)GPU_PREFETCH   , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Prefetch
-  { (int)GPU_PREFETCHU  , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Prefetchu
-  { (int)GPU_PRMT       , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Prmt
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_RCP        , (int)GPU_RCP64       }, // Rcp
-  { (int)GPU_RED        , (int)GPU_RED64      , (int)GPU_RED        , (int)GPU_INVALID     }, // Red
-  { (int)GPU_REM        , (int)GPU_REM64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Rem
-  { (int)GPU_RET        , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Ret
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_RSQRT      , (int)GPU_RSQRT64     }, // Rsqrt
-  { (int)GPU_SAD        , (int)GPU_SAD64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Sad
-  { (int)GPU_SELP       , (int)GPU_SELP64     , (int)GPU_SELP       , (int)GPU_SELP64      }, // SelP
-  { (int)GPU_SET        , (int)GPU_SET64      , (int)GPU_SET        , (int)GPU_SET64       }, // Set
-  { (int)GPU_SETP       , (int)GPU_SETP64     , (int)GPU_SETP       , (int)GPU_SETP64      }, // SetP
-  { (int)GPU_SHL        , (int)GPU_SHL64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Shl
-  { (int)GPU_SHR        , (int)GPU_SHR64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Shr
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_SIN        , (int)GPU_INVALID     }, // Sin
-  { (int)GPU_SLCT       , (int)GPU_SLCT64     , (int)GPU_SLCT       , (int)GPU_SLCT64      }, // Slct
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_SQRT       , (int)GPU_SQRT64      }, // Sqrt
-  { (int)GPU_ST         , (int)GPU_ST64       , (int)GPU_ST         , (int)GPU_ST64        }, // St
-  { (int)GPU_SUB        , (int)GPU_SUB64      , (int)GPU_SUB        , (int)GPU_SUB64       }, // Sub
-  { (int)GPU_SUBC       , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // SubC
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Suld
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Sured
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Sust
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Suq
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_TESTP      , (int)GPU_TESTP64     }, // TestP
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Tex
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Tld4
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Txq
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Trap
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vabsdiff
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vadd
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vmad
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vmax
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vmin
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vset
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vshl
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vshr
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vsub
-  { (int)GPU_VOTE       , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Vote
-  { (int)GPU_XOR        , (int)GPU_XOR64      , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Xor
-  { (int)GPU_RECONVERGE , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Reconverge
-  { (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID    , (int)GPU_INVALID     }, // Phi
+  {
+    (int)XED_CATEGORY_DECIMAL,  //Abs 
+    (int)XED_CATEGORY_DECIMAL,  //Add - only int
+    (int)XED_CATEGORY_DECIMAL,  //AddC - only int
+    (int)XED_CATEGORY_LOGICAL,  // And
+    (int)XED_CATEGORY_DATAXFER, //Atom
+    (int)XED_CATEGORY_SEMAPHORE, //Bar
+    (int)XED_CATEGORY_DECIMAL,  // ** Bfe int
+    (int)XED_CATEGORY_DECIMAL,  // ** Bfi int 
+    (int)XED_CATEGORY_DECIMAL,  // ** Bfind int
+    (int)XED_CATEGORY_COND_BR,  //Bra
+    (int)XED_CATEGORY_DECIMAL,  // ** Brev int
+    (int)XED_CATEGORY_DECIMAL,  // ** Brkpt misc
+    (int)XED_CATEGORY_CALL,     //Call
+    (int)XED_CATEGORY_DECIMAL,  // ** Clz int
+    (int)XED_CATEGORY_DECIMAL,  //CNot,
+    (int)XED_CATEGORY_DECIMAL,  // copysign
+    (int)TR_FMUL,               //Cos - only fp
+    (int)XED_CATEGORY_DATAXFER, // ** Cvt was TR_MUL
+    (int)XED_CATEGORY_DATAXFER, // ** Cvta mov
+    (int)TR_DIV,                //Div
+    (int)TR_FDIV,               //Ex2 - only fp
+    (int)XED_CATEGORY_DECIMAL,  //Exit
+    (int)TR_FMUL,               // fma
+    (int)XED_CATEGORY_DECIMAL,  // isspacep
+    (int)XED_CATEGORY_DATAXFER, //Ld
+    (int)XED_CATEGORY_DATAXFER, // ** Ldu mov
+    (int)TR_FDIV,               //Lg2 - only fp
+    (int)TR_MUL,                //Mad24 - only int
+    (int)TR_MUL,                //Mad
+    (int)XED_CATEGORY_DECIMAL,  //Max,
+    (int)XED_CATEGORY_SEMAPHORE, //Membar,
+    (int)XED_CATEGORY_DECIMAL,  //Min,
+    (int)XED_CATEGORY_DATAXFER, //Mov,
+    (int)TR_MUL,                //Mul24 - only int
+    (int)TR_MUL,                //Mul
+    (int)XED_CATEGORY_LOGICAL,  //Neg
+    (int)XED_CATEGORY_LOGICAL,  //Not
+    (int)XED_CATEGORY_LOGICAL,  // Or
+    (int)XED_CATEGORY_LOGICAL,  //Pmevent
+    (int)XED_CATEGORY_DECIMAL,  // ** Popc int
+    (int)XED_CATEGORY_DATAXFER, // ** Prefetch mov
+    (int)XED_CATEGORY_DATAXFER, // ** Prefetchu mov
+    (int)XED_CATEGORY_DECIMAL,  // ** Prmt int
+    (int)TR_FDIV,               //Rcp - only fp
+    (int)XED_CATEGORY_DATAXFER, //Red
+    (int)TR_DIV,                //Rem - only int
+    (int)XED_CATEGORY_RET,      //Ret
+    (int)TR_FDIV,               //Rsqrt
+    (int)TR_MUL,                //Sad - only int
+    (int)XED_CATEGORY_DECIMAL,  //SelP
+    (int)XED_CATEGORY_DECIMAL,  //Set
+    (int)XED_CATEGORY_DECIMAL,  //SetP
+    (int)XED_CATEGORY_SHIFT,    //Shl
+    (int)XED_CATEGORY_SHIFT,    //Shr
+    (int)TR_FMUL,               //Sin - only float
+    (int)XED_CATEGORY_DECIMAL,  //SlCt
+    (int)TR_FDIV,               //Sqrt
+    (int)XED_CATEGORY_DATAXFER, //St
+    (int)XED_CATEGORY_DECIMAL,  //Sub
+    (int)XED_CATEGORY_DECIMAL,  //SubC
+    (int)XED_CATEGORY_DATAXFER, // ** Suld surface mem
+    (int)XED_CATEGORY_DATAXFER, // ** Sured surface mem
+    (int)XED_CATEGORY_DATAXFER, // ** Sust surface mem
+    (int)XED_CATEGORY_DATAXFER, // ** Suq surface mem
+    (int)XED_CATEGORY_LOGICAL,  // TestP
+    (int)XED_CATEGORY_DATAXFER, //Tex
+    (int)XED_CATEGORY_DATAXFER, // Tld4
+    (int)XED_CATEGORY_DATAXFER, // ** Txq texture mem
+    (int)XED_CATEGORY_INTERRUPT, //Trap
+    (int)XED_CATEGORY_DECIMAL,  // ** Vadsdiff video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vadd video 
+    (int)TR_MUL,                // ** Vmad video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vmax video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vmin video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vset video
+    (int)XED_CATEGORY_SHIFT,    // ** Vshl video
+    (int)XED_CATEGORY_SHIFT,    // ** Vshr video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vsub video
+    (int)XED_CATEGORY_DATAXFER, //Vote, - check this
+    (int)XED_CATEGORY_LOGICAL,  //Xor,
+    (int)XED_CATEGORY_DECIMAL,  //Reconverge, - check
+    (int)XED_CATEGORY_DECIMAL,  //, //Phi - check
+//    (int)XED_CATEGORY_DECIMAL   //Nop
+  },
+  {
+    (int)XED_CATEGORY_DECIMAL,  //Abs 
+    (int)XED_CATEGORY_DECIMAL,  //Add - only int
+    (int)XED_CATEGORY_DECIMAL,  //AddC - only int
+    (int)XED_CATEGORY_LOGICAL,  // And
+    (int)XED_CATEGORY_DATAXFER, //Atom
+    (int)XED_CATEGORY_SEMAPHORE, //Bar
+    (int)XED_CATEGORY_DECIMAL,  // ** Bfe int
+    (int)XED_CATEGORY_DECIMAL,  // ** Bfi int 
+    (int)XED_CATEGORY_DECIMAL,  // ** Bfind int
+    (int)XED_CATEGORY_COND_BR,  //Bra
+    (int)XED_CATEGORY_DECIMAL,  // ** Brev int
+    (int)XED_CATEGORY_DECIMAL,  //Brkpt
+    (int)XED_CATEGORY_CALL,     //Call
+    (int)XED_CATEGORY_DECIMAL,  // ** Clz int
+    (int)XED_CATEGORY_DECIMAL,  //CNot,
+    (int)XED_CATEGORY_DECIMAL,  // copysign
+    (int)TR_FMUL,               //Cos - only fp
+    (int)XED_CATEGORY_DATAXFER, // ** Cvt was TR_MUL
+    (int)XED_CATEGORY_DATAXFER, // ** Cvta mov
+    (int)TR_FDIV,               //Div
+    (int)TR_FDIV,               //Ex2 - only fp
+    (int)XED_CATEGORY_DECIMAL,  //Exit
+    (int)TR_MUL,                // fma
+    (int)XED_CATEGORY_LOGICAL,  // isspacep
+    (int)XED_CATEGORY_DATAXFER, //Ld
+    (int)XED_CATEGORY_DATAXFER, // ** Ldu mov
+    (int)TR_FDIV,               //Lg2 - only fp
+    (int)TR_MUL,                //Mad24 - only int
+    (int)TR_MUL,                //Mad
+    (int)XED_CATEGORY_DECIMAL,  //Max,
+    (int)XED_CATEGORY_SEMAPHORE, //Membar,
+    (int)XED_CATEGORY_DECIMAL,  //Min,
+    (int)XED_CATEGORY_DATAXFER, //Mov,
+    (int)TR_MUL,                //Mul24 - only int
+    (int)TR_MUL,                //Mul
+    (int)XED_CATEGORY_LOGICAL,  //Neg
+    (int)XED_CATEGORY_LOGICAL,  //Not
+    (int)XED_CATEGORY_LOGICAL,  // Or
+    (int)XED_CATEGORY_LOGICAL,  //Pmevent
+    (int)XED_CATEGORY_DECIMAL,  // ** Popc int
+    (int)XED_CATEGORY_DATAXFER, // ** Prefetch mov
+    (int)XED_CATEGORY_DATAXFER, // ** Prefetchu mov
+    (int)XED_CATEGORY_DECIMAL,  // ** Prmt int
+    (int)TR_FDIV,               //Rcp
+    (int)XED_CATEGORY_DATAXFER, //Red
+    (int)TR_DIV,                //Rem - only int
+    (int)XED_CATEGORY_RET,      //Ret
+    (int)TR_FDIV,               //Rsqrt
+    (int)TR_MUL,                //Sad - only int
+    (int)XED_CATEGORY_DECIMAL,  //SelP
+    (int)XED_CATEGORY_DECIMAL,  //Set
+    (int)XED_CATEGORY_DECIMAL,  //SetP
+    (int)XED_CATEGORY_SHIFT,    //Shl
+    (int)XED_CATEGORY_SHIFT,    //Shr
+    (int)TR_FMUL,               //Sin - only float
+    (int)XED_CATEGORY_DECIMAL,  //SlCt
+    (int)TR_FDIV,               //Sqrt
+    (int)XED_CATEGORY_DATAXFER, //St
+    (int)XED_CATEGORY_DECIMAL,  //Sub
+    (int)XED_CATEGORY_DECIMAL,  //SubC
+    (int)XED_CATEGORY_DATAXFER, // ** Suld surface mem
+    (int)XED_CATEGORY_DATAXFER, // ** Sured surface mem
+    (int)XED_CATEGORY_DATAXFER, // ** Sust surface mem
+    (int)XED_CATEGORY_DATAXFER, // ** Suq surface mem
+    (int)XED_CATEGORY_LOGICAL,  // TestP
+    (int)XED_CATEGORY_DATAXFER, //Tex
+    (int)XED_CATEGORY_DATAXFER, // Tld4
+    (int)XED_CATEGORY_DATAXFER, // ** Txq texture mem
+    (int)XED_CATEGORY_INTERRUPT, //Trap
+    (int)XED_CATEGORY_DECIMAL,  // ** Vadsdiff video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vadd video 
+    (int)TR_FMUL,               // ** Vmad video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vmax video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vmin video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vset video
+    (int)XED_CATEGORY_SHIFT,    // ** Vshl video
+    (int)XED_CATEGORY_SHIFT,    // ** Vshr video
+    (int)XED_CATEGORY_DECIMAL,  // ** Vsub video
+    (int)XED_CATEGORY_DATAXFER, //Vote, - check this
+    (int)XED_CATEGORY_LOGICAL,  //Xor,
+    (int)XED_CATEGORY_DECIMAL,  //Reconverge, - check
+    (int)XED_CATEGORY_DECIMAL,   //, //Phi - check
+//    (int)XED_CATEGORY_DECIMAL //Nop
+  }
 };
+
+#else
+
+int ptx_to_x86[4][ir::PTXInstruction::Nop] = 
+{
+  // int (upto) 32-bit
+  {
+			(int)GPU_ABS,         // Abs
+			(int)GPU_ADD,         // Add
+			(int)GPU_ADDC,        // AddC
+			(int)GPU_AND,         // And
+			(int)GPU_ATOM,        // Atom
+			(int)GPU_BAR,         // Bar
+			(int)GPU_BFE,         // Bfe
+			(int)GPU_BFI,         // Bfi
+			(int)GPU_BFIND,       // Bfind
+			(int)GPU_BRA,         // Bra
+			(int)GPU_BREV,        // Brev
+			(int)GPU_BRKPT,       // Brkpt
+			(int)GPU_CALL,        // Call
+			(int)GPU_CLZ,         // Clz
+			(int)GPU_CNOT,        // CNot
+			(int)XED_CATEGORY_INVALID,    // CopySign
+			(int)XED_CATEGORY_INVALID,         // Cos
+			(int)GPU_CVT,         // Cvt
+			(int)GPU_CVTA,        // Cvta
+			(int)GPU_DIV,         // Div
+			(int)XED_CATEGORY_INVALID,         // Ex2
+			(int)GPU_EXIT,        // Exit
+			(int)XED_CATEGORY_INVALID,         // Fma
+			(int)GPU_ISSPACEP,    // Isspacep
+			(int)GPU_LD,          // Ld
+			(int)GPU_LDU,         // Ldu
+			(int)XED_CATEGORY_INVALID,         // Lg2
+			(int)GPU_MAD24,       // Mad24
+			(int)GPU_MAD,         // Mad
+			(int)GPU_MAX,         // Max
+			(int)GPU_MEMBAR,      // Membar
+			(int)GPU_MIN,         // Min
+			(int)GPU_MOV,         // Mov
+			(int)GPU_MUL24,       // Mul24
+			(int)GPU_MUL,         // Mul
+			(int)GPU_NEG,         // Neg
+			(int)GPU_NOT,         // Not
+			(int)GPU_OR,          // Or
+			(int)GPU_PMEVENT,     // Pmevent
+			(int)GPU_POPC,        // Popc
+			(int)GPU_PREFETCH,    // Prefetch
+			(int)GPU_PREFETCHU,   // Prefetchu
+			(int)GPU_PRMT,        // Prmt
+			(int)XED_CATEGORY_INVALID,         // Rcp
+			(int)GPU_RED,         // Red
+			(int)GPU_REM,         // Rem
+			(int)GPU_RET,         // Ret
+			(int)XED_CATEGORY_INVALID,       // Rsqrt
+			(int)GPU_SAD,         // Sad
+			(int)GPU_SELP,        // SelP
+			(int)GPU_SET,         // Set
+			(int)GPU_SETP,        // SetP
+			(int)GPU_SHL,         // Shl
+			(int)GPU_SHR,         // Shr
+			(int)XED_CATEGORY_INVALID,         // Sin
+			(int)GPU_SLCT,        // SlCt
+			(int)XED_CATEGORY_INVALID,        // Sqrt
+			(int)GPU_ST,          // St
+			(int)GPU_SUB,         // Sub
+			(int)GPU_SUBC,        // SubC
+			(int)XED_CATEGORY_INVALID,        // Suld
+			(int)XED_CATEGORY_INVALID,       // Sured
+			(int)XED_CATEGORY_INVALID,        // Sust
+			(int)XED_CATEGORY_INVALID,         // Suq
+			(int)XED_CATEGORY_INVALID,       // TestP
+			(int)XED_CATEGORY_INVALID,         // Tex
+			(int)XED_CATEGORY_INVALID,        // Tld4
+			(int)XED_CATEGORY_INVALID,         // Txq
+			(int)XED_CATEGORY_INVALID,        // Trap
+			(int)XED_CATEGORY_INVALID,    // Vabsdiff
+			(int)XED_CATEGORY_INVALID,        // Vadd
+			(int)XED_CATEGORY_INVALID,        // Vmad
+			(int)XED_CATEGORY_INVALID,        // Vmax
+			(int)XED_CATEGORY_INVALID,        // Vmin
+			(int)XED_CATEGORY_INVALID,        // Vset
+			(int)XED_CATEGORY_INVALID,        // Vshl
+			(int)XED_CATEGORY_INVALID,        // Vshr
+			(int)XED_CATEGORY_INVALID,        // Vsub
+			(int)GPU_VOTE,        // Vote
+			(int)GPU_XOR,         // Xor
+			(int)GPU_RECONVERGE,  // Reconverge
+			(int)XED_CATEGORY_INVALID,         // Phi
+  },
+  // int 64-bit
+  {
+			(int)GPU_ABS64,         // Abs
+			(int)GPU_ADD64,         // Add
+			(int)XED_CATEGORY_INVALID,        // AddC
+			(int)GPU_AND64,         // And
+			(int)GPU_ATOM64,        // Atom
+			(int)GPU_BAR,           // Bar *************** bar type is b64, so not set to invalid
+			(int)GPU_BFE64,         // Bfe
+			(int)GPU_BFI64,         // Bfi
+			(int)GPU_BFIND64,       // Bfind
+			(int)GPU_BRA,           // Bra *************** bra type is b64, so not set to invalid
+			(int)GPU_BREV64,        // Brev
+			(int)XED_CATEGORY_INVALID,       // Brkpt
+			(int)XED_CATEGORY_INVALID,        // Call
+			(int)GPU_CLZ64,         // Clz
+			(int)GPU_CNOT64,        // CNot
+			(int)XED_CATEGORY_INVALID,    // CopySign
+			(int)XED_CATEGORY_INVALID,         // Cos
+			(int)GPU_CVT64,         // Cvt
+			(int)GPU_CVTA64,        // Cvta
+			(int)GPU_DIV64,         // Div
+			(int)XED_CATEGORY_INVALID,         // Ex2
+			(int)GPU_EXIT,          // Exit ************* exit type is b64, so not set to invalid
+			(int)XED_CATEGORY_INVALID,         // Fma
+			(int)XED_CATEGORY_INVALID,    // Isspacep
+			(int)GPU_LD64,          // Ld
+			(int)GPU_LDU64,         // Ldu
+			(int)XED_CATEGORY_INVALID,         // Lg2
+			(int)XED_CATEGORY_INVALID,       // Mad24
+			(int)GPU_MAD64,         // Mad
+			(int)GPU_MAX64,         // Max
+			(int)XED_CATEGORY_INVALID,      // Membar
+			(int)GPU_MIN64,         // Min
+			(int)GPU_MOV64,         // Mov
+			(int)XED_CATEGORY_INVALID,       // Mul24
+			(int)GPU_MUL64,         // Mul
+			(int)GPU_NEG64,         // Neg
+			(int)GPU_NOT64,         // Not
+			(int)GPU_OR64,          // Or
+			(int)XED_CATEGORY_INVALID,     // Pmevent
+			(int)GPU_POPC64,        // Popc
+			(int)XED_CATEGORY_INVALID,    // Prefetch
+			(int)XED_CATEGORY_INVALID,   // Prefetchu
+			(int)XED_CATEGORY_INVALID,        // Prmt
+			(int)GPU_RCP64,         // Rcp
+			(int)GPU_RED64,         // Red
+			(int)GPU_REM64,         // Rem
+			(int)XED_CATEGORY_INVALID,         // Ret
+			(int)XED_CATEGORY_INVALID,       // Rsqrt
+			(int)GPU_SAD64,         // Sad
+			(int)GPU_SELP64,        // SelP
+			(int)GPU_SET64,         // Set
+			(int)GPU_SETP64,        // SetP
+			(int)GPU_SHL64,         // Shl
+			(int)GPU_SHR64,         // Shr
+			(int)XED_CATEGORY_INVALID,         // Sin
+			(int)GPU_SLCT64,        // SlCt
+			(int)XED_CATEGORY_INVALID,        // Sqrt
+			(int)GPU_ST64,          // St
+			(int)GPU_SUB64,         // Sub
+			(int)XED_CATEGORY_INVALID,        // SubC
+			(int)XED_CATEGORY_INVALID,        // Suld
+			(int)XED_CATEGORY_INVALID,       // Sured
+			(int)XED_CATEGORY_INVALID,        // Sust
+			(int)XED_CATEGORY_INVALID,         // Suq
+			(int)XED_CATEGORY_INVALID,       // TestP
+			(int)XED_CATEGORY_INVALID,         // Tex
+			(int)XED_CATEGORY_INVALID,        // Tld4
+			(int)XED_CATEGORY_INVALID,         // Txq
+			(int)XED_CATEGORY_INVALID,        // Trap
+			(int)XED_CATEGORY_INVALID,    // Vabsdiff
+			(int)XED_CATEGORY_INVALID,        // Vadd
+			(int)XED_CATEGORY_INVALID,        // Vmad
+			(int)XED_CATEGORY_INVALID,        // Vmax
+			(int)XED_CATEGORY_INVALID,        // Vmin
+			(int)XED_CATEGORY_INVALID,        // Vset
+			(int)XED_CATEGORY_INVALID,        // Vshl
+			(int)XED_CATEGORY_INVALID,        // Vshr
+			(int)XED_CATEGORY_INVALID,        // Vsub
+			(int)XED_CATEGORY_INVALID,        // Vote
+			(int)GPU_XOR64,         // Xor
+			(int)XED_CATEGORY_INVALID,  // Reconverge
+			(int)XED_CATEGORY_INVALID,         // Phi
+  },
+  // FP (32-bit)
+  {
+			(int)GPU_ABS,         // Abs
+			(int)GPU_ADD,         // Add
+			(int)XED_CATEGORY_INVALID,        // AddC
+			(int)XED_CATEGORY_INVALID,         // And
+			(int)GPU_ATOM,        // Atom
+			(int)XED_CATEGORY_INVALID,         // Bar
+			(int)XED_CATEGORY_INVALID,         // Bfe
+			(int)XED_CATEGORY_INVALID,         // Bfi
+			(int)XED_CATEGORY_INVALID,       // Bfind
+			(int)XED_CATEGORY_INVALID,         // Bra
+			(int)XED_CATEGORY_INVALID,        // Brev
+			(int)XED_CATEGORY_INVALID,       // Brkpt
+			(int)XED_CATEGORY_INVALID,        // Call
+			(int)XED_CATEGORY_INVALID,         // Clz
+			(int)XED_CATEGORY_INVALID,        // CNot
+			(int)GPU_COPYSIGN,    // CopySign
+			(int)GPU_COS,         // Cos
+			(int)GPU_CVT,         // Cvt
+			(int)XED_CATEGORY_INVALID,        // Cvta
+			(int)GPU_DIV,         // Div
+			(int)GPU_EX2,         // Ex2
+			(int)XED_CATEGORY_INVALID,        // Exit
+			(int)GPU_FMA,         // Fma
+			(int)XED_CATEGORY_INVALID,    // Isspacep
+			(int)GPU_LD,          // Ld
+			(int)GPU_LDU,         // Ldu
+			(int)GPU_LG2,         // Lg2
+			(int)XED_CATEGORY_INVALID,       // Mad24
+			(int)GPU_MAD,         // Mad
+			(int)GPU_MAX,         // Max
+			(int)XED_CATEGORY_INVALID,      // Membar
+			(int)GPU_MIN,         // Min
+			(int)GPU_MOV,         // Mov
+			(int)XED_CATEGORY_INVALID,       // Mul24
+			(int)GPU_MUL,         // Mul
+			(int)GPU_NEG,         // Neg
+			(int)XED_CATEGORY_INVALID,         // Not
+			(int)XED_CATEGORY_INVALID,          // Or
+			(int)XED_CATEGORY_INVALID,     // Pmevent
+			(int)XED_CATEGORY_INVALID,        // Popc
+			(int)XED_CATEGORY_INVALID,    // Prefetch
+			(int)XED_CATEGORY_INVALID,   // Prefetchu
+			(int)XED_CATEGORY_INVALID,        // Prmt
+			(int)GPU_RCP,         // Rcp
+			(int)GPU_RED,         // Red
+			(int)XED_CATEGORY_INVALID,         // Rem
+			(int)XED_CATEGORY_INVALID,         // Ret
+			(int)GPU_RSQRT,       // Rsqrt
+			(int)XED_CATEGORY_INVALID,         // Sad
+			(int)GPU_SELP,        // SelP
+			(int)GPU_SET,         // Set
+			(int)GPU_SETP,        // SetP
+			(int)XED_CATEGORY_INVALID,         // Shl
+			(int)XED_CATEGORY_INVALID,         // Shr
+			(int)GPU_SIN,         // Sin
+			(int)GPU_SLCT,        // SlCt
+			(int)GPU_SQRT,        // Sqrt
+			(int)GPU_ST,          // St
+			(int)GPU_SUB,         // Sub
+			(int)XED_CATEGORY_INVALID,        // SubC
+			(int)XED_CATEGORY_INVALID,        // Suld
+			(int)XED_CATEGORY_INVALID,       // Sured
+			(int)XED_CATEGORY_INVALID,        // Sust
+			(int)XED_CATEGORY_INVALID,         // Suq
+			(int)XED_CATEGORY_INVALID,       // TestP
+			(int)XED_CATEGORY_INVALID,         // Tex
+			(int)XED_CATEGORY_INVALID,        // Tld4
+			(int)XED_CATEGORY_INVALID,         // Txq
+			(int)XED_CATEGORY_INVALID,        // Trap
+			(int)XED_CATEGORY_INVALID,    // Vabsdiff
+			(int)XED_CATEGORY_INVALID,        // Vadd
+			(int)XED_CATEGORY_INVALID,        // Vmad
+			(int)XED_CATEGORY_INVALID,        // Vmax
+			(int)XED_CATEGORY_INVALID,        // Vmin
+			(int)XED_CATEGORY_INVALID,        // Vset
+			(int)XED_CATEGORY_INVALID,        // Vshl
+			(int)XED_CATEGORY_INVALID,        // Vshr
+			(int)XED_CATEGORY_INVALID,        // Vsub
+			(int)XED_CATEGORY_INVALID,        // Vote
+			(int)XED_CATEGORY_INVALID,         // Xor
+			(int)XED_CATEGORY_INVALID,  // Reconverge
+			(int)XED_CATEGORY_INVALID,         // Phi
+  },
+  // double (64-bit)
+  {
+			(int)GPU_ABS64,         // Abs
+			(int)GPU_ADD64,         // Add
+			(int)XED_CATEGORY_INVALID,        // AddC
+			(int)XED_CATEGORY_INVALID,         // And
+			(int)XED_CATEGORY_INVALID,        // Atom
+			(int)XED_CATEGORY_INVALID,         // Bar
+			(int)XED_CATEGORY_INVALID,         // Bfe
+			(int)XED_CATEGORY_INVALID,         // Bfi
+			(int)XED_CATEGORY_INVALID,       // Bfind
+			(int)XED_CATEGORY_INVALID,         // Bra
+			(int)XED_CATEGORY_INVALID,        // Brev
+			(int)XED_CATEGORY_INVALID,       // Brkpt
+			(int)XED_CATEGORY_INVALID,        // Call
+			(int)XED_CATEGORY_INVALID,         // Clz
+			(int)XED_CATEGORY_INVALID,        // CNot
+			(int)GPU_COPYSIGN64,    // CopySign
+			(int)XED_CATEGORY_INVALID,         // Cos
+			(int)GPU_CVT64,         // Cvt
+			(int)XED_CATEGORY_INVALID,        // Cvta
+			(int)GPU_DIV64,         // Div
+			(int)XED_CATEGORY_INVALID,         // Ex2
+			(int)XED_CATEGORY_INVALID,        // Exit
+			(int)GPU_FMA64,         // Fma
+			(int)XED_CATEGORY_INVALID,    // Isspacep
+			(int)GPU_LD64,          // Ld
+			(int)GPU_LDU64,         // Ldu
+			(int)XED_CATEGORY_INVALID,         // Lg2
+			(int)XED_CATEGORY_INVALID,       // Mad24
+			(int)GPU_MAD64,         // Mad
+			(int)GPU_MAX64,         // Max
+			(int)XED_CATEGORY_INVALID,      // Membar
+			(int)GPU_MIN64,         // Min
+			(int)GPU_MOV64,         // Mov
+			(int)XED_CATEGORY_INVALID,       // Mul24
+			(int)GPU_MUL64,         // Mul
+			(int)GPU_NEG64,         // Neg
+			(int)XED_CATEGORY_INVALID,         // Not
+			(int)XED_CATEGORY_INVALID,          // Or
+			(int)XED_CATEGORY_INVALID,     // Pmevent
+			(int)XED_CATEGORY_INVALID,        // Popc
+			(int)XED_CATEGORY_INVALID,    // Prefetch
+			(int)XED_CATEGORY_INVALID,   // Prefetchu
+			(int)XED_CATEGORY_INVALID,        // Prmt
+			(int)GPU_RCP64,         // Rcp
+			(int)XED_CATEGORY_INVALID,         // Red
+			(int)XED_CATEGORY_INVALID,         // Rem
+			(int)XED_CATEGORY_INVALID,         // Ret
+			(int)GPU_RSQRT64,       // Rsqrt
+			(int)XED_CATEGORY_INVALID,         // Sad
+			(int)GPU_SELP64,        // SelP
+			(int)GPU_SET64,         // Set
+			(int)GPU_SETP64,        // SetP
+			(int)XED_CATEGORY_INVALID,         // Shl
+			(int)XED_CATEGORY_INVALID,         // Shr
+			(int)XED_CATEGORY_INVALID,         // Sin
+			(int)GPU_SLCT64,        // SlCt
+			(int)GPU_SQRT64,        // Sqrt
+			(int)GPU_ST64,          // St
+			(int)GPU_SUB64,         // Sub
+			(int)XED_CATEGORY_INVALID,        // SubC
+			(int)XED_CATEGORY_INVALID,        // Suld
+			(int)XED_CATEGORY_INVALID,       // Sured
+			(int)XED_CATEGORY_INVALID,        // Sust
+			(int)XED_CATEGORY_INVALID,         // Suq
+			(int)GPU_TESTP64,       // TestP
+			(int)XED_CATEGORY_INVALID,         // Tex
+			(int)XED_CATEGORY_INVALID,        // Tld4
+			(int)XED_CATEGORY_INVALID,         // Txq
+			(int)XED_CATEGORY_INVALID,        // Trap
+			(int)XED_CATEGORY_INVALID,    // Vabsdiff
+			(int)XED_CATEGORY_INVALID,        // Vadd
+			(int)XED_CATEGORY_INVALID,        // Vmad
+			(int)XED_CATEGORY_INVALID,        // Vmax
+			(int)XED_CATEGORY_INVALID,        // Vmin
+			(int)XED_CATEGORY_INVALID,        // Vset
+			(int)XED_CATEGORY_INVALID,        // Vshl
+			(int)XED_CATEGORY_INVALID,        // Vshr
+			(int)XED_CATEGORY_INVALID,        // Vsub
+			(int)XED_CATEGORY_INVALID,        // Vote
+			(int)XED_CATEGORY_INVALID,         // Xor
+			(int)XED_CATEGORY_INVALID,  // Reconverge
+			(int)XED_CATEGORY_INVALID,         // Phi
+  }
+};
+
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -605,7 +1134,7 @@ ofstream *debug_stream;
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // Ptx to X86 trace generator constructor
 ///////////////////////////////////////////////////////////////////////////////////////////////
-trace::X86TraceGenerator::X86TraceGenerator() 
+trace::X86TraceGenerator::X86TraceGenerator()
   : init(false)
   , num_warps_per_block(0)
   , num_total_warps(0)
@@ -849,7 +1378,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
     exit(0);
   }
 
-    
+
   /////////////////////////////////////////////////////////////////////////////////////////////
   /// reset instruction hash for a new kernel
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -905,7 +1434,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
 
   string kernel_config_file = trace_path;
   kernel_config_file.append("kernel_config.txt");
-  txt_kernel_config_file.open(kernel_config_file.c_str());
+  txt_kernel_config_file.open(kernel_config_file.c_str(), std::ios_base::app);
 
   // open kernel configuration file
   if (init == false) {
@@ -978,7 +1507,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
 
   memset(thread_info, 0, num_total_warps * sizeof(Thread_info));
   memset(trace_info, 0, num_total_warps * sizeof(Trace_info));
-  
+
   init = true;
 }
 
@@ -1237,24 +1766,24 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         ptx_inst->opcode == ir::PTXInstruction::Ldu) {
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Const:
-          inst_info->opcode = GPU_MEM_LD_CM;
+          inst_info->opcode = TR_MEM_LD_CM;
           break;
 
         case ir::PTXInstruction::Global:
         case ir::PTXInstruction::Generic:
-          inst_info->opcode = GPU_MEM_LD_GM; 
+          inst_info->opcode = TR_MEM_LD_GM; 
           break;
 
         case ir::PTXInstruction::Local:
-          inst_info->opcode = GPU_MEM_LD_LM; 
+          inst_info->opcode = TR_MEM_LD_LM; 
           break;
 
         case ir::PTXInstruction::Param:
-          inst_info->opcode = GPU_MEM_LD_PM; 
+          inst_info->opcode = TR_MEM_LD_PM; 
           break;
 
         case ir::PTXInstruction::Shared:
-          inst_info->opcode = GPU_MEM_LD_SM; 
+          inst_info->opcode = TR_MEM_LD_SM; 
           break;
 
         case ir::PTXInstruction::Texture:
@@ -1273,7 +1802,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       assert(0);
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
-          inst_info->opcode = GPU_MEM_LDU_GM;
+          inst_info->opcode = LDU_GM;
           break;
 
         default:
@@ -1285,15 +1814,15 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
         case ir::PTXInstruction::Generic:
-          inst_info->opcode = GPU_MEM_ST_GM;
+          inst_info->opcode = TR_MEM_ST_GM;
           break;
 
         case ir::PTXInstruction::Local:
-          inst_info->opcode = GPU_MEM_ST_LM;
+          inst_info->opcode = TR_MEM_ST_LM;
           break;
 
         case ir::PTXInstruction::Shared:
-          inst_info->opcode = GPU_MEM_ST_SM;
+          inst_info->opcode = TR_MEM_ST_SM;
           break;
 
         default:
@@ -1331,7 +1860,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     }
     // texture memory
     else if (TEX_INST(ptx_inst->opcode)) {
-      inst_info->opcode = GPU_MEM_LD_TM;
+      inst_info->opcode = TR_MEM_LD_TM;
     }
     // surface memory access
     // TODO (jaekyu, 8-5-2010)
@@ -1345,11 +1874,11 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
              ptx_inst->opcode == ir::PTXInstruction::Red) {
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
-          inst_info->opcode = GPU_DATA_XFER_GM;
+          inst_info->opcode = TR_DATA_XFER_GM;
           break;
 
         case ir::PTXInstruction::Shared:
-          inst_info->opcode = GPU_DATA_XFER_SM;
+          inst_info->opcode = TR_DATA_XFER_SM;
           break;
 
         default :
@@ -1359,29 +1888,44 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     }
     // other instructions
     else {
+#ifndef GPU_VALIDATION
+      // floating point
+      if (ptx_inst->type == ir::PTXOperand::f16 || 
+          ptx_inst->type == ir::PTXOperand::f32 || 
+          ptx_inst->type == ir::PTXOperand::f64) {
+        inst_info->opcode = ptx_to_x86[1][ptx_inst->opcode];
+        inst_info->is_fp = true;
+      }
+      // integer
+      else {
+        inst_info->opcode = ptx_to_x86[0][ptx_inst->opcode];
+        inst_info->is_fp = false;
+      }
+#else   
       // double
       if (ptx_inst->type == ir::PTXOperand::f64) {
-        inst_info->opcode = opcode_translator[ptx_inst->opcode][3];
+        inst_info->opcode = ptx_to_x86[3][ptx_inst->opcode];
         inst_info->is_fp = true;
       }
       // floating point
       else if (ptx_inst->type == ir::PTXOperand::f16 || 
-               ptx_inst->type == ir::PTXOperand::f32) {
-        inst_info->opcode = opcode_translator[ptx_inst->opcode][2];
+          ptx_inst->type == ir::PTXOperand::f32) {
+        inst_info->opcode = ptx_to_x86[2][ptx_inst->opcode];
         inst_info->is_fp = true;
       }
       // integer - 64-bit
       else if (ptx_inst->type == ir::PTXOperand::s64 ||
-               ptx_inst->type == ir::PTXOperand::u64 ||
-               ptx_inst->type == ir::PTXOperand::b64) {
-        inst_info->opcode = opcode_translator[ptx_inst->opcode][1];
+          ptx_inst->type == ir::PTXOperand::u64 ||
+          ptx_inst->type == ir::PTXOperand::b64) {
+        inst_info->opcode = ptx_to_x86[1][ptx_inst->opcode];
         inst_info->is_fp = false;
       }
       // integer
       else {
-        inst_info->opcode = opcode_translator[ptx_inst->opcode][0];
+        inst_info->opcode = ptx_to_x86[0][ptx_inst->opcode];
         inst_info->is_fp = false;
       }
+#endif
     }
     ///////////////////////////////////////////////////////////////////////////////////////////
     // Opcode parsing done
@@ -1433,7 +1977,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         ptx_inst->opcode == ir::PTXInstruction::Prefetchu ||
         ptx_inst->opcode == ir::PTXInstruction::Atom ||
         ptx_inst->opcode == ir::PTXInstruction::Red ||
-        TEX_INST(inst_info->opcode)) {
+        TEX_INST(ptx_inst->opcode)) {
       inst_info->num_ld = 1;
     }
     else {
@@ -1464,10 +2008,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
 
   // flag to indicate whether inst. is a control flow inst. or not 
-  bool branch_inst = false;
-  if (BRANCH_INST(ptx_inst->opcode)) {
-    branch_inst = true;
-  }
+  bool branch_inst = BRANCH_INST(ptx_inst->opcode);
 
   // flag to indicate whether inst. accesses memory or not 
   bool mem_inst = false;
@@ -1626,12 +2167,13 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
           assert(mem_access[i].mem_size < 256);
 
           if (ptx_inst->opcode == ir::PTXInstruction::Ld || 
+              ptx_inst->opcode == ir::PTXInstruction::Mov || 
               ptx_inst->opcode == ir::PTXInstruction::Ldu ||
               ptx_inst->opcode == ir::PTXInstruction::Prefetch ||
               ptx_inst->opcode == ir::PTXInstruction::Prefetchu ||
+              inst_info->opcode == TR_MEM_LD_TM ||
               ptx_inst->opcode == ir::PTXInstruction::Atom || 
-              ptx_inst->opcode == ir::PTXInstruction::Red ||
-              inst_info->opcode == GPU_MEM_LD_TM) {
+              ptx_inst->opcode == ir::PTXInstruction::Red) {
             // set ld_vaddr1 and mem_read_size
             inst_info->ld_vaddr1 = (mem_access[i].mem_addr & mem_addr_flag);
             inst_info->mem_read_size = mem_access[i].mem_size;

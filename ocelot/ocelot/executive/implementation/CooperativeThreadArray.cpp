@@ -477,6 +477,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block, int PC) {
 				eval_Bfi(context, instr); break;
 			case ir::PTXInstruction::Bfind:
 				eval_Bfind(context, instr); break;
+			case ir::PTXInstruction::Bfe:
+				eval_Bfe(context, instr); break;
 			case ir::PTXInstruction::Bra:
 				eval_Bra(context, instr); break;
 			case ir::PTXInstruction::Brev:
@@ -2357,11 +2359,11 @@ void executive::CooperativeThreadArray::eval_Bfe(CTAContext &context,
 		bool isSigned = (instr.type == ir::PTXOperand::s32
 			|| instr.type == ir::PTXOperand::s64);
 		
-		ir::PTXU32 msb = (size32bit ? 31 : 63);
-		ir::PTXU32 pos = operandAsU32(tid, instr.b);
-		ir::PTXU32 len = operandAsU32(tid, instr.c);
-		ir::PTXU64 a = operandAsU64(tid, instr.a);
-		ir::PTXU64 mask = ((1 << len) - 1);
+		ir::PTXU32 msb    = (size32bit ? 31 : 63);
+		ir::PTXU32 pos    = operandAsU32(tid, instr.b);
+		ir::PTXU32 len    = operandAsU32(tid, instr.c);
+		ir::PTXU64 a      = operandAsU64(tid, instr.a);
+		ir::PTXU64 mask   = ((1 << len) - 1);
 		ir::PTXU64 result = 0;
 		
 		if (isSigned) {

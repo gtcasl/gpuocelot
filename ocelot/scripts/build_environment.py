@@ -98,17 +98,25 @@ def getBoost(env):
 
 	libs = [];
 	if os.name == 'nt':
-		lib_files = Flatten([Glob(os.path.join(lib_path, 'libboost_system-vc100-mt-s-*')),
-				     Glob(os.path.join(lib_path, 'libboost_filesystem-vc100-mt-s-*')),
-				     Glob(os.path.join(lib_path, 'libboost_thread-vc100-mt-s-*'))])
+		if env['mode'] == 'debug':
+			debug_str = "gd"
+		else:
+			debug_str = ""
+			lib_files = Flatten([Glob(os.path.join(lib_path,
+				'libboost_system-vc100-mt-s' + debug_str + '-*')),
+			Glob(os.path.join(lib_path,
+				'libboost_filesystem-vc100-mt-s' + debug_str + '-*')),
+			Glob(os.path.join(lib_path,
+				'libboost_thread-vc100-mt-s' + debug_str + '-*'))])
 		for f in lib_files:
 			libs.append(os.path.basename(f.abspath))
+			
 	elif os.name == 'posix':
 		libs = ['-lboost_system-mt', '-lboost_filesystem-mt',
-			'-lboost_thread-mt']
+		'-lboost_thread-mt']
 	else:
 		raise ValueError, 'Error: unknown OS.  What are Boost library names?'
- 
+
 	return (bin_path,lib_path,inc_path,libs)
 
 def getFlexPaths(env):
@@ -190,7 +198,6 @@ def getLLVMPaths(enabled):
 	cflags   = ['-I/usr/local/include', '-D_DEBUG', '-D_GNU_SOURCE',
 	            '-D__STDC_CONSTANT_MACROS', '-D__STDC_FORMAT_MACROS',
 	            '-D__STDC_LIMIT_MACROS']
-	lflags   = ['-L/usr/local/lib', '-lpthread', '-ldl', '-lm']
 	libs     = ['-lLLVMAsmParser', '-lLLVMX86CodeGen', '-lLLVMSelectionDAG',
 	            '-lLLVMAsmPrinter', '-lLLVMX86AsmParser', '-lLLVMMCParser',
 	            '-lLLVMX86Disassembler', '-lLLVMX86Desc', '-lLLVMX86Info',
@@ -200,6 +207,15 @@ def getLLVMPaths(enabled):
 	            '-lLLVMipa', '-lLLVMAnalysis', '-lLLVMTarget', '-lLLVMMC',
 	            '-lLLVMObject', '-lLLVMCore', '-lLLVMSupport']
 	
+	if os.name == 'nt':
+		lflags =  []
+		cflags =  []
+	# Do we need this?
+	#	libs   += ['Shell32', 'Advapi32']
+	else:
+		lflags = ['-L/usr/local/lib', '-lpthread', '-ldl', '-lm']
+		libs   = ['-l' + l for l in libs]
+
 	# override defaults
 	if 'LLVM_BIN_PATH' in os.environ:
 		bin_path = [os.path.abspath(os.environ['LLVM_BIN_PATH'])]
@@ -224,7 +240,6 @@ def getLLVMPaths(enabled):
 	
 	if not enabled:
 		return (False, [], [], [], [], [], [])
-	
 	
 	if 'USER_SPECIFIED_LLVM_PATHS' in os.environ:
 		return getUserSpecifiedLLVMPaths()

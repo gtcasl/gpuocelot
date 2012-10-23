@@ -24,6 +24,9 @@ namespace transforms {
 		/*! \brief Initialize the pass using a specific module */
 		virtual void runOnModule(ir::Module& m);
 	
+		//! \brief returns true if any kernel contains .ptr.shared parameter attribute
+		static bool testModule(const ir::Module &m);
+		
 	protected:
 		std::string _getOrInsertExternShared(ir::Module &m);
 		void _updateSharedPtrUses(ir::PTXKernel &k, std::string symbol);

@@ -48,8 +48,8 @@ bool executive::Device::MemoryAllocation::global() const
 	return _global;
 }
 
-executive::Device::Properties::Properties(const PropertiesData& props)
-	: PropertiesData(props)
+executive::Device::Properties::Properties(const DeviceProperties& props)
+	: DeviceProperties(props)
 {
 }
 

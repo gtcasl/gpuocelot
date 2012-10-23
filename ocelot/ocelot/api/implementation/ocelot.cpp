@@ -96,6 +96,12 @@ namespace ocelot
 	{
 		get()->removeExternalFunction(name);
 	}
+	
+	/*! \brief gets the Ocelot device properties of either the current device 
+		(deviceIndex = -1) or the indexed device */
+	void getDeviceProperties(executive::DeviceProperties &properties, int deviceIndex) {
+		get()->getDeviceProperties(properties, deviceIndex);
+	}
 }
 
 #endif

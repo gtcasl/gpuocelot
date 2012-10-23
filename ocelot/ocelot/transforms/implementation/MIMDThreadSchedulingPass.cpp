@@ -48,8 +48,8 @@ static void addPredicateInitialValue(ir::ControlFlowGraph::iterator dom,
 	setp->d = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, reg);
 	setp->type = ir::PTXOperand::u32;
-	setp->a = ir::PTXOperand(0);
-	setp->b = ir::PTXOperand(0);
+	setp->a = ir::PTXOperand(0ULL);
+	setp->b = ir::PTXOperand(0ULL);
 	setp->comparisonOperator = ir::PTXInstruction::Ne;
 	
 	dom->instructions.push_front(setp);

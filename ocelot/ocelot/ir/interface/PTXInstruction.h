@@ -395,6 +395,7 @@ namespace ir {
 		unsigned int modifier;
 
 		union {
+		
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
@@ -410,8 +411,6 @@ namespace ir {
 			/*! Permute mode for prmt instructions */
 			PermuteMode permuteMode;
 			
-			/*! For call instructions, indicates a tail call */
-			bool tailCall;
 			
 			/*! For txq and suq instruction, specifies attributes */
 			SurfaceQuery surfaceQuery;
@@ -426,7 +425,11 @@ namespace ir {
 			
 			/*! For tld4 instructions, the color component */
 			ColorComponent colorComponent;
+			
 		};
+		
+		/*! For call instructions, indicates a tail call */
+		bool tailCall;
 	
 		/*! If the instruction is predicated, the guard */
 		PTXOperand pg;
@@ -473,22 +476,27 @@ namespace ir {
 			
 			/*! cache level */
 			CacheLevel cacheLevel;
+			
 		};
 		
 		union {
+		
 			/*! Geometry if this is a texture or surface instruction */
 			Geometry geometry;
 			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
+			
 		};
 		
 		union {
+		
 			/*! optionally writes carry-out value to condition code register */
 			CarryFlag carry;
 		
 			/*! how to handle out-of-bounds accesses */
 			ClampOperation clamp;
+			
 		};
 
 		/*! Destination operand */
@@ -509,18 +517,20 @@ namespace ir {
 				at analysis time for use at runtime
 		*/
 	public:
-		union
-		{
+	
+		union {
+		
 			/*! \brief Index of post dominator instruction at which possibly 
 				divergent branches reconverge */
 			int reconvergeInstruction;
 			/*! \brief If this is a branch, is a check for re-convergence with
 				threads waiting at the target necessary */
 			bool needsReconvergenceCheck;
+			
 		};
 
-		union
-		{
+		union {
+		
 			/*! \brief Branch target instruction index */
 			int branchTargetInstruction;
 			/*! \brief Context switch reentry point */
@@ -529,6 +539,7 @@ namespace ir {
 			bool isArgument;
 			/*! \brief Get or set the active mask */
 			bool getActiveMask;
+			
 		};
 		
 		/*!	The following are used for debugging information at runtime. */

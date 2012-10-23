@@ -178,17 +178,62 @@ def getGLEW(env):
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
 	
+	from user specified variables
+	
+	returns (have,bin_path,lib_path,inc_path,cflags,lflags,libs)
+	"""
+
+	# determine defaults
+	bin_path = ['/usr/local/bin']
+	lib_path = ['/usr/local/lib']
+	inc_path = ['/usr/local/include']
+	cflags   = ['-I/usr/local/include', '-D_DEBUG', '-D_GNU_SOURCE',
+	            '-D__STDC_CONSTANT_MACROS', '-D__STDC_FORMAT_MACROS',
+	            '-D__STDC_LIMIT_MACROS']
+	lflags   = ['-L/usr/local/lib', '-lpthread', '-ldl', '-lm']
+	libs     = ['-lLLVMAsmParser', '-lLLVMX86CodeGen', '-lLLVMSelectionDAG',
+	            '-lLLVMAsmPrinter', '-lLLVMX86AsmParser', '-lLLVMMCParser',
+	            '-lLLVMX86Disassembler', '-lLLVMX86Desc', '-lLLVMX86Info',
+	            '-lLLVMX86AsmPrinter', '-lLLVMX86Utils', '-lLLVMJIT',
+	            '-lLLVMRuntimeDyld', '-lLLVMExecutionEngine', '-lLLVMCodeGen',
+	            '-lLLVMScalarOpts', '-lLLVMInstCombine', '-lLLVMTransformUtils',
+	            '-lLLVMipa', '-lLLVMAnalysis', '-lLLVMTarget', '-lLLVMMC',
+	            '-lLLVMObject', '-lLLVMCore', '-lLLVMSupport']
+	
+	# override defaults
+	if 'LLVM_BIN_PATH' in os.environ:
+		bin_path = [os.path.abspath(os.environ['LLVM_BIN_PATH'])]
+	if 'LLVM_LIB_PATH' in os.environ:
+		lib_path = [os.path.abspath(os.environ['LLVM_LIB_PATH'])]
+	if 'LLVM_INC_PATH' in os.environ:
+		inc_path = [os.path.abspath(os.environ['LLVM_INC_PATH'])]
+	if 'LLVM_CFLAGS' in os.environ:
+		cflags   = os.environ['LLVM_CFLAGS'].split()
+	if 'LLVM_LFLAGS' in os.environ:
+		lflags   = os.environ['LLVM_LFLAGS'].split()
+	if 'LLVM_LIBS' in os.environ:
+		libs     = os.environ['LLVM_LIBS'].split()
+	
+	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
+
+def getLLVMPaths(enabled):
+	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
+	
 	returns (have,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	"""
 	
 	if not enabled:
 		return (False, [], [], [], [], [], [])
 	
-	try:
-		llvm_config_path = which('/usr/local/bin/llvm-config')
-	except:
-		print 'Failed to find llvm-config'
-		return (False, [], [], [], [], [], [])
+	
+	if 'USER_SPECIFIED_LLVM_PATHS' in os.environ:
+		return getUserSpecifiedLLVMPaths()
+	else:
+		try:
+			llvm_config_path = which('llvm-config')
+		except:
+			print 'Failed to find llvm-config'
+			return (False, [], [], [], [], [], [])
 	
 	# determine defaults
 	bin_path = os.popen('/usr/local/bin/llvm-config --bindir').read().split()
@@ -464,6 +509,10 @@ def Environment():
 	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
 	
+	vars.Add(BoolVariable('enable_cuda_runtime',
+		'Export cuda runtime symbols (prevents linking Ocelot '
+		'against another version of the CUDA runtime)', 1))
+
 	# add a variable to compile the ocelot unit tests
 	vars.Add(EnumVariable('test_level',
 		'Build the ocelot unit tests at the given test level', 'none',
@@ -472,13 +521,15 @@ def Environment():
 	# add a variable to determine the install path
 	if os.name == 'nt':
 		if 'USERPROFILE' in os.environ:
-			default_install_path = os.path.join(os.environ['USERPROFILE'], 'ocelot')
+			default_install_path = os.path.join(
+				os.environ['USERPROFILE'], 'ocelot')
 		else:
 			default_install_path = '/ocelot'
 	elif os.name == 'posix':
 		default_install_path = '/usr/local'
 	else:
-		raise ValueError, 'Error: unknown OS.  Where is Ocelot installed by default?'
+		raise ValueError, 'Error: unknown OS.  " \
+			"Where is Ocelot installed by default?'
 	
 	if 'OCELOT_INSTALL_PATH' in os.environ:
 		default_install_path = os.environ['OCELOT_INSTALL_PATH']
@@ -494,6 +545,12 @@ def Environment():
 	# create an Environment
 	env = OldEnvironment(ENV = importEnvironment(), \
 		tools = getTools(), variables = vars)
+
+	# disable the cuda runtime
+	if env['enable_cuda_runtime']:
+		env.Replace(EXCLUDE_CUDA_RUNTIME = False)
+	else:
+		env.Replace(EXCLUDE_CUDA_RUNTIME = True)
 
 	# update compiler options with variables in the environment
 	# (such as those from the command line)

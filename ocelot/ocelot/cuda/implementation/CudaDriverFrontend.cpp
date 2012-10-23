@@ -347,7 +347,7 @@ CUresult cuda::CudaDriverFrontend::cuDeviceGetProperties(CUdevprop *prop, CUdevi
 	int ordinal = (int)dev;
 	executive::Device *device = _devices.at(ordinal);
 	if (device) {
-		executive::Device::PropertiesData properties = device->properties();
+		executive::DeviceProperties properties = device->properties();
 		prop->maxThreadsPerBlock = properties.maxThreadsPerBlock;
 		for (int i = 0; i < 3; i++) {
 			prop->maxThreadsDim[i] = properties.maxThreadsDim[i];

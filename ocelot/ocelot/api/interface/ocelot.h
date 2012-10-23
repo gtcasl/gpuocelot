@@ -10,6 +10,7 @@
 // C++ includes
 #include <istream>
 #include <unordered_map>
+#include <ocelot/executive/interface/DeviceProperties.h>
 
 // Forward Declarations
 namespace trace
@@ -98,6 +99,10 @@ namespace ocelot
 
 	/*! \brief Remove a previously registered host function */
 	void removeExternalFunction(const std::string& name);
+	
+	/*! \brief gets the Ocelot device properties of either the current device 
+		(deviceIndex = -1) or the indexed device */
+	void getDeviceProperties(executive::DeviceProperties &properties, int deviceIndex = -1);
 }
 
 #endif

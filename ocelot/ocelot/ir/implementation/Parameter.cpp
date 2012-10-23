@@ -133,6 +133,12 @@ std::string ir::Parameter::toString(PTXEmitter::Target emitterTarget) const {
 	std::stringstream stream;
 	stream << ".param ";
 	
+	if( alignment != 1 ) {
+		stream << " .align " << alignment;
+	}
+	if( vector != PTXOperand::v1 ) {
+		stream << "." << PTXInstruction::toString( vector );
+	}
 	
 	stream << " ." << PTXOperand::toString( type );
 	
@@ -164,13 +170,6 @@ std::string ir::Parameter::toString(PTXEmitter::Target emitterTarget) const {
 				break;
 			}
 		}
-	}
-	
-	if( alignment != 1 ) {
-		stream << " .align " << alignment;
-	}
-	if( vector != PTXOperand::v1 ) {
-		stream << "." << PTXInstruction::toString( vector );
 	}
 	
 	stream << " " << name;

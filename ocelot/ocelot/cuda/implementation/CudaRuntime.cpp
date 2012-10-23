@@ -3826,6 +3826,36 @@ void cuda::CudaRuntime::removeExternalFunction(const std::string& name) {
 	_unlock();	
 }
 
+void cuda::CudaRuntime::getDeviceProperties(executive::DeviceProperties &properties, 
+	int deviceIndex) {
+
+	_lock();	
+	bool notLoaded = !_devicesLoaded;
+	_enumerateDevices();
+
+	if (deviceIndex < 0) {
+		HostThreadContext& thread = _getCurrentThread();
+		deviceIndex = thread.selectedDevice;
+	}
+	
+	assert(deviceIndex >=0 && deviceIndex < (int)_devices.size());
+	properties = _devices[deviceIndex]->properties();
+	
+	// this is a horrible hack needed because cudaGetDeviceProperties can be 
+	// called before setflags
+	if (notLoaded) {
+		_devicesLoaded = false;
+		_workers.clear();
+
+		for (DeviceVector::iterator device = _devices.begin(); 
+			device != _devices.end(); ++device) {
+			delete *device;
+		}
+		
+		_devices.clear();
+	}
+	_unlock();	
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

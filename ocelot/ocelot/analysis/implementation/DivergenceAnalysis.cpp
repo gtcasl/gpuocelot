@@ -471,48 +471,6 @@ bool DivergenceAnalysis::_isPossibleDivBlock(
 	return isPossibleDivBranch(*--block->instructions().end());
 }
 
-class PathTree
-{
-public:
-	typedef std::list<PathTree> PathTreeList;
-
-public:
-	PathTree(const DataflowGraph::iterator &block, PathTree* parent);
-
-public:
-	DataflowGraph::iterator block;
-	PathTree*               parent;
-	PathTree*               root;
-	PathTreeList            children;
-	unsigned int            level;
-
-public:
-	DataflowGraph* graph;
-
-public:
-	void traverseUntil(const DataflowGraph::iterator &block);
-
-public:
-	DivergenceAnalysis::block_set getAllUniqueBlocks();
-	bool isDivergent() const;
-	bool isRoot() const;
-	bool isParent(const DataflowGraph::iterator &block) const; 
-};
-
-PathTree::PathTree(const DataflowGraph::iterator &b, PathTree* p)
-: block(b), parent(p), root(this), graph(0) {
-
-	if (parent != 0) {
-		root  = parent->root;
-		graph = parent->graph;
-		level = parent->level + 1;
-	}
-	else {
-		parent = this;
-		level  = 0;
-	}
-}
-
 static bool hasBarrier(const DataflowGraph::iterator &block) {
 	
 	for (auto instruction = block->instructions().begin();
@@ -529,77 +487,44 @@ static bool hasBarrier(const DataflowGraph::iterator &block) {
 	return false;
 }
 
-void PathTree::traverseUntil(const DataflowGraph::iterator &postDominator) {
+static bool buildDivergentSubgraph(
+	DivergenceAnalysis::block_set& graph,
+	const DataflowGraph::iterator &block,
+	const DataflowGraph::iterator &postDominator) {
+
+	bool hitPostDominator = false;
+
+	// don't include blocks with barriers
+	if(hasBarrier(block)) return false;
 	
-	// stop after 15 levels (32 thousand possible paths)
-	if(level == 15) return;
-	
-	// include, but don't continue past barriers
-	if (hasBarrier(block)) return;
+	// skip loops
+	if(!graph.insert(block).second) return false;
 	
 	for (auto successor = block->successors().begin();
 		successor != block->successors().end(); ++successor) {
-	
+		
 		// stop at the post dominator
-		if (*successor == postDominator) continue;
-		
-		// stop at loops
-		if (isParent(*successor)) continue;
-				
-		children.push_back(PathTree(*successor, this));
-		
-		children.back().traverseUntil(postDominator);
-	}
-}
+		if (*successor == postDominator)
+		{
+			hitPostDominator = true;
 
-static void addBlocks(DivergenceAnalysis::block_set& blocks, PathTree& tree) {
-	blocks.insert(tree.block);
-	
-	for (auto child = tree.children.begin();
-		child != tree.children.end(); ++child) {
-		
-		addBlocks(blocks, *child);
-	}
-}
-
-DivergenceAnalysis::block_set PathTree::getAllUniqueBlocks() {
-	DivergenceAnalysis::block_set blocks;
-	
-	addBlocks(blocks, *this);
-	
-	return blocks;
-}
-
-bool PathTree::isDivergent() const {
-	for (auto child = children.begin(); child != children.end(); ++child) {
-		
-		if (child->isDivergent()) return true;
-	}
-	
-	if (children.empty()) {
-
-		if (hasBarrier(block)) {
-			return false;
+			continue;
 		}
 		
-		return true;
+		hitPostDominator |= buildDivergentSubgraph(graph,
+			*successor, postDominator);
 	}
 	
-	return false;
+	return hitPostDominator;
 }
 
-bool PathTree::isRoot() const {
+static bool doAnyDivergentPathsReachThePostDominator(
+	DivergenceAnalysis::block_set& graph,
+	const DataflowGraph::iterator &root,
+	const DataflowGraph::iterator &postDominator) {
 	
-	return this == root;
-}
-
-bool PathTree::isParent(const DataflowGraph::iterator &b) const {
-	if (block == b) return true;
-	if (isRoot())   return false;
-	
-	assert(parent != this);
-
-	return parent->isParent(b);
+	// build the graph
+	return buildDivergentSubgraph(graph, root, postDominator);
 }
 
 unsigned int DivergenceAnalysis::_numberOfDivergentPathsToPostDominator(
@@ -628,12 +553,10 @@ unsigned int DivergenceAnalysis::_numberOfDivergentPathsToPostDominator(
 			continue;
 		}
 		
-		PathTree tree(*successor, 0);
-		tree.graph = &dfg;
+		block_set allDivergentPaths;
 		
-		tree.traverseUntil(postDominator);
-		
-		if (tree.isDivergent()) {
+		if (doAnyDivergentPathsReachThePostDominator(allDivergentPaths,
+			*successor, postDominator)) {
 			++divergentPaths;
 		}
 	}
@@ -668,12 +591,9 @@ DivergenceAnalysis::block_set
 		successor != block->successors().end(); ++successor) {
 		if (*successor == postDominator) continue;
 		
-		PathTree tree(*successor, 0);
-		tree.graph = &dfg;
+		block_set allDivergentPaths;
 		
-		tree.traverseUntil(postDominator);
-		
-		block_set allDivergentPaths = tree.getAllUniqueBlocks();
+		buildDivergentSubgraph(allDivergentPaths, *successor, postDominator);
 		
 		divergentBlocks.insert(allDivergentPaths.begin(),
 			allDivergentPaths.end());

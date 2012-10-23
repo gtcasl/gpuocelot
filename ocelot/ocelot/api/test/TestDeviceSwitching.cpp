@@ -30,8 +30,8 @@ namespace test
 
 	static void registerKernel()
 	{
-		std::string ptx = ".version 2.1\n";
-		ptx += ".target sm_13, sm_10\n\n";
+		std::string ptx = ".version 3.0\n";
+		ptx += ".target sm_20, sm_20\n\n";
 		ptx += ".entry increment( .param .u64 memory )\n";
 		ptx += "{\n";
 		ptx += "	.reg .u64 %lr<1>;\n";

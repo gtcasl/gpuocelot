@@ -918,7 +918,7 @@ void remote::OcelotServerConnection::_handleEnumerateDevices(RemoteDeviceMessage
 	}
 	
 	message.header.messageSize = sizeof(unsigned int)
-		+ _devices.size() * sizeof(executive::Device::PropertiesData);
+		+ _devices.size() * sizeof(executive::DeviceProperties);
 	message.resize();
 	
 	unsigned int offset = 0;
@@ -929,8 +929,8 @@ void remote::OcelotServerConnection::_handleEnumerateDevices(RemoteDeviceMessage
 	for(unsigned int i = 0; i < _devices.size(); ++i)
 	{
 		std::memcpy((message.data() + offset), &_devices[i]->properties(),
-			sizeof(executive::Device::PropertiesData));
-		offset += sizeof(executive::Device::PropertiesData);
+			sizeof(executive::DeviceProperties));
+		offset += sizeof(executive::DeviceProperties);
 	}
 
 	message.header.operation = RemoteDeviceMessage::Client_acknowledge;

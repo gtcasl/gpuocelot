@@ -5,6 +5,10 @@
 	\date 14 Dec 2009
 */
 
+#include <configure.h>
+
+#if EXCLUDE_CUDA_RUNTIME == 0
+
 // C stdlib includes
 #include <assert.h>
 
@@ -12,7 +16,7 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 
-/************************************************************************************************/
+/******************************************************************************/
 
 
 /*******************************************************************************
@@ -29,10 +33,12 @@ void __cudaUnregisterFatBinary(void **fatCubinHandle) {
 	cuda::CudaRuntimeInterface::get()->cudaUnregisterFatBinary(fatCubinHandle);
 }
 
-void __cudaRegisterVar(void **fatCubinHandle, char *hostVar, char *deviceAddress, 
-	const char *deviceName, int ext, int size, int constant, int global) {
+void __cudaRegisterVar(void **fatCubinHandle, char *hostVar,
+	char *deviceAddress, const char *deviceName, int ext, int size,
+	int constant, int global) {
 	
-	cuda::CudaRuntimeInterface::get()->cudaRegisterVar(fatCubinHandle, hostVar, deviceAddress,
+	cuda::CudaRuntimeInterface::get()->cudaRegisterVar(fatCubinHandle,
+		hostVar, deviceAddress,
 		deviceName, ext, size, constant, global);
 }
 
@@ -44,14 +50,16 @@ void __cudaRegisterTexture(
         int dim,
         int norm,
         int ext) {
-	cuda::CudaRuntimeInterface::get()->cudaRegisterTexture(fatCubinHandle, hostVar, deviceAddress,
+	cuda::CudaRuntimeInterface::get()->cudaRegisterTexture(fatCubinHandle,
+		hostVar, deviceAddress,
 		deviceName, dim, norm, ext);
 }
 
 void __cudaRegisterShared(
   void **fatCubinHandle,
   void **devicePtr) {
-	cuda::CudaRuntimeInterface::get()->cudaRegisterShared(fatCubinHandle, devicePtr);
+	cuda::CudaRuntimeInterface::get()->cudaRegisterShared(fatCubinHandle,
+		devicePtr);
 }
 
 void __cudaRegisterSharedVar(
@@ -61,7 +69,8 @@ void __cudaRegisterSharedVar(
   size_t alignment,
   int storage) {
   
-	cuda::CudaRuntimeInterface::get()->cudaRegisterSharedVar(fatCubinHandle, devicePtr, size,
+	cuda::CudaRuntimeInterface::get()->cudaRegisterSharedVar(fatCubinHandle,
+		devicePtr, size,
 		alignment, storage);
 }
 
@@ -76,7 +85,8 @@ void __cudaRegisterFunction(
         dim3 *bDim,
         dim3 *gDim,
         int *wSize) {
-	cuda::CudaRuntimeInterface::get()->cudaRegisterFunction(fatCubinHandle, hostFun, deviceFun,	
+	cuda::CudaRuntimeInterface::get()->cudaRegisterFunction(fatCubinHandle,
+		hostFun, deviceFun,	
 		deviceName, thread_limit, tid, bid, bDim, gDim, wSize);
 }
 
@@ -562,11 +572,13 @@ cudaError_t cudaGLUnmapBufferObject(GLuint bufObj) {
 }
 
 cudaError_t cudaGLUnmapBufferObjectAsync(GLuint bufObj, cudaStream_t stream) {
-	return cuda::CudaRuntimeInterface::get()->cudaGLUnmapBufferObjectAsync(bufObj, stream);
+	return cuda::CudaRuntimeInterface::get()->cudaGLUnmapBufferObjectAsync(
+		bufObj, stream);
 }
 
 cudaError_t cudaGLUnregisterBufferObject(GLuint bufObj) {
-	return cuda::CudaRuntimeInterface::get()->cudaGLUnregisterBufferObject(bufObj);
+	return cuda::CudaRuntimeInterface::get()->cudaGLUnregisterBufferObject(
+		bufObj);
 }
 
 /*******************************************************************************
@@ -671,11 +683,13 @@ cudaError_t  cudaThreadSynchronize(void) {
 *******************************************************************************/
 
 cudaError_t  cudaDriverGetVersion(int *driverVersion) {
-	return cuda::CudaRuntimeInterface::get()->cudaDriverGetVersion(driverVersion);
+	return cuda::CudaRuntimeInterface::get()->cudaDriverGetVersion(
+		driverVersion);
 }
 
 cudaError_t  cudaRuntimeGetVersion(int *runtimeVersion) {
-	return cuda::CudaRuntimeInterface::get()->cudaRuntimeGetVersion(runtimeVersion);
+	return cuda::CudaRuntimeInterface::get()->cudaRuntimeGetVersion(
+		runtimeVersion);
 }
 
 /*******************************************************************************
@@ -711,4 +725,6 @@ void __cudaTextureFetch(const void* tex, void* index, int integer, void* val) {
 }
 
 }
+
+#endif // EXCLUDE_CUDA_RUNTIME
 

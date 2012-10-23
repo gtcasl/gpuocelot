@@ -182,6 +182,8 @@ namespace ir {
 			\return pointer to global instance being inserted
 		*/
 		Global* insertGlobal(const Global& global);
+		
+		void insertGlobalAsStatement(const PTXStatement &statement);
 
 		/*! \brief Gets the module path */
 		const std::string& path() const;
@@ -206,6 +208,9 @@ namespace ir {
 		
 		void addPrototype(const std::string &identifier,
 			const ir::PTXKernel::Prototype &prototype);
+		
+		ir::PTXStatement version() const;
+		ir::PTXStatement target() const;
 		
 	private:
 		/*! After a successful parse; constructs all kernels for PTX isa. */

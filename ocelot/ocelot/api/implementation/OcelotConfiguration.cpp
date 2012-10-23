@@ -32,14 +32,18 @@ static api::OcelotConfiguration* ocelotConfiguration = 0;
 
 const api::OcelotConfiguration & api::OcelotConfiguration::get() {
 	if (!ocelotConfiguration) {
-		ocelotConfiguration = new OcelotConfiguration("configure.ocelot");
+		const char *configName = "configure.ocelot";
+		if (const char *cfgOverride = getenv("OCELOT_CONFIG")) {
+			configName = cfgOverride;
+		}
+		ocelotConfiguration = new OcelotConfiguration(configName);
 	}
 	return *ocelotConfiguration;
 }
 
 void api::OcelotConfiguration::destroy() {
-        delete ocelotConfiguration;
-        ocelotConfiguration = 0;
+	delete ocelotConfiguration;
+	ocelotConfiguration = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +88,11 @@ api::OcelotConfiguration::TraceGeneration::MemoryChecker::MemoryChecker():
 
 }
 
+api::OcelotConfiguration::TraceGeneration::KernelTimer::KernelTimer(): enabled(false),
+	outputFile("traceKernelTimer.json") {
+
+}
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
 
@@ -91,30 +100,38 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
-    hydrazine::json::Visitor memoryCheckerConfig = config["memoryChecker"];
-    if (!memoryCheckerConfig.is_null()) {
-            trace.memoryChecker.enabled = 
-            	memoryCheckerConfig.parse<bool>("enabled", true);
-            trace.memoryChecker.checkInitialization = 
-            	memoryCheckerConfig.parse<bool>("checkInitialization", false);
-    }
-    
-    hydrazine::json::Visitor raceConfig = config["raceDetector"];
-    if (!raceConfig.is_null()) {
-            trace.raceDetector.enabled = 
-            	raceConfig.parse<bool>("enabled", false);
-            trace.raceDetector.ignoreIrrelevantWrites = 
-            	raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
-    }
+	
+	hydrazine::json::Visitor memoryCheckerConfig = config["memoryChecker"];
+	if (!memoryCheckerConfig.is_null()) {
+		trace.memoryChecker.enabled = 
+			memoryCheckerConfig.parse<bool>("enabled", true);
+		trace.memoryChecker.checkInitialization = 
+			memoryCheckerConfig.parse<bool>("checkInitialization", false);
+	}
 
-    hydrazine::json::Visitor debugConfig = config["debugger"];
-    if (!debugConfig.is_null()) {
-            trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
-            trace.debugger.kernelFilter = 
-            	debugConfig.parse<std::string>("kernelFilter", "");
-            trace.debugger.alwaysAttach = 
-            	debugConfig.parse<bool>("alwaysAttach", false);
-    }
+	hydrazine::json::Visitor raceConfig = config["raceDetector"];
+	if (!raceConfig.is_null()) {
+		trace.raceDetector.enabled = 
+			raceConfig.parse<bool>("enabled", false);
+		trace.raceDetector.ignoreIrrelevantWrites = 
+			raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
+	}
+
+	hydrazine::json::Visitor debugConfig = config["debugger"];
+	if (!debugConfig.is_null()) {
+		trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
+		trace.debugger.kernelFilter = 
+			debugConfig.parse<std::string>("kernelFilter", "");
+		trace.debugger.alwaysAttach = 
+			debugConfig.parse<bool>("alwaysAttach", false);
+	}
+  
+  hydrazine::json::Visitor kernelTimer = config["kernelTimer"];
+  if (!kernelTimer.is_null()) {
+  	trace.kernelTimer.enabled = kernelTimer.parse<bool>("enabled", false);
+  	trace.kernelTimer.outputFile = kernelTimer.parse<std::string>("outputFile", 
+  		"traceKernelTimer.json");
+  }
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

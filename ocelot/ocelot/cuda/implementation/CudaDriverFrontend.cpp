@@ -63,7 +63,14 @@ cuda::CudaDriverFrontend *cuda::CudaDriverFrontend::_instance = 0;
 
 cuda::CudaDriverInterface * cuda::CudaDriverInterface::get() {
 	if (!cuda::CudaDriverFrontend::_instance) {
-		cuda::CudaDriverFrontend::_instance = new CudaDriverFrontend;
+		if(config::get().cuda.implementation == "CudaDriver") {
+			cuda::CudaDriverFrontend::_instance = new CudaDriverFrontend;
+			cuda::CudaDriverFrontend::_instance->ocelotRuntime.configure(
+				config::get());
+		}
+		else {
+			assertM(false, "no CUDA driver implementation matches");
+		}
 	}
 	return cuda::CudaDriverFrontend::_instance;
 }
@@ -182,6 +189,10 @@ cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
 
 //! \brief unlocks thread's active context
 void cuda::CudaDriverFrontend::_unbind() {
+	cuda::CudaDriverFrontend::Context *ctx = _getContext();
+	if (ctx->_getDevice().selected()) {
+		ctx->_getDevice().unselect();
+	}
 	_unlock();
 	
 #if REPORT_BASE
@@ -1613,7 +1624,7 @@ CUresult cuda::CudaDriverFrontend::cuLaunch(CUfunction hfunc) {
 					convert(context->_launchConfiguration.blockDim), 
 					context->_launchConfiguration.sharedMemory, 
 					context->_hostThreadContext.parameterBlock, 
-					context->_hostThreadContext.parameterBlockSize, traceGens);
+					context->_hostThreadContext.parameterBlockSize, traceGens, &_externals);
 					
 				report(" launch completed successfully");	
 			}
@@ -1677,6 +1688,8 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction hfunc, int grid_widt
 			try {
 				trace::TraceGeneratorVector traceGens;
 
+				context->_hostThreadContext.persistentTraceGenerators.clear();
+				context->_hostThreadContext.nextTraceGenerators.clear();
 				traceGens = context->_hostThreadContext.persistentTraceGenerators;
 				traceGens.insert(traceGens.end(),
 					context->_hostThreadContext.nextTraceGenerators.begin(), 
@@ -1688,7 +1701,7 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction hfunc, int grid_widt
 					convert(context->_launchConfiguration.blockDim), 
 					context->_launchConfiguration.sharedMemory, 
 					context->_hostThreadContext.parameterBlock, 
-					context->_hostThreadContext.parameterBlockSize, traceGens);
+					context->_hostThreadContext.parameterBlockSize, traceGens, &_externals);
 					
 				report(" launch completed successfully");	
 			}
@@ -2095,3 +2108,14 @@ std::string cuda::CudaDriverFrontend::toString(CUresult result) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void cuda::CudaDriverFrontend::registerExternalFunction(const std::string &name,
+		void * function) {
+		
+	_lock();
+
+	report("Adding external function '" << name << "'");
+	_externals.add(name, function);
+
+	_unlock();
+	
+}

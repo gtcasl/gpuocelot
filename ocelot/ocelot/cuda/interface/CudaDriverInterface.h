@@ -23,14 +23,23 @@
 
 // Ocelot includes
 #include <ocelot/cuda/interface/cuda_internal.h>
+#include <ocelot/api/interface/ocelot.h>
+
+#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/interface/OcelotRuntime.h>
+
 
 namespace cuda
 {
 	/*! \brief Dynamic interface to the cuda driver */
-	class CudaDriverInterface {
+	class CudaDriverInterface : public ocelot::OcelotInterface {
 		public:
 
 			static CudaDriverInterface *get();
+	
+		protected:
+			//! \brief Ocelot runtime object containing state related to Ocelot
+			ocelot::OcelotRuntime ocelotRuntime;
 
 		public:
 			/*********************************
@@ -404,6 +413,9 @@ namespace cuda
 			virtual CUresult cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags);
 
 			std::string toString(CUresult result);
+
+			virtual void registerExternalFunction(const std::string &name,
+				void * function) {}
 
 	};
 

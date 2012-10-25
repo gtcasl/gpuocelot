@@ -22,7 +22,7 @@ namespace cuda {
 			- on instantiation, selects appropriate CUDA Runtime 
 			implementation and dispatches calls
 	*/
-	class CudaRuntimeInterface {
+	class CudaRuntimeInterface : public ocelot::OcelotInterface {
 	public:
 		/* singleton accessors */
 		static CudaRuntimeInterface *instance;

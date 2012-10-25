@@ -189,6 +189,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 
 	// This kernel/function begins at the first instruction
 	functionEntryPoints.insert(std::make_pair(name, 0));
+	kernelEntryPoints.insert(std::make_pair(0, this));
 
 	transforms::PassManager manager(const_cast<ir::Module*>(module));
 	
@@ -884,6 +885,7 @@ const executive::EmulatedKernel*
 	executive::EmulatedKernel::getKernel(int PC) const {
 	report("Getting kernel at pc " << PC);
 	PCToKernelMap::const_iterator kernel = kernelEntryPoints.find(PC);
+	report("find kernel in " << kernelEntryPoints.size());
 	if (kernel == kernelEntryPoints.end()) return 0;
 	return kernel->second;
 }

@@ -9,12 +9,18 @@
 
 #include <ocelot/api/interface/ocelot.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
+#include <ocelot/cuda/interface/CudaDriverInterface.h>
 #include <hydrazine/interface/Exception.h>
 
 namespace ocelot
 {
-	static cuda::CudaRuntimeInterface* get() {
-		return cuda::CudaRuntimeInterface::get();
+	static ocelot::OcelotInterface* get() {
+		if(api::OcelotConfiguration::get().cuda.implementation == "CudaRuntime")
+			return cuda::CudaRuntimeInterface::get();
+		else if(api::OcelotConfiguration::get().cuda.implementation == "CudaDriver")
+			return cuda::CudaDriverInterface::get();
+		else
+			return NULL;
 	}
 
 	void addTraceGenerator( trace::TraceGenerator& gen, 

@@ -12,6 +12,8 @@
 #include <ocelot/api/interface/ocelot.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/cuda_internal.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/debug.h>
@@ -39,6 +41,16 @@ static uint64_t cudaGetParameterBufferWrapper(uint64_t alignment, uint64_t bytes
 
 	return address;
 }
+
+static uint64_t cudaGetParameterBufferDrvWrapper(uint64_t alignment, uint64_t bytes)
+{
+	CUdeviceptr pointer;
+	cuMemAlloc(&pointer, bytes);
+	uint64_t address = hydrazine::bit_cast<uint64_t>(pointer);
+	assert(address % alignment == 0);
+	return address;
+}
+
 
 static void cudaFreeWrapper(void* pointer)
 {
@@ -220,8 +232,12 @@ namespace ocelot
 		registerExternalFunction("vprintf", (void*)(printfWrapper));
 
 		// CNP support
-		registerExternalFunction("cudaGetParameterBuffer",
-			(void*)(cudaGetParameterBufferWrapper));
+		if(api::OcelotConfiguration::get().cuda.implementation == "CudaRuntime")
+			registerExternalFunction("cudaGetParameterBuffer",
+				(void*)(cudaGetParameterBufferWrapper));
+		else if(api::OcelotConfiguration::get().cuda.implementation == "CudaDriver")
+			registerExternalFunction("cudaGetParameterBuffer",
+				(void*)(cudaGetParameterBufferDrvWrapper));
 	}
 
 }

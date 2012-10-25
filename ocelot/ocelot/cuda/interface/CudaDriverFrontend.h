@@ -25,6 +25,7 @@
 #include <ocelot/cuda/interface/CudaDriverInterface.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/cuda/interface/CudaRuntimeContext.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/Timer.h>
@@ -514,6 +515,11 @@ namespace cuda {
 
 		std::string toString(CUresult result);
 
+	public:
+
+		virtual void registerExternalFunction(const std::string &name,
+			void * function);
+
 	private:
 		//! \brief gets active context
 		Context * _getContext();
@@ -538,6 +544,9 @@ namespace cuda {
 		
 		//! \brief lists devices present
 		void _enumerateDevices();
+
+		//! \breif external functions
+		ir::ExternalFunctionSet _externals;	
 
 	public:
 		

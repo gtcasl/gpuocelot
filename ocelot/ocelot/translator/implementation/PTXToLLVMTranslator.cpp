@@ -2767,7 +2767,7 @@ void PTXToLLVMTranslator::_translateEx2( const ir::PTXInstruction& i )
 	
 	#if _WIN32
 	call.parameters.resize( 2 );
-	call.parameters[0] = _translate( 2.0f );
+	call.parameters[0] = _translate( ir::PTXOperand(2.0f) );
 	call.parameters[1] = _translate( i.a );
 	#else
 	call.parameters.resize( 1 );
@@ -3216,7 +3216,7 @@ void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
 	mul.d = _destination( i );
 	mul.d.name = _tempRegister();
 	mul.a = call.d;
-	mul.b = _translate( 1.44269504088896340736f );
+	mul.b = _translate( ir::PTXOperand( 1.44269504088896340736f ) );
 
 	_add( mul );
 

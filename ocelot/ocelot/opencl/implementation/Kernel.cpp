@@ -3,6 +3,7 @@
 // C++ standard library includes
 
 // Ocelot includes
+#include <ocelot/opencl/interface/OpenCLRuntime.h>
 #include <ocelot/opencl/interface/Kernel.h>
 
 #include <hydrazine/interface/debug.h>
@@ -12,8 +13,6 @@
 #endif
 
 #define REPORT_BASE 0
-
-opencl::Kernel::KernelList opencl::Kernel::_kernelList;
 
 bool opencl::Kernel::_isBuiltOnDevice(Device * device) {
 	if(_deviceInfo.find(device) != _deviceInfo.end())
@@ -43,7 +42,6 @@ opencl::Kernel::Kernel(const std::string &n,
 	_sharedBase((void *)0),	_sharedOffset(0)/*hard-coded according to NVIDIA GPU*/ {
 	_parameterBlock = NULL;
 	_program->retain();
-	_kernelList.push_back(this);
 }
 
 opencl::Kernel::~Kernel()
@@ -59,10 +57,6 @@ opencl::Kernel::~Kernel()
 	_program->removeKernel(this);
 
 	_program->release();
-
-	KernelList::iterator it = std::find(_kernelList.begin(), _kernelList.end(), this);
-	assert(it != _kernelList.end());
-	_kernelList.erase(it);
 
 }
 
@@ -251,10 +245,12 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //		Context &ctx = *((Context *) kernel.context);
 		trace::TraceGeneratorVector traceGens;
 //
-		traceGens = _persistentTraceGenerators;
+		OpenCLRuntime * runtime = dynamic_cast<OpenCLRuntime *>(OpenCLRuntimeInterface::get());
+
+		traceGens = runtime->persistentTraceGenerators;
 		traceGens.insert(traceGens.end(),
-			_nextTraceGenerators.begin(), 
-			_nextTraceGenerators.end());
+			runtime->nextTraceGenerators.begin(), 
+			runtime->nextTraceGenerators.end());
 
 //		_inExecute = true;
 
@@ -509,21 +505,3 @@ do { \
 
 }
 
-void opencl::Kernel::addTraceGenerator(trace::TraceGenerator & gen,
-		bool persistent) {
-
-	report("Add trace generator for opencl kernel");
-	for(auto it = _kernelList.begin(); it != _kernelList.end(); ++it) {
-		if(persistent)
-			(*it)->_persistentTraceGenerators.push_back(&gen);
-		else
-			(*it)->_nextTraceGenerators.push_back(&gen);
-	}
-}
-
-void opencl::Kernel::clearTraceGenerators() {
-	for(auto it = _kernelList.begin(); it != _kernelList.end(); ++it) {
-		(*it)->_persistentTraceGenerators.clear();
-		(*it)->_nextTraceGenerators.clear();
-	}
-}

@@ -71,6 +71,7 @@ opencl::Context::~Context() {
 }
 
 void opencl::Context::release() {
+	report("Release Context object");
 	if(Object::release())
 		delete this;
 }

@@ -37,6 +37,7 @@ opencl::MemoryObject::~MemoryObject() {
 }
 
 void opencl::MemoryObject::release() {
+	report("Release memory object");
 	if(Object::release())
 		delete this;
 }

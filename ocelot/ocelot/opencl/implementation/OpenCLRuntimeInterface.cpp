@@ -46,6 +46,7 @@ opencl::OpenCLRuntimeInterface * opencl::OpenCLRuntimeInterface::get() {
 			opencl::OpenCLRuntimeInterface::instance->ocelotRuntime.configure(
 				api::OcelotConfiguration::get());
 			std::atexit(destroyInstance);
+
 		}
 		else {
 			assertM(false,"no OpenCL runtime implementation "

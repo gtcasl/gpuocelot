@@ -179,6 +179,12 @@ namespace opencl {
 
 	public:
 
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector persistentTraceGenerators;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector nextTraceGenerators;
+	
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 			bool persistent = false );
 		virtual void clearTraceGenerators();

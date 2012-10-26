@@ -128,6 +128,7 @@ opencl::Device::~Device() {
 }
 
 void opencl::Device::release() {
+	report("Release device object");
 	if(Object::release())
 		delete this;
 }

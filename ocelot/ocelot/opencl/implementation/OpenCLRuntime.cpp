@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // report all ptx
 #define REPORT_ALL_PTX 0
@@ -147,13 +147,23 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
 	_lock();
-	Kernel::addTraceGenerator(gen, persistent);
+
+	if (persistent) {
+		persistentTraceGenerators.push_back(&gen);
+	}
+	else {
+		nextTraceGenerators.push_back(&gen);
+	}
+
 	_unlock();
 }
 
 void opencl::OpenCLRuntime::clearTraceGenerators() {
 	_lock();
-	Kernel::clearTraceGenerators();
+	
+	persistentTraceGenerators.clear();
+	nextTraceGenerators.clear();
+	
 	_unlock();
 }
 

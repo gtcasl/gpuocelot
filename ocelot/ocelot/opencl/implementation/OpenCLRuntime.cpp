@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // report all ptx
 #define REPORT_ALL_PTX 0

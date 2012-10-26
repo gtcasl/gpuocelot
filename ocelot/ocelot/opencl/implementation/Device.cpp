@@ -52,7 +52,7 @@ void opencl::Device::_enumerateDevices(cl_platform_id platform) {
 		if(config::get().executive.enableLLVM) {
 			executive::DeviceVector	d = executive::Device::createDevices(ir::Instruction::LLVM, _flags,
 				_computeCapability);
-			type = CL_DEVICE_TYPE_GPU;
+			type = CL_DEVICE_TYPE_CPU;
 			vendor = "OCELOT";
 			report(" - Added " << d.size() << " llvm-cpu devices." );
 			if (config::get().executive.workerThreadLimit > 0) {

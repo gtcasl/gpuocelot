@@ -10,9 +10,9 @@
 
 #include <ocelot/api/interface/ocelot.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
-//#include <ocelot/api/interface/OcelotRuntime.h>
-//#include <ocelot/trace/interface/TraceGenerator.h>
-//#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/api/interface/OcelotRuntime.h>
+#include <ocelot/trace/interface/TraceGenerator.h>
+#include <ocelot/translator/interface/Translator.h>
 
 #include <hydrazine/interface/debug.h>
 #include <ocelot/opencl/interface/opencl_runtime.h>
@@ -23,7 +23,7 @@ namespace opencl {
 			- on instantiation, selects appropriate OpenCL Runtime 
 			implementation and dispatches calls
 	*/
-	class OpenCLRuntimeInterface {
+	class OpenCLRuntimeInterface : public ocelot::OcelotInterface {
 	public:
 		//! \brief singleton accessors */
 		static OpenCLRuntimeInterface *instance;
@@ -41,9 +41,9 @@ namespace opencl {
 		//! \brief gets the Ocelot runtime object
 //		const ocelot::OcelotRuntime & ocelot() const;
 
-//	protected:
+	protected:
 		//! \brief Ocelot runtime object containing state related to Ocelot
-//		ocelot::OcelotRuntime ocelotRuntime;
+		ocelot::OcelotRuntime ocelotRuntime;
 		
 	public:
 		//abstract interface for OpenCL runtime APIs
@@ -488,6 +488,69 @@ namespace opencl {
 										char *  printf_data_ptr, 
 										void *  user_data),
 					void *               user_data);
+
+	public:
+	
+		/*! \brief Adds a trace generator for the next kernel invocation 
+	
+			\param gen A reference to the generator being added, it must not
+				be destroyed until the next kernel is executed.
+			\param persistent The trace generator will be associated with all
+				subsequent kernels until clear is called, otherwise it will
+				only be associated with the next kernel.
+		*/
+		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
+			bool persistent = false );
+		/*! \brief Clear all trace generators */
+		virtual void clearTraceGenerators();
+		/*! \brief Adds a PTX->PTX pass for the next *Module load* */
+		virtual void addPTXPass(transforms::Pass &pass);
+		/*!	\brief removes the specified pass */
+		virtual void removePTXPass(transforms::Pass &pass);
+		/*! \brief clears all PTX->PTX passes */
+		virtual void clearPTXPasses();
+		
+		/*! \brief Sets a limit on the number of host worker threads to launch
+			when executing a CUDA kernel on a Multi-Core CPU.
+			\param limit The max number of worker threads to launch per kernel.
+		*/
+		virtual void limitWorkerThreads( unsigned int limit = 1024 );
+		/*! \brief Register an istream containing a PTX module.
+		
+			\param stream An input stream containing a PTX module
+			\param The name of the module being registered. Must be Unique.
+		*/
+		virtual void registerPTXModule(std::istream& stream, 
+			const std::string& name);
+		/*! \brief Register a texture with the cuda runtime */
+		virtual void registerTexture(const void* texref,
+			const std::string& moduleName,
+			const std::string& textureName, bool normalize);
+		/*! \brief Clear all errors in the Cuda Runtime */
+		virtual void clearErrors();
+		/*! \brief Reset all CUDA runtime state */
+		virtual void reset();
+		/*! \brief Perform a device context switch */
+		virtual ocelot::PointerMap contextSwitch(unsigned int destinationDevice, 
+			unsigned int sourceDevice);
+		/*! \brief Unregister a module, either PTX or LLVM, not a fatbinary */
+		virtual void unregisterModule( const std::string& name );
+		/*! \brief Launch a cuda kernel by name */
+		virtual void launch(const std::string& moduleName, 
+			const std::string& kernelName);
+		/*! \brief Set the optimization level */
+		virtual void setOptimizationLevel(
+			translator::Translator::OptimizationLevel l);
+		/*! \brief Register a callable host function with Ocelot 
+
+			This function will be callable as a PTX function.
+		*/
+		virtual void registerExternalFunction(const std::string& name,
+			void* function);
+		/*! \brief Remove a previously registered host function */
+		virtual void removeExternalFunction(const std::string& name);
+		
+		virtual void getDeviceProperties(executive::DeviceProperties &, int deviceIndex = -1);
 	};
 }
 #endif

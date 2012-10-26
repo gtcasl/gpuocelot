@@ -142,7 +142,7 @@ namespace api {
             std::string implementation;
 
             //! \brief for TraceGeneratingRuntime, path to output file
-        //  std::string runtimeApiTrace;
+			std::string runtimeApiTrace;
         };
 
 		class Executive {

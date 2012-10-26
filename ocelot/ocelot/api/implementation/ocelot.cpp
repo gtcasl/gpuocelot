@@ -10,6 +10,7 @@
 #include <ocelot/api/interface/ocelot.h>
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/cuda/interface/CudaDriverInterface.h>
+#include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <hydrazine/interface/Exception.h>
 
 namespace ocelot
@@ -19,6 +20,8 @@ namespace ocelot
 			return cuda::CudaRuntimeInterface::get();
 		else if(api::OcelotConfiguration::get().cuda.implementation == "CudaDriver")
 			return cuda::CudaDriverInterface::get();
+		else if(api::OcelotConfiguration::get().opencl.implementation == "OpenCLRuntime")
+			return opencl::OpenCLRuntimeInterface::get();
 		else
 			return NULL;
 	}

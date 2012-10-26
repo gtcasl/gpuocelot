@@ -135,15 +135,15 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():
-	implementation("CudaRuntime"),
-	runtimeApiTrace("trace/CudaAPI.trace")
+	implementation(""),
+	runtimeApiTrace("")
 {
 
 }
 
 api::OcelotConfiguration::OpenCLRuntimeImplementation::OpenCLRuntimeImplementation():
-    implementation("OpenCLRuntime")
-    /*runtimeApiTrace("trace/CudaAPI.trace")*/
+    implementation(""),
+    runtimeApiTrace("")
 {
 
 }
@@ -154,8 +154,8 @@ static void initializeOpenCLRuntimeImplementation(
 
     opencl.implementation = config.parse<std::string>(
         "implementation", "OpenCLRuntime");
-//  opencl.runtimeApiTrace = config.parse<std::string>(
-//      "runtimeApiTrace", "trace/CudaAPI.trace");
+	opencl.runtimeApiTrace = config.parse<std::string>(
+		"runtimeApiTrace", "trace/OpenCLAPI.trace");
 }
 
 static void initializeCudaRuntimeImplementation(

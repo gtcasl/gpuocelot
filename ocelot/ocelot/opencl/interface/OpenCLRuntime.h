@@ -161,7 +161,7 @@ namespace opencl {
 		
 		//! PTX passes
 	//	PassSet _passes;
-	
+
 	public:
 		OpenCLRuntime();
 		~OpenCLRuntime();
@@ -179,9 +179,9 @@ namespace opencl {
 
 	public:
 
-//		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
-//			bool persistent = false );
-//		virtual void clearTraceGenerators();
+		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
+			bool persistent = false );
+		virtual void clearTraceGenerators();
 
 //		virtual void addPTXPass(transforms::Pass &pass);
 //		virtual void removePTXPass(transforms::Pass &pass);
@@ -201,9 +201,9 @@ namespace opencl {
 //			const std::string& kernelName);
 //		virtual void setOptimizationLevel(
 //			translator::Translator::OptimizationLevel l);
-//		virtual void registerExternalFunction(const std::string& name,
-//			void* function);
-//		virtual void removeExternalFunction(const std::string& name);
+		virtual void registerExternalFunction(const std::string& name,
+			void* function);
+		virtual void removeExternalFunction(const std::string& name);
 
 
 	public:

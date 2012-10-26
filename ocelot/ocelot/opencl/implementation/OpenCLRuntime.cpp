@@ -144,28 +144,20 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-#if 0
 void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
 	_lock();
-	Context& thread = _createContext();
-	if (persistent) {
-		thread.persistentTraceGenerators.push_back(&gen);
-	}
-	else {
-		thread.nextTraceGenerators.push_back(&gen);
-	}
+	Kernel::addTraceGenerator(gen, persistent);
 	_unlock();
 }
 
 void opencl::OpenCLRuntime::clearTraceGenerators() {
 	_lock();
-	Context& thread = _createContext();
-	thread.persistentTraceGenerators.clear();
-	thread.nextTraceGenerators.clear();
+	Kernel::clearTraceGenerators();
 	_unlock();
 }
 
+#if 0
 void opencl::OpenCLRuntime::addPTXPass(transforms::Pass &pass) {
 	_lock();
 	_passes.insert(&pass);
@@ -448,14 +440,15 @@ void opencl::OpenCLRuntime::setOptimizationLevel(
 	_unlock();
 }
 #endif
-/*
+
 void opencl::OpenCLRuntime::registerExternalFunction(const std::string& name,
 	void* function) {
 	
 	_lock();
 
 	report("Adding external function '" << name << "'");
-	_externals.add(name, function);
+	std::cerr << "Ocelot warning: registerExternalFunction unimplemented for opencl!\n";
+//	Kernel::registerExternalFunction(name, function);
 
 	_unlock();
 }
@@ -464,12 +457,13 @@ void opencl::OpenCLRuntime::removeExternalFunction(const std::string& name) {
 	_lock();
 
 	report("Removing external function '" << name << "'");
+	std::cerr << "Ocelot warning: removeExternalFunction unimplemented for opencl!\n";
 
-	_externals.remove(name);
+//	Kernel::removeExternalFunction(name);
 
 	_unlock();	
 }
-*/
+
 ////////////////////////////////////////////////////////////////////////////////
 
 cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries, 

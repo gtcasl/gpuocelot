@@ -43,9 +43,8 @@ opencl::OpenCLRuntimeInterface * opencl::OpenCLRuntimeInterface::get() {
 			== "OpenCLRuntime") {
 			opencl::OpenCLRuntimeInterface::instance = new OpenCLRuntime;
 
-			//Handle configuration later, now don't bother
-			//opencl::OpenCLRuntimeInterface::instance->ocelotRuntime.configure(
-			//	api::OcelotConfiguration::get());
+			opencl::OpenCLRuntimeInterface::instance->ocelotRuntime.configure(
+				api::OcelotConfiguration::get());
 			std::atexit(destroyInstance);
 		}
 		else {
@@ -798,5 +797,85 @@ cl_int opencl::OpenCLRuntimeInterface::clSetPrintfCallback(cl_context           
 	assertM(false, "unimplemented");
 	return CL_UNIMPLEMENTED;
 }
+
+void opencl::OpenCLRuntimeInterface::addTraceGenerator( trace::TraceGenerator& gen, 
+	bool persistent ) {
+	assert(0 && "unimplemented");
+}
+			
+void opencl::OpenCLRuntimeInterface::clearTraceGenerators() {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::addPTXPass(transforms::Pass &pass) {
+	assert(0 && "unimplemented");
+}
+void opencl::OpenCLRuntimeInterface::removePTXPass(transforms::Pass &pass) {
+	assert(0 && "unimplemented");
+}
+void opencl::OpenCLRuntimeInterface::clearPTXPasses() {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::limitWorkerThreads( unsigned int limit ) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::registerPTXModule(std::istream& stream, 
+	const std::string& name) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::registerTexture(
+	const void* texref,
+	const std::string& moduleName,
+	const std::string& textureName, bool normalize){
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::clearErrors() {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::reset() {
+	assert(0 && "unimplemented");
+}
+
+ocelot::PointerMap opencl::OpenCLRuntimeInterface::contextSwitch( 
+	unsigned int destinationDevice, unsigned int sourceDevice ) {
+	assert(0 && "unimplemented");
+	return ocelot::PointerMap();
+}
+
+void opencl::OpenCLRuntimeInterface::unregisterModule( const std::string& name ) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::launch(const std::string& moduleName, const 
+	std::string& kernelName) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::setOptimizationLevel(
+	translator::Translator::OptimizationLevel l) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::registerExternalFunction(
+	const std::string& name, void* function) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::removeExternalFunction(
+	const std::string& name) {
+	assert(0 && "unimplemented");
+}
+
+void opencl::OpenCLRuntimeInterface::getDeviceProperties(
+	executive::DeviceProperties &, int deviceIndex) {
+	assert(0 && "unimplemented");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 

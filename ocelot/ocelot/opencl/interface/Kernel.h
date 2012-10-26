@@ -26,6 +26,9 @@ namespace opencl {
 	class Kernel : public Object{
 
 	public:
+		typedef std::list< Kernel * > KernelList;
+
+	public:
 		Kernel(const std::string& name, Program * program, bool builtIn = false);
 		~Kernel();
 
@@ -74,6 +77,10 @@ namespace opencl {
 				size_t                     param_value_size,
 				void *                     param_value,
 				size_t *                   param_value_size_ret);
+
+		static void addTraceGenerator(trace::TraceGenerator& gen,
+			bool persistent = false);
+		static void clearTraceGenerators();
 
 	private:
 		//! name of kernel
@@ -135,6 +142,13 @@ namespace opencl {
 		//! shared memory offset
 		size_t _sharedOffset;
 
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector _persistentTraceGenerators;
+
+		//! set of trace generators to be inserted into emulated kernels
+		trace::TraceGeneratorVector _nextTraceGenerators;
+	
+
 	private:
 		//! check if built on device
 		bool _isBuiltOnDevice(Device * device);
@@ -147,6 +161,9 @@ namespace opencl {
 
 		//! get argument name
 		std::string & _getArgumentName(cl_uint arg_index);
+
+		//! kernel list
+		static KernelList _kernelList;
 			
 	};
 	

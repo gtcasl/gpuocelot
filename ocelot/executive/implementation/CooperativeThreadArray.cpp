@@ -9699,7 +9699,8 @@ void executive::CooperativeThreadArray::eval_cudaLaunchDevice(CTAContext &contex
 	context.PC++;
 }
 
-void executive::CooperativeThreadArray::eval_cudaSynchronizeDevice(CTAContext &context,
+void executive::CooperativeThreadArray::eval_cudaSynchronizeDevice(
+	CTAContext &context,
 	const ir::PTXInstruction &instr) {
 	context.executionState = CTAContext::Barrier;
 }

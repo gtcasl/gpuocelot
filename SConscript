@@ -266,7 +266,6 @@ if enabled_tests:
 	print 'Adding unit tests to the build...'
 	for test in enabled_tests:
 		print '  ' + test[0]
-		Default(test[1])
 		env.Alias('tests', test[1])
 
 # find all header files in the source tree

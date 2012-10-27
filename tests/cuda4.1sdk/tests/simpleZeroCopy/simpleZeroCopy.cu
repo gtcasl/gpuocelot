@@ -9,6 +9,7 @@
  *
  */
 
+#include <shrUtils.h>
 // includes, system
 #include <stdio.h>
 #include <stdlib.h>

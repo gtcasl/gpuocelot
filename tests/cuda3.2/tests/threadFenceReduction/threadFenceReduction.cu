@@ -42,6 +42,7 @@
     
 */
 
+#include <cutil_inline.h>
 // includes, system
 #include <stdlib.h>
 #include <stdio.h>
@@ -49,7 +50,6 @@
 #include <math.h>
 
 // includes, project
-#include <cutil_inline.h>
 
 #define VERSION_MAJOR (CUDART_VERSION/1000)
 #define VERSION_MINOR (CUDART_VERSION%100)/10

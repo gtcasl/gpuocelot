@@ -8,6 +8,7 @@
  * is strictly prohibited.
  *
  */
+#include <shrUtils.h>
 
 // includes, system
 #include <stdio.h>
@@ -16,7 +17,6 @@
 // includes, project
 #include <sdkHelper.h>  // helper for shared that are common to CUDA SDK samples
 #include <shrQATest.h>  // This is for automated testing output (--qatest)
-#include <shrUtils.h>
 // includes CUDA
 #include <cuda_runtime.h>
 

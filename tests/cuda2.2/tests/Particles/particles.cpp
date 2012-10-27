@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <math.h>
 #include <cutil_inline.h>
+#include <unistd.h>
 
 #include <GL/glew.h>
 

@@ -16,6 +16,15 @@
 #include <cutil.h>
 #include <cuda_runtime_api.h>
 
+#ifdef _GLIBCXX_USE_INT128
+#undef _GLIBCXX_USE_INT128
+#endif 
+
+#ifdef _GLIBCXX_ATOMIC_BUILTINS
+#undef _GLIBCXX_ATOMIC_BUILTINS
+#endif
+
+
 #include <cutil_inline_bankchecker.h>
 #include <cutil_inline_runtime.h>
 #include <cutil_inline_drvapi.h>

@@ -20,6 +20,7 @@
 *  simpleMPI.cu: GPU part, compiled with nvcc
 */
 
+#include <shrUtils.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

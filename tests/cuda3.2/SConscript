@@ -156,4 +156,6 @@ for testApplication in testApplications:
 		LIBS=additionalLibs + ['-lglut', libsdk3_2, '-lGLU', '-locelot', '-lGLEW'])
 	tests.append(testApp)
 
+	env.Alias('tests', testApp)
+
 

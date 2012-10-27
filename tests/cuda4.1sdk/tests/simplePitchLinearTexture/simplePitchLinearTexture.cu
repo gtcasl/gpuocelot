@@ -22,6 +22,7 @@
  * filtering which are not possible with textures bound to regular linear memory 
  */
 
+#include <shrUtils.h>
 // includes, system
 #include <stdio.h>
 

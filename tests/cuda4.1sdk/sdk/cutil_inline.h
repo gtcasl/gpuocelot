@@ -9,6 +9,17 @@
  *
  */
  
+ 
+
+#ifdef _GLIBCXX_USE_INT128
+#undef _GLIBCXX_USE_INT128
+#endif 
+
+#ifdef _GLIBCXX_ATOMIC_BUILTINS
+#undef _GLIBCXX_ATOMIC_BUILTINS
+#endif
+
+
 #ifndef _CUTIL_INLINE_H_
 #define _CUTIL_INLINE_H_
 

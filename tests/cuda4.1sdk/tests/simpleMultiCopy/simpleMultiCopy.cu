@@ -23,6 +23,7 @@
  *
 */
 
+#include <shrUtils.h>
 const char *sSDKname = "simpleMultiCopy";
 
 // includes, system

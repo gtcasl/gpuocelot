@@ -13,6 +13,7 @@
    device functions (atomic*() functions).
 */
 
+#include <shrUtils.h>
 // includes, system
 #include <stdlib.h>
 #include <stdio.h>

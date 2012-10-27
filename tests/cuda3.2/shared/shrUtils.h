@@ -29,6 +29,16 @@
     // Headers needed for Windows
     #include <windows.h>
 #else
+
+#ifdef _GLIBCXX_USE_INT128
+#undef _GLIBCXX_USE_INT128
+#endif 
+
+#ifdef _GLIBCXX_ATOMIC_BUILTINS
+#undef _GLIBCXX_ATOMIC_BUILTINS
+#endif
+
+
     // Headers needed for Linux
     #include <sys/stat.h>
     #include <sys/types.h>

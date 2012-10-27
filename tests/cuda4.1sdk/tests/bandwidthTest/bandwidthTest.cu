@@ -20,9 +20,10 @@
  */
 
 // includes
+#include <shrUtils.h>
 #include <sdkHelper.h>  // helper for shared functions common to CUDA SDK samples
 #include <shrQATest.h> // This is for automated testing output (--qatest)
-#include <shrUtils.h>
+
 
 #include <cuda.h>
 

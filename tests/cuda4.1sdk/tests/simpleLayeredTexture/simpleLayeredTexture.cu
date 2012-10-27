@@ -17,6 +17,7 @@
 * which fetch their layer's texture data (using normalized texture coordinates) 
 * transform it to the expected output, and write it to a 3D output data array.
 */
+#include <shrUtils.h>
 
 // includes, system
 #include <stdlib.h>

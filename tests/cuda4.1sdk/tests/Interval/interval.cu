@@ -23,10 +23,10 @@
 
 const static char *sSDKsample = "Interval Computing"; 
 
+#include "cutil_inline.h"
 #include <iostream>
 #include <stdio.h>
 #include <shrQATest.h>
-#include "cutil_inline.h"
 #include "interval.h"
 #include "cuda_interval.h"
 #include "cpu_interval.h"

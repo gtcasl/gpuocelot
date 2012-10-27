@@ -49,6 +49,7 @@ const char *sDeviceSyncMethod[] =
 	NULL 
 };
 
+#include <shrUtils.h>
 // Include headers
 #include <stdio.h>
 

@@ -97,4 +97,6 @@ for testApplication in testApplications:
 		LIBS=additionalLibs + ['-lglut', '-lGLU', '-locelot', '-lGLEW', libparboil])
 	tests.append(testApp)
 
+	env.Alias('tests', testApp)
+
 

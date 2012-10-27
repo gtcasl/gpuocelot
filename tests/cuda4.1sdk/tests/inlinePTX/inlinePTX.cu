@@ -13,6 +13,8 @@
  * Demonstration of inline PTX (assembly language) usage in CUDA kernels
  */
 
+#include <cutil_inline.h>
+
 // includes, system
 #include <stdio.h>
 #include <stdlib.h>

@@ -24,6 +24,16 @@
   Author: Lijiuan Luo (lluo3@uiuc.edu)
   Revised for Parboil 2 Benchmark Suite by: Geng Daniel Liu (gengliu2@illinois.edu)
 */
+
+#ifdef _GLIBCXX_USE_INT128
+#undef _GLIBCXX_USE_INT128
+#endif 
+
+#ifdef _GLIBCXX_ATOMIC_BUILTINS
+#undef _GLIBCXX_ATOMIC_BUILTINS
+#endif
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

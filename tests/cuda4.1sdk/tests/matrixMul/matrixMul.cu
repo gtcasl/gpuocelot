@@ -27,10 +27,10 @@
  */
 
 // Utilities and system includes
+#include <shrUtils.h>
 #include <cublas_v2.h>
 #include <sdkHelper.h>  // helper for shared functions common to CUDA SDK samples
 #include <shrQATest.h>
-#include <shrUtils.h>
 
 #include <cuda_runtime.h>
 

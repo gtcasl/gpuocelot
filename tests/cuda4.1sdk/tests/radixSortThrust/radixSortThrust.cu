@@ -1,3 +1,7 @@
+
+
+#include <cutil_inline.h>
+
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
@@ -6,8 +10,6 @@
 #include <thrust/random.h>
 #include <thrust/generate.h>
 #include <thrust/detail/type_traits.h>
-
-#include <cutil_inline.h>
 
 #include <shrUtils.h>
 #include <shrQATest.h>

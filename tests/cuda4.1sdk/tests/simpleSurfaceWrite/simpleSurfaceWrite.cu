@@ -17,6 +17,7 @@
 * a simple 2D transform (rotation) on the texture coordinates (u,v).
 */
 
+#include <shrUtils.h>
 // includes, system
 #include <stdlib.h>
 #include <stdio.h>

@@ -14,6 +14,7 @@
  * Unified Virtual Address Space (UVA) features new to SDK 4.0
  */
 
+#include <shrUtils.h>
 // includes, system
 #include <stdlib.h>
 #include <stdio.h>

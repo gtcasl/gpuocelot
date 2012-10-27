@@ -13,6 +13,7 @@
 #define _SIMPLETEXTURE3D_KERNEL_CU_
 
 
+#include <shrUtils.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

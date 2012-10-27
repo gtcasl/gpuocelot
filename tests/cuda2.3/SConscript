@@ -110,5 +110,7 @@ for testApplication in testApplications:
 		LIBS=['-locelot', libsdk2_3])
 	tests.append(testApp)
 
+	env.Alias('tests', testApp)
+
 
 

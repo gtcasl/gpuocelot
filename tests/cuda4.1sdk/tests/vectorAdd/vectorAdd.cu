@@ -17,16 +17,16 @@
  *
  */
 
-// Includes
-#include <stdio.h>
-
 // includes, project
+#include <shrUtils.h>
 #include <sdkHelper.h>  // helper for shared functions common to CUDA SDK samples
 #include <shrQATest.h>
-#include <shrUtils.h>
 
 // includes CUDA
 #include <cuda_runtime.h>
+
+// Includes
+#include <stdio.h>
 
 // Variables
 float* h_A;

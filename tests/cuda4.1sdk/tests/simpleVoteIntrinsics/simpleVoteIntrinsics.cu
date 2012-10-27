@@ -9,6 +9,7 @@
  *
  */
 
+#include <shrUtils.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <cutil_inline.h>

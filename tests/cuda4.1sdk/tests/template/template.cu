@@ -14,6 +14,7 @@
 * Host code.
 */
 
+#include <shrUtils.h>
 // includes, system
 #include <stdlib.h>
 #include <stdio.h>

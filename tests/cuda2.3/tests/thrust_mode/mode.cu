@@ -1,4 +1,12 @@
-#include <thrust/device_vector.h>
+#ifdef _GLIBCXX_USE_INT128
+#undef _GLIBCXX_USE_INT128
+#endif 
+
+#ifdef _GLIBCXX_ATOMIC_BUILTINS
+#undef _GLIBCXX_ATOMIC_BUILTINS
+#endif
+
+	#include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
 #include <thrust/sort.h>
 #include <thrust/scan.h>

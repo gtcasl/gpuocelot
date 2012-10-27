@@ -9,6 +9,14 @@
 /* 
  * Main entry of dense matrix-matrix multiplication kernel
  */
+#ifdef _GLIBCXX_USE_INT128
+#undef _GLIBCXX_USE_INT128
+#endif 
+
+#ifdef _GLIBCXX_ATOMIC_BUILTINS
+#undef _GLIBCXX_ATOMIC_BUILTINS
+#endif
+
 
 #include <stdio.h>
 #include <math.h>

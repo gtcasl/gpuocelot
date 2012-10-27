@@ -9,11 +9,13 @@
  *
  */
 
+
+#include <cutil_inline.h>
+
 #include "FDTD3dGPU.h"
 
 #include <iostream>
 #include <algorithm>
-#include <cutil_inline.h>
 #include <shrUtils.h>
 #include "FDTD3dGPUKernel.cuh"
 

@@ -109,7 +109,7 @@ struct Inst_info{
 #define BUF_SIZE (10 * sizeof(struct Inst_info))
 struct Trace_info
 {
-  typedef void * gzFile;
+//  typedef void * gzFile;
   gzFile trace_stream;
   char trace_buf[BUF_SIZE];
   int bytes_accumulated;

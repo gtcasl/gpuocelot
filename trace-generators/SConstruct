@@ -11,7 +11,7 @@ def getOcelotPaths():
 	"""returns (ocelotIncludePath, ocelotLibPath, ocelotBinPath)"""
 	results = []
 	for arg in ('-i', '-L', '-b'):
-		ocelotConfig = subprocess.Popen(['OcelotConfig', arg], stdout = subprocess.PIPE)
+		ocelotConfig = subprocess.Popen(['/usr/local/bin/OcelotConfig', arg], stdout = subprocess.PIPE)
 		results.append(ocelotConfig.stdout.readline()[:-2])
 	return results
 
@@ -46,7 +46,8 @@ sources = (
 	"traces/implementation/ActivityFactorGenerator.cpp"
 )
 
-libocelotTrace = env.StaticLibrary('ocelotTrace', sources)
+libocelotTrace = env.SharedLibrary('ocelotTrace', sources)
+libocelotStaticTrace = env.StaticLibrary('ocelotTrace', sources)
 
 #
 #
@@ -74,6 +75,6 @@ for application in applications:
 if 'install' in COMMAND_LINE_TARGETS:
 	print 'Installing libOcelotTrace'
 	
-	env.Install(ocelotLibPath, libocelotTrace)
+	env.Install(ocelotLibPath, [libocelotTrace, libocelotStaticTrace])
 	env.Alias('install', ocelotLibPath)
 

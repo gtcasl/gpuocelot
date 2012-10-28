@@ -304,6 +304,7 @@ TraceConfiguration::TraceConfiguration()
 	}
 	
 	if (temporalSIMT.enabled) {
+		report("create SIMT generator");
 		_temporalSIMTGenerator.warpSize = temporalSIMT.warpSize;
 		_temporalSIMTGenerator.simdWidth = temporalSIMT.simdWidth;
 		_temporalSIMTGenerator.simdIssueCount = temporalSIMT.simdIssueCount;

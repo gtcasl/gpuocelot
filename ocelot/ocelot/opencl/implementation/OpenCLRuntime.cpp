@@ -491,8 +491,8 @@ void opencl::OpenCLRuntime::registerExternalFunction(const std::string& name,
 	_lock();
 
 	report("Adding external function '" << name << "'");
-	std::cerr << "Ocelot warning: registerExternalFunction unimplemented for opencl!\n";
-//	Kernel::registerExternalFunction(name, function);
+
+	externals.add(name, function);
 
 	_unlock();
 }
@@ -501,9 +501,8 @@ void opencl::OpenCLRuntime::removeExternalFunction(const std::string& name) {
 	_lock();
 
 	report("Removing external function '" << name << "'");
-	std::cerr << "Ocelot warning: removeExternalFunction unimplemented for opencl!\n";
 
-//	Kernel::removeExternalFunction(name);
+	externals.remove(name);
 
 	_unlock();	
 }

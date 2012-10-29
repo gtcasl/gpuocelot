@@ -162,8 +162,6 @@ namespace opencl {
 		//! Runtime object count
 		size_t _objSize;
 	
-		//! external functions
-	//	ir::ExternalFunctionSet _externals;
 		
 		//! PTX passes
 	//	PassSet _passes;
@@ -195,6 +193,9 @@ namespace opencl {
 
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector nextTraceGenerators;
+
+		//! external functions
+		ir::ExternalFunctionSet externals;
 	
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 			bool persistent = false );

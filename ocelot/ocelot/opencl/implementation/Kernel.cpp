@@ -257,7 +257,7 @@ void opencl::Kernel::launchOnDevice(Device * device)
 
 		device->launch(_deviceInfo[device]._moduleName, _name, convert(_workGroupNum), 
 			convert(_localWorkSize), _sharedOffset, 
-			_parameterBlock, _parameterBlockSize, traceGens, NULL/*&_externals*/);
+			_parameterBlock, _parameterBlockSize, traceGens, &(runtime->externals));
 //		_inExecute = false;
 		report(" launch completed successfully");	
 //	}

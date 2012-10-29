@@ -40,56 +40,52 @@ std::string opencl::Program::_loadBackDoor() {
 
 }
 
-std::string opencl::Program::_compileToBinary() {
+/// _compileToBinary (modifed by <pwh@gatech.edu> 02-Oct-12
+///
+/// I've rewritten the file read to string logic to make it more concise.
+/// I've changed some OUT_OF_MEMORY conditions to generic FAILURE because
+/// C++ stream fail() can mean lots of things (e.g. permission failure, etc.).
+/// Simplified some string operations using + and constructor parameters.
+/// Added using statements for concision.
+/// Changed c_str() to data() to be consistent throughout. This assumes
+/// C++11 (re)definition of data().
+/// Eliminated error-prone NEWLINE escapes in compileCommand definition.
 
-	std::string clName = _name;
-	clName += ".cl";
-	std::string ptxName = _name;
-	ptxName += ".ptx";
-
-	//Temporarily store source to cl file
-	std::ofstream clFile(clName.c_str());
-	if(clFile.fail()) {
-		throw CL_OUT_OF_HOST_MEMORY;
-	}
+// Seems to use strange names like "__clmodule_##".
+std::string opencl::Program::_compileToBinary()
+{
+	std::string clName (_name + ".cl");
+	std::string ptxName(_name + ".ptx"); 
+	
+	// Write CL to tmp file
+	// Need to check fail() after every op if you want to be consistent
+	// (Silly, isn't it?)
+	std::ofstream clFile(clName.data());
+	if (clFile.fail()) throw CL_BUILD_PROGRAM_FAILURE;
 	clFile << _source;
+	if (clFile.fail()) throw CL_BUILD_PROGRAM_FAILURE;
 	clFile.close();
-
-	//Compile cl to ptx
-	std::string compileCommand = "clang -ccc-host-triple nvptx64--nvidiacl \
-   -Xclang -mlink-bitcode-file \
-   -Xclang $HOME/libclc/nvptx64--nvidiacl/lib/builtins.bc \
-   -I$HOME/libclc/generic/include -I$HOME/libclc/ptx-nvidiacl/include \
-   -include clc/clc.h -Dcl_clang_storage_class_specifiers \
-   -Dcl_khr_fp64 -O3 ";
-	compileCommand += clName;
-	compileCommand += " -S -o ";
-	compileCommand += ptxName;
-
+	if (clFile.fail()) throw CL_BUILD_PROGRAM_FAILURE;
+	
+	  // Compile cl to ptx
+	// Eliminated NEWLINE escapes, relying instead on implicit concatenation
+	std::string compileCommand("clang -ccc-host-triple nvptx64--nvidiacl "
+	 "-Xclang -mlink-bitcode-file "
+	 "-Xclang $HOME/libclc/nvptx64--nvidiacl/lib/builtins.bc "
+	 "-I$HOME/libclc/generic/include -I$HOME/libclc/ptx-nvidiacl/include "
+	 "-include clc/clc.h -Dcl_clang_storage_class_specifiers "
+	 "-Dcl_khr_fp64 -O3 " + clName + " -S -o " + ptxName);
 	report(compileCommand);
-	int result = system(compileCommand.c_str());
-	if(result != 0)
-		throw CL_BUILD_PROGRAM_FAILURE;
-
-	//Read in ptx
-	std::ifstream ptxFile(ptxName.c_str());
-	if(ptxFile.fail())
-		throw CL_OUT_OF_HOST_MEMORY;
+	int result = system(compileCommand.data());
+	if (result) throw CL_BUILD_PROGRAM_FAILURE;
 	
-	//Get file size
-	ptxFile.seekg(0, std::ios::end);
-	size_t size = ptxFile.tellg();
-	ptxFile.seekg(0, std::ios::beg);
-	
-	if(!size) 
-		throw CL_BUILD_PROGRAM_FAILURE;
-
-	//Read file to temporary buffer	
-	std::string temp;
-	temp.resize(size);
-	ptxFile.read((char*)temp.data(), size);
-
-	return temp;
+	/// Read in PTX and return as string (concisely)
+	std::ifstream ifs(ptxName.data());
+	if (ifs.fail()) throw CL_BUILD_PROGRAM_FAILURE;
+	std::stringstream ss;
+	ss << ifs.rdbuf();
+	if (ss.fail())  throw CL_BUILD_PROGRAM_FAILURE;
+	return ss.str();
 }
 
 bool opencl::Program::_isBuiltOnDevice(Device * device) {

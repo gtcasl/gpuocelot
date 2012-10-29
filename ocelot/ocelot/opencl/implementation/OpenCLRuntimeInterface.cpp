@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -609,8 +609,8 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueCopyBufferRect(cl_command_queue 
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueReadImage(cl_command_queue      command_queue,
 					cl_mem                image,
 					cl_bool               blocking_read, 
-					const size_t *        origin[3],
-					const size_t *        region[3],
+					const size_t *        origin,
+					const size_t *        region,
 					size_t                row_pitch,
 					size_t                slice_pitch, 
 					void *                ptr,
@@ -624,8 +624,8 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueReadImage(cl_command_queue      
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueWriteImage(cl_command_queue     command_queue,
 					cl_mem               image,
 					cl_bool              blocking_write, 
-					const size_t *       origin[3],
-					const size_t *       region[3],
+					const size_t *       origin,
+					const size_t *       region,
 					size_t               input_row_pitch,
 					size_t               input_slice_pitch, 
 					const void *         ptr,
@@ -639,8 +639,8 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueWriteImage(cl_command_queue     
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueFillImage(cl_command_queue    command_queue,
 					cl_mem              image, 
 					const void *        fill_color, 
-					const size_t *      origin[3], 
-					const size_t *      region[3], 
+					const size_t *      origin, 
+					const size_t *      region, 
 					cl_uint             num_events_in_wait_list, 
 					const cl_event *    event_wait_list, 
 					cl_event *          event) {
@@ -651,9 +651,9 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueFillImage(cl_command_queue    co
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueCopyImage(cl_command_queue      command_queue,
 					cl_mem                src_image,
 					cl_mem                dst_image, 
-					const size_t *        src_origin[3],
-					const size_t *        dst_origin[3],
-					const size_t *        region[3], 
+					const size_t *        src_origin,
+					const size_t *        dst_origin,
+					const size_t *        region, 
 					cl_uint               num_events_in_wait_list,
 					const cl_event *      event_wait_list,
 					cl_event *            event) {
@@ -664,8 +664,8 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueCopyImage(cl_command_queue      
 cl_int opencl::OpenCLRuntimeInterface::clEnqueueCopyImageToBuffer(cl_command_queue  command_queue,
 					cl_mem            src_image,
 					cl_mem            dst_buffer, 
-					const size_t *    src_origin[3],
-					const size_t *    region[3], 
+					const size_t *    src_origin,
+					const size_t *    region, 
 					size_t            dst_offset,
 					cl_uint           num_events_in_wait_list,
 					const cl_event *  event_wait_list,
@@ -678,8 +678,8 @@ cl_int opencl::OpenCLRuntimeInterface::clEnqueueCopyBufferToImage(cl_command_que
 					cl_mem            src_buffer,
 					cl_mem            dst_image, 
 					size_t            src_offset,
-					const size_t *    dst_origin[3],
-					const size_t *    region[3], 
+					const size_t *    dst_origin,
+					const size_t *    region, 
 					cl_uint           num_events_in_wait_list,
 					const cl_event *  event_wait_list,
 					cl_event *        event) {
@@ -705,8 +705,8 @@ void * opencl::OpenCLRuntimeInterface::clEnqueueMapImage(cl_command_queue   comm
 					cl_mem             image, 
 					cl_bool            blocking_map, 
 					cl_map_flags       map_flags, 
-					const size_t *     origin[3],
-					const size_t *     region[3],
+					const size_t *     origin,
+					const size_t *     region,
 					size_t *           image_row_pitch,
 					size_t *           image_slice_pitch,
 					cl_uint            num_events_in_wait_list,

@@ -1,7 +1,7 @@
 #include <ocelot/opencl/interface/CommandQueue.h>
 
 #undef REPORT_BASE
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 opencl::QueueThread::QueueMessage::QueueMessage(Type t, void * d):
 	type(t), data(d) {

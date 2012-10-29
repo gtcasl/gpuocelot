@@ -1261,6 +1261,19 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 	return result;
 }
 
+cl_int opencl::OpenCLRuntime::clGetProgramBuildInfo(cl_program            program,
+			cl_device_id          device,
+			cl_program_build_info param_name,
+			size_t                param_value_size,
+			void *                param_value,
+			size_t *              param_value_size_ret) {
+
+	std::cerr << "Ocelot OpenCL Warning: clGetProgramBuildInfo unimplemented\n";
+
+	return CL_SUCCESS;
+}
+	
+
 cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	const char * kernel_name,
 	cl_int * errcode_ret) {

@@ -5,6 +5,9 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/Device.h>
 
+#undef REPORT_BASE
+#define REPORT_BASE 0
+
 opencl::Device::DeviceList opencl::Device::_deviceList = opencl::Device::DeviceList();
 
 bool opencl::Device::_loaded = false;
@@ -111,11 +114,10 @@ opencl::Device::Device(executive::Device * d, cl_device_type type,
 
 opencl::Device::~Device() {
 
-	_platform->release();
+	report("Destruct device");
 
 	if(_parentDevice != NULL) { //sub device
 		delete[] _partitionProp;
-		_parentDevice->release();
 	}
 	else
 		delete _exeDevice;
@@ -129,8 +131,14 @@ opencl::Device::~Device() {
 
 void opencl::Device::release() {
 	report("Release device object");
-	if(Object::release())
+	if(Object::release()) { //zero reference
+		_platform->release();
+	
+		if(_parentDevice != NULL) //sub device
+			_parentDevice->release();
+
 		delete this;
+	}
 }
 
 

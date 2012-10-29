@@ -23,10 +23,10 @@ namespace opencl {
 	public:
 		MemoryObject(Context * context, cl_mem_object_type type, 
 			cl_mem_flags flags, void * host_ptr, bool isSubBuffer = false);
-		~MemoryObject();
+		virtual ~MemoryObject();
 
 	public:
-		void release();
+		virtual void release();
 
 		//! get associated context
 		Context * getContext() const;
@@ -86,7 +86,7 @@ namespace opencl {
 	class BufferObject: public MemoryObject {
 	public:
 		BufferObject(Context * context, const cl_mem_flags flags, void * host_ptr, size_t size);
-		~BufferObject();
+		virtual ~BufferObject();
 
 	public:
 		//! get allocation size
@@ -136,6 +136,9 @@ namespace opencl {
 
 		//! get offset of associated buffer object
 		const size_t offset() const;
+
+		//! release, overload MemoryObject release()
+		virtual void release();
 
 
 	private:

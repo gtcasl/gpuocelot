@@ -28,8 +28,10 @@ public:
 			OBJTYPE_EVENT
 		}objT;
 
+		typedef std::list<Object * > ObjectList;
+
 		Object(objT type);
-		~Object();
+		virtual ~Object();
 
 		//Check if is a object type
 		bool isValidObject(objT type);	
@@ -40,10 +42,10 @@ public:
 		//Release
 		bool release();
 
-protected:
-		//Object list
-		static std::list < Object * > _objList;
+		//To string
+		virtual std::string toString();
 
+protected:
 		//Object type
 		const objT _objType;
 

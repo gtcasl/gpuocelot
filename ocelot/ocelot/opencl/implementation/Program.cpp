@@ -366,17 +366,22 @@ opencl::Program::Program(Context * context,
 
 opencl::Program::~Program() {
 	
-	for(std::map <Device *, deviceBuiltInfoT>::iterator it = _deviceBuiltInfo.begin();
-		it != _deviceBuiltInfo.end(); it++) {
-		delete it->second._module;
-	}
+	report("Delete Program object");
 
-	_context->release();
 }
 
 void opencl::Program::release() {
-	if(Object::release())
+	if(Object::release()) {
+	
+		for(std::map <Device *, deviceBuiltInfoT>::iterator it = _deviceBuiltInfo.begin();
+			it != _deviceBuiltInfo.end(); it++) {
+			report("Delete Program module");
+			delete it->second._module;
+		}
+
+		_context->release();
 		delete this;
+	}
 }
 
 bool opencl::Program::isValidContext(Context * context) {

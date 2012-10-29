@@ -16,12 +16,13 @@
 
 // Hydrazine includes
 #include <hydrazine/interface/debug.h>
+#include <ocelot/opencl/interface/Object.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 
 ////////////////////////////////////////////////////////////////////////////////

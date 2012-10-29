@@ -60,20 +60,22 @@ opencl::Context::Context(const cl_context_properties * properties,
 
 
 opencl::Context::~Context() {
-	for(Device::DeviceList::iterator d = _validDevices.begin();
-		d != _validDevices.end(); d++) {
-		(*d)->release();
-	}
-
-	_platform->release();
-
 	delete[] _properties;
 }
 
 void opencl::Context::release() {
 	report("Release Context object");
-	if(Object::release())
+	if(Object::release()) { //zero reference
+
+		for(Device::DeviceList::iterator d = _validDevices.begin();
+			d != _validDevices.end(); d++) {
+			(*d)->release();
+		}
+
+		_platform->release();
+
 		delete this;
+	}
 }
 
 opencl::Device::DeviceList & opencl::Context::getValidDevices() {

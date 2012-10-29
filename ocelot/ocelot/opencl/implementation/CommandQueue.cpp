@@ -201,29 +201,20 @@ queue properties detected\n";
 
 opencl::CommandQueue::~CommandQueue() {
 	report("Delete command queue " << this);
-	if(_thread)
+	if(_thread) {
 		delete _thread;
+		_thread = NULL;
+	}
 
-	_context->release();
-
-	_device->release();
 }
 
 void opencl::CommandQueue::release() {
-	if(Object::release())
+	if(Object::release()) {
+		_context->release();
+		_device->release();
 		delete this;
-}
-
-void opencl::CommandQueue::killAllQueueThreads() {
-	report("Kill all queue threads");
-
-	for(std::list< Object * >::iterator it = _objList.begin();
-		it != _objList.end(); it++) {
-		if((*it)->isValidObject(OBJTYPE_COMMANDQUEUE))
-			((CommandQueue *)(*it))->_killThread();
 	}
 }
-
 
 opencl::Context * opencl::CommandQueue::context() {
 	return _context;

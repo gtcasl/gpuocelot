@@ -83,16 +83,22 @@ void opencl::OpenCLRuntime::_unlock() {
 
 opencl::OpenCLRuntime::OpenCLRuntime() :	 
 	_optimization((translator::Translator::OptimizationLevel)
-		config::get().executive.optimizationLevel) {
+		config::get().executive.optimizationLevel), _objSize(0){
 }
 
 opencl::OpenCLRuntime::~OpenCLRuntime() {
 
-	CommandQueue::killAllQueueThreads();
-
 	//
 	// free things that need freeing
 	//
+	// runtime objects
+
+	for(auto object = _objList.begin(); object != _objList.end(); ++object) {
+		if(*object)
+			delete *object;
+	}
+
+	_objList.clear();
 	// devices
 //	for (DeviceList::iterator device = _devices.begin(); 
 //		device != _devices.end(); ++device) {
@@ -141,11 +147,38 @@ opencl::OpenCLRuntime::~OpenCLRuntime() {
 	// globals
 }
 
+size_t opencl::OpenCLRuntime::addRuntimeObject(Object * obj) {
+	_objList.push_back(obj);
+	return ++_objSize;
+}
 
+size_t opencl::OpenCLRuntime::removeRuntimeObject(Object * obj) {
+	Object::ObjectList::iterator it = 
+		std::find(_objList.begin(), _objList.end(), obj);
+
+	assert(it != _objList.end());
+
+//	_objList.erase(it);
+	*it = NULL;
+	
+	return --_objSize;
+
+}
+
+bool opencl::OpenCLRuntime::isRuntimeObjectValid(Object * obj) {
+	Object::ObjectList::iterator it = 
+		std::find(_objList.begin(), _objList.end(), obj);
+
+	if(it == _objList.end())
+		return false;
+	else
+		return true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
+	report("Add trace generator");
 	_lock();
 
 	if (persistent) {
@@ -159,6 +192,7 @@ void opencl::OpenCLRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 }
 
 void opencl::OpenCLRuntime::clearTraceGenerators() {
+	report("Remove trace generator");
 	_lock();
 	
 	persistentTraceGenerators.clear();

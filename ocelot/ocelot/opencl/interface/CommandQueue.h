@@ -80,9 +80,6 @@ namespace opencl {
 	public:
 		void release();
 
-		//Kill all alive queue thread
-		static void killAllQueueThreads();
-
 		Context * context();
 		Device * device();
 

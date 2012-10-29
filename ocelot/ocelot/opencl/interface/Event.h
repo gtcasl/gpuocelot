@@ -26,13 +26,13 @@ namespace opencl {
 			cl_uint num_events_in_wait_list,
 			const cl_event * event_wait_list,
     		cl_event * event);
-		~Event();
+		virtual ~Event();
 
 	public:
 		static void waitForEvents(cl_uint num_events,
 			const cl_event * event_list);
 
-		void release();
+		virtual void release();
 
 		//! get type
 		cl_command_type type();
@@ -96,6 +96,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 
 	protected:
@@ -127,6 +128,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 
 	protected:
@@ -157,6 +159,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 	protected:
 		BufferObject * _buffer;
@@ -180,6 +183,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 	protected:
 		BufferObject * _src;
@@ -210,6 +214,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 	protected:
 		BufferObject * _src;
@@ -242,6 +247,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 
 	protected:
@@ -266,6 +272,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 	protected:
 		MemoryObject * _memobj;
@@ -289,6 +296,7 @@ namespace opencl {
 
 	public:
 		virtual void execute(Device * device);
+		virtual void release();
 
 	protected:
 		Kernel * _kernel;

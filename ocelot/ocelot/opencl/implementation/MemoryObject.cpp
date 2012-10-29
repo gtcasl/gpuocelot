@@ -33,13 +33,15 @@ opencl::MemoryObject::MemoryObject(Context * context, cl_mem_object_type type,
 }
 
 opencl::MemoryObject::~MemoryObject() {
-	_context->release();
 }
 
 void opencl::MemoryObject::release() {
 	report("Release memory object");
-	if(Object::release())
+	if(Object::release()) {
+		_context->release();
+
 		delete this;
+	}
 }
 
 opencl::Context * opencl::MemoryObject::getContext() const {
@@ -297,9 +299,20 @@ opencl::SubBufferObject::SubBufferObject(BufferObject * buffer,
 
 
 opencl::SubBufferObject::~SubBufferObject() {
-	_buffer->release();
 }
 
 const size_t opencl::SubBufferObject::size() const {
 	return _size;
+}
+
+void opencl::SubBufferObject::release() {
+
+	report("Release subbuffer object");
+	if(Object::release()) {
+		_buffer->release();
+		_context->release();
+
+		delete this;
+	}
+
 }

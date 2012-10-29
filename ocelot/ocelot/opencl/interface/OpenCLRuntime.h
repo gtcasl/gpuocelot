@@ -155,6 +155,12 @@ namespace opencl {
 	
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
+
+		//! Runtime objects
+		Object::ObjectList _objList;
+
+		//! Runtime object count
+		size_t _objSize;
 	
 		//! external functions
 	//	ir::ExternalFunctionSet _externals;
@@ -167,6 +173,11 @@ namespace opencl {
 		~OpenCLRuntime();
 
 	public:
+		size_t addRuntimeObject(Object * obj);
+
+		size_t removeRuntimeObject(Object * obj);
+
+		bool isRuntimeObjectValid(Object * obj);
 		/*virtual void openclRegisterTexture(
 			void **fatCubinHandle,
 			const struct textureReference *hostVar,

@@ -54,15 +54,16 @@ opencl::Kernel::~Kernel()
 	if(_parameterBlock)
 		delete _parameterBlock;
 
-	_program->removeKernel(this);
-
-	_program->release();
 
 }
 
 void opencl::Kernel::release() {
-	if(Object::release())
+	if(Object::release()) {
+		_program->removeKernel(this);
+
+		_program->release();
 		delete this;
+	}
 }
 
 bool opencl::Kernel::isValidContext(Context * context) {

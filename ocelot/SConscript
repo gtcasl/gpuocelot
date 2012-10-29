@@ -327,11 +327,12 @@ if env['install']:
 			os.path.relpath(str(header), '.'))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
+	
 
 	for i in installed:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
-	
-	install_alias = env.Alias('install', env['install_path'])
+
+	install_alias = env.Alias('ocelot', env['install_path'])
 	Default(install_alias)
 
 	env.Replace(installed_files = installed)
@@ -339,4 +340,5 @@ if env['install']:
 	if env['deb_arch'] != 'unknown':
 		Export('env')
 		SConscript('deb/DebSConscript')
-
+else:
+	print "Not installing Ocelot."

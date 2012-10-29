@@ -8,7 +8,7 @@
 #define TEST_CALL_LATENCY_CPP_INCLUDED
 
 #include <tests/TestCallLatency/TestCallLatency.h>
-#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/interface/ArgumentParser.h>
 #include <cuda_runtime_api.h>
 #include <ocelot/api/interface/ocelot.h>
 

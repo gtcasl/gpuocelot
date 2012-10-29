@@ -8,7 +8,7 @@
 #define TEST_BARRIERS_CPP_INCLUDED
 
 #include <tests/TestSpecialFunctions/TestSpecialFunctions.h>
-#include <hydrazine/implementation/ArgumentParser.h>
+#include <hydrazine/interface/ArgumentParser.h>
 #include <cuda_runtime_api.h>
 #include <ocelot/api/interface/ocelot.h>
 

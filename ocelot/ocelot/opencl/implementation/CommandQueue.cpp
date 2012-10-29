@@ -1,7 +1,7 @@
 #include <ocelot/opencl/interface/CommandQueue.h>
 
 #undef REPORT_BASE
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 opencl::QueueThread::QueueMessage::QueueMessage(Type t, void * d):
 	type(t), data(d) {
@@ -31,6 +31,7 @@ void opencl::QueueThread::_executeEvent(Event * e) {
 	report("  event '" << e << "' finished.");
 
 	e->setStatus(completeStatus);
+	e->unlockEvent();
 	e->callBack();
 
 }
@@ -122,7 +123,7 @@ void opencl::CommandQueue::_submitEvents() {
 			(*e)->setStatus(CL_SUBMITTED);
 			_thread->sendEvent(*e);
 
-			break;
+//			break;
 		}
 	}
 }
@@ -147,22 +148,11 @@ void opencl::CommandQueue::_clearCompletedEvents() {
 	}
 }
 
-bool opencl::CommandQueue::_isAllSubmitted() {
+void opencl::CommandQueue::_waitForAllCompleted() {
 	for(EventList::iterator e = _eventsQueue.begin();
 		e != _eventsQueue.end(); e++) {
-		if((*e)->hasStatus(CL_QUEUED))
-			return false;
+		(*e)->waitToComplete();
 	}
-	return true;
-}
-
-bool opencl::CommandQueue::_isAllCompleted() {
-	for(EventList::iterator e = _eventsQueue.begin();
-		e != _eventsQueue.end(); e++) {
-		if(!(*e)->isCompleted())
-			return false;
-	}
-	return true;
 }
 
 void opencl::CommandQueue::_killThread() {
@@ -228,16 +218,16 @@ void opencl::CommandQueue::queueEvent(Event * event, cl_bool blocking) {
 
 	report("Enqueue event " << event << " in queue " << this);
 	_eventsQueue.push_back(event);
+	event->lockEvent();
 	event->setStatus(CL_QUEUED);
 
 	_clearCompletedEvents();
-	//_submitEvents();
 
 	if(blocking) {
 		report(" Blocking event " << event);
 		flushEvents();
 
-		while(!event->isCompleted());
+		event->waitToComplete();
 
 		_clearEvent(event);
 
@@ -248,23 +238,23 @@ void opencl::CommandQueue::queueEvent(Event * event, cl_bool blocking) {
 void opencl::CommandQueue::flushEvents() {
 
 	//submit all events in the queue
-	report("Flush events for command queue " << this);
 
 	_clearCompletedEvents();
 
-	while(!_isAllSubmitted())
-		_submitEvents();
+	_submitEvents();
+	
+	report("Flush events for command queue " << this);
 }
 
 void opencl::CommandQueue::finishEvents() {
 
-	report("Finish events for command queue " << this);
-
 	flushEvents();
 
-	while(!_isAllCompleted());
+	_waitForAllCompleted();
 
 	_clearCompletedEvents();
+
+	report("Finish events for command queue " << this);
 }
 
 void opencl::CommandQueue::getInfo(cl_command_queue_info param_name,

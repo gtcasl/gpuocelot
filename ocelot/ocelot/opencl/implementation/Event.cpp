@@ -62,6 +62,20 @@ void opencl::Event::release() {
 	}
 }
 
+void opencl::Event::lockEvent() {
+	_complete.lock();
+}
+
+void opencl::Event::unlockEvent() {
+	_complete.unlock();
+}
+
+void opencl::Event::waitToComplete() {
+	lockEvent();
+	assert(isCompleted());
+	unlockEvent();
+}
+
 cl_command_type opencl::Event::type() {
 	return _type;
 }
@@ -164,6 +178,7 @@ void opencl::Event::callBack() {
 void opencl::Event::waitForEvents(cl_uint num_events,
 		const cl_event * event_list) {
 
+
 	// check if is valid event objects
 	for(cl_uint i = 0; i < num_events; i++) {
 		if(!event_list[i]->isValidObject(Object::OBJTYPE_EVENT))
@@ -182,17 +197,12 @@ void opencl::Event::waitForEvents(cl_uint num_events,
 		((CommandQueue *)(event_list[i]->_commandQueue))->flushEvents();
 	}
 
+	report("Wait for " << num_events << " events");
 	// wait for events
-	while(true) {
-		cl_uint i = 0;
-		for(i = 0; i < num_events; i++) {
-			if(!event_list[i]->isCompleted())
-				break;
-			else if(event_list[i]->hasError()) // error
-				throw CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST;
-		}
-		if(i == num_events) // all completed
-			break;
+	for(cl_uint i = 0; i < num_events; i++) {
+		event_list[i]->waitToComplete();
+		if(event_list[i]->hasError()) // error
+			throw CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST;
 	}
 }
 

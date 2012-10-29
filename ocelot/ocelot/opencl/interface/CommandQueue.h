@@ -115,11 +115,8 @@ namespace opencl {
 		//! remove and release completed events
 		void _clearCompletedEvents();
 
-		//! check if all events are submitted
-		bool _isAllSubmitted();
-
-		//! check if all events are completed
-		bool _isAllCompleted();
+		//! wait till all events are completed
+		void _waitForAllCompleted();
 
 		//! kill queue thread
 		void _killThread();

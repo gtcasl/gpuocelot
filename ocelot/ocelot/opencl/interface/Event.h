@@ -34,6 +34,15 @@ namespace opencl {
 
 		virtual void release();
 
+		//! lock event complete mutex
+		void lockEvent();
+
+		//! unlock event complete mutex
+		void unlockEvent();
+
+		//! wait event to complete
+		void waitToComplete();
+
 		//! get type
 		cl_command_type type();
 
@@ -69,6 +78,8 @@ namespace opencl {
 		void callBack();
 
 	protected:
+		//! locking object indicating event is not complete
+		boost::mutex _complete;
 		cl_command_type _type;
 		CommandQueue * _commandQueue;
 		Context * _context;

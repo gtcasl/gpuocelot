@@ -14,6 +14,8 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <ctime>
+#include <chrono>
 
 // Boost libs
 #include <boost/thread/thread.hpp>
@@ -161,6 +163,9 @@ namespace opencl {
 
 		//! Runtime object count
 		size_t _objSize;
+
+		//! Start Timer
+		std::chrono::high_resolution_clock::time_point _startTimer;
 	
 		
 		//! PTX passes
@@ -176,6 +181,9 @@ namespace opencl {
 		size_t removeRuntimeObject(Object * obj);
 
 		bool isRuntimeObjectValid(Object * obj);
+
+		//! current past time in nanoseconds since OpenCLRuntime is created
+		cl_ulong getCurrentTime();
 		/*virtual void openclRegisterTexture(
 			void **fatCubinHandle,
 			const struct textureReference *hostVar,
@@ -448,11 +456,11 @@ namespace opencl {
                     void *      user_data);
 
 		/* Profiling APIs */
-//		virtual cl_int clGetEventProfilingInfo(cl_event event,
-//					cl_profiling_info   param_name,
-//					size_t              param_value_size,
-//					void *              param_value,
-//					size_t *            param_value_size_ret);
+		virtual cl_int clGetEventProfilingInfo(cl_event event,
+					cl_profiling_info   param_name,
+					size_t              param_value_size,
+					void *              param_value,
+					size_t *            param_value_size_ret);
 
 		/* Flush and Finish APIs */
 		virtual cl_int clFlush(cl_command_queue command_queue);

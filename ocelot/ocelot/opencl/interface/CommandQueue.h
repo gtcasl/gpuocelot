@@ -83,6 +83,9 @@ namespace opencl {
 		Context * context();
 		Device * device();
 
+		//! is profile enabled
+		bool isProfileEnabled();
+
 		//! enqueue event
 		void queueEvent(Event * event, cl_bool blocking);
 
@@ -102,6 +105,7 @@ namespace opencl {
 		Context * _context;
 		Device * _device;
 		cl_command_queue_properties _properties;
+		bool _profileEnabled;
 		QueueThread * _thread;
 		EventList _eventsQueue;
 

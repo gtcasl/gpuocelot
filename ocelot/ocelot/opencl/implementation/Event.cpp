@@ -170,6 +170,85 @@ do { \
 
 }
 
+void opencl::Event::setProfilingInfo(cl_int status) {
+	if(!_commandQueue->isProfileEnabled())
+		return;
+
+	OpenCLRuntime * runtime = dynamic_cast<OpenCLRuntime *>(OpenCLRuntimeInterface::get());
+	cl_ulong currentTime = runtime->getCurrentTime();
+
+	report("Set profiling info for event " << this << " at time point " << currentTime);
+
+	switch(status) {
+		case CL_QUEUED:
+			_profileQueued = currentTime;
+			break;
+		case CL_SUBMITTED:
+			_profileSubmit = currentTime;
+			break;
+		case CL_RUNNING:
+			_profileStart = currentTime;
+			break;
+		default: {
+			if(isCompleted())
+				_profileEnd = currentTime;
+			else
+				assertM(false, "Unknown event status");
+			}
+			break;
+	}
+}
+
+void opencl::Event::getProfilingInfo(cl_profiling_info param_name,
+		size_t param_value_size,
+		void * param_value,
+		size_t * param_value_size_ret) {
+	if(!_commandQueue->isProfileEnabled())
+		throw CL_PROFILING_INFO_NOT_AVAILABLE;
+	if(isUserEvent())
+		throw CL_PROFILING_INFO_NOT_AVAILABLE;
+	if(!hasStatus(CL_COMPLETE))
+		throw CL_PROFILING_INFO_NOT_AVAILABLE;
+
+	cl_ulong profile;
+	size_t infoLen = sizeof(cl_ulong);
+	void * ptr = &profile;
+
+	switch(param_name) {
+		case CL_PROFILING_COMMAND_QUEUED:
+			profile = _profileQueued;
+			break;
+
+		case CL_PROFILING_COMMAND_SUBMIT:
+			profile = _profileSubmit;
+			break;
+
+		case CL_PROFILING_COMMAND_START:
+			profile = _profileStart;
+			break;
+
+		case CL_PROFILING_COMMAND_END:
+			profile = _profileEnd;
+			break;
+
+		default:
+			throw CL_INVALID_VALUE;
+			break;
+	}
+
+	if(param_value && param_value_size < infoLen)
+		throw CL_INVALID_VALUE;
+	
+	if(param_value != 0)
+		std::memcpy(param_value, ptr, infoLen);
+
+	if(param_value_size_ret !=0 )
+		*param_value_size_ret = infoLen;
+
+
+}
+
+
 void opencl::Event::callBack() {
 	if(_eventNotify)
 		_eventNotify((cl_event)this, _status, _userData);
@@ -543,7 +622,7 @@ opencl::KernelEvent::KernelEvent(cl_command_type type,
 	commandQueue->context(), num_events_in_wait_list,
 	event_wait_list, event), _kernel(kernel) {
 
-	report("Create Kernel Event\n");
+	report("Create Kernel Event");
 
 	kernel->mapParametersOnDevice(commandQueue->device());
 	kernel->setConfiguration(work_dim, global_work_offset, global_work_size, local_work_size);
@@ -603,5 +682,6 @@ void opencl::UserEvent::setUserStatus(cl_int status) {
 	if(_prevChanged)
 		throw CL_INVALID_OPERATION;
 
+	_prevChanged = true;
 	setStatus(status);
 }

@@ -12,6 +12,7 @@ void opencl::QueueThread::_executeEvent(Event * e) {
 
 	report(" Executing event '" << e << "' now.");
 	e->setStatus(CL_RUNNING);
+	e->setProfilingInfo(CL_RUNNING);
 
 	cl_uint completeStatus = CL_COMPLETE;
 
@@ -31,6 +32,7 @@ void opencl::QueueThread::_executeEvent(Event * e) {
 	report("  event '" << e << "' finished.");
 
 	e->setStatus(completeStatus);
+	e->setProfilingInfo(completeStatus);
 	e->unlockEvent();
 	e->callBack();
 
@@ -121,6 +123,7 @@ void opencl::CommandQueue::_submitEvents() {
 			report("Submit event " << (*e) << " in queue " << this);
 
 			(*e)->setStatus(CL_SUBMITTED);
+			(*e)->setProfilingInfo(CL_SUBMITTED);
 			_thread->sendEvent(*e);
 
 //			break;
@@ -166,7 +169,7 @@ opencl::CommandQueue::CommandQueue(Context * context,
 	cl_command_queue_properties properties)
 	:Object(OBJTYPE_COMMANDQUEUE),
 	_context(context), _device(device), 
-	_properties(properties), _thread(NULL) {
+	_properties(properties), _profileEnabled(false), _thread(NULL) {
 
 	if(!_context->isValidDevice(device))//Not found
 		throw CL_INVALID_DEVICE;
@@ -174,12 +177,13 @@ opencl::CommandQueue::CommandQueue(Context * context,
 	if(properties > (CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE |
 					CL_QUEUE_PROFILING_ENABLE))
 		throw CL_INVALID_VALUE;
+
+	if(properties & CL_QUEUE_PROFILING_ENABLE)
+		_profileEnabled = true;
 	
-	if((properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
-		||(properties & CL_QUEUE_PROFILING_ENABLE)) {
+	if(properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) 
 		std::cerr << "Ocelot OpenCL Warning: unimplemented command \
 queue properties detected\n";
-	}
 	
 	_context->retain();
 	_device->retain();
@@ -214,12 +218,18 @@ opencl::Device * opencl::CommandQueue::device() {
 	return _device;
 }
 
+bool opencl::CommandQueue::isProfileEnabled() {
+	return _profileEnabled;
+}
+
 void opencl::CommandQueue::queueEvent(Event * event, cl_bool blocking) {
 
 	report("Enqueue event " << event << " in queue " << this);
 	_eventsQueue.push_back(event);
 	event->lockEvent();
 	event->setStatus(CL_QUEUED);
+	if(_profileEnabled)
+		event->setProfilingInfo(CL_QUEUED);
 
 	_clearCompletedEvents();
 

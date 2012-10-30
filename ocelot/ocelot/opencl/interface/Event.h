@@ -74,6 +74,15 @@ namespace opencl {
 				void *           param_value,
 				size_t *         param_value_size_ret);
 
+		//! set profiling info
+		void setProfilingInfo(cl_int status);
+
+		//! get profiling info
+		void getProfilingInfo(cl_profiling_info param_name,
+				size_t param_value_size,
+				void * param_value,
+				size_t * param_value_size_ret);
+
 		//! execute call back function
 		void callBack();
 
@@ -89,6 +98,12 @@ namespace opencl {
 						cl_int event_command_exec_status,
 						void * user_data);
 		void * _userData;		
+
+		//! profiling data
+		cl_ulong _profileQueued;
+		cl_ulong _profileSubmit;
+		cl_ulong _profileStart;
+		cl_ulong _profileEnd;
 
 	};
 

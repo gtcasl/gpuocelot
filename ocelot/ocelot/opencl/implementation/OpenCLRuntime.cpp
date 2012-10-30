@@ -84,6 +84,8 @@ void opencl::OpenCLRuntime::_unlock() {
 opencl::OpenCLRuntime::OpenCLRuntime() :	 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel), _objSize(0){
+
+	_startTimer = std::chrono::high_resolution_clock::now();
 }
 
 opencl::OpenCLRuntime::~OpenCLRuntime() {
@@ -166,6 +168,9 @@ size_t opencl::OpenCLRuntime::removeRuntimeObject(Object * obj) {
 }
 
 bool opencl::OpenCLRuntime::isRuntimeObjectValid(Object * obj) {
+	if(obj == NULL)
+		return false;
+
 	Object::ObjectList::iterator it = 
 		std::find(_objList.begin(), _objList.end(), obj);
 
@@ -173,6 +178,16 @@ bool opencl::OpenCLRuntime::isRuntimeObjectValid(Object * obj) {
 		return false;
 	else
 		return true;
+}
+
+cl_ulong opencl::OpenCLRuntime::getCurrentTime() {
+
+	std::chrono::high_resolution_clock::time_point currentTimer = std::chrono::high_resolution_clock::now();
+	
+	std::chrono::duration<cl_ulong, std::nano> timeSpan = 
+		std::chrono::duration_cast<std::chrono::duration<cl_ulong, std::nano>>(currentTimer - _startTimer);
+	
+	return timeSpan.count();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2234,6 +2249,39 @@ cl_int opencl::OpenCLRuntime::clSetEventCallback( cl_event    event,
 
 	return result;
 
+}
+
+cl_int opencl::OpenCLRuntime::clGetEventProfilingInfo(cl_event event,
+	cl_profiling_info param_name,
+	size_t param_value_size,
+	void * param_value,
+	size_t * param_value_size_ret) {
+
+	cl_int result = CL_SUCCESS;
+
+	_lock();
+
+	try {
+
+		if(!event->isValidObject(Object::OBJTYPE_EVENT))
+			throw CL_INVALID_EVENT;
+		
+		if(!param_value && !param_value_size_ret)
+			throw CL_INVALID_VALUE;
+
+		event->getProfilingInfo(param_name, param_value_size, 
+			param_value, param_value_size_ret);
+	}
+	catch(cl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	_unlock();
+
+	return result;
 }
 
 cl_int opencl::OpenCLRuntime::clFlush(cl_command_queue command_queue) {

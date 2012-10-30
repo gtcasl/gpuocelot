@@ -45,7 +45,7 @@ sources = (
 	"traces/implementation/TemporalSIMTGenerator.cpp",
 	"traces/implementation/ActivityFactorGenerator.cpp"
 )
-trace_dep_libs = ['ocelot', 'libboost_filesystem-mt', 'boost_system-mt', 'boost_serialization-mt', 'z', 'pthread']
+trace_dep_libs = ['libboost_filesystem-mt', 'boost_system-mt', 'boost_serialization-mt', 'z', 'pthread']
 libocelotTrace = env.SharedLibrary('ocelotTrace', sources, LIBS=trace_dep_libs)
 libocelotStaticTrace = env.StaticLibrary('ocelotTrace', sources)
 

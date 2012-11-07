@@ -237,6 +237,7 @@ trace::InstructionTraceGenerator::FunctionalUnit trace::InstructionTraceGenerato
 	// Memory
 	case ir::PTXInstruction::Atom:
 	case ir::PTXInstruction::Ld:
+	case ir::PTXInstruction::Ldu:
 	case ir::PTXInstruction::Membar:
 	case ir::PTXInstruction::Tex:
 	case ir::PTXInstruction::St:
@@ -350,7 +351,8 @@ void trace::InstructionTraceGenerator::initialize(
 	_header.gridDim = emuKernel.gridDim();
 	
 	threadCount = _header.blockDim.x * _header.blockDim.y * _header.blockDim.z;
-	
+
+	instructionCounter.clear();	
 	for (executive::EmulatedKernel::PTXInstructionVector::const_iterator instr_it = 
 		emuKernel.instructions.begin();
 		instr_it != emuKernel.instructions.end(); ++instr_it ) {

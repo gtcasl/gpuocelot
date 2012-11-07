@@ -127,14 +127,14 @@ static void append(trace::InstructionTraceGenerator::FunctionalUnitCountMap & ap
 				
 				if (appCounter[count_it->first].find(oc_it->first) == appCounter[count_it->first].end()) {
 					appCounter[count_it->first][oc_it->first] = oc_it->second;
-					appCounter[count_it->first][oc_it->first].activity *= appCounter[count_it->first][oc_it->first].dynamic_count;
+//					appCounter[count_it->first][oc_it->first].activity *= appCounter[count_it->first][oc_it->first].dynamic_count;
 				}
 				else {
 					appCounter[count_it->first][oc_it->first].dynamic_count += oc_it->second.dynamic_count;
 					if (appendStatic) {
 						appCounter[count_it->first][oc_it->first].static_count += oc_it->second.static_count;
 					}
-					appCounter[count_it->first][oc_it->first].activity += oc_it->second.activity * oc_it->second.dynamic_count;
+					appCounter[count_it->first][oc_it->first].activity += oc_it->second.activity /** oc_it->second.dynamic_count*/;
 				}
 			}
 		}	
@@ -390,6 +390,9 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel(bool pyList) const 
 			std::cout << "    'gridDim': [" << header.gridDim.x << ", " << header.gridDim.y << ", " << header.gridDim.z << "],\n";
 		
 			kernelCount[k_it->name] ++;
+			size_t totalDynamicCount = 0;
+			size_t totalStaticCount = 0;
+			double totalActivity = 0;
 
 			// print out one bar per functional unit
 			for (int n = 0; funcUnits[n] != InstructionTraceGenerator::FunctionalUnit_invalid; n++) {		
@@ -397,7 +400,7 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel(bool pyList) const 
 				size_t dynamicCount = 0;
 				size_t staticCount = 0;
 				double activity = 0;
-				int activeFU = 0;
+//				int activeFU = 0;
 			
 				typedef trace::InstructionTraceGenerator::OpcodeCountMap OC;
 				for (OC::iterator op_it = counter[funcUnits[n]].begin(); op_it != counter[funcUnits[n]].end();
@@ -408,18 +411,28 @@ void trace::InstructionTraceAnalyzer::instructions_by_kernel(bool pyList) const 
 					
 					if (op_it->second.dynamic_count) {
 						activity += op_it->second.activity;
-						activeFU++;
+//						activeFU++;
 					}
 				}
+
+				totalDynamicCount += dynamicCount;
+				totalStaticCount += staticCount;
+				totalActivity += activity;
 			
-				if (activeFU) {
-					activity /= (double)activeFU;
-				}
+//				if (activeFU) {
+//					activity /= (double)activeFU;
+//				}
+				if(dynamicCount)
+					activity /= (double)dynamicCount;
 			
 				// write to stdout
 				std::cout << "    '" << trace::InstructionTraceGenerator::toString(funcUnits[n]) << "': ( " 
 					<< dynamicCount << ", " << staticCount << ", " << activity << " )," << std::endl;
 			}
+			if(totalDynamicCount)
+				totalActivity /= (double)totalDynamicCount;
+			std::cout << "    '" << "total" << "': ( " 
+				<< totalDynamicCount << ", " << totalStaticCount << ", " << totalActivity << " )," << std::endl;
 		
 			std::cout << "  },\n";
 		}

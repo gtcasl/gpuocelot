@@ -57,7 +57,7 @@ def build(options):
 		command += options.build_target
 		
 	if options.test_level != 'none':
-		command += " test_level=" + options.test_level
+		command += " tests test_level=" + options.test_level
 
 	if options.threads > 1:
 		command += " -j" + str(options.threads)

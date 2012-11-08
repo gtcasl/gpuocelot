@@ -141,6 +141,8 @@ namespace ir
 				Type type = Float);
 
 		public:
+			std::string demangledName() const;
+			
 			std::string toString() const;
 	};
 

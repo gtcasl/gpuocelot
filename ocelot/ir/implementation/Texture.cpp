@@ -12,12 +12,23 @@
 
 #include <ocelot/ir/interface/Texture.h>
 
+#include <hydrazine/interface/SystemCompatibility.h>
+
 namespace ir
 {
 	Texture::Texture(const std::string& n, SurfaceType _surfType, Type t)
 	: name(n), surfaceType(_surfType),
 		normalize(false),  type(t), size( Dim3(0, 0, 0) ), data( 0 ) {
 		
+	}
+	
+	std::string Texture::demangledName() const {
+		if(hydrazine::isMangledCXXString(name)) {	
+			return hydrazine::demangleCXXString(name);
+		}
+		else {
+			return name;
+		}
 	}
 	
 	std::string Texture::toString(SurfaceType type) {

@@ -36,7 +36,7 @@ void DominatorTree::analyze(ir::IRKernel& kernel) {
 	
 	report("Building dominator tree.");
 	cfg = kernel.cfg();
-	report(" Starting with post order sequence");
+	report(" Starting with reverse post order sequence");
 	// form a vector of the basic blocks in reverse post-order
 	ir::ControlFlowGraph::BlockPointerVector 
 		post_order = cfg->topological_sequence();

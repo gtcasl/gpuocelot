@@ -367,7 +367,7 @@ void util::ExtractedDeviceState::Module::deserialize(
 
 			deserializeTexture(*texture, hydrazine::json::Visitor(*tex_it));
 		
-			this->textures[texture->name] = texture;
+			this->textures[texture->demangledName()] = texture;
 		}
 	}
 }

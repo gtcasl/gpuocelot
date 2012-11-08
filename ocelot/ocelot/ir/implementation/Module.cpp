@@ -397,7 +397,7 @@ ir::Texture* ir::Module::insertTexture(const Texture& texture) {
 	loadNow();
 	
 	Insertion insertion = _textures.insert(
-		std::make_pair(texture.name, texture));
+		std::make_pair(texture.demangledName(), texture));
 	if(!insertion.second) {
 		throw hydrazine::Exception("Inserted duplicated texture - " 
 			+ texture.name);
@@ -725,26 +725,32 @@ void ir::Module::extractPTXKernels() {
 			{
 				if (!inKernel) {
 					assert(_textures.count(statement.name) == 0);
-					_textures.insert(std::make_pair(statement.name, 
-									Texture(statement.name, Texture::Texref)));
+					Texture texture(statement.name, Texture::Texref);
+					
+					_textures.insert(std::make_pair(texture.demangledName(), 
+									texture));
 				}
 			}
 			break;
 			case PTXStatement::Surfref:
 			{
 				if (!inKernel) {
+					Texture texture(statement.name, Texture::Surfref);
+					
 					assert(_textures.count(statement.name) == 0);
-					_textures.insert(std::make_pair(statement.name, 
-		            Texture(statement.name, Texture::Surfref)));
+					_textures.insert(std::make_pair(texture.demangledName(), 
+									texture));
 				}
 			}
 			break;
 			case PTXStatement::Samplerref:
 			{
 				if (!inKernel) {
+					Texture texture(statement.name, Texture::Samplerref);
+					
 					assert(_textures.count(statement.name) == 0);
-					_textures.insert(std::make_pair(statement.name, 
-								Texture(statement.name, Texture::Samplerref)));
+					_textures.insert(std::make_pair(texture.demangledName(), 
+									texture));
 				}
 			}
 			break;

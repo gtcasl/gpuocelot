@@ -39,7 +39,8 @@ public:
 		ConvergentRegionAnalysis      = 0x400,
 		MinimalStaticSingleAssignment = 0x800,
 		GatedStaticSingleAssignment   = 0x1000,
-		AffineAnalysis                = 0x2000
+		AffineAnalysis                = 0x2000,
+		SimpleAliasAnalysis           = 0x4000
 	};
 
 public:

@@ -373,6 +373,8 @@ namespace ir {
 		bool isBranch() const;
 		/*! \brief Is the instruction a load */
 		bool isLoad() const;
+		/*! \brief Is the instruction a store? */
+		bool isStore() const;
 		/*! \brief Does the instruction accept an address as an operand */
 		bool mayHaveAddressableOperand() const;
 		/*! \brief Does the instruction write to a relaxed type? */

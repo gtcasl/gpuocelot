@@ -174,6 +174,8 @@ private:
 	void _processEliminatedInstructions();
 	
 private:
+	bool _isSimpleLoad(const InstructionIterator& instruction);
+	
 	Number _getNextNumber();
 	Number _lookupExistingOrCreateNewNumber(
 		const InstructionIterator& instruction);

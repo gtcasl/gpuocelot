@@ -9,6 +9,7 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 
@@ -33,7 +34,8 @@ namespace transforms
 GlobalValueNumberingPass::GlobalValueNumberingPass(bool e)
 :  KernelPass(Analysis::DataflowGraphAnalysis |
 	Analysis::MinimalStaticSingleAssignment
-	| Analysis::DominatorTreeAnalysis,
+	| Analysis::DominatorTreeAnalysis
+	| Analysis::SimpleAliasAnalysis,
 	"GlobalValueNumberingPass"), eliminateInstructions(e), _nextNumber(0)
 {
 
@@ -194,7 +196,11 @@ bool GlobalValueNumberingPass::_processInstruction(
 	// TODO attempt to simplify the instruction
 	
 	// handle loads (complex)
-	if(ptx->isLoad()) return _processLoad(instruction);
+	if(ptx->isLoad())
+	{
+		// allow simple loads to proceed normally
+		if(!_isSimpleLoad(instruction)) return _processLoad(instruction);
+	}
 	
 	Number nextNumber = _getNextNumber();
 	Number number     = _lookupExistingOrCreateNewNumber(instruction);
@@ -230,6 +236,17 @@ bool GlobalValueNumberingPass::_processInstruction(
 	_eliminateInstruction(generatingInstruction, instruction);
 	
 	return true;
+}
+
+bool GlobalValueNumberingPass::_isSimpleLoad(
+	const InstructionIterator& instruction)
+{
+	auto analysis = getAnalysis(Analysis::SimpleAliasAnalysis);
+	assert(analysis != 0);
+	
+	auto alias = static_cast<analysis::SimpleAliasAnalysis*>(analysis);
+	
+	return alias->cannotAliasAnyStore(instruction->i);
 }
 
 bool GlobalValueNumberingPass::_processLoad(
@@ -567,7 +584,7 @@ void GlobalValueNumberingPass::_processEliminatedInstructions()
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
-
+	
 	for(auto killed = _eliminatedInstructions.begin();
 		killed != _eliminatedInstructions.end(); ++killed)
 	{

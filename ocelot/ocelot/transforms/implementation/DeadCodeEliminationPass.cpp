@@ -45,7 +45,7 @@ typedef std::unordered_set<iterator>                   BlockSet;
 typedef analysis::DataflowGraph::BlockPointerSet       BlockPointerSet;
 typedef analysis::DataflowGraph::PhiInstruction        PhiInstruction;
 typedef analysis::DataflowGraph::Register              Register;
-typedef analysis::DataflowGraph::RegisterSet    RegisterSet;
+typedef analysis::DataflowGraph::RegisterSet           RegisterSet;
 typedef analysis::DataflowGraph::InstructionVector     InstructionVector;
 typedef analysis::DataflowGraph::PhiInstructionVector  PhiInstructionVector;
 

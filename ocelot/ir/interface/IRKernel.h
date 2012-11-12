@@ -45,7 +45,7 @@ namespace ir {
 		/*!	Returns true if the kernel instance is derived from 
 			ExecutableKernel */
 		virtual bool executable() const;
-
+		
 	protected:
 		/*!	Control flow graph of kernel - this is the primary store of 
 				instructions belonging to the kernel */

@@ -163,7 +163,9 @@ namespace ir
 			virtual bool executable() const;
 
 			/*! \brief Write this kernel to a parseable string */
-			virtual void write(std::ostream& stream, 
+			virtual void write(std::ostream& stream) const;
+			/*! \brief Write this kernel to a parseable string */
+			void writeWithEmitter(std::ostream& stream, 
 				PTXEmitter::Target = PTXEmitter::Target_OcelotIR) const;
 			
 	};

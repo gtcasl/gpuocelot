@@ -367,7 +367,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 	stream << "/* Kernels */\n";
 	for (KernelMap::const_iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel) {
-		(kernel->second)->write(stream, emitterTarget);
+		(kernel->second)->writeWithEmitter(stream, emitterTarget);
 	}
 	
 	stream << "\n\n";

@@ -97,6 +97,16 @@ KernelPass::~KernelPass()
 
 }
 
+void KernelPass::initialize(const ir::Module& m)
+{
+
+}
+
+void KernelPass::finalize()
+{
+
+}
+
 ImmutableKernelPass::ImmutableKernelPass(int a, const std::string& n)
 	: Pass(Pass::ImmutableKernelPass, a, n)
 {

@@ -136,11 +136,11 @@ public:
 	
 public:
 	/*! \brief Initialize the pass using a specific module */
-	virtual void initialize(const ir::Module& m) = 0;
+	virtual void initialize(const ir::Module& m);
 	/*! \brief Run the pass on a specific kernel in the module */
 	virtual void runOnKernel(ir::IRKernel& k) = 0;		
 	/*! \brief Finalize the pass */
-	virtual void finalize() = 0;
+	virtual void finalize();
 };
 
 /*! \brief An immutable pass over a single kernel in a module */

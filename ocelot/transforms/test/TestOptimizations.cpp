@@ -226,7 +226,7 @@ int main(int argc, char** argv)
 		"Search path for PTX files." );
 	parser.parse( "-O", "--optimizations", test.optimizations, 
 		"dead-code-elimination, loop-unrolling, function-inlining, "
-		"global-value-numbering", 
+		"global-value-numbering, constant-propagation", 
 		"Comma separated list of optimizations to run." );
 	parser.parse();
 

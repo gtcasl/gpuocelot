@@ -74,7 +74,7 @@ void ConstantPropagationPass::runOnKernel(ir::IRKernel& k)
 }
 
 
-typedef analysis::DataflowGraph::InstructionVector     InstructionVector;
+typedef analysis::DataflowGraph::InstructionVector InstructionVector;
 
 static bool canRemoveInstruction(iterator block,
 	InstructionVector::iterator instruction);
@@ -90,7 +90,7 @@ static void eliminateRedundantInstructions(analysis::DataflowGraph& dfg,
 	
 	report("  Propagating constants through instructions");
 	unsigned int index = 0;
-	for(InstructionVector::iterator instruction = block->instructions().begin();
+	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
 	{
 		propagateValueToSuccessors(dfg, blocks, instruction);
@@ -169,6 +169,75 @@ static bool isOutputConstant(InstructionVector::iterator instruction)
 	return true;
 }
 
+static void replaceOperand(ir::PTXInstruction& ptx,
+	ir::Instruction::RegisterType registerId,
+	const ir::PTXOperand& immediate)
+{
+	ir::PTXOperand* operands[] = {&ptx.a, &ptx.b, &ptx.c, &ptx.pq,
+		&ptx.d};
+
+	unsigned int sources = 4;
+
+	if(ptx.isStore()) ++sources;
+	
+	for(unsigned int i = 0; i < sources; ++i)
+	{
+		auto operand = operands[i];
+
+		if(!operand->isRegister()) continue;
+
+		if(operand->reg != registerId) continue;
+
+		*operand = immediate;
+	}
+}
+
+static uint64_t getMask(const ir::PTXOperand& operand)
+{
+	uint64_t mask = 1ULL << ((operand.bytes() * 8) - 1);
+
+	return mask;
+}
+
+static uint64_t getValue(const ir::PTXOperand& operand)
+{
+	uint64_t value = operand.imm_uint;
+
+	uint64_t mask = getMask(operand);;
+
+	return value & mask;
+}
+
+static void setValue(ir::PTXOperand& operand, uint64_t value)
+{
+	uint64_t mask = getMask(operand);
+
+	operand.imm_uint = value & mask;
+}
+
+static ir::PTXOperand computeValue(const ir::PTXInstruction& ptx)
+{
+	ir::PTXOperand result(ir::PTXOperand::Immediate, ptx.d.type);
+
+	switch(ptx.opcode)
+	{
+	case ir::PTXInstruction::Add:
+	{
+		uint64_t a = getValue(ptx.a);
+		uint64_t b = getValue(ptx.b);
+
+		setValue(result, a + b);
+		break;
+	}
+	default:
+	{
+		assertM(false, "Not implemented for " << ptx.toString());
+	}
+	}
+
+	return result;
+}
+
 static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 	BlockSet& blocks, InstructionVector::iterator instruction)
 {
@@ -183,13 +252,32 @@ static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 		if(instruction->block->aliveOut().count(*reg) != 0) return;
 	}
 
-	// TODO generate value
-	// auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
-	//
-	// auto value = computeValue(ptx);
+	auto registerId = *instruction->d.back().pointer;
 
-	// TODO copy to successors	
-	
+	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
+
+	// get the value 	
+	auto value = computeValue(*ptx);
+
+	auto block = instruction->block;
+
+	// send it to all successors
+	for(auto instruction = block->instructions().begin();
+		instruction != block->instructions().end(); ++instruction)
+	{
+		auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
+		
+		for(auto source = instruction->s.begin(); source !=
+			instruction->s.end(); ++source)
+		{
+			if(*source->pointer == registerId)
+			{
+				replaceOperand(*ptx, registerId, value);
+			}
+		}
+	}
+
+	// TODO handle successors in other blocks
 }
 
 }

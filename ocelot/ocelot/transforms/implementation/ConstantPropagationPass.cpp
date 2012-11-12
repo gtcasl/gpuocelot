@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define REPORT_PTX  0
 
 namespace transforms
@@ -337,7 +337,7 @@ static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 
 	bool success = computeValue(value, *ptx);
 
-	if(success)
+	if(!success)
 	{
 		report("    could not determine the resulting value.");
 		return;

@@ -1367,6 +1367,7 @@ sad : OPCODE_SAD dataType operand ',' operand ',' operand ',' operand ';'
 selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>2 );
+	state.operandCIsAPredicate();
 };
 
 

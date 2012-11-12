@@ -93,11 +93,12 @@ static void eliminateRedundantInstructions(analysis::DataflowGraph& dfg,
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
 	{
+		report("   checking " << instruction->i->toString());
 		propagateValueToSuccessors(dfg, blocks, instruction);
 
 		if(canRemoveInstruction(block, instruction))
 		{
-			report("   removed '" << instruction->i->toString() << "'");
+			report("    value is not used, removed it.");
 			killList.push_back(index);
 			
 			// schedule the block for more work
@@ -160,8 +161,19 @@ static bool isOutputConstant(InstructionVector::iterator instruction)
 	{
 		if(operands[i]->addressMode == ir::PTXOperand::Invalid) continue;
 
+		if(operands[i]->isRegister() && operands[i]->type == ir::PTXOperand::pred)
+		{
+			if(operands[i]->condition == ir::PTXOperand::PT ||
+				operands[i]->condition == ir::PTXOperand::nPT)
+			{
+				continue;
+			}
+		}
+
 		if(operands[i]->addressMode != ir::PTXOperand::Immediate)
 		{
+			report("    operand " << operands[i]->toString()
+				<< " is not constant.");
 			return false;
 		}
 	}
@@ -187,14 +199,25 @@ static void replaceOperand(ir::PTXInstruction& ptx,
 		if(!operand->isRegister()) continue;
 
 		if(operand->reg != registerId) continue;
-
+		
+		int offset = 0;
+		
+		if(operand->addressMode == ir::PTXOperand::Indirect)
+		{
+			offset = operand->offset;
+		}
+	
 		*operand = immediate;
+		
+		operand->imm_uint += offset;
 	}
 }
 
 static uint64_t getMask(const ir::PTXOperand& operand)
 {
-	uint64_t mask = 1ULL << ((operand.bytes() * 8) - 1);
+	uint64_t mask = (1ULL << (operand.bytes() * 8)) - 1;
+
+	if(mask == 0) mask = 0xffffffffffffffffULL;
 
 	return mask;
 }
@@ -215,9 +238,12 @@ static void setValue(ir::PTXOperand& operand, uint64_t value)
 	operand.imm_uint = value & mask;
 }
 
-static ir::PTXOperand computeValue(const ir::PTXInstruction& ptx)
+static ir::PTXOperand computeCvtValue(const ir::PTXInstruction& ptx);
+static ir::PTXOperand computeSetPValue(const ir::PTXInstruction& ptx);
+
+static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 {
-	ir::PTXOperand result(ir::PTXOperand::Immediate, ptx.d.type);
+	result = ir::PTXOperand(ir::PTXOperand::Immediate, ptx.d.type);
 
 	switch(ptx.opcode)
 	{
@@ -229,55 +255,188 @@ static ir::PTXOperand computeValue(const ir::PTXInstruction& ptx)
 		setValue(result, a + b);
 		break;
 	}
+	case ir::PTXInstruction::And:
+	{
+		uint64_t a = getValue(ptx.a);
+		uint64_t b = getValue(ptx.b);
+
+		setValue(result, a & b);
+		break;
+	}
+	case ir::PTXInstruction::Cvt:
+	{
+		result = computeCvtValue(ptx);
+		break;
+	}
+	case ir::PTXInstruction::Mov:
+	{
+		setValue(result, getValue(ptx.a));
+		break;
+	}
+	case ir::PTXInstruction::Mul:
+	{
+		uint64_t a = getValue(ptx.a);
+		uint64_t b = getValue(ptx.b);
+
+		assertM(ptx.modifier & ir::PTXInstruction::Lo,
+			"Multiply modifier not implemented.");
+
+		setValue(result, a * b);
+		break;
+	}
+	case ir::PTXInstruction::SetP:
+	{
+		result = computeSetPValue(ptx);
+		break;
+	}
+	case ir::PTXInstruction::Shr:
+	{
+		uint64_t a = getValue(ptx.a);
+		uint64_t b = getValue(ptx.b);
+
+		setValue(result, a >> b);
+		break;
+	}
 	default:
 	{
-		assertM(false, "Not implemented for " << ptx.toString());
+		return false;
 	}
 	}
 
-	return result;
+	return true;
 }
 
 static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 	BlockSet& blocks, InstructionVector::iterator instruction)
 {
-	if(!isOutputConstant(instruction)) return;
-	
-	// TODO support instructions with multiple destinations
-	if(instruction->d.size() != 1) return;
-	
-	for(auto reg = instruction->d.begin(); reg != instruction->d.end(); ++reg)
+	typedef analysis::DataflowGraph::RegisterPointerVector RegisterPointerVector;
+
+	if(!isOutputConstant(instruction))
 	{
-		// the reg is alive outside the block
-		if(instruction->block->aliveOut().count(*reg) != 0) return;
+		report("    output is not constant.");
+		return;
+	}
+	
+	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
+	
+	if(ptx->isLoad())
+	{
+		report("    not allowed for loads.");
+		return;
 	}
 
-	auto registerId = *instruction->d.back().pointer;
-
-	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
+	// TODO support instructions with multiple destinations
+	if(instruction->d.size() != 1)
+	{
+		report("    no support for instructions with multiple destinations.");
+		return;
+	}
 
 	// get the value 	
-	auto value = computeValue(*ptx);
+	ir::PTXOperand value;
+
+	bool success = computeValue(value, *ptx);
+
+	if(success)
+	{
+		report("    could not determine the resulting value.");
+		return;
+	}
+
+	// send it to successors	
+	auto registerId = *instruction->d.back().pointer;
 
 	auto block = instruction->block;
 
-	// send it to all successors
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
 	{
 		auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
-		
+	
+		RegisterPointerVector newSources;
+	
 		for(auto source = instruction->s.begin(); source !=
 			instruction->s.end(); ++source)
 		{
 			if(*source->pointer == registerId)
 			{
+				report("    updated use by '" << ptx->toString()
+					<< "', of r" << registerId); 
+		
 				replaceOperand(*ptx, registerId, value);
+			}
+			else
+			{
+				newSources.push_back(*source);
+			}
+		}
+
+		instruction->s = std::move(newSources);
+	}
+
+	// TODO handle successors in other blocks
+}
+
+static bool isTrivialCvt(const ir::PTXInstruction& ptx)
+{
+	if(ptx.a.type == ptx.type) return true;
+
+	if(ptx.modifier != 0) return false; 
+
+	if(ir::PTXOperand::isInt(ptx.type))
+	{
+		if(ir::PTXOperand::isInt(ptx.type))
+		{
+			if(ir::PTXOperand::bytes(ptx.type) <=
+				ir::PTXOperand::bytes(ptx.a.type))
+			{
+				return true;
+			}
+			
+			if(!ir::PTXOperand::isSigned(ptx.type) &&
+				!ir::PTXOperand::isSigned(ptx.a.type))
+			{
+				return true;
 			}
 		}
 	}
 
-	// TODO handle successors in other blocks
+	return false;
+}
+
+static ir::PTXOperand computeCvtValue(const ir::PTXInstruction& ptx)
+{
+	ir::PTXOperand result(ir::PTXOperand::Immediate, ptx.d.type);
+
+	if(isTrivialCvt(ptx))
+	{
+		setValue(result, getValue(ptx.a));
+	}
+
+	return result;
+}
+
+static ir::PTXOperand computeSetPValue(const ir::PTXInstruction& ptx)
+{
+	ir::PTXOperand result(ir::PTXOperand::Immediate, ptx.d.type);
+
+	uint64_t a = getValue(ptx.a);
+	uint64_t b = getValue(ptx.b);
+
+	switch(ptx.comparisonOperator)
+	{
+	case ir::PTXInstruction::Eq:
+	{
+		setValue(result, a == b);
+		break;
+	}
+	default:
+	{
+		assertM(false, "Not implemented.");
+	}
+	}
+
+	return result;
 }
 
 }

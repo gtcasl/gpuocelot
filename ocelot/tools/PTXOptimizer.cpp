@@ -16,6 +16,7 @@
 #include <ocelot/transforms/interface/SubkernelFormationPass.h>
 #include <ocelot/transforms/interface/SplitBasicBlockPass.h>
 #include <ocelot/transforms/interface/FunctionInliningPass.h>
+#include <ocelot/transforms/interface/ConstantPropagationPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -193,7 +194,8 @@ int main( int argc, char** argv )
 		"mimd-threading, dead-code-elimination, split-blocks, "
 		"sync-elimination, hoist-special-definitions, "
 		"simplify-cfg, loop-unrolling, lock-step, function-inlining, "
-		"global-value-numbering, shared-ptr-attribute)" );
+		"global-value-numbering, shared-ptr-attribute, "
+		"constant-propagation)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

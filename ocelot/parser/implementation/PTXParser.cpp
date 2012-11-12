@@ -2051,6 +2051,10 @@ namespace parser
 		statement.instruction.d.type = tokenToDataType( token );
 	}
 	
+	void PTXParser::State::operandCIsAPredicate()
+	{
+		statement.instruction.c.type = ir::PTXOperand::pred;
+	}
 	void PTXParser::State::cacheOperation(int token) {
 		statement.instruction.cacheOperation = tokenToCacheOperation(token);
 	}

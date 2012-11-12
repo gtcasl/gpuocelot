@@ -334,25 +334,21 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 	
 	for(auto phi = block->phis().begin(); phi != block->phis().end(); ++phi)
 	{
+		if(phi->s.size() != 1) continue;
+
 		for(auto source = phi->s.begin(); source != phi->s.end(); ++source)
 		{
 			if(source->id == registerId)
 			{
-				report("    updated use by " << phi->toString());
+				newRegisterId = phi->d.id;
+				block->phis().erase(phi);
+				
+				report("    removed " << phi->toString());
 				replacedPhi = true;
-				phi->s.erase(source);
 				break;
 			}
 		}
 
-		newRegisterId = phi->d.id;
-
-		if(phi->s.empty())
-		{
-			report("    removed " << phi->toString());
-
-			block->phis().erase(phi);
-		}
 
 		if(replacedPhi)
 		{
@@ -364,6 +360,8 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 	{
 		updateUses(block, newRegisterId, value, visited);
 	}
+
+	// TODO handle complex phis
 
 	// local uses
 	for(auto instruction = block->instructions().begin();

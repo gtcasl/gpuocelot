@@ -276,6 +276,7 @@ namespace parser
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );
+					void operandCIsAPredicate();
 					void barrierOperation( int token, YYLTYPE & location);
 					void cacheOperation(int token );
 					void cacheLevel(int token );

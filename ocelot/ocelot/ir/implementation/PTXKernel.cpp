@@ -613,7 +613,12 @@ unsigned int PTXKernel::getSharedMemoryLayout(std::map<std::string, unsigned int
 	return sharedOffset;
 }
 
-void PTXKernel::write(std::ostream& stream, PTXEmitter::Target emitterTarget) const 
+void PTXKernel::write(std::ostream& stream) const 
+{
+	writeWithEmitter(stream);
+}
+
+void PTXKernel::writeWithEmitter(std::ostream& stream, PTXEmitter::Target emitterTarget) const 
 {
 	std::stringstream strReturnArguments;
 	std::stringstream strArguments;

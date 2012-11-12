@@ -19,7 +19,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_PTX  0
 
 namespace transforms
@@ -27,7 +27,7 @@ namespace transforms
 
 ConstantPropagationPass::ConstantPropagationPass()
 : KernelPass(Analysis::DataflowGraphAnalysis
-	| Analysis::StaticSingleAssignment, "ConstantPropagationPass")
+	| Analysis::MinimalStaticSingleAssignment, "ConstantPropagationPass")
 {
 
 }
@@ -67,8 +67,8 @@ void ConstantPropagationPass::runOnKernel(ir::IRKernel& k)
 	
 		eliminateRedundantInstructions(dfg, blocks, block);
 	}
-	
-	report("Finished running dead code elimination on kernel " << k.name);
+
+	report("Finished running constant propagation on kernel " << k.name);
 	reportE(REPORT_PTX, k);
 
 }
@@ -78,7 +78,7 @@ typedef analysis::DataflowGraph::InstructionVector InstructionVector;
 
 static bool canRemoveInstruction(iterator block,
 	InstructionVector::iterator instruction);
-static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
+static bool propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 	BlockSet& blocks, InstructionVector::iterator instruction);
 
 static void eliminateRedundantInstructions(analysis::DataflowGraph& dfg,
@@ -88,14 +88,17 @@ static void eliminateRedundantInstructions(analysis::DataflowGraph& dfg,
 	
 	KillList killList;
 	
-	report("  Propagating constants through instructions");
+	report("  Propagating constants through instructions in BB_" << block->id());
 	unsigned int index = 0;
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
 	{
-		report("   checking " << instruction->i->toString());
-		propagateValueToSuccessors(dfg, blocks, instruction);
-
+		if(!propagateValueToSuccessors(dfg, blocks, instruction))
+		{
+			++index;
+			continue;
+		}
+		
 		if(canRemoveInstruction(block, instruction))
 		{
 			report("    value is not used, removed it.");
@@ -123,12 +126,20 @@ static bool canRemoveInstruction(iterator block,
 	ir::PTXInstruction& ptx = *static_cast<ir::PTXInstruction*>(
 		instruction->i);
 
-	if(ptx.hasSideEffects()) return false;
+	if(ptx.hasSideEffects())
+	{
+		report("    can't remove because it has side effects.");
+		return false;
+	}
 	
 	for(auto reg = instruction->d.begin(); reg != instruction->d.end(); ++reg)
 	{
 		// the reg is alive outside the block
-		if(block->aliveOut().count(*reg) != 0) return false;
+		if(block->aliveOut().count(*reg) != 0)
+		{
+			report("    can't remove because it is live out of the block");
+			return false;
+		}
 		
 		auto next = instruction;
 		for(++next; next != block->instructions().end(); ++next)
@@ -137,7 +148,12 @@ static bool canRemoveInstruction(iterator block,
 				source != next->s.end(); ++source)
 			{
 				// found a user in the block
-				if(*source->pointer == *reg->pointer) return false;
+				if(*source->pointer == *reg->pointer)
+				{
+					report("    can't remove because " << next->i->toString()
+						<< " uses the value.");
+					return false;
+				}
 			}
 		}
 	}
@@ -239,7 +255,7 @@ static void setValue(ir::PTXOperand& operand, uint64_t value)
 }
 
 static ir::PTXOperand computeCvtValue(const ir::PTXInstruction& ptx);
-static ir::PTXOperand computeSetPValue(const ir::PTXInstruction& ptx);
+static bool computeSetPValue(ir::PTXOperand&, const ir::PTXInstruction& ptx);
 
 static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 {
@@ -275,18 +291,17 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 	}
 	case ir::PTXInstruction::Mul:
 	{
+		if(!(ptx.modifier & ir::PTXInstruction::Lo)) return false;
+
 		uint64_t a = getValue(ptx.a);
 		uint64_t b = getValue(ptx.b);
-
-		assertM(ptx.modifier & ir::PTXInstruction::Lo,
-			"Multiply modifier not implemented.");
 
 		setValue(result, a * b);
 		break;
 	}
 	case ir::PTXInstruction::SetP:
 	{
-		result = computeSetPValue(ptx);
+		return computeSetPValue(result, ptx);
 		break;
 	}
 	case ir::PTXInstruction::Shr:
@@ -306,48 +321,51 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 	return true;
 }
 
-static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
-	BlockSet& blocks, InstructionVector::iterator instruction)
+static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
+	const ir::PTXOperand& value, BlockSet& visited)
 {
 	typedef analysis::DataflowGraph::RegisterPointerVector RegisterPointerVector;
 
-	if(!isOutputConstant(instruction))
-	{
-		report("    output is not constant.");
-		return;
-	}
+	visited.insert(block);
+
+	// phi uses
+	bool replacedPhi = false;
+	ir::Instruction::RegisterType newRegisterId = 0;
 	
-	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
-	
-	if(ptx->isLoad())
+	for(auto phi = block->phis().begin(); phi != block->phis().end(); ++phi)
 	{
-		report("    not allowed for loads.");
-		return;
+		for(auto source = phi->s.begin(); source != phi->s.end(); ++source)
+		{
+			if(source->id == registerId)
+			{
+				report("    updated use by " << phi->toString());
+				replacedPhi = true;
+				phi->s.erase(source);
+				break;
+			}
+		}
+
+		newRegisterId = phi->d.id;
+
+		if(phi->s.empty())
+		{
+			report("    removed " << phi->toString());
+
+			block->phis().erase(phi);
+		}
+
+		if(replacedPhi)
+		{
+			break;
+		}
 	}
 
-	// TODO support instructions with multiple destinations
-	if(instruction->d.size() != 1)
+	if(replacedPhi)
 	{
-		report("    no support for instructions with multiple destinations.");
-		return;
+		updateUses(block, newRegisterId, value, visited);
 	}
 
-	// get the value 	
-	ir::PTXOperand value;
-
-	bool success = computeValue(value, *ptx);
-
-	if(!success)
-	{
-		report("    could not determine the resulting value.");
-		return;
-	}
-
-	// send it to successors	
-	auto registerId = *instruction->d.back().pointer;
-
-	auto block = instruction->block;
-
+	// local uses
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
 	{
@@ -373,8 +391,71 @@ static void propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 
 		instruction->s = std::move(newSources);
 	}
+	
+	auto liveout = block->aliveOut().find(registerId);
+	
+	if(liveout == block->aliveOut().end()) return;
 
-	// TODO handle successors in other blocks
+	block->aliveOut().erase(liveout);
+	
+	// uses by successors
+	for(auto successor = block->successors().begin();
+		successor != block->successors().end(); ++successor)
+	{
+		auto livein = (*successor)->aliveIn().find(registerId);
+		
+		if(livein == (*successor)->aliveIn().end()) continue;
+
+		(*successor)->aliveIn().erase(livein);
+
+		updateUses(*successor, registerId, value, visited);
+	}
+}
+
+static bool propagateValueToSuccessors(analysis::DataflowGraph& dfg,
+	BlockSet& blocks, InstructionVector::iterator instruction)
+{
+	if(!isOutputConstant(instruction))
+	{
+		return false;
+	}
+	
+	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);
+	
+	if(ptx->isLoad())
+	{
+		return false;
+	}
+
+	// TODO support instructions with multiple destinations
+	if(instruction->d.size() != 1)
+	{
+		return false;
+	}
+
+	report("   checking " << instruction->i->toString());
+	
+	// get the value 	
+	ir::PTXOperand value;
+
+	bool success = computeValue(value, *ptx);
+
+	if(!success)
+	{
+		report("    could not determine the resulting value.");
+		return false;
+	}
+
+	// send it to successors	
+	
+	auto registerId = *instruction->d.back().pointer;
+
+	auto block = instruction->block;
+
+	BlockSet visited;
+	updateUses(block, registerId, value, visited);
+
+	return true;
 }
 
 static bool isTrivialCvt(const ir::PTXInstruction& ptx)
@@ -416,9 +497,9 @@ static ir::PTXOperand computeCvtValue(const ir::PTXInstruction& ptx)
 	return result;
 }
 
-static ir::PTXOperand computeSetPValue(const ir::PTXInstruction& ptx)
+static bool computeSetPValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 {
-	ir::PTXOperand result(ir::PTXOperand::Immediate, ptx.d.type);
+	result = ir::PTXOperand(ir::PTXOperand::Immediate, ptx.d.type);
 
 	uint64_t a = getValue(ptx.a);
 	uint64_t b = getValue(ptx.b);
@@ -432,11 +513,11 @@ static ir::PTXOperand computeSetPValue(const ir::PTXInstruction& ptx)
 	}
 	default:
 	{
-		assertM(false, "Not implemented.");
+		return false;
 	}
 	}
 
-	return result;
+	return true;
 }
 
 }

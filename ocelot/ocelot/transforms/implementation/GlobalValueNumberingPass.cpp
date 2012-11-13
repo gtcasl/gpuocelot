@@ -258,8 +258,43 @@ bool GlobalValueNumberingPass::_isSimpleLoad(
 bool GlobalValueNumberingPass::_processLoad(
 	const InstructionIterator& instruction)
 {
-	// TODO implement this
-	return false;
+	Number nextNumber = _getNextNumber();
+	Number number     = _lookupExistingOrCreateNewNumber(instruction);
+	
+	// if a new number was created, just insert it
+	if(nextNumber <= number)
+	{
+		report("    this instruction generates the number.");
+		_setGeneratingInstruction(number, instruction);
+		return false;
+	}
+	
+	// try to find a generating instruction that dominates this one
+	auto generatingInstruction = _findGeneratingInstruction(number,
+		instruction);
+	
+	report("    finding a dominating instruction that "
+		"generates the same number.");
+	if(!generatingInstruction.valid)
+	{
+		// None exists, set this one in case another instruction is
+		//  dominated by it
+		_setGeneratingInstruction(number, instruction);
+
+		report("     couldn't find one...");
+		
+		return false;
+	}
+	
+	report("     found " << generatingInstruction.toString());
+
+	// check for aliasing stores
+	if(_couldAliasStore(generatingInstruction, instruction)) return false;
+
+	// Success, eliminate the instruction
+	_eliminateInstruction(generatingInstruction, instruction);
+	
+	return true;
 }
 
 GlobalValueNumberingPass::Number GlobalValueNumberingPass::_getNextNumber()
@@ -502,9 +537,7 @@ void GlobalValueNumberingPass::_updateDataflow(
 		{
 			if(*potentiallyUsedValue->pointer == *replacedValue->pointer)
 			{
-				report("      updating " << instruction->i->toString());
 				usedValue = potentiallyUsedValue;
-				report("       to " << instruction->i->toString());
 				break;
 			}
 		}
@@ -512,7 +545,9 @@ void GlobalValueNumberingPass::_updateDataflow(
 		// Handle the case of no uses in the block
 		if(usedValue == instruction->s.end()) continue;
 		
+		report("      updating " << instruction->i->toString());
 		*usedValue->pointer = *generatedValue->pointer;
+		report("       to " << instruction->i->toString());
 	}
 	
 	auto aliveOutEntry = block->aliveOut().find(*replacedValue);
@@ -549,6 +584,77 @@ void GlobalValueNumberingPass::_updateDataflow(
 			}
 		}
 	}
+}
+	
+bool GlobalValueNumberingPass::_couldAliasStore(
+	const GeneratingInstruction& generatingInstruction,
+	const InstructionIterator& instruction)
+{
+	typedef std::stack<analysis::DataflowGraph::iterator>         BlockStack;
+	typedef std::unordered_set<analysis::DataflowGraph::iterator> BlockSet;	
+	
+	auto analysis = getAnalysis(Analysis::SimpleAliasAnalysis);
+	assert(analysis != 0);
+	
+	auto alias = static_cast<analysis::SimpleAliasAnalysis*>(analysis);
+	
+	auto load = static_cast<ir::PTXInstruction&>(*instruction->i);
+	
+	// check for aliasing stores in the block
+	for(auto i = instruction->block->instructions().begin(); i != instruction; ++i)
+	{
+		auto ptx = static_cast<ir::PTXInstruction&>(*i->i);
+
+		if(!ptx.isStore()) continue;
+
+		if(alias->canAlias(&ptx, &load)) return true;
+	}
+	
+	BlockSet   visited;
+	BlockStack frontier;
+
+	for(auto predecessor = instruction->block->predecessors().begin();
+		predecessor != instruction->block->predecessors().end();
+		++predecessor)
+	{
+		if(visited.insert(*predecessor).second)
+		{
+			frontier.push(*predecessor);
+		}
+	}
+	
+	while(!frontier.empty())
+	{
+		auto block = frontier.top();
+		frontier.pop();
+		
+		auto instruction = generatingInstruction.instruction;
+	
+		if(instruction->block != block)
+		{
+			instruction = block->instructions().begin();
+		}
+
+		for(; instruction != block->instructions().end(); ++instruction)
+		{
+			auto ptx = static_cast<ir::PTXInstruction&>(*instruction->i);
+
+			if(!ptx.isStore()) continue;
+
+			if(alias->canAlias(&ptx, &load)) return true;
+		}
+
+		for(auto predecessor = block->predecessors().begin();
+			predecessor != block->predecessors().end(); ++predecessor)
+		{
+			if(visited.insert(*predecessor).second)
+			{
+				frontier.push(*predecessor);
+			}
+		}
+	}
+	
+	return false;
 }
 
 GlobalValueNumberingPass::Expression

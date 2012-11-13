@@ -108,8 +108,8 @@ def getBoost(env):
 				'libboost_filesystem-vc100-mt-s' + debug_str + '-*')),
 			Glob(os.path.join(lib_path,
 				'libboost_thread-vc100-mt-s' + debug_str + '-*'))])
-		for f in lib_files:
-			libs.append(os.path.basename(f.abspath))
+			for f in lib_files:
+				libs.append(os.path.basename(f.abspath))
 			
 	elif os.name == 'posix':
 		libs = ['-lboost_system-mt', '-lboost_filesystem-mt',

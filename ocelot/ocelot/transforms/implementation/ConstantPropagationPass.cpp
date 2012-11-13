@@ -19,8 +19,8 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
-#define REPORT_PTX  0
+#define REPORT_BASE 1
+#define REPORT_PTX  1
 
 namespace transforms
 {
@@ -197,6 +197,37 @@ static bool isOutputConstant(InstructionVector::iterator instruction)
 	return true;
 }
 
+static void replaceOperand(ir::PTXOperand& operand,
+	ir::Instruction::RegisterType registerId,
+	const ir::PTXOperand& immediate)
+{
+	if(!operand.array.empty())
+	{
+		for(auto sub = operand.array.begin();
+			sub != operand.array.end(); ++sub)
+		{
+			replaceOperand(*sub, registerId, immediate);
+		}
+
+		return;
+	}
+
+	if(!operand.isRegister()) return;
+
+	if(operand.reg != registerId) return;;
+	
+	int offset = 0;
+	
+	if(operand.addressMode == ir::PTXOperand::Indirect)
+	{
+		offset = operand.offset;
+	}
+
+	operand = immediate;
+	
+	operand.imm_uint += offset;
+}
+
 static void replaceOperand(ir::PTXInstruction& ptx,
 	ir::Instruction::RegisterType registerId,
 	const ir::PTXOperand& immediate)
@@ -210,22 +241,7 @@ static void replaceOperand(ir::PTXInstruction& ptx,
 	
 	for(unsigned int i = 0; i < sources; ++i)
 	{
-		auto operand = operands[i];
-
-		if(!operand->isRegister()) continue;
-
-		if(operand->reg != registerId) continue;
-		
-		int offset = 0;
-		
-		if(operand->addressMode == ir::PTXOperand::Indirect)
-		{
-			offset = operand->offset;
-		}
-	
-		*operand = immediate;
-		
-		operand->imm_uint += offset;
+		replaceOperand(*operands[i], registerId, immediate);
 	}
 }
 
@@ -326,7 +342,7 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 {
 	typedef analysis::DataflowGraph::RegisterPointerVector RegisterPointerVector;
 
-	visited.insert(block);
+	if(!visited.insert(block).second) return;
 
 	// phi uses
 	bool replacedPhi = false;
@@ -342,6 +358,11 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 			{
 				newRegisterId = phi->d.id;
 				block->phis().erase(phi);
+			    	
+				auto livein = block->aliveIn().find(registerId);
+			    
+			    	assert(livein == block->aliveIn().end());
+				block->aliveIn().erase(livein);
 				
 				report("    removed " << phi->toString());
 				replacedPhi = true;
@@ -393,10 +414,10 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 	auto liveout = block->aliveOut().find(registerId);
 	
 	if(liveout == block->aliveOut().end()) return;
-
-	block->aliveOut().erase(liveout);
 	
 	// uses by successors
+	bool anyUsesBySuccessors = false;
+	
 	for(auto successor = block->successors().begin();
 		successor != block->successors().end(); ++successor)
 	{
@@ -404,10 +425,20 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 		
 		if(livein == (*successor)->aliveIn().end()) continue;
 
-		(*successor)->aliveIn().erase(livein);
-
 		updateUses(*successor, registerId, value, visited);
+		
+		livein = (*successor)->aliveIn().find(registerId);
+		
+		if(livein == (*successor)->aliveIn().end()) continue;
+
+		anyUsesBySuccessors = true;
 	}
+
+	if(!anyUsesBySuccessors)
+	{
+		report("    removed from liveout set of BB_" << block->id());
+		block->aliveOut().erase(liveout);
+	}	
 }
 
 static bool propagateValueToSuccessors(analysis::DataflowGraph& dfg,

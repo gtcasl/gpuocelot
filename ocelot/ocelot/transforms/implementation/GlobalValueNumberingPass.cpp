@@ -60,6 +60,12 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 		{
 			changed = _numberThenMergeIdenticalValues(k);
 		}
+		
+		// BUG: when values are replaced by generting instructions
+		//      destinations, the dataflow path between them needs
+		//      updating
+		invalidateAnalysis(Analysis::StaticSingleAssignment);
+		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
 	}
 	else
 	{

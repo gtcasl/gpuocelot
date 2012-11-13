@@ -45,7 +45,43 @@ void SimpleAliasAnalysis::analyze(ir::IRKernel& kernel)
 
 bool SimpleAliasAnalysis::cannotAliasAnyStore(const ir::Instruction* load)
 {
-	return !_aStoreCanReachThisFunction;
+	if(!_aStoreCanReachThisFunction) return true;
+
+	auto ptx = static_cast<const ir::PTXInstruction*>(load);
+
+	if(ptx->addressSpace == ir::PTXInstruction::Param) return true;
+	if(ptx->addressSpace == ir::PTXInstruction::Const) return true;
+
+	return false;
+}
+
+bool SimpleAliasAnalysis::canAlias(const ir::Instruction* s, const ir::Instruction* l)
+{
+	auto load  = static_cast<const ir::PTXInstruction*>(l);
+	auto store = static_cast<const ir::PTXInstruction*>(s);
+
+	if(cannotAliasAnyStore(load)) return false;
+	
+	// check for constant addresses
+	if(load->a.addressMode == ir::PTXOperand::Immediate)
+	{
+		if(store->d.addressMode == ir::PTXOperand::Immediate)
+		{
+			uint64_t storeAddress = store->d.imm_uint + store->d.offset;
+			uint64_t loadAddress  =  load->a.imm_uint +  load->a.offset;
+
+			if(storeAddress + store->a.bytes() < loadAddress)
+			{
+				return false;
+			}
+			if(loadAddress + load->d.bytes() < storeAddress)
+			{
+				return false;
+			}
+		}
+	}
+	
+	return true;
 }
 
 }

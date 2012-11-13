@@ -193,6 +193,9 @@ private:
 	void _updateDataflow(const BlockIterator& instruction,
 		const RegisterPointerIterator& replacedValue,
 		const RegisterPointerIterator& generatedValue);
+	bool _couldAliasStore(
+		const GeneratingInstruction& generatingInstruction,
+		const InstructionIterator& instruction);
 	
 	Expression _createExpression(const InstructionIterator& instruction);
 	Immediate  _createImmediate(const ir::PTXOperand& operand);

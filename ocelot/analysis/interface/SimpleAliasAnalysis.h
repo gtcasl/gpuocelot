@@ -36,6 +36,8 @@ public:
 			alias this load?
 	*/
 	bool cannotAliasAnyStore(const ir::Instruction* load);
+	/*! \brief Is it possible for these instructions to alias? */
+	bool canAlias(const ir::Instruction* store, const ir::Instruction* load);
 
 private:
 	bool _aStoreCanReachThisFunction;

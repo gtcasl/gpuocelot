@@ -33,6 +33,9 @@ def build(options):
 	
 	if options.no_llvm:
 		command += " enable_llvm=false"
+	
+	if options.no_opengl:
+		command += " enable_opengl=false"
 
 	if options.no_cuda_runtime:
 		command += " enable_cuda_runtime=false"
@@ -177,6 +180,8 @@ def main():
 		help = "Build a .deb package of Ocelot." )
 	parser.add_option( "--no_llvm", \
 		default = False, action = "store_true", help = "Disable llvm support." )
+	parser.add_option( "--no_opengl", \
+		default = False, action = "store_true", help = "Disable opengl support." )
 	parser.add_option( "--no_cuda_runtime", \
 		default = False, action = "store_true",
 		help = "Disable exporting cuda runtime symbols." )

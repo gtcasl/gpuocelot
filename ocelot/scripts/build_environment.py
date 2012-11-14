@@ -139,7 +139,7 @@ def getFlexPaths(env):
 
 	return (inc_path)
 
-def getGLEW(env):
+def getGLEW(env, enabled):
 	"""Determines GLEW {bin_path,lib_path,include_path,libs} and is it installed?
 
 	returns (have_glew,bin_path,lib_path,inc_path,libs)
@@ -148,6 +148,10 @@ def getGLEW(env):
 	configure = Configure(env)
 	glew = configure.CheckLib('GLEW')		
 	
+	if not enabled:
+		print "Glew disabled: not found"
+		return (glew, [], [], [], [])
+
 	if not glew:
 		print "Glew disabled: not found"
 		return (glew, [], [], [], [])
@@ -524,6 +528,9 @@ def Environment():
 	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
 	
+	vars.Add(BoolVariable('enable_opengl',
+		'Compile in support for OpenGL if available', 1))
+	
 	vars.Add(BoolVariable('enable_cuda_runtime',
 		'Export cuda runtime symbols (prevents linking Ocelot '
 		'against another version of the CUDA runtime)', 1))
@@ -642,7 +649,8 @@ def Environment():
 	env.AppendUnique(EXTRA_LIBS = boost_libs) 
 
 	# get GLEW information
-	(glew,glew_exe_path,glew_lib_path,glew_inc_path,glew_libs) = getGLEW(env)
+	(glew,glew_exe_path,glew_lib_path,glew_inc_path,
+		glew_libs) = getGLEW(env, env['enable_opengl'])
 	if glew:
 		env.AppendUnique(LIBPATH = glew_lib_path)
 		env.AppendUnique(CPPPATH = glew_inc_path)

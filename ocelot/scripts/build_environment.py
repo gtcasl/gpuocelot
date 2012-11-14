@@ -149,8 +149,8 @@ def getGLEW(env, enabled):
 	glew = configure.CheckLib('GLEW')		
 	
 	if not enabled:
-		print "Glew disabled: not found"
-		return (glew, [], [], [], [])
+		print "Glew disabled by user"
+		return (False, [], [], [], [])
 
 	if not glew:
 		print "Glew disabled: not found"

@@ -177,7 +177,8 @@ static bool isOutputConstant(InstructionVector::iterator instruction)
 	{
 		if(operands[i]->addressMode == ir::PTXOperand::Invalid) continue;
 
-		if(operands[i]->isRegister() && operands[i]->type == ir::PTXOperand::pred)
+		if(operands[i]->isRegister() &&
+			operands[i]->type == ir::PTXOperand::pred)
 		{
 			if(operands[i]->condition == ir::PTXOperand::PT ||
 				operands[i]->condition == ir::PTXOperand::nPT)
@@ -258,9 +259,19 @@ static uint64_t getValue(const ir::PTXOperand& operand)
 {
 	uint64_t value = operand.imm_uint;
 
-	uint64_t mask = getMask(operand);;
+	uint64_t mask = getMask(operand);
 
 	return value & mask;
+}
+
+static double getDouble(const ir::PTXOperand& operand)
+{
+	if(operand.type == ir::PTXOperand::f32)
+	{
+		return operand.imm_single;
+	}
+
+	return operand.imm_float;
 }
 
 static void setValue(ir::PTXOperand& operand, uint64_t value)
@@ -268,6 +279,18 @@ static void setValue(ir::PTXOperand& operand, uint64_t value)
 	uint64_t mask = getMask(operand);
 
 	operand.imm_uint = value & mask;
+}
+
+static void setValue(ir::PTXOperand& operand, double value)
+{
+	if(operand.type == ir::PTXOperand::f32)
+	{
+		operand.imm_single = value;
+	}
+	else
+	{
+		operand.imm_float = value;
+	}
 }
 
 static ir::PTXOperand computeCvtValue(const ir::PTXInstruction& ptx);
@@ -281,6 +304,15 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 	{
 	case ir::PTXInstruction::Add:
 	{
+		if(ir::PTXOperand::isFloat(ptx.type))
+		{
+			double a = getDouble(ptx.a);
+			double b = getDouble(ptx.b);
+
+			setValue(result, a + b);
+			break;
+		}
+		
 		uint64_t a = getValue(ptx.a);
 		uint64_t b = getValue(ptx.b);
 
@@ -309,6 +341,15 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 	{
 		if(!(ptx.modifier & ir::PTXInstruction::Lo)) return false;
 
+		if(ir::PTXOperand::isFloat(ptx.type))
+		{
+			double a = getDouble(ptx.a);
+			double b = getDouble(ptx.b);
+
+			setValue(result, a * b);
+			break;
+		}
+		
 		uint64_t a = getValue(ptx.a);
 		uint64_t b = getValue(ptx.b);
 
@@ -326,6 +367,23 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 		uint64_t b = getValue(ptx.b);
 
 		setValue(result, a >> b);
+		break;
+	}
+	case ir::PTXInstruction::Sub:
+	{
+		if(ir::PTXOperand::isFloat(ptx.type))
+		{
+			double a = getDouble(ptx.a);
+			double b = getDouble(ptx.b);
+
+			setValue(result, a - b);
+			break;
+		}
+		
+		uint64_t a = getValue(ptx.a);
+		uint64_t b = getValue(ptx.b);
+
+		setValue(result, a - b);
 		break;
 	}
 	default:
@@ -537,7 +595,7 @@ static bool computeSetPValue(ir::PTXOperand& result, const ir::PTXInstruction& p
 	{
 	case ir::PTXInstruction::Eq:
 	{
-		setValue(result, a == b);
+		setValue(result, (uint64_t)(a == b));
 		break;
 	}
 	default:

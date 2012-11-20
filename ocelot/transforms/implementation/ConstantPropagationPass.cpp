@@ -356,6 +356,21 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 		setValue(result, a * b);
 		break;
 	}
+	case ir::PTXInstruction::Neg:
+	{
+		if(ir::PTXOperand::isFloat(ptx.type))
+		{
+			double a = getDouble(ptx.a);
+
+			setValue(result, -a);
+			break;
+		}
+		
+		uint64_t a = getValue(ptx.a);
+
+		setValue(result, -a);
+		break;
+	}
 	case ir::PTXInstruction::SetP:
 	{
 		return computeSetPValue(result, ptx);

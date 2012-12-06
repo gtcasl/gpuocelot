@@ -182,7 +182,8 @@ namespace ir {
 	std::string PTXStatement::toString( Attribute attribute ) {
 		switch( attribute ) {
 			case Visible: return "visible"; break;
-			case Extern: return "extern"; break;
+			case Extern:  return "extern";  break;
+			case Weak:    return "weak";    break;
 			default: break;
 		}
 		return "";

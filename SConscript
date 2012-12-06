@@ -144,6 +144,10 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 
+OcelotLinker = env.Program('OcelotLinker', \
+	['ocelot/tools/OcelotLinker.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotLinker, libocelot)
+
 KernelDrawer = env.Program('KernelDrawer', \
 	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
 env.Depends(KernelDrawer, libocelot)
@@ -308,6 +312,8 @@ if env['install']:
 		env['install_path'], "bin"), OcelotHarness))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), LoadPtx))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), OcelotLinker))
 		
 	if enableKernelExtractor and os.name != 'nt':
 		installed.append(env.Install(os.path.join(

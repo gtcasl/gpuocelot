@@ -133,6 +133,12 @@ void ir::Module::unload() {
 	_loaded = false;
 }
 
+void ir::Module::isLoaded() {
+	unload();
+	
+	_loaded = true;
+}
+
 /*!
 	Unloads module and loads everything in path
 */
@@ -330,8 +336,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 		for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
 			prot_it != _prototypes.end(); ++prot_it) {
 		
-			if (prot_it->second.callType != PTXKernel::Prototype::Entry
-				&& prot_it->second.identifier != "") {
+			if (prot_it->second.identifier != "") {
 				stream << prot_it->second.toString(emitterTarget) << "\n";
 				encounteredPrototypes.insert(prot_it->second.identifier);
 			}
@@ -339,9 +344,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 		
 		for (KernelMap::const_iterator kernel = _kernels.begin();
 			kernel != _kernels.end(); ++kernel) {
-			if (kernel->second->function() && 
-				encounteredPrototypes.find((kernel->second)->name) ==
-				encounteredPrototypes.end()) {
+			if (encounteredPrototypes.count((kernel->second)->name) == 0) {
 			
 				stream << kernel->second->getPrototype().toString(emitterTarget) << "\n";
 				encounteredPrototypes.insert(kernel->second->name);
@@ -438,6 +441,14 @@ ir::Global* ir::Module::insertGlobal(const Global& global) {
 	return &insertion.first->second;
 }
 
+void ir::Module::removeGlobal(const std::string& name) {
+	loadNow();
+	GlobalMap::iterator global = _globals.find(name);
+	if (global != _globals.end()) {
+		_globals.erase(global);
+	}
+}
+
 void ir::Module::insertGlobalAsStatement(const PTXStatement &statement) {
     loadNow();
    
@@ -489,6 +500,14 @@ void ir::Module::addPrototype(const std::string &identifier,
 	report("adding prototype: " << prototype.toString());
 	
 	_prototypes.insert(std::make_pair(identifier, prototype));
+}
+
+void ir::Module::removePrototype(const std::string& name) {
+	loadNow();
+	FunctionPrototypeMap::iterator prototype = _prototypes.find(name);
+	if (prototype != _prototypes.end()) {
+		_prototypes.erase(prototype);
+	}
 }
 		
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
@@ -608,6 +627,8 @@ void ir::Module::extractPTXKernels() {
 						(int)ir::PTXStatement::Visible, "Mismatched flag");
 					static_assert((int)PTXKernel::Prototype::Extern ==
 						(int)ir::PTXStatement::Extern, "Mismatched flag");
+					static_assert((int)PTXKernel::Prototype::Weak ==
+						(int)ir::PTXStatement::Weak, "Mismatched flag");
 					static_assert((int)PTXKernel::Prototype::InternalHidden ==
 						(int)ir::PTXStatement::NoAttribute, "Mismatched flag");
 					prototypeState = PS_Params;

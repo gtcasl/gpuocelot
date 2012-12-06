@@ -39,17 +39,18 @@ PTXKernel::Prototype::Prototype() {
 
 std::string PTXKernel::Prototype::toString(const LinkingDirective ld) {
 	switch (ld) {
-		case Extern: return ".extern";
+		case Extern:  return ".extern";
 		case Visible: return ".visible";
-		default: break;
+		case Weak:    return ".weak";
+		default:      break;
 	}
 	return ""; // internal hidden is a valid state
 }
 std::string PTXKernel::Prototype::toString(const CallType ct) {
 	switch (ct) {
 		case Entry: return ".entry";
-		case Func: return ".func";
-		default: break;
+		case Func:  return ".func";
+		default:    break;
 	}
 	return "invalid";
 }
@@ -556,7 +557,8 @@ void PTXKernel::computeOffset(
 	}
 }
 
-unsigned int PTXKernel::getSharedMemoryLayout(std::map<std::string, unsigned int> &globalOffsets, 
+unsigned int PTXKernel::getSharedMemoryLayout(
+	std::map<std::string, unsigned int> &globalOffsets, 
 	std::map<std::string, unsigned int> &localOffsets) const {
 	
 	using namespace std;
@@ -803,6 +805,7 @@ void PTXKernel::writeWithEmitter(std::ostream& stream, PTXEmitter::Target emitte
 /*! \brief returns a prototype for this kernel */
 const ir::PTXKernel::Prototype& ir::PTXKernel::getPrototype() const {
 	auto it = module->prototypes().find(name);
+	assert(it != module->prototypes().end());
 	return it->second;
 }
 

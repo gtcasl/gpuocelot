@@ -77,14 +77,19 @@ namespace ir {
 		
 		/*! \brief Write the module to an assembly file from the IR */
 		void writeIR(std::ostream& stream, 
-			PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
+			PTXEmitter::Target emitterTarget =
+			PTXEmitter::Target_OcelotIR) const;
 		
 		/*! \brief Write the module to a string from the IR */
-		std::string toString(PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
+		std::string toString(PTXEmitter::Target emitterTarget =
+			PTXEmitter::Target_OcelotIR) const;
 		
 		/*!	Deletes everything associated with this particular module */
 		void unload();
 
+		/*! Unloads module and indicates that the empty module is loaded */
+		void isLoaded();
+		
 		/*!	Unloads module and loads PTX source file in given path */
 		bool load(const std::string& path);
 
@@ -182,6 +187,7 @@ namespace ir {
 			\return pointer to global instance being inserted
 		*/
 		Global* insertGlobal(const Global& global);
+		void removeGlobal(const std::string& name);
 		
 		void insertGlobalAsStatement(const PTXStatement &statement);
 
@@ -208,6 +214,7 @@ namespace ir {
 		
 		void addPrototype(const std::string &identifier,
 			const ir::PTXKernel::Prototype &prototype);
+		void removePrototype(const std::string& identifier);
 		
 		ir::PTXStatement version() const;
 		ir::PTXStatement target() const;

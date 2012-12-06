@@ -836,7 +836,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "invalid instruction type " + PTXOperand::toString(type);
 			}
 			if (!(addressSpace == Global || addressSpace == Local
-				|| addressSpace == Shared)) {
+				|| addressSpace == Shared || addressSpace == Const)) {
 				return "invalid address space " + toString(addressSpace);
 			}
 			break;
@@ -1117,8 +1117,7 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Mov: {
-			if ( ( a.type == PTXOperand::s8 || a.type == PTXOperand::u8 
-				|| a.type == PTXOperand::b8 || a.type == PTXOperand::f16 ) &&
+			if ( ( a.type == PTXOperand::f16 ) &&
 				a.addressMode != PTXOperand::Address &&
 				a.addressMode != PTXOperand::Immediate ) {
 				return "invalid type for operand A " 

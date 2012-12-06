@@ -571,11 +571,14 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 
 	handle = _fatBinaries.size();
 	
-	FatBinaryContext cubinContext(fatCubin);
-
-	for (FatBinaryVector::const_iterator it = _fatBinaries.begin();
+	FatBinaryMap::const_iterator fatbin = _fatBinaries.insert(std::make_pair(
+		handle,	FatBinaryContext(fatCubin))).first;
+	
+	for (FatBinaryMap::const_iterator it = _fatBinaries.begin();
 		it != _fatBinaries.end(); ++it) {
-		if (std::string(it->name()) == cubinContext.name()) {
+		if(fatbin == it) continue;
+		
+		if (std::string(it->second.name()) == fatbin->second.name()) {
 			_unlock();
 	
 			assert(0 && "binary already exists");		
@@ -583,15 +586,13 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 		}	
 	}
 
-	_fatBinaries.push_back(cubinContext);
-	
 	// register associated PTX
 	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(cubinContext.name(), ir::Module())).first;
-	module->second.lazyLoad(cubinContext.ptx(), cubinContext.name());
+		std::make_pair(fatbin->second.name(), ir::Module())).first;
+	module->second.lazyLoad(fatbin->second.ptx(), fatbin->second.name());
 	
 	report("Loading module (fatbin) - " << module->first);
-	reportE(REPORT_ALL_PTX, " with PTX\n" << cubinContext.ptx());
+	reportE(REPORT_ALL_PTX, " with PTX\n" << fatbin->second.ptx());
 		
 	_unlock();
 	
@@ -3612,10 +3613,10 @@ void cuda::CudaRuntime::reset() {
 	{
 		bool found = false;
 		report(" Unloading module - " << module->first);
-		for(FatBinaryVector::iterator bin = _fatBinaries.begin(); 
+		for(FatBinaryMap::iterator bin = _fatBinaries.begin(); 
 			bin != _fatBinaries.end(); ++bin)
 		{
-			if(bin->name() == module->first)
+			if(bin->second.name() == module->first)
 			{
 				found = true;
 				break;

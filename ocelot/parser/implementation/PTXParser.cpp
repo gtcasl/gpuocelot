@@ -172,9 +172,31 @@ namespace parser
 		// Don't rename in the original context
 		if( contexts.size() <= 3 ) return name;
 		
+		// Allocate a new context for this value if here is a collision
+		bool collision = false;
+		
+		for( OperandMap::iterator operand = contexts.back().operands.begin();
+			operand != contexts.back().operands.end(); ++operand )
+		{
+			if( strip( operand->first ) == strip( name ) )
+			{
+				collision = true;
+				break;
+			}
+		}
+		
 		std::stringstream stream;
 		
-		stream << "_Zcontext_" << contexts.back().id << "_" << strip(name);
+		if( collision )
+		{
+			// Allocate a new name in a new context
+			stream << "_Zcontext_" << contextId++ << "_" << strip( name );
+		}
+		else
+		{
+			// Allocate a new name in the current context
+			stream << "_Zcontext_" << contexts.back().id << "_" << strip( name );
+		}
 		
 		return stream.str();
 	}
@@ -188,7 +210,7 @@ namespace parser
 			OperandMap::iterator operand = context->operands.find( name );
 			
 			if( operand != context->operands.end() ) return &operand->second;
-			
+						
 			operand = context->operands.find( strip( name ) );
 
 			if( operand != context->operands.end() ) return &operand->second;
@@ -630,9 +652,9 @@ namespace parser
 		statement.array.vec = tokenToVec( value );
 	}
 	
-	void PTXParser::State::attribute( bool visible, bool external )
+	void PTXParser::State::attribute( bool visible, bool external, bool weak )
 	{
-		assert( !( visible && external ) );
+		assert( visible + external + weak < 2 );
 		if( visible )
 		{
 			statement.attribute = ir::PTXStatement::Visible;
@@ -640,6 +662,10 @@ namespace parser
 		else if( external )
 		{
 			statement.attribute = ir::PTXStatement::Extern;
+		}
+		else if( weak )
+		{
+			statement.attribute = ir::PTXStatement::Weak;
 		}
 		else
 		{
@@ -1325,6 +1351,8 @@ namespace parser
 			operand.identifier = string;
 			operand.addressMode = ir::PTXOperand::Label;
 			operand.type = ir::PTXOperand::TypeSpecifier_invalid;
+
+			operandVector.push_back( operand );
 		}
 		else
 		{
@@ -1333,10 +1361,8 @@ namespace parser
 				statement.instruction.addressSpace = mode->space;
 			}
 			
-			operand = mode->operand;
+			operandVector.push_back( *mode );
 		}
-	
-		operandVector.push_back( operand );
 	}
 	
 	void PTXParser::State::nonLabelOperand( const std::string& string, 
@@ -1410,7 +1436,7 @@ namespace parser
 			operand.condition = ir::PTXOperand::InvPred;
 		}
 	
-		operandVector.push_back( operand );		
+		operandVector.push_back( OperandWrapper( operand, mode->space ) );		
 	}
 			
 	void PTXParser::State::constantOperand( long long int value )
@@ -1472,7 +1498,7 @@ namespace parser
 			mode->operand.type);
 		operand.type = mode->operand.type;
 	
-		operandVector.push_back( operand );	
+		operandVector.push_back( OperandWrapper( operand, mode->space ) );	
 	}
 
 	
@@ -1486,19 +1512,17 @@ namespace parser
 			throw_exception( toString( location, *this ) << "Operand " 
 				<< name << " not declared in this scope.", NoDeclaration );
 		}
+		
+		if( mode->operand.addressMode == ir::PTXOperand::Register )
+		{
+			operand.addressMode = ir::PTXOperand::Indirect;
+		}
 		else
 		{
-			if( mode->operand.addressMode == ir::PTXOperand::Register )
-			{
-				operand.addressMode = ir::PTXOperand::Indirect;
-			}
-			else
-			{
-				report(" Operand: " << name << " mode: "
-					<< ir::PTXOperand::toString(
-					mode->operand.addressMode));
-				operand.addressMode = mode->operand.addressMode;
-			}
+			report(" Operand: " << name << " mode: "
+				<< ir::PTXOperand::toString(
+				mode->operand.addressMode));
+			operand.addressMode = mode->operand.addressMode;
 		}
 	
 		operand.identifier = mode->operand.identifier;
@@ -1513,7 +1537,7 @@ namespace parser
 		operand.offset = (int) value;
 		operand.type = mode->operand.type;
 	
-		operandVector.push_back( operand );
+		operandVector.push_back( OperandWrapper( operand, mode->space ) );
 	}
 
 	void PTXParser::State::arrayOperand( YYLTYPE& location )
@@ -1760,35 +1784,35 @@ namespace parser
 		statement.directive = ir::PTXStatement::Instr;
 		statement.instruction.type = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( opcode );
-		statement.instruction.pg = operandVector[0];
+		statement.instruction.pg = operandVector[0].operand;
 
 		unsigned int index = 1;
 				
 		if( operandVector.size() > index )
 		{
-			statement.instruction.d = operandVector[index++];
+			statement.instruction.d = operandVector[index++].operand;
 		}
 
 		if( operandVector.size() > index )
 		{
-			if( ( operandVector[ index ].type == ir::PTXOperand::pred
+			if( ( operandVector[ index ].operand.type == ir::PTXOperand::pred
 				&& operandVector.size() > 4 ) || operandVector.size() == 6 )
 			{
-				statement.instruction.pq = operandVector[index++];
+				statement.instruction.pq = operandVector[index++].operand;
 			}
 		}
 
 		if( operandVector.size() > index )
 		{
-			statement.instruction.a = operandVector[index++];
+			statement.instruction.a = operandVector[index++].operand;
 		}
 		if( operandVector.size() > index )
 		{
-			statement.instruction.b = operandVector[index++];
+			statement.instruction.b = operandVector[index++].operand;
 		}
 		if( operandVector.size() > index )
 		{
-			statement.instruction.c = operandVector[index++];
+			statement.instruction.c = operandVector[index++].operand;
 		}
 
 		_setImmediateTypes();
@@ -1808,10 +1832,10 @@ namespace parser
 		statement.directive          = ir::PTXStatement::Instr;
 		statement.instruction.type   = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( "tex" );
-		statement.instruction.pg     = operandVector[0];
-		statement.instruction.d      = operandVector[1];
-		statement.instruction.a      = operandVector[2];
-		statement.instruction.c      = operandVector[3];
+		statement.instruction.pg     = operandVector[0].operand;
+		statement.instruction.d      = operandVector[1].operand;
+		statement.instruction.a      = operandVector[2].operand;
+		statement.instruction.c      = operandVector[3].operand;
 
 		_setImmediateTypes();
 	}
@@ -1825,10 +1849,10 @@ namespace parser
 		statement.directive          = ir::PTXStatement::Instr;
 		statement.instruction.type   = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( "tld4" );
-		statement.instruction.pg     = operandVector[0];
-		statement.instruction.d      = operandVector[1];
-		statement.instruction.a      = operandVector[2];
-		statement.instruction.c      = operandVector[3];
+		statement.instruction.pg     = operandVector[0].operand;
+		statement.instruction.d      = operandVector[1].operand;
+		statement.instruction.a      = operandVector[2].operand;
+		statement.instruction.c      = operandVector[3].operand;
 
 		_setImmediateTypes();	
 	}
@@ -1847,7 +1871,7 @@ namespace parser
 		statement.directive = ir::PTXStatement::Instr;
 		statement.instruction.opcode = stringToOpcode( "call" );
 		
-		statement.instruction.pg = operandVector[0];
+		statement.instruction.pg = operandVector[0].operand;
 		
 		OperandWrapper* operand = _getOperand( identifier );
 		
@@ -1897,7 +1921,7 @@ namespace parser
 		unsigned int operandIndex = 1;
 		for( ; returnOperands > 0; --returnOperands, ++operandIndex )
 		{
-			ir::PTXOperand& operand = operandVector[ operandIndex ];
+			ir::PTXOperand& operand = operandVector[ operandIndex ].operand;
 
 			report( "    " << operand.toString() );	
 
@@ -1908,10 +1932,9 @@ namespace parser
 			
 			if( operand.addressMode == ir::PTXOperand::Address )
 			{
-				OperandWrapper* mode = _getOperand( operand.identifier );
-				assert( mode != 0 );
+				auto addressSpace = operandVector[ operandIndex ].space;
 				
-				if( mode->space != ir::PTXInstruction::Param )
+				if( addressSpace != ir::PTXInstruction::Param )
 				{
 					throw_exception( toString( location, *this ) 
 						<< "Function call return argument '" 
@@ -1924,15 +1947,15 @@ namespace parser
 			proto.returnTypes.push_back( operand.type );
 
 			statement.instruction.d.array.push_back( 
-				operandVector[ operandIndex ] );			
+				operandVector[ operandIndex ].operand );			
 		}
 
 		report( "   operands:" );
 		
 		for( ; operandIndex < operandVector.size(); ++operandIndex )
 		{
-			ir::PTXOperand& operand = operandVector[ operandIndex ];
-
+			ir::PTXOperand& operand = operandVector[ operandIndex ].operand;
+			
 			report( "    " << operand.toString() );	
 
 			if( operand.addressMode == ir::PTXOperand::BitBucket )
@@ -1943,10 +1966,9 @@ namespace parser
 			
 			if( operand.addressMode == ir::PTXOperand::Address )
 			{
-				OperandWrapper* mode = _getOperand( operand.identifier );
-				assert( mode != 0 );
+				auto addressSpace = operandVector[ operandIndex ].space;
 				
-				if( mode->space != ir::PTXInstruction::Param )
+				if( addressSpace != ir::PTXInstruction::Param )
 				{
 					throw_exception( toString( location, *this ) 
 						<< "Function call argument '" 
@@ -1959,7 +1981,7 @@ namespace parser
 			proto.argumentTypes.push_back( operand.type );
 
 			statement.instruction.b.array.push_back(
-				operandVector[ operandIndex ] );			
+				operandVector[ operandIndex ].operand );			
 		}
 				
 		if( !pi->compare( proto ) )
@@ -2322,6 +2344,61 @@ namespace parser
 		state.addSpecialRegisters();	
 	}
 
+	std::string PTXParser::getLinesNearCurrentLocation( std::istream& input )
+	{
+		if( !input.good() )
+		{
+			input.clear();
+		}
+
+		input.seekg( 0, std::ios::beg );
+		
+		unsigned int beginLine = 0;
+		
+		if(!state.statements.empty())
+		{
+			beginLine = state.statements.back().line;
+		}
+		
+		const unsigned int offset = 10;
+
+		if(beginLine > offset) beginLine -= offset;
+		
+		unsigned int endLine = beginLine + 2 * offset;
+		
+		unsigned int currentLine = 0;
+		
+		while(input.good())
+		{
+			if(currentLine == beginLine) break;
+
+			char n = input.get();
+			
+			if(n == '\n')
+			{
+				++currentLine;
+			}
+		}
+		
+		std::string result;
+		
+		while(input.good())
+		{
+			if(currentLine >= endLine) break;
+
+			char n = input.get();
+			
+			result += n;
+			
+			if(n == '\n')
+			{
+				++currentLine;
+			}
+		}
+		
+		return hydrazine::addLineNumbers(result, beginLine + 1);
+	}
+	
 	ir::PTXOperand::DataType PTXParser::tokenToDataType( int token )
 	{
 		switch( token )
@@ -2824,22 +2901,10 @@ namespace parser
 		}
 		catch( Exception& e )
 		{
-			if( !input.good() )
-			{
-				input.clear();
-			}
+			e.message = "\nFailed to parse file '" + fileName + "':\n" +
+				getLinesNearCurrentLocation(input) +
+				"\n" + e.message;
 			
-			input.seekg( 0, std::ios::end );
-			unsigned int length = input.tellg();
-			input.seekg( 0, std::ios::beg );
-		
-			char* temp = new char[ length + 1 ];
-			temp[ length ] = '\0';
-			input.read( temp, length );
-			e.message = "\nFailed to parse file '" + fileName + "':\n" 
-				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
-			delete[] temp;
-		
 			report("parse error");
 			report(e.what());
 			throw e;

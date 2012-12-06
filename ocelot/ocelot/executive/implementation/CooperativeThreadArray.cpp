@@ -3932,8 +3932,13 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		{
 			ir::PTXU32 addrSpaceBase = 0;
 			switch (instr.addressSpace) {
+				case ir::PTXInstruction::Const:
+				{
+					hydrazine::bit_cast(addrSpaceBase, kernel->ConstMemory);
+				}
+					break;
 				case ir::PTXInstruction::Global: // DO NOTHING
-				case ir::PTXInstruction::Local: // DO NOTHING
+				case ir::PTXInstruction::Local:  // DO NOTHING
 					break;
 				case ir::PTXInstruction::Shared:
 				{
@@ -3979,8 +3984,13 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		{
 			ir::PTXU64 addrSpaceBase = 0;
 			switch (instr.addressSpace) {
+				case ir::PTXInstruction::Const:
+				{
+					hydrazine::bit_cast(addrSpaceBase, kernel->ConstMemory);
+				}
+					break;
 				case ir::PTXInstruction::Global: // DO NOTHING
-				case ir::PTXInstruction::Local: // DO NOTHING
+				case ir::PTXInstruction::Local:  // DO NOTHING
 					break;
 				case ir::PTXInstruction::Shared:
 				{
@@ -4051,9 +4061,15 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 						functionCallStack.sharedMemorySize());
 				}
 					break;
-				case ir::PTXInstruction::Local:
+				case ir::PTXInstruction::Local: // DO NOTHING
 				{
 
+				}
+					break;
+				case ir::PTXInstruction::Const:
+				{
+					hydrazine::bit_cast(addrSpaceBase, kernel->ConstMemory);
+					addrSpaceSize = kernel->constMemorySize();
 				}
 					break;
 				default:
@@ -4125,6 +4141,12 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				case ir::PTXInstruction::Local:
 				{
 
+				}
+					break;
+				case ir::PTXInstruction::Const:
+				{
+					hydrazine::bit_cast(addrSpaceBase, kernel->ConstMemory);
+					addrSpaceSize = kernel->constMemorySize();
 				}
 					break;
 				default:

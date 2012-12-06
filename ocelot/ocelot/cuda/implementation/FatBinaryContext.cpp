@@ -10,6 +10,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/compression.h>
 #include <hydrazine/interface/ELFFile.h>
 
 // Standard Library Includes
@@ -85,6 +86,12 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 		else {
 			_ptx = 0;
 		}
+		
+		if(entry->flags & COMPRESSED_PTX)
+		{
+			_decompressedPTX.resize(entry->uncompressedBinarySize + 1);
+			_decompressPTX(entry->binarySize);
+		}
 	}
 	else {
 		assertM(false, "unknown fat binary magic number "
@@ -92,6 +99,7 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 		_name = 0;
 		_ptx = 0;
 	}
+	
 	if (!_ptx) {
 		report("registered, contains NO PTX");
 	}
@@ -109,8 +117,19 @@ const char* cuda::FatBinaryContext::name() const {
 }	
 
 const char* cuda::FatBinaryContext::ptx() const {
+	if(!_decompressedPTX.empty()) return (const char*) _decompressedPTX.data();
+	
 	return _ptx;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+void cuda::FatBinaryContext::_decompressPTX(unsigned int compressedBinarySize) {
+	uint64_t decompressedSize = _decompressedPTX.size() - 1;
+
+	hydrazine::decompress(_decompressedPTX.data(), decompressedSize, _ptx,
+		compressedBinarySize - 1);
+
+	_decompressedPTX.back() = '\0';
+}
+
+////////////////////////////////////////////////////////////////////////////////
 

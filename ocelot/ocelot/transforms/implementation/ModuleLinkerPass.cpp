@@ -1,0 +1,395 @@
+/*!	\file   ModuleLinkerPass.cpp
+	\author Gregory Diamos <gregory.diamos@gatech.edu>
+	\date   Tuesday December 4, 2012
+	\brief  The source file for the ModuleLinkerPass class.
+*/
+
+// Ocelot Includes
+#include <ocelot/transforms/interface/ModuleLinkerPass.h>
+
+#include <ocelot/ir/interface/Module.h>
+
+// Standard Library Includes
+#include <stdexcept>
+
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
+namespace transforms
+{
+
+ModuleLinkerPass::ModuleLinkerPass()
+: ModulePass(Analysis::NoAnalysis, "ModuleLinkerPass"), _linkedModule(nullptr)
+{
+	
+}
+
+ModuleLinkerPass::~ModuleLinkerPass()
+{
+	delete _linkedModule;
+}
+
+void ModuleLinkerPass::runOnModule(ir::Module& m)
+{
+	report("Linking module " << m.path());
+	
+	if(_linkedModule == nullptr)
+	{
+		_linkedModule = new ir::Module;
+		
+		_linkedModule->isLoaded();
+	}
+
+	_linkTextures(m);
+	_linkGlobals(m);
+	_linkFunctions(m);
+	_linkPrototypes(m);
+}
+
+ir::Module* ModuleLinkerPass::linkedModule() const
+{
+	return _linkedModule;
+}
+
+bool containsSymbol(ir::Module& module, ir::PTXKernel& kernel,
+	const std::string& symbol)
+{
+	if(kernel.parameters.count(symbol) != 0) return true;
+	    if(kernel.locals.count(symbol) != 0) return true;
+
+	for(auto argument : kernel.arguments)
+	{
+		if(argument.name == symbol) return true;
+	}
+	
+	 if(module.kernels().count(symbol) != 0) return true;
+	if(module.textures().count(symbol) != 0) return true;
+	 if(module.globals().count(symbol) != 0) return true;
+	
+	return false;
+}
+
+ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
+{
+	StringVector undefined;
+	
+	if(_linkedModule == nullptr) return undefined;
+	
+	typedef std::set<std::string> StringSet;
+	
+	StringSet encountered;
+	
+	for(auto kernel : _linkedModule->kernels())
+	{
+		for(auto block = kernel.second->cfg()->begin();
+			block != kernel.second->cfg()->end(); ++block)
+		{
+			for(auto instruction : block->instructions)
+			{
+				typedef std::vector<ir::PTXOperand*> OperandVector;
+				
+				auto ptx = static_cast<ir::PTXInstruction*>(instruction);
+			
+				OperandVector operands = {&ptx->a, &ptx->b, &ptx->pg,
+					&ptx->pq, &ptx->d};
+				
+				if(ptx->opcode != ir::PTXInstruction::Call)
+				{
+					 operands.push_back(&ptx->c);
+				}
+			
+				for(auto operand : operands)
+				{
+					if(operand->addressMode != ir::PTXOperand::Address &&
+						operand->addressMode != ir::PTXOperand::FunctionName)
+					{
+						continue;
+					}
+					
+					if(!containsSymbol(*_linkedModule, *kernel.second,
+						operand->identifier))
+					{
+						if(encountered.insert(operand->identifier).second)
+						{
+							undefined.push_back(operand->identifier);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return undefined;
+}
+
+void ModuleLinkerPass::_linkTextures(ir::Module& m)
+{
+	report(" Linking textures...");
+	for(auto texture : m.textures())
+	{
+		report("  " << texture.first);
+		
+		if(_linkedModule->textures().count(texture.first))
+		{
+			throw std::runtime_error(
+				"No support for duplicate textures YET (needed for '" +
+				texture.first + "')");
+		}
+		
+		_linkedModule->insertTexture(texture.second);
+	}
+}
+
+static bool isNumeric(char c)
+{
+	return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' ||
+		c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
+}
+
+static std::string findNumericSuffix(ir::Module& module,
+	const std::string& base, unsigned int begin)
+{
+	while(true)
+	{
+		std::stringstream stream;
+		
+		stream << base << begin++;
+		
+		if(module.globals().count(stream.str()) == 0 &&
+			module.kernels().count(stream.str()) == 0 &&
+			module.textures().count(stream.str()) == 0)
+		{
+			return stream.str();
+		}
+	}
+	
+	assertM(false, "Could not find any valid identifier.");
+	
+	return base;
+}
+
+static void findSimpleUniqueName(ir::Module& module, std::string& name)
+{
+	assert(!name.empty());
+	assert(!isNumeric(name[0]));
+	
+	if(!isNumeric(*name.rbegin())) return;
+	
+	size_t endPosition = name.size();
+	
+	for(; endPosition != 0; --endPosition)
+	{
+		if(!isNumeric(name[endPosition - 1])) break;
+	}
+	
+	std::string base = name.substr(0, endPosition);
+	
+	name = findNumericSuffix(module, base, 0);
+}
+
+static void findComplexUniqueName(ir::Module& module, std::string& name)
+{
+	name = findNumericSuffix(module, "tmp", 0);
+}
+
+static void replaceInstances(ir::Module& module, const std::string& oldName,
+	const std::string& newName)
+{
+	for(auto kernel : module.kernels())
+	{
+		for(auto block = kernel.second->cfg()->begin();
+			block != kernel.second->cfg()->end(); ++block)
+		{
+			for(auto instruction : block->instructions)
+			{
+				typedef std::vector<ir::PTXOperand*> OperandVector;
+				
+				auto ptx = static_cast<ir::PTXInstruction*>(instruction);
+			
+				OperandVector operands = {&ptx->a, &ptx->b, &ptx->c, &ptx->pg,
+					&ptx->pq, &ptx->d};
+			
+				for(auto operand : operands)
+				{
+					if(operand->addressMode != ir::PTXOperand::Address)
+					{
+						continue;
+					}
+					
+					if(operand->identifier == oldName)
+					{
+						operand->identifier = newName;
+					}
+				}
+			}
+		}
+	}
+}
+
+static std::string renameGlobal(ir::Module& module, const ir::Global& global)
+{
+	std::string newName = global.name();
+	
+	findSimpleUniqueName(module, newName);
+	
+	if(newName == global.name()) findComplexUniqueName(module, newName);
+	
+	replaceInstances(module, global.name(), newName);
+	
+	return newName;
+}
+
+static void handleDuplicateGlobal(ir::Module& module, const ir::Global& global)
+{
+	auto existingGlobal = module.globals().find(global.name());
+	
+	assert(existingGlobal != module.globals().end());
+
+	bool bothPrivate =
+		(global.statement.attribute == ir::PTXStatement::NoAttribute)
+		&& (existingGlobal->second.statement.attribute ==
+			ir::PTXStatement::NoAttribute);
+
+	if(bothPrivate)
+	{
+		auto newName = renameGlobal(module, existingGlobal->second);
+		
+		ir::Global newGlobal = global;
+		
+		newGlobal.statement.name = newName;
+		
+		module.insertGlobal(newGlobal);
+	}
+	else
+	{
+		bool override =
+			(existingGlobal->second.statement.attribute ==
+				ir::PTXStatement::Weak)
+			|| (existingGlobal->second.statement.attribute ==
+				ir::PTXStatement::Extern);
+				
+		if(override)
+		{
+			module.removeGlobal(global.name());
+			module.insertGlobal(global);
+		}
+	}
+}
+
+void ModuleLinkerPass::_linkGlobals(ir::Module& m)
+{
+	report(" Linking globals...");
+	for(auto global : m.globals())
+	{
+		report("  " << global.second.name());
+		
+		if(_linkedModule->globals().count(global.first))
+		{
+			handleDuplicateGlobal(*_linkedModule, global.second);
+			continue;
+		}
+		
+		_linkedModule->insertGlobal(global.second);
+	}
+}
+
+static void handleDuplicateFunction(ir::Module& module,
+	const ir::PTXKernel& function)
+{
+	auto existingFunction = module.kernels().find(function.name);
+	
+	assert(existingFunction != module.kernels().end());
+	
+	if(existingFunction->second->function() != function.function())
+	{
+		throw std::runtime_error(
+			"Function and Kernel declared with the same name: '" +
+			function.name + "'.");	
+	}
+	
+	auto originalPrototype = existingFunction->second->getPrototype();
+	auto      newPrototype =                  function.getPrototype();
+	
+	auto originalAttribute = originalPrototype.linkingDirective;
+	auto      newAttribute =      newPrototype.linkingDirective;
+	
+	bool replace = (originalAttribute == ir::PTXKernel::Prototype::Visible ||
+		ir::PTXKernel::Prototype::Weak) &&
+		newAttribute == ir::PTXKernel::Prototype::Weak;
+	
+	if(replace)
+	{
+		module.removePrototype(function.name);
+		module.removeKernel(function.name);
+
+		module.insertKernel(new ir::PTXKernel(function));
+		module.addPrototype(function.name, newPrototype);
+	}
+}
+
+void ModuleLinkerPass::_linkFunctions(ir::Module& m)
+{
+	report(" Linking functions...");
+	for(auto function : m.kernels())
+	{
+		report("  " << function.second->getPrototype().toString());
+		
+		if(_linkedModule->kernels().count(function.first))
+		{
+			handleDuplicateFunction(*_linkedModule, *function.second);
+			continue;
+		}
+		
+		_linkedModule->insertKernel(new ir::PTXKernel(*function.second));
+		_linkedModule->addPrototype(function.second->name,
+			function.second->getPrototype());
+	}
+}
+
+static void handleDuplicatePrototype(ir::Module& module,
+	const ir::PTXKernel::Prototype& prototype)
+{
+	auto existingPrototype = module.prototypes().find(prototype.identifier);
+	
+	assert(existingPrototype != module.prototypes().end());
+		
+	auto originalAttribute = existingPrototype->second.linkingDirective;
+	auto      newAttribute =                 prototype.linkingDirective;
+	
+	bool replace = (originalAttribute == ir::PTXKernel::Prototype::Visible ||
+		ir::PTXKernel::Prototype::Weak) &&
+		newAttribute == ir::PTXKernel::Prototype::Weak;
+	
+	if(replace)
+	{
+		module.removePrototype(prototype.identifier);
+		module.addPrototype(prototype.identifier, prototype);
+	}
+}
+
+void ModuleLinkerPass::_linkPrototypes(ir::Module& m)
+{
+	report(" Linking prototypes...");
+	for(auto prototype : m.prototypes())
+	{
+		report("  " << prototype.second.toString());
+		
+		if(_linkedModule->prototypes().count(prototype.first))
+		{
+			handleDuplicatePrototype(*_linkedModule, prototype.second);
+			continue;
+		}
+		
+		_linkedModule->addPrototype(prototype.first, prototype.second);
+	}
+}
+
+}
+

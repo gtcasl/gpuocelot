@@ -119,18 +119,19 @@ enum FatBin2EntryType {
 typedef struct __cudaFatCudaBinary2EntryRec { 
 	unsigned int           type;
 	unsigned int           binary;
-	unsigned int           binarySize;
+	unsigned long long int binarySize;
 	unsigned int           unknown2;
 	unsigned int           kindOffset;
 	unsigned int           unknown3;
 	unsigned int           unknown4;
-	unsigned int           unknown5;
 	unsigned int           name;
 	unsigned int           nameSize;
-	unsigned long long int unknown6;
+	unsigned long long int flags;
 	unsigned long long int unknown7;
+	unsigned long long int uncompressedBinarySize;
 } __cudaFatCudaBinary2Entry;
 
+#define COMPRESSED_PTX 0x0000000000001000LL
 
 typedef struct __cudaFatCudaBinaryRec2 {
 	int magic;

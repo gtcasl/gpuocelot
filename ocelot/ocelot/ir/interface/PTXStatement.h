@@ -108,6 +108,7 @@ namespace ir {
 		enum Attribute {
 			Visible,
 			Extern,
+			Weak,
 			NoAttribute
 		};
 		

@@ -49,6 +49,7 @@ namespace ir
 				enum LinkingDirective {
 					Visible,	      //!< visible outside this module
 					Extern,		      //!< externally-defined function
+					Weak,		      //!< weak function (overriden by another)
 					InternalHidden,   //!< not external and not visible ==
 					                  //  internal hidden ==
 					                  // 'static' module scope
@@ -62,8 +63,8 @@ namespace ir
 				Prototype();
 				
 				/*! \brief emits a PTX form of the prototype */
-				std::string toString(
-					PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
+				std::string toString(PTXEmitter::Target emitterTarget =
+					PTXEmitter::Target_OcelotIR) const;
 				
 				/*! \brief emits a mangled form of the function prototype */
 				std::string getMangledName() const;

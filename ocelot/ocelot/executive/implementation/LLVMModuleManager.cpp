@@ -965,8 +965,6 @@ static void optimize(llvm::Module& module,
 
 	llvm::PassManager manager;
 
-	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
-
 	if(level < 2)
 	{
 		manager.add(llvm::createInstructionCombiningPass());

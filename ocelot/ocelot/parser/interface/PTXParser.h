@@ -49,7 +49,7 @@ namespace parser
 							TypeVector returnTypes;
 							TypeVector argumentTypes;
 							std::string name;
-					
+						
 						public:
 							void clear();
 							bool compare( const FunctionPrototype& t );
@@ -76,9 +76,9 @@ namespace parser
 					typedef std::unordered_map< std::string, unsigned int > 
 						StringMap;
 					typedef std::vector< std::string > StringList;
-					typedef std::vector< ir::PTXOperand > OperandVector;
+					typedef std::vector< OperandWrapper > OperandVector;
 					typedef std::vector< Context > ContextStack;
-			
+					
 					enum Error
 					{
 						Success,
@@ -177,7 +177,7 @@ namespace parser
 					void dataType( int token );
 					void statementVectorType( int token );
 					void instructionVectorType( int token );
-					void attribute( bool visible, bool external );
+					void attribute( bool visible, bool external, bool weak );
 					void shiftAmount( bool shift );
 					void vectorIndex( int token );
 					
@@ -310,6 +310,7 @@ namespace parser
 		private:
 			void checkLabels();
 			void reset();
+			std::string getLinesNearCurrentLocation( std::istream& input );
 		
 		public:
 			static std::string toString( YYLTYPE&, State& );

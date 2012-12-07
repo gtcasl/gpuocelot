@@ -528,7 +528,7 @@ namespace parser
 		report( "   Appending " << identifier << ", " << index
 			<< " to symbol list.");
 		
-		statement.symbols.push_back(
+		statement.array.symbols.push_back(
 			ir::PTXStatement::Symbol( identifier, index ) );
 	}
 
@@ -540,7 +540,7 @@ namespace parser
 		report( "   Appending " << identifier << ", " << index
 			<< " to symbol list.");
 		
-		statement.symbols.push_back(
+		statement.array.symbols.push_back(
 			ir::PTXStatement::Symbol( identifier, index ) );
 	}
 
@@ -747,7 +747,7 @@ namespace parser
 	{
 		report( "  Clearing doubles" );
 		statement.array.values.clear();
-		statement.symbols.clear();
+		statement.array.symbols.clear();
 	}
 	
 	void PTXParser::State::registerDeclaration( const std::string& name, 

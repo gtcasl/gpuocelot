@@ -211,6 +211,13 @@ namespace trace
 						++address;
 						continue;
 					}
+					if( (ir::PTXU64)_kernel->ConstMemory <= *address 
+						&& *address < (ir::PTXU64)_kernel->ConstMemory +
+						_constant.extent)
+					{
+						++address;
+						continue;
+					}
 					if( _cache.base > *address 
 						|| *address >= _cache.base + _cache.extent
 						|| !_cache.valid )
@@ -520,7 +527,8 @@ namespace trace
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Storing uninitialized value to " << space 
-						<< " address space near " << "Near " << _kernel->location( e.PC ) 
+						<< " address space near " << "Near "
+						<< _kernel->location( e.PC ) 
 						<< "\n";
 				}
 			}

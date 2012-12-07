@@ -35,11 +35,11 @@ namespace ir {
 		for (int n = 0; it != values.end(); ++it, ++n) {
 			out << (n ? ", " : "");
 			switch (type) {
-				case ir::PTXOperand::s8: out << it->s8; break;
+				case ir::PTXOperand::s8:  out << it->s8; break;
 				case ir::PTXOperand::s16: out << it->s16; break;
 				case ir::PTXOperand::s32: out << it->s32; break;
 				case ir::PTXOperand::s64: out << it->s64;  break;
-				case ir::PTXOperand::u8: out << it->u8; break;
+				case ir::PTXOperand::u8:  out << it->u8; break;
 				case ir::PTXOperand::u16: out << it->u16; break;
 				case ir::PTXOperand::u32: out << it->u32; break;
 				case ir::PTXOperand::u64: out << it->u64; break;
@@ -51,7 +51,7 @@ namespace ir {
 					break;
 				}
 				case ir::PTXOperand::f64: out << it->f64; break;
-				case ir::PTXOperand::b8: out << it->b8; break;
+				case ir::PTXOperand::b8:  out << it->b8; break;
 				case ir::PTXOperand::b16: out << it->b16; break;
 				case ir::PTXOperand::b32: out << it->b32; break;
 				case ir::PTXOperand::b64: out << it->b64; break;
@@ -91,7 +91,9 @@ namespace ir {
 		stream << "{ ";
 		stack.push( 0 );
 		ArrayStrideVector::const_iterator si = stride.begin();
-		ArrayVector::const_iterator ai = values.begin();
+		
+		unsigned int index = 0;
+		
 		while( !stack.empty() ) {	
 				
 			if( si == --stride.end() ) {
@@ -100,37 +102,35 @@ namespace ir {
 				
 					if( vec == PTXOperand::v1 ) {
 					
-						assert( ai != values.end() );
-						stream << PTXStatement::toString( *ai, t );
-						++ai;
+						assert( index < values.size() );
+						stream << valueAt( index, t );
+						++index;
 						
 					}
 					else if( vec == PTXOperand::v2 ) {
 					
-						assert( ai != values.end() );
-						stream << "{ " 
-							<< PTXStatement::toString( *ai, t ) << ", ";
-						++ai;
-						assert( ai != values.end() );
-						stream << PTXStatement::toString( *ai, t ) << " }";
-						++ai;
+						assert( index < values.size() );
+						stream << "{ " << valueAt( index, t ) << ", ";
+						++index;
+						assert( index < values.size() );
+						stream << valueAt( index, t ) << " }";
+						++index;
 						
 					}
 					else {
 					
-						assert( ai != values.end() );
-						stream << "{ " << 
-							PTXStatement::toString( *ai, t ) << ", ";
-						++ai;
-						assert( ai != values.end() );
-						stream << PTXStatement::toString( *ai, t ) << ", ";
-						++ai;
-						assert( ai != values.end() );
-						stream << PTXStatement::toString( *ai, t ) << ", ";
-						++ai;
-						assert( ai != values.end() );
-						stream << PTXStatement::toString( *ai, t ) << " }";
-						++ai;				
+						assert( index < values.size() );
+						stream << "{ " << valueAt( index, t ) << ", ";
+						++index;
+						assert( index < values.size() );
+						stream << valueAt( index, t ) << ", ";
+						++index;
+						assert( index < values.size() );
+						stream << valueAt( index, t ) << ", ";
+						++index;
+						assert( index < values.size() );
+						stream << valueAt( index, t ) << " }";
+						++index;				
 					}
 					
 					if( stack.top() != ( *si - 1 ) ) {
@@ -165,9 +165,20 @@ namespace ir {
 			
 		}
 		
-		assert( ai == values.end() );
+		assert( index == values.size() );
 		return stream.str();
 		
+	}
+	
+	std::string PTXStatement::StaticArray::valueAt( unsigned int index, 
+		PTXOperand::DataType t ) const
+	{
+		for(auto symbol = symbols.begin(); symbol != symbols.end(); ++symbol)
+		{
+			if(symbol->offset == index) return symbol->name;
+		}
+		
+		return toString( values[ index ], t );
 	}
 
 	std::string PTXStatement::toString( TextureSpace space ) {

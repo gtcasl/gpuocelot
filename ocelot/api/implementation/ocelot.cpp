@@ -97,6 +97,11 @@ namespace ocelot
 		get()->removeExternalFunction(name);
 	}
 	
+	bool isExternalFunction(const std::string& name)
+	{
+		return get()->isExternalFunction(name);
+	}
+	
 	/*! \brief gets the Ocelot device properties of either the current device 
 		(deviceIndex = -1) or the indexed device */
 	void getDeviceProperties(executive::DeviceProperties &properties, int deviceIndex) {

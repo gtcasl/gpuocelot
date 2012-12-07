@@ -3827,6 +3827,16 @@ void cuda::CudaRuntime::removeExternalFunction(const std::string& name) {
 	_unlock();	
 }
 
+bool cuda::CudaRuntime::isExternalFunction(const std::string& name) {
+	_lock();
+
+	bool isExternal = _externals.find(name) != 0;
+
+	_unlock();	
+	
+	return isExternal;
+}
+
 void cuda::CudaRuntime::getDeviceProperties(executive::DeviceProperties &properties, 
 	int deviceIndex) {
 

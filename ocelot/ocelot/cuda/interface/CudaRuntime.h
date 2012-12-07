@@ -634,6 +634,7 @@ namespace cuda {
 		virtual void registerExternalFunction(const std::string& name,
 			void* function);
 		virtual void removeExternalFunction(const std::string& name);
+		virtual bool isExternalFunction(const std::string& name);
 		virtual void getDeviceProperties(executive::DeviceProperties &, int deviceIndex = -1);
 	};
 

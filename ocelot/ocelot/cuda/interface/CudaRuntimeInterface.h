@@ -450,7 +450,9 @@ namespace cuda {
 			void* function);
 		/*! \brief Remove a previously registered host function */
 		virtual void removeExternalFunction(const std::string& name);
-		
+		/*! \brief Is a named function already registered? */
+		virtual bool isExternalFunction(const std::string& name);
+	
 		virtual void getDeviceProperties(executive::DeviceProperties &, int deviceIndex = -1);
 	};
 

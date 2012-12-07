@@ -1121,8 +1121,8 @@ void executive::EmulatedKernel::initializeSymbolReferences() {
 			it = module->globals().begin(); 
 			it != module->globals().end(); ++it) {
 			for (ir::PTXStatement::SymbolVector::const_iterator symbol =
-				it->second.statement.symbols.begin(); symbol !=
-				it->second.statement.symbols.end(); ++symbol) {
+				it->second.statement.array.symbols.begin(); symbol !=
+				it->second.statement.array.symbols.end(); ++symbol) {
 				Device::MemoryAllocation* allocation = 
 					device->getGlobalAllocation(module->path(),
 					it->second.name());

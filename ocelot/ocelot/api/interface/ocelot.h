@@ -100,6 +100,9 @@ namespace ocelot
 	/*! \brief Remove a previously registered host function */
 	void removeExternalFunction(const std::string& name);
 	
+	/*! \brief Is a named function already registered? */
+	bool isExternalFunction(const std::string& name);
+	
 	/*! \brief gets the Ocelot device properties of either the current device 
 		(deviceIndex = -1) or the indexed device */
 	void getDeviceProperties(executive::DeviceProperties &properties, int deviceIndex = -1);

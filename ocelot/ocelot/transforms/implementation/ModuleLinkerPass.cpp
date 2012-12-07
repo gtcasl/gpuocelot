@@ -9,6 +9,8 @@
 
 #include <ocelot/ir/interface/Module.h>
 
+#include <ocelot/api/interface/ocelot.h>
+
 // Standard Library Includes
 #include <stdexcept>
 
@@ -72,6 +74,11 @@ bool containsSymbol(ir::Module& module, ir::PTXKernel& kernel,
 	 if(module.kernels().count(symbol) != 0) return true;
 	if(module.textures().count(symbol) != 0) return true;
 	 if(module.globals().count(symbol) != 0) return true;
+	
+	if(ocelot::isExternalFunction(symbol)) return true;
+	
+	// built-in
+	if(symbol == "cudaLaunchDevice") return true;
 	
 	return false;
 }
@@ -196,7 +203,7 @@ static void findSimpleUniqueName(ir::Module& module, std::string& name)
 
 static void findComplexUniqueName(ir::Module& module, std::string& name)
 {
-	name = findNumericSuffix(module, "tmp", 0);
+	name = findNumericSuffix(module, name, 0);
 }
 
 static void replaceInstances(ir::Module& module, const std::string& oldName,
@@ -241,6 +248,8 @@ static std::string renameGlobal(ir::Module& module, const ir::Global& global)
 	
 	if(newName == global.name()) findComplexUniqueName(module, newName);
 	
+	report("   renaming to " << newName);
+	
 	replaceInstances(module, global.name(), newName);
 	
 	return newName;
@@ -261,11 +270,15 @@ static void handleDuplicateGlobal(ir::Module& module, const ir::Global& global)
 	{
 		auto newName = renameGlobal(module, existingGlobal->second);
 		
-		ir::Global newGlobal = global;
+		ir::Global newGlobal      = global;
+		ir::Global existingGlobal = *module.getGlobal(global.name());
 		
-		newGlobal.statement.name = newName;
+		module.removeGlobal(global.name());
+		
+		existingGlobal.statement.name = newName;
 		
 		module.insertGlobal(newGlobal);
+		module.insertGlobal(existingGlobal);
 	}
 	else
 	{
@@ -277,8 +290,14 @@ static void handleDuplicateGlobal(ir::Module& module, const ir::Global& global)
 				
 		if(override)
 		{
+			report("   overriding with copy from new module.");
+	
 			module.removeGlobal(global.name());
 			module.insertGlobal(global);
+		}
+		else
+		{
+			report("   overriding with existing copy.");
 		}
 	}
 }

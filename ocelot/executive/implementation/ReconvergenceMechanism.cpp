@@ -219,8 +219,6 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 			si != runtimeStack.rend(); ++si, ++ti) {
 			assert(ti != tokenStack.rend());
 			
-			if(*ti != Branch) break;
-			
 			if(si->PC == reconvergeContext.PC) {
 				reconvergeContextAlreadyExists = true;
 				break;

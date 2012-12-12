@@ -98,8 +98,13 @@ bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)
 			ir::PTXInstruction& ptx =
 				static_cast<ir::PTXInstruction&>(**instruction);
 			
-			if(ptx.isExit())
+			if(ptx.isExit() && ptx.opcode != ir::PTXInstruction::Trap)
 			{
+				// There should be an edge to the exit block
+				assertM(block->find_out_edge(k.cfg()->get_exit_block()) !=
+					block->out_edges.end(), "No edge from " << block->label()
+					<< " to exit node.");
+			
 				exitBlocks.insert(std::make_pair(block, instruction));
 				break;
 			}

@@ -342,8 +342,7 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
-			else if( statement.instruction.opcode == PTXInstruction::Exit
-				|| statement.instruction.opcode == PTXInstruction::Ret )
+			else if( statement.instruction.isExit() )
 			{
 				last_inserted_block = block;
 				if (edge.type != ControlFlowGraph::Edge::Invalid) {

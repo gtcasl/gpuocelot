@@ -2568,7 +2568,7 @@ bool ir::PTXInstruction::isMemoryInstruction() const {
 }
 
 bool ir::PTXInstruction::isExit() const {
-	return opcode == Exit || opcode == Trap || opcode == Ret;
+	return opcode == Exit || opcode == Ret;
 }
 
 

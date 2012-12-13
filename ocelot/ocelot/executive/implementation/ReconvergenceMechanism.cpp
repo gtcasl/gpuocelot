@@ -214,20 +214,28 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		tokenStack.pop_back();
 
 		bool reconvergeContextAlreadyExists = false;
-		auto ti = tokenStack.rbegin();
-		for(auto si = runtimeStack.rbegin(); 
-			si != runtimeStack.rend(); ++si, ++ti) {
-			assert(ti != tokenStack.rend());
+
+		// only look for existing contexts in the current stack frame
+		if(token != Call) {
+			auto ti = tokenStack.rbegin();
+			for(auto si = runtimeStack.rbegin(); 
+				si != runtimeStack.rend(); ++si, ++ti) {
+				assert(ti != tokenStack.rend());
 			
-			if(si->PC == reconvergeContext.PC) {
-				reconvergeContextAlreadyExists = true;
-				break;
+				if(si->PC == reconvergeContext.PC) {
+					reconvergeContextAlreadyExists = true;
+					break;
+				}
+			
+				if(*ti != Branch) {
+					continue;
+				}
 			}
 		}
-
+		
 		if(!reconvergeContextAlreadyExists) {
 			report(" (" << pc << ") Pushing reconvergence context at "
-				<< reconvergeContext.PC);
+				<< reconvergeContext.PC << " (type " << toString(token) << ")");
 			runtimeStack.push_back(reconvergeContext);
 			pcStack.push_back(reconverge);
 			tokenStack.push_back(token);
@@ -236,7 +244,8 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		if (branchContext.active.any()) {
 			report(" (" << pc << ") Pushing branch context at "
 				<< branchContext.PC << ", reconverge at "
-				<< instr.reconvergeInstruction);
+				<< instr.reconvergeInstruction
+				<< " (type " << toString(Branch) << ")");
 			runtimeStack.push_back(branchContext);
 			pcStack.push_back(instr.reconvergeInstruction);
 			tokenStack.push_back(Branch);
@@ -245,7 +254,8 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		if (fallthroughContext.active.any()) {
 			report(" (" << pc << ") Pushing fallthrough context at "
 				<< fallthroughContext.PC << ", reconverge at "
-				<< instr.reconvergeInstruction);
+				<< instr.reconvergeInstruction
+				<< " (type " << toString(Branch) << ")");
 			runtimeStack.push_back(fallthroughContext);		
 			pcStack.push_back(instr.reconvergeInstruction);
 			tokenStack.push_back(Branch);
@@ -347,6 +357,17 @@ void executive::ReconvergenceIPDOM::pop() {
 	
 	runtimeStack.pop_back();
 	tokenStack.pop_back();
+}
+
+std::string executive::ReconvergenceIPDOM::toString(Token t) {
+	switch(t) {
+	case Call:
+		return "Call";
+	case Branch:
+		return "Branch";
+	}
+	
+	return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

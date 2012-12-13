@@ -183,6 +183,11 @@ void EmulatedKernelScheduler::Context::executeUntilYield()
 
 						return;
 					}
+					else if(state == CTAContext::Trap)
+					{
+						assertM(false, "CTA trapped, "
+							"trap handler not implemented.");
+					}
 					else
 					{
 						assertM(false, "Not implemented.");

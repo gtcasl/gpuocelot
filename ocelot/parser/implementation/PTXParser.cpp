@@ -195,7 +195,8 @@ namespace parser
 		else
 		{
 			// Allocate a new name in the current context
-			stream << "_Zcontext_" << contexts.back().id << "_" << strip( name );
+			stream << "_Zcontext_" << contexts.back().id
+				<< "_" << strip( name );
 		}
 		
 		return stream.str();
@@ -1225,7 +1226,28 @@ namespace parser
 		
 		prototype.name = name;
 		
+		contexts.push_back( Context( contextId++ ) );
+		report("Nesting level " << contexts.size());	
+		
 		statementEnd( location );	
+	}
+	
+	void PTXParser::State::entryPrototype( YYLTYPE& location )
+	{
+		report( "  Rule: entryPrototype" );
+
+		assert( contexts.size() > 1 );
+		
+		statement.directive = ir::PTXStatement::StartScope;	
+		statementEnd( location );
+
+		statement.directive = ir::PTXStatement::EndScope;
+		statementEnd( location );
+		
+		contexts.pop_back();
+		report("Nesting level " << contexts.size());		
+
+		inEntry = contexts.size() > 1;
 	}
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )

@@ -78,7 +78,8 @@ bool containsSymbol(ir::Module& module, ir::PTXKernel& kernel,
 	if(ocelot::isExternalFunction(symbol)) return true;
 	
 	// built-in
-	if(symbol == "cudaLaunchDevice") return true;
+	if(symbol == "cudaLaunchDevice")      return true;
+	if(symbol == "cudaDeviceSynchronize") return true;
 	
 	return false;
 }

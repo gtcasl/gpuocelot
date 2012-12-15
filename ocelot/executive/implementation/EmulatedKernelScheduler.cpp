@@ -17,7 +17,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0 
+#define REPORT_BASE 1 
 
 namespace executive
 {
@@ -57,6 +57,7 @@ void EmulatedKernelScheduler::launch(ir::PTXU64 pc, ir::PTXU64 parameterBuffer,
 
 	report(" Launching nested kernel " << kernel->name << " over grid ("
 		<< gridDim.x << ", " << gridDim.y << ", " << gridDim.z
+		<< ") with cta (" << ctaDim.x << ", " << ctaDim.y << ", " << ctaDim.z
 		<< ") at PC " << pc);
 	
 	auto context = _contexts.insert(_contexts.end(), Context(kernel, pc, gridDim,

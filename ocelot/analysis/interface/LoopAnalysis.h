@@ -149,6 +149,9 @@ public:
 	const_iterator end()   const;
 
 public:
+	bool isContainedInLoop(const_block_iterator block);
+
+public:
 	// Get inner-most loop containing a specified block
 	Loop* _getLoopAt(const_block_iterator block);
 

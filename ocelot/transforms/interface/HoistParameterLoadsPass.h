@@ -40,10 +40,11 @@ public:
 	void runOnKernel(ir::IRKernel& k);
 
 private:
-	void _tryHoistingLoad(ir::ControlFlowGraph::iterator, ir::PTXInstruction*);
+	void _tryHoistingLoad(ir::ControlFlowGraph::iterator, ir::PTXInstruction*,
+		ir::IRKernel&);
 
 	ir::ControlFlowGraph::iterator _getTopLevelDominatingBlock(
-		ir::ControlFlowGraph::iterator block);
+		ir::IRKernel&, ir::ControlFlowGraph::iterator);
 
 };
 

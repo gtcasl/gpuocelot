@@ -63,7 +63,7 @@ void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 	report(" Attempting to hoist loads");
 	for(auto load : candidateLoads)
 	{
-		_tryHoistingLoad(load.first, load.second);
+		_tryHoistingLoad(load.first, load.second, k);
 	}
 	
 	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);
@@ -92,11 +92,12 @@ static void insertBeforeTerminator(ir::ControlFlowGraph::iterator block,
 }
 
 void HoistParameterLoadsPass::_tryHoistingLoad(
-	ir::ControlFlowGraph::iterator block, ir::PTXInstruction* ptx)
+	ir::ControlFlowGraph::iterator block, ir::PTXInstruction* ptx,
+	ir::IRKernel& k)
 {
 	report("  " << ptx->toString());
 	
-	auto newBlock = _getTopLevelDominatingBlock(block);
+	auto newBlock = _getTopLevelDominatingBlock(k, block);
 	
 	if(newBlock == block) return;
 	
@@ -112,30 +113,41 @@ void HoistParameterLoadsPass::_tryHoistingLoad(
 	load->volatility     = ptx->volatility;
 	load->cacheOperation = ptx->cacheOperation;
 	
-	load->d = ir::PTXOperand(ir::PTXOperand(ir::PTXOperand::Register,
-		ptx->d.type, dfg->newRegister()));
+	load->d = ir::PTXOperand(ir::PTXOperand::Register,
+		ptx->d.type, dfg->newRegister());
 	load->a = ptx->a;
 	
 	insertBeforeTerminator(newBlock, load);
 	
 	ptx->opcode = ir::PTXInstruction::Mov;
-	ptx->a = load->d;
+	ptx->a      = load->d;
 }
 
 ir::ControlFlowGraph::iterator 
 	HoistParameterLoadsPass::_getTopLevelDominatingBlock(
-		ir::ControlFlowGraph::iterator block)
+		ir::IRKernel& k, ir::ControlFlowGraph::iterator block)
 {
 	auto loopAnalysis = static_cast<analysis::LoopAnalysis*>(
 		getAnalysis(Analysis::LoopAnalysis));
 	auto dominatorTree = static_cast<analysis::DominatorTree*>(
 		getAnalysis(Analysis::DominatorTreeAnalysis));
 		
-	while(block != block->cfg->get_entry_block())
+	while(loopAnalysis->isContainedInLoop(block))
 	{
-		block = dominatorTree->getDominator(block);
+		auto dominator = dominatorTree->getDominator(block);
 		
-		if(!loopAnalysis->isContainedInLoop(block)) break;
+		if(dominator == block->cfg->get_entry_block())
+		{
+			block = k.cfg()->split_edge(dominator->get_fallthrough_edge(),
+				ir::BasicBlock(k.cfg()->newId())).first->tail;
+				
+			invalidateAnalysis(analysis::Analysis::LoopAnalysis         );
+			invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
+
+			break;
+		}
+		
+		block = dominator;
 	}
 	
 	return block;

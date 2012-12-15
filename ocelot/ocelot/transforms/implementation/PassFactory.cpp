@@ -26,6 +26,7 @@
 #include <ocelot/transforms/interface/GlobalValueNumberingPass.h>
 #include <ocelot/transforms/interface/ConstantPropagationPass.h>
 #include <ocelot/transforms/interface/SharedPtrAttribute.h>
+#include <ocelot/transforms/interface/HoistParameterLoadsPass.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -107,9 +108,14 @@ Pass* PassFactory::createPass(const std::string& name)
 	{
 		return new transforms::SharedPtrAttribute;
 	}
-	else if (name == "constant-propagation")
+	else if (name == "constant-propagation" ||
+		name == "ConstantPropagationPass")
 	{
 		return new transforms::ConstantPropagationPass;
+	}
+	else if (name == "hoist-parameters" || name == "HoistParameterLoadsPass")
+	{
+		return new transforms::HoistParameterLoadsPass;
 	}
 	else
 	{

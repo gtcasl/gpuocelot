@@ -550,8 +550,7 @@ entry : entryDeclaration openBrace entryStatements closeBrace;
 
 entry : entryDeclaration
 {
-	state.openBrace( @1 );
-	state.closeBrace( @1 );
+	state.entryPrototype( @1 );
 };
 
 entryStatement : registerDeclaration | location | label | pragma 

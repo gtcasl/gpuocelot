@@ -217,6 +217,7 @@ namespace parser
 					
 					void entry( const std::string& name, YYLTYPE& location );
 					void entryDeclaration( YYLTYPE& location );
+					void entryPrototype( YYLTYPE& location );
 					void entryStatement( YYLTYPE& location );
 					void metadata( const std::string& comment );
 					

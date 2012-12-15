@@ -195,7 +195,7 @@ int main( int argc, char** argv )
 		"sync-elimination, hoist-special-definitions, "
 		"simplify-cfg, loop-unrolling, lock-step, function-inlining, "
 		"global-value-numbering, shared-ptr-attribute, "
-		"constant-propagation)" );
+		"constant-propagation, hoist-parameters)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

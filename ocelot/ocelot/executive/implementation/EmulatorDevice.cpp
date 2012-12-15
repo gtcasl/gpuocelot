@@ -505,11 +505,31 @@ namespace executive
 		void* pointer) const
 	{
 		MemoryAllocationVector allocations;
-		for(AllocationMap::const_iterator allocation = _allocations.begin(); 
-			allocation != _allocations.end(); ++allocation)
+		
+		auto center = _allocations.lower_bound(pointer);
+		
+		auto lower = center;
+		
+		for(unsigned int i = 0; i < 5; ++i, --lower)
 		{
-			allocations.push_back(allocation->second);
+			if(lower == _allocations.begin()) break;
+			
+			allocations.push_back(lower->second);
 		}
+		
+		std::reverse(allocations.begin(), allocations.end());
+		
+		auto upper = center;
+		
+		if(upper != _allocations.end()) ++upper;
+		
+		for(unsigned int i = 0; i < 5; ++i, ++upper)
+		{
+			if(upper == _allocations.end()) break;
+			
+			allocations.push_back(upper->second);
+		}
+		
 		return allocations;
 	}
 

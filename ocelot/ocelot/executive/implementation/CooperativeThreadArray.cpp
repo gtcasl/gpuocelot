@@ -2651,6 +2651,10 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				eval_cudaLaunchDevice(context, instr);
 				return;
 			}
+			if (instr.a.identifier == "cudaDeviceSynchronize") {
+				eval_cudaSynchronizeDevice(context, instr);
+				return;
+			}
 
 			reportE(REPORT_CALL, " direct call to PC " 
 				<< instr.branchTargetInstruction)

@@ -48,11 +48,13 @@ void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 	
 	for(auto block = k.cfg()->begin(); block != k.cfg()->end(); ++block)
 	{
-		for(auto instruction : block->instructions)
+		for(auto instruction = block->instructions.begin();
+			instruction != block->instructions.end(); ++instruction)
 		{
-			auto ptx = static_cast<ir::PTXInstruction*>(instruction);
+			auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
 		
-			if(ptx->isLoad() && aliasAnalysis->cannotAliasAnyStore(instruction))
+			if(ptx->isLoad() &&
+				aliasAnalysis->cannotAliasAnyStore(*instruction))
 			{
 				report("  " << ptx->toString());
 				candidateLoads.push_back(std::make_pair(block, ptx));

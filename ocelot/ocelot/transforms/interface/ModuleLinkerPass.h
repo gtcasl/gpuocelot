@@ -32,8 +32,10 @@ public:
 	StringVector getAllUndefinedSymbols() const;
 	
 public:
+	#ifndef _WIN32
 	ModuleLinkerPass(const ModuleLinkerPass&) = delete;
 	ModuleLinkerPass& operator=(const ModuleLinkerPass&) = delete;
+	#endif
 
 public:
 	void _linkTextures(ir::Module& m);

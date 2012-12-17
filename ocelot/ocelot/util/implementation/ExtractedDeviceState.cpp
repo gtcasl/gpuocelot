@@ -258,6 +258,7 @@ void util::ExtractedDeviceState::KernelLaunch::serialize(
 	out << "  \"gridDim\": "; ::serialize(out, gridDim); out << ",\n";
 	out << "  \"blockDim\": "; ::serialize(out, blockDim); out << ",\n";
 	out << "  \"sharedMemorySize\": " << sharedMemorySize << ",\n";
+	out << "  \"staticSharedMemorySize\": " << staticSharedMemorySize << ",\n";
 	out << "  \"parameterMemory\": ";
 	serializeBinary(out, parameterMemory);
 	out << "}";
@@ -271,6 +272,7 @@ void util::ExtractedDeviceState::KernelLaunch::deserialize(
 	::deserialize(gridDim, object["gridDim"]);
 	::deserialize(blockDim, object["blockDim"]);
 	sharedMemorySize = object.parse<int>("sharedMemorySize", 0);
+	staticSharedMemorySize = object.parse<int>("staticSharedMemorySize", 0);
 	
 	if (hydrazine::json::Value *parameterMemory =
 		object.find("parameterMemory")) {

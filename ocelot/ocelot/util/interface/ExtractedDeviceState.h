@@ -131,6 +131,9 @@ namespace util {
 			//! \brief shared memory size
 			size_t sharedMemorySize;
 			
+			//! \brief static shared memory size
+			size_t staticSharedMemorySize;
+			
 			//! \brief block of memory denoting parameter memory
 			ByteVector parameterMemory;
 		};

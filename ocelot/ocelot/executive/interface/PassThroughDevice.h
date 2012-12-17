@@ -193,6 +193,11 @@ namespace executive
 				comparison, serialize it to disk */
 			void _recordStatePostExecution();
 
+			/*! \brief Get the amount of static shared memory needed by a
+				specific kernel */
+			unsigned int _getStaticSharedMemorySize(const std::string& module, 
+				const std::string& kernel);
+			
 		private:
 			/*! \brief a counter for the number of kernels launched */
 			unsigned int _kernelCount;

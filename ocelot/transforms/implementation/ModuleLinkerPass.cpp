@@ -95,10 +95,11 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 	
 	StringSet encountered;
 	
-	for(auto kernel : _linkedModule->kernels())
+	for(auto kernel = _linkedModule->kernels().begin();
+		kernel != _linkedModule->kernels().end(); ++kernel)
 	{
-		for(auto block = kernel.second->cfg()->begin();
-			block != kernel.second->cfg()->end(); ++block)
+		for(auto block = kernel->second->cfg()->begin();
+			block != kernel->second->cfg()->end(); ++block)
 		{
 			for(auto instruction = block->instructions.begin();
 				instruction != block->instructions.end(); ++instruction)
@@ -123,7 +124,7 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 						continue;
 					}
 					
-					if(!containsSymbol(*_linkedModule, *kernel.second,
+					if(!containsSymbol(*_linkedModule, *kernel->second,
 						operand->identifier))
 					{
 						if(encountered.insert(operand->identifier).second)

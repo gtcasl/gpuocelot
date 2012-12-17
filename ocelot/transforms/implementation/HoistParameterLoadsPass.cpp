@@ -63,9 +63,10 @@ void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 	}
 	
 	report(" Attempting to hoist loads");
-	for(auto load : candidateLoads)
+	for(auto load = candidateLoads.begin();
+		load != candidateLoads.end(); ++load)
 	{
-		_tryHoistingLoad(load.first, load.second, k);
+		_tryHoistingLoad(load->first, load->second, k);
 	}
 	
 	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);

@@ -66,10 +66,10 @@ int link(const std::string& inputList, const std::string& output,
 		return -1;
 	}
 	
-	for(auto input : inputs)
+	for(auto input = inputs.begin(); input != inputs.end(); ++input)
 	{
-		report(" Loading module '" << input << "'");
-		ir::Module module(input);
+		report(" Loading module '" << *input << "'");
+		ir::Module module(*input);
 
 		transforms::PassManager manager(&module);
 		
@@ -83,7 +83,7 @@ int link(const std::string& inputList, const std::string& output,
 		catch(const std::exception& e)
 		{
 			std::cout << "Linker Error: link failed for module '"
-				<< input << "'.\n";
+				<< *input << "'.\n";
 			std::cout << " Message: " << e.what() << ".\n";
 			return -2;
 		}
@@ -104,9 +104,9 @@ int link(const std::string& inputList, const std::string& output,
 	{
 		auto symbols = linkerPass.getAllUndefinedSymbols();
 		
-		for(auto symbol : symbols)
+		for(auto symbol = symbols.begin(); symbol != symbols.end(); ++symbol)
 		{
-			std::cout << "Undefined symbol: '" << symbol << "'\n";
+			std::cout << "Undefined symbol: '" << *symbol << "'\n";
 		}
 		
 		if(!symbols.empty())

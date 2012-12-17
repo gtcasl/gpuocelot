@@ -66,9 +66,10 @@ bool containsSymbol(ir::Module& module, ir::PTXKernel& kernel,
 	if(kernel.parameters.count(symbol) != 0) return true;
 	    if(kernel.locals.count(symbol) != 0) return true;
 
-	for(auto argument : kernel.arguments)
+	for(auto argument = kernel.arguments.begin();
+		argument != kernel.arguments.end(); ++argument)
 	{
-		if(argument.name == symbol) return true;
+		if(argument->name == symbol) return true;
 	}
 	
 	 if(module.kernels().count(symbol) != 0) return true;
@@ -99,11 +100,12 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 		for(auto block = kernel.second->cfg()->begin();
 			block != kernel.second->cfg()->end(); ++block)
 		{
-			for(auto instruction : block->instructions)
+			for(auto instruction = block->instructions.begin();
+				instruction != block->instructions.end(); ++instruction)
 			{
 				typedef std::vector<ir::PTXOperand*> OperandVector;
 				
-				auto ptx = static_cast<ir::PTXInstruction*>(instruction);
+				auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
 			
 				OperandVector operands = {&ptx->a, &ptx->b, &ptx->pg,
 					&ptx->pq, &ptx->d};

@@ -67,7 +67,8 @@ executive::EmulatedKernel::EmulatedKernel(
 	bool _initialize) 
 : 
 	ExecutableKernel(*kernel, d),
-	CTA(0)
+	CTA(0),
+	_initialized(false)
 {
 	report("Created emulated kernel " << name);
 	assertM(kernel->ISA == ir::Instruction::PTX, 
@@ -81,11 +82,11 @@ executive::EmulatedKernel::EmulatedKernel(
 }
 
 executive::EmulatedKernel::EmulatedKernel(
-	Device* d): ExecutableKernel(d), CTA(0) {
+	Device* d): ExecutableKernel(d), CTA(0), _initialized(false) {
 	ISA = ir::Instruction::Emulated;
 }
 
-executive::EmulatedKernel::EmulatedKernel(): CTA(0) {
+executive::EmulatedKernel::EmulatedKernel(): CTA(0), _initialized(false) {
 	ISA = ir::Instruction::Emulated;
 }
 
@@ -171,16 +172,19 @@ void executive::EmulatedKernel::freeAll() {
 }
 
 void executive::EmulatedKernel::initialize() {
-	registerAllocation();
-	constructInstructionSequence();
-	initializeTextureMemory();
-	initializeSharedMemory();
-	initializeArgumentMemory();
-	initializeStackMemory();
-	updateParamReferences();
-	initializeLocalMemory();
-	initializeGlobalLocalMemory();
-	invalidateCallTargets();
+	if (!_initialized) {
+		_initialized = true;
+		registerAllocation();
+		constructInstructionSequence();
+		initializeTextureMemory();
+		initializeSharedMemory();
+		initializeArgumentMemory();
+		initializeStackMemory();
+		updateParamReferences();
+		initializeLocalMemory();
+		initializeGlobalLocalMemory();
+		invalidateCallTargets();
+	}
 }
 		
 void executive::EmulatedKernel::constructInstructionSequence() {
@@ -480,16 +484,19 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	ir::PTXOperand ir::PTXInstruction:: *operands[] = { &ir::PTXInstruction::d,
 		&ir::PTXInstruction::a, &ir::PTXInstruction::b, &ir::PTXInstruction::c
 	};
-	PTXInstructionVector::iterator 
-		i_it = instructions.begin();
+
+	bool hasCalls = false;
+
+	PTXInstructionVector::iterator i_it = instructions.begin();
 	for (; i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction &instr = *i_it;
+
+		hasCalls |= instr.isCall();
 
 		// look for mov and ld/st instructions
 		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
-
 					== ir::PTXOperand::Address) {
 					StringSet::iterator si = external.find(
 						(instr.*operands[n]).identifier);
@@ -547,6 +554,11 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 	// allocate shared memory object
 	_sharedMemorySize = sharedOffset;
 	
+	if (hasCalls) {
+		_sharedMemorySize = std::max(_sharedMemorySize,
+			_getSharedMemorySizeOfReachableKernels());
+	}
+
 	report("Total shared memory size is " << _sharedMemorySize);
 }
 
@@ -1234,9 +1246,9 @@ std::string executive::EmulatedKernel::location( unsigned int PC ) const {
 }
 
 std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
-
-	ProgramCounterBlockMap::const_iterator 
-		bt_it = basicBlockMap.lower_bound(PC);
+	
+	auto bt_it = basicBlockMap.lower_bound(PC);
+	
 	if (bt_it != basicBlockMap.end()) {
 		return bt_it->second;
 	}
@@ -1250,4 +1262,15 @@ std::pair<int,int> executive::EmulatedKernel::getBlockRange(
 	return blockPCRange.at(label); 
 }
 
+unsigned int executive::EmulatedKernel::_getSharedMemorySizeOfReachableKernels() const {
+	unsigned int size = 0;
+	
+	auto kernels = static_cast<EmulatorDevice*>(device)->getAllKernels();
+
+	for(auto kernel = kernels.begin(); kernel != kernels.end(); ++kernel) {
+		size = std::max(size, (*kernel)->sharedMemorySize());
+	}
+
+	return size;
+}
 

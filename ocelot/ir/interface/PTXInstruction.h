@@ -371,6 +371,8 @@ namespace ir {
 	public:
 		/*! \brief Is the instruction a branch */
 		bool isBranch() const;
+		/*! \brief Is the instruction a call */
+		bool isCall() const;
 		/*! \brief Is the instruction a load */
 		bool isLoad() const;
 		/*! \brief Is the instruction a store? */

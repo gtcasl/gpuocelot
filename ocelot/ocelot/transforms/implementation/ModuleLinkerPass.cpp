@@ -108,28 +108,34 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 				
 				auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
 			
-				OperandVector operands = {&ptx->a, &ptx->b, &ptx->pg,
-					&ptx->pq, &ptx->d};
+				OperandVector operands;
+				
+				operands.push_back(&ptx->a);
+				operands.push_back(&ptx->b);
+				operands.push_back(&ptx->pg);
+				operands.push_back(&ptx->pq);
+				operands.push_back(&ptx->d);
 				
 				if(ptx->opcode != ir::PTXInstruction::Call)
 				{
 					 operands.push_back(&ptx->c);
 				}
 			
-				for(auto operand : operands)
+				for(auto operand = operands.begin();
+					operand != operands.end(); ++operand)
 				{
-					if(operand->addressMode != ir::PTXOperand::Address &&
-						operand->addressMode != ir::PTXOperand::FunctionName)
+					if((*operand)->addressMode != ir::PTXOperand::Address &&
+						(*operand)->addressMode != ir::PTXOperand::FunctionName)
 					{
 						continue;
 					}
 					
 					if(!containsSymbol(*_linkedModule, *kernel->second,
-						operand->identifier))
+						(*operand)->identifier))
 					{
-						if(encountered.insert(operand->identifier).second)
+						if(encountered.insert((*operand)->identifier).second)
 						{
-							undefined.push_back(operand->identifier);
+							undefined.push_back((*operand)->identifier);
 						}
 					}
 				}
@@ -143,18 +149,19 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 void ModuleLinkerPass::_linkTextures(ir::Module& m)
 {
 	report(" Linking textures...");
-	for(auto texture : m.textures())
+	for(auto texture = m.textures().begin();
+		texture != m.textures().end(); ++texture)
 	{
-		report("  " << texture.first);
+		report("  " << texture->first);
 		
-		if(_linkedModule->textures().count(texture.first))
+		if(_linkedModule->textures().count(texture->first))
 		{
 			throw std::runtime_error(
 				"No support for duplicate textures YET (needed for '" +
-				texture.first + "')");
+				texture->first + "')");
 		}
 		
-		_linkedModule->insertTexture(texture.second);
+		_linkedModule->insertTexture(texture->second);
 	}
 }
 
@@ -213,30 +220,43 @@ static void findComplexUniqueName(ir::Module& module, std::string& name)
 static void replaceInstances(ir::Module& module, const std::string& oldName,
 	const std::string& newName)
 {
-	for(auto kernel : module.kernels())
+	for(auto kernel = module.kernels().begin();
+		kernel != module.kernels().end(); ++kernel)
 	{
-		for(auto block = kernel.second->cfg()->begin();
-			block != kernel.second->cfg()->end(); ++block)
+		for(auto block = kernel->second->cfg()->begin();
+			block != kernel->second->cfg()->end(); ++block)
 		{
-			for(auto instruction : block->instructions)
+			for(auto instruction = block->instructions.begin();
+				instruction != block->instructions.end(); ++instruction)
 			{
 				typedef std::vector<ir::PTXOperand*> OperandVector;
 				
-				auto ptx = static_cast<ir::PTXInstruction*>(instruction);
+				auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
 			
-				OperandVector operands = {&ptx->a, &ptx->b, &ptx->c, &ptx->pg,
-					&ptx->pq, &ptx->d};
-			
-				for(auto operand : operands)
+				OperandVector operands;
+				
+				operands.push_back(&ptx->a);
+				operands.push_back(&ptx->b);
+				operands.push_back(&ptx->pg);
+				operands.push_back(&ptx->pq);
+				operands.push_back(&ptx->d);
+				
+				if(ptx->opcode != ir::PTXInstruction::Call)
 				{
-					if(operand->addressMode != ir::PTXOperand::Address)
+					 operands.push_back(&ptx->c);
+				}
+				
+				for(auto operand = operands.begin();
+					operand != operands.end(); ++operand)
+				{
+					if((*operand)->addressMode != ir::PTXOperand::Address)
 					{
 						continue;
 					}
 					
-					if(operand->identifier == oldName)
+					if((*operand)->identifier == oldName)
 					{
-						operand->identifier = newName;
+						(*operand)->identifier = newName;
 					}
 				}
 			}
@@ -309,17 +329,18 @@ static void handleDuplicateGlobal(ir::Module& module, const ir::Global& global)
 void ModuleLinkerPass::_linkGlobals(ir::Module& m)
 {
 	report(" Linking globals...");
-	for(auto global : m.globals())
+	for(auto global = m.globals().begin();
+		global != m.globals().end(); ++global)
 	{
-		report("  " << global.second.name());
+		report("  " << global->second.name());
 		
-		if(_linkedModule->globals().count(global.first))
+		if(_linkedModule->globals().count(global->first))
 		{
-			handleDuplicateGlobal(*_linkedModule, global.second);
+			handleDuplicateGlobal(*_linkedModule, global->second);
 			continue;
 		}
 		
-		_linkedModule->insertGlobal(global.second);
+		_linkedModule->insertGlobal(global->second);
 	}
 }
 
@@ -360,19 +381,20 @@ static void handleDuplicateFunction(ir::Module& module,
 void ModuleLinkerPass::_linkFunctions(ir::Module& m)
 {
 	report(" Linking functions...");
-	for(auto function : m.kernels())
+	for(auto function = m.kernels().begin();
+		function != m.kernels().end(); ++function)
 	{
-		report("  " << function.second->getPrototype().toString());
+		report("  " << function->second->getPrototype().toString());
 		
-		if(_linkedModule->kernels().count(function.first))
+		if(_linkedModule->kernels().count(function->first))
 		{
-			handleDuplicateFunction(*_linkedModule, *function.second);
+			handleDuplicateFunction(*_linkedModule, *function->second);
 			continue;
 		}
 		
-		_linkedModule->insertKernel(new ir::PTXKernel(*function.second));
-		_linkedModule->addPrototype(function.second->name,
-			function.second->getPrototype());
+		_linkedModule->insertKernel(new ir::PTXKernel(*function->second));
+		_linkedModule->addPrototype(function->second->name,
+			function->second->getPrototype());
 	}
 }
 
@@ -400,17 +422,18 @@ static void handleDuplicatePrototype(ir::Module& module,
 void ModuleLinkerPass::_linkPrototypes(ir::Module& m)
 {
 	report(" Linking prototypes...");
-	for(auto prototype : m.prototypes())
+	for(auto prototype = m.prototypes().begin();
+		prototype != m.prototypes().end(); ++prototype)
 	{
-		report("  " << prototype.second.toString());
+		report("  " << prototype->second.toString());
 		
-		if(_linkedModule->prototypes().count(prototype.first))
+		if(_linkedModule->prototypes().count(prototype->first))
 		{
-			handleDuplicatePrototype(*_linkedModule, prototype.second);
+			handleDuplicatePrototype(*_linkedModule, prototype->second);
 			continue;
 		}
 		
-		_linkedModule->addPrototype(prototype.first, prototype.second);
+		_linkedModule->addPrototype(prototype->first, prototype->second);
 	}
 }
 

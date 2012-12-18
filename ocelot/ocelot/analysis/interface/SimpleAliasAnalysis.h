@@ -40,7 +40,8 @@ public:
 	bool canAlias(const ir::Instruction* store, const ir::Instruction* load);
 
 private:
-	bool _aStoreCanReachThisFunction;
+	bool          _aStoreCanReachThisFunction;
+	ir::IRKernel* _kernel;
 
 };
 

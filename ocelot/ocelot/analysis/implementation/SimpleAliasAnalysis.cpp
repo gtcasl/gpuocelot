@@ -14,7 +14,8 @@ namespace analysis
 {
 
 SimpleAliasAnalysis::SimpleAliasAnalysis()
-: KernelAnalysis(Analysis::SimpleAliasAnalysis, "SimpleAliasAnalysis")
+: KernelAnalysis(Analysis::SimpleAliasAnalysis, "SimpleAliasAnalysis"),
+	_aStoreCanReachThisFunction(true), _kernel(0)
 {
 
 }
@@ -23,6 +24,7 @@ void SimpleAliasAnalysis::analyze(ir::IRKernel& kernel)
 {
 	// Functions can be called
 	_aStoreCanReachThisFunction = !kernel.function();
+	_kernel = &kernel;
 	
 	if(_aStoreCanReachThisFunction) return;
 	
@@ -43,19 +45,39 @@ void SimpleAliasAnalysis::analyze(ir::IRKernel& kernel)
 	}
 }
 
+static bool referencesKernelArgument(ir::IRKernel* kernel,
+	const ir::PTXInstruction* load)
+{
+	if(load->a.addressMode == ir::PTXOperand::Address)
+	{
+		for(auto argument = kernel->arguments.begin();
+			argument != kernel->arguments.end(); ++argument)
+		{
+			if(load->a.identifier == argument->name) return true;
+		}
+	}
+	
+	return false;
+}
+
 bool SimpleAliasAnalysis::cannotAliasAnyStore(const ir::Instruction* load)
 {
 	if(!_aStoreCanReachThisFunction) return true;
 
 	auto ptx = static_cast<const ir::PTXInstruction*>(load);
 
-	if(ptx->addressSpace == ir::PTXInstruction::Param) return true;
+	if(ptx->addressSpace == ir::PTXInstruction::Param)
+	{
+		if(referencesKernelArgument(_kernel, ptx)) return true;
+	}
+	
 	if(ptx->addressSpace == ir::PTXInstruction::Const) return true;
 
 	return false;
 }
 
-bool SimpleAliasAnalysis::canAlias(const ir::Instruction* s, const ir::Instruction* l)
+bool SimpleAliasAnalysis::canAlias(const ir::Instruction* s,
+	const ir::Instruction* l)
 {
 	auto load  = static_cast<const ir::PTXInstruction*>(l);
 	auto store = static_cast<const ir::PTXInstruction*>(s);

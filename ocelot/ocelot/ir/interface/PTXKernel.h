@@ -158,6 +158,9 @@ namespace ir
 			unsigned int getSharedMemoryLayout(std::map<std::string, unsigned int> &globals, 
 				std::map<std::string, unsigned int> &locals) const;
 
+			/*! \brief gets the shared memory size of the kernel */
+			unsigned int sharedMemorySize() const;
+
 		public:
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */

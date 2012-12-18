@@ -614,6 +614,14 @@ unsigned int PTXKernel::getSharedMemoryLayout(
 	return sharedOffset;
 }
 
+unsigned int PTXKernel::sharedMemorySize() const
+{
+	std::map<std::string, unsigned int> globalOffsets;
+	std::map<std::string, unsigned int> localOffsets;	
+
+	return getSharedMemoryLayout(globalOffsets, localOffsets);
+}
+
 void PTXKernel::write(std::ostream& stream) const 
 {
 	writeWithEmitter(stream);

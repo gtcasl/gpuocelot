@@ -2534,6 +2534,10 @@ bool ir::PTXInstruction::isBranch() const {
 	return opcode == Bra || opcode == Call;
 }
 
+bool ir::PTXInstruction::isCall() const {
+	return opcode == Call;
+}
+
 bool ir::PTXInstruction::isLoad() const {
 	return opcode == Ld || opcode == Ldu;
 }

@@ -235,6 +235,9 @@ namespace executive {
 		/*! A handle to the current CTA, or 0 if none is executing */
 		CooperativeThreadArray* CTA;
 
+		/*! Is the kernel initizlied ? */
+		bool _initialized;
+
 	public:
 		/*! \brief Check to see if a memory access is valid */
 		bool checkMemoryAccess(const void* base, size_t size) const;
@@ -260,6 +263,10 @@ namespace executive {
 		/*! \brief accessor for obtaining PCs of first and
 			last instructions in a block */
 		std::pair<int,int> getBlockRange(const std::string &label) const;
+
+
+	public:
+		unsigned int _getSharedMemorySizeOfReachableKernels() const;
 	};
 
 }

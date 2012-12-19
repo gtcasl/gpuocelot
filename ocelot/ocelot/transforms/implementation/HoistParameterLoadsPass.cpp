@@ -32,6 +32,15 @@ HoistParameterLoadsPass::HoistParameterLoadsPass()
 	
 }
 
+static bool hasNoRegisterDependencies(const ir::PTXInstruction& ptx)
+{
+	if(ptx.pg.condition != ir::PTXOperand::PT) return false;
+	
+	if(ptx.a.isRegister()) return false;
+	
+	return true;
+}
+
 void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 {
 	typedef std::pair<ir::ControlFlowGraph::iterator, ir::PTXInstruction*> Load;
@@ -54,7 +63,8 @@ void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 			auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
 		
 			if(ptx->isLoad() &&
-				aliasAnalysis->cannotAliasAnyStore(*instruction))
+				aliasAnalysis->cannotAliasAnyStore(*instruction)
+				&& hasNoRegisterDependencies(*ptx))
 			{
 				report("  " << ptx->toString());
 				candidateLoads.push_back(std::make_pair(block, ptx));

@@ -53,12 +53,18 @@ namespace executive {
 		~CooperativeThreadArray();
 		
 		void reset();
+		
+		/*! initializes elements of the CTA */
+		void initialize(const ir::Dim3 & block);
 
 		/*! Initializes the CTA and executes the kernel for a given block */
-		void execute(const ir::Dim3& block, int PC = 0);
+		void execute(int PC = 0);
 		
 		/*! Jump to a specific PC for the current context */
 		void jumpToPC(int PC);
+
+		/*! Get the current PC of the executing CTA */
+		int getPC() const;
 
 		/* Get a snapshot of the current register file */
 		RegisterFile getCurrentRegisterFile() const;
@@ -66,12 +72,16 @@ namespace executive {
 		/*! gets the active context of the cooperative thread array */
 		CTAContext& getActiveContext();
 
+		/*! gets the active context of the cooperative thread array */
+		const CTAContext& getActiveContext() const;
+
 		/*! gets the context state of the currently active context */
 		CTAContext::ExecutionState getExecutionState() const;
 		
+		/*! sets the context state of the currently active context */
+		void setExecutionState(CTAContext::ExecutionState state);
+		
 	protected:
-		/*! initializes elements of the CTA */
-		void initialize(const ir::Dim3 & block);
 		
 		/*! finishes execution of the CTA */
 		void finalize();

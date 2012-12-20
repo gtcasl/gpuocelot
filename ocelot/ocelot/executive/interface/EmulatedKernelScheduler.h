@@ -55,16 +55,17 @@ private:
 	{
 	public:
 		typedef unsigned int          Priority;
+		typedef unsigned int          Id;
 		typedef std::list<Context>    ContextList;
 		typedef ContextList::iterator iterator;
 		typedef std::vector<iterator> ContextIteratorVector;
 		typedef std::vector<uint8_t>  ByteVector;
 
 	public:
-		Context(EmulatedKernel* kernel, const ir::Dim3& gridDimensions,
+		Context(Id id, EmulatedKernel* kernel, const ir::Dim3& gridDimensions,
 			const ir::Dim3& ctaDim,
 			iterator parent, EmulatedKernelScheduler* scheduler, Priority p);
-		Context(const EmulatedKernel* kernel, uint64_t pc,
+		Context(Id id, const EmulatedKernel* kernel, uint64_t pc,
 			const ir::Dim3& gridDimensions, const ir::Dim3& ctaDim,
 			const void* argumentData, size_t argumentSize, iterator parent,
 			EmulatedKernelScheduler* scheduler, Priority p);
@@ -77,10 +78,12 @@ private:
 		bool blockedOnChildren() const;
 
 	public:
+		Id              id;
 		EmulatedKernel* kernel;
 		uint64_t        startingPC;
 		ir::Dim3        gridDimensions;
 		ByteVector      argumentMemory;	
+		bool            isSuspended;
 
 	public:
 		iterator              parent;
@@ -109,6 +112,7 @@ private:
 	const EmulatedKernel* _getKernelAtPC(unsigned int PC) const;
 
 private:
+	Context::Id        _nextId;
 	ContextList        _contexts;
 	PriorityContextMap _executingContexts;
 

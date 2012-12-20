@@ -23,7 +23,7 @@ namespace executive
 {
 
 EmulatedKernelScheduler::EmulatedKernelScheduler(EmulatorDevice* owningDevice)
-: _device(owningDevice)
+: _nextId(0), _device(owningDevice)
 {
 
 }
@@ -33,13 +33,14 @@ void EmulatedKernelScheduler::launch(EmulatedKernel* kernel,
 	ExecutableKernel::TraceGeneratorVector* generators)
 {
 	report("Launching kernel " << kernel->name << " over grid (" << dimensions.x
-		<< ", " << dimensions.y << ", " << dimensions.z << ")");
+		<< ", " << dimensions.y << ", " << dimensions.z << ") (context "
+		<< _nextId << ")");
 	
 	kernel->scheduler = this;
 	_generators = generators;
 	
 	auto context = _contexts.insert(_contexts.end(),
-		Context(kernel, dimensions, kernel->blockDim(), _contexts.end(),
+		Context(_nextId++, kernel, dimensions, kernel->blockDim(), _contexts.end(),
 		this, 0));
 	
 	_executingContexts.insert(std::make_pair(context->priority, context));
@@ -58,12 +59,20 @@ void EmulatedKernelScheduler::launch(ir::PTXU64 pc, ir::PTXU64 parameterBuffer,
 	report(" Launching nested kernel " << kernel->name << " over grid ("
 		<< gridDim.x << ", " << gridDim.y << ", " << gridDim.z
 		<< ") with cta (" << ctaDim.x << ", " << ctaDim.y << ", " << ctaDim.z
-		<< ") at PC " << pc);
+		<< ") at PC " << pc << " (context " << _nextId << ")");
 	
-	auto context = _contexts.insert(_contexts.end(), Context(kernel, pc, gridDim,
-		ctaDim, (const void*) parameterBuffer, kernel->argumentMemorySize(),
-		_getExecutingContext(), this, _getExecutingContext()->priority + 1));
+	auto context = _contexts.insert(_contexts.end(), Context(_nextId++,
+		kernel, pc, gridDim, ctaDim, (const void*) parameterBuffer,
+		kernel->argumentMemorySize(), _getExecutingContext(), this,
+		_getExecutingContext()->priority + 1));
 
+	// Add to parent
+	auto parent = _getExecutingContext();
+	report("  attaching to parent context " << parent->id);
+	
+	parent->children.push_back(context);
+
+	// Add to pool of executing contexts
 	_executingContexts.insert(std::make_pair(context->priority, context));
 }
 
@@ -83,9 +92,13 @@ void EmulatedKernelScheduler::_scheduler()
 		context->executeUntilYield();
 
 		_executingContexts.erase(contextIterator);
-			
+		
+		report("  context " << context->id << " running kernel "
+			<< context->kernel->name << " yielded");
+		
 		if(context->exited())
 		{
+			report("   it exited");
 			bool hasParent = context->hasParent();
 
 			if(hasParent)
@@ -99,13 +112,26 @@ void EmulatedKernelScheduler::_scheduler()
 				
 				parent->children.erase(child);
 				
+				report("    disconnecting from parent "
+					<< parent->kernel->name << " (context "
+					<< parent->id << ")");
+	
 				if(wasBlocked && !parent->blockedOnChildren())
 				{
+					report("     waking up parent");
 					_executingContexts.insert(std::make_pair(
 						parent->priority, parent));
 				}
 			}
 
+			// detach all children
+			for(auto child = context->children.begin();
+				child != context->children.end(); ++child)
+			{
+				assert((*child)->parent == context);
+				(*child)->parent = _contexts.end();
+			}
+			
 			_contexts.erase(context);
 		}
 	}
@@ -124,10 +150,11 @@ const EmulatedKernel* EmulatedKernelScheduler::_getKernelAtPC(
 	return _getExecutingContext()->kernel->getKernel(pc);
 }
 
-EmulatedKernelScheduler::Context::Context(EmulatedKernel* k,
+EmulatedKernelScheduler::Context::Context(Id i, EmulatedKernel* k,
 	const ir::Dim3& g, const ir::Dim3& c, iterator p,
 	EmulatedKernelScheduler* s, Priority pr)
-: kernel(k), startingPC(0), gridDimensions(g), argumentMemory(k->ArgumentMemory,
+: id(i), kernel(k), startingPC(0), gridDimensions(g),
+	argumentMemory(k->ArgumentMemory,
 		k->ArgumentMemory + k->argumentMemorySize()),
 	 parent(p), priority(pr),  _scheduler(s),
 	_cta(new CooperativeThreadArray(k, g, c, k->argumentMemorySize(),
@@ -139,10 +166,10 @@ EmulatedKernelScheduler::Context::Context(EmulatedKernel* k,
 	
 }
 		
-EmulatedKernelScheduler::Context::Context(const EmulatedKernel* k,
+EmulatedKernelScheduler::Context::Context(Id i, const EmulatedKernel* k,
 	uint64_t pc, const ir::Dim3& g, const ir::Dim3& c, const void* d,
 	size_t size, iterator p, EmulatedKernelScheduler* s, Priority pr)
-: kernel(p->kernel), startingPC(pc), gridDimensions(g),
+: id(i), kernel(p->kernel), startingPC(pc), gridDimensions(g),
 	argumentMemory((uint8_t*)d, (uint8_t*)d + size), parent(p),
 	priority(pr), _scheduler(s),
 	_cta(new CooperativeThreadArray(p->kernel, g, c, k->argumentMemorySize(),
@@ -167,8 +194,20 @@ void EmulatedKernelScheduler::Context::executeUntilYield()
 		{
 			for(int x = startingPoint.x; x < grid.x; ++x)
 			{
-				report("  cta: " << x << ", " << y << ", " << z);	
-				_cta->execute(ir::Dim3(x, y, z), startingPC);
+				report("  cta: " << x << ", " << y << ", " << z << ", pc "
+					<< startingPC);
+				
+				if(_cta->getExecutionState() != CTAContext::Barrier)
+				{
+					_cta->initialize(ir::Dim3(x, y, z));
+				}
+				else
+				{
+					report("   resuming");
+					_cta->setExecutionState(CTAContext::Running);
+				}
+
+				_cta->execute(startingPC);
 				
 				CTAContext::ExecutionState state = _cta->getExecutionState();
 
@@ -179,6 +218,7 @@ void EmulatedKernelScheduler::Context::executeUntilYield()
 					if(state == CTAContext::Barrier)
 					{
 						_positionInGrid = ir::Dim3(x, y, z);
+						startingPC = _cta->getPC() + 1;
 						
 						_yieldBarrier();
 
@@ -219,11 +259,13 @@ bool EmulatedKernelScheduler::Context::blockedOnChildren() const
 void EmulatedKernelScheduler::Context::_yieldExit()
 {
 	delete _cta;
+	_cta = 0;
 	kernel->setCTA(0);
 }
 
 void EmulatedKernelScheduler::Context::_yieldBarrier()
 {
+	report("kernel " << kernel->name << " yielded and blocked on children");	
 	kernel->setCTA(0);
 }
 

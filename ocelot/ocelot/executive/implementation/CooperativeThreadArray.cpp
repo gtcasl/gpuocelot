@@ -409,8 +409,8 @@ void executive::CooperativeThreadArray::initialize(const ir::Dim3 & block) {
 	counter = 0;
 	blockId = block;
 
-	currentEvent.blockId = blockId;
-	currentEvent.gridDim = gridDim;
+	currentEvent.blockId  = blockId;
+	currentEvent.gridDim  = gridDim;
 	currentEvent.blockDim = blockDim;
 	
 	reset();
@@ -424,17 +424,17 @@ void executive::CooperativeThreadArray::finalize() {
 /*!
 	Called by the worker thread to evaluate a block
 */
-void executive::CooperativeThreadArray::execute(const ir::Dim3& block, int PC) {
+void executive::CooperativeThreadArray::execute(int PC) {
 	using namespace ir;
 
-	initialize(block);
 	jumpToPC(PC);
 	
 	bool running = true;
 	assert(reconvergenceMechanism->stackSize());
 	
 	report("CooperativeThreadArray::execute called");
-	report("  block is " << block.x << ", " << block.y << ", " << block.z);
+	report("  block is " << blockId.x << ", "
+		<< blockId.y << ", " << blockId.z);
 	reportE(REPORT_STATIC_INSTRUCTIONS, "Running " << kernel->toString());
 
 	do {
@@ -625,6 +625,12 @@ void executive::CooperativeThreadArray::jumpToPC(int PC) {
 	getActiveContext().PC = PC;
 }
 
+int executive::CooperativeThreadArray::getPC() const {
+	assert(reconvergenceMechanism->stackSize() != 0);
+	
+	return getActiveContext().PC;
+}
+
 executive::CooperativeThreadArray::RegisterFile 
 	executive::CooperativeThreadArray::getCurrentRegisterFile() const {
 	RegisterFile file(threadCount * functionCallStack.registerCount());	
@@ -645,9 +651,19 @@ executive::CTAContext & executive::CooperativeThreadArray::getActiveContext() {
 	return reconvergenceMechanism->getContext();
 }
 
+const executive::CTAContext & executive::CooperativeThreadArray::getActiveContext() const {
+	return reconvergenceMechanism->getContext();
+}
+
 executive::CTAContext::ExecutionState
 	executive::CooperativeThreadArray::getExecutionState() const {
 	return reconvergenceMechanism->getContext().executionState;
+}
+
+void executive::CooperativeThreadArray::setExecutionState(
+	executive::CTAContext::ExecutionState state) {
+
+	reconvergenceMechanism->getContext().executionState = state;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

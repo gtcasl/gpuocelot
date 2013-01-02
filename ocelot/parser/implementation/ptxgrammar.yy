@@ -709,9 +709,12 @@ returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
 returnTypeList : '(' returnTypeListBody ')' | '(' ')' | /* empty string */;
 
-argumentType : parameter dataTypeId optionalIdentifier
+optionalAlignment : /* empty string */ | alignment;
+
+argumentType : parameter optionalAlignment dataTypeId
+	optionalIdentifier arrayDimensions
 {
-	state.argumentType( $<value>2 );
+	state.argumentType( $<value>3 );
 };
 
 argumentTypeListBody : argumentType;

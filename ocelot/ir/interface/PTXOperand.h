@@ -191,6 +191,7 @@ namespace ir {
 		std::string registerName() const;
 		unsigned int bytes() const;
 		bool isRegister() const;
+		bool isVector() const;
 
 		//! identifier of operand
 		std::string identifier;

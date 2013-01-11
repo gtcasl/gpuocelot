@@ -39,6 +39,17 @@ void FunctionInliningPass::initialize(const ir::Module& m)
 void FunctionInliningPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running function inlining pass on kernel " << k.name);
+	// No support for SSA
+	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(analysis != 0);
+	
+	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
+	
+	if(dfg->ssa() != analysis::DataflowGraph::None)
+	{
+		dfg->fromSsa();
+	}
+	
 	// Get the set of all function calls that satisfy the inlining criteria
 	_getFunctionsToInline(k);
 

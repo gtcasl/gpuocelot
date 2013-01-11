@@ -26,7 +26,7 @@ namespace transforms
 
 FunctionInliningPass::FunctionInliningPass(unsigned int threshold)
 : KernelPass(Analysis::DataflowGraphAnalysis, "FunctionInliningPass"),
-	thresholdToInline(threshold)
+	thresholdToInline(threshold), _nextRegister(0)
 {
 
 }
@@ -39,16 +39,13 @@ void FunctionInliningPass::initialize(const ir::Module& m)
 void FunctionInliningPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running function inlining pass on kernel " << k.name);
-	// No support for SSA
+	
 	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
-	
-	if(dfg->ssa() != analysis::DataflowGraph::None)
-	{
-		dfg->fromSsa();
-	}
+
+	_nextRegister = dfg->maxRegister() + 1;
 	
 	// Get the set of all function calls that satisfy the inlining criteria
 	_getFunctionsToInline(k);
@@ -153,7 +150,7 @@ typedef std::unordered_map<ir::ControlFlowGraph::const_iterator,
 static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 	ir::ControlFlowGraph::iterator& functionEntry,
 	ir::ControlFlowGraph::iterator& functionExit,
-	ir::IRKernel& kernel, analysis::DataflowGraph& dfg,
+	ir::IRKernel& kernel, unsigned int& nextRegister,
 	const ir::IRKernel& inlinedKernel)
 {
 	typedef std::unordered_map<ir::PTXOperand::RegisterType,
@@ -245,7 +242,7 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 						if(mapping == newRegisters.end())
 						{
 							mapping = newRegisters.insert(std::make_pair(
-								operand.reg, dfg.newRegister())).first;
+								operand.reg, nextRegister++)).first;
 						}
 						
 						operand.reg = mapping->second;
@@ -262,7 +259,7 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 							if(mapping == newRegisters.end())
 							{
 								mapping = newRegisters.insert(std::make_pair(
-									subOperand->reg, dfg.newRegister())).first;
+									subOperand->reg, nextRegister++)).first;
 							}
 						
 							subOperand->reg = mapping->second;
@@ -279,7 +276,7 @@ static void insertAndConnectBlocks(BasicBlockMap& newBlocks,
 						if(mapping == newRegisters.end())
 						{
 							mapping = newRegisters.insert(std::make_pair(
-								operand.reg, dfg.newRegister())).first;
+								operand.reg, nextRegister++)).first;
 						}
 						
 						operand.reg = mapping->second;
@@ -592,11 +589,6 @@ void FunctionInliningPass::_inlineSelectedFunctions(ir::IRKernel& k)
 {
 	report(" Inlining selected calls...");
 	
-	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
-	assert(analysis != 0);
-	
-	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
-
 	for(auto call = _calls.begin(); call != _calls.end(); ++call)
 	{
 		if(call->calledKernel->cfg()->instructionCount() > thresholdToInline)
@@ -615,7 +607,7 @@ void FunctionInliningPass::_inlineSelectedFunctions(ir::IRKernel& k)
 
 		// Insert and connect the blocks from the inlined kernel
 		insertAndConnectBlocks(newBlocks, functionEntry, functionExit,
-			k, *dfg, *call->calledKernel);
+			k, _nextRegister, *call->calledKernel);
 		
 		// Convert parameter accesses into register accesses
 		convertParametersToRegisters(newBlocks, k, call->call,

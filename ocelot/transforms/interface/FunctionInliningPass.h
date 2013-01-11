@@ -68,6 +68,7 @@ private:
 
 private:
 	FunctionDescriptorVector _calls;
+	unsigned int             _nextRegister;
 };
 
 }

@@ -226,10 +226,12 @@ void ir::Module::loadNow() {
 	else
 	{
 		if (!_ptxPointer) {
-			report("Module::loadNow() - path: '" << path() << "' contains no PTX");
+			report("Module::loadNow() - path: '" << path()
+				<< "' contains no PTX");
 		}
 		else {
-			report("Module::loadNow() - contains PTX string literal:\n\n" << _ptxPointer << "\n");
+			report("Module::loadNow() - contains PTX string literal:\n\n"
+				<< _ptxPointer << "\n");
 		}
 		
 		
@@ -407,6 +409,14 @@ ir::Texture* ir::Module::insertTexture(const Texture& texture) {
 	}
 	
 	return &insertion.first->second;
+}
+
+void ir::Module::removeTexture(const std::string& name) {
+	loadNow();
+	TextureMap::iterator texture = _textures.find(name);
+	if (texture != _textures.end()) {
+		_textures.erase(texture);
+	}
 }
 
 ir::Global* ir::Module::getGlobal(const std::string& name) {

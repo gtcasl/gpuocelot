@@ -27,8 +27,9 @@
 namespace transforms
 {
 
-ModuleLinkerPass::ModuleLinkerPass()
-: ModulePass(Analysis::NoAnalysis, "ModuleLinkerPass"), _linkedModule(nullptr)
+ModuleLinkerPass::ModuleLinkerPass(bool inPlace)
+: ModulePass(Analysis::NoAnalysis, "ModuleLinkerPass"), _linkedModule(nullptr),
+	_inPlace(inPlace)
 {
 	
 }
@@ -44,9 +45,18 @@ void ModuleLinkerPass::runOnModule(ir::Module& m)
 	
 	if(_linkedModule == nullptr)
 	{
-		_linkedModule = new ir::Module;
+		if(_inPlace)
+		{
+			_linkedModule = &m;
+			
+			return;
+		}
+		else
+		{
+			_linkedModule = new ir::Module;
 		
-		_linkedModule->isLoaded();
+			_linkedModule->isLoaded();
+		}
 	}
 
 	_linkTextures(m);

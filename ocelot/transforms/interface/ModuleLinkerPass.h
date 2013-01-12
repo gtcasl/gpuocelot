@@ -20,7 +20,7 @@ public:
 
 public:
 	/*! \brief Create the pass, create dependencies */
-	ModuleLinkerPass();
+	ModuleLinkerPass(bool modifyModuleInPlace = false);
 	~ModuleLinkerPass();
 
 public:
@@ -49,6 +49,7 @@ public:
 
 private:
 	ir::Module* _linkedModule;
+	bool        _inPlace;
 };
 
 

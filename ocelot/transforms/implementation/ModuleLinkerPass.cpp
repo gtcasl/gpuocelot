@@ -187,6 +187,8 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllSymbolsUsedByKernel(
 {
 	StringSet usedSymbols;
 
+	usedSymbols.insert(kernelName);
+
 	StringVector unprocessedSymbols = getAllSymbolsUsedByThisKernel(
 		kernelName, _linkedModule);
 	

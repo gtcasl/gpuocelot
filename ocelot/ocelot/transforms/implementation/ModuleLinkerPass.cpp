@@ -36,7 +36,7 @@ ModuleLinkerPass::ModuleLinkerPass(bool inPlace)
 
 ModuleLinkerPass::~ModuleLinkerPass()
 {
-	delete _linkedModule;
+	if(!_inPlace) delete _linkedModule;
 }
 
 void ModuleLinkerPass::runOnModule(ir::Module& m)

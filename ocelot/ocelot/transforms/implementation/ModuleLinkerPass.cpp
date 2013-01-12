@@ -220,23 +220,63 @@ static void removeSymbol(ir::Module* module, const std::string& symbol)
 	{
 		module->removeKernel(symbol);
 	}
-	
-	if(module->textures().count(symbol) != 0)
+	else if(module->textures().count(symbol) != 0)
 	{
 		module->removeTexture(symbol);
 	}
-	
-	if(module->globals().count(symbol) != 0)
+	else if(module->globals().count(symbol) != 0)
 	{
 		module->removeGlobal(symbol);
 	}
+	else if(module->prototypes().count(symbol) != 0)
+	{
+		module->removePrototype(symbol);
+	}
 }
 
-void ModuleLinkerPass::deleteAllSymbolsExceptThese(const StringVector& symbols)
+static StringVector getAllSymbols(ir::Module* module)
 {
+	StringVector symbols;
+	
+	for(auto kernel = module->kernels().begin();
+		kernel != module->kernels().end(); ++kernel)
+	{
+		symbols.push_back(kernel->first);
+	}
+	
+	for(auto prototype = module->prototypes().begin();
+		prototype != module->prototypes().end(); ++prototype)
+	{
+		symbols.push_back(prototype->first);
+	}
+	
+	for(auto global = module->globals().begin();
+		global != module->globals().end(); ++global)
+	{
+		symbols.push_back(global->first);
+	}
+	
+	for(auto texture = module->textures().begin();
+		texture != module->textures().end(); ++texture)
+	{
+		symbols.push_back(texture->first);
+	}
+	
+	return symbols;
+}
+
+void ModuleLinkerPass::deleteAllSymbolsExceptThese(
+	const StringVector& symbolsToKeep)
+{
+	StringSet keptSymbols(symbolsToKeep.begin(), symbolsToKeep.end());
+	
+	auto symbols = getAllSymbols(_linkedModule);
+	
 	for(auto symbol = symbols.begin();
 		symbol != symbols.end(); ++symbol)
 	{
+		if(keptSymbols.count(*symbol) != 0) continue;
+		
 		removeSymbol(_linkedModule, *symbol);
 	}
 }

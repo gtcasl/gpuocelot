@@ -85,65 +85,150 @@ bool containsSymbol(ir::Module& module, ir::PTXKernel& kernel,
 	return false;
 }
 
+typedef std::set<std::string>    StringSet;
+typedef std::vector<std::string> StringVector;
+	
+static StringVector getAllSymbolsUsedByThisKernel(
+	const std::string& kernelName, ir::Module* module)
+{
+	auto kernel = module->kernels().find(kernelName);
+
+	if(kernel == module->kernels().end()) return StringVector();
+	
+	StringSet encountered;
+	
+	for(auto block = kernel->second->cfg()->begin();
+		block != kernel->second->cfg()->end(); ++block)
+	{
+		for(auto instruction = block->instructions.begin();
+			instruction != block->instructions.end(); ++instruction)
+		{
+			typedef std::vector<ir::PTXOperand*> OperandVector;
+			
+			auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
+		
+			OperandVector operands;
+			
+			operands.push_back(&ptx->a);
+			operands.push_back(&ptx->b);
+			operands.push_back(&ptx->pg);
+			operands.push_back(&ptx->pq);
+			operands.push_back(&ptx->d);
+			
+			if(ptx->opcode != ir::PTXInstruction::Call)
+			{
+				 operands.push_back(&ptx->c);
+			}
+		
+			for(auto operand = operands.begin();
+				operand != operands.end(); ++operand)
+			{
+				if((*operand)->addressMode != ir::PTXOperand::Address &&
+					(*operand)->addressMode != ir::PTXOperand::FunctionName)
+				{
+					continue;
+				}
+				
+				encountered.insert((*operand)->identifier);
+			}
+		}
+	}
+	
+	return StringVector(encountered.begin(), encountered.end());
+}
+	
 ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 {
 	StringVector undefined;
 	
 	if(_linkedModule == nullptr) return undefined;
 	
-	typedef std::set<std::string> StringSet;
-	
 	StringSet encountered;
 	
 	for(auto kernel = _linkedModule->kernels().begin();
 		kernel != _linkedModule->kernels().end(); ++kernel)
 	{
-		for(auto block = kernel->second->cfg()->begin();
-			block != kernel->second->cfg()->end(); ++block)
+		auto symbolsUsedByKernel = getAllSymbolsUsedByThisKernel(kernel->first,	
+			_linkedModule);
+		
+		for(auto symbol = symbolsUsedByKernel.begin();
+			symbol != symbolsUsedByKernel.end(); ++symbol)
 		{
-			for(auto instruction = block->instructions.begin();
-				instruction != block->instructions.end(); ++instruction)
+			if(!encountered.insert(*symbol).second) continue;
+			
+			if(!containsSymbol(*_linkedModule, *kernel->second, *symbol))
 			{
-				typedef std::vector<ir::PTXOperand*> OperandVector;
-				
-				auto ptx = static_cast<ir::PTXInstruction*>(*instruction);
-			
-				OperandVector operands;
-				
-				operands.push_back(&ptx->a);
-				operands.push_back(&ptx->b);
-				operands.push_back(&ptx->pg);
-				operands.push_back(&ptx->pq);
-				operands.push_back(&ptx->d);
-				
-				if(ptx->opcode != ir::PTXInstruction::Call)
-				{
-					 operands.push_back(&ptx->c);
-				}
-			
-				for(auto operand = operands.begin();
-					operand != operands.end(); ++operand)
-				{
-					if((*operand)->addressMode != ir::PTXOperand::Address &&
-						(*operand)->addressMode != ir::PTXOperand::FunctionName)
-					{
-						continue;
-					}
-					
-					if(!containsSymbol(*_linkedModule, *kernel->second,
-						(*operand)->identifier))
-					{
-						if(encountered.insert((*operand)->identifier).second)
-						{
-							undefined.push_back((*operand)->identifier);
-						}
-					}
-				}
+				undefined.push_back(*symbol);
 			}
 		}
 	}
 	
 	return undefined;
+}
+
+static bool isKernelSymbol(ir::Module* module,
+	const std::string& symbol)
+{
+	return module->kernels().count(symbol) != 0;
+}
+
+ModuleLinkerPass::StringVector ModuleLinkerPass::getAllSymbolsUsedByKernel(
+	const std::string& kernelName) const
+{
+	StringSet usedSymbols;
+
+	StringVector unprocessedSymbols = getAllSymbolsUsedByThisKernel(
+		kernelName, _linkedModule);
+	
+	while(!unprocessedSymbols.empty())
+	{
+		StringVector newSymbols;
+	
+		for(auto symbol = unprocessedSymbols.begin();
+			symbol != unprocessedSymbols.end(); ++symbol)
+		{
+			if(!usedSymbols.insert(*symbol).second) continue;
+		
+			if(!isKernelSymbol(_linkedModule, *symbol)) continue;
+		
+			StringVector kernelSymbols = getAllSymbolsUsedByThisKernel(
+				*symbol, _linkedModule);
+				
+			newSymbols.insert(newSymbols.end(), kernelSymbols.begin(),
+				kernelSymbols.end());
+		}
+		
+		unprocessedSymbols = std::move(newSymbols);
+	}
+	
+	return StringVector(usedSymbols.begin(), usedSymbols.end());
+}
+
+static void removeSymbol(ir::Module* module, const std::string& symbol)
+{
+	if(module->kernels().count(symbol) != 0)
+	{
+		module->removeKernel(symbol);
+	}
+	
+	if(module->textures().count(symbol) != 0)
+	{
+		module->removeTexture(symbol);
+	}
+	
+	if(module->globals().count(symbol) != 0)
+	{
+		module->removeGlobal(symbol);
+	}
+}
+
+void ModuleLinkerPass::deleteAllSymbolsExceptThese(const StringVector& symbols)
+{
+	for(auto symbol = symbols.begin();
+		symbol != symbols.end(); ++symbol)
+	{
+		removeSymbol(_linkedModule, *symbol);
+	}
 }
 
 void ModuleLinkerPass::_linkTextures(ir::Module& m)

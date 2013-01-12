@@ -160,6 +160,7 @@ namespace ir {
 			\return pointer to texture instance being inserted
 		*/
 		Texture* insertTexture(const Texture& texture);
+		void removeTexture(const std::string& name);
 
 		/*! \brief Gets a global instance by name. 
 

@@ -30,7 +30,11 @@ public:
 public:
 	ir::Module* linkedModule() const;
 	StringVector getAllUndefinedSymbols() const;
-	
+
+public:
+	StringVector getAllSymbolsUsedByKernel(const std::string& kernelName) const;
+	void deleteAllSymbolsExceptThese(const StringVector& symbolsToKeep);
+
 public:
 	#ifndef _WIN32
 	ModuleLinkerPass(const ModuleLinkerPass&) = delete;

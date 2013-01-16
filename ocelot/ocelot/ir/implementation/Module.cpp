@@ -339,7 +339,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 			prot_it != _prototypes.end(); ++prot_it) {
 		
 			if (prot_it->second.identifier != "") {
-				stream << prot_it->second.toString(emitterTarget) << "\n";
+				stream << prot_it->second.toString(emitterTarget) << ";\n";
 				encounteredPrototypes.insert(prot_it->second.identifier);
 			}
 		}
@@ -348,7 +348,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 			kernel != _kernels.end(); ++kernel) {
 			if (encounteredPrototypes.count((kernel->second)->name) == 0) {
 			
-				stream << kernel->second->getPrototype().toString(emitterTarget) << "\n";
+				stream << kernel->second->getPrototype().toString(emitterTarget) << ";\n";
 				encounteredPrototypes.insert(kernel->second->name);
 			}
 		}

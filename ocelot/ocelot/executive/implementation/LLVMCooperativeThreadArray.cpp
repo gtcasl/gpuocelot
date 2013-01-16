@@ -108,6 +108,7 @@ void LLVMCooperativeThreadArray::_executeSimpleCta(unsigned int id)
 			for(unsigned int x = 0; x < context.ntid.x; ++x)
 			{
 				context.tid.x = x;
+				context.laneid = _threadId(context) % _warpSize;
 				metadata->function(&context);
 			}		
 		}
@@ -312,6 +313,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 			metadata.globalLocalSize * threadId;
 		context.externalSharedSize  = _kernel->externSharedMemorySize();
 		context.metadata            = reinterpret_cast<char*>(&metadata);
+		context.laneid    = threadId %  _warpSize;
 	}
 	else
 	{
@@ -323,6 +325,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.tid.x = threadId % context.ntid.x;
 		context.tid.y = (threadId / context.ntid.x) % context.ntid.y;
 		context.tid.z = threadId / (context.ntid.x * context.ntid.y);
+		context.laneid    = threadId %  _warpSize;
 	}	
 	
 	return contextId;

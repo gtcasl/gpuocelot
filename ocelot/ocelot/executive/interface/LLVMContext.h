@@ -41,6 +41,9 @@ public:
 	char* globallyScopedLocal; //! Pointer to globally scoped local memory
 	
 public:
+	unsigned int laneid; //! lane id
+
+public:
 	unsigned int externalSharedSize; //! External shared size
 
 public:

@@ -76,7 +76,7 @@ class ExecutiveConfig:
 		self.host                     = "127.0.0.1"
 		self.reconvergenceMechanism   = "ipdom"
 		self.workerThreadLimit        = 8
-		self.warpSize                 = 1
+		self.warpSize                 = 32
 
 	def write(self, openFile):
 		openFile.write("\texecutive: {\n")

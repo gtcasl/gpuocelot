@@ -161,7 +161,7 @@ api::OcelotConfiguration::Executive::Executive():
 	enableNVIDIA(true),
 	enableAMD(true),
 	enableRemote(false),
-	asynchronousKernelLaunch(false),
+	asynchronousKernelLaunch(true),
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
@@ -287,7 +287,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
 	executive.enableRemote = config.parse<bool>("enableRemote", false);
 	executive.asynchronousKernelLaunch =
-		config.parse<bool>("asynchronousKernelLaunch", false);
+		config.parse<bool>("asynchronousKernelLaunch", true);
 	executive.port = config.parse<int>("port", 2011);
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);

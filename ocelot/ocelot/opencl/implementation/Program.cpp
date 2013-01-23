@@ -14,6 +14,7 @@ unsigned int opencl::Program::_id = 0;
 std::string opencl::Program::_loadBackDoor() {
 
 	//Temorarily load ptx file as built binary
+	std::cerr << "Ocelot-OpenCL: using backdoor PTX now...\n";
 	std::ifstream binary("buildout.ptx"); 
 	if(binary.fail()) {
 		assertM(false, "using build backdoor but buildout.ptx not found");

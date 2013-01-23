@@ -252,6 +252,7 @@ void opencl::Kernel::launchOnDevice(Device * device)
 		traceGens.insert(traceGens.end(),
 			runtime->nextTraceGenerators.begin(), 
 			runtime->nextTraceGenerators.end());
+		runtime->nextTraceGenerators.clear();
 
 //		_inExecute = true;
 

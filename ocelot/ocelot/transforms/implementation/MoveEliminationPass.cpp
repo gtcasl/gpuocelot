@@ -191,8 +191,10 @@ static void propagateMoveSourceToUsersInBlock(instruction_iterator move,
 	if(!visited.insert(block->id()).second) return;
 
 	assert(move->d.size() == 1);
+	assert(move->s.size() == 1);
 
 	auto destination = *move->d.front().pointer;
+	auto moveSource  = *move->s.front().pointer;
 	
 	// We can skip PHIs because the use of a PHI would make the removal illegal
 
@@ -201,7 +203,10 @@ static void propagateMoveSourceToUsersInBlock(instruction_iterator move,
 	{
 		for(auto source : position->s)
 		{
-			*source.pointer = destination;
+			if(*source.pointer == destination)
+			{
+				*source.pointer = moveSource;
+			}
 		}
 	}
 	

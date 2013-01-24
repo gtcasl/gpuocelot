@@ -548,7 +548,7 @@ entryDeclaration : entryName optionalArgumentList performanceDirectives
 
 entry : entryDeclaration openBrace entryStatements closeBrace;
 
-entry : entryDeclaration ';' 
+entry : entryDeclaration ';'
 {
 	state.entryPrototype( @1 );
 };

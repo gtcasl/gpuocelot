@@ -27,6 +27,7 @@
 #include <ocelot/transforms/interface/ConstantPropagationPass.h>
 #include <ocelot/transforms/interface/SharedPtrAttribute.h>
 #include <ocelot/transforms/interface/HoistParameterLoadsPass.h>
+#include <ocelot/transforms/interface/MoveEliminationPass.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -116,6 +117,10 @@ Pass* PassFactory::createPass(const std::string& name)
 	else if (name == "hoist-parameters" || name == "HoistParameterLoadsPass")
 	{
 		return new transforms::HoistParameterLoadsPass;
+	}
+	else if (name == "move-elimination" || name == "MoveEliminationPass")
+	{
+		return new transforms::MoveEliminationPass;
 	}
 	else
 	{

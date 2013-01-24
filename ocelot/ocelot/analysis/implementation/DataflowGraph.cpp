@@ -518,6 +518,11 @@ ir::ControlFlowGraph::const_iterator DataflowGraph::Block::block() const
 	return _block;
 }
 
+DataflowGraph* DataflowGraph::Block::dfg()
+{
+	return _dfg;
+}
+
 DataflowGraph::DataflowGraph()  
 	: KernelAnalysis(Analysis::DataflowGraphAnalysis,
 		"DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 

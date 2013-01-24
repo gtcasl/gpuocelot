@@ -167,6 +167,13 @@ static bool isVectorMove(instruction_iterator move)
 	return move->d.size() > 1;
 }
 
+static bool typesMatch(instruction_iterator move)
+{
+	auto ptx = toPTX(move);
+	
+	return ir::PTXOperand::valid(ptx->d.type, ptx->a.type);
+}
+
 static bool canEliminate(instruction_iterator move)
 {
 	// Does the move source a register?
@@ -181,6 +188,9 @@ static bool canEliminate(instruction_iterator move)
 	// Do all definitions of the move source dominate the move?
 	if(!allDefinitionsDominateMove(move)) return false;
 	
+	// Does the source type match the destination type?
+	if(!typesMatch(move)) return false;
+
 	return true;
 }
 

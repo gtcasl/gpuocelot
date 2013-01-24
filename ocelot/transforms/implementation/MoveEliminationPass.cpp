@@ -53,12 +53,12 @@ void MoveEliminationPass::runOnKernel(ir::IRKernel& k)
 	
 	report(" Eliminating moves");
 	
-	for(auto move : moves)
+	for(auto move = moves.begin(); move != moves.end(); ++move)
 	{
-		if(canEliminate(move))
+		if(canEliminate(*move))
 		{
-			report("  " << move->i->toString());
-			eliminate(move);
+			report("  " << (*move)->i->toString());
+			eliminate(*move);
 			eliminatedAny = true;
 		}
 	}
@@ -135,11 +135,12 @@ static bool allPreviousDefinitionsDominateMove(instruction_iterator move,
 	}
 	
 	// Check all predecessors with the value live out
-	for(auto predecessor : block->predecessors())
+	for(auto predecessor = block->predecessors().begin();
+		predecessor != block->predecessors().end(); ++predecessor)
 	{
-		if(predecessor->aliveOut().count(destination) == 0) continue;
+		if((*predecessor)->aliveOut().count(destination) == 0) continue;
 		
-		if(!allPreviousDefinitionsDominateMove(move, predecessor, visited))
+		if(!allPreviousDefinitionsDominateMove(move, *predecessor, visited))
 		{
 			return false;
 		}
@@ -211,22 +212,24 @@ static void propagateMoveSourceToUsersInBlock(instruction_iterator move,
 	// replace uses in the block
 	for(; position != block->instructions().end(); ++position)
 	{
-		for(auto source : position->s)
+		for(auto source = position->s.begin();
+			source != position->s.end(); ++source)
 		{
-			if(*source.pointer == destination)
+			if(*source->pointer == destination)
 			{
-				*source.pointer = moveSource;
+				*source->pointer = moveSource;
 			}
 		}
 	}
 	
 	// replace in successors
-	for(auto successor : block->successors())
+	for(auto successor = block->successors().begin();
+		successor != block->successors().end(); ++successor)
 	{
-		if(successor->aliveIn().count(destination) == 0) continue;
+		if((*successor)->aliveIn().count(destination) == 0) continue;
 		
 		propagateMoveSourceToUsersInBlock(move,
-			successor->instructions().begin(), successor, visited);
+			(*successor)->instructions().begin(), *successor, visited);
 	}
 
 }

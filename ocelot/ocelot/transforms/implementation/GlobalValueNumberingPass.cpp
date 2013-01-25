@@ -367,7 +367,7 @@ GlobalValueNumberingPass::Number
 	GlobalValueNumberingPass::_lookupExistingOrCreateNewNumber(
 		const ir::PTXOperand& operand)
 {
-	if(operand.isRegister())
+	if(operand.addressMode == ir::PTXOperand::Register)
 	{
 		auto value = _numberedValues.find(operand.reg);
 		
@@ -403,6 +403,21 @@ GlobalValueNumberingPass::Number
 		}
 		
 		_numberedSpecials.insert(std::make_pair(special, _nextNumber));
+		
+		return _nextNumber++;
+	}
+	else if(operand.addressMode == ir::PTXOperand::Indirect)
+	{
+		Indirect indirect(operand.reg, operand.offset);
+	
+		auto value = _numberedIndirects.find(indirect);
+		
+		if(value != _numberedIndirects.end())
+		{
+			return value->second;
+		}
+		
+		_numberedIndirects.insert(std::make_pair(indirect, _nextNumber));
 		
 		return _nextNumber++;
 	}
@@ -711,6 +726,7 @@ void GlobalValueNumberingPass::_clearValueAssignments()
 	_numberedValues.clear();
 	_numberedExpressions.clear();
 	_numberedImmediates.clear();
+	_numberedIndirects.clear();
 	_nextNumber = 0;
 	_generatingInstructions.clear();
 }
@@ -745,6 +761,17 @@ GlobalValueNumberingPass::Immediate::Immediate(
 bool GlobalValueNumberingPass::Immediate::operator==(const Immediate& imm) const
 {
 	return type == imm.type && value == imm.value;
+}
+
+GlobalValueNumberingPass::Indirect::Indirect(Register r, int o)
+: reg(r), offset(o)
+{
+
+}
+
+bool GlobalValueNumberingPass::Indirect::operator==(const Indirect& ind) const
+{
+	return reg == ind.reg && offset == ind.offset;
 }
 
 GlobalValueNumberingPass::SpecialValue::SpecialValue(

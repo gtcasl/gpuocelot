@@ -43,6 +43,7 @@ private:
 	typedef analysis::DataflowGraph::phi_iterator         PhiIterator;
 	typedef analysis::DataflowGraph::iterator             BlockIterator;
 	typedef analysis::DataflowGraph::BlockPointerVector   BlockPointerVector;
+	typedef ir::Instruction::RegisterType                 Register;
 
 	typedef analysis::DataflowGraph::register_pointer_iterator
 		RegisterPointerIterator;
@@ -78,6 +79,19 @@ private:
 		bool operator==(const Immediate& imm) const;
 	};
 	
+	class Indirect
+	{
+	public:
+		Register reg;
+		int      offset;
+		
+	public:
+		Indirect(Register reg, int offset);
+
+	public:
+		bool operator==(const Indirect& imm) const;
+	};
+	
 	class SpecialValue
 	{
 	public:
@@ -108,7 +122,16 @@ private:
 	public:
 		inline size_t operator()(const Immediate& i) const
 		{
-			return i.type ^ i.value;
+			return (i.type << 16) ^ i.value;
+		}
+	};
+
+	class IndirectHash
+	{
+	public:
+		inline size_t operator()(const Indirect& i) const
+		{
+			return (i.reg) ^ (i.offset << 16);
 		}
 	};
 
@@ -149,6 +172,8 @@ private:
 		ExpressionToNumberMap;
 	typedef std::unordered_map<Immediate, Number, ImmediateHash>
 		ImmediateToNumberMap;
+	typedef std::unordered_map<Indirect, Number, IndirectHash>
+		IndirectToNumberMap;
 	typedef std::unordered_map<SpecialValue, Number, SpecialValueHash>
 		SpecialValueToNumberMap;
 	typedef std::unordered_map<Number, GeneratingInstructionList>
@@ -204,6 +229,7 @@ private:
 	ValueToNumberMap                 _numberedValues;
 	ExpressionToNumberMap            _numberedExpressions;
 	ImmediateToNumberMap             _numberedImmediates;
+	IndirectToNumberMap              _numberedIndirects;
 	SpecialValueToNumberMap          _numberedSpecials;
 	Number                           _nextNumber;
 	NumberToGeneratingInstructionMap _generatingInstructions;

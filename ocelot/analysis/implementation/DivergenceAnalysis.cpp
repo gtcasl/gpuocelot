@@ -481,6 +481,21 @@ static bool hasBarrier(const DataflowGraph::iterator &block) {
 				static_cast<ir::PTXInstruction*>(instruction->i);
 		
 			if (ptxInstruction->opcode == ir::PTXInstruction::Bar) return true;
+		
+			// texture instruction intrinsics
+			if (ptxInstruction->isCall()) {
+				if (ptxInstruction->a.addressMode !=
+					ir::PTXOperand::FunctionName) {
+					 continue;
+				}
+				
+				if (ptxInstruction->a.identifier.find(
+					"_Z_intrinsic_pseudo_tex") != 0) {
+					 continue;
+				}
+				
+				return true;
+			}
 		}
 	}
 	

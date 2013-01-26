@@ -20,6 +20,7 @@
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
 #include <ocelot/analysis/interface/LoopAnalysis.h>
 #include <ocelot/analysis/interface/ConvergentRegionAnalysis.h>
+#include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -345,6 +346,25 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			allocateNewDataStructures(analyses, k,
 				regionAnalysis->required, manager);
 			regionAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::SimpleAliasAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::SimpleAliasAnalysis) == 0)
+		{
+			analysis::SimpleAliasAnalysis* aliasAnalysis =
+				new analysis::SimpleAliasAnalysis;
+			
+			report("   Allocating simple alias analysis"
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::SimpleAliasAnalysis,
+				aliasAnalysis));
+			
+			aliasAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				aliasAnalysis->required, manager);
+			aliasAnalysis->analyze(*k);
 		}
 	}
 }

@@ -855,4 +855,8 @@ bool ir::PTXOperand::isRegister() const {
 		|| addressMode == BitBucket;
 }
 
+bool ir::PTXOperand::isVector() const {
+	return isRegister() && vec != v1;
+}
+
 

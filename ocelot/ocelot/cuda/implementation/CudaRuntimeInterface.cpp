@@ -136,6 +136,13 @@ void cuda::CudaRuntimeInterface::removeExternalFunction(
 	assert(0 && "unimplemented");
 }
 
+bool cuda::CudaRuntimeInterface::isExternalFunction(
+	const std::string& name) {
+	assert(0 && "unimplemented");
+	
+	return false;
+}
+
 void cuda::CudaRuntimeInterface::getDeviceProperties(
 	executive::DeviceProperties &, int deviceIndex) {
 	assert(0 && "unimplemented");

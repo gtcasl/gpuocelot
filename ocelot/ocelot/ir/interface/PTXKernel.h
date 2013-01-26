@@ -49,6 +49,7 @@ namespace ir
 				enum LinkingDirective {
 					Visible,	      //!< visible outside this module
 					Extern,		      //!< externally-defined function
+					Weak,		      //!< weak function (overriden by another)
 					InternalHidden,   //!< not external and not visible ==
 					                  //  internal hidden ==
 					                  // 'static' module scope
@@ -62,8 +63,8 @@ namespace ir
 				Prototype();
 				
 				/*! \brief emits a PTX form of the prototype */
-				std::string toString(
-					PTXEmitter::Target emitterTarget = PTXEmitter::Target_OcelotIR) const;
+				std::string toString(PTXEmitter::Target emitterTarget =
+					PTXEmitter::Target_OcelotIR) const;
 				
 				/*! \brief emits a mangled form of the function prototype */
 				std::string getMangledName() const;
@@ -157,13 +158,18 @@ namespace ir
 			unsigned int getSharedMemoryLayout(std::map<std::string, unsigned int> &globals, 
 				std::map<std::string, unsigned int> &locals) const;
 
+			/*! \brief gets the shared memory size of the kernel */
+			unsigned int sharedMemorySize() const;
+
 		public:
 			/*!	Returns true if the kernel instance is derived from 
 				ExecutableKernel */
 			virtual bool executable() const;
 
 			/*! \brief Write this kernel to a parseable string */
-			virtual void write(std::ostream& stream, 
+			virtual void write(std::ostream& stream) const;
+			/*! \brief Write this kernel to a parseable string */
+			void writeWithEmitter(std::ostream& stream, 
 				PTXEmitter::Target = PTXEmitter::Target_OcelotIR) const;
 			
 	};

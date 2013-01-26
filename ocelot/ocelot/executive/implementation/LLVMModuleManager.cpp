@@ -965,8 +965,6 @@ static void optimize(llvm::Module& module,
 
 	llvm::PassManager manager;
 
-	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
-
 	if(level < 2)
 	{
 		manager.add(llvm::createInstructionCombiningPass());
@@ -1045,8 +1043,8 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 		global != kernel.module->globals().end(); ++global) 
 	{
 		for(ir::PTXStatement::SymbolVector::const_iterator symbol =
-			global->second.statement.symbols.begin(); symbol !=
-			global->second.statement.symbols.end(); ++symbol)
+			global->second.statement.array.symbols.begin(); symbol !=
+			global->second.statement.array.symbols.end(); ++symbol)
 		{
 			assert(device != 0);
 			

@@ -265,6 +265,13 @@ LoopAnalysis::const_iterator LoopAnalysis::end() const
 	return _loops.end();
 }
 
+bool LoopAnalysis::isContainedInLoop(const_block_iterator block)
+{
+	BlockToLoopMap::iterator loop = _blockToLoopMap.find(block);
+	
+	return loop != _blockToLoopMap.end();
+} 
+
 static bool isNotContainedIn(LoopAnalysis::Loop* subLoop,
 	LoopAnalysis::Loop* loop)
 {

@@ -873,6 +873,13 @@ void opencl::OpenCLRuntimeInterface::removeExternalFunction(
 	assert(0 && "unimplemented");
 }
 
+bool opencl::OpenCLRuntimeInterface::isExternalFunction(
+	const std::string& name) {
+	assert(0 && "unimplemented");
+
+	return false;
+}
+
 void opencl::OpenCLRuntimeInterface::getDeviceProperties(
 	executive::DeviceProperties &, int deviceIndex) {
 	assert(0 && "unimplemented");

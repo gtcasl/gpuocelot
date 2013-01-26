@@ -8,6 +8,8 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/PassThroughDevice.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
+
 #include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
@@ -570,12 +572,14 @@ void  executive::PassThroughDevice::_recordKernelLaunch(
 	_state.launch.kernelName = kernel;
 	_state.launch.blockDim = block;
 	_state.launch.gridDim = grid;
-	_state.launch.sharedMemorySize = sharedMemory;;
+	_state.launch.sharedMemorySize = sharedMemory;
+	_state.launch.staticSharedMemorySize =
+		_getStaticSharedMemorySize(module, kernel);
 	_state.launch.parameterMemory.assign((const char*)argumentBlock,
 		(const char*)argumentBlock + argumentBlockSize);
 }
 
-void  executive::PassThroughDevice::_recordStatePostExecution() {
+void executive::PassThroughDevice::_recordStatePostExecution() {
 	// save allocations
 	Device::MemoryAllocationVector allocations = getAllAllocations();
 
@@ -633,4 +637,14 @@ void  executive::PassThroughDevice::_recordStatePostExecution() {
 	
 	_state.serialize(file);
 }
+
+unsigned int executive::PassThroughDevice::_getStaticSharedMemorySize(
+	const std::string& module, const std::string& kernel) {
+	
+	auto executableKernel = getKernel(module, kernel);
+	
+	assert(executableKernel != 0);
+	
+	return executableKernel->sharedMemorySize();
+}	
 

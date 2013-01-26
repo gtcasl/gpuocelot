@@ -522,6 +522,17 @@ void opencl::OpenCLRuntime::removeExternalFunction(const std::string& name) {
 	_unlock();	
 }
 
+bool opencl::OpenCLRuntime::isExternalFunction(const std::string & name) {
+
+	_lock();
+
+	bool isExternal = externals.find(name) != 0;
+	
+	_unlock();
+	
+	return isExternal;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries, 

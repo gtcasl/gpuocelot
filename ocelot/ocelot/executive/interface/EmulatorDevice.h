@@ -88,6 +88,8 @@ namespace executive
 						size_t toOffset, size_t fromOffset, size_t size) const;				
 			};
 
+			typedef std::vector<ir::PTXKernel*> KernelVector;
+
 		protected:
 			/*! \brief A class for holding the state associated with a module */
 			class Module
@@ -131,6 +133,10 @@ namespace executive
 						const std::string& name);
 					/*! \brief Get a handle to a specific texture or 0 */
 					ir::Texture* getTexture(const std::string& name);
+
+				public:
+					/*! \brief Get all kernels in the module */
+					KernelVector getAllKernels();
 			};
 			
 			/*! \brief A graphics resource with an opengl buffer and pointer */
@@ -321,6 +327,11 @@ namespace executive
 			/*! \brief Set the optimization level for kernels in this device */
 			virtual void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level);
+
+		public:
+			/*! \brief Get all kernels in all modules */
+			KernelVector getAllKernels();
+			
 	};
 }
 

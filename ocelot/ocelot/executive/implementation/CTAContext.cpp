@@ -23,7 +23,7 @@ executive::CTAContext::CTAContext(
 		: PC(0), executionState(Running), kernel(k), cta(c)
 {
 	
-	ir::Dim3 blockDim = kernel->blockDim();
+	ir::Dim3 blockDim = cta->blockDim;
 	active = boost::dynamic_bitset<>(blockDim.x * blockDim.y * blockDim.z, 1);
 
 	for (int i = 0; i < blockDim.x*blockDim.y*blockDim.z; i++) {

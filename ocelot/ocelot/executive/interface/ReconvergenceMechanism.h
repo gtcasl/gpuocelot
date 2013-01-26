@@ -162,6 +162,9 @@ private:
 	typedef std::vector<Token>      TokenStack;
 
 private:
+	static std::string toString(Token t);
+
+private:
 	//! \brief context stack
 	RuntimeStack runtimeStack;
 	//! \brief stack of reconvergence points for the current context

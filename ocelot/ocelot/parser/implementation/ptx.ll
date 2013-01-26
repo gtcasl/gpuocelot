@@ -282,8 +282,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return TOKEN_PARAM; }
 ".pragma"                       { yylval->value = TOKEN_PRAGMA; \
                                     return TOKEN_PRAGMA; }
-".ptr"                        { yylval->value = TOKEN_PTR; \
-																		return TOKEN_PTR; }
+".ptr"                          { yylval->value = TOKEN_PTR; \
+									return TOKEN_PTR; }
 ".reg"                          { yylval->value = TOKEN_REG; \
                                     return TOKEN_REG; }
 ".samplerref"                   { yylval->value = TOKEN_SAMPLERREF; \
@@ -304,6 +304,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return TOKEN_VERSION; }
 ".visible"                      { yylval->value = TOKEN_VISIBLE; \
                                     return TOKEN_VISIBLE; }
+".weak"                         { yylval->value = TOKEN_WEAK; \
+                                    return TOKEN_WEAK; }
 
 ".cta"                          { yylval->value = TOKEN_CTA; return TOKEN_CTA; }
 ".gl"                           { yylval->value = TOKEN_GL; return TOKEN_GL; }

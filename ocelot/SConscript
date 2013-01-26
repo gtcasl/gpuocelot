@@ -145,6 +145,10 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 
+OcelotLinker = env.Program('OcelotLinker', \
+	['ocelot/tools/OcelotLinker.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotLinker, libocelot)
+
 KernelDrawer = env.Program('KernelDrawer', \
 	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
 env.Depends(KernelDrawer, libocelot)
@@ -267,7 +271,6 @@ if enabled_tests:
 	print 'Adding unit tests to the build...'
 	for test in enabled_tests:
 		print '  ' + test[0]
-		Default(test[1])
 		env.Alias('tests', test[1])
 
 # find all header files in the source tree
@@ -312,6 +315,8 @@ if env['install']:
 		env['install_path'], "bin"), OcelotHarness))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), LoadPtx))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), OcelotLinker))
 		
 	if enableKernelExtractor and os.name != 'nt':
 		installed.append(env.Install(os.path.join(
@@ -331,11 +336,12 @@ if env['install']:
 			os.path.relpath(str(header), '.'))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
+	
 
 	for i in installed:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
-	
-	install_alias = env.Alias('install', env['install_path'])
+
+	install_alias = env.Alias('ocelot', env['install_path'])
 	Default(install_alias)
 
 	env.Replace(installed_files = installed)
@@ -343,4 +349,5 @@ if env['install']:
 	if env['deb_arch'] != 'unknown':
 		Export('env')
 		SConscript('deb/DebSConscript')
-
+else:
+	print "Not installing Ocelot."

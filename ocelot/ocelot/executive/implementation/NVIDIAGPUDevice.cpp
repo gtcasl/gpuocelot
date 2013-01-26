@@ -438,7 +438,7 @@ namespace executive
 			hydrazine::bit_cast<void*>(errorLogActualSize), 
 		};
 		
-		if (module->version().major == 3 && module->version().minor == 0) {
+		if (module->target().major == 3 /*&& module->version().minor == 0*/) {
 			optionValues[0] = (void *)CU_TARGET_COMPUTE_30;
 		}
 		

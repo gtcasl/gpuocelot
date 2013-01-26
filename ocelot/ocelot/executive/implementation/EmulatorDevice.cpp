@@ -270,12 +270,12 @@ namespace executive
 			return kernel->second;
 		}
 		
-		ir::Module::KernelMap::const_iterator ptxKernel = 
-			ir->kernels().find(name);
+		auto ptxKernel = ir->kernels().find(name);
 		if(ptxKernel != ir->kernels().end())
 		{
 			kernel = kernels.insert(std::make_pair(name, 
 				new EmulatedKernel(ptxKernel->second, device))).first;
+
 			return kernel->second;
 		}
 		
@@ -292,6 +292,19 @@ namespace executive
 		TextureMap::iterator texture = textures.find(name);
 		if(texture == textures.end()) return 0;
 		return &texture->second;
+	}
+
+	EmulatorDevice::KernelVector EmulatorDevice::Module::getAllKernels()
+	{
+		KernelVector kernels;
+
+		for(auto kernel = ir->kernels().begin(); kernel != ir->kernels().end();
+			++kernel)
+		{
+			kernels.push_back(kernel->second);
+		}
+
+		return kernels;
 	}
 	
 	EmulatorDevice::OpenGLResource::OpenGLResource(unsigned int b) : 
@@ -505,11 +518,31 @@ namespace executive
 		void* pointer) const
 	{
 		MemoryAllocationVector allocations;
-		for(AllocationMap::const_iterator allocation = _allocations.begin(); 
-			allocation != _allocations.end(); ++allocation)
+		
+		auto center = _allocations.lower_bound(pointer);
+		
+		auto lower = center;
+		
+		for(unsigned int i = 0; i < 5; ++i, --lower)
 		{
-			allocations.push_back(allocation->second);
+			if(lower == _allocations.begin()) break;
+			
+			allocations.push_back(lower->second);
 		}
+		
+		std::reverse(allocations.begin(), allocations.end());
+		
+		auto upper = center;
+		
+		if(upper != _allocations.end()) ++upper;
+		
+		for(unsigned int i = 0; i < 5; ++i, ++upper)
+		{
+			if(upper == _allocations.end()) break;
+			
+			allocations.push_back(upper->second);
+		}
+		
 		return allocations;
 	}
 
@@ -1130,6 +1163,21 @@ namespace executive
 		translator::Translator::OptimizationLevel level)
 	{
 		// This is emulation so we probably don't ever want to do optimization
+	}
+
+	EmulatorDevice::KernelVector EmulatorDevice::getAllKernels()
+	{
+		KernelVector kernels;
+
+		for(auto module = _modules.begin(); module != _modules.end(); ++module)
+		{
+			auto kernelsInModule = module->second->getAllKernels();
+
+			kernels.insert(kernels.end(), kernelsInModule.begin(),
+				kernelsInModule.end());
+		}
+	
+		return kernels;
 	}
 	
 }

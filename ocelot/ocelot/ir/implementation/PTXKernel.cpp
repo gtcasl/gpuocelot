@@ -39,17 +39,18 @@ PTXKernel::Prototype::Prototype() {
 
 std::string PTXKernel::Prototype::toString(const LinkingDirective ld) {
 	switch (ld) {
-		case Extern: return ".extern";
+		case Extern:  return ".extern";
 		case Visible: return ".visible";
-		default: break;
+		case Weak:    return ".weak";
+		default:      break;
 	}
 	return ""; // internal hidden is a valid state
 }
 std::string PTXKernel::Prototype::toString(const CallType ct) {
 	switch (ct) {
 		case Entry: return ".entry";
-		case Func: return ".func";
-		default: break;
+		case Func:  return ".func";
+		default:    break;
 	}
 	return "invalid";
 }
@@ -341,8 +342,7 @@ void PTXKernel::constructCFG( ControlFlowGraph &cfg,
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
-			else if( statement.instruction.opcode == PTXInstruction::Exit
-				|| statement.instruction.opcode == PTXInstruction::Ret )
+			else if( statement.instruction.isExit() )
 			{
 				last_inserted_block = block;
 				if (edge.type != ControlFlowGraph::Edge::Invalid) {
@@ -556,7 +556,8 @@ void PTXKernel::computeOffset(
 	}
 }
 
-unsigned int PTXKernel::getSharedMemoryLayout(std::map<std::string, unsigned int> &globalOffsets, 
+unsigned int PTXKernel::getSharedMemoryLayout(
+	std::map<std::string, unsigned int> &globalOffsets, 
 	std::map<std::string, unsigned int> &localOffsets) const {
 	
 	using namespace std;
@@ -613,7 +614,20 @@ unsigned int PTXKernel::getSharedMemoryLayout(std::map<std::string, unsigned int
 	return sharedOffset;
 }
 
-void PTXKernel::write(std::ostream& stream, PTXEmitter::Target emitterTarget) const 
+unsigned int PTXKernel::sharedMemorySize() const
+{
+	std::map<std::string, unsigned int> globalOffsets;
+	std::map<std::string, unsigned int> localOffsets;	
+
+	return getSharedMemoryLayout(globalOffsets, localOffsets);
+}
+
+void PTXKernel::write(std::ostream& stream) const 
+{
+	writeWithEmitter(stream);
+}
+
+void PTXKernel::writeWithEmitter(std::ostream& stream, PTXEmitter::Target emitterTarget) const 
 {
 	std::stringstream strReturnArguments;
 	std::stringstream strArguments;
@@ -798,6 +812,7 @@ void PTXKernel::write(std::ostream& stream, PTXEmitter::Target emitterTarget) co
 /*! \brief returns a prototype for this kernel */
 const ir::PTXKernel::Prototype& ir::PTXKernel::getPrototype() const {
 	auto it = module->prototypes().find(name);
+	assert(it != module->prototypes().end());
 	return it->second;
 }
 

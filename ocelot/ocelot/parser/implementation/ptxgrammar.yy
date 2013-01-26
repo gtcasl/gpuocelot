@@ -73,7 +73,7 @@
 
 %token<value> TOKEN_ENTRY TOKEN_EXTERN TOKEN_FILE TOKEN_VISIBLE TOKEN_LOC
 %token<value> TOKEN_FUNCTION TOKEN_STRUCT TOKEN_UNION TOKEN_TARGET TOKEN_VERSION
-%token<value> TOKEN_SECTION TOKEN_ADDRESS_SIZE
+%token<value> TOKEN_SECTION TOKEN_ADDRESS_SIZE TOKEN_WEAK
 
 %token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM 
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
@@ -462,7 +462,7 @@ parameter : TOKEN_REG
 argumentDeclaration : parameter addressableVariablePrefix identifier 
 	arrayDimensions
 {
-	state.attribute( false, false );
+	state.attribute( false, false, false );
 	state.argumentDeclaration( $<text>3, @1 );
 };
 
@@ -538,17 +538,20 @@ entryName : externOrVisible TOKEN_ENTRY identifier
 	state.entry( $<text>3, @1 );
 };
 
-entryDeclaration : entryName argumentList performanceDirectives
-{
-	state.entryDeclaration( @1 );
-};
+optionalArgumentList : argumentList;
+optionalArgumentList : /* empty string */;
 
-entryDeclaration : entryName performanceDirectives
+entryDeclaration : entryName optionalArgumentList performanceDirectives
 {
 	state.entryDeclaration( @1 );
 };
 
 entry : entryDeclaration openBrace entryStatements closeBrace;
+
+entry : entryDeclaration ';'
+{
+	state.entryPrototype( @1 );
+};
 
 entryStatement : registerDeclaration | location | label | pragma 
 	| callprototype | calltargets;
@@ -624,19 +627,24 @@ performanceDirectiveList : performanceDirective
 	| performanceDirectiveList performanceDirective;
 performanceDirectives : /* empty string */ | performanceDirectiveList;
 
+externOrVisible : TOKEN_WEAK
+{
+	state.attribute( false, false, true );
+};
+
 externOrVisible : TOKEN_EXTERN
 {
-	state.attribute( false, true );
+	state.attribute( false, true, false );
 };
 
 externOrVisible : TOKEN_VISIBLE
 {
-	state.attribute( true, false );
+	state.attribute( true, false, false );
 };
 
 externOrVisible : /* empty string */
 {
-	state.attribute( false, false );
+	state.attribute( false, false, false );
 };
 
 uninitializableAddress : TOKEN_LOCAL | TOKEN_SHARED | TOKEN_PARAM;
@@ -701,9 +709,12 @@ returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
 returnTypeList : '(' returnTypeListBody ')' | '(' ')' | /* empty string */;
 
-argumentType : parameter dataTypeId optionalIdentifier
+optionalAlignment : /* empty string */ | alignment;
+
+argumentType : parameter optionalAlignment dataTypeId
+	optionalIdentifier arrayDimensions
 {
-	state.argumentType( $<value>2 );
+	state.argumentType( $<value>3 );
 };
 
 argumentTypeListBody : argumentType;
@@ -1367,6 +1378,7 @@ sad : OPCODE_SAD dataType operand ',' operand ',' operand ',' operand ';'
 selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>2 );
+	state.operandCIsAPredicate();
 };
 
 

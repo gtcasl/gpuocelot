@@ -230,7 +230,7 @@ namespace opencl {
 		virtual void registerExternalFunction(const std::string& name,
 			void* function);
 		virtual void removeExternalFunction(const std::string& name);
-
+		virtual bool isExternalFunction(const std::string& name);
 
 	public:
 

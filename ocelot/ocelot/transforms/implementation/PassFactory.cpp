@@ -24,7 +24,10 @@
 #include <ocelot/transforms/interface/FunctionInliningPass.h>
 #include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
 #include <ocelot/transforms/interface/GlobalValueNumberingPass.h>
+#include <ocelot/transforms/interface/ConstantPropagationPass.h>
 #include <ocelot/transforms/interface/SharedPtrAttribute.h>
+#include <ocelot/transforms/interface/HoistParameterLoadsPass.h>
+#include <ocelot/transforms/interface/MoveEliminationPass.h>
 
 // Standard Library Includes
 #include <stdexcept>
@@ -102,8 +105,22 @@ Pass* PassFactory::createPass(const std::string& name)
 	{
 		return new transforms::GlobalValueNumberingPass;
 	}
-	else if (name == "shared-ptr-attribute") {
+	else if (name == "shared-ptr-attribute")
+	{
 		return new transforms::SharedPtrAttribute;
+	}
+	else if (name == "constant-propagation" ||
+		name == "ConstantPropagationPass")
+	{
+		return new transforms::ConstantPropagationPass;
+	}
+	else if (name == "hoist-parameters" || name == "HoistParameterLoadsPass")
+	{
+		return new transforms::HoistParameterLoadsPass;
+	}
+	else if (name == "move-elimination" || name == "MoveEliminationPass")
+	{
+		return new transforms::MoveEliminationPass;
 	}
 	else
 	{

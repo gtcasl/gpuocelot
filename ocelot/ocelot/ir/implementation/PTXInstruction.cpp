@@ -836,7 +836,7 @@ std::string ir::PTXInstruction::valid() const {
 				return "invalid instruction type " + PTXOperand::toString(type);
 			}
 			if (!(addressSpace == Global || addressSpace == Local
-				|| addressSpace == Shared)) {
+				|| addressSpace == Shared || addressSpace == Const)) {
 				return "invalid address space " + toString(addressSpace);
 			}
 			break;
@@ -1117,8 +1117,7 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Mov: {
-			if ( ( a.type == PTXOperand::s8 || a.type == PTXOperand::u8 
-				|| a.type == PTXOperand::b8 || a.type == PTXOperand::f16 ) &&
+			if ( ( a.type == PTXOperand::f16 ) &&
 				a.addressMode != PTXOperand::Address &&
 				a.addressMode != PTXOperand::Immediate ) {
 				return "invalid type for operand A " 
@@ -2535,8 +2534,16 @@ bool ir::PTXInstruction::isBranch() const {
 	return opcode == Bra || opcode == Call;
 }
 
+bool ir::PTXInstruction::isCall() const {
+	return opcode == Call;
+}
+
 bool ir::PTXInstruction::isLoad() const {
 	return opcode == Ld || opcode == Ldu;
+}
+
+bool ir::PTXInstruction::isStore() const {
+	return opcode == St;
 }
 
 bool ir::PTXInstruction::mayHaveAddressableOperand() const {
@@ -2565,7 +2572,7 @@ bool ir::PTXInstruction::isMemoryInstruction() const {
 }
 
 bool ir::PTXInstruction::isExit() const {
-	return opcode == Exit || opcode == Trap || opcode == Ret;
+	return opcode == Exit || opcode == Ret;
 }
 
 

@@ -96,10 +96,15 @@ namespace ir {
 				ArrayStrideVector stride;
 				ArrayVector values;
 				PTXInstruction::Vec vec;
+		
+				SymbolVector symbols;
 			
 			public:
 				std::string dimensions() const;
 				std::string initializer( PTXOperand::DataType ) const;
+		
+				std::string valueAt( unsigned int index,
+					PTXOperand::DataType t ) const;
 		};
 		
 		/*!
@@ -108,6 +113,7 @@ namespace ir {
 		enum Attribute {
 			Visible,
 			Extern,
+			Weak,
 			NoAttribute
 		};
 		
@@ -169,8 +175,6 @@ namespace ir {
 		bool isReturnArgument;
 		
 		PTXInstruction::AddressSpace ptrAddressSpace;
-		
-		SymbolVector symbols;
 
 	public:
 		PTXStatement( Directive directive = Directive_invalid );

@@ -133,6 +133,12 @@ void ir::Module::unload() {
 	_loaded = false;
 }
 
+void ir::Module::isLoaded() {
+	unload();
+	
+	_loaded = true;
+}
+
 /*!
 	Unloads module and loads everything in path
 */
@@ -220,10 +226,12 @@ void ir::Module::loadNow() {
 	else
 	{
 		if (!_ptxPointer) {
-			report("Module::loadNow() - path: '" << path() << "' contains no PTX");
+			report("Module::loadNow() - path: '" << path()
+				<< "' contains no PTX");
 		}
 		else {
-			report("Module::loadNow() - contains PTX string literal:\n\n" << _ptxPointer << "\n");
+			report("Module::loadNow() - contains PTX string literal:\n\n"
+				<< _ptxPointer << "\n");
 		}
 		
 		
@@ -330,20 +338,17 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 		for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
 			prot_it != _prototypes.end(); ++prot_it) {
 		
-			if (prot_it->second.callType != PTXKernel::Prototype::Entry
-				&& prot_it->second.identifier != "") {
-				stream << prot_it->second.toString(emitterTarget) << "\n";
+			if (prot_it->second.identifier != "") {
+				stream << prot_it->second.toString(emitterTarget) << ";\n";
 				encounteredPrototypes.insert(prot_it->second.identifier);
 			}
 		}
 		
 		for (KernelMap::const_iterator kernel = _kernels.begin();
 			kernel != _kernels.end(); ++kernel) {
-			if (kernel->second->function() && 
-				encounteredPrototypes.find((kernel->second)->name) ==
-				encounteredPrototypes.end()) {
+			if (encounteredPrototypes.count((kernel->second)->name) == 0) {
 			
-				stream << kernel->second->getPrototype().toString(emitterTarget) << "\n";
+				stream << kernel->second->getPrototype().toString(emitterTarget) << ";\n";
 				encounteredPrototypes.insert(kernel->second->name);
 			}
 		}
@@ -367,7 +372,7 @@ void ir::Module::writeIR( std::ostream& stream, PTXEmitter::Target emitterTarget
 	stream << "/* Kernels */\n";
 	for (KernelMap::const_iterator kernel = _kernels.begin();
 		kernel != _kernels.end(); ++kernel) {
-		(kernel->second)->write(stream, emitterTarget);
+		(kernel->second)->writeWithEmitter(stream, emitterTarget);
 	}
 	
 	stream << "\n\n";
@@ -397,13 +402,21 @@ ir::Texture* ir::Module::insertTexture(const Texture& texture) {
 	loadNow();
 	
 	Insertion insertion = _textures.insert(
-		std::make_pair(texture.name, texture));
+		std::make_pair(texture.demangledName(), texture));
 	if(!insertion.second) {
 		throw hydrazine::Exception("Inserted duplicated texture - " 
 			+ texture.name);
 	}
 	
 	return &insertion.first->second;
+}
+
+void ir::Module::removeTexture(const std::string& name) {
+	loadNow();
+	TextureMap::iterator texture = _textures.find(name);
+	if (texture != _textures.end()) {
+		_textures.erase(texture);
+	}
 }
 
 ir::Global* ir::Module::getGlobal(const std::string& name) {
@@ -436,6 +449,14 @@ ir::Global* ir::Module::insertGlobal(const Global& global) {
 			+ global.name());
 	}
 	return &insertion.first->second;
+}
+
+void ir::Module::removeGlobal(const std::string& name) {
+	loadNow();
+	GlobalMap::iterator global = _globals.find(name);
+	if (global != _globals.end()) {
+		_globals.erase(global);
+	}
 }
 
 void ir::Module::insertGlobalAsStatement(const PTXStatement &statement) {
@@ -489,6 +510,14 @@ void ir::Module::addPrototype(const std::string &identifier,
 	report("adding prototype: " << prototype.toString());
 	
 	_prototypes.insert(std::make_pair(identifier, prototype));
+}
+
+void ir::Module::removePrototype(const std::string& name) {
+	loadNow();
+	FunctionPrototypeMap::iterator prototype = _prototypes.find(name);
+	if (prototype != _prototypes.end()) {
+		_prototypes.erase(prototype);
+	}
 }
 		
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
@@ -608,6 +637,8 @@ void ir::Module::extractPTXKernels() {
 						(int)ir::PTXStatement::Visible, "Mismatched flag");
 					static_assert((int)PTXKernel::Prototype::Extern ==
 						(int)ir::PTXStatement::Extern, "Mismatched flag");
+					static_assert((int)PTXKernel::Prototype::Weak ==
+						(int)ir::PTXStatement::Weak, "Mismatched flag");
 					static_assert((int)PTXKernel::Prototype::InternalHidden ==
 						(int)ir::PTXStatement::NoAttribute, "Mismatched flag");
 					prototypeState = PS_Params;
@@ -725,26 +756,32 @@ void ir::Module::extractPTXKernels() {
 			{
 				if (!inKernel) {
 					assert(_textures.count(statement.name) == 0);
-					_textures.insert(std::make_pair(statement.name, 
-									Texture(statement.name, Texture::Texref)));
+					Texture texture(statement.name, Texture::Texref);
+					
+					_textures.insert(std::make_pair(texture.demangledName(), 
+									texture));
 				}
 			}
 			break;
 			case PTXStatement::Surfref:
 			{
 				if (!inKernel) {
+					Texture texture(statement.name, Texture::Surfref);
+					
 					assert(_textures.count(statement.name) == 0);
-					_textures.insert(std::make_pair(statement.name, 
-		            Texture(statement.name, Texture::Surfref)));
+					_textures.insert(std::make_pair(texture.demangledName(), 
+									texture));
 				}
 			}
 			break;
 			case PTXStatement::Samplerref:
 			{
 				if (!inKernel) {
+					Texture texture(statement.name, Texture::Samplerref);
+					
 					assert(_textures.count(statement.name) == 0);
-					_textures.insert(std::make_pair(statement.name, 
-								Texture(statement.name, Texture::Samplerref)));
+					_textures.insert(std::make_pair(texture.demangledName(), 
+									texture));
 				}
 			}
 			break;

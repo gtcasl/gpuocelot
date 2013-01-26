@@ -178,7 +178,7 @@ namespace cuda {
 	/*! \brief Set of PTX passes */
 	typedef std::set< transforms::Pass* > PassSet;
 
-	typedef std::vector< FatBinaryContext > FatBinaryVector;
+	typedef std::map< unsigned int, FatBinaryContext > FatBinaryMap;
 	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
 	typedef std::map< void*, Dimension > DimensionMap;
@@ -282,7 +282,7 @@ namespace cuda {
 		unsigned int _flags;
 		
 		//! fatbinaries
-		FatBinaryVector _fatBinaries;
+		FatBinaryMap _fatBinaries;
 		
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
@@ -634,6 +634,7 @@ namespace cuda {
 		virtual void registerExternalFunction(const std::string& name,
 			void* function);
 		virtual void removeExternalFunction(const std::string& name);
+		virtual bool isExternalFunction(const std::string& name);
 		virtual void getDeviceProperties(executive::DeviceProperties &, int deviceIndex = -1);
 	};
 

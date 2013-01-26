@@ -90,17 +90,19 @@ opencl::OpenCLRuntime::OpenCLRuntime() :
 
 opencl::OpenCLRuntime::~OpenCLRuntime() {
 
+//TODO: compose destructor correctly!!!!!!!!!
+
 	//
 	// free things that need freeing
 	//
 	// runtime objects
 
-	for(auto object = _objList.begin(); object != _objList.end(); ++object) {
-		if(*object)
-			delete *object;
-	}
-
-	_objList.clear();
+//	for(auto object = _objList.begin(); object != _objList.end(); ++object) {
+//		if(*object)
+//			delete *object;
+//	}
+//
+//	_objList.clear();
 	// devices
 //	for (DeviceList::iterator device = _devices.begin(); 
 //		device != _devices.end(); ++device) {

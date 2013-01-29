@@ -332,9 +332,12 @@ GlobalValueNumberingPass::Number
 	// Ignore instructions with multiple or no defs
 	if(instruction->d.size() != 1) return InvalidNumber;
 
-	// If the assignment is trivial, return the number of the source
 	auto ptx = static_cast<ir::PTXInstruction*>(instruction->i);	
+	
+	// Ignore instructions with side effects
+	if(ptx->hasSideEffects()) return InvalidNumber;
 
+	// If the assignment is trivial, return the number of the source
 	if(isTrivial(*ptx))
 	{
 		return _lookupExistingOrCreateNewNumber(ptx->a);

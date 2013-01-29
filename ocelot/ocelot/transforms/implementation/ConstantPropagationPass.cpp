@@ -48,7 +48,7 @@ void ConstantPropagationPass::runOnKernel(ir::IRKernel& k)
 	analysis::DataflowGraph& dfg =
 		*static_cast<analysis::DataflowGraph*>(dfgAnalysis);
 	
-	assert(dfg.ssa() != analysis::DataflowGraph::SsaType::None);
+	assert(dfg.ssa() == analysis::DataflowGraph::Minimal);
 	
 	BlockSet blocks;
 	
@@ -72,7 +72,6 @@ void ConstantPropagationPass::runOnKernel(ir::IRKernel& k)
 	reportE(REPORT_PTX, k);
 
 }
-
 
 typedef analysis::DataflowGraph::InstructionVector InstructionVector;
 
@@ -413,18 +412,33 @@ static bool computeValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
 static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 	const ir::PTXOperand& value, BlockSet& visited)
 {
-	typedef analysis::DataflowGraph::RegisterPointerVector RegisterPointerVector;
+	typedef analysis::DataflowGraph::RegisterPointerVector
+		RegisterPointerVector;
 
 	if(!visited.insert(block).second) return;
 
 	// phi uses
 	bool replacedPhi = false;
+	bool anyPhis     = false;
 	ir::Instruction::RegisterType newRegisterId = 0;
 	
 	for(auto phi = block->phis().begin(); phi != block->phis().end(); ++phi)
 	{
-		if(phi->s.size() != 1) continue;
-
+		if(phi->s.size() != 1)
+		{
+			for(auto source = phi->s.begin(); source != phi->s.end(); ++source)
+			{
+				if(source->id == registerId)
+				{
+					anyPhis = true;
+					report("    could not remove " << phi->toString());
+					break;
+				}
+			}
+									
+			continue;
+		}
+		
 		for(auto source = phi->s.begin(); source != phi->s.end(); ++source)
 		{
 			if(source->id == registerId)
@@ -434,7 +448,7 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 			    	
 				auto livein = block->aliveIn().find(registerId);
 			    
-			    	assert(livein == block->aliveIn().end());
+			    assert(livein != block->aliveIn().end());
 				block->aliveIn().erase(livein);
 				
 				report("    removed " << phi->toString());
@@ -442,7 +456,6 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 				break;
 			}
 		}
-
 
 		if(replacedPhi)
 		{
@@ -452,11 +465,11 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 
 	if(replacedPhi)
 	{
+		BlockSet visited;
+		
 		updateUses(block, newRegisterId, value, visited);
 	}
-
-	// TODO handle complex phis
-
+	
 	// local uses
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
@@ -483,10 +496,35 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 
 		instruction->s = std::move(newSources);
 	}
+		
+	if(!anyPhis)
+	{
+		auto livein = block->aliveIn().find(registerId);
+   
+		if(livein == block->aliveIn().end()) return;
+
+		block->aliveIn().erase(livein);
+																
+		report("    removed from live-in set of block " <<
+			block->id());
+	}
 	
+	if(!anyPhis)
+	{
+		auto livein = block->aliveIn().find(registerId);
+
+		if(livein == block->aliveIn().end()) return;
+
+		block->aliveIn().erase(livein);
+
+		report("    removed from live-in set of block " <<
+			block->id());
+	}
+
 	auto liveout = block->aliveOut().find(registerId);
-	
+
 	if(liveout == block->aliveOut().end()) return;
+
 	
 	// uses by successors
 	bool anyUsesBySuccessors = false;
@@ -509,7 +547,7 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 
 	if(!anyUsesBySuccessors)
 	{
-		report("    removed from liveout set of BB_" << block->id());
+		report("    removed from live-out set of BB_" << block->id());
 		block->aliveOut().erase(liveout);
 	}	
 }
@@ -549,7 +587,6 @@ static bool propagateValueToSuccessors(analysis::DataflowGraph& dfg,
 	}
 
 	// send it to successors	
-	
 	auto registerId = *instruction->d.back().pointer;
 
 	auto block = instruction->block;
@@ -599,7 +636,8 @@ static ir::PTXOperand computeCvtValue(const ir::PTXInstruction& ptx)
 	return result;
 }
 
-static bool computeSetPValue(ir::PTXOperand& result, const ir::PTXInstruction& ptx)
+static bool computeSetPValue(ir::PTXOperand& result,
+	const ir::PTXInstruction& ptx)
 {
 	result = ir::PTXOperand(ir::PTXOperand::Immediate, ptx.d.type);
 

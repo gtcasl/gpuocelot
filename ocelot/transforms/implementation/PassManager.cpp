@@ -36,7 +36,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 0 
 
 namespace transforms
 {
@@ -171,7 +171,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			analysis::DataflowGraph* graph = new analysis::DataflowGraph;
 
 			analyses.insert(std::make_pair(
-			analysis::Analysis::DataflowGraphAnalysis, graph)).first;
+				analysis::Analysis::DataflowGraphAnalysis, graph)).first;
 
 			graph->setPassManager(manager);
 			allocateNewDataStructures(analyses, k, graph->required, manager);
@@ -191,7 +191,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 	
 			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::Default)
 			{
-				if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+				if(dfgp->ssa() != analysis::DataflowGraph::None)
 				{
 					dfgp->fromSsa();
 				}
@@ -205,9 +205,10 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 		{
 			assertM(!(type & analysis::Analysis::GatedStaticSingleAssignment),
 				"Cannot ask for more than one SSA form at once");
-			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::Minimal)
+				
+			if(dfgp->ssa() != analysis::DataflowGraph::Minimal)
 			{
-				if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+				if(dfgp->ssa() != analysis::DataflowGraph::None)
 				{
 					dfgp->fromSsa();
 				}
@@ -219,16 +220,16 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 		}
 		else if(type & analysis::Analysis::GatedStaticSingleAssignment)
 		{
-			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::Gated)
+			if(dfgp->ssa() != analysis::DataflowGraph::Gated)
 			{
-				if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+				if(dfgp->ssa() != analysis::DataflowGraph::None)
 				{
 					dfgp->fromSsa();
 				}
 		
 				report("    converting to gated SSA form.");
 
-				dfgp->toSsa(analysis::DataflowGraph::SsaType::Gated);
+				dfgp->toSsa(analysis::DataflowGraph::Gated);
 			}
 		}
 	}
@@ -454,6 +455,8 @@ static void runKernelPass(ir::Module* module, ir::IRKernel* kernel, Pass* pass)
 	break;
 	case Pass::InvalidPass: assertM(false, "Invalid pass type.");
 	}
+
+	report("   Finished running pass...");
 }
 
 static void initializeKernelPass(ir::Module* module, Pass* pass)
@@ -684,8 +687,14 @@ void PassManager::runOnModule()
 				auto analyses = kernelAnalyses.insert(std::make_pair(
 					kernel->first, AnalysisMap())).first;
 				
+				_analyses = &analyses->second;
+				_kernel = kernel->second;
+			
 				allocateNewDataStructures(analyses->second,
 					kernel->second, (*pass)->analyses, this);
+		
+				_analyses = 0;
+				_kernel   = 0;
 			}
 			
 			_previouslyRunPasses[(*pass)->name] = *pass;
@@ -780,7 +789,7 @@ void PassManager::invalidateAnalysis(int type)
 			auto dfgp = static_cast<analysis::DataflowGraph*>(
 				analysis->second);
 			
-			if(dfgp->ssa() != analysis::DataflowGraph::SsaType::None)
+			if(dfgp->ssa() != analysis::DataflowGraph::None)
 			{
 				report("   converting out of SSA form.");
 				dfgp->fromSsa();

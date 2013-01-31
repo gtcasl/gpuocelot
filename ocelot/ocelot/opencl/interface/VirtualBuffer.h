@@ -11,6 +11,9 @@ namespace lcl {
 
 	class VirtualBuffer {
 	public:
+
+		typedef std::list< VirtualBuffer * > VirtualBufferList;
+
 		typedef struct {
 			cl_kernel * kernel;
 			size_t memAccessSize;
@@ -23,6 +26,13 @@ namespace lcl {
 		//! Destructor
 		~VirtualBuffer();
 
+		//! Write virtual buffer
+		void write(lcl_command_queue, lcl_bool blocking_write,
+				size_t offset, size_t size, const void * ptr,
+				lcl_uint num_events_in_wait_list,
+				const lcl_event * event_wait_list,
+				lcl_event * event);
+
 		//! Get physical buffer object
 		cl_mem & getPhysicalBuffer();
 
@@ -30,7 +40,7 @@ namespace lcl {
 		void evaluatePlacement();
 
 		//! Kernel Memory Access Information List
-		std::list<KernelMemInfo> kernelMemInfoList;
+		std::list<KernelMemInfo> KernelMemInfoList;
 
 		//! Host Mapping Access Information
 		size_t hostMemAccessSize;

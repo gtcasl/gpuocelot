@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 //Ocelot defined Error code
-#define CL_UNIMPLEMENTED	-15
+#define CL_UNIMPLEMENTED	-100
 
 #ifdef __cplusplus
 }

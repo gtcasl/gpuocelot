@@ -13,10 +13,10 @@
 // Ocelot includes
 #include <ocelot/opencl/interface/OpenCLRuntimeInterface.h>
 #include <ocelot/opencl/interface/OpenCLRuntime.h>
+#include <ocelot/opencl/interface/Object.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/debug.h>
-#include <ocelot/opencl/interface/Object.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

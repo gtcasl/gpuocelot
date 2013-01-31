@@ -501,30 +501,18 @@ static void updateUses(iterator block, ir::Instruction::RegisterType registerId,
 	{
 		auto livein = block->aliveIn().find(registerId);
    
-		if(livein == block->aliveIn().end()) return;
-
-		block->aliveIn().erase(livein);
+		if(livein != block->aliveIn().end())
+		{
+			block->aliveIn().erase(livein);
 																
-		report("    removed from live-in set of block " <<
-			block->id());
-	}
-	
-	if(!anyPhis)
-	{
-		auto livein = block->aliveIn().find(registerId);
-
-		if(livein == block->aliveIn().end()) return;
-
-		block->aliveIn().erase(livein);
-
-		report("    removed from live-in set of block " <<
-			block->id());
+			report("    removed from live-in set of block " <<
+				block->id());
+		}
 	}
 
 	auto liveout = block->aliveOut().find(registerId);
 
 	if(liveout == block->aliveOut().end()) return;
-
 	
 	// uses by successors
 	bool anyUsesBySuccessors = false;

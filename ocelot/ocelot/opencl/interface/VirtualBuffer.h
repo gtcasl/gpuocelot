@@ -33,6 +33,16 @@ namespace lcl {
 				const lcl_event * event_wait_list,
 				lcl_event * event);
 
+		//! Read virtual buffer
+		void read(lcl_command_queue, lcl_bool blocking_write,
+				size_t offset, size_t size, void * ptr,
+				lcl_uint num_events_in_wait_list,
+				const lcl_event * event_wait_list,
+				lcl_event * event);
+
+
+		void setToKernelArg(lcl_kernel kernel, lcl_uint arg_index);
+
 		//! Get physical buffer object
 		cl_mem & getPhysicalBuffer();
 

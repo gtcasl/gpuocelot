@@ -8,7 +8,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 lcl::LCLRuntime * lcl::LCLRuntime::instance = 0;
 
@@ -54,6 +54,7 @@ lcl_vbuf lcl::LCLRuntime::lclCreateVirtualBuffer(lcl_context context,
 
 	try {
 		vBuffer = new VirtualBuffer(context, size);
+		_vBuffers.push_back(vBuffer);
 	}
 	catch(lcl_int exception) {
 		err = exception;
@@ -68,7 +69,42 @@ lcl_vbuf lcl::LCLRuntime::lclCreateVirtualBuffer(lcl_context context,
 	return (lcl_vbuf)vBuffer;
 }
 
-lcl_int lcl::LCLRuntime::lclWriteVirtualBuffer(lcl_command_queue command_queue,
+lcl_int lcl::LCLRuntime::lclEnqueueReadVirtualBuffer(lcl_command_queue command_queue,
+				lcl_vbuf virtual_buffer,
+				lcl_bool blocking_write,
+				size_t offset,
+				size_t size,
+				void * ptr,
+				lcl_uint num_events_in_wait_list,
+				const lcl_event * event_wait_list,
+				lcl_event * event) {
+
+
+	lcl_int result = CL_SUCCESS;
+
+	try {
+		VirtualBuffer * vBuf = (VirtualBuffer *)virtual_buffer;
+	
+		if(!isValidVirtualBuffer(vBuf))
+			throw LCL_INVALID_VIRTUAL_BUFFER;
+
+		vBuf->read(command_queue, blocking_write, 
+					offset, size, ptr,
+					num_events_in_wait_list,
+					event_wait_list, event);
+
+	}
+	catch(lcl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	return result;
+}
+
+lcl_int lcl::LCLRuntime::lclEnqueueWriteVirtualBuffer(lcl_command_queue command_queue,
 				lcl_vbuf virtual_buffer,
 				lcl_bool blocking_write,
 				size_t offset,
@@ -79,7 +115,7 @@ lcl_int lcl::LCLRuntime::lclWriteVirtualBuffer(lcl_command_queue command_queue,
 				lcl_event * event) {
 
 
-	cl_int result = CL_SUCCESS;
+	lcl_int result = CL_SUCCESS;
 
 	try {
 		VirtualBuffer * vBuf = (VirtualBuffer *)virtual_buffer;
@@ -103,4 +139,67 @@ lcl_int lcl::LCLRuntime::lclWriteVirtualBuffer(lcl_command_queue command_queue,
 	return result;
 }
 
+lcl_int lcl::LCLRuntime::lclSetKernelArg(lcl_kernel kernel,
+					lcl_uint arg_index,
+					size_t arg_size,
+					const void * arg_value) {
+
+	lcl_int result = CL_SUCCESS;
+
+	try {
+
+		if(arg_size == sizeof(lcl_vbuf)) {//a possible virtual buffer
+
+			VirtualBuffer * vBuf = (VirtualBuffer *)(*((lcl_vbuf *)arg_value));
+			if(isValidVirtualBuffer(vBuf)) {//Yes, it is virtual buffer!
+				report("Find virtual buffer for kernel argument");
+
+				vBuf->setToKernelArg(kernel, arg_index);
+			}
+			else { // call regular clSetKernelArg
+				result = clSetKernelArg(kernel, arg_index, arg_size, arg_value);
+			}
+		}
+		else { //call regular clSetKernelArg
+			result = clSetKernelArg(kernel, arg_index, arg_size, arg_value);
+		}
+
+	}
+	catch(lcl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	return result;
+}
+
+lcl_int lcl::LCLRuntime::lclEnqueueNDRangeKernel(lcl_command_queue command_queue,
+					lcl_kernel kernel,
+					lcl_uint work_dim,
+					const size_t * global_work_offset,
+					const size_t * global_work_size,
+					const size_t * local_work_size,
+					lcl_uint num_events_in_wait_list,
+					const lcl_event * event_wait_list,
+					lcl_event * event) {
+
+	lcl_int result = CL_SUCCESS;
+
+	try {
+		result = clEnqueueNDRangeKernel(command_queue, kernel, work_dim,
+					global_work_offset, global_work_size, local_work_size,
+					num_events_in_wait_list, event_wait_list, event);
+	}
+	catch(lcl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	return result;
+
+}
 

@@ -29,6 +29,25 @@ CL_MEM_READ_WRITE, size = " << size);
 lcl::VirtualBuffer::~VirtualBuffer() {
 }
 
+void lcl::VirtualBuffer::read(lcl_command_queue command_queue,
+							lcl_bool blocking,
+							size_t offset,
+							size_t size,
+							void * ptr,
+							lcl_uint num_events_in_wait_list,
+							const lcl_event * event_wait_list,
+							lcl_event * event) {
+
+	cl_int status = clEnqueueReadBuffer(command_queue, _phyBuffer,
+						blocking, offset, size, ptr, 
+						num_events_in_wait_list,
+						event_wait_list,
+						event);
+
+	if(status != CL_SUCCESS)
+		throw status;
+}
+
 void lcl::VirtualBuffer::write(lcl_command_queue command_queue,
 							lcl_bool blocking,
 							size_t offset,
@@ -43,6 +62,17 @@ void lcl::VirtualBuffer::write(lcl_command_queue command_queue,
 						num_events_in_wait_list,
 						event_wait_list,
 						event);
+
+	if(status != CL_SUCCESS)
+		throw status;
+}
+
+void lcl::VirtualBuffer::setToKernelArg(lcl_kernel kernel, lcl_uint arg_index) {
+	//TODO: add to vb evaluate list
+	//addToEvaluateList(kernel);
+
+	//Set physical buffer to kernel argument
+	cl_int status = clSetKernelArg(kernel, arg_index, sizeof(cl_mem), &_phyBuffer);
 
 	if(status != CL_SUCCESS)
 		throw status;

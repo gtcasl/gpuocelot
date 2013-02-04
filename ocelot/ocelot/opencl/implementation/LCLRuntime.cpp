@@ -8,7 +8,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 lcl::LCLRuntime * lcl::LCLRuntime::instance = 0;
 
@@ -203,3 +203,43 @@ lcl_int lcl::LCLRuntime::lclEnqueueNDRangeKernel(lcl_command_queue command_queue
 
 }
 
+lcl_int lcl::LCLRuntime::lclFinish(lcl_command_queue command_queue) {
+
+	lcl_int result = CL_SUCCESS;
+
+	try {
+		result = clFinish(command_queue);
+	}
+	catch(lcl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	return result;
+}
+
+lcl_int lcl::LCLRuntime::lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer) {
+	lcl_int result = CL_SUCCESS;
+
+	try {
+		VirtualBuffer * vBuffer = (VirtualBuffer *)virtual_buffer;
+		if(!isValidVirtualBuffer(vBuffer))
+			throw LCL_INVALID_VIRTUAL_BUFFER;
+
+		vBuffer->release();
+
+		_vBuffers.remove(vBuffer);
+
+		delete vBuffer;
+	}
+	catch(lcl_int exception) {
+		result = exception;
+	}
+	catch(...) {
+		result = CL_OUT_OF_HOST_MEMORY;
+	}
+
+	return result;
+}

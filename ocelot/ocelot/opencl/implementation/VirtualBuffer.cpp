@@ -8,10 +8,10 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 lcl::VirtualBuffer::VirtualBuffer(lcl_context context, size_t size) :
-	_size(size) {
+	_size(size){
 
 	report("Create Virtual Buffer using default memory flag \
 CL_MEM_READ_WRITE, size = " << size);
@@ -73,6 +73,13 @@ void lcl::VirtualBuffer::setToKernelArg(lcl_kernel kernel, lcl_uint arg_index) {
 
 	//Set physical buffer to kernel argument
 	cl_int status = clSetKernelArg(kernel, arg_index, sizeof(cl_mem), &_phyBuffer);
+
+	if(status != CL_SUCCESS)
+		throw status;
+}
+
+void lcl::VirtualBuffer::release() {
+	cl_int status = clReleaseMemObject(_phyBuffer);
 
 	if(status != CL_SUCCESS)
 		throw status;

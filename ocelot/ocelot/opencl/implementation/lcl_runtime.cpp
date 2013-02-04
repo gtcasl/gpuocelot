@@ -63,3 +63,11 @@ lcl_int lclEnqueueNDRangeKernel(lcl_command_queue command_queue,
 					event);
 }
 
+lcl_int lclFinish(lcl_command_queue command_queue) {
+
+	return lcl::LCLRuntime::get()->lclFinish(command_queue);
+}
+
+lcl_int lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer) {
+	return lcl::LCLRuntime::get()->lclReleaseVirtualBuffer(virtual_buffer);
+}

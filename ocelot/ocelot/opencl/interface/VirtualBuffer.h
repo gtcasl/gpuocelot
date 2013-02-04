@@ -43,6 +43,8 @@ namespace lcl {
 
 		void setToKernelArg(lcl_kernel kernel, lcl_uint arg_index);
 
+		void release();
+
 		//! Get physical buffer object
 		cl_mem & getPhysicalBuffer();
 

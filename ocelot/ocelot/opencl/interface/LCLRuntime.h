@@ -68,7 +68,8 @@ namespace lcl {
 					lcl_uint num_events_in_wait_list,
 					const lcl_event * event_wait_list,
 					lcl_event * event);
-
+		virtual lcl_int lclFinish(lcl_command_queue command_queue);
+		virtual lcl_int lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer);
 
 	private:
 		VirtualBufferList _vBuffers;

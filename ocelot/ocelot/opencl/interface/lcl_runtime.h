@@ -58,6 +58,10 @@ extern lcl_int lclEnqueueNDRangeKernel(lcl_command_queue command_queue,
 					lcl_uint num_events_in_wait_list,
 					const lcl_event * event_wait_list,
 					lcl_event * event);
+
+extern lcl_int lclFinish(lcl_command_queue command_queue);
+
+extern lcl_int lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer);
 #ifdef __cplusplus
 }
 #endif

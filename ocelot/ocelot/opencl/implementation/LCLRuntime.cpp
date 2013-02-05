@@ -30,7 +30,7 @@ lcl::LCLRuntime * lcl::LCLRuntime::get() {
 	return lcl::LCLRuntime::instance;
 }
 
-lcl::LCLRuntime::LCLRuntime() {
+lcl::LCLRuntime::LCLRuntime():_inEvaluation(false), _isEvaluated(false) {
 }
 
 lcl::LCLRuntime::~LCLRuntime() {
@@ -42,6 +42,14 @@ bool lcl::LCLRuntime::isValidVirtualBuffer(VirtualBuffer * vBuf) {
 		return true;
 	else
 		return false;
+}
+
+bool lcl::LCLRuntime::isInEvaluation() {
+	return _inEvaluation;
+}
+
+bool lcl::LCLRuntime::isEvaluated() {
+	return _isEvaluated;
 }
 		
 lcl_vbuf lcl::LCLRuntime::lclCreateVirtualBuffer(lcl_context context,
@@ -242,4 +250,16 @@ lcl_int lcl::LCLRuntime::lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer) {
 	}
 
 	return result;
+}
+
+lcl_int lcl::LCLRuntime::lclEvaluateStart() {
+	if(!_isEvaluated)
+		_inEvaluation = true;
+	return CL_SUCCESS;
+}
+
+lcl_int lcl::LCLRuntime::lclEvaluateEnd() {
+	_inEvaluation = false;
+	_isEvaluated = true;
+	return CL_SUCCESS;
 }

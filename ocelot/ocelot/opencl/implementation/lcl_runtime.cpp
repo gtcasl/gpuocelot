@@ -71,3 +71,11 @@ lcl_int lclFinish(lcl_command_queue command_queue) {
 lcl_int lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer) {
 	return lcl::LCLRuntime::get()->lclReleaseVirtualBuffer(virtual_buffer);
 }
+
+lcl_int lclEvaluateStart() {
+	return lcl::LCLRuntime::get()->lclEvaluateStart();
+}
+
+lcl_int lclEvaluateEnd() {
+	return lcl::LCLRuntime::get()->lclEvaluateEnd();
+}

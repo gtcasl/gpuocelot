@@ -33,6 +33,10 @@ namespace lcl {
 
 		bool isValidVirtualBuffer(VirtualBuffer * vBuf);
 
+		bool isInEvaluation();
+
+		bool isEvaluated();
+
 	public:
 		virtual lcl_vbuf lclCreateVirtualBuffer(lcl_context context,
 							size_t size,
@@ -70,9 +74,14 @@ namespace lcl {
 					lcl_event * event);
 		virtual lcl_int lclFinish(lcl_command_queue command_queue);
 		virtual lcl_int lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer);
+		virtual lcl_int lclEvaluateStart();
+		virtual lcl_int lclEvaluateEnd();
 
 	private:
 		VirtualBufferList _vBuffers;
+
+		bool _inEvaluation;
+		bool _isEvaluated;
 
 	};
 }

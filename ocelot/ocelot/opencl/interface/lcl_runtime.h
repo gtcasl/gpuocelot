@@ -62,6 +62,10 @@ extern lcl_int lclEnqueueNDRangeKernel(lcl_command_queue command_queue,
 extern lcl_int lclFinish(lcl_command_queue command_queue);
 
 extern lcl_int lclReleaseVirtualBuffer(lcl_vbuf virtual_buffer);
+
+extern lcl_int lclEvaluateStart();
+
+extern lcl_int lclEvaluateEnd();
 #ifdef __cplusplus
 }
 #endif

@@ -86,7 +86,17 @@ std::string opencl::Program::_compileToBinary()
 	std::stringstream ss;
 	ss << ifs.rdbuf();
 	if (ss.fail())  throw CL_BUILD_PROGRAM_FAILURE;
-	return ss.str();
+
+	std::string compiledStr = ss.str();
+	size_t pos = compiledStr.find(".target sm_10");
+	if(pos != std::string::npos) {
+		report("Target sm_10!");
+		pos += 11; //sm_10
+		assert(compiledStr[pos] == '1');
+		compiledStr[pos] = '2';
+	}
+
+	return compiledStr;
 }
 
 bool opencl::Program::_isBuiltOnDevice(Device * device) {

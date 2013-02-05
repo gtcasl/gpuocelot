@@ -3,8 +3,11 @@
 // C++ standard library includes
 
 // Ocelot includes
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/MemoryAccessSizePass.h>
 #include <ocelot/opencl/interface/OpenCLRuntime.h>
 #include <ocelot/opencl/interface/Kernel.h>
+#include <ocelot/opencl/interface/LCLRuntime.h>
 
 #include <hydrazine/interface/debug.h>
 
@@ -256,11 +259,32 @@ void opencl::Kernel::launchOnDevice(Device * device)
 
 //		_inExecute = true;
 
+		lcl::LCLRuntime * lcl = lcl::LCLRuntime::get();
+		void *ptr = NULL;
+		if(lcl->isInEvaluation()) {
+			ptr = device->allocate(sizeof(uint32_t));
+			std::cout << "$$$$$$$$$$$$$$$$ temp allocate ptr = " << ptr << std::endl;
+			uint32_t init = 0;
+			device->write(ptr, &init, 0, sizeof(uint32_t)); 
+	
+			ir::Module * module = _deviceInfo[device]._module;
+			transforms::MemoryAccessSizePass memAccessSizePass(ptr);
+			transforms::PassManager manager(module);
+			manager.addPass(memAccessSizePass);
+			manager.runOnModule();
+		}
+
 		device->launch(_deviceInfo[device]._moduleName, _name, convert(_workGroupNum), 
 			convert(_localWorkSize), _sharedOffset, 
 			_parameterBlock, _parameterBlockSize, traceGens, &(runtime->externals));
 //		_inExecute = false;
 		report(" launch completed successfully");	
+
+		if(lcl->isInEvaluation()) {
+			uint64_t count;
+			device->read(ptr, &count, 0, sizeof(uint32_t));
+			std::cout << "##############Read out " << count << std::endl;
+		}
 //	}
 //	catch( const executive::RuntimeException& e ) {
 //		std::cerr << "==Ocelot== PTX Emulator failed to run kernel \"" 

@@ -367,12 +367,13 @@ namespace executive
 		}
 	}
 
-	NVIDIAGPUDevice::Module::Module(const ir::Module* m) : _handle(0), ir(m)
+	NVIDIAGPUDevice::Module::Module(NVIDIAGPUDevice * device, const ir::Module* m) : 
+	_handle(0), _device(device), ir(m)
 	{
 	
 	}
 	
-	NVIDIAGPUDevice::Module::Module(const Module& m) : _handle(0), ir(m.ir)
+	NVIDIAGPUDevice::Module::Module(const Module& m) : _handle(0), _device(m._device), ir(m.ir)
 	{
 		
 	}
@@ -438,7 +439,7 @@ namespace executive
 			hydrazine::bit_cast<void*>(errorLogActualSize), 
 		};
 		
-		if (module->target().major == 3 /*&& module->version().minor == 0*/) {
+		if (_device->properties().major == 3) {
 			optionValues[0] = (void *)CU_TARGET_COMPUTE_30;
 		}
 		
@@ -1245,7 +1246,7 @@ namespace executive
 			Throw("Duplicate module - " << module->path());
 		}
 		_modules.insert(std::make_pair(module->path(), 
-			Module(module)));
+			Module(this, module)));
 	}
 	
 	void NVIDIAGPUDevice::unload(const std::string& name)

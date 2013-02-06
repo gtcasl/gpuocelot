@@ -93,6 +93,9 @@ namespace executive
 					/*! \brief A handle to the module or 0*/
 					CUmodule _handle;
 
+					/*! \brief a handler to the Device*/
+					NVIDIAGPUDevice * _device;
+
 				public:
 					/*! \brief This is a map from a global name to pointer */
 					typedef std::unordered_map<std::string, void*> GlobalMap;
@@ -112,7 +115,7 @@ namespace executive
 					
 				public:
 					/*! \brief Construct this based on a module */
-					Module(const ir::Module* m = 0);
+					Module(NVIDIAGPUDevice * device, const ir::Module* m = 0);
 					/*! \brief Copy constructor */
 					Module(const Module& m);
 					/*! \brief Clean up all translated kernels */

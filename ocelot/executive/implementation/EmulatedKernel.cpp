@@ -900,6 +900,26 @@ const executive::EmulatedKernel*
 	return kernel->second;
 }
 
+const executive::EmulatedKernel* 
+	executive::EmulatedKernel::getKernelContainingThisPC(int PC) const {
+	report("Getting kernel containing pc " << PC);
+	
+	for(auto kernel = kernelEntryPoints.begin();
+		kernel != kernelEntryPoints.end(); ++kernel) {
+		if(PC < kernel->first) continue;
+		if((unsigned int)PC >=
+			kernel->first + kernel->second->instructions.size()) {
+			continue;
+		}
+		
+		return kernel->second;
+	}
+	
+	if((unsigned int)PC < instructions.size()) return this;
+	
+	return 0;
+}
+
 void executive::EmulatedKernel::jumpToPC(int PC) {
 	assert(CTA != 0);
 	
@@ -956,6 +976,17 @@ unsigned int executive::EmulatedKernel::getTotalStackSize(
 	unsigned int threadId) const {
 	assert(CTA != 0);
 	return CTA->functionCallStack.totalStackSize();
+}
+
+unsigned int executive::EmulatedKernel::getStackFrameCount() const {
+	assert(CTA != 0);
+	return CTA->functionCallStack.getFrameCount();
+}
+
+executive::FrameInfo executive::EmulatedKernel::getStackFrameInfo(
+	unsigned int frame) const {
+	assert(CTA != 0);
+	return CTA->functionCallStack.getFrameInfo(frame);
 }
 
 void executive::EmulatedKernel::initializeStackMemory() {

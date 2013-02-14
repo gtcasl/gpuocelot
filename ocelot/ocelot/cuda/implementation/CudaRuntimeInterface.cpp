@@ -529,6 +529,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaSetDeviceFlags( int flags ) {
 }
 
 
+cudaError_t cuda::CudaRuntimeInterface::cudaDeviceGetAttribute( int* value,
+	cudaDeviceAttr attrbute, int device ) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 cudaError_t cuda::CudaRuntimeInterface::cudaBindTexture(size_t *offset, 
 	const struct textureReference *texref, const void *devPtr, 

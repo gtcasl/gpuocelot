@@ -6454,6 +6454,14 @@ void PTXToLLVMTranslator::_translateTex( const ir::PTXInstruction& i )
 			call.parameters[3] = _translate( i.c.array[0] );
 			call.parameters[4] = _translate( i.c.array[1] );
 			break;
+		case ir::PTXInstruction::_a2d:
+			call.name = "@__ocelot_tex_a2d";
+			call.parameters.resize( 6 );
+			call.parameters[0] = d;
+			call.parameters[3] = _translate( i.c.array[1] );
+			call.parameters[4] = _translate( i.c.array[2] );
+			call.parameters[5] = _translate( i.c.array[0] );
+			break;
 		case ir::PTXInstruction::_3d:
 			call.name = "@__ocelot_tex_3d";
 			call.parameters.resize( 7 );
@@ -8872,6 +8880,14 @@ void PTXToLLVMTranslator::_addTextureCalls()
 	tex.parameters[0].type.type = ir::LLVMInstruction::F32;
 	_llvmKernel->push_front( tex );
 
+	tex.parameters.resize( 6 );
+	
+	tex.label = "__ocelot_tex_a2d_ff";
+	tex.parameters[5].type.category = ir::LLVMInstruction::Type::Element;
+	tex.parameters[5].type.type = ir::LLVMInstruction::I32;
+	_llvmKernel->push_front( tex );
+
+	tex.parameters.resize( 5 );
 	tex.label = "__ocelot_tex_2d_fu";
 	tex.parameters[3].type.type = ir::LLVMInstruction::I32;
 	tex.parameters[4].type.type = ir::LLVMInstruction::I32;

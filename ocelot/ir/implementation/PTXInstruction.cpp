@@ -1837,8 +1837,8 @@ std::string ir::PTXInstruction::valid() const {
 				&& !PTXOperand::valid( PTXOperand::s32, type ) ) {
 				return "instruction must be be assignable to u32, f32, or s32";
 			}
-			if( !PTXOperand::valid( type, c.type )  ) {
-				return "operand C type " + PTXOperand::toString( d.type ) 
+			if( !PTXOperand::valid( type, d.type )  ) {//SI_FIX: temp, for SimpleLayeredTexture
+				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			break;

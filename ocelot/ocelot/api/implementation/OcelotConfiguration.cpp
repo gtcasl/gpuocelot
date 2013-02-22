@@ -194,6 +194,9 @@ api::OcelotConfiguration::Optimizations::Optimizations():
 	linearScanAllocation(false),
 	mimdThreadScheduling(false),
 	syncElimination(false),
+	hoistSpecialValues(false),
+	simplifyCFG(false),
+	enforceLockStepExecution(false),
 	inlining(false)
 {
 

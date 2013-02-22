@@ -13,6 +13,7 @@
 
 #include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/CTAContext.h>
+#include <ocelot/executive/interface/FrameInfo.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
 // Forward Declarations
@@ -103,6 +104,9 @@ namespace executive {
 
 		/*! Finds the kernel beginning at the specified PC */
 		const EmulatedKernel* getKernel(int PC) const;
+
+		/*! Finds the kernel containing the specified PC */
+		const EmulatedKernel* getKernelContainingThisPC(int PC) const;
 		
 		/*! If the kernel is executing, jump to the specified PC */
 		void jumpToPC(int PC);
@@ -138,6 +142,12 @@ namespace executive {
 		/* Get the total stack size for the specified thread */
 		unsigned int getTotalStackSize(unsigned int threadId) const;
 
+		/* Get the number of stack frames */
+		unsigned int getStackFrameCount() const;
+
+		/* Get info for a specific stack frame */
+		FrameInfo getStackFrameInfo(unsigned int frame) const;
+		
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();

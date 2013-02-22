@@ -16,6 +16,7 @@
 #include <hydrazine/interface/ArgumentParser.h>
 #include <hydrazine/interface/string.h>
 #include <hydrazine/interface/debug.h>
+#include <hydrazine/interface/SystemCompatibility.h>
 
 // Standard Library Includes
 #include <fstream>
@@ -106,7 +107,18 @@ int link(const std::string& inputList, const std::string& output,
 		
 		for(auto symbol = symbols.begin(); symbol != symbols.end(); ++symbol)
 		{
-			std::cout << "Undefined symbol: '" << *symbol << "'\n";
+			std::cout << "Undefined symbol: '";
+			
+			if(hydrazine::isMangledCXXString(*symbol))
+			{
+				std::cout << hydrazine::demangleCXXString(*symbol); 
+			}
+			else
+			{
+				std::cout << *symbol;
+			}
+			
+			std::cout << "'\n";
 		}
 		
 		if(!symbols.empty())

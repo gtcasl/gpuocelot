@@ -186,7 +186,8 @@ public:
 			ir::PTXOperand::RegisterType reg) const;
 		/*! \brief View the value of a register */
 		void _printRegisterAsMask(ir::PTXOperand::RegisterType reg) const;
-		/*! \brief prints watchpoints according to formatting information from command */
+		/*! \brief prints watchpoints according to formatting information
+			from command */
 		void _listWatchpoints(const std::string &command) const;
 		/*! \brief print the value of the region specified in a watchpoint */
 		void _printWatchpoint(const Watchpoint &watch) const;
@@ -194,7 +195,8 @@ public:
 		void _clearWatchpoint(const std::string &command);
 		/*! \brief sets a watchpoint */
 		void _setWatchpoint(const std::string &command);
-		/*! \brief finds the watch points triggered by the event and prints their values */
+		/*! \brief finds the watch points triggered by the event and
+			prints their values */
 		void _testWatchpoints(const trace::TraceEvent &event);
 		/*! \brief View values in memory near the specified device address */
 		void _printMemory(ir::PTXU64 address) const;
@@ -206,6 +208,8 @@ public:
 		void _printPC() const;
 		/*! \brief Print the location of the nearest source code line */
 		void _printLocation(unsigned int pc) const;
+		/*! \brief Print the set of functions on the call stack  */
+		void _backtrace() const;
 		
 	};
 }

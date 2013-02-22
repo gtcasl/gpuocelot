@@ -225,6 +225,8 @@ namespace cuda {
 		virtual cudaError_t cudaGetDevice(int *device);
 		virtual cudaError_t cudaSetValidDevices(int *device_arr, int len);
 		virtual cudaError_t cudaSetDeviceFlags( int flags );
+		virtual cudaError_t cudaDeviceGetAttribute( int* value, cudaDeviceAttr attrbute,
+			int device );
 
 		/*
 			Texture binding

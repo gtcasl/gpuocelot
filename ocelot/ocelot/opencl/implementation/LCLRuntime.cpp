@@ -30,7 +30,8 @@ lcl::LCLRuntime * lcl::LCLRuntime::get() {
 	return lcl::LCLRuntime::instance;
 }
 
-lcl::LCLRuntime::LCLRuntime():_inEvaluation(false), _isEvaluated(false) {
+lcl::LCLRuntime::LCLRuntime():_inEvaluation(false), _isEvaluated(false),
+	_deviceReadSize(0), _deviceWriteSize(0), _hostReadSize(0), _hostWriteSize(0){
 }
 
 lcl::LCLRuntime::~LCLRuntime() {
@@ -51,7 +52,34 @@ bool lcl::LCLRuntime::isInEvaluation() {
 bool lcl::LCLRuntime::isEvaluated() {
 	return _isEvaluated;
 }
-		
+
+size_t lcl::LCLRuntime::increaseAccessSize(size_t size, AccessType type) {
+
+	switch(type) {
+	
+		case DEVICE_READ: 
+			_deviceReadSize += size;
+			return _deviceReadSize;
+
+		case HOST_READ:
+			_hostReadSize += size;
+			return _hostReadSize;
+
+		case DEVICE_WRITE:
+			_deviceWriteSize += size;
+			return _deviceWriteSize;
+
+		case HOST_WRITE:
+			_hostWriteSize += size;
+			return _hostWriteSize;
+
+		default:
+			assertM(false, "Invalid access type");
+			return 0;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////	
 lcl_vbuf lcl::LCLRuntime::lclCreateVirtualBuffer(lcl_context context,
 	size_t size,
 	lcl_int * errcode_ret) {
@@ -261,5 +289,11 @@ lcl_int lcl::LCLRuntime::lclEvaluateStart() {
 lcl_int lcl::LCLRuntime::lclEvaluateEnd() {
 	_inEvaluation = false;
 	_isEvaluated = true;
+
+	for(auto vIt = _vBuffers.begin(); vIt != _vBuffers.end(); vIt++) {
+		(*vIt)->updatePlacement(_deviceReadSize, _deviceWriteSize,
+			_hostReadSize, _hostWriteSize);
+	}
+
 	return CL_SUCCESS;
 }

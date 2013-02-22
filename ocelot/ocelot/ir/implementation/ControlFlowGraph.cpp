@@ -281,10 +281,12 @@ bool ControlFlowGraph::empty() const {
 ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	const BasicBlock& block) {
 	
-	report("Inserting block '" << block.label() << "' (" << block.id << ")" );
 	auto inserted = _blocks.insert(end(), block);
 	
 	inserted->cfg = this;
+	
+	report("Inserting block '" << inserted->label() << "' ("
+		<< inserted->id << ")" );
 	
 	return inserted;	
 }

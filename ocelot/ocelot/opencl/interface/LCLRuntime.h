@@ -20,6 +20,13 @@ namespace lcl {
 	public: 
 		typedef VirtualBuffer::VirtualBufferList VirtualBufferList;
 
+		typedef enum {
+			DEVICE_READ = 0,
+			DEVICE_WRITE,
+			HOST_READ,
+			HOST_WRITE
+		}AccessType;
+
 	public:
 
 		//! \brief singleton accessors */
@@ -36,6 +43,8 @@ namespace lcl {
 		bool isInEvaluation();
 
 		bool isEvaluated();
+
+		size_t increaseAccessSize(size_t size, AccessType type);
 
 	public:
 		virtual lcl_vbuf lclCreateVirtualBuffer(lcl_context context,
@@ -82,6 +91,11 @@ namespace lcl {
 
 		bool _inEvaluation;
 		bool _isEvaluated;
+
+		size_t _deviceReadSize;
+		size_t _deviceWriteSize;
+		size_t _hostReadSize;
+		size_t _hostWriteSize;
 
 	};
 }

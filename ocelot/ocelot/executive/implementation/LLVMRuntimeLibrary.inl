@@ -944,6 +944,14 @@ void OCELOT_INTRINSIC __ocelot_tex_2d_ff( float* result,
 	result[3] = executive::tex::sample< 3, float >( texture, c0, c1 );	
 }
 
+void OCELOT_INTRINSIC __ocelot_tex_a2d_ff( float* result,
+    executive::LLVMContext* context, 
+    unsigned int index, float c0, float c1, int offset)
+{
+    //index += offset * 512;
+    __ocelot_tex_2d_ff( result, context, index, c0, c1 );
+}
+
 void OCELOT_INTRINSIC __ocelot_tex_2d_sf( unsigned int* result, 
 	executive::LLVMContext* context, 
 	unsigned int index, float c0, float c1 )

@@ -21,6 +21,7 @@
 // Hydrazine Includes
 #include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Casts.h>
+#include <hydrazine/interface/SystemCompatibility.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -192,7 +193,8 @@ void InteractiveDebugger::_command(const std::string& command)
 	
 	_processCommands = false;
 	
-	if (base == "") {
+	if (base == "")
+	{
 		_processCommands = true;
 	}
 	else if(base == "help" || base == "h")
@@ -219,13 +221,20 @@ void InteractiveDebugger::_command(const std::string& command)
 		stream >> PC;
 		_setBreakpoint(PC);
 	}
-	else if (base == "list") {
+	else if (base == "list")
+	{
 		_listWatchpoints(command);
 	}
-	else if (base == "clear") {
+	else if (base == "backtrace" || base == "bt")
+	{
+		_backtrace();
+	}
+	else if (base == "clear")
+	{
 		_clearWatchpoint(command);
 	}
-	else if (base == "watch") {
+	else if (base == "watch")
+	{
 		_setWatchpoint(command);
 	}	
 	else if(base == "print" || base == "p")
@@ -538,7 +547,8 @@ void InteractiveDebugger::_printRegisterAsMask(
 		unsigned int count = 0;
 		for(unsigned int tid = 0; tid < threads; ++tid)
 		{
-			std::cout << ((file[tid * registers + reg] & 0x1) == 0x1 ? "1" : "0");
+			std::cout
+				<< ((file[tid * registers + reg] & 0x1) == 0x1 ? "1" : "0");
 			count += file[tid * registers + reg] & 0x1;
 		}
 
@@ -670,7 +680,58 @@ void InteractiveDebugger::_printLocation(unsigned int pc) const
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+void InteractiveDebugger::_backtrace() const
+{
+	switch(_kernel->ISA)
+	{
+	case ir::Instruction::Emulated:
+	{
+		const executive::EmulatedKernel& kernel =
+			static_cast<const executive::EmulatedKernel&>(*_kernel);
+		
+		unsigned int frames = kernel.getStackFrameCount();
+		
+		std::cout << (frames - 1) << " stack frames\n";
+		
+		for(unsigned int frame = frames; frame > 1; --frame)
+		{
+			unsigned int pc = _event.PC;
+			
+			if(frame != frames)
+			{
+				auto info = kernel.getStackFrameInfo(frame);
+			
+				pc = info.pc;
+			}
+			
+			auto frameKernel = kernel.getKernelContainingThisPC(pc);
+			assert(frameKernel != 0);
+		
+			std::cout << "frame " << (frames - frame)
+				<< ": (PC " << pc << ") ";
+			
+			if(hydrazine::isMangledCXXString(frameKernel->name))
+			{
+				std::cout << hydrazine::demangleCXXString(frameKernel->name)
+					<< "\n";
+			}
+			else
+			{
+				std::cout << frameKernel->name << "\n";
+			}
+		}
+	}
+	break;
+	default:
+	{
+		assertM(false, "Backtrace for '" 
+			<< ir::Instruction::toString(_kernel->ISA) << "' kernels.");
+	}
+	break;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 
 /*!
@@ -751,7 +812,8 @@ private:
 			ir::PTXOperand::f64
 		};
 		const char *names[] = {
-			"s8", "u8", "b8", "s16", "u16", "b16", "s32", "u32", "b32", "f32", "s64", "u64", "b64", "f64",0
+			"s8", "u8", "b8", "s16", "u16", "b16", "s32", "u32",
+			"b32", "f32", "s64", "u64", "b64", "f64",0
 		};
 		for (int n = 0; names[n]; n++) {
 			if (str == std::string(names[n])) {
@@ -834,9 +896,11 @@ public:
 };
 typedef std::vector< Token > TokenVector;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-std::ostream & operator<< (std::ostream &out, const InteractiveDebugger::Watchpoint &watch) {
+std::ostream & operator<< (std::ostream &out,
+	const InteractiveDebugger::Watchpoint &watch)
+{
 	std::stringstream ss;
 
 	switch (watch.type) {	

@@ -183,46 +183,55 @@ namespace ocelot
 
 		if (c.optimizations.structuralTransform)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_structuralTransform);
 		}
 			
 		if (c.optimizations.predicateToSelect)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_predicationToSelect);		
 		}
 		
 		if (c.optimizations.linearScanAllocation)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_linearScanAllocation);		
 		}
 			
 		if (c.optimizations.mimdThreadScheduling)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_mimdThreadScheduling);
 		}
 			
 		if (c.optimizations.syncElimination)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_syncElimination);
 		}
 
 		if (c.optimizations.hoistSpecialValues)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_hoistSpecialValues);
 		}
 
 		if (c.optimizations.simplifyCFG)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_simplifyCFG);
 		}
 		
 		if (c.optimizations.enforceLockStepExecution)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_enforceLockStepExecution);
 		}
 		
 		if (c.optimizations.inlining)
 		{
+			report("Add PTX Pass\n");
 			ocelot::addPTXPass(_inliner);
 		}
 

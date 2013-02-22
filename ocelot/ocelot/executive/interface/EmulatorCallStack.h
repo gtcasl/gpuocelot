@@ -7,6 +7,9 @@
 #ifndef EMULATOR_CALL_STACK_H_INCLUDED
 #define EMULATOR_CALL_STACK_H_INCLUDED
 
+// Ocelot Includes
+#include <ocelot/executive/interface/FrameInfo.h>
+
 // Standard Library Includes
 #include <vector>
 
@@ -120,6 +123,12 @@ class EmulatorCallStack
 			unsigned int callerStackSize);
 		/*! \brief Pop the current frame */
 		void popFrame();
+
+	public:
+		/*! \brief Get the number of allocated frames */
+		unsigned int getFrameCount() const;
+		/*! \brief Get info for a specific frame */
+		FrameInfo getFrameInfo(unsigned int frame) const;
 
 	private:
 		/*! \brief Get a pointer to the base of the stack. */

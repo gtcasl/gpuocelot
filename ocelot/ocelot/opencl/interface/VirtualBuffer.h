@@ -41,8 +41,10 @@ namespace lcl {
 				lcl_event * event);
 
 
+		//! Set physical buffer as kernel argument
 		void setToKernelArg(lcl_kernel kernel, lcl_uint arg_index);
 
+		//! Release buffer
 		void release();
 
 		//! Get physical buffer object
@@ -50,6 +52,9 @@ namespace lcl {
 
 		//! Evaluate the placemet of the buffer
 		void evaluatePlacement();
+
+		//! Update the placement of the buffer
+		void updatePlacement(size_t deviceRead, size_t deviceWrite, size_t hostRead, size_t hostWrite);
 
 		//! Kernel Memory Access Information List
 		std::list<KernelMemInfo> KernelMemInfoList;

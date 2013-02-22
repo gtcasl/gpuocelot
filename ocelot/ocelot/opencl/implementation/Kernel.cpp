@@ -235,6 +235,11 @@ static ir::Dim3 convert(const size_t d[3]) {
 	return std::move(ir::Dim3(d[0], d[1], d[2]));
 }
 
+static size_t threadCount(const size_t workGroupNum[3], const size_t localWorkSize[3]) {
+	return workGroupNum[0] * workGroupNum[1] * workGroupNum[2] * localWorkSize[0] 
+	* localWorkSize[1] * localWorkSize[2];
+}
+
 void opencl::Kernel::launchOnDevice(Device * device)
 {
 
@@ -281,9 +286,10 @@ void opencl::Kernel::launchOnDevice(Device * device)
 		report(" launch completed successfully");	
 
 		if(lcl->isInEvaluation()) {
-			uint64_t count;
-			device->read(ptr, &count, 0, sizeof(uint32_t));
-			std::cout << "##############Read out " << count << std::endl;
+			uint64_t readSize;
+			device->read(ptr, &readSize, 0, sizeof(uint32_t));
+			std::cout << "##############Read out " << readSize << std::endl;
+			lcl->increaseAccessSize(readSize * threadCount(_workGroupNum, _localWorkSize), lcl::LCLRuntime::DEVICE_READ);
 		}
 //	}
 //	catch( const executive::RuntimeException& e ) {

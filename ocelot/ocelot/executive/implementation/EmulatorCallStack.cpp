@@ -315,6 +315,44 @@ namespace executive
 	{
 		return _sharedMemory.size() - globalAlignment;
 	}
+	
+	unsigned int EmulatorCallStack::getFrameCount() const
+	{
+		return _stackFrameSizes.size();	
+	}
+	
+	FrameInfo EmulatorCallStack::getFrameInfo(unsigned int frame) const
+	{
+		FrameInfo info;
+		
+		// Rewind to the specified frame
+		unsigned int framesToRewind = getFrameCount() - 1 - frame;
+		
+		unsigned int currentFrame = _stackPointer;
+		
+		auto size             =   _stackFrameSizes.rbegin();
+		auto localSize        =  _localMemorySizes.rbegin();
+		auto registerFileSize = _registerFileSizes.rbegin();
+		auto sharedMemorySize = _sharedMemorySizes.rbegin();
+
+		for(unsigned int i = 0; i < framesToRewind; ++i)
+		{
+			assert(            size !=   _stackFrameSizes.rend());
+			assert(       localSize !=  _localMemorySizes.rend());
+			assert(registerFileSize != _registerFileSizes.rend());
+			assert(sharedMemorySize != _sharedMemorySizes.rend());
+		
+			unsigned int totalPreviousSize = (*size
+				+ *registerFileSize * sizeof(RegisterType) + *localSize) 
+				* _threadCount + align(3 * sizeof(unsigned int));
+			currentFrame -= totalPreviousSize;
+		}
+		
+		// Fill in the info
+		info.pc = *(unsigned int*)_stackBase(currentFrame);
+		
+		return info;
+	}
 
 }
 

@@ -2584,7 +2584,17 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 
 			const EmulatedKernel* targetKernel = kernel->getKernel(
 				targetContext->second.PC);
-			assert( targetKernel != 0 );
+			if( targetKernel == 0 ) {
+				std::stringstream stream;
+
+				stream << targetContext->second.PC;
+
+				throw RuntimeException("attempted to call function at PC '"
+					+ stream.str() + "' in module '"
+					+ kernel->module->path() +
+					"', but there is no function at that PC.",
+					context.PC, instr);
+			}
 
 			reportE(REPORT_CALL, 
 				"  call was taken, increasing stack size by (" 

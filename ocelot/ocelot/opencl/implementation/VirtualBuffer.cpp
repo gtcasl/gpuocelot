@@ -84,3 +84,13 @@ void lcl::VirtualBuffer::release() {
 	if(status != CL_SUCCESS)
 		throw status;
 }
+
+void lcl::VirtualBuffer::updatePlacement(size_t deviceRead,
+	size_t deviceWrite, size_t hostRead, size_t hostWrite) {
+
+//	float deviceToDeviceBand = 165174.6 * 1024;
+//	float deviceToHostBand = 6043.4 * 1024;
+//
+//	float hostToDeviceBand = 6043.4 * 1024;
+//	float hostToHostBand = 
+}

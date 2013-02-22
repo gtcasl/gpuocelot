@@ -22,7 +22,7 @@
 		tracePath:      "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices:                  ["emulated"],
+		devices:                  ["llvm"],
 		preferredISA:             "nvidia",
 		optimizationLevel:        "full",
 		reconvergenceMechanism:   "ipdom",
@@ -32,7 +32,7 @@
 		port:                     2011,
 		host:                     "127.0.0.1",
 		workerThreadLimit:        8,
-		warpSize:                 1
+		warpSize:                 32
 	},
 	checkpoint: {
 		enabled:  False,

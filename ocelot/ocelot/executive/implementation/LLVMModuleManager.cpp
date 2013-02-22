@@ -34,12 +34,11 @@
 #if HAVE_LLVM
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
-#include <llvm/Target/TargetData.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/Assembly/Parser.h>
 #include <llvm/Analysis/Verifier.h>
-#include <llvm/LLVMContext.h>
-#include <llvm/Module.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
 #endif

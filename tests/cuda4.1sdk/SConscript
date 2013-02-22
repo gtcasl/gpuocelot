@@ -114,7 +114,7 @@ testApplications = [
 	('SimpleAtomicIntrinsics', ['simpleAtomicIntrinsics.cu','simpleAtomicIntrinsics_gold.cpp',], 'simpleAtomicIntrinsics'),
 	#('SimpleCubemapTexture', ['simpleCubemapTexture.cu',], 'simpleCubemapTexture'),
 	('SimpleGL', ['simpleGL_kernel.cu','simpleGL.cpp',], 'simpleGL'),
-	#('SimpleLayeredTexture', ['simpleLayeredTexture.cu',], 'simpleLayeredTexture'),
+	('SimpleLayeredTexture', ['simpleLayeredTexture.cu',], 'simpleLayeredTexture'),
 #	('SimpleMPI', ['simpleMPI.cu','simpleMPI.cpp',], 'simpleMPI'),
 	('SimpleMultiCopy', ['simpleMultiCopy.cu',], 'simpleMultiCopy'),
 	('SimpleMultiGPU', ['simpleMultiGPU_kernel.cu','simpleMultiGPU.cpp',], 'simpleMultiGPU'),

@@ -24,6 +24,7 @@ QuasirandomGenerator -qatest
 ScalarProd -qatest
 SimpleAtomicIntrinsics -qatest
 SimpleGL -qatest
+SimpleLayeredTexture -qatest
 SimpleMultiCopy -qatest
 SimpleMultiGPU -qatest
 SimplePitchLinearTexture -qatest

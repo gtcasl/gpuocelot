@@ -2,6 +2,9 @@
 
 // C++ standard library includes
 
+// Boost include
+#include <boost/filesystem.hpp>
+
 // Ocelot includes
 #include <ocelot/opencl/interface/Program.h>
 
@@ -68,12 +71,26 @@ std::string opencl::Program::_compileToBinary()
 	clFile.close();
 	if (clFile.fail()) throw CL_BUILD_PROGRAM_FAILURE;
 	
-	  // Compile cl to ptx
-	// Eliminated NEWLINE escapes, relying instead on implicit concatenation
-	std::string compileCommand("clang -ccc-host-triple nvptx64--nvidiacl "
+	// Compile cl to ptx
+	// libclc is ready
+	if(getenv("LIBCLC")==NULL) {
+
+		// Check the default dir
+		if(!boost::filesystem::exists("/usr/local/libclc")) {
+			std::cerr << "Ocelot OpenCL Error: environment variable LIBCLC"
+				<< " is not set! Set it to where libclc source is!\n";
+			throw CL_BUILD_PROGRAM_FAILURE;
+		}
+		else {
+			char cmd[] = "LIBCLC=/usr/local/libclc";
+			putenv(cmd);
+		}
+	}
+	
+	std::string compileCommand("clang -target nvptx64--nvidiacl "
 	 "-Xclang -mlink-bitcode-file "
-	 "-Xclang $HOME/libclc/nvptx64--nvidiacl/lib/builtins.bc "
-	 "-I$HOME/libclc/generic/include -I$HOME/libclc/ptx-nvidiacl/include "
+	 "-Xclang $LIBCLC/nvptx64--nvidiacl/lib/builtins.bc "
+	 "-I$LIBCLC/generic/include -I$LIBCLC/ptx-nvidiacl/include "
 	 "-include clc/clc.h -Dcl_clang_storage_class_specifiers "
 	 "-Dcl_khr_fp64 -O3 " + clName + " -S -o " + ptxName);
 	report(compileCommand);

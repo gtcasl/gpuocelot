@@ -7,7 +7,7 @@
 #include <ocelot/transforms/interface/MemoryAccessSizePass.h>
 #include <ocelot/opencl/interface/OpenCLRuntime.h>
 #include <ocelot/opencl/interface/Kernel.h>
-#include <ocelot/opencl/interface/LCLRuntime.h>
+//#include <ocelot/opencl/interface/LCLRuntime.h>
 
 #include <hydrazine/interface/debug.h>
 
@@ -235,10 +235,10 @@ static ir::Dim3 convert(const size_t d[3]) {
 	return std::move(ir::Dim3(d[0], d[1], d[2]));
 }
 
-static size_t threadCount(const size_t workGroupNum[3], const size_t localWorkSize[3]) {
-	return workGroupNum[0] * workGroupNum[1] * workGroupNum[2] * localWorkSize[0] 
-	* localWorkSize[1] * localWorkSize[2];
-}
+//static size_t threadCount(const size_t workGroupNum[3], const size_t localWorkSize[3]) {
+//	return workGroupNum[0] * workGroupNum[1] * workGroupNum[2] * localWorkSize[0] 
+//	* localWorkSize[1] * localWorkSize[2];
+//}
 
 void opencl::Kernel::launchOnDevice(Device * device)
 {
@@ -264,20 +264,20 @@ void opencl::Kernel::launchOnDevice(Device * device)
 
 //		_inExecute = true;
 
-		lcl::LCLRuntime * lcl = lcl::LCLRuntime::get();
-		void *ptr = NULL;
-		if(lcl->isInEvaluation()) {
-			ptr = device->allocate(sizeof(uint32_t));
-			std::cout << "$$$$$$$$$$$$$$$$ temp allocate ptr = " << ptr << std::endl;
-			uint32_t init = 0;
-			device->write(ptr, &init, 0, sizeof(uint32_t)); 
-	
-			ir::Module * module = _deviceInfo[device]._module;
-			transforms::MemoryAccessSizePass memAccessSizePass(ptr);
-			transforms::PassManager manager(module);
-			manager.addPass(memAccessSizePass);
-			manager.runOnModule();
-		}
+//		lcl::LCLRuntime * lcl = lcl::LCLRuntime::get();
+//		void *ptr = NULL;
+//		if(lcl->isInEvaluation()) {
+//			ptr = device->allocate(sizeof(uint32_t));
+//			std::cout << "$$$$$$$$$$$$$$$$ temp allocate ptr = " << ptr << std::endl;
+//			uint32_t init = 0;
+//			device->write(ptr, &init, 0, sizeof(uint32_t)); 
+//	
+//			ir::Module * module = _deviceInfo[device]._module;
+//			transforms::MemoryAccessSizePass memAccessSizePass(ptr);
+//			transforms::PassManager manager(module);
+//			manager.addPass(memAccessSizePass);
+//			manager.runOnModule();
+//		}
 
 		device->launch(_deviceInfo[device]._moduleName, _name, convert(_workGroupNum), 
 			convert(_localWorkSize), _sharedOffset, 
@@ -285,12 +285,12 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //		_inExecute = false;
 		report(" launch completed successfully");	
 
-		if(lcl->isInEvaluation()) {
-			uint64_t readSize;
-			device->read(ptr, &readSize, 0, sizeof(uint32_t));
-			std::cout << "##############Read out " << readSize << std::endl;
-			lcl->increaseAccessSize(readSize * threadCount(_workGroupNum, _localWorkSize), lcl::LCLRuntime::DEVICE_READ);
-		}
+//		if(lcl->isInEvaluation()) {
+//			uint64_t readSize;
+//			device->read(ptr, &readSize, 0, sizeof(uint32_t));
+//			std::cout << "##############Read out " << readSize << std::endl;
+//			lcl->increaseAccessSize(readSize * threadCount(_workGroupNum, _localWorkSize), lcl::LCLRuntime::DEVICE_READ);
+//		}
 //	}
 //	catch( const executive::RuntimeException& e ) {
 //		std::cerr << "==Ocelot== PTX Emulator failed to run kernel \"" 

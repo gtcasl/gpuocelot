@@ -213,14 +213,17 @@ void opencl::Kernel::setConfiguration(cl_uint work_dim, const size_t * global_wo
 		}
 	}
 
+	size_t maxLocalSize[3]  = {512, 512, 64};
+
 
 	for(cl_uint dim = 0; dim < 3; dim++) {
 		if(dim < work_dim) {
 			_globalWorkSize[dim] = global_work_size[dim];
 			if(local_work_size)
 				_localWorkSize[dim] = local_work_size[dim];
-			else
-				_localWorkSize[dim] = global_work_size[dim];
+			else {
+				_localWorkSize[dim] = std::min(maxLocalSize[dim], global_work_size[dim]);
+			}
 		}
 		else {
 			_globalWorkSize[dim] = 1;
@@ -228,6 +231,9 @@ void opencl::Kernel::setConfiguration(cl_uint work_dim, const size_t * global_wo
 		}
 
 		_workGroupNum[dim] = _globalWorkSize[dim] / _localWorkSize[dim];
+
+		report("local[ " << dim << " ] = " << _localWorkSize[dim] <<
+			", group[ " << dim << " ] = " << _workGroupNum[dim] << "\n");
 	}
 }
 
@@ -279,6 +285,9 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //			manager.runOnModule();
 //		}
 
+		for(int dim = 0; dim < 3; dim++)
+			report("local[ " << dim << " ] = " << _localWorkSize[dim] <<
+				", group[ " << dim << " ] = " << _workGroupNum[dim] << "\n");
 		device->launch(_deviceInfo[device]._moduleName, _name, convert(_workGroupNum), 
 			convert(_localWorkSize), _sharedOffset, 
 			_parameterBlock, _parameterBlockSize, traceGens, &(runtime->externals));

@@ -45,6 +45,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Print Runtime API name
+#define REPORT_FUNC report(__func__)
+
 typedef api::OcelotConfiguration config;
 
 /*
@@ -543,6 +546,9 @@ cl_int opencl::OpenCLRuntime::clGetPlatformIDs(cl_uint num_entries,
 	cl_int result = CL_SUCCESS;
 	_lock();
 
+
+	REPORT_FUNC;
+
 	try {
 		if((num_entries == 0 && platforms != NULL) || (num_platforms == NULL && platforms == NULL))
 			throw CL_INVALID_VALUE;
@@ -568,6 +574,7 @@ cl_int opencl::OpenCLRuntime::clGetPlatformInfo(cl_platform_id platform,
 	cl_int result = CL_SUCCESS;
 	_lock();
 
+	REPORT_FUNC;
 	try {
 		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
 			throw CL_INVALID_PLATFORM;
@@ -602,6 +609,7 @@ cl_int opencl::OpenCLRuntime::clGetDeviceIDs(cl_platform_id platform,
 
 	_lock();
 
+	REPORT_FUNC;
 	try {
 
 		if(!platform->isValidObject(Object::OBJTYPE_PLATFORM))
@@ -630,7 +638,8 @@ cl_int opencl::OpenCLRuntime::clGetDeviceInfo(cl_device_id device,
 	size_t * param_value_size_ret) {
 	cl_int result = CL_SUCCESS;
 	_lock();
-	
+
+	REPORT_FUNC;
 	try {
 
 		if(!device->isValidObject(Object::OBJTYPE_DEVICE))
@@ -662,6 +671,7 @@ cl_int opencl::OpenCLRuntime::clCreateSubDevices(cl_device_id in_device,
 	cl_int result = CL_SUCCESS;
 	_lock();
 
+	REPORT_FUNC;
 	try {
 		if(!in_device->isValidObject(Object::OBJTYPE_DEVICE))
 			throw CL_INVALID_DEVICE;
@@ -691,6 +701,7 @@ cl_context opencl::OpenCLRuntime::clCreateContext(const cl_context_properties * 
 	cl_int * errcode_ret) {
 	
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 
 	Context * ctx = NULL;
@@ -728,6 +739,7 @@ cl_context opencl::OpenCLRuntime::clCreateContextFromType(const cl_context_prope
 	cl_int *                      errcode_ret) {
 
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 
 	Context * ctx = NULL;
@@ -765,6 +777,7 @@ cl_int opencl::OpenCLRuntime::clRetainContext(cl_context context) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
 			throw CL_INVALID_CONTEXT;
@@ -787,6 +800,7 @@ cl_int opencl::OpenCLRuntime::clReleaseContext(cl_context context) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
 			throw CL_INVALID_CONTEXT;
@@ -814,6 +828,7 @@ cl_int opencl::OpenCLRuntime::clGetContextInfo(cl_context         context,
 	cl_int result = CL_SUCCESS;
 	_lock();
 	
+	REPORT_FUNC;
 	try {
 		
 		if(!context->isValidObject(Object::OBJTYPE_CONTEXT))
@@ -846,6 +861,7 @@ cl_command_queue opencl::OpenCLRuntime::clCreateCommandQueue(cl_context context,
 	CommandQueue * queue = NULL;
 	
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 
 	try {
@@ -871,6 +887,7 @@ cl_int opencl::OpenCLRuntime::clRetainCommandQueue(cl_command_queue command_queu
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
 			throw CL_INVALID_COMMAND_QUEUE;
@@ -893,6 +910,7 @@ cl_int opencl::OpenCLRuntime::clReleaseCommandQueue(cl_command_queue command_que
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
 			throw CL_INVALID_COMMAND_QUEUE;
@@ -921,6 +939,7 @@ cl_int opencl::OpenCLRuntime::clGetCommandQueueInfo(cl_command_queue command_que
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
 			throw CL_INVALID_COMMAND_QUEUE;
@@ -954,6 +973,7 @@ cl_mem opencl::OpenCLRuntime::clCreateBuffer(cl_context context,
 
 	BufferObject * buffer = NULL;
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 
 	try {
@@ -985,6 +1005,7 @@ cl_mem opencl::OpenCLRuntime::clCreateSubBuffer(cl_mem buffer,
 
 	SubBufferObject * subBuffer = NULL;
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 
 	try {
@@ -1015,6 +1036,7 @@ cl_int opencl::OpenCLRuntime::clRetainMemObject(cl_mem memobj) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
 			throw CL_INVALID_MEM_OBJECT;
@@ -1037,6 +1059,7 @@ cl_int opencl::OpenCLRuntime::clReleaseMemObject(cl_mem memobj) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!memobj->isValidObject(Object::OBJTYPE_MEMORY))
 			throw CL_INVALID_MEM_OBJECT;
@@ -1064,6 +1087,7 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithSource(cl_context context,
 	cl_int * errcode_ret) {
 	
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 	Program * program = NULL;
 
@@ -1100,6 +1124,7 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithBinary(cl_context context,
 	cl_int *                       errcode_ret) {
 
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 	Program * program = NULL;
 
@@ -1138,6 +1163,7 @@ cl_program opencl::OpenCLRuntime::clCreateProgramWithBuiltInKernels(cl_context c
                     cl_int *              errcode_ret) {
 
 	_lock();
+	REPORT_FUNC;
 	cl_int err = CL_SUCCESS;
 	Program * program = NULL;
 
@@ -1172,6 +1198,7 @@ cl_int opencl::OpenCLRuntime::clRetainProgram(cl_program program) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))
 			throw CL_INVALID_PROGRAM;
@@ -1194,6 +1221,7 @@ cl_int opencl::OpenCLRuntime::clReleaseProgram(cl_program program) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))
 			throw CL_INVALID_PROGRAM;
@@ -1221,6 +1249,7 @@ cl_int opencl::OpenCLRuntime::clBuildProgram(cl_program program,
 	void * user_data) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 	try {
 		
 		if(!program->isValidObject(Object::OBJTYPE_PROGRAM))//Not program object
@@ -1265,6 +1294,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramInfo(cl_program program,
 	size_t * param_value_size_ret) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 	
 	try {
 		
@@ -1295,6 +1325,7 @@ cl_int opencl::OpenCLRuntime::clGetProgramBuildInfo(cl_program            progra
 			void *                param_value,
 			size_t *              param_value_size_ret) {
 
+	REPORT_FUNC;
 	std::cerr << "Ocelot OpenCL Warning: clGetProgramBuildInfo unimplemented\n";
 
 	return CL_SUCCESS;
@@ -1310,6 +1341,7 @@ cl_kernel opencl::OpenCLRuntime::clCreateKernel(cl_program program,
 	Kernel * kernel = NULL;
 
 	_lock();
+	REPORT_FUNC;
 
 	try{
 
@@ -1339,6 +1371,7 @@ cl_int opencl::OpenCLRuntime::clCreateKernelsInProgram(cl_program program,
 	cl_int err = CL_SUCCESS;	
 
 	_lock();
+	REPORT_FUNC;
 
 	try{
 
@@ -1362,6 +1395,7 @@ cl_int opencl::OpenCLRuntime::clRetainKernel(cl_kernel kernel) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
 			throw CL_INVALID_KERNEL;
@@ -1384,6 +1418,7 @@ cl_int opencl::OpenCLRuntime::clReleaseKernel(cl_kernel kernel) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
 			throw CL_INVALID_KERNEL;
@@ -1411,6 +1446,7 @@ cl_int opencl::OpenCLRuntime::clSetKernelArg(cl_kernel kernel,
 
 	_lock();
 
+	REPORT_FUNC;
 	try {
 		if(!kernel->isValidObject(Object::OBJTYPE_KERNEL))
 			throw CL_INVALID_KERNEL;
@@ -1438,6 +1474,7 @@ cl_int opencl::OpenCLRuntime::clGetKernelInfo(cl_kernel kernel,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 
@@ -1473,6 +1510,7 @@ cl_int opencl::OpenCLRuntime::clGetKernelArgInfo(cl_kernel kernel,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 
@@ -1508,6 +1546,7 @@ cl_int opencl::OpenCLRuntime::clGetKernelWorkGroupInfo(cl_kernel kernel,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 
@@ -1539,6 +1578,7 @@ cl_int opencl::OpenCLRuntime::clWaitForEvents(cl_uint num_events,
                     const cl_event *    event_list) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(num_events == 0 || event_list == NULL)
@@ -1565,6 +1605,7 @@ cl_event opencl::OpenCLRuntime::clCreateUserEvent(cl_context context,
 	Event * event = NULL;
 
 	_lock();
+	REPORT_FUNC;
 
 	try{
 
@@ -1596,6 +1637,7 @@ cl_int opencl::OpenCLRuntime::clGetEventInfo(cl_event event,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 
@@ -1631,6 +1673,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBuffer(cl_command_queue command_queue
 	cl_event * event) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1676,6 +1719,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueReadBufferRect(cl_command_queue    comman
 	cl_event *          event) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1718,6 +1762,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBuffer(cl_command_queue command_queu
 	cl_event * event) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 
 	try {
 
@@ -1762,6 +1807,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueWriteBufferRect(cl_command_queue    comma
 	cl_event *          event) {
 	cl_int result = CL_SUCCESS;
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1805,6 +1851,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueFillBuffer(cl_command_queue   command_que
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1847,6 +1894,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueCopyBuffer(cl_command_queue    command_qu
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1900,6 +1948,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueCopyBufferRect(cl_command_queue     comma
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1951,6 +2000,7 @@ void * opencl::OpenCLRuntime::clEnqueueMapBuffer(cl_command_queue  command_queue
 	void * mapPtr = NULL;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -1993,6 +2043,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueUnmapMemObject(cl_command_queue  command_
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		
@@ -2034,6 +2085,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueNDRangeKernel(cl_command_queue command_qu
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
@@ -2071,6 +2123,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueTask(cl_command_queue command_queue,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
@@ -2110,6 +2163,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueMarkerWithWaitList(cl_command_queue  comm
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
@@ -2139,6 +2193,7 @@ cl_int opencl::OpenCLRuntime::clEnqueueBarrierWithWaitList(cl_command_queue  com
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
@@ -2166,6 +2221,7 @@ cl_int opencl::OpenCLRuntime::clRetainEvent(cl_event event) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!event->isValidObject(Object::OBJTYPE_EVENT))
 			throw CL_INVALID_EVENT;
@@ -2188,6 +2244,7 @@ cl_int opencl::OpenCLRuntime::clReleaseEvent(cl_event event) {
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!event->isValidObject(Object::OBJTYPE_EVENT))
 			throw CL_INVALID_EVENT;
@@ -2213,6 +2270,7 @@ cl_int opencl::OpenCLRuntime::clSetUserEventStatus(cl_event   event,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!(event->isValidObject(Object::OBJTYPE_EVENT) && event->isUserEvent()))
 			throw CL_INVALID_EVENT;
@@ -2241,6 +2299,7 @@ cl_int opencl::OpenCLRuntime::clSetEventCallback( cl_event    event,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 	try {
 		if(!event->isValidObject(Object::OBJTYPE_EVENT))
 			throw CL_INVALID_EVENT;
@@ -2273,6 +2332,7 @@ cl_int opencl::OpenCLRuntime::clGetEventProfilingInfo(cl_event event,
 	cl_int result = CL_SUCCESS;
 
 	_lock();
+	REPORT_FUNC;
 
 	try {
 
@@ -2301,6 +2361,7 @@ cl_int opencl::OpenCLRuntime::clFlush(cl_command_queue command_queue) {
 	cl_int result = CL_SUCCESS;
 	
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))
@@ -2323,6 +2384,7 @@ cl_int opencl::OpenCLRuntime::clFinish(cl_command_queue command_queue) {
 	cl_int result = CL_SUCCESS;
 	
 	_lock();
+	REPORT_FUNC;
 
 	try {
 		if(!command_queue->isValidObject(Object::OBJTYPE_COMMANDQUEUE))

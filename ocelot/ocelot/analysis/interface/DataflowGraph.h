@@ -477,6 +477,9 @@ class DataflowGraph : public KernelAnalysis
 		const PhiPredicateMap& phiPredicateMap() const;
 		bool hasPhi( DataflowGraph::PhiInstruction const *phi ) const;
 
+	public:
+		void write(std::ostream& out) const;
+
 };
 
 std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );

@@ -112,8 +112,12 @@ def getBoost(env):
 				libs.append(os.path.basename(f.abspath))
 			
 	elif os.name == 'posix':
-		libs = ['-lboost_system-mt', '-lboost_filesystem-mt',
-		'-lboost_thread-mt']
+		ext = ""
+		if os.path.exists(os.path.join(lib_path, 'libboost_system-mt.so')):
+			ext = "-mt"
+			
+		libs = ['-lboost_system' + ext, '-lboost_filesystem' + ext,
+			'-lboost_thread' + ext]
 	else:
 		raise ValueError, 'Error: unknown OS.  What are Boost library names?'
 
@@ -647,6 +651,7 @@ def Environment():
 	env.AppendUnique(LIBPATH = [boost_lib_path])
 	env.AppendUnique(CPPPATH = [boost_inc_path])
 	env.AppendUnique(EXTRA_LIBS = boost_libs) 
+	
 
 	# get GLEW information
 	(glew,glew_exe_path,glew_lib_path,glew_inc_path,

@@ -28,7 +28,7 @@ namespace transforms
 {
 
 ModuleLinkerPass::ModuleLinkerPass(bool inPlace)
-: ModulePass(Analysis::NoAnalysis, "ModuleLinkerPass"), _linkedModule(nullptr),
+: ModulePass(Analysis::NoAnalysis, "ModuleLinkerPass"), _linkedModule(0),
 	_inPlace(inPlace)
 {
 	
@@ -43,7 +43,7 @@ void ModuleLinkerPass::runOnModule(ir::Module& m)
 {
 	report("Linking module " << m.path());
 	
-	if(_linkedModule == nullptr)
+	if(_linkedModule == 0)
 	{
 		if(_inPlace)
 		{
@@ -151,7 +151,7 @@ ModuleLinkerPass::StringVector ModuleLinkerPass::getAllUndefinedSymbols() const
 {
 	StringVector undefined;
 	
-	if(_linkedModule == nullptr) return undefined;
+	if(_linkedModule == 0) return undefined;
 	
 	StringSet encountered;
 	

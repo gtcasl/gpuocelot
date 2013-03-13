@@ -22,7 +22,7 @@
 		tracePath:      "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices:                  ["llvm"],
+		devices:                  ["emulated"],
 		preferredISA:             "nvidia",
 		optimizationLevel:        "full",
 		reconvergenceMechanism:   "ipdom",

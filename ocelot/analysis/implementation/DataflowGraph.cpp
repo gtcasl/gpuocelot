@@ -1404,8 +1404,9 @@ bool DataflowGraph::hasPhi( DataflowGraph::PhiInstruction const *phi ) const
   return _phiPredicateMap.find(phi) != _phiPredicateMap.end();
 }
 
-std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
+void DataflowGraph::write( std::ostream& out ) const
 {
+	const DataflowGraph& graph = *this;
 	DataflowGraph& nonConstGraph = const_cast< DataflowGraph& >( graph );
 	nonConstGraph.compute();
 	
@@ -1616,6 +1617,11 @@ std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
 
 	}
 	out << "}";
+}
+
+std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )
+{
+	graph.write(out);
 
 	return out;
 }

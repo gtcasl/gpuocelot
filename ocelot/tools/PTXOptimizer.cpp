@@ -44,11 +44,26 @@ PTXOptimizer::PTXOptimizer()
 
 }
 
+static bool exists( const std::string& filename )
+{
+	std::ifstream file( filename.c_str() );
+	
+	return file.is_open();
+}
+
 void PTXOptimizer::optimize()
 {		
 	report("Running PTX to PTX Optimizer.");
 	
 	report(" Loading module '" << input << "'");
+
+	if( !exists( input ) )
+	{
+		std::cout << "Could not open '" << input
+			<< "' for reading.  Bailing out." << std::endl;
+		return;
+	}
+	
 	ir::Module module( input );
 
 	transforms::PassManager manager( &module );
@@ -95,23 +110,48 @@ void PTXOptimizer::optimize()
 	
 	module.writeIR( out, ir::PTXEmitter::Target_NVIDIA_PTX30 );
 
-	if(!cfg) return;
+	if(!cfg && !dfg) return;
 	
 	for( ir::Module::KernelMap::const_iterator 
 		kernel = module.kernels().begin(); 
 		kernel != module.kernels().end(); ++kernel )
 	{
-		report(" Writing CFG for kernel '" << kernel->first << "'");
-		std::ofstream out( std::string( 
+		auto ptxKernel = module.getKernel( kernel->first );
+		assert( ptxKernel != 0 );
+	
+		if( cfg )
+		{
+			report(" Writing CFG for kernel '" << kernel->first << "'");
+					std::ofstream out( std::string( 
 			kernel->first + "_cfg.dot" ).c_str() );
 	
-		if( !out.is_open() )
-		{
-			throw hydrazine::Exception( "Could not open output file " 
-				+ output + " for writing." );
+			if( !out.is_open() )
+			{
+				throw hydrazine::Exception( "Could not open output file " 
+					+ output + " for writing." );
+			}
+
+			ptxKernel->cfg()->write( out );
 		}
+		
+		if( dfg )
+		{
+			report(" Writing DFG for kernel '" << kernel->first << "'");
+					std::ofstream out( std::string( 
+			kernel->first + "_dfg.dot" ).c_str() );
 	
-		module.getKernel( kernel->first )->cfg()->write( out );
+			if( !out.is_open() )
+			{
+				throw hydrazine::Exception( "Could not open output file " 
+					+ output + " for writing." );
+			}
+			
+			analysis::DataflowGraph dataflowGraph;
+			
+			dataflowGraph.analyze( *ptxKernel );
+		
+			dataflowGraph.write( out );
+		}
 	}
 }
 
@@ -198,6 +238,8 @@ int main( int argc, char** argv )
 		"constant-propagation, hoist-parameters)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
+	parser.parse( "", "--dfg", optimizer.dfg, false, 
+		"Dump out the DFG's of all generated kernels." );
 	parser.parse();
 	
 	optimizer.passes = parsePassTypes( passes );

@@ -50,6 +50,9 @@ namespace tools
 			/*! \brief Print out the CFG of optimized kernels */
 			bool cfg;
 			
+			/*! \brief Print out the CFG of optimized kernels */
+			bool dfg;
+			
 		public:
 			/*! \brief The constructor sets the defaults */
 			PTXOptimizer();

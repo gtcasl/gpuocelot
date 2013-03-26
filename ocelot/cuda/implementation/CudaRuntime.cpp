@@ -23,6 +23,10 @@
 #include <hydrazine/interface/string.h>
 #include <hydrazine/interface/debug.h>
 
+//Lynx include
+#include <lynx/api/interface/lynx.h>
+#include <lynx/trace/interface/Profiler.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -222,6 +226,8 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 				_getDevice().getMemoryAllocation(src);
 			size_t offset = (char*)src - (char*)allocation->pointer();
 			allocation->copy(dst, offset, count);
+			
+			lynx::getProfiler()->dataMoveSize += count;
 		}
 		break;
 		case cudaMemcpyDeviceToDevice: {
@@ -258,6 +264,8 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 				_getDevice().getMemoryAllocation(dst);
 			size_t offset = (char*)dst - (char*)allocation->pointer();
 			allocation->copy(offset, src, count);
+			
+			lynx::getProfiler()->dataMoveSize += count;
 		}
 		break;
 	}
@@ -465,6 +473,9 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 		tex->normalizedFloat = texture->second.norm;
 	}
 	
+	lynx::validateInstrumentor(module->first, "");
+    lynx::instrument(module->second);
+	
 	transforms::PassManager manager(&module->second);
 	
 	for(PassSet::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
@@ -526,6 +537,9 @@ cuda::CudaRuntime::CudaRuntime() :
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::Remote, _computeCapability);
 	}
+	
+	lynx::initialize();
+	lynx::getProfiler()->startAppTimer();	
 }
 
 cuda::CudaRuntime::~CudaRuntime() {
@@ -555,6 +569,10 @@ cuda::CudaRuntime::~CudaRuntime() {
 	config::destroy();
 	
 	// globals
+	
+	lynx::getProfiler()->stopAppTimer(
+	    & trace::Profiler::appExecute);
+	lynx::finalize();
 }
 
 
@@ -765,6 +783,9 @@ cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 // memory allocation
 
 cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
+	
+	lynx::getProfiler()->startTimer();
+	
 	cudaError_t result = cudaErrorMemoryAllocation;
 
 	_acquire();
@@ -786,6 +807,9 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	<< ", size = " << size << ")");
 
 	_release();
+	
+	lynx::getProfiler()->stopTimer(
+	    & trace::Profiler::dataMove);
 	
 	return _setLastError(result);
 }
@@ -1121,6 +1145,9 @@ cudaError_t cuda::CudaRuntime::cudaHostUnregister(void *pHost)
 
 cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src, 
 	size_t count, enum cudaMemcpyKind kind) {
+	
+	lynx::getProfiler()->startTimer();
+	
 	cudaError_t result = cudaErrorInvalidDevicePointer;
 	if (kind >= 0 && kind <= 3) {
 		_wait();
@@ -1136,6 +1163,9 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy(void *dst, const void *src,
 	else {
 		result = cudaErrorInvalidMemcpyDirection;
 	}
+
+    lynx::getProfiler()->stopTimer(
+        & trace::Profiler::dataMove);
 
 	return _setLastError(result);
 }
@@ -2648,6 +2678,8 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 {
 	_lock();
 
+    lynx::validateInstrumentor(moduleName, kernelName);
+
 	_enumerateDevices();
 	if (_devices.empty()) {
 		_unlock();
@@ -2680,6 +2712,14 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	
 	unsigned int paramSize = thread.mapParameters(k);
 	
+	_release();
+	
+	lynx::initializeKernelLaunch(kernelName,  
+        launch.blockDim.x * launch.blockDim.y * launch.blockDim.z,
+        launch.gridDim.x * launch.gridDim.y * launch.gridDim.z);
+	
+	_acquire();
+	
 	report("kernel launch (" << kernelName 
 		<< ") on thread " << boost::this_thread::get_id());
 	
@@ -2698,9 +2738,15 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 				thread.parameterBlock, paramSize, traceGens, &_externals);
 		}
 		else {
+		
+		    lynx::getProfiler()->startTimer();   
+		
 			_getDevice().launch(moduleName, kernelName, convert(launch.gridDim),
 				convert(launch.blockDim), launch.sharedMemory,
 				thread.parameterBlock, paramSize, traceGens, &_externals);
+				
+		    lynx::getProfiler()->stopKernelTimer(
+		    & trace::Profiler::kernelsExecute, kernelName); 			
 		}
 		report(" launch completed successfully");	
 	}
@@ -2733,6 +2779,8 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	_release();
 	
 	_wait();
+	
+	lynx::finalizeKernelLaunch();
 	
 	return result;
 }

@@ -694,7 +694,7 @@ def Environment():
 
 	# we need libdl on linux, and librt
 	if os.name == 'posix':
-		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
+		env.AppendUnique(EXTRA_LIBS = ['-ldl', '-llynx']) 
 		if platform.system() != 'Darwin':
 			env.AppendUnique(EXTRA_LIBS = ['-lrt'])
 	

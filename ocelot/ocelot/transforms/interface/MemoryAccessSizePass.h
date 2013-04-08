@@ -10,7 +10,8 @@ namespace transforms {
 	class MemoryAccessSizePass: public KernelPass {
 
 	private:
-		void * _ptr; //store memory size
+		std::list<void *> _readPtrs; //memory read size storing pointer
+		std::list<void *> _writePtrs; //memory write size storing pointer
 
 	private:
 		//add read size instruction
@@ -18,7 +19,7 @@ namespace transforms {
 			ir::PTXOperand::RegisterType addReg);
 	
 	public:
-		MemoryAccessSizePass(void * ptr);
+		MemoryAccessSizePass(std::list<void * > &readPtrs, std::list<void *> &writePtrs);
 	    virtual ~MemoryAccessSizePass() {};
 		virtual void initialize( const ir::Module& m ){};
 		virtual void runOnKernel( ir::IRKernel& k );

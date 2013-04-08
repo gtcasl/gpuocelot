@@ -115,8 +115,8 @@ namespace opencl {
 //			openclChannelFormatDesc format;
 //	};
 //	
-//	/*! \brief Set of PTX passes */
-//	typedef std::set< transforms::Pass* > PassSet;
+	/*! \brief Set of PTX passes */
+	typedef std::set< transforms::Pass* > PassSet;
 
 
 //	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
@@ -168,9 +168,6 @@ namespace opencl {
 		std::chrono::high_resolution_clock::time_point _startTimer;
 	
 		
-		//! PTX passes
-	//	PassSet _passes;
-
 	public:
 		OpenCLRuntime();
 		~OpenCLRuntime();
@@ -204,14 +201,17 @@ namespace opencl {
 
 		//! external functions
 		ir::ExternalFunctionSet externals;
+		
+		//! PTX passes
+		PassSet passes;
 	
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 			bool persistent = false );
 		virtual void clearTraceGenerators();
 
-//		virtual void addPTXPass(transforms::Pass &pass);
-//		virtual void removePTXPass(transforms::Pass &pass);
-//		virtual void clearPTXPasses();
+		virtual void addPTXPass(transforms::Pass &pass);
+		virtual void removePTXPass(transforms::Pass &pass);
+		virtual void clearPTXPasses();
 //		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 //		virtual void registerPTXModule(std::istream& stream, 
 //			const std::string& name);

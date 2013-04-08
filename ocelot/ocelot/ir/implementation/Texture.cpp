@@ -109,71 +109,71 @@ namespace ir
 		return ".global " + toString(surfaceType) + " " + name + ";";
 	}
 
-	ir::PTXOperand::DataType Texture::convertFromChannelDataType(Texture::ChannelDataType channelData) {
-		switch (channelData) {
-		case CL_SNORM_INT8:
-				break;
-		case CL_SNORM_INT16:
-				break;
-		case CL_UNORM_INT8:
-				break;
-		case CL_UNORM_INT16:
-				break;
-		case CL_UNORM_SHORT_565:
-				break;
-		case CL_UNORM_SHORT_555:
-				break;
-		case CL_UNORM_INT_101010:
-				break;
-		case CL_SIGNED_INT8:
-				return ir::PTXOperand::s8;
-		case CL_SIGNED_INT16:
-				return ir::PTXOperand::s16;
-		case CL_SIGNED_INT32:
-				return ir::PTXOperand::s32;
-		case CL_UNSIGNED_INT8:
-				return ir::PTXOperand::u8;
-		case CL_UNSIGNED_INT16:
-				return ir::PTXOperand::u16;
-		case CL_UNSIGNED_INT32:
-				return ir::PTXOperand::u32;
-		case CL_HALF_FLOAT:
-				return ir::PTXOperand::f16;
-		case CL_FLOAT:
-				return ir::PTXOperand::f32;
-				break;
-		default:
-			break;
-		}
-		return ir::PTXOperand::u64;
-	}
-	
-	Texture::ChannelDataType Texture::convertFromPTXDataType(PTXOperand::DataType ptxData) {
-		switch (ptxData) {
-		case PTXOperand::s8:
-			return CL_SIGNED_INT8;
-		case PTXOperand::s16:
-			return CL_SIGNED_INT16;
-		case PTXOperand::s32:
-			return CL_SIGNED_INT32;
-		case PTXOperand::b8:	// fall through
-		case PTXOperand::u8:
-			return CL_UNSIGNED_INT8;
-		case PTXOperand::b16:	// fall through
-		case PTXOperand::u16:
-			return CL_UNSIGNED_INT16;
-		case PTXOperand::b32: // fall through
-		case PTXOperand::u32:
-			return CL_UNSIGNED_INT32;
-		case PTXOperand::f16:
-			return CL_HALF_FLOAT;
-		case PTXOperand::f32:
-			return CL_FLOAT;
-		default:
-			break;
-		}
-		return ir::Texture::ChannelDataType_Invalid;
-	}
+//	ir::PTXOperand::DataType Texture::convertFromChannelDataType(Texture::ChannelDataType channelData) {
+//		switch (channelData) {
+//		case CL_SNORM_INT8:
+//				break;
+//		case CL_SNORM_INT16:
+//				break;
+//		case CL_UNORM_INT8:
+//				break;
+//		case CL_UNORM_INT16:
+//				break;
+//		case CL_UNORM_SHORT_565:
+//				break;
+//		case CL_UNORM_SHORT_555:
+//				break;
+//		case CL_UNORM_INT_101010:
+//				break;
+//		case CL_SIGNED_INT8:
+//				return ir::PTXOperand::s8;
+//		case CL_SIGNED_INT16:
+//				return ir::PTXOperand::s16;
+//		case CL_SIGNED_INT32:
+//				return ir::PTXOperand::s32;
+//		case CL_UNSIGNED_INT8:
+//				return ir::PTXOperand::u8;
+//		case CL_UNSIGNED_INT16:
+//				return ir::PTXOperand::u16;
+//		case CL_UNSIGNED_INT32:
+//				return ir::PTXOperand::u32;
+//		case CL_HALF_FLOAT:
+//				return ir::PTXOperand::f16;
+//		case CL_FLOAT:
+//				return ir::PTXOperand::f32;
+//				break;
+//		default:
+//			break;
+//		}
+//		return ir::PTXOperand::u64;
+//	}
+//	
+//	Texture::ChannelDataType Texture::convertFromPTXDataType(PTXOperand::DataType ptxData) {
+//		switch (ptxData) {
+//		case PTXOperand::s8:
+//			return CL_SIGNED_INT8;
+//		case PTXOperand::s16:
+//			return CL_SIGNED_INT16;
+//		case PTXOperand::s32:
+//			return CL_SIGNED_INT32;
+//		case PTXOperand::b8:	// fall through
+//		case PTXOperand::u8:
+//			return CL_UNSIGNED_INT8;
+//		case PTXOperand::b16:	// fall through
+//		case PTXOperand::u16:
+//			return CL_UNSIGNED_INT16;
+//		case PTXOperand::b32: // fall through
+//		case PTXOperand::u32:
+//			return CL_UNSIGNED_INT32;
+//		case PTXOperand::f16:
+//			return CL_HALF_FLOAT;
+//		case PTXOperand::f32:
+//			return CL_FLOAT;
+//		default:
+//			break;
+//		}
+//		return ir::Texture::ChannelDataType_Invalid;
+//	}
 }
 
 #endif

@@ -48,38 +48,38 @@ namespace ir
 				AddressMode_Invalid
 			};
 			
-			enum ChannelDataType {
-				CL_SNORM_INT8 = 0x10D0,
-				CL_SNORM_INT16 = 0x10D1,
-				CL_UNORM_INT8 = 0x10D2,
-				CL_UNORM_INT16 = 0x10D3,
-				CL_UNORM_SHORT_565 = 0x10D4,
-				CL_UNORM_SHORT_555 = 0x105,
-				CL_UNORM_INT_101010 = 0x10D6,
-				CL_SIGNED_INT8 = 0x10D7,
-				CL_SIGNED_INT16 = 0x10D8,
-				CL_SIGNED_INT32 = 0x10D9,
-				CL_UNSIGNED_INT8 = 0x10DA,
-				CL_UNSIGNED_INT16 = 0x10DB,
-				CL_UNSIGNED_INT32 = 0x10DC,
-				CL_HALF_FLOAT = 0x10DD,
-				CL_FLOAT = 0x10DE,
-				ChannelDataType_Invalid
-			};
+//			enum ChannelDataType {
+//				CL_SNORM_INT8 = 0x10D0,
+//				CL_SNORM_INT16 = 0x10D1,
+//				CL_UNORM_INT8 = 0x10D2,
+//				CL_UNORM_INT16 = 0x10D3,
+//				CL_UNORM_SHORT_565 = 0x10D4,
+//				CL_UNORM_SHORT_555 = 0x105,
+//				CL_UNORM_INT_101010 = 0x10D6,
+//				CL_SIGNED_INT8 = 0x10D7,
+//				CL_SIGNED_INT16 = 0x10D8,
+//				CL_SIGNED_INT32 = 0x10D9,
+//				CL_UNSIGNED_INT8 = 0x10DA,
+//				CL_UNSIGNED_INT16 = 0x10DB,
+//				CL_UNSIGNED_INT32 = 0x10DC,
+//				CL_HALF_FLOAT = 0x10DD,
+//				CL_FLOAT = 0x10DE,
+//				ChannelDataType_Invalid
+//			};
 			
-			enum ChannelOrder {
-				CL_R = 0x10B0,
-				CL_A = 0x10B1,
-				CL_RG = 0x10B2,
-				CL_RA = 0x10B3,
-				CL_RGB = 0x10B4,
-				CL_RGBA = 0x10B5,
-				CL_BGRA = 0x10B6,
-				CL_ARGB = 0x10B7,
-				CL_ITENSITY = 0x10B8,
-				CL_LUMINANCE = 0x10B9,
-				ChannelOrder_Invalid
-			};
+//			enum ChannelOrder {
+//				CL_R = 0x10B0,
+//				CL_A = 0x10B1,
+//				CL_RG = 0x10B2,
+//				CL_RA = 0x10B3,
+//				CL_RGB = 0x10B4,
+//				CL_RGBA = 0x10B5,
+//				CL_BGRA = 0x10B6,
+//				CL_ARGB = 0x10B7,
+//				CL_ITENSITY = 0x10B8,
+//				CL_LUMINANCE = 0x10B9,
+//				ChannelOrder_Invalid
+//			};
 			
 		public:
 		
@@ -92,10 +92,10 @@ namespace ir
 			static AddressMode modeFromString(const std::string&);
 			static Interpolation interpolationFromString(const std::string&);
 			
-			static ir::PTXOperand::DataType
-				convertFromChannelDataType(ChannelDataType);
-			static ChannelDataType
-				convertFromPTXDataType(ir::PTXOperand::DataType);
+//			static ir::PTXOperand::DataType
+//				convertFromChannelDataType(ChannelDataType);
+//			static ChannelDataType
+//				convertFromPTXDataType(ir::PTXOperand::DataType);
 
 		public:
 			unsigned int pitch() const {

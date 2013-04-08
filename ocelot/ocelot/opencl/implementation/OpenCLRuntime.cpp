@@ -221,28 +221,28 @@ void opencl::OpenCLRuntime::clearTraceGenerators() {
 	_unlock();
 }
 
-#if 0
 void opencl::OpenCLRuntime::addPTXPass(transforms::Pass &pass) {
 	_lock();
-	_passes.insert(&pass);
+	passes.insert(&pass);
 	_unlock();
 }
 
 void opencl::OpenCLRuntime::removePTXPass(transforms::Pass &pass) {
 	_lock();
 
-	assert(_passes.count(&pass) != 0);
-	_passes.erase(&pass);
+	assert(passes.count(&pass) != 0);
+	passes.erase(&pass);
 
 	_unlock();
 }
 
 void opencl::OpenCLRuntime::clearPTXPasses() {
 	_lock();
-	_passes.clear();
+	passes.clear();
 	_unlock();
 }
 
+#if 0
 void opencl::OpenCLRuntime::limitWorkerThreads(unsigned int limit) {
 	_lock();
 	Device::limitWorkerThreadForAll(limit);

@@ -278,11 +278,16 @@ void opencl::Kernel::launchOnDevice(Device * device)
 //			uint32_t init = 0;
 //			device->write(ptr, &init, 0, sizeof(uint32_t)); 
 //	
-//			ir::Module * module = _deviceInfo[device]._module;
+			ir::Module * module = _deviceInfo[device]._module;
 //			transforms::MemoryAccessSizePass memAccessSizePass(ptr);
-//			transforms::PassManager manager(module);
-//			manager.addPass(memAccessSizePass);
-//			manager.runOnModule();
+			transforms::PassManager manager(module);
+			PassSet passes = runtime->passes; 
+			for(PassSet::iterator pass = passes.begin(); pass != passes.end(); ++pass)
+			{
+				manager.addPass(**pass);
+			}
+	
+			manager.runOnModule();
 //		}
 
 		for(int dim = 0; dim < 3; dim++)

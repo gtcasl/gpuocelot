@@ -223,6 +223,7 @@ void opencl::OpenCLRuntime::clearTraceGenerators() {
 
 void opencl::OpenCLRuntime::addPTXPass(transforms::Pass &pass) {
 	_lock();
+	report("Add pass");
 	passes.insert(&pass);
 	_unlock();
 }

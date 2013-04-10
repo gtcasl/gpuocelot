@@ -299,7 +299,7 @@ opencl::ReadWriteBufferEvent::ReadWriteBufferEvent(cl_command_type type,
 	commandQueue->context(), num_events_in_wait_list,
 	event_wait_list, event),
 	_buffer(buffer), _offset(offset),
-	_size(size), _ptr(ptr) {
+	_size(size), _ptr(NULL) {
 
 	if(offset >= buffer->size() || size + offset > buffer->size())
 		throw CL_INVALID_VALUE;
@@ -310,13 +310,23 @@ opencl::ReadWriteBufferEvent::ReadWriteBufferEvent(cl_command_type type,
 	if(!buffer->isAllocatedOnDevice(commandQueue->device()))
 		throw CL_MEM_OBJECT_ALLOCATION_FAILURE;
 
+	if(_type == CL_COMMAND_WRITE_BUFFER) {
+		_ptr = new uint8_t[size];
+		std::memcpy(_ptr, ptr, size);
+	}
+	else
+		_ptr = ptr;
+
 	buffer->retain();
 
 	commandQueue->queueEvent(this, blocking);
 }
 
 opencl::ReadWriteBufferEvent::~ReadWriteBufferEvent() {
-
+	if(_type == CL_COMMAND_WRITE_BUFFER && _ptr) {
+		delete (uint8_t *)_ptr;
+		_ptr = NULL;
+	}
 }
 
 void opencl::ReadWriteBufferEvent::execute(Device * device) {

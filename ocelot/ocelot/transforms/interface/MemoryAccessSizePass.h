@@ -15,7 +15,7 @@ namespace transforms {
 
 	private:
 		//add read size instruction
-		ir::PTXInstruction _readSizeInstruction(ir::PTXOperand::DataType dataType,
+		ir::PTXInstruction _accessSizeInstruction(ir::PTXOperand::DataType dataType,
 			ir::PTXOperand::RegisterType addReg);
 	
 	public:

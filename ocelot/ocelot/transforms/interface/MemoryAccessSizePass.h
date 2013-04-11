@@ -19,7 +19,10 @@ namespace transforms {
 			ir::PTXOperand::RegisterType addReg);
 	
 	public:
+		MemoryAccessSizePass();
 		MemoryAccessSizePass(std::list<void * > &readPtrs, std::list<void *> &writePtrs);
+		MemoryAccessSizePass(const MemoryAccessSizePass & pass);
+		MemoryAccessSizePass& operator=(const MemoryAccessSizePass & pass);
 	    virtual ~MemoryAccessSizePass() {};
 		virtual void initialize( const ir::Module& m ){};
 		virtual void runOnKernel( ir::IRKernel& k );

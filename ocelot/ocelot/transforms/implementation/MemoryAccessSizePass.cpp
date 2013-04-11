@@ -10,6 +10,9 @@
 #define REPORT_BASE 0
 
 namespace transforms {
+	MemoryAccessSizePass::MemoryAccessSizePass()
+		: KernelPass(Analysis::DataflowGraphAnalysis, "MemoryAccessSizePass") {
+	}
 
 	MemoryAccessSizePass::MemoryAccessSizePass(std::list<void *> &readPtrs, std::list<void *> &writePtrs)
 		: KernelPass(Analysis::DataflowGraphAnalysis, "MemoryAccessSizePass"), 
@@ -19,6 +22,28 @@ namespace transforms {
 		report("writePtrs size = " << _writePtrs.size());
 	}
 
+	MemoryAccessSizePass::MemoryAccessSizePass(const MemoryAccessSizePass & pass) 
+		: KernelPass(Analysis::DataflowGraphAnalysis, "MemoryAccessSizePass") {
+
+		report("Create Memory Access Pass by copying");
+		_readPtrs = pass._readPtrs;
+		_writePtrs = pass._writePtrs;
+		report("readPtrs size = " << _readPtrs.size());
+		report("writePtrs size = " << _writePtrs.size());
+	}
+
+	MemoryAccessSizePass& MemoryAccessSizePass::operator=(const MemoryAccessSizePass & pass) {
+		
+		report("Create Memory Access Pass by operator =");
+		if(this == &pass)
+			return *this;
+		_readPtrs = pass._readPtrs;
+		_writePtrs = pass._writePtrs;
+		report("readPtrs size = " << _readPtrs.size());
+		report("writePtrs size = " << _writePtrs.size());
+
+		return *this;
+	}
 
 	ir::PTXInstruction MemoryAccessSizePass::_accessSizeInstruction(ir::PTXOperand::DataType dataType,
 		ir::PTXOperand::RegisterType addReg) {
@@ -64,6 +89,8 @@ namespace transforms {
 	void MemoryAccessSizePass::runOnKernel( ir::IRKernel& k ) {
 
 		report("Run Memory Access Size Pass on Kernel " << k);
+		report("_readPtrs size = " << _readPtrs.size());
+		report("_writePtrs size = " << _writePtrs.size());
 
 		Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
 		assert(dfg_structure != 0);
@@ -165,6 +192,7 @@ namespace transforms {
 		analysis::DataflowGraph::InstructionIterator instBegin = blockBegin->instructions().begin();
 		instBegin = blockBegin->instructions().begin();
 		dfg.insert(blockBegin, mvReadCount, instBegin);
+		dfg.insert(blockBegin, mvWriteCount, instBegin);
 		instBegin = blockBegin->instructions().begin();
 		for(auto mvAddrIt = mvReadAddrs.begin(); mvAddrIt != mvReadAddrs.end(); mvAddrIt++)
 			dfg.insert(blockBegin, *mvAddrIt, instBegin);
@@ -185,11 +213,6 @@ namespace transforms {
 				}
 			}
 		}
-	//		for(auto i = block->block()->instructions.begin(); 
-		//		i != block->block()->instructions.end(); ++i) {
-		//		ir::PTXInstruction* inst = static_cast<ir::PTXInstruction *>(*i);
-	//			std::cout << inst->toString() << std::endl;
-	//		}
-	//	}
+
 	}
 }

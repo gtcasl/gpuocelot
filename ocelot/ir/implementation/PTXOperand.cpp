@@ -618,6 +618,12 @@ ir::PTXOperand::PTXOperand(AddressMode m, const std::string& i) : identifier(i),
 	reg(0), vec(v1) {
 }
 
+ir::PTXOperand::PTXOperand(PredicateCondition c) : 
+	addressMode(Register), type(pred),
+	relaxedType(TypeSpecifier_invalid), offset(0), condition(c),
+	reg(0), vec(v1) {
+}
+
 ir::PTXOperand::~PTXOperand() {
 
 }

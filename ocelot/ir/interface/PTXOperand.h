@@ -179,6 +179,7 @@ namespace ir {
 		PTXOperand(AddressMode m, DataType t, const std::string& identifier, 
 			int o = 0, Vec v = v1);
 		PTXOperand(AddressMode m, const std::string& identifier);
+		PTXOperand(PredicateCondition condition);
 		
 		template<typename T>
 		PTXOperand(T v, DataType t);

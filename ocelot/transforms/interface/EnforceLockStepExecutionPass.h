@@ -75,6 +75,8 @@ private:
 		const_block_iterator target);
 	void _uniformBranchToTarget(block_iterator block,
 		const_block_iterator target);
+	void _conditionalBranchToTarget(block_iterator block,
+		const_block_iterator target);
 	ir::PTXInstruction* _canonicalizeComparison(block_iterator block,
 		ir::PTXInstruction* comparison);
 	void _addComparison(block_iterator block, ir::PTXInstruction* branch);

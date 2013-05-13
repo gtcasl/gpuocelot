@@ -2476,7 +2476,7 @@ std::string ir::PTXInstruction::toString() const {
 		case Sust: {			
 			return guard() + "sust" + toString(formatMode) + "." 
 				+ toString(geometry) + "." 
-				+ toString(vec) + "." + PTXOperand::toString(type) 
+				+ ((vec != Vec::v1)?toString(vec) + ".":"") + PTXOperand::toString(type) 
 				+ toString(clamp) + " [" + d.toString() +", " + a.toString() 
 				+ "], " + b.toString();
 		}

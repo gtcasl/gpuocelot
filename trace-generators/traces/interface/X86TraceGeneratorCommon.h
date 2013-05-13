@@ -16,10 +16,6 @@
 /* added on jan-28 by nagesh */
 //#include "xed-category-enum.h"
 
-#define MAX_SRC_NUM 9
-#define MAX_DST_NUM 6
-/* added on jan-28 by nagesh */
-
 #define USE_MAP 0
 
 #define MAX_THREADS 1024
@@ -64,6 +60,117 @@ struct Thread_info
   uint64_t inst_count;
 };
 
+#define TRACEGEN_VER 131
+
+#if TRACEGEN_VER == 131
+
+//mov can do 
+// i. vector to scalar packing (4 src regs + 1 predicate register) 
+// ii. scalar to vector unpacking (4 dest regs)
+
+#define MAX_SRC_NUM 5
+#define MAX_DST_NUM 4
+#define SPECIAL_REG_START 900 //NUM_REG_IDS in Simulator
+
+//new format
+struct Inst_info{
+  uint8_t opcode; // 6 bits
+  bool is_fp;    // 1bit
+  bool is_load;  // 1 bit
+  uint8_t cf_type;  // 4 bits
+
+  uint8_t num_read_regs;      // 3-bits
+  uint8_t num_dest_regs;      // 3-bits
+
+  uint16_t src[MAX_SRC_NUM];
+  uint16_t dst[MAX_DST_NUM];
+
+  uint8_t size; // 5 bit
+
+  // **** dynamic ****
+
+  uint32_t active_mask;
+  uint32_t br_taken_mask;
+
+  //union of mem_addr and branch target/reconvergence_inst
+  uint64_t inst_addr;
+  uint64_t br_target_addr;
+  union {
+    uint64_t reconv_inst_addr;
+    uint64_t mem_addr;
+  };
+  union {
+    uint8_t mem_access_size;
+    uint8_t barrier_id;
+  };
+  uint16_t num_barrier_threads;
+
+  union {
+    uint8_t addr_space; //for loads, stores, atomic, prefetch(?)
+    uint8_t level; //for membar
+  };
+  uint8_t cache_level; //for prefetch?
+  uint8_t cache_operator; //for loads, stores, atomic, prefetch(?)
+
+
+};
+
+
+#elif TRACEGEN_VER == 13
+
+#define MAX_SRC_NUM 9
+#define MAX_DST_NUM 6
+#define SPECIAL_REG_START 200
+
+//new format
+struct Inst_info{
+  uint8_t opcode; // 6 bits
+  bool is_fp;    // 1bit
+  bool is_load;  // 1 bit
+  uint8_t cf_type;  // 4 bits
+
+  uint8_t num_read_regs;      // 3-bits
+  uint8_t num_dest_regs;      // 3-bits
+
+  uint8_t src[MAX_SRC_NUM]; // 6-bits * 4
+  uint8_t dst[MAX_DST_NUM]; // 6-bits * 4
+
+  uint8_t size; // 5 bit
+
+  // **** dynamic ****
+
+  uint32_t active_mask;
+  uint32_t br_taken_mask;
+
+  //union of mem_addr and branch target/reconvergence_inst
+  uint64_t inst_addr;
+  uint64_t br_target_addr;
+  union {
+    uint64_t reconv_inst_addr;
+    uint64_t mem_addr;
+  };
+  union {
+    uint8_t mem_access_size;
+    uint8_t barrier_id;
+  };
+  uint16_t num_barrier_threads;
+
+  union {
+    uint8_t addr_space; //for loads, stores, atomic, prefetch(?)
+    uint8_t level; //for membar
+  };
+  uint8_t cache_level; //for prefetch?
+  uint8_t cache_operator; //for loads, stores, atomic, prefetch(?)
+
+
+};
+
+
+#elif TRACEGEN_VER == 10
+
+#define MAX_SRC_NUM 9
+#define MAX_DST_NUM 6
+#define SPECIAL_REG_START 200
 
 /* decoded inst format */
 struct Inst_info{
@@ -88,13 +195,19 @@ struct Inst_info{
 
   // **** dynamic ****
 
+#ifndef USE_32BIT_ADDR
+  uint64_t ld_vaddr1; // 8 bytes
+  uint64_t ld_vaddr2; // 8 bytes
+  uint64_t st_vaddr;   // 8 bytes
+  uint64_t inst_addr; // 8 bytes
+  uint64_t branch_target; // not the dynamic info. static info  // 8 bytes
+#else
   uint32_t ld_vaddr1; // 4 bytes
   uint32_t ld_vaddr2; // 4 bytes
   uint32_t st_vaddr;   // 4 bytes
-
-  uint32_t instruction_addr; // 4 bytes
-
+  uint32_t inst_addr; // 4 bytes
   uint32_t branch_target; // not the dynamic info. static info  // 4 bytes
+#endif
 
   uint8_t mem_read_size; // 8 bit
   uint8_t mem_write_size;  // 8 bit
@@ -104,6 +217,7 @@ struct Inst_info{
 
 };
 
+#endif
 
 /* added on jan-28 by nagesh */
 #define BUF_SIZE (10 * sizeof(struct Inst_info))

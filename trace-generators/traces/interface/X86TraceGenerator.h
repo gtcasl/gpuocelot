@@ -24,7 +24,7 @@
 #define WARP_SIZE 32
 
 #define dbg if(0) cerr
-#define WRITE_DEBUG 0
+#define WRITE_DEBUG 1
 
 #if WRITE_DEBUG == 1
 #define SINGLE_WARP 1
@@ -34,6 +34,12 @@
 
 #define INST_START_ADDR 8000
 #define INST_LAST_ADDR 262144
+
+#ifndef USE_32BIT_ADDR
+#define ADDR_SIZE 8
+#else
+#define ADDR_SIZE 4
+#endif
 
 namespace executive {
   class EmulatedKernel;
@@ -78,18 +84,22 @@ namespace trace {
     private:
       int calculate_occupancy(const executive::ExecutableKernel& kernel);
 
+      void dump_opcode_stats(void);
+
     private:
       bool init;
       int32_t num_warps_per_block;
       int32_t num_total_warps;
       Thread_info *thread_info;
       Trace_info *trace_info;
+      bool *skip_inst;
       //std::map<int, Thread_info *> thread_info;
       //std::map<int, Trace_info *> trace_info;
       std::map<ir::PTXU64, Inst_info *> inst_storage;
       std::map<int, bool> init_block;
 
       uint64_t total_inst_count;
+      uint64_t kernel_inst_count;
 
       gzFile gz_config_file;
       std::ofstream txt_config_file;
@@ -102,6 +112,7 @@ namespace trace {
       };
 
       MemAccess mem_access[WARP_SIZE];
+      char addr_buffer[WARP_SIZE * ADDR_SIZE];
 
       std::string module;
       std::string kernel_name;
@@ -117,6 +128,11 @@ namespace trace {
       std::unordered_map<std::string, int> m_kernel_sharedmem_map;
       std::string m_compute;
 
+      bool tracegen_all;
+      bool tracegen_none;
+      bool tracegen;
+      std::unordered_map<std::string, int> kernel_tracegen_map;
+
       ////////////////////////////////////////////////
       int blockDimX;
       int blockDimY;
@@ -127,9 +143,15 @@ namespace trace {
 
       int kernel_count;
 
-      unsigned int mem_addr_flag;
+#ifndef USE_32BIT_ADDR
+      uint64_t mem_addr_flag;
+#else
+      uint32_t mem_addr_flag;
+#endif
 
       std::map<std::string, int> kernel_count_map;
+
+      uint64_t opcode_stats[500];
       ////////////////////////////////////////////////
 
   };

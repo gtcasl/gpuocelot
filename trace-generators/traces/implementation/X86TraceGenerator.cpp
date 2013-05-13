@@ -4,6 +4,8 @@
  * \brief ptx trace generator for MacSim simulator
  */
 
+
+// c++ libraries
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -17,36 +19,35 @@
 #include <cfloat>
 #include <iostream>
 
-
-#include <traces/interface/X86TraceGenerator.h>
-#include <traces/interface/X86TraceGeneratorCommon.h>
-
-#include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/api/interface/ocelot.h>
-
-#include <ocelot/executive/interface/ExecutableKernel.h>
-#include <ocelot/executive/interface/EmulatedKernel.h>
-#include <ocelot/executive/interface/Device.h>
-
-#include <ocelot/ir/interface/Module.h>
-
-#include <hydrazine/interface/Exception.h>
-#include <hydrazine/interface/debug.h>
-
+// boost libraries
 #include <boost/filesystem.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/dynamic_bitset.hpp> 
+
+// Ocelot libraries
+#include <traces/interface/X86TraceGenerator.h>
+#include <traces/interface/X86TraceGeneratorCommon.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/api/interface/ocelot.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/EmulatedKernel.h>
+#include <ocelot/executive/interface/Device.h>
+#include <ocelot/ir/interface/Module.h>
+#include <hydrazine/interface/Exception.h>
+#include <hydrazine/interface/debug.h>
+
 
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 
 #define GPU_REGISTER 49
 #define GPU_SHARED 60
+
 
 
 #define ST_INST(opcode) \
@@ -72,6 +73,280 @@
    opcode == ir::PTXInstruction::Exit)
 
 
+#if TRACEGEN_VER == 131
+
+#define SET_STORE_FLAG(inst_info, opcode) \
+  do { \
+  } while(0)
+
+#define SET_LOAD_FLAG(inst_info, flag_value) \
+  do { \
+      inst_info->is_load = flag_value; \
+  } while(0)
+
+
+#define IS_MEM_INST(inst_info, ptx_inst)  ((inst_info->is_load == 1) || ST_INST(ptx_inst->opcode)) 
+
+
+#define SET_ACTIVE_MASK(inst_info, warp_active_mask) \
+  do { \
+    inst_info->active_mask = warp_active_mask; \
+  } while(0)
+                                  
+//all of these fields are set to zero by memset, so this is not necessary!
+#if 0
+#define RESET_OTHER_FIELDS(inst_info) \
+  do { \
+    inst_info->active_mask = 0; \
+    inst_info->br_taken_mask = 0; \
+    inst_info->br_target_addr = 0; \
+    inst_info->mem_addr = 0; \
+    inst_info->mem_access_size = 0; \
+    inst_info->num_barrier_threads = 0; \
+    inst_info->addr_space = GPU_ADDR_SP_INVALID; \
+    inst_info->cache_level = GPU_CACHE_INVALID; \
+    inst_info->cache_operator = GPU_CACHE_OP_INVALID; \
+  } while(0)
+#else
+#define RESET_OTHER_FIELDS(inst_info) \
+  do { \
+  } while(0)
+#endif
+
+
+#define SET_LD_ADDR_AND_SIZE(inst_info, addr, size) \
+  do { \
+    inst_info->mem_addr = addr; \
+    inst_info->mem_access_size = size; \
+  } while(0)
+
+#define SET_ST_ADDR_AND_SIZE(inst_info, addr, size) \
+  do { \
+    inst_info->mem_addr = addr; \
+    inst_info->mem_access_size = size; \
+  } while(0)
+
+#define SET_MUL_TRACE_OP_FLAG(inst_info) \
+  do { \
+  } while(0)
+
+#define RESET_MUL_TRACE_OP_FLAG(inst_info) \
+  do { \
+  } while(0)
+
+#define SET_BRANCH_TARGET(inst_info, addr) \
+  do { \
+    inst_info->br_target_addr = addr; \
+  } while(0)
+
+#define SET_BRANCH_TAKEN_MASK(inst_info, mask) \
+  do { \
+    inst_info->br_taken_mask = mask; \
+  } while(0)
+
+#define SET_RECONV_ADDR(inst_info, addr) \
+  do { \
+    inst_info->reconv_inst_addr = addr; \
+  } while(0)
+
+#define SET_BRANCH_TAKEN_FLAG(inst_info, flag) \
+  do { \
+  } while(0)
+
+#define SET_ADDR_SPACE(inst_info, address_space) \
+  do { \
+    inst_info->addr_space = address_space; \
+  } while(0)
+
+#define SET_CACHE_LEVEL(inst_info, level) \
+  do { \
+    inst_info->cache_level = level; \
+  } while(0)
+
+#define SET_CACHE_OPERATOR(inst_info, op) \
+  do { \
+    inst_info->cache_operator = op; \
+  } while(0)
+
+#define SET_FENCE_LEVEL(inst_info, fence_level) \
+  do { \
+    inst_info->level = fence_level; \
+  } while(0)
+
+#define WRITE_INST_TO_FILE(file, inst_info) \
+  do { \
+    file << "opcode " << dec << (uint32_t)inst_info->opcode << endl; \
+    file << "num_read_regs " << (uint32_t)inst_info->num_read_regs << endl; \
+    file << "num_dest_regs " << (uint32_t)inst_info->num_dest_regs << endl; \
+    \
+    file << "src1 " << (uint32_t)inst_info->src[0] << endl; \
+    file << "src2 " << (uint32_t)inst_info->src[1] << endl; \
+    file << "src3 " << (uint32_t)inst_info->src[2] << endl; \
+    file << "src4 " << (uint32_t)inst_info->src[3] << endl; \
+    \
+    file << "dest1 " << (uint32_t)inst_info->dst[0] << endl; \
+    file << "dest2 " << (uint32_t)inst_info->dst[1] << endl; \
+    file << "dest3 " << (uint32_t)inst_info->dst[2] << endl; \
+    file << "dest4 " << (uint32_t)inst_info->dst[3] << endl; \
+    \
+    file << "is_fp " << inst_info->is_fp << endl; \
+    file << "cf_type " << (uint32_t)inst_info->cf_type << endl; \
+    file << "is_load " << inst_info->is_load << endl; \
+    \
+    file << "inst_size " << (uint32_t)inst_info->size << endl; \
+    \
+    file << "inst_addr " << hex << inst_info->inst_addr << dec << endl; \
+    file << "active_mask " << hex << inst_info->active_mask << dec << endl; \
+    \
+    file << "br_target_addr " << hex << inst_info->br_target_addr << dec << endl; \
+    file << "reconv_inst_addr/mem_addr " << hex << inst_info->reconv_inst_addr << dec << endl; \
+    file << "br_taken_mask " << hex << inst_info->br_taken_mask << dec << endl; \
+    \
+    file << "mem_addr/reconv_inst_addr " << hex << inst_info->mem_addr << endl; \
+    file << "mem_access_size/barrier_id " << (uint32_t)inst_info->mem_access_size << endl; \
+    file << "addr_space/fence_level " << (uint32_t)inst_info->addr_space << endl; \
+    file << "cache_operator " << (uint32_t)inst_info->cache_operator << endl; \
+    \
+    file << "barrier_id/mem_access_size " << (uint32_t)inst_info->barrier_id << endl; \
+    file << "num_barrier_threads " << (uint32_t)inst_info->num_barrier_threads << endl; \
+    \
+    file << "cache_level " << (uint32_t)inst_info->cache_level << endl; \
+    file << "fence_level/addr_space " << (uint32_t)inst_info->level << endl; \
+  } while(0)
+
+#elif TRACEGEN_VER == 10
+
+#define SET_STORE_FLAG(inst_info, opcode) \
+  do { \
+    inst_info->has_st = ST_INST(opcode); \
+  } while(0)
+
+
+// this is actually the number of loads, not a flag!
+#define SET_LOAD_FLAG(inst_info, flag_value) \
+  do { \
+    inst_info->num_ld = flag_value; \
+  } while(0)
+
+
+#define IS_MEM_INST(inst_info, ptx_inst)  ((inst_info->num_ld >= 1) || (inst_info->has_st == true)) 
+
+
+#define SET_ACTIVE_MASK(inst_info, warp_active_mask) \
+  do { \
+    inst_info->ld_vaddr2 = warp_active_mask; \
+  } while(0)
+
+//all of these fields are set to zero by memset, so this is not necessary!
+#define RESET_OTHER_FIELDS(inst_info) \
+  do { \
+    inst_info->branch_target = 0; \
+    inst_info->actually_taken = 0; \
+    inst_info->st_vaddr = inst_info->mem_write_size = 0; \
+    inst_info->ld_vaddr1 = inst_info->mem_read_size = 0; \
+    inst_info->rep_dir = 0; \
+  } while(0)
+
+
+#define SET_LD_ADDR_AND_SIZE(inst_info, addr, size) \
+  do { \
+    inst_info->ld_vaddr1 = addr; \
+    inst_info->mem_read_size = size; \
+  } while(0)
+
+#define SET_ST_ADDR_AND_SIZE(inst_info, addr, size) \
+  do { \
+    inst_info->st_vaddr = addr; \
+    inst_info->mem_write_size = size; \
+  } while(0)
+
+#define SET_MUL_TRACE_OP_FLAG(inst_info) \
+  do { \
+    inst_info->has_immediate = true; \
+  } while(0)
+
+#define RESET_MUL_TRACE_OP_FLAG(inst_info) \
+  do { \
+    inst_info->has_immediate = false; \
+  } while(0)
+
+#define SET_BRANCH_TARGET(inst_info, addr) \
+  do { \
+    inst_info->branch_target = addr; \
+  } while(0)
+
+#define SET_BRANCH_TAKEN_MASK(inst_info, mask) \
+  do { \
+    inst_info->ld_vaddr1 = mask; \
+  } while(0)
+
+#define SET_RECONV_ADDR(inst_info, addr) \
+  do { \
+    inst_info->st_vaddr = addr; \
+  } while(0)
+
+#define SET_BRANCH_TAKEN_FLAG(inst_info, flag) \
+  do { \
+    inst_info->actually_taken = flag; \
+  } while(0)
+
+#define SET_ADDR_SPACE(inst_info, address_space) \
+  do { \
+  } while(0)
+
+#define SET_CACHE_LEVEL(inst_info, level) \
+  do { \
+  } while(0)
+
+#define SET_CACHE_OPERATOR(inst_info, op) \
+  do { \
+  } while(0)
+
+#define SET_FENCE_LEVEL(inst_info, level) \
+  do { \
+  } while(0)
+
+#define WRITE_INST_TO_FILE(file, inst_info) \
+  do { \
+    file << "t_info->uop_opcode " << dec << inst_info->opcode << endl; \
+    file << "t_info->num_read_regs: " << hex <<  (uint32_t) inst_info->num_read_regs << endl; \
+    file << "t_info->num_dest_regs: " << hex << (uint32_t) inst_info->num_dest_regs << endl; \
+    \
+    file << "t_info->src1: " << hex << (uint32_t) inst_info->src[0] << endl; \
+    file << "t_info->src2: " << hex << (uint32_t) inst_info->src[1] << endl; \
+    file << "t_info->src3: " << hex << (uint32_t) inst_info->src[2] << endl; \
+    file << "t_info->src4: " << hex << (uint32_t) inst_info->src[3] << endl; \
+    \
+    file << "t_info->dest1: " << hex << (uint32_t) inst_info->dst[0] << endl; \
+    file << "t_info->dest2: " << hex << (uint32_t) inst_info->dst[1] << endl; \
+    file << "t_info->dest3: " << hex << (uint32_t) inst_info->dst[2] << endl; \
+    file << "t_info->dest4: " << hex << (uint32_t) inst_info->dst[3] << endl; \
+    \
+    file << "t_info->cf_type: " << hex << (uint32_t) inst_info->cf_type << endl; \
+    file << "t_info->has_immediate: " << hex << (uint32_t) inst_info->has_immediate << endl; \
+    \
+    file << "t_info->r_dir:" << (uint32_t) inst_info->rep_dir << endl; \
+    file << "t_info->has_st: " << hex << (uint32_t) inst_info->has_st << endl; \
+    file << "t_info->num_ld: " << hex << (uint32_t) inst_info->num_ld << endl; \
+    file << "t_info->mem_read_size: " << hex << (uint32_t) inst_info->mem_read_size << endl; \
+    file << "t_info->mem_write_size: " << hex << (uint32_t) inst_info->mem_write_size << endl; \
+    file << "t_info->is_fp: " << (uint32_t) inst_info->is_fp << endl; \
+    \
+    file << "t_info->ld_vaddr1: " << hex << (uint32_t) inst_info->ld_vaddr1 << endl; \
+    file << "t_info->ld_vaddr2: " << hex << (uint32_t) inst_info->ld_vaddr2 << endl; \
+    file << "t_info->st_vaddr: " << hex << (uint32_t) inst_info->st_vaddr << endl; \
+    \
+    file << "t_info->inst_addr: " << dec << (uint32_t) inst_info->inst_addr << endl; \
+    \
+    file << "t_info->branch_target: " << dec << (uint32_t) inst_info->branch_target << endl; \
+    file << "t_info->actually_taken: " << hex << (uint32_t) inst_info->actually_taken << endl; \
+    file << "t_info->write_flg: " << hex << (uint32_t) inst_info->write_flg << endl; \
+  } while(0)
+
+
+#endif
+
+
 using namespace std;
 
 
@@ -79,359 +354,8 @@ using namespace std;
 // Opcode enumerator
 // These should be exactly matched with the Macsim
 /////////////////////////////////////////////////////////////////////////////////////////////// 
-// numbering is not correct!!
-/*
-   //before matching with enum in trace_read.h in MacSim
-enum TR_OPCODE_ENUM_  {
-  XED_CATEGORY_INVALID   = 0,
-  XED_CATEGORY_3DNOW,
-  XED_CATEGORY_AES,
-  XED_CATEGORY_AVX,
-  XED_CATEGORY_BASE,
-  XED_CATEGORY_BINARY,
-  XED_CATEGORY_BITBYTE,
-  XED_CATEGORY_BROADCAST,
-  XED_CATEGORY_CALL,
-  XED_CATEGORY_CMOV,
-  XED_CATEGORY_COND_BR   = 10, 
-  XED_CATEGORY_CONVERT,
-  XED_CATEGORY_DATAXFER,
-  XED_CATEGORY_DECIMAL,
-  XED_CATEGORY_FCMOV,
-  XED_CATEGORY_FLAGOP,
-  XED_CATEGORY_INTERRUPT,
-  XED_CATEGORY_IO,
-  XED_CATEGORY_IOSTRINGOP,
-  XED_CATEGORY_LOGICAL,
-  XED_CATEGORY_MISC     = 20,
-  XED_CATEGORY_MMX,
-  XED_CATEGORY_NOP,
-  XED_CATEGORY_PCLMULQDQ,
-  XED_CATEGORY_POP,
-  XED_CATEGORY_PREFETCH,
-  XED_CATEGORY_PUSH,
-  XED_CATEGORY_RET,
-  XED_CATEGORY_ROTATE,
-  XED_CATEGORY_SEGOP,
-  XED_CATEGORY_SEMAPHORE = 30,
-  XED_CATEGORY_SHIFT,
-  XED_CATEGORY_SSE,
-  XED_CATEGORY_SSE5,
-  XED_CATEGORY_STRINGOP,
-  XED_CATEGORY_STTNI,
-  XED_CATEGORY_SYSCALL,
-  XED_CATEGORY_SYSRET,
-  XED_CATEGORY_SYSTEM,
-  XED_CATEGORY_UNCOND_BR,
-  XED_CATEGORY_VTX      = 40,
-  XED_CATEGORY_WIDENOP,
-  XED_CATEGORY_X87_ALU,
-  XED_CATEGORY_XSAVE,
-  XED_CATEGORY_XSAVEOPT,
-  TR_MUL,
-  TR_DIV,
-  TR_FMUL,
-  TR_FDIV,
-  TR_NOP,
-  PREFETCH_NTA         = 50,
-  PREFETCH_T0,
-  PREFETCH_T1,
-  PREFETCH_T2,
-  TR_MEM_LD_LM,
-  TR_MEM_LD_SM,
-  TR_MEM_LD_GM,
-  TR_MEM_ST_LM,
-  TR_MEM_ST_SM,
-  TR_MEM_ST_GM,
-  TR_DATA_XFER_LM      = 60,
-  TR_DATA_XFER_SM,
-  TR_DATA_XFER_GM,
-  TR_MEM_LD_CM,
-  TR_MEM_LD_TM,
-  TR_MEM_LD_PM,
-  LD_CM_CA,
-  LD_CM_CG,
-  LD_CM_CS,
-  LD_CM_LU,
-  LD_CM_CU            = 70,
-  LD_GM_CA,
-  LD_GM_CG,
-  LD_GM_CS,
-  LD_GM_LU,
-  LD_GM_CU,
-  LD_LM_CA,
-  LD_LM_CG,
-  LD_LM_CS,
-  LD_LM_LU,
-  LD_LM_CU            = 80,
-  LD_PM_CA,
-  LD_PM_CG,
-  LD_PM_CS,
-  LD_PM_LU,
-  LD_PM_CU,
-  LD_SM_CA,
-  LD_SM_CG,
-  LD_SM_CS,
-  LD_SM_LU,
-  LD_SM_CU           = 90,
-  LDU_GM,
-  ST_GM_WB,
-  ST_GM_CG,
-  ST_GM_CS,
-  ST_GM_WT,
-  ST_LM_WB,
-  ST_LM_CG,
-  ST_LM_CS,
-  ST_LM_WT,
-  ST_SM_WB          = 100,
-  ST_SM_CG,
-  ST_SM_CS,
-  ST_SM_WT,
-  PREF_GM_L1,
-  PREF_GM_L2,
-  PREF_LM_L1,
-  PREF_LM_L2,
-  PREF_UNIFORM,
-  GPU_ABS,
-  GPU_ABS64        = 110,
-  GPU_ADD, 
-  GPU_ADD64, 
-	GPU_ADDC,
-	GPU_AND,
-	GPU_AND64,
-	GPU_ATOM,
-	GPU_ATOM64,
-	GPU_BAR,
-	GPU_BFE,
-	GPU_BFE64        = 120,
-	GPU_BFI,
-	GPU_BFI64,
-	GPU_BFIND,
-	GPU_BFIND64,
-	GPU_BRA,
-	GPU_BREV,
-	GPU_BREV64,
-	GPU_BRKPT,
-	GPU_CALL,
-	GPU_CLZ         = 130,
-	GPU_CLZ64,
-	GPU_CNOT,
-	GPU_CNOT64,
-	GPU_COPYSIGN,
-	GPU_COPYSIGN64,
-	GPU_COS,
-	GPU_CVT,
-	GPU_CVT64,
-	GPU_CVTA,
-	GPU_CVTA64      = 140,
-	GPU_DIV,
-	GPU_DIV64,
-	GPU_EX2,
-	GPU_EXIT,
-	GPU_FMA,
-	GPU_FMA64,
-	GPU_ISSPACEP,
-	GPU_LD,
-	GPU_LD64,
-	GPU_LDU         = 150,
-	GPU_LDU64,
-	GPU_LG2,
-	GPU_MAD24,
-	GPU_MAD,
-	GPU_MAD64,
-	GPU_MAX,
-	GPU_MAX64,
-	GPU_MEMBAR,
-	GPU_MIN,
-	GPU_MIN64      = 160,
-	GPU_MOV,
-	GPU_MOV64,
-	GPU_MUL24,
-	GPU_MUL,
-	GPU_MUL64,
-	GPU_NEG,
-	GPU_NEG64,
-	GPU_NOT,
-	GPU_NOT64,
-	GPU_OR        = 170,
-	GPU_OR64,
-	GPU_PMEVENT,
-	GPU_POPC,
-	GPU_POPC64,
-	GPU_PREFETCH,
-	GPU_PREFETCHU,
-	GPU_PRMT,
-	GPU_RCP,
-	GPU_RCP64,
-	GPU_RED       = 180,
-	GPU_RED64,
-	GPU_REM,
-	GPU_REM64,
-	GPU_RET,
-	GPU_RSQRT,
-	GPU_RSQRT64,
-	GPU_SAD,
-	GPU_SAD64,
-	GPU_SELP,
-	GPU_SELP64    = 190,
-	GPU_SET,
-	GPU_SET64,
-	GPU_SETP,
-	GPU_SETP64,
-	GPU_SHL,
-	GPU_SHL64,
-	GPU_SHR,
-	GPU_SHR64,
-	GPU_SIN,
-	GPU_SLCT     = 200,
-	GPU_SLCT64,
-	GPU_SQRT,
-	GPU_SQRT64,
-	GPU_ST,
-	GPU_ST64,
-	GPU_SUB,
-	GPU_SUB64,
-	GPU_SUBC,
-	GPU_SULD,
-	GPU_SULD64  = 210,
-	GPU_SURED,
-	GPU_SURED64,
-	GPU_SUST,
-	GPU_SUST64,
-	GPU_SUQ,
-  GPU_TESTP,
-  GPU_TESTP64,
-  GPU_TEX,
-  GPU_TLD4,
-  GPU_TXQ     = 220,
-  GPU_TRAP,
-  GPU_VABSDIFF,
-  GPU_VADD,
-  GPU_VMAD,
-  GPU_VMAX,
-  GPU_VMIN,
-  GPU_VSET,
-  GPU_VSHL,
-  GPU_VSHR,
-  GPU_VSUB   = 230,
-  GPU_VOTE,
-  GPU_XOR,
-  GPU_XOR64,
-  GPU_RECONVERGE,
-  GPU_PHI,
-  TR_OPCODE_LAST
-} TR_OPCODE_ENUM;
-*/
-
-enum TR_OPCODE_ENUM_  {
-  XED_CATEGORY_INVALID   = 0,
-  XED_CATEGORY_3DNOW,
-  XED_CATEGORY_AES,
-  XED_CATEGORY_AVX,
-  XED_CATEGORY_BINARY,
-  XED_CATEGORY_BITBYTE,
-  XED_CATEGORY_BROADCAST,
-  XED_CATEGORY_CALL,
-  XED_CATEGORY_CMOV,
-  XED_CATEGORY_COND_BR,
-  XED_CATEGORY_CONVERT,
-  XED_CATEGORY_DATAXFER,
-  XED_CATEGORY_DECIMAL,
-  XED_CATEGORY_FCMOV,
-  XED_CATEGORY_FLAGOP,
-  XED_CATEGORY_INTERRUPT,
-  XED_CATEGORY_IO,
-  XED_CATEGORY_IOSTRINGOP,
-  XED_CATEGORY_LOGICAL,
-  XED_CATEGORY_MISC,
-  XED_CATEGORY_MMX,
-  XED_CATEGORY_NOP,
-  XED_CATEGORY_PCLMULQDQ,
-  XED_CATEGORY_POP,
-  XED_CATEGORY_PREFETCH,
-  XED_CATEGORY_PUSH,
-  XED_CATEGORY_RET,
-  XED_CATEGORY_ROTATE,
-  XED_CATEGORY_SEGOP,
-  XED_CATEGORY_SEMAPHORE,
-  XED_CATEGORY_SHIFT,
-  XED_CATEGORY_SSE,
-  XED_CATEGORY_STRINGOP,
-  XED_CATEGORY_STTNI,
-  XED_CATEGORY_SYSCALL,
-  XED_CATEGORY_SYSRET,
-  XED_CATEGORY_SYSTEM,
-  XED_CATEGORY_UNCOND_BR,
-  XED_CATEGORY_VTX,
-  XED_CATEGORY_WIDENOP,
-  XED_CATEGORY_X87_ALU,
-  XED_CATEGORY_XSAVE,
-  XED_CATEGORY_XSAVEOPT,
-  TR_MUL,
-  TR_DIV,
-  TR_FMUL,
-  TR_FDIV,
-  TR_NOP,
-  PREFETCH_NTA,
-  PREFETCH_T0,
-  PREFETCH_T1,
-  PREFETCH_T2,
-  TR_MEM_LD_LM,
-  TR_MEM_LD_SM,
-  TR_MEM_LD_GM,
-  TR_MEM_ST_LM,
-  TR_MEM_ST_SM,
-  TR_MEM_ST_GM,
-  TR_DATA_XFER_LM,
-  TR_DATA_XFER_SM,
-  TR_DATA_XFER_GM,
-  TR_MEM_LD_CM,
-  TR_MEM_LD_TM,
-  TR_MEM_LD_PM,
-  GPU_EN,
-  LD_CM_CA,
-  LD_CM_CG,
-  LD_CM_CS,
-  LD_CM_LU,
-  LD_CM_CU,
-  LD_GM_CA,
-  LD_GM_CG,
-  LD_GM_CS,
-  LD_GM_LU,
-  LD_GM_CU,
-  LD_LM_CA,
-  LD_LM_CG,
-  LD_LM_CS,
-  LD_LM_LU,
-  LD_LM_CU,
-  LD_PM_CA,
-  LD_PM_CG,
-  LD_PM_CS,
-  LD_PM_LU,
-  LD_PM_CU,
-  LD_SM_CA,
-  LD_SM_CG,
-  LD_SM_CS,
-  LD_SM_LU,
-  LD_SM_CU,
-  LDU_GM,
-  ST_GM_WB,
-  ST_GM_CG,
-  ST_GM_CS,
-  ST_GM_WT,
-  ST_LM_WB,
-  ST_LM_CG,
-  ST_LM_CS,
-  ST_LM_WT,
-  ST_SM_WB,
-  ST_SM_CG,
-  ST_SM_CS,
-  ST_SM_WT,
-  PREF_GM_L1,
-  PREF_GM_L2,
-  PREF_LM_L1,
-  PREF_LM_L2,
-  PREF_UNIFORM,
+enum GPU_OPCODE_ENUM_ {
+  GPU_INVALID = 0,
   GPU_ABS,
   GPU_ABS64,
   GPU_ADD, 
@@ -439,9 +363,13 @@ enum TR_OPCODE_ENUM_  {
 	GPU_ADDC,
 	GPU_AND,
 	GPU_AND64,
-	GPU_ATOM,
-	GPU_ATOM64,
-	GPU_BAR,
+	GPU_ATOM_GM,
+	GPU_ATOM_SM,
+	GPU_ATOM64_GM,
+	GPU_ATOM64_SM,
+	GPU_BAR_ARRIVE,
+  GPU_BAR_SYNC,
+  GPU_BAR_RED,
 	GPU_BFE,
 	GPU_BFE64,
 	GPU_BFI,
@@ -481,7 +409,9 @@ enum TR_OPCODE_ENUM_  {
 	GPU_MAD64,
 	GPU_MAX,
 	GPU_MAX64,
-	GPU_MEMBAR,
+	GPU_MEMBAR_CTA,
+	GPU_MEMBAR_GL,
+	GPU_MEMBAR_SYS,
 	GPU_MIN,
 	GPU_MIN64,
 	GPU_MOV,
@@ -503,8 +433,10 @@ enum TR_OPCODE_ENUM_  {
 	GPU_PRMT,
 	GPU_RCP,
 	GPU_RCP64,
-	GPU_RED,
-	GPU_RED64,
+	GPU_RED_GM,
+	GPU_RED_SM,
+	GPU_RED64_GM,
+	GPU_RED64_SM,
 	GPU_REM,
 	GPU_REM64,
 	GPU_RET,
@@ -559,539 +491,160 @@ enum TR_OPCODE_ENUM_  {
   GPU_XOR64,
   GPU_RECONVERGE,
   GPU_PHI,
-  TR_OPCODE_LAST
-} TR_OPCODE_ENUM;
+  GPU_MEM_LD_GM,
+  GPU_MEM_LD_LM,
+  GPU_MEM_LD_SM,
+  GPU_MEM_LD_CM,
+  GPU_MEM_LD_TM,
+  GPU_MEM_LD_PM,
+  GPU_MEM_LDU_GM,
+  GPU_MEM_ST_GM,
+  GPU_MEM_ST_LM,
+  GPU_MEM_ST_SM,
+  GPU_DATA_XFER_GM,
+  GPU_DATA_XFER_LM,
+  GPU_DATA_XFER_SM,
+  GPU_OPCODE_LAST
+} GPU_OPCODE_ENUM;
+
+
+enum GPU_ADDRESS_SPACE_ENUM_ {
+  GPU_ADDR_SP_INVALID = 0,
+  GPU_ADDR_SP_CONST,
+  GPU_ADDR_SP_GLOBAL,
+  GPU_ADDR_SP_LOCAL,
+  GPU_ADDR_SP_PARAM,
+  GPU_ADDR_SP_SHARED,
+  GPU_ADDR_SP_TEXTURE,
+  GPU_ADDR_SP_GENERIC,
+  GPU_ADDR_SP_LAST
+} GPU_ADDRESS_SPACE_ENUM;
+
+
+enum GPU_CACHE_OP_ENUM_ {
+  GPU_CACHE_OP_INVALID = 0,
+  GPU_CACHE_OP_CA,
+  GPU_CACHE_OP_CV,
+  GPU_CACHE_OP_CG,
+  GPU_CACHE_OP_CS,
+  GPU_CACHE_OP_WB,
+  GPU_CACHE_OP_WT,
+  GPU_CACHE_OP_LAST
+} GPU_CACHE_OP_ENUM;
+
+
+enum GPU_CACHE_LEVEL_ENUM_ {
+  GPU_CACHE_INVALID = 0,
+  GPU_CACHE_L1,
+  GPU_CACHE_L2,
+  GPU_CACHE_LAST
+} GPU_CACHE_LEVEL_ENUM;
+
+enum GPU_FENCE_LEVEL_ENUM_ {
+  GPU_FENCE_INVALID = 0,
+  GPU_FENCE_CTA,
+  GPU_FENCE_GL,
+  GPU_FENCE_SYS,
+  GPU_FENCE_LAST
+} GPU_FENCE_LEVEL_ENUM;
+
 
 
 // Sanity check::
 // We should match with total number of instructions in gpuocelot (ptx)
-//
-// index 0 for integer instruction
-// index 1 for fp instruction
 
-#ifndef GPU_VALIDATION
-
-int ptx_to_x86[2][ir::PTXInstruction::Nop] = 
+// Opcode translation
+// missing instruction from PTX manual : madc, shfl
+int opcode_translator[ir::PTXInstruction::Nop][4] = 
 {
-  {
-    (int)XED_CATEGORY_DECIMAL,  //Abs 
-    (int)XED_CATEGORY_DECIMAL,  //Add - only int
-    (int)XED_CATEGORY_DECIMAL,  //AddC - only int
-    (int)XED_CATEGORY_LOGICAL,  // And
-    (int)XED_CATEGORY_DATAXFER, //Atom
-    (int)XED_CATEGORY_SEMAPHORE, //Bar
-    (int)XED_CATEGORY_DECIMAL,  // ** Bfe int
-    (int)XED_CATEGORY_DECIMAL,  // ** Bfi int 
-    (int)XED_CATEGORY_DECIMAL,  // ** Bfind int
-    (int)XED_CATEGORY_COND_BR,  //Bra
-    (int)XED_CATEGORY_DECIMAL,  // ** Brev int
-    (int)XED_CATEGORY_DECIMAL,  // ** Brkpt misc
-    (int)XED_CATEGORY_CALL,     //Call
-    (int)XED_CATEGORY_DECIMAL,  // ** Clz int
-    (int)XED_CATEGORY_DECIMAL,  //CNot,
-    (int)XED_CATEGORY_DECIMAL,  // copysign
-    (int)TR_FMUL,               //Cos - only fp
-    (int)XED_CATEGORY_DATAXFER, // ** Cvt was TR_MUL
-    (int)XED_CATEGORY_DATAXFER, // ** Cvta mov
-    (int)TR_DIV,                //Div
-    (int)TR_FDIV,               //Ex2 - only fp
-    (int)XED_CATEGORY_DECIMAL,  //Exit
-    (int)TR_FMUL,               // fma
-    (int)XED_CATEGORY_DECIMAL,  // isspacep
-    (int)XED_CATEGORY_DATAXFER, //Ld
-    (int)XED_CATEGORY_DATAXFER, // ** Ldu mov
-    (int)TR_FDIV,               //Lg2 - only fp
-    (int)TR_MUL,                //Mad24 - only int
-    (int)TR_MUL,                //Mad
-    (int)XED_CATEGORY_DECIMAL,  //Max,
-    (int)XED_CATEGORY_SEMAPHORE, //Membar,
-    (int)XED_CATEGORY_DECIMAL,  //Min,
-    (int)XED_CATEGORY_DATAXFER, //Mov,
-    (int)TR_MUL,                //Mul24 - only int
-    (int)TR_MUL,                //Mul
-    (int)XED_CATEGORY_LOGICAL,  //Neg
-    (int)XED_CATEGORY_LOGICAL,  //Not
-    (int)XED_CATEGORY_LOGICAL,  // Or
-    (int)XED_CATEGORY_LOGICAL,  //Pmevent
-    (int)XED_CATEGORY_DECIMAL,  // ** Popc int
-    (int)XED_CATEGORY_DATAXFER, // ** Prefetch mov
-    (int)XED_CATEGORY_DATAXFER, // ** Prefetchu mov
-    (int)XED_CATEGORY_DECIMAL,  // ** Prmt int
-    (int)TR_FDIV,               //Rcp - only fp
-    (int)XED_CATEGORY_DATAXFER, //Red
-    (int)TR_DIV,                //Rem - only int
-    (int)XED_CATEGORY_RET,      //Ret
-    (int)TR_FDIV,               //Rsqrt
-    (int)TR_MUL,                //Sad - only int
-    (int)XED_CATEGORY_DECIMAL,  //SelP
-    (int)XED_CATEGORY_DECIMAL,  //Set
-    (int)XED_CATEGORY_DECIMAL,  //SetP
-    (int)XED_CATEGORY_SHIFT,    //Shl
-    (int)XED_CATEGORY_SHIFT,    //Shr
-    (int)TR_FMUL,               //Sin - only float
-    (int)XED_CATEGORY_DECIMAL,  //SlCt
-    (int)TR_FDIV,               //Sqrt
-    (int)XED_CATEGORY_DATAXFER, //St
-    (int)XED_CATEGORY_DECIMAL,  //Sub
-    (int)XED_CATEGORY_DECIMAL,  //SubC
-    (int)XED_CATEGORY_DATAXFER, // ** Suld surface mem
-    (int)XED_CATEGORY_DATAXFER, // ** Sured surface mem
-    (int)XED_CATEGORY_DATAXFER, // ** Sust surface mem
-    (int)XED_CATEGORY_DATAXFER, // ** Suq surface mem
-    (int)XED_CATEGORY_LOGICAL,  // TestP
-    (int)XED_CATEGORY_DATAXFER, //Tex
-    (int)XED_CATEGORY_DATAXFER, // Tld4
-    (int)XED_CATEGORY_DATAXFER, // ** Txq texture mem
-    (int)XED_CATEGORY_INTERRUPT, //Trap
-    (int)XED_CATEGORY_DECIMAL,  // ** Vadsdiff video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vadd video 
-    (int)TR_MUL,                // ** Vmad video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vmax video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vmin video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vset video
-    (int)XED_CATEGORY_SHIFT,    // ** Vshl video
-    (int)XED_CATEGORY_SHIFT,    // ** Vshr video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vsub video
-    (int)XED_CATEGORY_DATAXFER, //Vote, - check this
-    (int)XED_CATEGORY_LOGICAL,  //Xor,
-    (int)XED_CATEGORY_DECIMAL,  //Reconverge, - check
-    (int)XED_CATEGORY_DECIMAL,  //, //Phi - check
-//    (int)XED_CATEGORY_DECIMAL   //Nop
-  },
-  {
-    (int)XED_CATEGORY_DECIMAL,  //Abs 
-    (int)XED_CATEGORY_DECIMAL,  //Add - only int
-    (int)XED_CATEGORY_DECIMAL,  //AddC - only int
-    (int)XED_CATEGORY_LOGICAL,  // And
-    (int)XED_CATEGORY_DATAXFER, //Atom
-    (int)XED_CATEGORY_SEMAPHORE, //Bar
-    (int)XED_CATEGORY_DECIMAL,  // ** Bfe int
-    (int)XED_CATEGORY_DECIMAL,  // ** Bfi int 
-    (int)XED_CATEGORY_DECIMAL,  // ** Bfind int
-    (int)XED_CATEGORY_COND_BR,  //Bra
-    (int)XED_CATEGORY_DECIMAL,  // ** Brev int
-    (int)XED_CATEGORY_DECIMAL,  //Brkpt
-    (int)XED_CATEGORY_CALL,     //Call
-    (int)XED_CATEGORY_DECIMAL,  // ** Clz int
-    (int)XED_CATEGORY_DECIMAL,  //CNot,
-    (int)XED_CATEGORY_DECIMAL,  // copysign
-    (int)TR_FMUL,               //Cos - only fp
-    (int)XED_CATEGORY_DATAXFER, // ** Cvt was TR_MUL
-    (int)XED_CATEGORY_DATAXFER, // ** Cvta mov
-    (int)TR_FDIV,               //Div
-    (int)TR_FDIV,               //Ex2 - only fp
-    (int)XED_CATEGORY_DECIMAL,  //Exit
-    (int)TR_MUL,                // fma
-    (int)XED_CATEGORY_LOGICAL,  // isspacep
-    (int)XED_CATEGORY_DATAXFER, //Ld
-    (int)XED_CATEGORY_DATAXFER, // ** Ldu mov
-    (int)TR_FDIV,               //Lg2 - only fp
-    (int)TR_MUL,                //Mad24 - only int
-    (int)TR_MUL,                //Mad
-    (int)XED_CATEGORY_DECIMAL,  //Max,
-    (int)XED_CATEGORY_SEMAPHORE, //Membar,
-    (int)XED_CATEGORY_DECIMAL,  //Min,
-    (int)XED_CATEGORY_DATAXFER, //Mov,
-    (int)TR_MUL,                //Mul24 - only int
-    (int)TR_MUL,                //Mul
-    (int)XED_CATEGORY_LOGICAL,  //Neg
-    (int)XED_CATEGORY_LOGICAL,  //Not
-    (int)XED_CATEGORY_LOGICAL,  // Or
-    (int)XED_CATEGORY_LOGICAL,  //Pmevent
-    (int)XED_CATEGORY_DECIMAL,  // ** Popc int
-    (int)XED_CATEGORY_DATAXFER, // ** Prefetch mov
-    (int)XED_CATEGORY_DATAXFER, // ** Prefetchu mov
-    (int)XED_CATEGORY_DECIMAL,  // ** Prmt int
-    (int)TR_FDIV,               //Rcp
-    (int)XED_CATEGORY_DATAXFER, //Red
-    (int)TR_DIV,                //Rem - only int
-    (int)XED_CATEGORY_RET,      //Ret
-    (int)TR_FDIV,               //Rsqrt
-    (int)TR_MUL,                //Sad - only int
-    (int)XED_CATEGORY_DECIMAL,  //SelP
-    (int)XED_CATEGORY_DECIMAL,  //Set
-    (int)XED_CATEGORY_DECIMAL,  //SetP
-    (int)XED_CATEGORY_SHIFT,    //Shl
-    (int)XED_CATEGORY_SHIFT,    //Shr
-    (int)TR_FMUL,               //Sin - only float
-    (int)XED_CATEGORY_DECIMAL,  //SlCt
-    (int)TR_FDIV,               //Sqrt
-    (int)XED_CATEGORY_DATAXFER, //St
-    (int)XED_CATEGORY_DECIMAL,  //Sub
-    (int)XED_CATEGORY_DECIMAL,  //SubC
-    (int)XED_CATEGORY_DATAXFER, // ** Suld surface mem
-    (int)XED_CATEGORY_DATAXFER, // ** Sured surface mem
-    (int)XED_CATEGORY_DATAXFER, // ** Sust surface mem
-    (int)XED_CATEGORY_DATAXFER, // ** Suq surface mem
-    (int)XED_CATEGORY_LOGICAL,  // TestP
-    (int)XED_CATEGORY_DATAXFER, //Tex
-    (int)XED_CATEGORY_DATAXFER, // Tld4
-    (int)XED_CATEGORY_DATAXFER, // ** Txq texture mem
-    (int)XED_CATEGORY_INTERRUPT, //Trap
-    (int)XED_CATEGORY_DECIMAL,  // ** Vadsdiff video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vadd video 
-    (int)TR_FMUL,               // ** Vmad video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vmax video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vmin video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vset video
-    (int)XED_CATEGORY_SHIFT,    // ** Vshl video
-    (int)XED_CATEGORY_SHIFT,    // ** Vshr video
-    (int)XED_CATEGORY_DECIMAL,  // ** Vsub video
-    (int)XED_CATEGORY_DATAXFER, //Vote, - check this
-    (int)XED_CATEGORY_LOGICAL,  //Xor,
-    (int)XED_CATEGORY_DECIMAL,  //Reconverge, - check
-    (int)XED_CATEGORY_DECIMAL,   //, //Phi - check
-//    (int)XED_CATEGORY_DECIMAL //Nop
-  }
+  // 32 bit integer    , 64 bit integer   , 32 bit FP        , 64 bit FP
+  { (int)GPU_ABS       , (int)GPU_ABS64   , (int)GPU_ABS     , (int)GPU_ABS64     }, // Abs
+  { (int)GPU_ADD       , (int)GPU_ADD64   , (int)GPU_ADD     , (int)GPU_ADD64     }, // Add
+  { (int)GPU_ADDC      , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // AddC
+  { (int)GPU_AND       , (int)GPU_AND64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // And
+  //{ (int)GPU_ATOM    , (int)GPU_ATOM64  , (int)GPU_ATOM    , (int)GPU_INVALID   }, // Atom
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Atom
+  //{ (int)GPU_BAR     , (int)GPU_BAR     , (int)GPU_INVALID , (int)GPU_INVALID   }, // Bar
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Bar
+  { (int)GPU_BFE       , (int)GPU_BFE64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Bfe
+  { (int)GPU_BFI       , (int)GPU_BFI64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Bfi
+  { (int)GPU_BFIND     , (int)GPU_BFIND64 , (int)GPU_INVALID , (int)GPU_INVALID   }, // Bfind
+  { (int)GPU_BRA       , (int)GPU_BRA     , (int)GPU_INVALID , (int)GPU_INVALID   }, // Bra
+  { (int)GPU_BREV      , (int)GPU_BREV64  , (int)GPU_INVALID , (int)GPU_INVALID   }, // Brev
+  { (int)GPU_BRKPT     , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Brkpt
+  { (int)GPU_CALL      , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Call
+  { (int)GPU_CLZ       , (int)GPU_CLZ64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Clz
+  { (int)GPU_CNOT      , (int)GPU_CNOT64  , (int)GPU_INVALID , (int)GPU_INVALID   }, // CNot
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_COPYSIGN, (int)GPU_COPYSIGN64}, // CopySign
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_COS     , (int)GPU_INVALID   }, // Cos
+  { (int)GPU_CVT       , (int)GPU_CVT64   , (int)GPU_CVT     , (int)GPU_CVT64     }, // Cvt
+  { (int)GPU_CVTA      , (int)GPU_CVTA64  , (int)GPU_INVALID , (int)GPU_INVALID   }, // Cvta
+  { (int)GPU_DIV       , (int)GPU_DIV64   , (int)GPU_DIV     , (int)GPU_DIV64     }, // Div
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_EX2     , (int)GPU_INVALID   }, // Ex2
+  { (int)GPU_EXIT      , (int)GPU_EXIT    , (int)GPU_INVALID , (int)GPU_INVALID   }, // Exit
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_FMA     , (int)GPU_FMA64     }, // Fma
+  { (int)GPU_ISSPACEP  , (int)GPU_ISSPACEP, (int)GPU_INVALID , (int)GPU_INVALID   }, // Isspacep
+  { (int)GPU_LD        , (int)GPU_LD64    , (int)GPU_LD      , (int)GPU_LD64      }, // Ld
+  { (int)GPU_LDU       , (int)GPU_LDU64   , (int)GPU_LDU     , (int)GPU_LDU64     }, // Ldu
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_LG2     , (int)GPU_INVALID   }, // Lg2
+  { (int)GPU_MAD24     , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Mad24
+  { (int)GPU_MAD       , (int)GPU_MAD64   , (int)GPU_MAD     , (int)GPU_MAD64     }, // Mad
+  { (int)GPU_MAX       , (int)GPU_MAX64   , (int)GPU_MAX     , (int)GPU_MAX64     }, // Max
+  //{ (int)GPU_MEMBAR  , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Membar
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Membar
+  { (int)GPU_MIN       , (int)GPU_MIN64   , (int)GPU_MIN     , (int)GPU_MIN64     }, // Min
+  { (int)GPU_MOV       , (int)GPU_MOV64   , (int)GPU_MOV     , (int)GPU_MOV64     }, // Mov
+  { (int)GPU_MUL24     , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Mul24
+  { (int)GPU_MUL       , (int)GPU_MUL64   , (int)GPU_MUL     , (int)GPU_MUL64     }, // Mul
+  { (int)GPU_NEG       , (int)GPU_NEG64   , (int)GPU_NEG     , (int)GPU_NEG64     }, // Neg
+  { (int)GPU_NOT       , (int)GPU_NOT64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Not
+  { (int)GPU_OR        , (int)GPU_OR64    , (int)GPU_INVALID , (int)GPU_INVALID   }, // Or
+  { (int)GPU_PMEVENT   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Pmevent
+  { (int)GPU_POPC      , (int)GPU_POPC64  , (int)GPU_INVALID , (int)GPU_INVALID   }, // Popc
+  { (int)GPU_PREFETCH  , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Prefetch
+  { (int)GPU_PREFETCHU , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Prefetchu
+  { (int)GPU_PRMT      , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Prmt
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_RCP     , (int)GPU_RCP64     }, // Rcp
+  //{ (int)GPU_RED     , (int)GPU_RED64   , (int)GPU_RED     , (int)GPU_INVALID   }, // Red
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Red
+  { (int)GPU_REM       , (int)GPU_REM64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Rem
+  { (int)GPU_RET       , (int)GPU_RET     , (int)GPU_INVALID , (int)GPU_INVALID   }, // Ret
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_RSQRT   , (int)GPU_RSQRT64   }, // Rsqrt
+  { (int)GPU_SAD       , (int)GPU_SAD64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Sad
+  { (int)GPU_SELP      , (int)GPU_SELP64  , (int)GPU_SELP    , (int)GPU_SELP64    }, // SelP
+  { (int)GPU_SET       , (int)GPU_SET64   , (int)GPU_SET     , (int)GPU_SET64     }, // Set
+  { (int)GPU_SETP      , (int)GPU_SETP64  , (int)GPU_SETP    , (int)GPU_SETP64    }, // SetP
+  { (int)GPU_SHL       , (int)GPU_SHL64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Shl
+  { (int)GPU_SHR       , (int)GPU_SHR64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Shr
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_SIN     , (int)GPU_INVALID   }, // Sin
+  { (int)GPU_SLCT      , (int)GPU_SLCT64  , (int)GPU_SLCT    , (int)GPU_SLCT64    }, // Slct
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_SQRT    , (int)GPU_SQRT64    }, // Sqrt
+  { (int)GPU_ST        , (int)GPU_ST64    , (int)GPU_ST      , (int)GPU_ST64      }, // St
+  { (int)GPU_SUB       , (int)GPU_SUB64   , (int)GPU_SUB     , (int)GPU_SUB64     }, // Sub
+  { (int)GPU_SUBC      , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // SubC
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Suld
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Sured
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Sust
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Suq
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_TESTP   , (int)GPU_TESTP64   }, // TestP
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Tex
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Tld4
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Txq
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Trap
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vabsdiff
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vadd
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vmad
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vmax
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vmin
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vset
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vshl
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vshr
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vsub
+  { (int)GPU_VOTE      , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Vote
+  { (int)GPU_XOR       , (int)GPU_XOR64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Xor
+  { (int)GPU_RECONVERGE, (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Reconverge
+  { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Phi
 };
-
-#else
-
-int ptx_to_x86[4][ir::PTXInstruction::Nop] = 
-{
-  // int (upto) 32-bit
-  {
-			(int)GPU_ABS,         // Abs
-			(int)GPU_ADD,         // Add
-			(int)GPU_ADDC,        // AddC
-			(int)GPU_AND,         // And
-			(int)GPU_ATOM,        // Atom
-			(int)GPU_BAR,         // Bar
-			(int)GPU_BFE,         // Bfe
-			(int)GPU_BFI,         // Bfi
-			(int)GPU_BFIND,       // Bfind
-			(int)GPU_BRA,         // Bra
-			(int)GPU_BREV,        // Brev
-			(int)GPU_BRKPT,       // Brkpt
-			(int)GPU_CALL,        // Call
-			(int)GPU_CLZ,         // Clz
-			(int)GPU_CNOT,        // CNot
-			(int)XED_CATEGORY_INVALID,    // CopySign
-			(int)XED_CATEGORY_INVALID,         // Cos
-			(int)GPU_CVT,         // Cvt
-			(int)GPU_CVTA,        // Cvta
-			(int)GPU_DIV,         // Div
-			(int)XED_CATEGORY_INVALID,         // Ex2
-			(int)GPU_EXIT,        // Exit
-			(int)XED_CATEGORY_INVALID,         // Fma
-			(int)GPU_ISSPACEP,    // Isspacep
-			(int)GPU_LD,          // Ld
-			(int)GPU_LDU,         // Ldu
-			(int)XED_CATEGORY_INVALID,         // Lg2
-			(int)GPU_MAD24,       // Mad24
-			(int)GPU_MAD,         // Mad
-			(int)GPU_MAX,         // Max
-			(int)GPU_MEMBAR,      // Membar
-			(int)GPU_MIN,         // Min
-			(int)GPU_MOV,         // Mov
-			(int)GPU_MUL24,       // Mul24
-			(int)GPU_MUL,         // Mul
-			(int)GPU_NEG,         // Neg
-			(int)GPU_NOT,         // Not
-			(int)GPU_OR,          // Or
-			(int)GPU_PMEVENT,     // Pmevent
-			(int)GPU_POPC,        // Popc
-			(int)GPU_PREFETCH,    // Prefetch
-			(int)GPU_PREFETCHU,   // Prefetchu
-			(int)GPU_PRMT,        // Prmt
-			(int)XED_CATEGORY_INVALID,         // Rcp
-			(int)GPU_RED,         // Red
-			(int)GPU_REM,         // Rem
-			(int)GPU_RET,         // Ret
-			(int)XED_CATEGORY_INVALID,       // Rsqrt
-			(int)GPU_SAD,         // Sad
-			(int)GPU_SELP,        // SelP
-			(int)GPU_SET,         // Set
-			(int)GPU_SETP,        // SetP
-			(int)GPU_SHL,         // Shl
-			(int)GPU_SHR,         // Shr
-			(int)XED_CATEGORY_INVALID,         // Sin
-			(int)GPU_SLCT,        // SlCt
-			(int)XED_CATEGORY_INVALID,        // Sqrt
-			(int)GPU_ST,          // St
-			(int)GPU_SUB,         // Sub
-			(int)GPU_SUBC,        // SubC
-			(int)XED_CATEGORY_INVALID,        // Suld
-			(int)XED_CATEGORY_INVALID,       // Sured
-			(int)XED_CATEGORY_INVALID,        // Sust
-			(int)XED_CATEGORY_INVALID,         // Suq
-			(int)XED_CATEGORY_INVALID,       // TestP
-			(int)XED_CATEGORY_INVALID,         // Tex
-			(int)XED_CATEGORY_INVALID,        // Tld4
-			(int)XED_CATEGORY_INVALID,         // Txq
-			(int)XED_CATEGORY_INVALID,        // Trap
-			(int)XED_CATEGORY_INVALID,    // Vabsdiff
-			(int)XED_CATEGORY_INVALID,        // Vadd
-			(int)XED_CATEGORY_INVALID,        // Vmad
-			(int)XED_CATEGORY_INVALID,        // Vmax
-			(int)XED_CATEGORY_INVALID,        // Vmin
-			(int)XED_CATEGORY_INVALID,        // Vset
-			(int)XED_CATEGORY_INVALID,        // Vshl
-			(int)XED_CATEGORY_INVALID,        // Vshr
-			(int)XED_CATEGORY_INVALID,        // Vsub
-			(int)GPU_VOTE,        // Vote
-			(int)GPU_XOR,         // Xor
-			(int)GPU_RECONVERGE,  // Reconverge
-			(int)XED_CATEGORY_INVALID,         // Phi
-  },
-  // int 64-bit
-  {
-			(int)GPU_ABS64,         // Abs
-			(int)GPU_ADD64,         // Add
-			(int)XED_CATEGORY_INVALID,        // AddC
-			(int)GPU_AND64,         // And
-			(int)GPU_ATOM64,        // Atom
-			(int)GPU_BAR,           // Bar *************** bar type is b64, so not set to invalid
-			(int)GPU_BFE64,         // Bfe
-			(int)GPU_BFI64,         // Bfi
-			(int)GPU_BFIND64,       // Bfind
-			(int)GPU_BRA,           // Bra *************** bra type is b64, so not set to invalid
-			(int)GPU_BREV64,        // Brev
-			(int)XED_CATEGORY_INVALID,       // Brkpt
-			(int)XED_CATEGORY_INVALID,        // Call
-			(int)GPU_CLZ64,         // Clz
-			(int)GPU_CNOT64,        // CNot
-			(int)XED_CATEGORY_INVALID,    // CopySign
-			(int)XED_CATEGORY_INVALID,         // Cos
-			(int)GPU_CVT64,         // Cvt
-			(int)GPU_CVTA64,        // Cvta
-			(int)GPU_DIV64,         // Div
-			(int)XED_CATEGORY_INVALID,         // Ex2
-			(int)GPU_EXIT,          // Exit ************* exit type is b64, so not set to invalid
-			(int)XED_CATEGORY_INVALID,         // Fma
-			(int)XED_CATEGORY_INVALID,    // Isspacep
-			(int)GPU_LD64,          // Ld
-			(int)GPU_LDU64,         // Ldu
-			(int)XED_CATEGORY_INVALID,         // Lg2
-			(int)XED_CATEGORY_INVALID,       // Mad24
-			(int)GPU_MAD64,         // Mad
-			(int)GPU_MAX64,         // Max
-			(int)XED_CATEGORY_INVALID,      // Membar
-			(int)GPU_MIN64,         // Min
-			(int)GPU_MOV64,         // Mov
-			(int)XED_CATEGORY_INVALID,       // Mul24
-			(int)GPU_MUL64,         // Mul
-			(int)GPU_NEG64,         // Neg
-			(int)GPU_NOT64,         // Not
-			(int)GPU_OR64,          // Or
-			(int)XED_CATEGORY_INVALID,     // Pmevent
-			(int)GPU_POPC64,        // Popc
-			(int)XED_CATEGORY_INVALID,    // Prefetch
-			(int)XED_CATEGORY_INVALID,   // Prefetchu
-			(int)XED_CATEGORY_INVALID,        // Prmt
-			(int)GPU_RCP64,         // Rcp
-			(int)GPU_RED64,         // Red
-			(int)GPU_REM64,         // Rem
-			(int)XED_CATEGORY_INVALID,         // Ret
-			(int)XED_CATEGORY_INVALID,       // Rsqrt
-			(int)GPU_SAD64,         // Sad
-			(int)GPU_SELP64,        // SelP
-			(int)GPU_SET64,         // Set
-			(int)GPU_SETP64,        // SetP
-			(int)GPU_SHL64,         // Shl
-			(int)GPU_SHR64,         // Shr
-			(int)XED_CATEGORY_INVALID,         // Sin
-			(int)GPU_SLCT64,        // SlCt
-			(int)XED_CATEGORY_INVALID,        // Sqrt
-			(int)GPU_ST64,          // St
-			(int)GPU_SUB64,         // Sub
-			(int)XED_CATEGORY_INVALID,        // SubC
-			(int)XED_CATEGORY_INVALID,        // Suld
-			(int)XED_CATEGORY_INVALID,       // Sured
-			(int)XED_CATEGORY_INVALID,        // Sust
-			(int)XED_CATEGORY_INVALID,         // Suq
-			(int)XED_CATEGORY_INVALID,       // TestP
-			(int)XED_CATEGORY_INVALID,         // Tex
-			(int)XED_CATEGORY_INVALID,        // Tld4
-			(int)XED_CATEGORY_INVALID,         // Txq
-			(int)XED_CATEGORY_INVALID,        // Trap
-			(int)XED_CATEGORY_INVALID,    // Vabsdiff
-			(int)XED_CATEGORY_INVALID,        // Vadd
-			(int)XED_CATEGORY_INVALID,        // Vmad
-			(int)XED_CATEGORY_INVALID,        // Vmax
-			(int)XED_CATEGORY_INVALID,        // Vmin
-			(int)XED_CATEGORY_INVALID,        // Vset
-			(int)XED_CATEGORY_INVALID,        // Vshl
-			(int)XED_CATEGORY_INVALID,        // Vshr
-			(int)XED_CATEGORY_INVALID,        // Vsub
-			(int)XED_CATEGORY_INVALID,        // Vote
-			(int)GPU_XOR64,         // Xor
-			(int)XED_CATEGORY_INVALID,  // Reconverge
-			(int)XED_CATEGORY_INVALID,         // Phi
-  },
-  // FP (32-bit)
-  {
-			(int)GPU_ABS,         // Abs
-			(int)GPU_ADD,         // Add
-			(int)XED_CATEGORY_INVALID,        // AddC
-			(int)XED_CATEGORY_INVALID,         // And
-			(int)GPU_ATOM,        // Atom
-			(int)XED_CATEGORY_INVALID,         // Bar
-			(int)XED_CATEGORY_INVALID,         // Bfe
-			(int)XED_CATEGORY_INVALID,         // Bfi
-			(int)XED_CATEGORY_INVALID,       // Bfind
-			(int)XED_CATEGORY_INVALID,         // Bra
-			(int)XED_CATEGORY_INVALID,        // Brev
-			(int)XED_CATEGORY_INVALID,       // Brkpt
-			(int)XED_CATEGORY_INVALID,        // Call
-			(int)XED_CATEGORY_INVALID,         // Clz
-			(int)XED_CATEGORY_INVALID,        // CNot
-			(int)GPU_COPYSIGN,    // CopySign
-			(int)GPU_COS,         // Cos
-			(int)GPU_CVT,         // Cvt
-			(int)XED_CATEGORY_INVALID,        // Cvta
-			(int)GPU_DIV,         // Div
-			(int)GPU_EX2,         // Ex2
-			(int)XED_CATEGORY_INVALID,        // Exit
-			(int)GPU_FMA,         // Fma
-			(int)XED_CATEGORY_INVALID,    // Isspacep
-			(int)GPU_LD,          // Ld
-			(int)GPU_LDU,         // Ldu
-			(int)GPU_LG2,         // Lg2
-			(int)XED_CATEGORY_INVALID,       // Mad24
-			(int)GPU_MAD,         // Mad
-			(int)GPU_MAX,         // Max
-			(int)XED_CATEGORY_INVALID,      // Membar
-			(int)GPU_MIN,         // Min
-			(int)GPU_MOV,         // Mov
-			(int)XED_CATEGORY_INVALID,       // Mul24
-			(int)GPU_MUL,         // Mul
-			(int)GPU_NEG,         // Neg
-			(int)XED_CATEGORY_INVALID,         // Not
-			(int)XED_CATEGORY_INVALID,          // Or
-			(int)XED_CATEGORY_INVALID,     // Pmevent
-			(int)XED_CATEGORY_INVALID,        // Popc
-			(int)XED_CATEGORY_INVALID,    // Prefetch
-			(int)XED_CATEGORY_INVALID,   // Prefetchu
-			(int)XED_CATEGORY_INVALID,        // Prmt
-			(int)GPU_RCP,         // Rcp
-			(int)GPU_RED,         // Red
-			(int)XED_CATEGORY_INVALID,         // Rem
-			(int)XED_CATEGORY_INVALID,         // Ret
-			(int)GPU_RSQRT,       // Rsqrt
-			(int)XED_CATEGORY_INVALID,         // Sad
-			(int)GPU_SELP,        // SelP
-			(int)GPU_SET,         // Set
-			(int)GPU_SETP,        // SetP
-			(int)XED_CATEGORY_INVALID,         // Shl
-			(int)XED_CATEGORY_INVALID,         // Shr
-			(int)GPU_SIN,         // Sin
-			(int)GPU_SLCT,        // SlCt
-			(int)GPU_SQRT,        // Sqrt
-			(int)GPU_ST,          // St
-			(int)GPU_SUB,         // Sub
-			(int)XED_CATEGORY_INVALID,        // SubC
-			(int)XED_CATEGORY_INVALID,        // Suld
-			(int)XED_CATEGORY_INVALID,       // Sured
-			(int)XED_CATEGORY_INVALID,        // Sust
-			(int)XED_CATEGORY_INVALID,         // Suq
-			(int)XED_CATEGORY_INVALID,       // TestP
-			(int)XED_CATEGORY_INVALID,         // Tex
-			(int)XED_CATEGORY_INVALID,        // Tld4
-			(int)XED_CATEGORY_INVALID,         // Txq
-			(int)XED_CATEGORY_INVALID,        // Trap
-			(int)XED_CATEGORY_INVALID,    // Vabsdiff
-			(int)XED_CATEGORY_INVALID,        // Vadd
-			(int)XED_CATEGORY_INVALID,        // Vmad
-			(int)XED_CATEGORY_INVALID,        // Vmax
-			(int)XED_CATEGORY_INVALID,        // Vmin
-			(int)XED_CATEGORY_INVALID,        // Vset
-			(int)XED_CATEGORY_INVALID,        // Vshl
-			(int)XED_CATEGORY_INVALID,        // Vshr
-			(int)XED_CATEGORY_INVALID,        // Vsub
-			(int)XED_CATEGORY_INVALID,        // Vote
-			(int)XED_CATEGORY_INVALID,         // Xor
-			(int)XED_CATEGORY_INVALID,  // Reconverge
-			(int)XED_CATEGORY_INVALID,         // Phi
-  },
-  // double (64-bit)
-  {
-			(int)GPU_ABS64,         // Abs
-			(int)GPU_ADD64,         // Add
-			(int)XED_CATEGORY_INVALID,        // AddC
-			(int)XED_CATEGORY_INVALID,         // And
-			(int)XED_CATEGORY_INVALID,        // Atom
-			(int)XED_CATEGORY_INVALID,         // Bar
-			(int)XED_CATEGORY_INVALID,         // Bfe
-			(int)XED_CATEGORY_INVALID,         // Bfi
-			(int)XED_CATEGORY_INVALID,       // Bfind
-			(int)XED_CATEGORY_INVALID,         // Bra
-			(int)XED_CATEGORY_INVALID,        // Brev
-			(int)XED_CATEGORY_INVALID,       // Brkpt
-			(int)XED_CATEGORY_INVALID,        // Call
-			(int)XED_CATEGORY_INVALID,         // Clz
-			(int)XED_CATEGORY_INVALID,        // CNot
-			(int)GPU_COPYSIGN64,    // CopySign
-			(int)XED_CATEGORY_INVALID,         // Cos
-			(int)GPU_CVT64,         // Cvt
-			(int)XED_CATEGORY_INVALID,        // Cvta
-			(int)GPU_DIV64,         // Div
-			(int)XED_CATEGORY_INVALID,         // Ex2
-			(int)XED_CATEGORY_INVALID,        // Exit
-			(int)GPU_FMA64,         // Fma
-			(int)XED_CATEGORY_INVALID,    // Isspacep
-			(int)GPU_LD64,          // Ld
-			(int)GPU_LDU64,         // Ldu
-			(int)XED_CATEGORY_INVALID,         // Lg2
-			(int)XED_CATEGORY_INVALID,       // Mad24
-			(int)GPU_MAD64,         // Mad
-			(int)GPU_MAX64,         // Max
-			(int)XED_CATEGORY_INVALID,      // Membar
-			(int)GPU_MIN64,         // Min
-			(int)GPU_MOV64,         // Mov
-			(int)XED_CATEGORY_INVALID,       // Mul24
-			(int)GPU_MUL64,         // Mul
-			(int)GPU_NEG64,         // Neg
-			(int)XED_CATEGORY_INVALID,         // Not
-			(int)XED_CATEGORY_INVALID,          // Or
-			(int)XED_CATEGORY_INVALID,     // Pmevent
-			(int)XED_CATEGORY_INVALID,        // Popc
-			(int)XED_CATEGORY_INVALID,    // Prefetch
-			(int)XED_CATEGORY_INVALID,   // Prefetchu
-			(int)XED_CATEGORY_INVALID,        // Prmt
-			(int)GPU_RCP64,         // Rcp
-			(int)XED_CATEGORY_INVALID,         // Red
-			(int)XED_CATEGORY_INVALID,         // Rem
-			(int)XED_CATEGORY_INVALID,         // Ret
-			(int)GPU_RSQRT64,       // Rsqrt
-			(int)XED_CATEGORY_INVALID,         // Sad
-			(int)GPU_SELP64,        // SelP
-			(int)GPU_SET64,         // Set
-			(int)GPU_SETP64,        // SetP
-			(int)XED_CATEGORY_INVALID,         // Shl
-			(int)XED_CATEGORY_INVALID,         // Shr
-			(int)XED_CATEGORY_INVALID,         // Sin
-			(int)GPU_SLCT64,        // SlCt
-			(int)GPU_SQRT64,        // Sqrt
-			(int)GPU_ST64,          // St
-			(int)GPU_SUB64,         // Sub
-			(int)XED_CATEGORY_INVALID,        // SubC
-			(int)XED_CATEGORY_INVALID,        // Suld
-			(int)XED_CATEGORY_INVALID,       // Sured
-			(int)XED_CATEGORY_INVALID,        // Sust
-			(int)XED_CATEGORY_INVALID,         // Suq
-			(int)GPU_TESTP64,       // TestP
-			(int)XED_CATEGORY_INVALID,         // Tex
-			(int)XED_CATEGORY_INVALID,        // Tld4
-			(int)XED_CATEGORY_INVALID,         // Txq
-			(int)XED_CATEGORY_INVALID,        // Trap
-			(int)XED_CATEGORY_INVALID,    // Vabsdiff
-			(int)XED_CATEGORY_INVALID,        // Vadd
-			(int)XED_CATEGORY_INVALID,        // Vmad
-			(int)XED_CATEGORY_INVALID,        // Vmax
-			(int)XED_CATEGORY_INVALID,        // Vmin
-			(int)XED_CATEGORY_INVALID,        // Vset
-			(int)XED_CATEGORY_INVALID,        // Vshl
-			(int)XED_CATEGORY_INVALID,        // Vshr
-			(int)XED_CATEGORY_INVALID,        // Vsub
-			(int)XED_CATEGORY_INVALID,        // Vote
-			(int)XED_CATEGORY_INVALID,         // Xor
-			(int)XED_CATEGORY_INVALID,  // Reconverge
-			(int)XED_CATEGORY_INVALID,         // Phi
-  }
-};
-
-#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1138,6 +691,7 @@ trace::X86TraceGenerator::X86TraceGenerator()
   : init(false)
   , num_warps_per_block(0)
   , num_total_warps(0)
+  , total_inst_count(0)
   , blockDimX(1)
   , blockDimY(1)
   , blockDimZ(1)
@@ -1145,11 +699,15 @@ trace::X86TraceGenerator::X86TraceGenerator()
   , gridDimY(1)
   , gridDimZ(1)
   , kernel_count(0)
-  , total_inst_count(0)
 {
   m_compute = "2.0";
+#ifndef USE_32BIT_ADDR
+  mem_addr_flag = ~0llu;
+#else
   mem_addr_flag = ~0u;
+#endif
 
+//  opcode_stats = new uint64_t[GPU_OPCODE_LAST];
 }
 
 
@@ -1160,6 +718,7 @@ trace::X86TraceGenerator::X86TraceGenerator()
 trace::X86TraceGenerator::~X86TraceGenerator()
 {
   report("destructor");
+  dump_opcode_stats();
   finalize();
 
   if (init) {
@@ -1169,6 +728,8 @@ trace::X86TraceGenerator::~X86TraceGenerator()
 #endif
     txt_kernel_config_file.close();
   }
+
+//  delete[] opcode_stats;
 }
 
 
@@ -1273,6 +834,14 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
     // know if new instructions have been added (or removed), but 
     // what if there have been modifications and count hasn't changed?
     assert(ir::PTXInstruction::Nop == 82); 
+    // same concern as above, 
+    // also ensure that SPECIAL_REG_START + special reg value is < 256
+    // we are using 1 byte fields to store register ids
+    // for trace_ver >= 1.31 we are using 2 bytes for register ids 
+    // and SPECIAL_REG_START = 900
+    assert(ir::PTXOperand::SpecialRegister_invalid == 54);
+  
+    for (int ii = 0; ii < GPU_OPCODE_LAST; ++ii) opcode_stats[ii] = 0;
 
     init_x86_tracegenerator = true;
 
@@ -1296,6 +865,59 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
       trace_name = t_name;
     else
       trace_name = "Trace";
+
+
+    ///////////////////////////////
+    // get list of kernels for which traces are to be generated (and their count as well)
+    char *tracegen_info_path = getenv("TRACEGEN_INFO_PATH");
+    ifstream tracegen_info_file;
+
+    tracegen_info_file.open(tracegen_info_path);
+    if (!tracegen_info_file.fail()) {
+      int kernel_name_count = 0;
+      int tracegen_count;
+      string kernel_name;
+
+      while (1) {
+        tracegen_info_file >> kernel_name;
+        if (tracegen_info_file.eof()) break;
+
+        if (kernel_name != "") {
+          ++kernel_name_count;
+
+          if (kernel_name == "all") {
+            tracegen_all = true;
+            tracegen_none = false;
+            break;
+          }
+          else if (kernel_name == "none") {
+            tracegen_all = false;
+            tracegen_none = true;
+            break;
+          }
+          else {
+            tracegen_info_file >> tracegen_count;
+            if (tracegen_count == 0) {
+              tracegen_count = 65536;
+            }
+            kernel_tracegen_map[kernel_name] = tracegen_count;
+          }
+        }
+      }
+
+      if (!kernel_name_count) {
+        tracegen_all = true;
+        tracegen_none = false;
+      }
+    }
+    else {
+      tracegen_all = true;
+      tracegen_none = false;
+      cout << "all enabled\n";
+    }
+
+    tracegen = false;
+    ///////////////////////////////
 
 
     // get KERNEL_INFO_PATH : get register usage information from the file
@@ -1346,26 +968,31 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
     int block_id = last_block_id;
     for (int ii = 0; ii < num_warps_per_block; ++ii) {
       Trace_info *tr_info = &trace_info[block_id * num_warps_per_block + ii];
-      if (tr_info->bytes_accumulated) {
-        int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
-        if (bytes_written != tr_info->bytes_accumulated) {
-          report("gz file write error");
-          assert(0);
+
+      if (tracegen) {
+        if (tr_info->bytes_accumulated) {
+          int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
+          if (bytes_written != tr_info->bytes_accumulated) {
+            report("gz file write error");
+            assert(0);
+          }
         }
+        gzclose(tr_info->trace_stream);
       }
-      gzclose(tr_info->trace_stream);
 
       Thread_info *th_info = &thread_info[block_id * num_warps_per_block + ii];
-      if (sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
+      if (tracegen && sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
         report("unable to write to config file");
         exit(-1);
       }
 
       txt_config_file << th_info->thread_id << " " << th_info->inst_count << "\n";
-      info_file << th_info->thread_id << " " << th_info->inst_count << "\n";
+      info_file << th_info->thread_id << " " << tr_info->inst_count << "\n";
     }
 
     txt_config_file.close();
+
+    info_file << "kernel_count " << kernel_inst_count << "\n";
     info_file.close();
   }
 
@@ -1373,10 +1000,29 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   // Termination condition check
   /////////////////////////////////////////////////////////////////////////////////////////////
   if (total_inst_count > 100000000) {
+    dump_opcode_stats();
     report("total instruction count exceeds 100M.. stop here...");
     assert(0);
     exit(0);
   }
+
+  ///////////////////////////////////////
+  if (tracegen_all) {
+    tracegen = true;
+  }
+  else if (tracegen_none) {
+    tracegen = false;
+  }
+  else if (kernel_tracegen_map[kernel.name]) {
+    tracegen = true;
+    --kernel_tracegen_map[kernel.name];
+  }
+  else {
+    tracegen = false;
+  }
+
+  kernel_inst_count = 0;
+  ///////////////////////////////////////
 
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1399,7 +1045,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
 
   // set kernel name
   char temp[10];
-  kernel_name = kernel.name;
+  kernel_name = kernel.name.substr(0, 251); //`getconf NAME_MAX /trace` or `getconf NAME_MAX /` returns 255, and we want to accomodate _xxx for each kernel
 
   // if same kernel has been called several times, corresponding suffix will be added
   // to the name of the kernel.
@@ -1429,7 +1075,8 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   if (status == -1) {
     status = system(command.c_str());
   }
-  report("" << command.c_str() << " (status " <<  status << ")");
+  report("" << command.c_str() << " (status " <<  status << ")\n");
+  report("errno is " << errno << " message is " << strerror(errno) << "\n");
 
 
   string kernel_config_file = trace_path;
@@ -1438,10 +1085,14 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
 
   // open kernel configuration file
   if (init == false) {
-    txt_kernel_config_file << -1 << " newptx" << "\n";
+    txt_kernel_config_file << "newptx\n";
+    txt_kernel_config_file << TRACEGEN_VER << "\n";
+    txt_kernel_config_file << -1 << "\n";
   }
 
-  txt_kernel_config_file << kernel_path << "Trace.txt\n";
+  if (tracegen) {
+    txt_kernel_config_file << kernel_path << "Trace.txt\n";
+  }
   txt_kernel_config_file.close();
 
 
@@ -1483,6 +1134,15 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   data_file.close();
 
 
+  // dump PTX for kernel to kernel.txt file
+  //////////////////////////////////////
+  const ir::Module *module = kernel.module;
+  sprintf(file_path, "%s%s%s.txt", trace_path.c_str(), kernel_name.c_str(), "kernel");
+  std::ofstream kernel_file(file_path);
+  module->writeIR(kernel_file);
+  //////////////////////////////////////
+
+
   // write config file in text format : no of threads
   // thread no and start instruction for each thread
   sprintf(file_path, "%s%s%s.txt", trace_path.c_str(), kernel_name.c_str(), trace_name.c_str());
@@ -1491,8 +1151,10 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   if (txt_config_file.fail())
     assert(0);
 
-  txt_config_file << num_total_warps << " newptx";
-  txt_config_file << " " << max_block << "\n";
+  txt_config_file << "newptx\n";
+  txt_config_file << TRACEGEN_VER << "\n";
+  txt_config_file << max_block << "\n";
+  txt_config_file << num_total_warps << "\n";
 
   sprintf(file_path, "%s%s%s_info.txt", trace_path.c_str(), kernel_name.c_str(), trace_name.c_str());
   info_file.open(file_path);
@@ -1500,13 +1162,16 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   if (thread_info != NULL) {
     delete[] thread_info;
     delete[] trace_info;
+    delete[] skip_inst;
   }
 
   thread_info = new Thread_info[num_total_warps];
   trace_info  = new Trace_info [num_total_warps];
+  skip_inst   = new bool[num_total_warps];
 
   memset(thread_info, 0, num_total_warps * sizeof(Thread_info));
   memset(trace_info, 0, num_total_warps * sizeof(Trace_info));
+  memset(skip_inst, 0, num_total_warps * sizeof(bool));
 
   init = true;
 }
@@ -1523,6 +1188,71 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     report(">>>>> inst_count:" << total_inst_count);
   // current block id
   int cur_block = event.blockId.y * gridDimX + event.blockId.x;
+
+
+  ////////////////////////////////////////////////////////////
+  if (!tracegen) {
+
+    if (last_block_id != cur_block) {
+      if (last_block_id != -1) {
+        int block_id = last_block_id;
+        // process each warps in previous block
+        for (int ii = 0; ii < num_warps_per_block; ++ii) {
+          // write remaining inst info
+          Trace_info *tr_info = &trace_info[block_id * num_warps_per_block + ii];
+
+          // record warp information
+          Thread_info *th_info = &thread_info[block_id * num_warps_per_block + ii];
+
+          txt_config_file << th_info->thread_id << " " << th_info->inst_count << "\n";
+          info_file << th_info->thread_id << " " << tr_info->inst_count << "\n";
+        }
+      }
+      last_block_id = cur_block;
+
+
+      // setup data structure for a new block
+      for (int ii = 0; ii < num_warps_per_block; ++ii) {
+        Thread_info *th_info = &thread_info[cur_block * num_warps_per_block + ii];
+
+        /* id assigned to each warp/block - shift block_id left by 16 and add the running thread count */
+        int thread_id = (cur_block << 16) + ii;
+        th_info->thread_id = thread_id;
+
+      }
+    }
+
+    int cur_warp;
+    boost::dynamic_bitset<>::size_type pos;
+    int warp_set_bit_count;
+    Trace_info *info;
+
+    cur_warp = 0;
+    pos = event.active.find_first();
+
+    do {
+      warp_set_bit_count = 0;
+
+      // for current warp check if any thread was active
+      // if threads were active collect active mask, memory addresses accessed (if any) and branch taken mask (if applicable)
+      // if all threads were inactive check the next warp for active threads
+      while (pos != boost::dynamic_bitset<>::npos && pos < (unsigned int)((cur_warp + 1) * WARP_SIZE)) {
+        warp_set_bit_count++;
+        pos = event.active.find_next(pos);
+      }
+
+      if (warp_set_bit_count) {
+        info = &trace_info[cur_block * num_warps_per_block + cur_warp];
+        info->inst_count++;
+        ++kernel_inst_count;
+      }
+      cur_warp++;
+
+    } while (pos != boost::dynamic_bitset<>::npos);
+
+    return;
+  }
+  ////////////////////////////////////////////////////////////
 
 
   ///
@@ -1556,7 +1286,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         }
 
         txt_config_file << th_info->thread_id << " " << th_info->inst_count << "\n";
-        info_file << th_info->thread_id << " " << th_info->inst_count << "\n";
+        info_file << th_info->thread_id << " " << tr_info->inst_count << "\n";
       }
     }
 
@@ -1647,7 +1377,6 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     uint32_t src_count;
     uint32_t dest_count;
 
-
     // set sources and destinations
 
     /* source 1 */
@@ -1656,51 +1385,69 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         ptx_inst->a.addressMode == ir::PTXOperand::Indirect) { 
       /* scalar */
       if (ptx_inst->a.vec == ir::PTXOperand::v1) {
+        assert(ptx_inst->a.reg < SPECIAL_REG_START);
         inst_info->src[src_count] = ptx_inst->a.reg;
-        src_count++;
+        ++src_count;
       }
       /* vector2, vector 4 */
       else if (ptx_inst->a.vec == ir::PTXOperand::v2 || 
           ptx_inst->a.vec ==  ir::PTXOperand::v4) {
         for (unsigned int i = 0; i < ptx_inst->a.array.size(); ++i) {
+          assert(ptx_inst->a.array[i].reg < SPECIAL_REG_START);
           inst_info->src[src_count] = ptx_inst->a.array[i].reg;
-          src_count++;
+          ++src_count;
         }
       }
       else
         assert(0);
+    }
+    else if (ptx_inst->a.addressMode == ir::PTXOperand::Special) {
+      inst_info->src[src_count] = SPECIAL_REG_START + ptx_inst->a.special;
+      ++src_count;
     }
 
     /* source 2 */
     if (ptx_inst->b.addressMode == ir::PTXOperand::Register || 
         ptx_inst->b.addressMode == ir::PTXOperand::Indirect) { 
       if (ptx_inst->b.vec == ir::PTXOperand::v1) {
+        assert(ptx_inst->b.reg < SPECIAL_REG_START);
         inst_info->src[src_count] = ptx_inst->b.reg;
-        src_count++;
+        ++src_count;
       }
       else if (ptx_inst->b.vec == ir::PTXOperand::v2 || 
           ptx_inst->b.vec ==  ir::PTXOperand::v4) {
         for (unsigned int i = 0; i < ptx_inst->b.array.size(); ++i) {
+          assert(ptx_inst->b.array[i].reg < SPECIAL_REG_START);
           inst_info->src[src_count] = ptx_inst->b.array[i].reg;
-          src_count++;
+          ++src_count;
         }
       }
+    }
+    else if (ptx_inst->b.addressMode == ir::PTXOperand::Special) {
+      inst_info->src[src_count] = SPECIAL_REG_START + ptx_inst->b.special;
+      ++src_count;
     }
 
     /* source 3 */
     if (ptx_inst->c.addressMode == ir::PTXOperand::Register || 
         ptx_inst->c.addressMode == ir::PTXOperand::Indirect) { 
       if (ptx_inst->c.vec ==  ir::PTXOperand::v1) {
+        assert(ptx_inst->c.reg < SPECIAL_REG_START);
         inst_info->src[src_count] = ptx_inst->c.reg;
-        src_count++;
+        ++src_count;
       }
       else if (ptx_inst->c.vec ==  ir::PTXOperand::v2 || 
           ptx_inst->c.vec ==  ir::PTXOperand::v4) {
         for (unsigned int i = 0; i < ptx_inst->c.array.size(); ++i) {
+          assert(ptx_inst->c.array[i].reg < SPECIAL_REG_START);
           inst_info->src[src_count] = ptx_inst->c.array[i].reg;
-          src_count++;
+          ++src_count;
         }
       }
+    }
+    else if (ptx_inst->c.addressMode == ir::PTXOperand::Special) {
+      inst_info->src[src_count] = SPECIAL_REG_START + ptx_inst->c.special;
+      ++src_count;
     }
 
 
@@ -1710,8 +1457,9 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         ptx_inst->pg.type == ir::PTXOperand::pred && 
         ((ptx_inst->pg.condition == ir::PTXOperand::Pred) || 
          (ptx_inst->pg.condition == ir::PTXOperand::InvPred))) { 
+      assert(ptx_inst->pg.reg < SPECIAL_REG_START);
       inst_info->src[src_count] = ptx_inst->pg.reg;
-      src_count++;
+      ++src_count;
     }
 
 
@@ -1719,20 +1467,25 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     dest_count = 0;
     if (ptx_inst->d.addressMode == ir::PTXOperand::Register || 
         ptx_inst->d.addressMode == ir::PTXOperand::Indirect) {
-      if (ptx_inst->opcode != ir::PTXInstruction::St) {
-        inst_info->dst[dest_count] = ptx_inst->d.reg;
-        dest_count++;
+      if (ptx_inst->opcode == ir::PTXInstruction::St) {
+        // for stores, reg d is also a source (reg d contains the store address)
+        assert(ptx_inst->d.vec == ir::PTXOperand::v1);
+        assert(ptx_inst->d.reg < SPECIAL_REG_START);
+        inst_info->src[src_count] = ptx_inst->d.reg;
+        ++src_count;
       }
       else {
         if (ptx_inst->d.vec ==  ir::PTXOperand::v1) {
+          assert(ptx_inst->d.reg < SPECIAL_REG_START);
           inst_info->dst[dest_count] = ptx_inst->d.reg;
-          dest_count++;
+          ++dest_count;
         }
         else if (ptx_inst->d.vec ==  ir::PTXOperand::v2 || 
             ptx_inst->d.vec ==  ir::PTXOperand::v4) {
           for (unsigned int i = 0; i < ptx_inst->d.array.size(); ++i) {
+            assert(ptx_inst->d.array[i].reg < SPECIAL_REG_START);
             inst_info->dst[dest_count] = ptx_inst->d.array[i].reg;
-            dest_count++;
+            ++dest_count;
           }
         }
       }
@@ -1742,7 +1495,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     if (ptx_inst->pq.addressMode == ir::PTXOperand::Register || 
         ptx_inst->pq.addressMode == ir::PTXOperand::Indirect) {
       inst_info->dst[dest_count] = ptx_inst->pq.reg;
-      dest_count++;
+      ++dest_count;
     }
 
     inst_info->num_read_regs = src_count;
@@ -1754,7 +1507,10 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     // set has_immediate flag - this flag is used to indicate that 
     // successive memory accesses found in the trace are from the 
     // same instruction (uncoaleced memory accesses)
+#if TRACEGEN_VER == 10
+    // not necessary, all fields initialized to 0 by memset
     inst_info->has_immediate = false;
+#endif
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     // Opcode parsing begin
@@ -1766,29 +1522,56 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         ptx_inst->opcode == ir::PTXInstruction::Ldu) {
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Const:
-          inst_info->opcode = TR_MEM_LD_CM;
+          inst_info->opcode = GPU_MEM_LD_CM;
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_CONST);
           break;
 
         case ir::PTXInstruction::Global:
         case ir::PTXInstruction::Generic:
-          inst_info->opcode = TR_MEM_LD_GM; 
+          inst_info->opcode = GPU_MEM_LD_GM; 
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_GLOBAL);
           break;
 
         case ir::PTXInstruction::Local:
-          inst_info->opcode = TR_MEM_LD_LM; 
+          inst_info->opcode = GPU_MEM_LD_LM; 
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_LOCAL);
           break;
 
         case ir::PTXInstruction::Param:
-          inst_info->opcode = TR_MEM_LD_PM; 
+          inst_info->opcode = GPU_MEM_LD_PM; 
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_PARAM);
           break;
 
         case ir::PTXInstruction::Shared:
-          inst_info->opcode = TR_MEM_LD_SM; 
+          inst_info->opcode = GPU_MEM_LD_SM; 
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_SHARED);
           break;
 
         case ir::PTXInstruction::Texture:
           report("texture load - tocheck");
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_TEXTURE);
           assert(0);
+          break;
+
+        default:
+          assert(0);
+      }
+
+      switch (ptx_inst->cacheOperation) {
+        case ir::PTXInstruction::Ca:
+          SET_CACHE_OPERATOR(inst_info, GPU_CACHE_OP_CA);
+          break;
+
+        case ir::PTXInstruction::Cv:
+          SET_CACHE_OPERATOR(inst_info, GPU_CACHE_OP_CV);
+          break;
+
+        case ir::PTXInstruction::Cg:
+          SET_CACHE_OPERATOR(inst_info, GPU_CACHE_OP_CG);
+          break;
+
+        case ir::PTXInstruction::Cs:
+          SET_CACHE_OPERATOR(inst_info, GPU_CACHE_OP_CS);
           break;
 
         default:
@@ -1802,10 +1585,12 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       assert(0);
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
-          inst_info->opcode = LDU_GM;
+          inst_info->opcode = GPU_MEM_LDU_GM;
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_GLOBAL);
           break;
 
         default:
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_INVALID);
           assert(0);
       }
     }
@@ -1814,15 +1599,31 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
         case ir::PTXInstruction::Generic:
-          inst_info->opcode = TR_MEM_ST_GM;
+          inst_info->opcode = GPU_MEM_ST_GM;
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_GLOBAL);
           break;
 
         case ir::PTXInstruction::Local:
-          inst_info->opcode = TR_MEM_ST_LM;
+          inst_info->opcode = GPU_MEM_ST_LM;
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_LOCAL);
           break;
 
         case ir::PTXInstruction::Shared:
-          inst_info->opcode = TR_MEM_ST_SM;
+          inst_info->opcode = GPU_MEM_ST_SM;
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_SHARED);
+          break;
+
+        default:
+          assert(0);
+      }
+
+      switch (ptx_inst->cacheOperation) {
+        case ir::PTXInstruction::Wb:
+          SET_CACHE_OPERATOR(inst_info, GPU_CACHE_OP_WB);
+          break;
+
+        case ir::PTXInstruction::Wt:
+          SET_CACHE_OPERATOR(inst_info, GPU_CACHE_OP_WT);
           break;
 
         default:
@@ -1833,6 +1634,10 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     // TODO (jaekyu, 8-5-2010)
     else if (ptx_inst->opcode == ir::PTXInstruction::Prefetch) {
       report("PREF currently not supported");
+      SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_INVALID); //check this macro!
+      SET_CACHE_LEVEL(inst_info, GPU_CACHE_INVALID); //check this macro!
+      // cache operators dont have to be set,
+      // according to ptx 3.1 document they are only for loads and stores!
       assert(0);
       /*
       switch (ptx_inst->addressSpace) {
@@ -1853,6 +1658,10 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     // TODO (jaekyu, 8-5-2010)
     else if (ptx_inst->opcode == ir::PTXInstruction::Prefetchu) {
       report("PREF_UNIFORM currently not supported");
+      SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_INVALID); //check this macro!
+      SET_CACHE_LEVEL(inst_info, GPU_CACHE_INVALID); //check this macro!
+      // cache operators dont have to be set,
+      // according to ptx 3.1 document they are only for loads and stores!
       assert(0);
       /*
       inst_info->opcode = PREF_UNIFORM;
@@ -1860,25 +1669,109 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     }
     // texture memory
     else if (TEX_INST(ptx_inst->opcode)) {
-      inst_info->opcode = TR_MEM_LD_TM;
+      inst_info->opcode = GPU_MEM_LD_TM;
+      SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_TEXTURE);
     }
     // surface memory access
     // TODO (jaekyu, 8-5-2010)
     else if (SUR_INST(ptx_inst->opcode)) {
       report("Surface memory is not supported. 8-3-2010 Jaekyu Lee");
+      SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_INVALID); // is this required?
       assert(0);
     }
     // Atomic & Reduction
     // .global, .shared
-    else if (ptx_inst->opcode == ir::PTXInstruction::Atom || 
-             ptx_inst->opcode == ir::PTXInstruction::Red) {
+    else if (ptx_inst->opcode == ir::PTXInstruction::Atom) {
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
-          inst_info->opcode = TR_DATA_XFER_GM;
+          if (ptx_inst->type == ir::PTXOperand::s64 ||
+              ptx_inst->type == ir::PTXOperand::u64 ||
+              ptx_inst->type == ir::PTXOperand::b64) {
+            inst_info->opcode = GPU_ATOM64_GM;
+          }
+          else {
+            inst_info->opcode = GPU_ATOM_GM;
+          }
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_GLOBAL);
           break;
 
         case ir::PTXInstruction::Shared:
-          inst_info->opcode = TR_DATA_XFER_SM;
+          if (ptx_inst->type == ir::PTXOperand::s64 ||
+              ptx_inst->type == ir::PTXOperand::u64 ||
+              ptx_inst->type == ir::PTXOperand::b64) {
+            inst_info->opcode = GPU_ATOM64_SM;
+          }
+          else {
+            inst_info->opcode = GPU_ATOM_SM;
+          }
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_SHARED);
+          break;
+
+        default :
+          assert(0);
+          break;
+      }
+    }
+    else if (ptx_inst->opcode == ir::PTXInstruction::Red) {
+      switch (ptx_inst->addressSpace) {
+        case ir::PTXInstruction::Global:
+          if (ptx_inst->type == ir::PTXOperand::s64 ||
+              ptx_inst->type == ir::PTXOperand::u64 ||
+              ptx_inst->type == ir::PTXOperand::b64) {
+            inst_info->opcode = GPU_RED64_GM;
+          }
+          else {
+            inst_info->opcode = GPU_RED_GM;
+          }
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_GLOBAL);
+          break;
+
+        case ir::PTXInstruction::Shared:
+          if (ptx_inst->type == ir::PTXOperand::s64 ||
+              ptx_inst->type == ir::PTXOperand::u64 ||
+              ptx_inst->type == ir::PTXOperand::b64) {
+            inst_info->opcode = GPU_RED64_SM;
+          }
+          else {
+            inst_info->opcode = GPU_RED_SM;
+          }
+          SET_ADDR_SPACE(inst_info, GPU_ADDR_SP_SHARED);
+          break;
+
+        default :
+          assert(0);
+          break;
+      }
+    }
+    else if (ptx_inst->opcode == ir::PTXInstruction::Membar) {
+      switch(ptx_inst->level) {
+        case ir::PTXInstruction::CtaLevel:
+          inst_info->opcode = GPU_MEMBAR_CTA;
+          SET_FENCE_LEVEL(inst_info, GPU_FENCE_CTA);
+          break;
+
+        case ir::PTXInstruction::GlobalLevel:
+          inst_info->opcode = GPU_MEMBAR_GL;
+          SET_FENCE_LEVEL(inst_info, GPU_FENCE_GL);
+          break;
+
+        default :
+          assert(0);
+          break;
+      }
+    }
+    else if (ptx_inst->opcode == ir::PTXInstruction::Bar) {
+      switch(ptx_inst->barrierOperation) {
+        case ir::PTXInstruction::BarSync:
+          inst_info->opcode = GPU_BAR_SYNC;
+          break;
+
+        case ir::PTXInstruction::BarArrive:
+          inst_info->opcode = GPU_BAR_ARRIVE;
+          break;
+
+        case ir::PTXInstruction::BarReduction:
+          inst_info->opcode = GPU_BAR_RED;
           break;
 
         default :
@@ -1888,57 +1781,39 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     }
     // other instructions
     else {
-#ifndef GPU_VALIDATION
-      // floating point
-      if (ptx_inst->type == ir::PTXOperand::f16 || 
-          ptx_inst->type == ir::PTXOperand::f32 || 
-          ptx_inst->type == ir::PTXOperand::f64) {
-        inst_info->opcode = ptx_to_x86[1][ptx_inst->opcode];
-        inst_info->is_fp = true;
-      }
-      // integer
-      else {
-        inst_info->opcode = ptx_to_x86[0][ptx_inst->opcode];
-        inst_info->is_fp = false;
-      }
-#else   
       // double
       if (ptx_inst->type == ir::PTXOperand::f64) {
-        inst_info->opcode = ptx_to_x86[3][ptx_inst->opcode];
+        inst_info->opcode = opcode_translator[ptx_inst->opcode][3];
         inst_info->is_fp = true;
       }
       // floating point
       else if (ptx_inst->type == ir::PTXOperand::f16 || 
           ptx_inst->type == ir::PTXOperand::f32) {
-        inst_info->opcode = ptx_to_x86[2][ptx_inst->opcode];
+        inst_info->opcode = opcode_translator[ptx_inst->opcode][2];
         inst_info->is_fp = true;
       }
       // integer - 64-bit
       else if (ptx_inst->type == ir::PTXOperand::s64 ||
           ptx_inst->type == ir::PTXOperand::u64 ||
           ptx_inst->type == ir::PTXOperand::b64) {
-        inst_info->opcode = ptx_to_x86[1][ptx_inst->opcode];
+        inst_info->opcode = opcode_translator[ptx_inst->opcode][1];
         inst_info->is_fp = false;
       }
       // integer
       else {
-        inst_info->opcode = ptx_to_x86[0][ptx_inst->opcode];
+        inst_info->opcode = opcode_translator[ptx_inst->opcode][0];
         inst_info->is_fp = false;
       }
-#endif
     }
     ///////////////////////////////////////////////////////////////////////////////////////////
     // Opcode parsing done
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-
-#ifdef GPU_VALIDATION
-    if (inst_info->opcode == XED_CATEGORY_INVALID) {
+    if (inst_info->opcode == GPU_INVALID) {
       report("invalid opcode for " << ptx_inst->opcode);
       cout << "ptx inst is " << ir::PTXInstruction::toString(ptx_inst->opcode) << " inst type is " << ptx_inst->type << "\n";
       assert(0);
     }
-#endif
 
     // set cf_type
     switch (ptx_inst->opcode) {
@@ -1963,12 +1838,12 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         break;
     }
 
-
     // set has_st flag
-    inst_info->has_st = ST_INST(ptx_inst->opcode);
+    SET_STORE_FLAG(inst_info, ptx_inst->opcode);
 
     // set write_flg flag - this flag is not used by macsim, so setting it to false
-    inst_info->write_flg = false;
+    // not necessary, all fields are initialized to zero by default
+    //inst_info->write_flg = false;
 
     // set num_ld
     if (ptx_inst->opcode == ir::PTXInstruction::Ld || 
@@ -1978,15 +1853,18 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         ptx_inst->opcode == ir::PTXInstruction::Atom ||
         ptx_inst->opcode == ir::PTXInstruction::Red ||
         TEX_INST(ptx_inst->opcode)) {
-      inst_info->num_ld = 1;
+      SET_LOAD_FLAG(inst_info, 1);
     }
     else {
-      inst_info->num_ld = 0;
+      // not necessary
+      SET_LOAD_FLAG(inst_info, 0);
     }
 
     /* set instruction size */
     inst_info->size = 4;
   } // A newly seen instruction has been decoded
+      
+  ++opcode_stats[inst_info->opcode];
 
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -2000,6 +1878,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
   unsigned int warp_active_mask;
   unsigned int branch_taken_mask;
   unsigned int mem_count;
+  int mem_size;
 
   cur_warp = 0;
   pos = event.active.find_first();
@@ -2011,18 +1890,11 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
   bool branch_inst = BRANCH_INST(ptx_inst->opcode);
 
   // flag to indicate whether inst. accesses memory or not 
-  bool mem_inst = false;
-  if (inst_info->num_ld >= 1 || inst_info->has_st == true) {
-    mem_inst = true;
-  }
-
+  bool mem_inst = IS_MEM_INST(inst_info, ptx_inst);
 
   if (mem_inst && event.memory_addresses.size() == 0) {
     report("ERROR: No memory addresses found opcode:" << ir::PTXInstruction::toString(ptx_inst->opcode));
     assert(0);
-    inst_info->num_ld = 0;
-    inst_info->has_st = false;
-    mem_inst = false;
   }
 
 
@@ -2034,6 +1906,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     branch_taken       = false;
     warp_active_mask   = 0;
     branch_taken_mask  = 0;
+    mem_size           = 0;
 
     // for current warp check if any thread was active
     // if threads were active collect active mask, memory addresses accessed (if any) and branch taken mask (if applicable)
@@ -2045,8 +1918,11 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
           cerr << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) << "\n";
           assert(mem_count < event.memory_addresses.size());
         }
-        mem_access[warp_set_bit_count].mem_addr = event.memory_addresses[mem_count] + INST_LAST_ADDR;
-        mem_access[warp_set_bit_count].mem_size = event.memory_size;
+        mem_access[pos % WARP_SIZE].mem_addr = event.memory_addresses[mem_count] + INST_LAST_ADDR;
+        mem_access[pos % WARP_SIZE].mem_size = event.memory_size;
+        if (!mem_size && event.memory_size) {
+          mem_size = event.memory_size;
+        }
         mem_count++;
       }
       else if (branch_inst) {
@@ -2073,119 +1949,85 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       pos = event.active.find_next(pos);
     }
 
+    bool skip = skip_inst[cur_block * num_warps_per_block + cur_warp];
+    if (!warp_set_bit_count) {
+      if (!skip && !branch_inst) {
+        skip = true;
+        skip_inst[cur_block * num_warps_per_block + cur_warp] = true;
+        // branch after setp which clears all bits for warp should be executed!
+        // any other instruction with no active threads is skipped!
+      }
+    }
+    else {
+      skip = false;
+      skip_inst[cur_block * num_warps_per_block + cur_warp] = false;
+    }
+
 
     // if current warp had active threads then generate trace for the executed instruction
-    if (warp_set_bit_count) {
-      warp_active_mask = ~warp_active_mask;
-      branch_taken_mask = ~branch_taken_mask;
+    if (!skip || warp_set_bit_count) {
+      ++kernel_inst_count;
+
+      //warp_active_mask = ~warp_active_mask;
+      //branch_taken_mask = ~branch_taken_mask;
 
       // store active thread mask in ld_vaddr2 */
-      inst_info->ld_vaddr2 = warp_active_mask;
+      SET_ACTIVE_MASK(inst_info, warp_active_mask);
 
       // ocelot generates PC index instead of PC address, since we are assuming 
-      // that instruction size is 4 bytes, left-shift PC index by 2
-      inst_info->instruction_addr = (event.PC << 2) + INST_START_ADDR;
+      // that instruction size is 8 bytes, left-shift PC index by 3
+      inst_info->inst_addr = (event.PC << 3) + INST_START_ADDR;
 
-      if ((inst_info->instruction_addr + 3) > INST_LAST_ADDR) {
-        report("[assert] inst_info->instruction_addr + 3 > INST_LAST_ADDR");
-        report("pc:" << hex << event.PC << " " << inst_info->instruction_addr);
+      if ((inst_info->inst_addr + 7) > INST_LAST_ADDR) {
+        report("[assert] inst_info->inst_addr + 7 > INST_LAST_ADDR");
+        report("pc:" << hex << event.PC << " " << inst_info->inst_addr);
         report("start:" << hex << INST_START_ADDR << " " << INST_LAST_ADDR);
-        assert((inst_info->instruction_addr + 3)<= INST_LAST_ADDR);
+        assert((inst_info->inst_addr + 7) <= INST_LAST_ADDR);
       }
 
-
+      RESET_OTHER_FIELDS(inst_info);
+      /*
       inst_info->branch_target = 0; 
       inst_info->actually_taken = 0; 
       inst_info->st_vaddr = inst_info->mem_write_size = 0;
       inst_info->ld_vaddr1 = inst_info->mem_read_size = 0;
       inst_info->rep_dir = 0;
+      */
 
 
       // for instructions that access memory coalesce requests into fewer, 
       // larger contiguous chunks of requests if possible MACSIM will then 
       // break these larger requests into cache block size requests
       if (mem_inst) {
-        MemAccess temp;
-
-        // sort addresses based on address and memory access size
-        for (int i = 0; i < (warp_set_bit_count - 1); ++i) {
-          for (int j = 0; j < (warp_set_bit_count - i - 1); j++) {
-            if ((mem_access[j].mem_addr > mem_access[j + 1].mem_addr) 
-                || ((mem_access[j].mem_addr == mem_access[j + 1].mem_addr) 
-                  && (mem_access[j].mem_size > mem_access[j + 1].mem_size))) {
-              temp = mem_access[j];
-              mem_access[j] = mem_access[j + 1];
-              mem_access[j + 1] = temp;
-            }
-          }
-        }
-
-        // merge overlapping accesses 
-        // if [i] and [i + 1] are overlapping, merge [i] into [i + 1]
-        for (int i = 0 ; i < (warp_set_bit_count - 1); ++i) {
-          if (mem_access[i].mem_addr == mem_access[i + 1].mem_addr) {
-            mem_access[i].mem_size = 0;
-          }
-          else if ((mem_access[i].mem_addr + mem_access[i].mem_size) == 
-              mem_access[i + 1].mem_addr) {
-            mem_access[i + 1].mem_addr = mem_access[i].mem_addr;
-            mem_access[i + 1].mem_size += mem_access[i].mem_size;
-
-            mem_access[i].mem_size = 0;
-          }
-          else if ((mem_access[i].mem_addr + mem_access[i].mem_size) > mem_access[i + 1].mem_addr
-              && (mem_access[i].mem_addr + mem_access[i].mem_size) <= (mem_access[i + 1].mem_addr + mem_access[i + 1].mem_size)) {
-            mem_access[i + 1].mem_size = (mem_access[i + 1].mem_addr + mem_access[i + 1].mem_size) - mem_access[i].mem_addr;
-            mem_access[i + 1].mem_addr = mem_access[i].mem_addr;
-
-            mem_access[i].mem_size = 0;
-          }
-          else if ((mem_access[i].mem_addr + mem_access[i].mem_size) > mem_access[i + 1].mem_addr
-              && (mem_access[i].mem_addr + mem_access[i].mem_size) > (mem_access[i + 1].mem_addr + mem_access[i + 1].mem_size)) {
-            mem_access[i + 1].mem_addr = mem_access[i].mem_addr;
-            mem_access[i + 1].mem_size = mem_access[i].mem_size;
-
-            mem_access[i].mem_size = 0;
-          }
-        }
-
-        // move merged accesses to beginning of array
-        // if prev step was done in reverse, then we could have skipped this step*/ 
-        int count = 0;
-        for (int i = 0; i < warp_set_bit_count; ++i) {
-          if (mem_access[i].mem_size) {
-            mem_access[count].mem_addr = mem_access[i].mem_addr;
-            mem_access[count].mem_size = mem_access[i].mem_size;
-            count++;
-          }
-        }
-
 
         // generate instructions
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < WARP_SIZE; ++i) {
           /* MACSIM uses only 8-bit fields for memory address sizes */
+          if (mem_access[i].mem_size >= 256) { cerr << "adjusting mem size to 255 from " << mem_access[i].mem_size << "\n"; mem_access[i].mem_size = 255; }
+
           assert(mem_access[i].mem_size < 256);
 
+#ifndef USE_32BIT_ADDR
+          uint64_t addr = (mem_access[i].mem_addr & mem_addr_flag);
+#else
+          uint32_t addr = (mem_access[i].mem_addr & mem_addr_flag);
+#endif
           if (ptx_inst->opcode == ir::PTXInstruction::Ld || 
               ptx_inst->opcode == ir::PTXInstruction::Mov || 
               ptx_inst->opcode == ir::PTXInstruction::Ldu ||
               ptx_inst->opcode == ir::PTXInstruction::Prefetch ||
               ptx_inst->opcode == ir::PTXInstruction::Prefetchu ||
-              inst_info->opcode == TR_MEM_LD_TM ||
+              inst_info->opcode == GPU_MEM_LD_TM ||
               ptx_inst->opcode == ir::PTXInstruction::Atom || 
               ptx_inst->opcode == ir::PTXInstruction::Red) {
-            // set ld_vaddr1 and mem_read_size
-            inst_info->ld_vaddr1 = (mem_access[i].mem_addr & mem_addr_flag);
-            inst_info->mem_read_size = mem_access[i].mem_size;
+            SET_LD_ADDR_AND_SIZE(inst_info, addr, mem_size);
           }
 
 
           if (ptx_inst->opcode == ir::PTXInstruction::St || 
               ptx_inst->opcode == ir::PTXInstruction::Atom ||
               ptx_inst->opcode == ir::PTXInstruction::Red) {
-            // set st_vaddr and mem_write_size
-            inst_info->st_vaddr = (mem_access[i].mem_addr & mem_addr_flag);
-            inst_info->mem_write_size = mem_access[i].mem_size;
+            SET_ST_ADDR_AND_SIZE(inst_info, addr, mem_size);
           }
 
 #if WRITE_DEBUG == 1
@@ -2197,6 +2039,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
           if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
 #endif
+            *debug_stream << ptx_inst->toString() << "\n";
             *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
               << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
               << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
@@ -2212,23 +2055,41 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
         info = &trace_info[cur_block * num_warps_per_block + cur_warp];
 
-        if ((i == 0 || i == (count - 1)) && count > 1) {
+        if ((i == 0) || i == (WARP_SIZE - 1)) {
           // macsim does not use this field, so using it to indicate
           // whether instruction is first/last instruction in the 
           // sequence of instructions generated for an uncoalesced 
           // instruction
-          inst_info->has_immediate = true; 
+          SET_MUL_TRACE_OP_FLAG(inst_info);
         }
         else {
           //macsim does not use this field, so using it to indicate
           //whether instruction is first/last instruction in the 
           //sequence of instructions generated for an uncoalesced 
           //instruction
-          inst_info->has_immediate = false;
+          RESET_MUL_TRACE_OP_FLAG(inst_info);
         }
 
-        memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
-        info->bytes_accumulated += sizeof(Inst_info);
+        if (i == 0) {
+          memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
+          info->bytes_accumulated += sizeof(Inst_info);
+          memset(addr_buffer, 0, WARP_SIZE * ADDR_SIZE);
+        }
+        else {
+          int num_addr = sizeof(Inst_info) / ADDR_SIZE;
+          memcpy(addr_buffer + ((i - 1) % num_addr) * ADDR_SIZE, &addr, ADDR_SIZE);
+          //std::cout << "copied " << i << " addr " << addr << " to addr buffer, at position " << ((i - 1) % num_addr) << "\n";
+          if (!(i % num_addr) || (i == WARP_SIZE - 1)) {
+            memcpy(info->trace_buf + info->bytes_accumulated, addr_buffer, sizeof(Inst_info));
+            //std::cout << "copied " << i << " to addr inst info buffer\n";
+            for (unsigned int j = 0; j < sizeof(Inst_info); ++j) {
+              //std::cout << (int)addr_buffer[j] << " ";
+            }
+            //std::cout << "\n";
+            info->bytes_accumulated += sizeof(Inst_info);
+          }
+
+        }
         if (info->bytes_accumulated == BUF_SIZE) {
           int bytes_written;
           bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
@@ -2257,12 +2118,12 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       if (ptx_inst->opcode == ir::PTXInstruction::Bra || 
           ptx_inst->opcode == ir::PTXInstruction::Call ||
           ptx_inst->opcode == ir::PTXInstruction::Ret) {
-        inst_info->branch_target = (ptx_inst->branchTargetInstruction << 2) + INST_START_ADDR; //check this
+        SET_BRANCH_TARGET(inst_info, ((ptx_inst->branchTargetInstruction << 3) + INST_START_ADDR));
 
-        inst_info->ld_vaddr1 = branch_taken_mask;
-        inst_info->st_vaddr = (ptx_inst->reconvergeInstruction << 2) + INST_START_ADDR;
+        SET_BRANCH_TAKEN_MASK(inst_info, branch_taken_mask);
+        SET_RECONV_ADDR(inst_info, ((ptx_inst->reconvergeInstruction << 3) + INST_START_ADDR));
       }
-      inst_info->actually_taken = branch_taken;
+      SET_BRANCH_TAKEN_FLAG(inst_info, branch_taken);
 
 
 #if WRITE_DEBUG == 1
@@ -2274,6 +2135,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
       if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
 #endif
+        *debug_stream << ptx_inst->toString() << "\n";
         *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
           << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
           << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
@@ -2285,6 +2147,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
       info = &trace_info[cur_block * num_warps_per_block + cur_warp];
       memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
+
       info->bytes_accumulated += sizeof(Inst_info);
       if (info->bytes_accumulated == BUF_SIZE) {
         int bytes_written;
@@ -2318,6 +2181,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
       if (saved_cur_block == cur_block && saved_cur_warp == cur_warp) {
 #endif
+        *debug_stream << ptx_inst->toString() << "\n";
         *debug_stream << "opcode " << ir::PTXInstruction::toString(ptx_inst->opcode) 
           << " a " << ptx_inst->a.identifier << " b " << ptx_inst->b.identifier 
           << " c " << ptx_inst->c.identifier << " d " << ptx_inst->d.identifier << "\n";
@@ -2332,6 +2196,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
       info = &trace_info[cur_block * num_warps_per_block + cur_warp];
       memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
+
       info->bytes_accumulated += sizeof(Inst_info);
       if (info->bytes_accumulated == BUF_SIZE) {
         int bytes_written;
@@ -2380,29 +2245,33 @@ void trace::X86TraceGenerator::finalize()
   int block_id = last_block_id;
   for (int ii = 0; ii < num_warps_per_block; ++ii) {
     Trace_info *tr_info = &trace_info[block_id * num_warps_per_block + ii];
-    if (tr_info->bytes_accumulated) {
-      int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
-      if (bytes_written != tr_info->bytes_accumulated) {
-        std::cerr << "gz file write error\n";
-        assert(0);
+    if (tracegen) {
+      if (tr_info->bytes_accumulated) {
+        int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
+        if (bytes_written != tr_info->bytes_accumulated) {
+          std::cerr << "gz file write error\n";
+          assert(0);
+        }
       }
+      gzclose(tr_info->trace_stream);
     }
-    gzclose(tr_info->trace_stream);
 
     Thread_info *th_info = &thread_info[block_id * num_warps_per_block + ii];
-    if (sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
+    if (tracegen && sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
       std::cerr << "unable to write to config file\n";
       exit(-1);
     }
 
     txt_config_file << th_info->thread_id << " " << th_info->inst_count << "\n";
-    info_file << th_info->thread_id << " " << th_info->inst_count << "\n";
+    info_file << th_info->thread_id << " " << tr_info->inst_count << "\n";
   }
 
 
   // close config and info files
   gzclose(gz_config_file);
   txt_config_file.close();
+
+  info_file << "kernel_count " << kernel_inst_count << "\n";
   info_file.close();
 
 }
@@ -2411,47 +2280,184 @@ void trace::X86TraceGenerator::finalize()
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // for debug purpose, write instruction info in a file (text format)
 ///////////////////////////////////////////////////////////////////////////////////////////////
-void trace::X86TraceGenerator::writeInstToFile(ofstream &file, Inst_info *t_info)
+void trace::X86TraceGenerator::writeInstToFile(ofstream &file, Inst_info *inst_info)
 {
   file << "*** begin of the data strcture *** " <<endl;
 
-  file << "t_info->uop_opcode " << dec << t_info->opcode << endl;
-  file << "t_info->num_read_regs: " << hex <<  (uint32_t) t_info->num_read_regs << endl;
-  file << "t_info->num_dest_regs: " << hex << (uint32_t) t_info->num_dest_regs << endl;
-
-  file << "t_info->src1: " << hex << (uint32_t) t_info->src[0] << endl;
-  file << "t_info->src2: " << hex << (uint32_t) t_info->src[1] << endl;
-  file << "t_info->src3: " << hex << (uint32_t) t_info->src[2] << endl;
-  file << "t_info->src4: " << hex << (uint32_t) t_info->src[3] << endl;
-
-
-  file << "t_info->dest1: " << hex << (uint32_t) t_info->dst[0] << endl;
-  file << "t_info->dest2: " << hex << (uint32_t) t_info->dst[1] << endl;
-  file << "t_info->dest3: " << hex << (uint32_t) t_info->dst[2] << endl;
-  file << "t_info->dest4: " << hex << (uint32_t) t_info->dst[3] << endl;
-
-  file << "t_info->cf_type: " << hex << (uint32_t) t_info->cf_type << endl;
-  file << "t_info->has_immediate: " << hex << (uint32_t) t_info->has_immediate << endl;
-
-
-  file << "t_info->r_dir:" << (uint32_t) t_info->rep_dir << endl;
-  file << "t_info->has_st: " << hex << (uint32_t) t_info->has_st << endl;
-  file << "t_info->num_ld: " << hex << (uint32_t) t_info->num_ld << endl;
-  file << "t_info->mem_read_size: " << hex << (uint32_t) t_info->mem_read_size << endl;
-  file << "t_info->mem_write_size: " << hex << (uint32_t) t_info->mem_write_size << endl;
-  file << "t_info->is_fp: " << (uint32_t) t_info->is_fp << endl;
-
-  file << "t_info->ld_vaddr1: " << hex << (uint32_t) t_info->ld_vaddr1 << endl;
-  file << "t_info->ld_vaddr2: " << hex << (uint32_t) t_info->ld_vaddr2 << endl;
-  file << "t_info->st_vaddr: " << hex << (uint32_t) t_info->st_vaddr << endl;
-
-  file << "t_info->instruction_addr: " << dec << (uint32_t) t_info->instruction_addr << endl;
-
-  file << "t_info->branch_target: " << dec << (uint32_t) t_info->branch_target << endl;
-  file << "t_info->actually_taken: " << hex << (uint32_t) t_info->actually_taken << endl;
-  file << "t_info->write_flg: " << hex << (uint32_t) t_info->write_flg << endl;
+  WRITE_INST_TO_FILE(file, inst_info);
 
   file << "*** end of the data strcture *** " << endl << endl;
 }
+
+
+
+void trace::X86TraceGenerator::dump_opcode_stats(void)
+{
+  const char* tr_opcode_names[GPU_OPCODE_LAST] = {
+    "GPU_INVALID",
+    "GPU_ABS",
+    "GPU_ABS64",
+    "GPU_ADD", 
+    "GPU_ADD64", 
+    "GPU_ADDC",
+    "GPU_AND",
+    "GPU_AND64",
+    "GPU_ATOM_GM",
+    "GPU_ATOM_SM",
+    "GPU_ATOM64_GM",
+    "GPU_ATOM64_SM",
+    "GPU_BAR_ARRIVE",
+    "GPU_BAR_SYNC",
+    "GPU_BAR_RED",
+    "GPU_BFE",
+    "GPU_BFE64",
+    "GPU_BFI",
+    "GPU_BFI64",
+    "GPU_BFIND",
+    "GPU_BFIND64",
+    "GPU_BRA",
+    "GPU_BREV",
+    "GPU_BREV64",
+    "GPU_BRKPT",
+    "GPU_CALL",
+    "GPU_CLZ",
+    "GPU_CLZ64",
+    "GPU_CNOT",
+    "GPU_CNOT64",
+    "GPU_COPYSIGN",
+    "GPU_COPYSIGN64",
+    "GPU_COS",
+    "GPU_CVT",
+    "GPU_CVT64",
+    "GPU_CVTA",
+    "GPU_CVTA64",
+    "GPU_DIV",
+    "GPU_DIV64",
+    "GPU_EX2",
+    "GPU_EXIT",
+    "GPU_FMA",
+    "GPU_FMA64",
+    "GPU_ISSPACEP",
+    "GPU_LD",
+    "GPU_LD64",
+    "GPU_LDU",
+    "GPU_LDU64",
+    "GPU_LG2",
+    "GPU_MAD24",
+    "GPU_MAD",
+    "GPU_MAD64",
+    "GPU_MAX",
+    "GPU_MAX64",
+    "GPU_MEMBAR_CTA",
+    "GPU_MEMBAR_GL",
+    "GPU_MEMBAR_SYS",
+    "GPU_MIN",
+    "GPU_MIN64",
+    "GPU_MOV",
+    "GPU_MOV64",
+    "GPU_MUL24",
+    "GPU_MUL",
+    "GPU_MUL64",
+    "GPU_NEG",
+    "GPU_NEG64",
+    "GPU_NOT",
+    "GPU_NOT64",
+    "GPU_OR",
+    "GPU_OR64",
+    "GPU_PMEVENT",
+    "GPU_POPC",
+    "GPU_POPC64",
+    "GPU_PREFETCH",
+    "GPU_PREFETCHU",
+    "GPU_PRMT",
+    "GPU_RCP",
+    "GPU_RCP64",
+    "GPU_RED_GM",
+    "GPU_RED_SM",
+    "GPU_RED64_GM",
+    "GPU_RED64_SM",
+    "GPU_REM",
+    "GPU_REM64",
+    "GPU_RET",
+    "GPU_RSQRT",
+    "GPU_RSQRT64",
+    "GPU_SAD",
+    "GPU_SAD64",
+    "GPU_SELP",
+    "GPU_SELP64",
+    "GPU_SET",
+    "GPU_SET64",
+    "GPU_SETP",
+    "GPU_SETP64",
+    "GPU_SHL",
+    "GPU_SHL64",
+    "GPU_SHR",
+    "GPU_SHR64",
+    "GPU_SIN",
+    "GPU_SLCT",
+    "GPU_SLCT64",
+    "GPU_SQRT",
+    "GPU_SQRT64",
+    "GPU_ST",
+    "GPU_ST64",
+    "GPU_SUB",
+    "GPU_SUB64",
+    "GPU_SUBC",
+    "GPU_SULD",
+    "GPU_SULD64",
+    "GPU_SURED",
+    "GPU_SURED64",
+    "GPU_SUST",
+    "GPU_SUST64",
+    "GPU_SUQ",
+    "GPU_TESTP",
+    "GPU_TESTP64",
+    "GPU_TEX",
+    "GPU_TLD4",
+    "GPU_TXQ",
+    "GPU_TRAP",
+    "GPU_VABSDIFF",
+    "GPU_VADD",
+    "GPU_VMAD",
+    "GPU_VMAX",
+    "GPU_VMIN",
+    "GPU_VSET",
+    "GPU_VSHL",
+    "GPU_VSHR",
+    "GPU_VSUB",
+    "GPU_VOTE",
+    "GPU_XOR",
+    "GPU_XOR64",
+    "GPU_RECONVERGE",
+    "GPU_PHI",
+    "GPU_MEM_LD_GM",
+    "GPU_MEM_LD_LM",
+    "GPU_MEM_LD_SM",
+    "GPU_MEM_LD_CM",
+    "GPU_MEM_LD_TM",
+    "GPU_MEM_LD_PM",
+    "GPU_MEM_LDU_GM",
+    "GPU_MEM_ST_GM",
+    "GPU_MEM_ST_LM",
+    "GPU_MEM_ST_SM",
+    "GPU_DATA_XFER_GM",
+    "GPU_DATA_XFER_LM",
+    "GPU_DATA_XFER_SM",
+  };
+
+
+
+  string output_filename(trace_path);
+  output_filename.append("opcode_stat.txt");
+    
+  ofstream out(output_filename.c_str());
+
+  for (int ii = 0; ii < GPU_OPCODE_LAST; ++ii) {
+    out << setw(20) << left << tr_opcode_names[ii] << left << opcode_stats[ii] << "\n";
+  }
+
+  out.close();
+}
+
 
 

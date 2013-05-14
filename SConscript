@@ -155,7 +155,7 @@ env.Depends(KernelDrawer, libocelot)
 ocelot_server_libs = ['']
 
 if os.name != 'nt':
-	ocelot_server_libs = ['-lboost_system-mt', '-lpthread']
+	ocelot_server_libs = ['-lpthread']
 
 OcelotServer = env.Program('OcelotServer', \
 	['ocelot/tools/OcelotServer.cpp'],

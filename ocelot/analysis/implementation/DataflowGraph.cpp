@@ -378,6 +378,11 @@ DataflowGraph::RegisterSet& DataflowGraph::Block::aliveOut()
 	return _aliveOut;
 }
 
+bool DataflowGraph::Block::hasFallthrough() const
+{
+	return _fallthrough != _dfg->end();
+}
+
 DataflowGraph::BlockVector::iterator 
 	DataflowGraph::Block::fallthrough() const
 {

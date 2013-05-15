@@ -153,7 +153,7 @@ for testApplication in testApplications:
 	testApp = env.Program(testApplication[0], 
 		[builder.MapSource(env, 
 			"tests/%s/%s" % (path, x),options=paths) for x in testApplication[1]], 
-		LIBS=additionalLibs + ['-lglut', '-locelot', '-lGLEW', libsdk2_2, '-lGLU', '-lGL'])
+		LIBS=additionalLibs + ['-lglut', '-locelot', '-lGLEW', libsdk2_2, '-lGLU', '-lGL', '-lm'])
 	tests.append(testApp)
 
 	env.Alias('tests', testApp)

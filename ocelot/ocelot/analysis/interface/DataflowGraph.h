@@ -269,6 +269,8 @@ class DataflowGraph : public KernelAnalysis
 				RegisterSet& aliveOut();
 				/*! \brief Get the fallthrough block */
 				BlockVector::iterator fallthrough() const;
+				/*! \brief Get the fallthrough block */
+				bool hasFallthrough() const;
 				/*! \brief Get a list of target blocks */
 				const BlockPointerSet& targets() const;
 				/*! \brief Get a list of predecessor blocks */

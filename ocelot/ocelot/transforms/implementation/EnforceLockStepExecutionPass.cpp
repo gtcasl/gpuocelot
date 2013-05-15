@@ -602,6 +602,7 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 			assert(block->successors().size() <= 2);
 
 			if(block->targets().empty()) continue;
+			if(!block->hasFallthrough()) continue;
 
 			auto target = block->targets().begin();
 

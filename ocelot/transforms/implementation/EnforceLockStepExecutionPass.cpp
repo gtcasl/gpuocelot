@@ -831,13 +831,9 @@ ir::PTXInstruction* EnforceLockStepExecutionPass::_canonicalizeComparison(
 	{
 		comparison->c = ir::PTXOperand(ir::PTXOperand::Register,
 			ir::PTXOperand::pred, _getBlockVariable(block));
-	}
-	else
-	{
-		comparison->c = ir::PTXOperand(1);
-	}
 	
-	comparison->booleanOperator = ir::PTXInstruction::BoolAnd;
+		comparison->booleanOperator = ir::PTXInstruction::BoolAnd;
+	}
 
 	// D must be a predicate destination
 	assert(comparison->d.isRegister() &&
@@ -893,14 +889,26 @@ void EnforceLockStepExecutionPass::_addComparison(block_iterator block,
 	auto dfg = static_cast<analysis::DataflowGraph*>(
 		getAnalysis(Analysis::DataflowGraphAnalysis));
 	
+	// CVT predicate to register
+	ir::PTXInstruction convert(ir::PTXInstruction::Cvt);
+	
+	convert.type = ir::PTXOperand::b32;
+	
+	convert.a = ir::PTXOperand(ir::PTXOperand::Register,
+		ir::PTXOperand::pred, branch->pg.reg);
+	convert.d = ir::PTXOperand(ir::PTXOperand::Register,
+		ir::PTXOperand::b32, dfg->newRegister());
+	
+	dfg->insert(block, convert);
+
+	// SETP instruction
 	ir::PTXInstruction comparison(ir::PTXInstruction::SetP);
 	
 	comparison.comparisonOperator = ir::PTXInstruction::Eq;
-	comparison.type = ir::PTXOperand::pred;
+	comparison.type = ir::PTXOperand::b32;
 	
-	comparison.a = ir::PTXOperand(1, ir::PTXOperand::pred);
-	comparison.b = ir::PTXOperand(ir::PTXOperand::Register,
-		ir::PTXOperand::pred, branch->pg.reg);
+	comparison.a = ir::PTXOperand(1, ir::PTXOperand::b32);
+	comparison.b = convert.d;
 
 	// C must be a predicate destination
 	assert(branch->pg.isRegister() &&

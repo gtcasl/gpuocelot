@@ -561,8 +561,13 @@ ir::PTXKernel* ir::Module::insertKernel(PTXKernel* kernel) {
 	return kernel;
 }
 
+void ir::Module::setVersion(unsigned int major, unsigned int minor) {
+	_version.major = major;
+	_version.minor = minor;
+}
+		
 ir::PTXStatement ir::Module::version() const { return _version; }
-ir::PTXStatement ir::Module::target() const { return _target; }
+ir::PTXStatement ir::Module::target()  const { return _target;  }
 
 /*!
 	After parsing, construct a set of Kernels with ISA equal to PTX

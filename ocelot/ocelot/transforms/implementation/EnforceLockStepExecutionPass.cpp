@@ -544,7 +544,7 @@ void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
 			if((*successor)->block() == k.cfg()->get_exit_block())  continue;
 			
 			// if the predecessor was convergent, just set the successor
-			if(!div->isDivBlock(block))
+			if(!div->isEntryDiv(block))
 			{
 				report("   entering " << (*successor)->label()
 					<< " directly" );
@@ -889,17 +889,20 @@ void EnforceLockStepExecutionPass::_addComparison(block_iterator block,
 	auto dfg = static_cast<analysis::DataflowGraph*>(
 		getAnalysis(Analysis::DataflowGraphAnalysis));
 	
-	// CVT predicate to register
-	ir::PTXInstruction convert(ir::PTXInstruction::Cvt);
+	// convert predicate to register
+	ir::PTXInstruction selp(ir::PTXInstruction::SelP);
 	
-	convert.type = ir::PTXOperand::b32;
+	selp.type = ir::PTXOperand::b32;
 	
-	convert.a = ir::PTXOperand(ir::PTXOperand::Register,
+	selp.c = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, branch->pg.reg);
-	convert.d = ir::PTXOperand(ir::PTXOperand::Register,
+	selp.a = ir::PTXOperand(1);
+	selp.b = ir::PTXOperand(0);
+	
+	selp.d = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::b32, dfg->newRegister());
 	
-	dfg->insert(block, convert);
+	dfg->insert(block, selp);
 
 	// SETP instruction
 	ir::PTXInstruction comparison(ir::PTXInstruction::SetP);
@@ -908,7 +911,7 @@ void EnforceLockStepExecutionPass::_addComparison(block_iterator block,
 	comparison.type = ir::PTXOperand::b32;
 	
 	comparison.a = ir::PTXOperand(1, ir::PTXOperand::b32);
-	comparison.b = convert.d;
+	comparison.b = selp.d;
 
 	// C must be a predicate destination
 	assert(branch->pg.isRegister() &&

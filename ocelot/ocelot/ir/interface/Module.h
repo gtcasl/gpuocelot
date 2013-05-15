@@ -217,6 +217,9 @@ namespace ir {
 			const ir::PTXKernel::Prototype &prototype);
 		void removePrototype(const std::string& identifier);
 		
+		/*! \brief Set the PTX version of the module */
+		void setVersion(unsigned int major, unsigned int minor);
+		
 		ir::PTXStatement version() const;
 		ir::PTXStatement target() const;
 		

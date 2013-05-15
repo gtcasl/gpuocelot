@@ -66,6 +66,9 @@ void PTXOptimizer::optimize()
 	
 	ir::Module module( input );
 
+	// Set the PTX version
+	module.setVersion(3, 1);
+
 	transforms::PassManager manager( &module );
 
 	if( registerAllocationType != "none" &&

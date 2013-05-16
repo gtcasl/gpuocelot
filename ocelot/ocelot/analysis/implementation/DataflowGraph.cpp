@@ -780,6 +780,87 @@ void DataflowGraph::target( iterator block,
 			block->_targets.insert( target );
 		}
 	}
+	else
+	{
+		report( " edge insert failed." );
+	}
+}
+
+void DataflowGraph::disconnect( iterator block )
+{
+	report( "Disconnecting edges from " << block->label() );
+	_consistent = false;
+	
+	// DFG edges
+	
+	/// DFG out-edges
+	for( BlockPointerSet::iterator pi = block->_successors.begin(); 
+		pi != block->_successors.end(); ++pi )		
+	{
+		BlockVector::iterator target = *pi;
+		
+		report( " disconnecting edge to " << target->label() );
+	
+		BlockPointerSet::iterator fi = target->_predecessors.find( block );
+		assert( fi != target->_predecessors.end() );
+		target->_predecessors.erase( fi );
+	}
+
+	block->_successors.clear();
+	block->_targets.clear();
+
+	block->_fallthrough = end();
+	
+	/// DFG in-edges
+	for( BlockPointerSet::iterator pi = block->_predecessors.begin(); 
+		pi != block->_predecessors.end(); ++pi )		
+	{
+		if( (*pi)->_fallthrough == block )
+		{
+			(*pi)->_fallthrough = end();
+		}
+
+		BlockPointerSet::iterator target = (*pi)->_targets.find( block );
+
+		if( target != (*pi)->_targets.end() )
+		{
+			(*pi)->_targets.erase( target );
+		}
+	}
+
+	block->_predecessors.clear();
+	
+	// CFG edges
+	_cfg->disconnect_block( block->block() );
+}
+
+void DataflowGraph::disconnectOutEdges( iterator block )
+{
+	report( "Disconnecting out-edges from " << block->label() );
+	_consistent = false;
+	
+	// DFG edges
+	
+	/// DFG out-edges
+	for( BlockPointerSet::iterator pi = block->_successors.begin(); 
+		pi != block->_successors.end(); ++pi )		
+	{
+		BlockVector::iterator target = *pi;
+	
+		report( " disconnecting edge to " << target->label() );
+	
+		BlockPointerSet::iterator fi = target->_predecessors.find( block );
+		assert( fi != target->_predecessors.end() );
+		target->_predecessors.erase( fi );
+	}
+
+	block->_successors.clear();
+	block->_targets.clear();
+
+	block->_fallthrough = end();
+	
+	// CFG edges
+	_cfg->disconnect_block_out_edges( block->block() );
 }
 
 DataflowGraph::iterator DataflowGraph::split( iterator block, 

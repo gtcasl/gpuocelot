@@ -424,7 +424,11 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 		if(block->block() == k.cfg()->get_exit_block())  continue;
 		
 		// skip convergent blocks
-		if(!div->isEntryDiv(block)) continue;
+		if(!div->isEntryDiv(block))
+		{
+			report("  skipping convergent block " << block->label());
+			continue;
+		}
 		
 		auto immediateDominator = domTree->getDominator(block->block());
 		auto nearest = block->block();
@@ -476,12 +480,12 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 	{
 		if(block->block() == k.cfg()->get_entry_block()) continue;
 		if(block->block() == k.cfg()->get_exit_block())  continue;
-		
-		// skip convergent blocks
-		if(!div->isEntryDiv(block)) continue;
-		
+				
 		Priority blockPriority = tfAnalysis->getPriority(block->block());
 
+		report("  examing block " << block->label()
+				<< " with priority (" << blockPriority << ")");
+			
 		for(auto successor = block->successors().begin();
 			successor != block->successors().end(); ++successor)
 		{
@@ -494,14 +498,17 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 			// skip edges that go forward
 			if(successorPriority < blockPriority) continue;
 			
-			auto begin = priorities.lower_bound(successorPriority);
-			auto end   = priorities.upper_bound(blockPriority);
+			auto end   = priorities.lower_bound(blockPriority);
+			auto begin = priorities.upper_bound(successorPriority);
 			
-			report("  examing priority range (" << successorPriority
-				<< ", " << blockPriority << ")");
+			report("   examing priority range (" << blockPriority
+				<< ", " << successorPriority << ")");
 			
 			for(auto blockInRange = begin; blockInRange != end; ++blockInRange)
 			{
+				// skip convergent blocks
+				if(!div->isEntryDiv(blockInRange->second)) continue;
+				
 				auto initializer = initializers.find(blockInRange->second);
 				assert(initializer != initializers.end());
 				
@@ -512,7 +519,7 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 				if(initializerPriority <= successorPriority &&
 					(successorPriority != blockPriority)) continue;
 				
-				report("   block " << block->label() << " may trigger "
+				report("    block " << block->label() << " may trigger "
 					<< blockInRange->second->label() << " (priority "
 					<< blockInRange->first << "), zeroing mask");
 		
@@ -568,7 +575,7 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 		getAnalysis(Analysis::DivergenceAnalysis));
 	
 	typedef std::multimap<analysis::ThreadFrontierAnalysis::Priority,
-		const_block_iterator,
+		block_iterator,
 		std::greater<analysis::ThreadFrontierAnalysis::Priority>> PriorityMap;
 	typedef std::unordered_set<ir::ControlFlowGraph::const_iterator> BlockSet;
 
@@ -608,7 +615,7 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 
 			if(tfAnalysis->getPriority(block->fallthrough()->block()) >
 				tfAnalysis->getPriority((*target)->block()))
-			{
+			{				
 				_conditionalBranchToTarget(block, *target);
 				continue;
 			}
@@ -637,6 +644,10 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 				tfAnalysis->getPriority(*frontierBlock), dfgBlock));
 		}
 		
+		// rewrite the CFG edges
+		// TODO only remove OUT-EDGES
+		dfg->disconnectOutEdges(block);
+		
 		for(auto entry = priorities.begin();
 			entry != priorities.end(); ++entry)
 		{
@@ -652,13 +663,29 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 			// checked
 			if(entry->first + 1 == tfAnalysis->getPriority(block->block()))
 			{
-				if(entry == --priorities.end()) continue;
+				if(entry == --priorities.end())
+				{
+					// add fallthrough edge
+					report("   added fallthrough edge to "
+						<< entry->second->label());
+		
+					dfg->target(block, entry->second, true);
+					break;
+				}
 				
 				if(successors.empty())
 				{
+					// add fallthrough edge
+					report("   added fallthrough edge to "
+						<< entry->second->label());
+		
+					dfg->target(block, entry->second, true);
 					break;
 				}
 			}
+			
+			// add branch edge
+			dfg->target(block, entry->second, false);
 			
 			if(successor != successors.end() && successors.empty())
 			{
@@ -759,7 +786,7 @@ void EnforceLockStepExecutionPass::_uniformBranchToTarget(block_iterator block,
 	
 	dfg->insert(block, bra);
 		
-	report("   added branch to target " << target->label());
+	report("   added uniform branch to target " << target->label());
 }
 
 void EnforceLockStepExecutionPass::_conditionalBranchToTarget(

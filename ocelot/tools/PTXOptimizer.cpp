@@ -122,16 +122,20 @@ void PTXOptimizer::optimize()
 		auto ptxKernel = module.getKernel( kernel->first );
 		assert( ptxKernel != 0 );
 	
+		std::string shortName = kernel->first.substr(0, 100);
+	
 		if( cfg )
 		{
+			std::string filename = std::string( shortName + "_cfg.dot" );
+			
 			report(" Writing CFG for kernel '" << kernel->first << "'");
-					std::ofstream out( std::string( 
-			kernel->first + "_cfg.dot" ).c_str() );
+			
+			std::ofstream out( filename.c_str() );
 	
 			if( !out.is_open() )
 			{
 				throw hydrazine::Exception( "Could not open output file " 
-					+ output + " for writing." );
+					+ filename + " for writing." );
 			}
 
 			ptxKernel->cfg()->write( out );
@@ -139,14 +143,16 @@ void PTXOptimizer::optimize()
 		
 		if( dfg )
 		{
+			std::string filename = std::string( shortName + "_dfg.dot" );
+			
 			report(" Writing DFG for kernel '" << kernel->first << "'");
-					std::ofstream out( std::string( 
-			kernel->first + "_dfg.dot" ).c_str() );
+			
+			std::ofstream out( filename.c_str() );
 	
 			if( !out.is_open() )
 			{
 				throw hydrazine::Exception( "Could not open output file " 
-					+ output + " for writing." );
+					+ filename + " for writing." );
 			}
 			
 			analysis::DataflowGraph dataflowGraph;

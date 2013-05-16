@@ -498,14 +498,17 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 			// skip edges that go forward
 			if(successorPriority < blockPriority) continue;
 			
-			auto end   = priorities.lower_bound(blockPriority);
-			auto begin = priorities.upper_bound(successorPriority);
+			auto begin = priorities.lower_bound(successorPriority);
+			auto end   = priorities.upper_bound(blockPriority);
 			
 			report("   examing priority range (" << blockPriority
 				<< ", " << successorPriority << ")");
 			
 			for(auto blockInRange = begin; blockInRange != end; ++blockInRange)
 			{
+				report("    checking block in range "
+					<< blockInRange->second->label());
+			
 				// skip convergent blocks
 				if(!div->isEntryDiv(blockInRange->second)) continue;
 				
@@ -519,7 +522,7 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 				if(initializerPriority <= successorPriority &&
 					(successorPriority != blockPriority)) continue;
 				
-				report("    block " << block->label() << " may trigger "
+				report("     block " << block->label() << " may trigger "
 					<< blockInRange->second->label() << " (priority "
 					<< blockInRange->first << "), zeroing mask");
 		

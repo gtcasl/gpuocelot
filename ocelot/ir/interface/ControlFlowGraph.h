@@ -246,6 +246,20 @@ public:
 		\param block block to remove from graph
 	*/
 	void remove_block(iterator block);
+	
+	/*! Disconnect the block from all edges. Any blocks dominated by
+		block are now unreachable but still part of the graph.
+	
+		\param block block to remove edges from graph
+	*/
+	void disconnect_block(iterator block);
+	
+	/*! Disconnect the block from all out-edges. Any blocks dominated by
+		block are now unreachable but still part of the graph.
+	
+		\param block block to remove out-edges from graph
+	*/
+	void disconnect_block_out_edges(iterator block);
 
 	/*! Creates an edge between given basic blocks
 		\param edge edge to create

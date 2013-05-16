@@ -417,6 +417,12 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief Set the target of a block */
 		void target( iterator block, iterator target,
 			bool fallthrough = false );
+		/*! \brief disconnect a specified block from the graph,
+			removing all edges.  The block remains intact */
+		void disconnect( iterator block );
+		/*! \brief disconnect a specified block from the graph,
+			removing all out-edges.  The block remains intact */
+		void disconnectOutEdges( iterator block );
 		/*! \brief Delete a block, joining predecessors and successors */
 		iterator erase( iterator block );
 		/*! \brief Revert back to a single entry and exit block */

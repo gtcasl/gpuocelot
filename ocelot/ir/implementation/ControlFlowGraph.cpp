@@ -300,6 +300,14 @@ ControlFlowGraph::iterator ControlFlowGraph::clone_block(const_iterator block)
 
 void ControlFlowGraph::remove_block(iterator block) {
 	
+	disconnect_block(block);
+	
+	block->clear();
+	_blocks.erase(block);
+}
+
+void ControlFlowGraph::disconnect_block(iterator block) {
+	
 	while (!block->in_edges.empty()) {
 		remove_edge(*block->in_edges.begin());
 	}
@@ -307,9 +315,13 @@ void ControlFlowGraph::remove_block(iterator block) {
 	while (!block->out_edges.empty()) {
 		remove_edge(*block->out_edges.begin());
 	}
+}
+
+void ControlFlowGraph::disconnect_block_out_edges(iterator block) {
 	
-	block->clear();
-	_blocks.erase(block);
+	while (!block->out_edges.empty()) {
+		remove_edge(*block->out_edges.begin());
+	}
 }
 
 ControlFlowGraph::edge_iterator 
@@ -317,6 +329,7 @@ ControlFlowGraph::edge_iterator
 	report( "Created " << toString(edge.type) << " edge from " 
 		<< edge.head->label() << " -> " << edge.tail->label() );
 	#ifndef NDEBUG
+	/*
 	if (edge.type == Edge::FallThrough) {
 		// verify that tail is the tail of NO OTHER FallThrough edges
 		edge_pointer_iterator eit = edge.tail->in_edges.begin();
@@ -326,6 +339,7 @@ ControlFlowGraph::edge_iterator
 				<< edge.tail->label() );
 		}
 	}
+	*/
 	#endif
 	edge_iterator e = _edges.insert(edges_end(), edge);
 	edge.head->out_edges.push_back(e);

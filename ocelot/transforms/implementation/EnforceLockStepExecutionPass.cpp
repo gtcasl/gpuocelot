@@ -610,16 +610,24 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 		if(!div->isEntryDiv(block))
 		{
 			assert(block->successors().size() <= 2);
-
+			
+			// Leave the fallthrough
 			if(block->targets().empty()) continue;
-			if(!block->hasFallthrough()) continue;
+			
+			auto target = *block->targets().begin();
 
-			auto target = block->targets().begin();
-
+			// Leave the single target
+			if(!block->hasFallthrough())
+			{
+				// Add the uniform branch back
+				_uniformBranchToTarget(block, target);
+				continue;
+			}
+			
 			if(tfAnalysis->getPriority(block->fallthrough()->block()) >
-				tfAnalysis->getPriority((*target)->block()))
+				tfAnalysis->getPriority(target->block()))
 			{				
-				_conditionalBranchToTarget(block, *target);
+				_conditionalBranchToTarget(block, target);
 				continue;
 			}
 		}

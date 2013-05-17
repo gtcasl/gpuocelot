@@ -98,6 +98,8 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 	
 	// 3) Break ties
 	_breakPriorityTies();
+	
+	// Optimization:
 }
 
 void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)

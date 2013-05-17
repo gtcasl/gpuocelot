@@ -648,7 +648,6 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 		}
 		
 		// rewrite the CFG edges
-		// TODO only remove OUT-EDGES
 		dfg->disconnectOutEdges(block);
 		
 		for(auto entry = priorities.begin();
@@ -719,18 +718,18 @@ void EnforceLockStepExecutionPass::_mergeVariablesBeforeEntering(
 	Register edgeVariable      = _getEdgeVariable(block, successor);
 	Register successorVariable = _getBlockVariable(successor);
 	
-	ir::PTXInstruction lxor(ir::PTXInstruction::Xor);
+	ir::PTXInstruction lor(ir::PTXInstruction::Or);
 	
-	lxor.type = ir::PTXOperand::pred;
+	lor.type = ir::PTXOperand::pred;
 	
-	lxor.d = ir::PTXOperand(ir::PTXOperand::Register,
+	lor.d = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, successorVariable);
-	lxor.a = ir::PTXOperand(ir::PTXOperand::Register,
+	lor.a = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, edgeVariable);
-	lxor.b = ir::PTXOperand(ir::PTXOperand::Register,
+	lor.b = ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, successorVariable);
 	
-	dfg->insert(block, lxor);
+	dfg->insert(block, lor);
 }
 
 void EnforceLockStepExecutionPass::_setVariableForSuccessor(

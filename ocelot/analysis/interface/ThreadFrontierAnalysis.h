@@ -81,7 +81,7 @@ private:
 		Priority       priority;
 		
 	public:
-		void updatePriority(Priority p);
+		Priority updatePriority(Priority p);
 		bool isThisMyParent(node_iterator possibleParent);
 		
 	public:

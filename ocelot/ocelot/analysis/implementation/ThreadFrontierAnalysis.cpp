@@ -25,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace analysis
 {
@@ -98,8 +98,6 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 	
 	// 3) Break ties
 	_breakPriorityTies();
-	
-	// Optimization:
 }
 
 void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
@@ -243,15 +241,22 @@ void ThreadFrontierAnalysis::Node::assignPriorities(PriorityMap& priorities)
 	}
 }
 
-void ThreadFrontierAnalysis::Node::updatePriority(Priority p)
+ThreadFrontierAnalysis::Priority
+	ThreadFrontierAnalysis::Node::updatePriority(Priority p)
 {
 	priority = p;
+
+	Priority increment = 0;
 
 	for(node_iterator child = children.begin();
 		child != children.end(); ++child)
 	{
-		child->updatePriority(p + 1);
+		increment += 1;
+	
+		increment += child->updatePriority(p + increment);
 	}
+	
+	return increment;
 }
 
 bool ThreadFrontierAnalysis::Node::isThisMyParent(node_iterator possibleParent)

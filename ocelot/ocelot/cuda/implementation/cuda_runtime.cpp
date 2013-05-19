@@ -325,6 +325,12 @@ cudaError_t  cudaSetDeviceFlags( int flags ) {
 	return cuda::CudaRuntimeInterface::get()->cudaSetDeviceFlags(flags);
 }
 
+cudaError_t cudaDeviceGetAttribute( int* value, cudaDeviceAttr attribute,
+	int device ) {
+	return cuda::CudaRuntimeInterface::get()->cudaDeviceGetAttribute(
+		value, attribute, device);
+}
+
 
 /*******************************************************************************
 *                                                                              *

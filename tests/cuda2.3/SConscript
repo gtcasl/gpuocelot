@@ -107,7 +107,7 @@ for testApplication in testApplications:
 	testApp = env.Program(testApplication[0], 
 		[builder.MapSource(env, 
 			"tests/%s/%s" % (path, x), paths) for x in testApplication[1]], 
-		LIBS=['-locelot', libsdk2_3])
+		LIBS=['-locelot', libsdk2_3, '-lGL'])
 	tests.append(testApp)
 
 	env.Alias('tests', testApp)

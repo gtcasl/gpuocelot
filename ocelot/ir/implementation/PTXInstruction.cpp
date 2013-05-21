@@ -1818,9 +1818,6 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Tex: {
-			if( a.addressMode != PTXOperand::Address ) {
-				return "operand A must be a label with the texture name";
-			}
 			if( geometry == _2d && c.vec == PTXOperand::v1 ) {
 				return "for 2d tectures, C must be a at least a 2d vector";
 			}

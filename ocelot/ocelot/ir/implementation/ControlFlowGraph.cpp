@@ -67,6 +67,10 @@ std::string BasicBlock::DotFormatter::toString(
 	out << "label=";
 	out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label());
 
+	if (!block->comment.empty()) {
+		out << " | " << hydrazine::toGraphVizParsableLabel(block->comment);
+	}
+	
 	BasicBlock::InstructionList::const_iterator instrs 
 		= block->instructions.begin();	
 	for (; instrs != block->instructions.end(); ++instrs) {
@@ -99,6 +103,10 @@ std::string BasicBlock::DotFormatter::toString(
 BasicBlock::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
 
+}
+
+bool BasicBlock::Edge::isFallthrough() const {
+	return type == FallThrough;
 }
 
 BasicBlock::BasicBlock(ControlFlowGraph* graph, Id i, 

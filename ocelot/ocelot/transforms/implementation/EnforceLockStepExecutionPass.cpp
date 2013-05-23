@@ -396,6 +396,15 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 		priorities.insert(std::make_pair(
 			tfAnalysis->getPriority(block->block()), block));
 		
+		#ifndef NDEBUG
+		std::stringstream comment;
+		
+		comment << "// Priority ("
+			<< tfAnalysis->getPriority(block->block()) << ")";
+		
+		block->block()->comment = comment.str();
+		#endif
+		
 		auto frontier = tfAnalysis->getThreadFrontier(block->block());
 		
 		for(auto frontierBlock = frontier.begin();

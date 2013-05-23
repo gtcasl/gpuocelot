@@ -9,7 +9,9 @@
 
 // Ocelot Incudes
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
-#include <ocelot/analysis/interface/StructuralAnalysis.h>
+#include <ocelot/analysis/interface/DominatorTree.h>
+
+#include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/debug.h>
@@ -32,7 +34,7 @@ namespace analysis
 
 ThreadFrontierAnalysis::ThreadFrontierAnalysis()
 : KernelAnalysis(Analysis::ThreadFrontierAnalysis, "ThreadFrontierAnalysis",
-	Analysis::NoAnalysis)
+	Analysis::DominatorTreeAnalysis)
 {
 
 }
@@ -93,10 +95,18 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 	// 1) Build the edge-covering tree
 	_visitNode(nodeMap, root);
 	
-	// 2) Walk the tree, assign priorities
+	// 2) Adjust priorites so that independent paths are separated
+	report("Separating independent paths.");
+	
+	nodeMap.clear();
+	Priority priority = 0;
+	
+	_separatePathPriorities(nodeMap, root, priority);
+	
+	// 3) Walk the tree, assign priorities
 	root->assignPriorities(_priorities);
 	
-	// 3) Break ties
+	// 4) Break ties
 	_breakPriorityTies();
 }
 
@@ -202,6 +212,79 @@ void ThreadFrontierAnalysis::_visitNode(NodeMap& nodes, node_iterator node)
 	}
 }
 
+void ThreadFrontierAnalysis::_separatePathPriorities(NodeMap& nodes, node_iterator node,
+	Priority& nextPriority)
+{
+	typedef std::list<node_iterator> NodePointerList;
+
+	// If this block dominates an unvisited node, visit it now
+	auto dom = static_cast<DominatorTree*>(getAnalysis(DominatorTreeAnalysis));
+
+	bool changed = true;
+
+	while(changed)
+	{
+		changed = false;
+
+		for(auto unvisited = nodes.begin(); unvisited != nodes.end(); ++unvisited)
+		{
+			if(!dom->dominates(node->block, unvisited->first)) continue;
+
+			auto unvisitedNode = unvisited->second;
+
+			nodes.erase(unvisited);
+
+			changed = true;
+
+			_separatePathPriorities(nodes, unvisitedNode, nextPriority);
+
+			break;
+		}
+	}
+
+	report(" Setting basic block '" << node->block->label() << "' priority "
+		<< nextPriority);
+
+	// Visit the node
+	node->priority = nextPriority++;
+
+	// sort children by edge type, fallthrough first	
+	NodePointerList children;
+
+	for(node_iterator child = node->children.begin();
+		child != node->children.end(); ++child)
+	{
+		auto edge = child->block->get_edge(node->block);
+		
+		if(edge->isFallthrough())
+		{
+			children.push_front(child);
+		}
+		else
+		{
+			children.push_back(child);
+		}
+	}
+
+	// register children as unvisited
+	for(auto child = children.begin(); child != children.end(); ++child)
+	{
+		nodes.insert(std::make_pair((*child)->block, *child));
+	}
+
+	// update priorities of unvisited children
+	for(auto child = children.begin(); child != children.end(); ++child)
+	{
+		auto visitedNode = nodes.find((*child)->block);
+
+		if(visitedNode == nodes.end()) continue;
+	
+		nodes.erase(visitedNode);
+
+		_separatePathPriorities(nodes, *child, nextPriority);
+	}
+}
+
 void ThreadFrontierAnalysis::_breakPriorityTies()
 {
 	typedef std::multimap<Priority, const_iterator> PriorityMultiMap;
@@ -241,22 +324,15 @@ void ThreadFrontierAnalysis::Node::assignPriorities(PriorityMap& priorities)
 	}
 }
 
-ThreadFrontierAnalysis::Priority
-	ThreadFrontierAnalysis::Node::updatePriority(Priority p)
+void ThreadFrontierAnalysis::Node::updatePriority(Priority p)
 {
 	priority = p;
-
-	Priority increment = 0;
 
 	for(node_iterator child = children.begin();
 		child != children.end(); ++child)
 	{
-		increment += 1;
-	
-		increment += child->updatePriority(p + increment);
+		child->updatePriority(p + 1);
 	}
-	
-	return increment;
 }
 
 bool ThreadFrontierAnalysis::Node::isThisMyParent(node_iterator possibleParent)

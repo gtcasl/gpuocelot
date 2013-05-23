@@ -55,21 +55,21 @@ public:
 	ir::ControlFlowGraph::BlockMap blocksToIndex;
 
 	/*! Does a particular block dominate another block? */
-	bool dominates(ir::ControlFlowGraph::iterator block, 
-		ir::ControlFlowGraph::iterator potentialSuccessor);
+	bool dominates(ir::ControlFlowGraph::const_iterator block, 
+		ir::ControlFlowGraph::const_iterator potentialSuccessor);
 
 	/*! Get the dominator of a given block */
 	ir::ControlFlowGraph::iterator getDominator(
-		ir::ControlFlowGraph::iterator block);
+		ir::ControlFlowGraph::const_iterator block);
 		
 	/*! Get the nearest common dominator of two blocks */
 	ir::ControlFlowGraph::iterator getCommonDominator(
-		ir::ControlFlowGraph::iterator block1,
-		ir::ControlFlowGraph::iterator block2);
+		ir::ControlFlowGraph::const_iterator block1,
+		ir::ControlFlowGraph::const_iterator block2);
 	
 	/*! Get the set of blocks immediately dominated by the specified block */
 	ir::ControlFlowGraph::BlockPointerVector getDominatedBlocks(
-		ir::ControlFlowGraph::iterator block);
+		ir::ControlFlowGraph::const_iterator block);
 	
 private:
 	void computeDT();

@@ -81,7 +81,7 @@ private:
 		Priority       priority;
 		
 	public:
-		Priority updatePriority(Priority p);
+		void updatePriority(Priority p);
 		bool isThisMyParent(node_iterator possibleParent);
 		
 	public:
@@ -96,6 +96,7 @@ private:
 	void _computeFrontiers(ir::IRKernel& kernel);
 
 	void _visitNode(NodeMap& nodes, node_iterator node);
+	void _separatePathPriorities(NodeMap& nodes, node_iterator node, Priority&);
 	void _breakPriorityTies();
 
 private:

@@ -84,8 +84,8 @@ std::ostream& DominatorTree::write(std::ostream& out) {
 	return out;
 }
 
-bool DominatorTree::dominates(ir::ControlFlowGraph::iterator block, 
-	ir::ControlFlowGraph::iterator potentialSuccessor) {
+bool DominatorTree::dominates(ir::ControlFlowGraph::const_iterator block, 
+	ir::ControlFlowGraph::const_iterator potentialSuccessor) {
 	int id = blocksToIndex[block];
 	int successorId = blocksToIndex[potentialSuccessor];
 	int startId = blocksToIndex[cfg->get_entry_block()];
@@ -105,14 +105,14 @@ bool DominatorTree::dominates(ir::ControlFlowGraph::iterator block,
 }
 
 ir::ControlFlowGraph::iterator DominatorTree::getDominator(
-	ir::ControlFlowGraph::iterator block) {
+	ir::ControlFlowGraph::const_iterator block) {
 	int n = blocksToIndex[block];
 	return blocks[i_dom[n]];
 }
 
 ir::ControlFlowGraph::iterator DominatorTree::getCommonDominator(
-	ir::ControlFlowGraph::iterator block1,
-	ir::ControlFlowGraph::iterator block2) {
+	ir::ControlFlowGraph::const_iterator block1,
+	ir::ControlFlowGraph::const_iterator block2) {
 
 	int n1 = blocksToIndex[block1];
 	int n2 = blocksToIndex[block2];
@@ -124,7 +124,7 @@ ir::ControlFlowGraph::iterator DominatorTree::getCommonDominator(
 
 
 ir::ControlFlowGraph::BlockPointerVector DominatorTree::getDominatedBlocks(
-	ir::ControlFlowGraph::iterator block) {
+	ir::ControlFlowGraph::const_iterator block) {
 	ir::ControlFlowGraph::BlockPointerVector dominatedBlocks;
 	
 	int n = blocksToIndex[block];

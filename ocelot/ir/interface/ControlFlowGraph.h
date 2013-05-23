@@ -50,6 +50,10 @@ public:
 		BlockList::iterator tail;
 		/*!	Edge properties */
 		Type type;
+
+	public:
+		/*!	is this a fallthrough? */
+		bool isFallthrough() const;
 	};
 
 	typedef std::list<Edge>                 EdgeList;

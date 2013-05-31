@@ -40,7 +40,8 @@ public:
 		MinimalStaticSingleAssignment =  0x800,
 		GatedStaticSingleAssignment   = 0x1000,
 		AffineAnalysis                = 0x2000,
-		SimpleAliasAnalysis           = 0x4000
+		SimpleAliasAnalysis           = 0x4000,
+		SafeRegionAnalysis            = 0x8000
 	};
 
 public:

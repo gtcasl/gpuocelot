@@ -78,6 +78,12 @@ const SafeRegionAnalysis::Region* SafeRegionAnalysis::getRegion(
 	return region->second;
 }
 
+SafeRegionAnalysis::Region::Region(Region* p, RegionId i)
+: parent(p), id(i), doesNotDependOnSideEffects(false)
+{
+
+}
+
 }
 
 

@@ -17,7 +17,7 @@ namespace analysis
 
 SafeRegionAnalysis::SafeRegionAnalysis()
 : KernelAnalysis(Analysis::SafeRegionAnalysis, "SafeRegionAnalysis",
-	Analysis::DominatorTreeAnalysis | Analysis::PostDominatorTreeAnalysis)
+	DominatorTreeAnalysis | PostDominatorTreeAnalysis | CycleAnalysis)
 {
 
 }

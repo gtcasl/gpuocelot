@@ -21,6 +21,8 @@
 #include <ocelot/analysis/interface/LoopAnalysis.h>
 #include <ocelot/analysis/interface/ConvergentRegionAnalysis.h>
 #include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
+#include <ocelot/analysis/interface/CycleAnalysis.h>
+#include <ocelot/analysis/interface/SafeRegionAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -62,6 +64,10 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 	types.push_back(analysis::Analysis::ThreadFrontierAnalysis);
 	types.push_back(analysis::Analysis::LoopAnalysis);
 	types.push_back(analysis::Analysis::ConvergentRegionAnalysis);
+	types.push_back(analysis::Analysis::SafeRegionAnalysis);
+	types.push_back(analysis::Analysis::CycleAnalysis);
+	types.push_back(analysis::Analysis::SimpleAliasAnalysis);
+	
 	
 	#else
 	TypeVector types =
@@ -75,7 +81,10 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 		analysis::Analysis::StructuralAnalysis,
 		analysis::Analysis::ThreadFrontierAnalysis,
 		analysis::Analysis::LoopAnalysis,
-		analysis::Analysis::ConvergentRegionAnalysis
+		analysis::Analysis::ConvergentRegionAnalysis,
+		analysis::Analysis::SafeRegionAnalysis,
+		analysis::Analysis::CycleAnalysis,
+		analysis::Analysis::SimpleAliasAnalysis
 	};
 	#endif
 	
@@ -341,6 +350,44 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				" for kernel " << k->name);
 			analyses.insert(std::make_pair(
 				analysis::Analysis::ConvergentRegionAnalysis,
+				regionAnalysis));
+			
+			regionAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				regionAnalysis->required, manager);
+			regionAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::SafeRegionAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::SafeRegionAnalysis) == 0)
+		{
+			analysis::SafeRegionAnalysis* regionAnalysis =
+				new analysis::SafeRegionAnalysis;
+			
+			report("   Allocating safe region analysis"
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::SafeRegionAnalysis,
+				regionAnalysis));
+			
+			regionAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				regionAnalysis->required, manager);
+			regionAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::CycleAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::CycleAnalysis) == 0)
+		{
+			analysis::CycleAnalysis* regionAnalysis =
+				new analysis::CycleAnalysis;
+			
+			report("   Allocating cycle analysis"
+				" for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::CycleAnalysis,
 				regionAnalysis));
 			
 			regionAnalysis->setPassManager(manager);

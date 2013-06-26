@@ -25,23 +25,24 @@ public:
 	/*! \brief Analysis type */
 	enum Type
 	{
-		NoAnalysis                    =    0x0,
-		ControlTreeAnalysis           =    0x1,
-		DominatorTreeAnalysis         =    0x2,
-		PostDominatorTreeAnalysis     =    0x4,
-		DataflowGraphAnalysis         =    0x8,
-		StaticSingleAssignment        =   0x10,
-		DivergenceAnalysis            =   0x20,
-		StructuralAnalysis            =   0x40,
-		ConditionalDivergenceAnalysis =   0x80,
-		ThreadFrontierAnalysis        =  0x100,
-		LoopAnalysis                  =  0x200,
-		ConvergentRegionAnalysis      =  0x400,
-		MinimalStaticSingleAssignment =  0x800,
-		GatedStaticSingleAssignment   = 0x1000,
-		AffineAnalysis                = 0x2000,
-		SimpleAliasAnalysis           = 0x4000,
-		SafeRegionAnalysis            = 0x8000
+		NoAnalysis                    =     0x0,
+		ControlTreeAnalysis           =     0x1,
+		DominatorTreeAnalysis         =     0x2,
+		PostDominatorTreeAnalysis     =     0x4,
+		DataflowGraphAnalysis         =     0x8,
+		StaticSingleAssignment        =    0x10,
+		DivergenceAnalysis            =    0x20,
+		StructuralAnalysis            =    0x40,
+		ConditionalDivergenceAnalysis =    0x80,
+		ThreadFrontierAnalysis        =   0x100,
+		LoopAnalysis                  =   0x200,
+		ConvergentRegionAnalysis      =   0x400,
+		MinimalStaticSingleAssignment =   0x800,
+		GatedStaticSingleAssignment   =  0x1000,
+		AffineAnalysis                =  0x2000,
+		SimpleAliasAnalysis           =  0x4000,
+		SafeRegionAnalysis            =  0x8000,
+		CycleAnalysis                 = 0x10000
 	};
 
 public:

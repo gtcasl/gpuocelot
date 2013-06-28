@@ -45,7 +45,7 @@ namespace translator
 PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l,
 	const ir::ExternalFunctionSet* s ) 
 	: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l, 
-		Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment,
+		{"StaticSingleAssignment"},
 		"PTXToLLVMTranslator" ),
 	_llvmKernel( 0 ), _tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
 	_tempBlockCount( 0 ), _usesTextures( false ), _externals( s )
@@ -77,8 +77,7 @@ ir::Kernel* PTXToLLVMTranslator::translate( const ir::Kernel* k )
 	
 	_llvmKernel = new ir::LLVMKernel( *k );
 
-	analysis::Analysis* analysis = getAnalysis(
-		Analysis::DataflowGraphAnalysis );
+	analysis::Analysis* analysis = getAnalysis( "DataflowGraphAnalysis" );
 	assert( analysis != 0 );
 	
 	_dfg = static_cast< analysis::DataflowGraph* >( analysis );

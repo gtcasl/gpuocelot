@@ -29,7 +29,7 @@ namespace transforms
 {
 
 PriorityLayoutPass::PriorityLayoutPass()
-: ImmutableKernelPass(Analysis::ThreadFrontierAnalysis, "PriorityLayoutPass")
+: ImmutableKernelPass({"ThreadFrontierAnalysis"}, "PriorityLayoutPass")
 {
 
 }
@@ -53,7 +53,7 @@ void PriorityLayoutPass::runOnKernel(const ir::IRKernel& k)
 	PriorityToBlockMap blocks;
 	
 	auto tfAnalysis = static_cast<analysis::ThreadFrontierAnalysis*>(
-		getAnalysis(Analysis::ThreadFrontierAnalysis));
+		getAnalysis("ThreadFrontierAnalysis"));
 
 	// Sort blocks by priority
 	for(auto block = k.cfg()->begin(); block != k.cfg()->end(); ++block)

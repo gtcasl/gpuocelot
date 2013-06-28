@@ -28,7 +28,7 @@ namespace transforms
 {
 
 ModuleLinkerPass::ModuleLinkerPass(bool inPlace)
-: ModulePass(Analysis::NoAnalysis, "ModuleLinkerPass"), _linkedModule(0),
+: ModulePass({}, "ModuleLinkerPass"), _linkedModule(0),
 	_inPlace(inPlace)
 {
 	

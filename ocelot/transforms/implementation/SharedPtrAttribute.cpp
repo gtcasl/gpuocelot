@@ -26,7 +26,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-transforms::SharedPtrAttribute::SharedPtrAttribute(int a, const std::string &n) {
+transforms::SharedPtrAttribute::SharedPtrAttribute(const std::string &n) {
 
 }
 

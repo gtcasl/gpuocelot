@@ -23,8 +23,8 @@ Translator::Exception::Exception( const std::string& message )
 	
 Translator::Translator( ir::Instruction::Architecture s, 
 	ir::Instruction::Architecture t, 
-	OptimizationLevel l, int r, const std::string& n ) 
-: ImmutableKernelPass( r, n ), optimizationLevel( l ), 
+	OptimizationLevel l, const StringVector& a, const std::string& n ) 
+: ImmutableKernelPass( a, n ), optimizationLevel( l ), 
 	sourceArchitecture( s ), targetArchitecture( t )
 {
 

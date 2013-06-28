@@ -785,19 +785,21 @@ static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	if(&externals != 0)
 	{
 		report("  Adding simplify externals pass");
-		manager.addPass(simplifyExternals);
+		manager.addPass(&simplifyExternals);
 	}
 	
 	transforms::ConvertPredicationToSelectPass convertPredicationToSelect;
 	transforms::RemoveBarrierPass              removeBarriers(id, &externals);
 	
 	report("  Adding convert predication to select pass");
-	manager.addPass(convertPredicationToSelect);
+	manager.addPass(&convertPredicationToSelect);
 
 	report("  Adding remove barriers pass");
-	manager.addPass(removeBarriers);
+	manager.addPass(&removeBarriers);
 	
 	manager.runOnKernel(kernel);
+
+	manager.releasePasses();
 
 	return removeBarriers.usesBarriers;
 }
@@ -858,8 +860,9 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 
 	transforms::PassManager manager(const_cast<ir::Module*>(kernel.module));
 	
-	manager.addPass(translator);
+	manager.addPass(&translator);
 	manager.runOnKernel(kernel);
+	manager.releasePasses();
 
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
 		translator.translatedKernel());
@@ -1371,8 +1374,9 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 	Pass pass(config::get().optimizations.subkernelSize);
 	transforms::PassManager manager(newModule);
 
-	manager.addPass(pass);
+	manager.addPass(&pass);
 	manager.runOnModule();
+	manager.releasePasses();
 
 	KernelVector subkernels;
 

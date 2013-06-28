@@ -28,9 +28,9 @@ namespace analysis
 
 /*! \brief Constructor, already making the analysis of a input kernel */
 DivergenceAnalysis::DivergenceAnalysis()
-: KernelAnalysis( Analysis::DivergenceAnalysis, "DivergenceAnalysis",
-	Analysis::DataflowGraphAnalysis | Analysis::GatedStaticSingleAssignment |
-	Analysis::PostDominatorTreeAnalysis), _doCFGanalysis(true),
+: KernelAnalysis( "DivergenceAnalysis",
+	{"GatedStaticSingleAssignment",
+	"PostDominatorTreeAnalysis"}), _doCFGanalysis(true),
 	_includeConditionalConvergence(true)
 {
 }
@@ -45,7 +45,7 @@ DivergenceAnalysis::DivergenceAnalysis()
  */
 void DivergenceAnalysis::analyze(ir::IRKernel &k)
 {
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
@@ -169,7 +169,7 @@ const DivergenceGraph& DivergenceAnalysis::getDivergenceGraph() const
 
 const DataflowGraph* DivergenceAnalysis::getDFG() const
 {
-	const Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	const Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	return static_cast<const DataflowGraph*>(dfgAnalysis);
@@ -189,7 +189,7 @@ void DivergenceAnalysis::_convergenceAnalysis()
 {
 	report("Running convergence analysis.");
 
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
@@ -236,7 +236,7 @@ static bool isDivergenceSource(const ir::PTXOperand& operand)
 
 void DivergenceAnalysis::_analyzeDataFlow()
 {
-	Analysis* dfg = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfg = getAnalysis("DataflowGraphAnalysis");
 	assert(dfg != 0);
 
 	DataflowGraph &nonConstGraph = static_cast<DataflowGraph&>(*dfg);
@@ -545,8 +545,7 @@ static bool doAnyDivergentPathsReachThePostDominator(
 unsigned int DivergenceAnalysis::_numberOfDivergentPathsToPostDominator(
 	const DataflowGraph::iterator &block) const {
 	
-	const Analysis* dfgAnalysis = getAnalysis(
-		Analysis::DataflowGraphAnalysis);
+	const Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	const DataflowGraph &cdfg =
@@ -554,7 +553,7 @@ unsigned int DivergenceAnalysis::_numberOfDivergentPathsToPostDominator(
 	DataflowGraph &dfg = const_cast<DataflowGraph&>(cdfg);
 	
 	PostdominatorTree* dtree = (PostdominatorTree*)
-		(getAnalysis(Type::PostDominatorTreeAnalysis));
+		(getAnalysis("PostDominatorTreeAnalysis"));
 	
 	auto postDominator = dfg.getCFGtoDFGMap()[
 		dtree->getPostDominator(block->block())];
@@ -586,8 +585,7 @@ DivergenceAnalysis::block_set
 	DivergenceAnalysis::_getDivergentBlocksInPostdominanceFrontier(
 	const DataflowGraph::iterator &block) {
 	
-	const Analysis* dfgAnalysis = getAnalysis(
-		Analysis::DataflowGraphAnalysis);
+	const Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	const DataflowGraph &cdfg =
@@ -595,7 +593,7 @@ DivergenceAnalysis::block_set
 	DataflowGraph &dfg = const_cast<DataflowGraph&>(cdfg);
 	
 	PostdominatorTree* dtree = (PostdominatorTree*)
-		(getAnalysis(Type::PostDominatorTreeAnalysis));
+		(getAnalysis("PostDominatorTreeAnalysis"));
 	
 	auto postDominator = dfg.getCFGtoDFGMap()[
 		dtree->getPostDominator(block->block())];
@@ -623,8 +621,7 @@ bool DivergenceAnalysis::_hasTrivialPathToExit(
 	// We can ignore divergent threads that immediately exit
 	unsigned int exitingPaths = 0;
 	
-	const Analysis* dfgAnalysis = getAnalysis(
-		Analysis::DataflowGraphAnalysis);
+	const Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	const DataflowGraph &dfg =
@@ -669,7 +666,7 @@ bool DivergenceAnalysis::_hasTrivialPathToExit(
 
 void DivergenceAnalysis::_findBranches(branch_set& branches)
 {
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
@@ -681,7 +678,7 @@ void DivergenceAnalysis::_findBranches(branch_set& branches)
 
 	/* Post-dominator tree */
 	PostdominatorTree *dtree;
-	dtree = (PostdominatorTree*) (getAnalysis(Type::PostDominatorTreeAnalysis));
+	dtree = (PostdominatorTree*) (getAnalysis("PostDominatorTreeAnalysis"));
 
 	report(" Finding branches");
 	for (; block != endBlock; ++block) {

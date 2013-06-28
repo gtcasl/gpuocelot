@@ -31,7 +31,7 @@ namespace transforms
 {
 
 ThreadFrontierReconvergencePass::ThreadFrontierReconvergencePass(bool g)
-: ImmutableKernelPass(Analysis::ThreadFrontierAnalysis,
+: ImmutableKernelPass({"ThreadFrontierAnalysis"},
 	"ThreadFrontierReconvergencePass"), _gen6(g)
 {
 
@@ -51,7 +51,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	typedef analysis::ThreadFrontierAnalysis TFAnalysis;
 	typedef ir::ControlFlowGraph::const_pointer_iterator const_pointer_iterator;
 
-	Analysis* analysis = getAnalysis(Analysis::ThreadFrontierAnalysis);
+	Analysis* analysis = getAnalysis("ThreadFrontierAnalysis");
 	assert(analysis != 0);
 	
 	TFAnalysis* tfAnalysis = static_cast<TFAnalysis*>(analysis);

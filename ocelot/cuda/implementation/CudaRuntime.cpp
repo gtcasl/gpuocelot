@@ -469,10 +469,11 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	
 	for(PassSet::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
-		manager.addPass(**pass);
+		manager.addPass(*pass);
 	}
 	
 	manager.runOnModule();
+	manager.releasePasses();	
 	
 	for(DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {

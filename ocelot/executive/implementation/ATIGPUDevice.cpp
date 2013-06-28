@@ -498,7 +498,6 @@ namespace executive
 		PassManager manager(const_cast<ir::Module*>(m->ir));
 
 		manager.runOnKernel(k);
-		manager.destroyPasses();
 	}
 	
 	void ATIGPUDevice::launch(

@@ -79,7 +79,7 @@ void PTXOptimizer::optimize()
 		
 		applyOptions( pass );
 		
-		manager.addPass( *pass );
+		manager.addPass( pass );
 	}
 
 	for( auto name = passes.begin(); name != passes.end(); ++name )
@@ -91,7 +91,7 @@ void PTXOptimizer::optimize()
 		
 		applyOptions( pass );
 		
-		manager.addPass( *pass );
+		manager.addPass( pass );
 	}
 	
 	if( input.empty() )
@@ -101,7 +101,6 @@ void PTXOptimizer::optimize()
 	}
 
 	manager.runOnModule();
-	manager.destroyPasses();
 	
 	std::ofstream out( output.c_str() );
 	

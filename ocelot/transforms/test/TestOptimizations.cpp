@@ -140,10 +140,11 @@ bool TestOptimizations::runTest(const std::string& test)
 	
 		transforms::PassManager manager(&module);
 	
-		manager.addPass(*getPass(test));
+		manager.addPass(getPass(test));
 
 		manager.runOnModule();
-		manager.destroyPasses();
+
+		manager.releasePasses();
 	}
 	catch(const std::exception& e)
 	{

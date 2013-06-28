@@ -37,7 +37,7 @@ namespace transforms
 {
 
 SubkernelFormationPass::SubkernelFormationPass(unsigned int e)
-	: ModulePass(Analysis::DataflowGraphAnalysis, "SubkernelFormationPass"), 
+	: ModulePass({"DataflowGraphAnalysis"}, "SubkernelFormationPass"), 
 	_expectedRegionSize(e)
 {
 	report("Constructing SubkernelFormationPass() - expected region size: "
@@ -88,7 +88,7 @@ void SubkernelFormationPass::setExpectedRegionSize(unsigned int s)
 
 SubkernelFormationPass::ExtractKernelsPass::ExtractKernelsPass(
 	unsigned int regionSize) : 
-	KernelPass(Analysis::DataflowGraphAnalysis, "ExtractKernelsPass"), 
+	KernelPass({"DataflowGraphAnalysis"}, "ExtractKernelsPass"), 
 	_expectedRegionSize(regionSize)
 {
 
@@ -101,7 +101,7 @@ void SubkernelFormationPass::ExtractKernelsPass::initialize(const ir::Module& m)
 
 analysis::DataflowGraph& SubkernelFormationPass::ExtractKernelsPass::_dfg()
 {
-	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfg_structure = getAnalysis("DataflowGraphAnalysis");
 	assert(dfg_structure != 0);
 
 	return *static_cast<analysis::DataflowGraph*>(dfg_structure);

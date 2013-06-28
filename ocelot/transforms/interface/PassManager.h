@@ -23,15 +23,20 @@ namespace transforms { class Pass;     }
 namespace transforms
 {
 
-//! Forward Declarations
-class Pass;
-
 /*! \brief A class to orchestrate the execution of many passes */
 class PassManager
 {
 public:
+	typedef analysis::Analysis Analysis;
+	typedef ir::Module         Module;
+	typedef ir::IRKernel       IRKernel;
+
+public:
 	/*! \brief A map from analysis id to an up to date copy */
-	typedef std::unordered_map<int, analysis::Analysis*> AnalysisMap;
+	typedef std::unordered_map<std::string, Analysis*> AnalysisMap;
+	
+	typedef std::vector<Pass*> PassVector;
+	typedef std::list<PassVector> PassWaveList;
 
 public:
 	/*! \brief The constructor creates an empty pass manager associated
@@ -41,18 +46,17 @@ public:
 		
 		\param module The module that this manager is associated with.
 	*/
-	explicit PassManager(ir::Module* module);
+	explicit PassManager(Module* module);
 	~PassManager();
 		
 public:
 	/*! \brief Adds a pass that needs to be eventually run
 	
-		The pass is not owned by the manager and must not be deallocated
-		before it is run by the manager.
+		The pass is now owned by the manager.
 	
 		\param pass The pass being added
 	 */
-	void addPass(Pass& pass);
+	void addPass(Pass* pass);
 	
 	/*! \brief Adds an explicit dependence between pass types
 	
@@ -67,38 +71,39 @@ public:
 	void addDependence(const std::string& dependentPassName,
 		const std::string& passName);
 	
-	/*! \brief Clears all added passes */
+	/*! \brief Clears all added passes, deleting them */
 	void clear();
-	
-	/*! \brief Deletes all added passes */
-	void destroyPasses();
+
+	/*! \brief Releases all added passes, they are no longer
+		owned by the manager */
+	void releasePasses();
 	
 public:
-	/*! \brief Runs passes on a specific Kernel contained in the module.
+	/*! \brief Runs passes on a specific IRKernel contained in the module.
 	
-		\param name The name of the kernel to run all passes on.
+		\param name The name of the function to run all passes on.
 	*/
 	void runOnKernel(const std::string& name);
 
-	/*! \brief Runs passes on a specific Kernel.
+	/*! \brief Runs passes on a specific IRKernel.
 	
-		\param kernel The kernel to run all passes on.
+		\param function The function to run all passes on.
 	*/
-	void runOnKernel(ir::IRKernel& kernel);
+	void runOnKernel(IRKernel& function);
 	
 	/*! \brief Runs passes on the entire module. */
 	void runOnModule();
 
 public:
 	/*! \brief Get an up to date analysis by type */
-	analysis::Analysis* getAnalysis(int type);
+	Analysis* getAnalysis(const std::string& type);
 
 	/*! \brief Get an up to date analysis by type (const) */
-	const analysis::Analysis* getAnalysis(int type) const;
+	const Analysis* getAnalysis(const std::string& type) const;
 	
 	/*! \brief Invalidate the analysis, the pass manager will
 		need to generate it again the next time 'get' is called */
-	void invalidateAnalysis(int type);
+	void invalidateAnalysis(const std::string& type);
 
 public:
 	/*! \brief Get a previously run pass by name */
@@ -107,36 +112,30 @@ public:
 	/*! \brief Get a previously run pass by name (const) */
 	const Pass* getPass(const std::string& name) const;
 
-public:
-	// Come on MSVS, get your act together!		
-	#if !defined(_MSC_VER)
+public:	
 	/*! \brief Disallow the copy constructor */
 	PassManager(const PassManager&) = delete;
 	/*! \brief Disallow the assignment operator */
 	const PassManager& operator=(const PassManager&) = delete;
-	#endif
 
 private:
-	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
 	typedef std::multimap<std::string, std::string> DependenceMap;
-	typedef std::unordered_map<std::string, Pass*> PassNameMap;
-	typedef std::vector<Pass*> PassVector;
-	typedef std::list<PassVector> PassWaveList;
+	typedef std::unordered_map<std::string, Pass*> PassMap;
 	typedef std::vector<std::string> StringVector;
 
 private:
 	PassWaveList _schedulePasses();
 	StringVector _getAllDependentPasses(Pass* p);
-	Pass* _findPass(const std::string& name);
+	Pass*        _findPass(const std::string& name);
 
 private:
-	PassMap       _passes;
-	ir::Module*   _module;
-	ir::IRKernel* _kernel;
+	PassVector    _passes;
+	Module*       _module;
+	IRKernel*     _function;
 	AnalysisMap*  _analyses;
 	PassVector    _ownedTemporaryPasses;
-	PassNameMap   _previouslyRunPasses;
 	DependenceMap _extraDependences;
+	PassMap       _previouslyRunPasses;
 };
 
 }

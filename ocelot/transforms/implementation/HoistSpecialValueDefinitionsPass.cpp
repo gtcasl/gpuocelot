@@ -22,7 +22,7 @@ namespace transforms
 {
 
 HoistSpecialValueDefinitionsPass::HoistSpecialValueDefinitionsPass()
-: KernelPass(Analysis::DominatorTreeAnalysis,
+: KernelPass({"DominatorTreeAnalysis"},
 	"HoistSpecialValueDefinitionsPass"),
   hoistSpecialRegisters(true), hoistSpecialMemoryOperations(true)
 {
@@ -85,7 +85,7 @@ void HoistSpecialValueDefinitionsPass::finalize()
 	
 	_addressSpaces.clear();
 		
-	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);
+	invalidateAnalysis("DataflowGraphAnalysis");
 }
 
 HoistSpecialValueDefinitionsPass::VariableDescriptor::VariableDescriptor(
@@ -248,7 +248,7 @@ void HoistSpecialValueDefinitionsPass::_findAllAddressSpaceUses(
 
 void HoistSpecialValueDefinitionsPass::_hoistAllVariableUses(ir::IRKernel& k)
 {
-	Analysis* a = getAnalysis(Analysis::DominatorTreeAnalysis);
+	Analysis* a = getAnalysis("DominatorTreeAnalysis");
 	assert(a != 0);
 	
 	analysis::DominatorTree* dominatorTree =
@@ -264,7 +264,7 @@ void HoistSpecialValueDefinitionsPass::_hoistAllVariableUses(ir::IRKernel& k)
 void HoistSpecialValueDefinitionsPass::_hoistAllAddressSpaceUses(
 	ir::IRKernel& k)
 {
-	Analysis* a = getAnalysis(Analysis::DominatorTreeAnalysis);
+	Analysis* a = getAnalysis("DominatorTreeAnalysis");
 	assert(a != 0);
 	
 	analysis::DominatorTree* dominatorTree =
@@ -432,9 +432,9 @@ ir::ControlFlowGraph::iterator
 			ir::BasicBlock(k.cfg()->newId())).first->tail;
 			
 		// invalidate the dominator tree
-		pass->invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
+		pass->invalidateAnalysis("DominatorTreeAnalysis");
 		
-		Analysis* a = pass->getAnalysis(Analysis::DominatorTreeAnalysis);
+		Analysis* a = pass->getAnalysis("DominatorTreeAnalysis");
 		assert(a != 0);
 	
 		dominatorTree = static_cast<analysis::DominatorTree*>(a);		

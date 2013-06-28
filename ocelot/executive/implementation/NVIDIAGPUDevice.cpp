@@ -403,8 +403,10 @@ namespace executive
 			transforms::SharedPtrAttribute ptrAttributePass;
 			copyModule = new ir::Module(*ir);
 			transforms::PassManager manager(copyModule);
-			manager.addPass(ptrAttributePass);
+			manager.addPass(&ptrAttributePass);
 			manager.runOnModule();
+			manager.releasePasses();
+
 			module = copyModule;
 		}
 		

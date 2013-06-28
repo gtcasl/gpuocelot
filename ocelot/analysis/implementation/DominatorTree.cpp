@@ -25,8 +25,7 @@ namespace analysis
 {
 
 DominatorTree::DominatorTree()
-: KernelAnalysis(Analysis::DominatorTreeAnalysis,
-	"DominatorTreeAnalysis", Analysis::NoAnalysis) {
+: KernelAnalysis("DominatorTreeAnalysis", {}) {
 }
 
 DominatorTree::~DominatorTree() {

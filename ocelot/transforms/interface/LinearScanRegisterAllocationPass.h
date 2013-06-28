@@ -56,10 +56,9 @@ public:
 
 	/*! \brief Constructor on the number of registers to allocate */
 	LinearScanRegisterAllocationPass(unsigned regs = 8,
-		Analysis::Type analysis =
-			(Analysis::Type)(Analysis::Type::MinimalStaticSingleAssignment |
-			Analysis::Type::DominatorTreeAnalysis |
-			Analysis::Type::PostDominatorTreeAnalysis),
+		const Analysis::StringVector& analysis =
+			{"MinimalStaticSingleAssignment", "DominatorTreeAnalysis",
+				"PostDominatorTreeAnalysis"},
 		unsigned reserved = 0);
 
 	/*! \brief Initialize the pass using a specific module */

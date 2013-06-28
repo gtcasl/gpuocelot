@@ -16,7 +16,7 @@ namespace analysis
 {
 
 CycleAnalysis::CycleAnalysis()
-: KernelAnalysis(Analysis::CycleAnalysis, "CycleAnalysis", NoAnalysis)
+: KernelAnalysis("CycleAnalysis")
 {
 
 }

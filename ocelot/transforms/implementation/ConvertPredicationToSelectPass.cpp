@@ -22,8 +22,7 @@ namespace transforms
 {
 	analysis::DataflowGraph& ConvertPredicationToSelectPass::dfg()
 	{
-		analysis::Analysis* graph = getAnalysis(
-			analysis::Analysis::DataflowGraphAnalysis);
+		analysis::Analysis* graph = getAnalysis("DataflowGraphAnalysis");
 		assert(graph != 0);
 		
 		return static_cast<analysis::DataflowGraph&>(*graph);
@@ -92,7 +91,7 @@ namespace transforms
 
 	
 	ConvertPredicationToSelectPass::ConvertPredicationToSelectPass()
-		: KernelPass( Analysis::DataflowGraphAnalysis,
+		: KernelPass( {"DataflowGraphAnalysis"},
 			"ConvertPredicationToSelectPass" )
 	{
 	}

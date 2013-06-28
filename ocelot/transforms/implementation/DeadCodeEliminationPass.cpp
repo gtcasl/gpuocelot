@@ -26,8 +26,7 @@ namespace transforms
 {
 
 DeadCodeEliminationPass::DeadCodeEliminationPass()
-: KernelPass(Analysis::DataflowGraphAnalysis
-	| Analysis::StaticSingleAssignment, "DeadCodeEliminationPass")
+: KernelPass({"StaticSingleAssignment"}, "DeadCodeEliminationPass")
 {
 
 }
@@ -247,7 +246,7 @@ void DeadCodeEliminationPass::runOnKernel(ir::IRKernel& k)
 	report("Running dead code elimination on kernel " << k.name);
 	reportE(REPORT_PTX, k);
 	
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 
 	analysis::DataflowGraph& dfg =

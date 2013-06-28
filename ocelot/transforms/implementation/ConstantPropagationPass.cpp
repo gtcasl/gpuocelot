@@ -26,8 +26,7 @@ namespace transforms
 {
 
 ConstantPropagationPass::ConstantPropagationPass()
-: KernelPass(Analysis::DataflowGraphAnalysis
-	| Analysis::MinimalStaticSingleAssignment, "ConstantPropagationPass")
+: KernelPass({"MinimalStaticSingleAssignment"}, "ConstantPropagationPass")
 {
 
 }
@@ -42,7 +41,7 @@ void ConstantPropagationPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running constant propagation on kernel " << k.name);
 	
-	Analysis* dfgAnalysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfgAnalysis = getAnalysis("DataflowGraphAnalysis");
 	assert(dfgAnalysis != 0);
 	
 	analysis::DataflowGraph& dfg =

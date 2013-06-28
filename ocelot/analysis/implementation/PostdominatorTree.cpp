@@ -27,8 +27,7 @@ namespace analysis
 {
 
 PostdominatorTree::PostdominatorTree()
-: KernelAnalysis(Analysis::PostDominatorTreeAnalysis,
-	"PostdominatorTreeAnalysis", Analysis::NoAnalysis) {
+: KernelAnalysis("PostDominatorTreeAnalysis", {}) {
 	
 }
 

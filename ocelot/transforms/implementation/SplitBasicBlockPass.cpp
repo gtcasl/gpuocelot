@@ -17,7 +17,7 @@ namespace transforms
 {
 
 SplitBasicBlockPass::SplitBasicBlockPass(unsigned int m)
-: KernelPass(Analysis::NoAnalysis, "SplitBasicBlockPass"), _maxSize(m)
+: KernelPass({}, "SplitBasicBlockPass"), _maxSize(m)
 {
 	assert(_maxSize > 0);
 }

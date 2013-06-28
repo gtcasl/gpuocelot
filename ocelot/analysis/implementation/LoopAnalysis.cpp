@@ -214,8 +214,7 @@ LoopAnalysis::Loop::block_iterator LoopAnalysis::Loop::getLoopPredecessor()
 }
 
 LoopAnalysis::LoopAnalysis()
-: KernelAnalysis(Analysis::LoopAnalysis, "LoopAnalysis",
-	Analysis::DominatorTreeAnalysis)
+: KernelAnalysis("LoopAnalysis", {"DominatorTreeAnalysis"})
 {
 
 }
@@ -225,7 +224,7 @@ void LoopAnalysis::analyze(ir::IRKernel& kernel)
 	_blockToLoopMap.clear();
 	
 	analysis::Analysis* dominatorTreeAnalysis =
-		getAnalysis(Analysis::DominatorTreeAnalysis);
+		getAnalysis("DominatorTreeAnalysis");
 	assert(dominatorTreeAnalysis != 0);
 	
 	analysis::DominatorTree* dominatorTree =

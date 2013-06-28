@@ -762,7 +762,7 @@ void SSAGraph::_gssa(DataflowGraph::RegisterId& current)
 	_graph._phiPredicateMap.clear();
 
 	PostdominatorTree& pdt = static_cast<PostdominatorTree&>(
-		*_graph.getAnalysis(Analysis::PostDominatorTreeAnalysis));
+		*_graph.getAnalysis("PostDominatorTreeAnalysis"));
 
 	reportE(DEBUG, "Building GSSA");
 	for(DataflowGraph::iterator fi = _graph.begin(); fi != _graph.end(); ++fi)

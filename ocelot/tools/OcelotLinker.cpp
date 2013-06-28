@@ -74,7 +74,7 @@ int link(const std::string& inputList, const std::string& output,
 
 		transforms::PassManager manager(&module);
 		
-		manager.addPass(linkerPass);
+		manager.addPass(&linkerPass);
 
 		try
 		{
@@ -86,8 +86,13 @@ int link(const std::string& inputList, const std::string& output,
 			std::cout << "Linker Error: link failed for module '"
 				<< *input << "'.\n";
 			std::cout << " Message: " << e.what() << ".\n";
+
+			manager.clear();
+
 			return -2;
 		}
+		
+		manager.clear();
 	}
 
 	std::ofstream out(output.c_str());

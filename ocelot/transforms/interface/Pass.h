@@ -56,14 +56,14 @@ public:
 	const Type type;
 	
 	/*! \brief What types of analysis routines does the pass require? */
-	const int analyses;
+	const StringVector analyses;
 	
 	/*! \brief The name of the pass */
 	const std::string name;
 
 public:
 	/*! \brief The default constructor sets the type */
-	Pass(Type t = InvalidPass, int a = Analysis::NoAnalysis,
+	Pass(Type t = InvalidPass, const StringVector& required = StringVector(),
 		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~Pass();
@@ -73,14 +73,14 @@ public:
 	void setPassManager(transforms::PassManager* m);
 
 	/*! \brief Get an up to date analysis by type */
-	Analysis* getAnalysis(Analysis::Type type);
+	Analysis* getAnalysis(const std::string& name);
 
 	/*! \brief Get an up to date analysis by type (const) */
-	const Analysis* getAnalysis(Analysis::Type type) const;
+	const Analysis* getAnalysis(const std::string& name) const;
 	
 	/*! \brief Invalidate the analysis, the pass manager will
 		need to generate it again for other applications */
-	void invalidateAnalysis(Analysis::Type type);
+	void invalidateAnalysis(const std::string& name);
 
 public:
 	/*! \brief Get a list of passes that this pass depends on */
@@ -101,7 +101,7 @@ class ImmutablePass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	ImmutablePass(int a = Analysis::NoAnalysis,
+	ImmutablePass(const StringVector& required = StringVector(),
 		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~ImmutablePass();
@@ -116,7 +116,8 @@ class ModulePass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "");
+	ModulePass(const StringVector& required = StringVector(),
+		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~ModulePass();
 	
@@ -130,7 +131,8 @@ class KernelPass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "");
+	KernelPass(const StringVector& required = StringVector(),
+		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~KernelPass();
 	
@@ -148,7 +150,7 @@ class ImmutableKernelPass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	ImmutableKernelPass(int a = Analysis::NoAnalysis,
+	ImmutableKernelPass(const StringVector& required = StringVector(),
 		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~ImmutableKernelPass();
@@ -167,7 +169,7 @@ class BasicBlockPass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	BasicBlockPass(int a = Analysis::NoAnalysis,
+	BasicBlockPass(const StringVector& required = StringVector(),
 		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~BasicBlockPass();

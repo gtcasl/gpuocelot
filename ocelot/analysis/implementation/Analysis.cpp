@@ -4,9 +4,6 @@
 	\brief  The source file for the Analysis class.
 */
 
-#ifndef ANALYSIS_CPP_INCLUDED
-#define ANALYSIS_CPP_INCLUDED
-
 // Ocelot Includes
 #include <ocelot/analysis/interface/Analysis.h>
 
@@ -18,8 +15,8 @@
 namespace analysis
 {
 
-Analysis::Analysis(Type t, const std::string& n, int r)
-: type(t), name(n), required(r), _manager(0)
+Analysis::Analysis(const std::string& n, const StringVector& r)
+: name(n), required(r), _manager(0)
 {
 
 }
@@ -29,14 +26,21 @@ Analysis::~Analysis()
 
 }
 
-KernelAnalysis::KernelAnalysis(Type t, const std::string& n, int r)
-: Analysis(t, n, r)
+void Analysis::configure(const StringVector& options)
+{
+	
+}
+
+KernelAnalysis::KernelAnalysis(const std::string& n,
+	const StringVector& r)
+: Analysis(n, r)
 {
 
 }
 
-ModuleAnalysis::ModuleAnalysis(Type t, const std::string& n, int r)
-: Analysis(t, n, r)
+ModuleAnalysis::ModuleAnalysis(const std::string& n,
+	const StringVector& r)
+: Analysis(n, r)
 {
 
 }
@@ -46,25 +50,23 @@ void Analysis::setPassManager(transforms::PassManager* m)
 	_manager = m;
 }
 
-Analysis* Analysis::getAnalysis(Analysis::Type type)
+Analysis* Analysis::getAnalysis(const std::string& name)
 {
 	assert(_manager != 0);
-	return _manager->getAnalysis(type);
+	return _manager->getAnalysis(name);
 }
 
-const Analysis* Analysis::getAnalysis(Analysis::Type type) const
+const Analysis* Analysis::getAnalysis(const std::string& name) const
 {
 	assert(_manager != 0);
-	return _manager->getAnalysis(type);
+	return _manager->getAnalysis(name);
 }
 
-void Analysis::invalidateAnalysis(Analysis::Type type)
+void Analysis::invalidateAnalysis(const std::string& name)
 {
 	assert(_manager != 0);
-	_manager->invalidateAnalysis(type);
+	_manager->invalidateAnalysis(name);
 }
 
 }
-
-#endif
 

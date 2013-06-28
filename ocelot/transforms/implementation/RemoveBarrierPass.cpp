@@ -24,7 +24,7 @@ namespace transforms
 
 analysis::DataflowGraph& RemoveBarrierPass::_dfg()
 {
-	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfg_structure = getAnalysis("DataflowGraphAnalysis");
 	assert(dfg_structure != 0);
 
 	return *static_cast<analysis::DataflowGraph*>(dfg_structure);
@@ -369,7 +369,7 @@ void RemoveBarrierPass::_addLocalVariables()
 
 RemoveBarrierPass::RemoveBarrierPass( unsigned int i,
 	const ir::ExternalFunctionSet* s )
-: KernelPass( analysis::Analysis::DataflowGraphAnalysis, "RemoveBarriersPass" ),
+: KernelPass( {"DataflowGraphAnalysis"}, "RemoveBarriersPass" ),
 	_kernelId( i ), _externals( s )
 {
 

@@ -10,7 +10,7 @@
 namespace transforms {
 
 SyncEliminationPass::SyncEliminationPass()
-	: KernelPass(Analysis::DivergenceAnalysis, "SyncElimination")
+	: KernelPass({"DivergenceAnalysis"}, "SyncElimination")
 {
 }
 
@@ -18,13 +18,13 @@ SyncEliminationPass::SyncEliminationPass()
 	bra instructions into bra.uni */
 void SyncEliminationPass::runOnKernel(ir::IRKernel& k)
 {
-	Analysis* div_structure = getAnalysis(Analysis::DivergenceAnalysis);
+	Analysis* div_structure = getAnalysis("DivergenceAnalysis");
 	assert(div_structure != 0);
 
 	const analysis::DivergenceAnalysis *divAnalysis =
 		static_cast<analysis::DivergenceAnalysis*>(div_structure);
 
-	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfg_structure = getAnalysis("DataflowGraphAnalysis");
 	assert(dfg_structure != 0);
 
 	analysis::DataflowGraph& dfg =

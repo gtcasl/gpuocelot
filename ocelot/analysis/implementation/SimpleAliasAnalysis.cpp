@@ -14,7 +14,7 @@ namespace analysis
 {
 
 SimpleAliasAnalysis::SimpleAliasAnalysis()
-: KernelAnalysis(Analysis::SimpleAliasAnalysis, "SimpleAliasAnalysis"),
+: KernelAnalysis("SimpleAliasAnalysis"),
 	_aStoreCanReachThisFunction(true), _kernel(0)
 {
 

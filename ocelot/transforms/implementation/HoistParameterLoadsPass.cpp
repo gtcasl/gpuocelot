@@ -25,8 +25,8 @@ namespace transforms
 {
 
 HoistParameterLoadsPass::HoistParameterLoadsPass()
-: KernelPass(Analysis::DominatorTreeAnalysis | Analysis::DataflowGraphAnalysis |
-	Analysis::LoopAnalysis | Analysis::SimpleAliasAnalysis,
+: KernelPass({"DominatorTreeAnalysis", "DataflowGraphAnalysis",
+	"LoopAnalysis", "SimpleAliasAnalysis"},
 	"HoistParameterLoadsPass")
 {
 	
@@ -47,7 +47,7 @@ void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 	typedef std::vector<Load> LoadVector;
 
 	auto aliasAnalysis = static_cast<analysis::SimpleAliasAnalysis*>(
-		getAnalysis(Analysis::SimpleAliasAnalysis));
+		getAnalysis("SimpleAliasAnalysis"));
 	
 	LoadVector candidateLoads;
 	
@@ -79,8 +79,8 @@ void HoistParameterLoadsPass::runOnKernel(ir::IRKernel& k)
 		_tryHoistingLoad(load->first, load->second, k);
 	}
 	
-	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);
-	invalidateAnalysis(analysis::Analysis::SimpleAliasAnalysis  );
+	invalidateAnalysis("DataflowGraphAnalysis");
+	invalidateAnalysis("SimpleAliasAnalysis"  );
 }
 
 static void insertBeforeTerminator(ir::ControlFlowGraph::iterator block,
@@ -117,7 +117,7 @@ void HoistParameterLoadsPass::_tryHoistingLoad(
 	report("   hoisting to " << newBlock->label());
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	auto load = new ir::PTXInstruction(ir::PTXInstruction::Ld);
 	
@@ -141,9 +141,9 @@ ir::ControlFlowGraph::iterator
 		ir::IRKernel& k, ir::ControlFlowGraph::iterator block)
 {
 	auto loopAnalysis = static_cast<analysis::LoopAnalysis*>(
-		getAnalysis(Analysis::LoopAnalysis));
+		getAnalysis("LoopAnalysis"));
 	auto dominatorTree = static_cast<analysis::DominatorTree*>(
-		getAnalysis(Analysis::DominatorTreeAnalysis));
+		getAnalysis("DominatorTreeAnalysis"));
 		
 	while(loopAnalysis->isContainedInLoop(block))
 	{
@@ -154,8 +154,8 @@ ir::ControlFlowGraph::iterator
 			block = k.cfg()->split_edge(dominator->get_fallthrough_edge(),
 				ir::BasicBlock(k.cfg()->newId())).first->tail;
 				
-			invalidateAnalysis(analysis::Analysis::LoopAnalysis         );
-			invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
+			invalidateAnalysis("LoopAnalysis"         );
+			invalidateAnalysis("DominatorTreeAnalysis");
 
 			break;
 		}

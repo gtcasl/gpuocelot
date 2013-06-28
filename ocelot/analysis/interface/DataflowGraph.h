@@ -473,6 +473,9 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief Is the graph in ssa form? */
 		unsigned int ssa() const;
 		
+		/*! \brief Set the type of SSA to use when the graph is constructed */
+		void setPreferredSSAType(SsaType form);
+		
 	public:
 		/*! \brief Get an executable sequence of blocks */
 		BlockPointerVector executableSequence();

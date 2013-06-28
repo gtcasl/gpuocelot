@@ -24,7 +24,7 @@ namespace transforms
 {
 
 SimplifyControlFlowGraphPass::SimplifyControlFlowGraphPass()
-: KernelPass(Analysis::NoAnalysis, "SimplifyControlFlowGraphPass"),
+: KernelPass({}, "SimplifyControlFlowGraphPass"),
 	mergeExitBlocks(true), deleteEmptyBlocks(true)
 {
 
@@ -72,10 +72,10 @@ void SimplifyControlFlowGraphPass::runOnKernel(ir::IRKernel& k)
 
 void SimplifyControlFlowGraphPass::finalize()
 {
-	invalidateAnalysis(analysis::Analysis::DataflowGraphAnalysis);
-	invalidateAnalysis(analysis::Analysis::DominatorTreeAnalysis);
-	invalidateAnalysis(analysis::Analysis::PostDominatorTreeAnalysis);
-	invalidateAnalysis(analysis::Analysis::ThreadFrontierAnalysis);
+	invalidateAnalysis("DataflowGraphAnalysis");
+	invalidateAnalysis("DominatorTreeAnalysis");
+	invalidateAnalysis("PostDominatorTreeAnalysis");
+	invalidateAnalysis("ThreadFrontierAnalysis");
 }
 
 bool SimplifyControlFlowGraphPass::_mergeExitBlocks(ir::IRKernel& k)

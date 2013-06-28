@@ -58,7 +58,7 @@ unsigned AffineLinearScan::MAX_WARPS = 32;
 
 analysis::AffineAnalysis& AffineLinearScan::_afa()
 {
-	Analysis* aff = getAnalysis(Analysis::AffineAnalysis);
+	Analysis* aff = getAnalysis("AffineAnalysis");
 	assert(aff != 0);
 
 	return *static_cast<analysis::AffineAnalysis*>(aff);
@@ -249,8 +249,7 @@ void AffineLinearScan::_coalesce()
 
 AffineLinearScan::AffineLinearScan(unsigned regs) :
 		LinearScanRegisterAllocationPass(regs-1,
-			(Analysis::Type) (Analysis::Type::AffineAnalysis |
-			Analysis::Type::GatedStaticSingleAssignment), 0),
+			{"AffineAnalysis", "GatedStaticSingleAssignment"}, 0),
 		_shared("ocelot_affine_stack", MemoryArray::MemoryDirective::Shared,
 			MemoryArray::StackAddressSpace::Shared),
 		_m(NULL)

@@ -17,7 +17,7 @@ namespace transforms {
 	{
 	public:
 		
-		SharedPtrAttribute(int a = Analysis::NoAnalysis, const std::string &n = "SharedPtrAttribute");
+		SharedPtrAttribute(const std::string &n = "SharedPtrAttribute");
 		virtual ~SharedPtrAttribute();
 	
 	public:

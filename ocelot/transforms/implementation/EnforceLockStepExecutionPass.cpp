@@ -27,9 +27,9 @@ namespace transforms
 {
 
 EnforceLockStepExecutionPass::EnforceLockStepExecutionPass()
-: KernelPass(Analysis::ThreadFrontierAnalysis |
-	Analysis::DataflowGraphAnalysis | Analysis::ConvergentRegionAnalysis |
-	Analysis::DominatorTreeAnalysis | Analysis::DivergenceAnalysis,
+: KernelPass({"ThreadFrontierAnalysis",
+	"DataflowGraphAnalysis", "ConvergentRegionAnalysis",
+	"DominatorTreeAnalysis", "DivergenceAnalysis"},
 	"EnforceLockStepExecutionPass")
 {
 
@@ -169,9 +169,9 @@ static bool blockHasExitPoint(ir::IRKernel& k,
 void EnforceLockStepExecutionPass::_assignMaskToEntryPoint(ir::IRKernel& k)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	auto div = static_cast<analysis::DivergenceAnalysis*>(
-		getAnalysis(Analysis::DivergenceAnalysis));
+		getAnalysis("DivergenceAnalysis"));
 	
 	auto firstBlock = dfg->begin()->fallthrough();
 	
@@ -204,9 +204,9 @@ void EnforceLockStepExecutionPass::_assignMaskToEntryPoint(ir::IRKernel& k)
 void EnforceLockStepExecutionPass::_predicateInstructions(ir::IRKernel& k)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-			getAnalysis(Analysis::DataflowGraphAnalysis));
+			getAnalysis("DataflowGraphAnalysis"));
 	auto div = static_cast<analysis::DivergenceAnalysis*>(
-		getAnalysis(Analysis::DivergenceAnalysis));
+		getAnalysis("DivergenceAnalysis"));
 	
 	for(auto block = dfg->begin(); block != dfg->end(); ++block)
 	{
@@ -272,7 +272,7 @@ void EnforceLockStepExecutionPass::_assignConditionsToEdges(ir::IRKernel& k)
 	report(" generating masks for each edge");
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	for(auto block = dfg->begin(); block != dfg->end(); ++block)
 	{
@@ -337,7 +337,7 @@ void EnforceLockStepExecutionPass::_deleteAllBranches(ir::IRKernel& k)
 	report(" deleting all branches");
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	for(auto block = dfg->begin(); block != dfg->end(); ++block)
 	{
@@ -372,13 +372,13 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 	//  their TFs) initializes the mask for each block
 	
 	auto tfAnalysis = static_cast<analysis::ThreadFrontierAnalysis*>(
-		getAnalysis(Analysis::ThreadFrontierAnalysis));
+		getAnalysis("ThreadFrontierAnalysis"));
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 
 	auto domTree = static_cast<analysis::DominatorTree*>(
-		getAnalysis(Analysis::DominatorTreeAnalysis));
+		getAnalysis("DominatorTreeAnalysis"));
 
 	auto cfgToDfgMap = dfg->getCFGtoDFGMap();
 
@@ -425,7 +425,7 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 	}
 
 	auto div = static_cast<analysis::DivergenceAnalysis*>(
-		getAnalysis(Analysis::DivergenceAnalysis));
+		getAnalysis("DivergenceAnalysis"));
 	
 	for(auto block = dfg->begin(); block != dfg->end(); ++block)
 	{
@@ -544,9 +544,9 @@ void EnforceLockStepExecutionPass::_initializeMasks(ir::IRKernel& k)
 void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	auto div = static_cast<analysis::DivergenceAnalysis*>(
-		getAnalysis(Analysis::DivergenceAnalysis));
+		getAnalysis("DivergenceAnalysis"));
 		
 	report(" updating masks on region transitions");
 	
@@ -582,9 +582,9 @@ void EnforceLockStepExecutionPass::_setMergePoints(ir::IRKernel& k)
 void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 {
 	auto tfAnalysis = static_cast<analysis::ThreadFrontierAnalysis*>(
-		getAnalysis(Analysis::ThreadFrontierAnalysis));
+		getAnalysis("ThreadFrontierAnalysis"));
 	auto div = static_cast<analysis::DivergenceAnalysis*>(
-		getAnalysis(Analysis::DivergenceAnalysis));
+		getAnalysis("DivergenceAnalysis"));
 	
 	typedef std::multimap<analysis::ThreadFrontierAnalysis::Priority,
 		block_iterator,
@@ -597,7 +597,7 @@ void EnforceLockStepExecutionPass::_setBranches(ir::IRKernel& k)
 	BlockSet    visited;
 
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	auto cfgToDFGMap = dfg->getCFGtoDFGMap();
 	
@@ -730,7 +730,7 @@ void EnforceLockStepExecutionPass::_mergeVariablesBeforeEntering(
 	block_iterator block, block_iterator successor)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	Register edgeVariable      = _getEdgeVariable(block, successor);
 	Register successorVariable = _getBlockVariable(successor);
@@ -753,7 +753,7 @@ void EnforceLockStepExecutionPass::_setVariableForSuccessor(
 	block_iterator block, block_iterator successor)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	Register edgeVariable      = _getEdgeVariable(block, successor);
 	Register successorVariable = _getBlockVariable(successor);
@@ -774,7 +774,7 @@ void EnforceLockStepExecutionPass::_zeroVariableBeforeExiting(
 	block_iterator block, block_iterator successor)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	Register successorVariable = _getBlockVariable(successor);
 	
@@ -793,7 +793,7 @@ void EnforceLockStepExecutionPass::_uniformBranchToTarget(block_iterator block,
 	const_block_iterator target)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	ir::PTXInstruction bra(ir::PTXInstruction::Bra);
 	
@@ -812,7 +812,7 @@ void EnforceLockStepExecutionPass::_conditionalBranchToTarget(
 	block_iterator block, const_block_iterator target)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	ir::PTXInstruction bra(ir::PTXInstruction::Bra);
 	
@@ -833,7 +833,7 @@ void EnforceLockStepExecutionPass::_branchToTargetIfVariableIsSet(
 	block_iterator block, const_block_iterator target)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 
 	Register targetVariable = _getBlockVariable(target);
 	
@@ -864,7 +864,7 @@ ir::PTXInstruction* EnforceLockStepExecutionPass::_canonicalizeComparison(
 	block_iterator block, ir::PTXInstruction* comparison)
 {
 	auto div = static_cast<analysis::DivergenceAnalysis*>(
-		getAnalysis(Analysis::DivergenceAnalysis));
+		getAnalysis("DivergenceAnalysis"));
 	
 	assert(comparison->opcode == ir::PTXInstruction::SetP);
 
@@ -889,7 +889,7 @@ ir::PTXInstruction* EnforceLockStepExecutionPass::_canonicalizeComparison(
 	if(comparison->pq.addressMode == ir::PTXOperand::Invalid)
 	{
 		auto dfg = static_cast<analysis::DataflowGraph*>(
-			getAnalysis(Analysis::DataflowGraphAnalysis));
+			getAnalysis("DataflowGraphAnalysis"));
 		
 		comparison->pq = ir::PTXOperand(ir::PTXOperand::Register,
 			ir::PTXOperand::pred, dfg->newRegister());
@@ -909,7 +909,7 @@ ir::PTXInstruction* EnforceLockStepExecutionPass::_moveToEnd(
 	block_iterator block, ir::PTXInstruction* original)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	for(auto instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction)
@@ -933,7 +933,7 @@ void EnforceLockStepExecutionPass::_addComparison(block_iterator block,
 	ir::PTXInstruction* branch)
 {
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	
 	// convert predicate to register
 	ir::PTXInstruction selp(ir::PTXInstruction::SelP);
@@ -995,7 +995,7 @@ EnforceLockStepExecutionPass::Register
 	EnforceLockStepExecutionPass::_getBlockVariable(const_block_iterator block)
 {
 	auto regions = static_cast<analysis::ConvergentRegionAnalysis*>(
-		getAnalysis(Analysis::ConvergentRegionAnalysis));
+		getAnalysis("ConvergentRegionAnalysis"));
 	
 	Region region = regions->getRegion(block->block());
 	
@@ -1004,7 +1004,7 @@ EnforceLockStepExecutionPass::Register
 	if(mapping == _blockToRegionRegisters.end())
 	{
 		auto dfg = static_cast<analysis::DataflowGraph*>(
-			getAnalysis(Analysis::DataflowGraphAnalysis));
+			getAnalysis("DataflowGraphAnalysis"));
 		
 		mapping = _blockToRegionRegisters.insert(
 			std::make_pair(region, dfg->newRegister())).first;

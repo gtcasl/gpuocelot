@@ -16,7 +16,7 @@ namespace transforms
 {
 
 LoopUnrollingPass::LoopUnrollingPass()
-: KernelPass(Analysis::LoopAnalysis, "LoopUnrollingPass")
+: KernelPass({"LoopAnalysis"}, "LoopUnrollingPass")
 {
 	
 }
@@ -28,7 +28,7 @@ void LoopUnrollingPass::initialize(const ir::Module& m)
 
 void LoopUnrollingPass::runOnKernel(ir::IRKernel& k)
 {
-	Analysis* loopAnalysis = getAnalysis(Analysis::LoopAnalysis);
+	Analysis* loopAnalysis = getAnalysis("LoopAnalysis");
 	assert(loopAnalysis != 0);
 	
 	// TODO actually unroll something.

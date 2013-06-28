@@ -25,7 +25,7 @@ namespace transforms
 {
 
 FunctionInliningPass::FunctionInliningPass(unsigned int threshold)
-: KernelPass(Analysis::DataflowGraphAnalysis, "FunctionInliningPass"),
+: KernelPass({"DataflowGraphAnalysis"}, "FunctionInliningPass"),
 	thresholdToInline(threshold), _nextRegister(0)
 {
 
@@ -40,7 +40,7 @@ void FunctionInliningPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running function inlining pass on kernel " << k.name);
 	
-	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	auto analysis = getAnalysis("DataflowGraphAnalysis");
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
@@ -55,7 +55,7 @@ void FunctionInliningPass::runOnKernel(ir::IRKernel& k)
 
 	if(!_calls.empty())
 	{
-		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
+		invalidateAnalysis("DataflowGraphAnalysis");
 	}
 }
 

@@ -7,6 +7,7 @@
 // Ocelot includes
 #include <ocelot/analysis/interface/ControlTree.h>
 #include <ocelot/ir/interface/Instruction.h>
+#include <ocelot/ir/interface/IRKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/interface/string.h>
@@ -29,13 +30,31 @@
 
 namespace analysis
 {
-	ControlTree::ControlTree(CFG *cfg) 
+	ControlTree::ControlTree() 
 		: 
 			_nodes(NodeVector()),
 			_post(NodeList()),
 			_visit(NodeSet()),
 			_root(0)
 	{
+		
+	}
+
+	ControlTree::~ControlTree()
+	{
+		for (NodeVector::iterator node = _nodes.begin() ; 
+				node != _nodes.end() ; ++node) 
+		{
+			delete *node;
+		}
+		
+		_nodes.clear();
+	}
+	
+	void ControlTree::analyze(ir::IRKernel& k)
+	{
+		auto cfg = k.cfg();
+	
 		Node* start = 0;
 		Node* end = 0;
 		std::unordered_map<CFG::const_iterator, Node*> bmap;
@@ -74,17 +93,6 @@ namespace analysis
 		assertM(end->succs().size() == 0, "End shouldn't have successor");
 
 		_structural_analysis(start);
-	}
-
-	ControlTree::~ControlTree()
-	{
-		for (NodeVector::iterator node = _nodes.begin() ; 
-				node != _nodes.end() ; ++node) 
-		{
-			delete *node;
-		}
-		
-		_nodes.clear();
 	}
 
 	ControlTree::Node* ControlTree::_insert_node(Node* node)

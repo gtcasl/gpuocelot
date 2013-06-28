@@ -63,7 +63,8 @@ public:
 	/*! \brief The constructor */
 	Translator( ir::Instruction::Architecture s, 
 		ir::Instruction::Architecture t, 
-		OptimizationLevel l = NoOptimization, int r = Analysis::NoAnalysis,
+		OptimizationLevel l = NoOptimization, 
+		const StringVector& analyses = {},
 		const std::string& name = "" );
 	/*! \brief The destructor is needed for virtual methods */
 	virtual ~Translator();

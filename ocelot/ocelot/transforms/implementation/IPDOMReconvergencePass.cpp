@@ -35,8 +35,8 @@ namespace transforms
 {
 
 IPDOMReconvergencePass::IPDOMReconvergencePass()
-: KernelPass(Analysis::PostDominatorTreeAnalysis
-	| Analysis::DominatorTreeAnalysis, "IPDOMReconvergencePass")
+: KernelPass({"PostDominatorTreeAnalysis",
+	"DominatorTreeAnalysis"}, "IPDOMReconvergencePass")
 {
 
 }
@@ -53,7 +53,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
 		unsigned int> InstructionIdMap;
 
-	Analysis* pdom_structure = getAnalysis(Analysis::PostDominatorTreeAnalysis);
+	Analysis* pdom_structure = getAnalysis("PostDominatorTreeAnalysis");
 	assert(pdom_structure != 0);
 	
 	analysis::PostdominatorTree* pdom_tree

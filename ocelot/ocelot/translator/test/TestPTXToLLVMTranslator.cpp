@@ -121,14 +121,15 @@ namespace test
 			transforms::RemoveBarrierPass pass2;
 			translator::PTXToLLVMTranslator translator;
 
-			manager.addPass(pass1);
-			manager.addPass(pass2);
+			manager.addPass(&pass1);
+			manager.addPass(&pass2);
 
 			manager.runOnKernel(*kernel);
-			manager.clear();
+			manager.releasePasses();
 			
-			manager.addPass(translator);
+			manager.addPass(&translator);
 			manager.runOnKernel(*kernel);
+			manager.releasePasses();
 
 			ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
 				translator.translatedKernel() );

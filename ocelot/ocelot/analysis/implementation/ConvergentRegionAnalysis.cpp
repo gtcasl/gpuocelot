@@ -16,8 +16,8 @@ namespace analysis
 {
 
 ConvergentRegionAnalysis::ConvergentRegionAnalysis()
-: KernelAnalysis(Analysis::ConvergentRegionAnalysis, "ConvergentRegionAnalysis",
-	Analysis::DivergenceAnalysis | Analysis::PostDominatorTreeAnalysis)
+: KernelAnalysis("ConvergentRegionAnalysis",
+	{"DivergenceAnalysis", "PostDominatorTreeAnalysis"})
 {
 
 }

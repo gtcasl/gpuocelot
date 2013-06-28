@@ -646,7 +646,7 @@ report("Applying forward copy");
 } 
 
 StructuralTransform::StructuralTransform()
-: KernelPass(Analysis::DataflowGraphAnalysis, "StructuralTransform")
+: KernelPass({"DataflowGraphAnalysis"}, "StructuralTransform")
 {
 
 }
@@ -826,7 +826,7 @@ const SA::NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
 
 analysis::DataflowGraph& StructuralTransform::dfg()
 {
-	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfg_structure = getAnalysis("DataflowGraphAnalysis");
 	assert(dfg_structure != 0);
 
 	return *static_cast<analysis::DataflowGraph*>(dfg_structure);

@@ -55,7 +55,7 @@ namespace transforms
 
 analysis::DivergenceAnalysis& DivergenceLinearScan::_diva()
 {
-	Analysis* divA = getAnalysis(Analysis::DivergenceAnalysis);
+	Analysis* divA = getAnalysis("DivergenceAnalysis");
 	assertM(divA != NULL, "Got null divergence analysis");
 	return *static_cast<analysis::DivergenceAnalysis*>(divA);
 }
@@ -240,8 +240,7 @@ void DivergenceLinearScan::_coalesce()
 
 DivergenceLinearScan::DivergenceLinearScan(unsigned regs) 
 : LinearScanRegisterAllocationPass(regs-1,
-	(Analysis::Type) (Analysis::Type::DivergenceAnalysis |
-	Analysis::Type::GatedStaticSingleAssignment), 0),
+	{"DivergenceAnalysis", "GatedStaticSingleAssignment"}, 0),
 	_shared("ocelot_divergence_stack", MemoryArray::MemoryDirective::Shared,
 		MemoryArray::StackAddressSpace::Shared),
 	_m(NULL)

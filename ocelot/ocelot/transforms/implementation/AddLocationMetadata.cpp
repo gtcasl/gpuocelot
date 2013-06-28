@@ -22,7 +22,7 @@ namespace transforms
 {
 
 AddLocationMetadataPass::AddLocationMetadataPass()
-: KernelPass(Analysis::NoAnalysis, "AddLocationMetadataPass")
+: KernelPass({}, "AddLocationMetadataPass")
 {
 
 }

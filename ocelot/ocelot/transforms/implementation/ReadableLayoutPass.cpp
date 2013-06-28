@@ -28,7 +28,7 @@ namespace transforms
 {
 
 ReadableLayoutPass::ReadableLayoutPass()
-: KernelPass(Analysis::DominatorTreeAnalysis, "ReadableLayoutPass")
+: KernelPass({"DominatorTreeAnalysis"}, "ReadableLayoutPass")
 {
 
 }
@@ -204,7 +204,7 @@ void ReadableLayoutPass::finalize()
 bool ReadableLayoutPass::_isCyclicDependency(iterator predecessor,
 	iterator successor)
 {
-	auto domAnalysis = getAnalysis(Analysis::DominatorTreeAnalysis);
+	auto domAnalysis = getAnalysis("DominatorTreeAnalysis");
 	assert(domAnalysis != 0);
 	
 	auto dominatorTree = static_cast<analysis::DominatorTree&>(*domAnalysis);

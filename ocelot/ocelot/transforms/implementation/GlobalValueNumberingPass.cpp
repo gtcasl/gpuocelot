@@ -32,10 +32,8 @@ namespace transforms
 
 
 GlobalValueNumberingPass::GlobalValueNumberingPass(bool e)
-:  KernelPass(Analysis::DataflowGraphAnalysis |
-	Analysis::MinimalStaticSingleAssignment
-	| Analysis::DominatorTreeAnalysis
-	| Analysis::SimpleAliasAnalysis,
+:  KernelPass({"MinimalStaticSingleAssignment",
+	"DominatorTreeAnalysis", "SimpleAliasAnalysis"},
 	"GlobalValueNumberingPass"), eliminateInstructions(e), _nextNumber(0)
 {
 
@@ -64,14 +62,14 @@ void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 		// BUG: when values are replaced by generting instructions
 		//      destinations, the dataflow path between them needs
 		//      updating
-		invalidateAnalysis(Analysis::StaticSingleAssignment);
-		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
+		invalidateAnalysis("StaticSingleAssignment");
+		invalidateAnalysis("DataflowGraphAnalysis");
 	}
 	else
 	{
 		// convert out of SSA, this renumbers registers
-		invalidateAnalysis(Analysis::StaticSingleAssignment);
-		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
+		invalidateAnalysis("StaticSingleAssignment");
+		invalidateAnalysis("DataflowGraphAnalysis");
 	}
 }
 
@@ -109,12 +107,12 @@ analysis::DataflowGraph::BlockPointerVector
 	typedef std::unordered_set<analysis::DataflowGraph::iterator> BlockSet;	
 	typedef analysis::DataflowGraph::BlockPointerVector           BlockVector;
 
-	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	auto analysis = getAnalysis("DataflowGraphAnalysis");
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);
 
-	analysis = getAnalysis(Analysis::DominatorTreeAnalysis);
+	analysis = getAnalysis("DominatorTreeAnalysis");
 	assert(analysis != 0);
 	
 	auto domTree = static_cast<analysis::DominatorTree*>(analysis);
@@ -247,7 +245,7 @@ bool GlobalValueNumberingPass::_processInstruction(
 bool GlobalValueNumberingPass::_isSimpleLoad(
 	const InstructionIterator& instruction)
 {
-	auto analysis = getAnalysis(Analysis::SimpleAliasAnalysis);
+	auto analysis = getAnalysis("SimpleAliasAnalysis");
 	assert(analysis != 0);
 	
 	auto alias = static_cast<analysis::SimpleAliasAnalysis*>(analysis);
@@ -472,7 +470,7 @@ GlobalValueNumberingPass::GeneratingInstruction
 		return GeneratingInstruction(false);
 	}
 	
-	auto analysis = getAnalysis(Analysis::DominatorTreeAnalysis);
+	auto analysis = getAnalysis("DominatorTreeAnalysis");
 	assert(analysis != 0);
 	
 	auto dominatorTree = static_cast<analysis::DominatorTree*>(analysis);
@@ -611,7 +609,7 @@ bool GlobalValueNumberingPass::_couldAliasStore(
 	typedef std::stack<analysis::DataflowGraph::iterator>         BlockStack;
 	typedef std::unordered_set<analysis::DataflowGraph::iterator> BlockSet;	
 	
-	auto analysis = getAnalysis(Analysis::SimpleAliasAnalysis);
+	auto analysis = getAnalysis("SimpleAliasAnalysis");
 	assert(analysis != 0);
 	
 	auto alias = static_cast<analysis::SimpleAliasAnalysis*>(analysis);
@@ -710,7 +708,7 @@ GlobalValueNumberingPass::Immediate GlobalValueNumberingPass::_createImmediate(
 
 void GlobalValueNumberingPass::_processEliminatedInstructions()
 {
-	auto analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	auto analysis = getAnalysis("DataflowGraphAnalysis");
 	assert(analysis != 0);
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(analysis);

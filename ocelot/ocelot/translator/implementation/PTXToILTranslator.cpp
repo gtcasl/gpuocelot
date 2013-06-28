@@ -51,7 +51,9 @@ namespace translator
 	{
 		// translate instructions iterating thru the control tree
 		
-		analysis::ControlTree controlTree(_ilKernel->cfg());
+		analysis::ControlTree controlTree;
+		
+		controlTree.analyze(*_ilKernel);
 		
 		_translate(controlTree.get_root_node());
 	}

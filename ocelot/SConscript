@@ -305,8 +305,6 @@ if env['install']:
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), PTXOptimizer))
 	installed.append(env.Install(os.path.join( \
-		env['install_path'], "bin"), KernelDrawer))
-	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotServer))
 	installed.append(env.Install(os.path.join( \
 		env['install_path'], "bin"), OcelotHarness))

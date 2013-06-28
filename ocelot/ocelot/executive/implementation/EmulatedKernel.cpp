@@ -204,7 +204,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		transforms::IPDOMReconvergencePass* pass
 			= new transforms::IPDOMReconvergencePass;
 
-		manager.addPass(*pass);
+		manager.addPass(pass);
 		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
@@ -215,7 +215,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		transforms::DefaultLayoutPass* pass
 			= new transforms::DefaultLayoutPass;
 
-		manager.addPass(*pass);
+		manager.addPass(pass);
 		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
@@ -226,7 +226,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		transforms::ThreadFrontierReconvergencePass* pass
 			= new transforms::ThreadFrontierReconvergencePass(false);
 
-		manager.addPass(*pass);
+		manager.addPass(pass);
 		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
@@ -237,7 +237,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		transforms::ThreadFrontierReconvergencePass* pass
 			= new transforms::ThreadFrontierReconvergencePass(true);
 
-		manager.addPass(*pass);
+		manager.addPass(pass);
 		manager.runOnKernel(*this);
 
 		instructions = std::move(pass->instructions);
@@ -248,7 +248,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		transforms::PriorityLayoutPass* layout
 			= new transforms::PriorityLayoutPass();
 
-		manager.addPass(*layout);
+		manager.addPass(layout);
 		manager.runOnKernel(*this);
 		
 		instructions = std::move(layout->instructions);
@@ -258,9 +258,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			<< ReconvergenceMechanism::toString(
 				(ReconvergenceMechanism::Type)
 				config::get().executive.reconvergenceMechanism));
-	}	
-	
-	manager.destroyPasses();
+	}
 }
 
 /*!

@@ -26,8 +26,7 @@ namespace transforms
 {
 
 MoveEliminationPass::MoveEliminationPass()
-: KernelPass(Analysis::DataflowGraphAnalysis |
-	Analysis::MinimalStaticSingleAssignment, "MoveEliminationPass")
+: KernelPass({"MinimalStaticSingleAssignment"}, "MoveEliminationPass")
 {
 	
 }
@@ -44,7 +43,7 @@ void MoveEliminationPass::runOnKernel(ir::IRKernel& k)
 	report("Eliminating moves in kernel " << k.name << "");
 	
 	auto dfg = static_cast<analysis::DataflowGraph*>(
-		getAnalysis(Analysis::DataflowGraphAnalysis));
+		getAnalysis("DataflowGraphAnalysis"));
 	assert(dfg != 0);
 
 	auto moves = getMoves(dfg);
@@ -65,7 +64,7 @@ void MoveEliminationPass::runOnKernel(ir::IRKernel& k)
 	
 	if(eliminatedAny)
 	{
-		invalidateAnalysis(Analysis::DataflowGraphAnalysis);
+		invalidateAnalysis("DataflowGraphAnalysis");
 	}
 	
 	report("finished...");

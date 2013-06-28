@@ -33,8 +33,8 @@ namespace analysis
 {
 
 ThreadFrontierAnalysis::ThreadFrontierAnalysis()
-: KernelAnalysis(Analysis::ThreadFrontierAnalysis, "ThreadFrontierAnalysis",
-	Analysis::DominatorTreeAnalysis)
+: KernelAnalysis("ThreadFrontierAnalysis",
+	{"DominatorTreeAnalysis"})
 {
 
 }
@@ -218,7 +218,8 @@ void ThreadFrontierAnalysis::_separatePathPriorities(NodeMap& nodes, node_iterat
 	typedef std::list<node_iterator> NodePointerList;
 
 	// If this block dominates an unvisited node, visit it now
-	auto dom = static_cast<DominatorTree*>(getAnalysis(DominatorTreeAnalysis));
+	auto dom = static_cast<DominatorTree*>(
+		getAnalysis("DominatorTreeAnalysis"));
 
 	bool changed = true;
 

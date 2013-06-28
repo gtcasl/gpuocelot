@@ -30,7 +30,7 @@ namespace transforms
 {
 
 DefaultLayoutPass::DefaultLayoutPass()
-: ImmutableKernelPass(Analysis::NoAnalysis, "DefaultLayoutPass")
+: ImmutableKernelPass({}, "DefaultLayoutPass")
 {
 
 }

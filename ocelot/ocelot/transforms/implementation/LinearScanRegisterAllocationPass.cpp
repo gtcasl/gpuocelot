@@ -120,15 +120,11 @@ const ir::PTXOperand::DataType LinearScanRegisterAllocationPass::selectType(
 }
 
 LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass(
-	unsigned regs, const Analysis::Type analysis, unsigned reserved)
-: KernelPass(Analysis::Type::DataflowGraphAnalysis |
-	analysis, "LinearScanRegisterAllocationPass"),
+	unsigned regs, const Analysis::StringVector& analysis, unsigned reserved)
+: KernelPass(analysis, "LinearScanRegisterAllocationPass"),
 	_memoryStack("ocelot_ls_stack"), _registers(regs)
 {
-	assertM((analysis & (Analysis::Type::GatedStaticSingleAssignment
-			| Analysis::Type::MinimalStaticSingleAssignment
-			| Analysis::Type::StaticSingleAssignment)),
-			"No static single assignment form requested");
+	
 }
 
 void LinearScanRegisterAllocationPass::initialize(const ir::Module& m)
@@ -199,8 +195,8 @@ void LinearScanRegisterAllocationPass::_coalesce()
 
 	Graph graph;
 	TypeMap types;
-	getAnalysis(Analysis::DominatorTreeAnalysis);
-	getAnalysis(Analysis::PostDominatorTreeAnalysis);
+	getAnalysis("DominatorTreeAnalysis");
+	getAnalysis("PostDominatorTreeAnalysis");
 
 	for(auto block = _dfg().begin(); block != _dfg().end(); ++block)
 	{
@@ -774,7 +770,7 @@ void LinearScanRegisterAllocationPass::_extendStack()
 
 analysis::DataflowGraph& LinearScanRegisterAllocationPass::_dfg()
 {
-	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* dfg_structure = getAnalysis("DataflowGraphAnalysis");
 	assert(dfg_structure != 0);
 
 	return *static_cast<analysis::DataflowGraph*>(dfg_structure);

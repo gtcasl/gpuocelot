@@ -259,14 +259,14 @@ static void simplifyCall(ir::PTXKernel& kernel,
 
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
 	const ir::ExternalFunctionSet& e, bool s) 
-: KernelPass(analysis::Analysis::DataflowGraphAnalysis,
+: KernelPass({"DataflowGraphAnalysis"},
 	"SimplifyExternalCallsPass"), _externals(&e), _simplifyAll(s || &e == 0)
 {
 
 }
 
 SimplifyExternalCallsPass::SimplifyExternalCallsPass() 
-: KernelPass(analysis::Analysis::DataflowGraphAnalysis,
+: KernelPass({"DataflowGraphAnalysis"},
 	"SimplifyExternalCallsPass"), _externals(0), _simplifyAll(true)
 {
 
@@ -281,7 +281,7 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 {
 	ir::PTXKernel& kernel = static_cast<ir::PTXKernel&>(k);
 	
-	Analysis* analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	Analysis* analysis = getAnalysis("DataflowGraphAnalysis");
 	assert(analysis != 0);
 	
 	analysis::DataflowGraph* dfg =
@@ -331,7 +331,7 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 		}
 	}
 	
-	invalidateAnalysis(Analysis::DataflowGraphAnalysis);
+	invalidateAnalysis("DataflowGraphAnalysis");
 }
 
 void SimplifyExternalCallsPass::finalize()

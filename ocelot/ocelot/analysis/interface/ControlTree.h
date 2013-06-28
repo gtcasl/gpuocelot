@@ -40,13 +40,16 @@ typedef ir::ControlFlowGraph CFG;
 namespace analysis
 {
 	/*! \brief Computes the Control Tree as defined in Muchnick's textbook */
-	class ControlTree : public Analysis
+	class ControlTree : public KernelAnalysis
 	{
 		public:
-			/*! \brief Construct ControlTree given the CFG */
-			ControlTree(CFG* cfg);
+			/*! \brief Construct ControlTree */
+			ControlTree();
 			/*! \brief Default destructor */
 			~ControlTree();
+
+		public:
+			void analyze(ir::IRKernel& k);
 
 			/*! \brief Region type */
 			enum RegionType

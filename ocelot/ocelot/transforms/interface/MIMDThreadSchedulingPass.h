@@ -4,8 +4,7 @@
 	\brief  The header file for the MIMDThreadSchedulingPass class.
 */
 
-#ifndef MIMD_THREAD_SCHEDULING_PASS_H_INCLUDED
-#define MIMD_THREAD_SCHEDULING_PASS_H_INCLUDED
+#pragma once
 
 // Ocelot Includes
 #include <ocelot/transforms/interface/Pass.h>
@@ -21,17 +20,12 @@ public:
 	MIMDThreadSchedulingPass();
 
 public:
-	/*! \brief Initialize the pass using a specific module */
-	void initialize(const ir::Module& m);
 	/*! \brief Run the pass on a specific kernel in the module */
-	void runOnKernel(ir::IRKernel& k);		
-	/*! \brief Finalize the pass */
-	void finalize();
+	void runOnKernel(ir::IRKernel& k);
 
 };
 
 
 }
 
-#endif
 

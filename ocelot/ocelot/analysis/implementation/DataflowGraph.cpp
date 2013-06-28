@@ -529,8 +529,7 @@ DataflowGraph* DataflowGraph::Block::dfg()
 }
 
 DataflowGraph::DataflowGraph()  
-	: KernelAnalysis(Analysis::DataflowGraphAnalysis,
-		"DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 
+	: KernelAnalysis("DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 
 		_ssa( SsaType::None ), _maxRegister( 0 )
 {
 }
@@ -636,7 +635,16 @@ void DataflowGraph::analyze(ir::IRKernel& kernel)
 		}
 	}
 	
+	auto form = _ssa;
+	
+	_ssa = None;
+	
 	compute();
+	
+	if(form != None)
+	{
+		toSsa(form);
+	}
 }
 
 DataflowGraph::iterator DataflowGraph::begin()
@@ -1437,6 +1445,13 @@ void DataflowGraph::fromSsa()
 unsigned int DataflowGraph::ssa() const
 {
 	return _ssa;
+}
+
+void DataflowGraph::setPreferredSSAType(SsaType form)
+{
+	assert(_cfg == 0);
+
+	_ssa = form;
 }
 
 DataflowGraph::BlockPointerVector DataflowGraph::executableSequence()

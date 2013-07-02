@@ -10,8 +10,20 @@
 #include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
 #include <ocelot/analysis/interface/DataDependenceAnalysis.h>
 
+#include <ocelot/ir/interface/IRKernel.h>
+
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+
 // Standard Library Includes
 #include <cassert>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 namespace analysis
 {
@@ -32,6 +44,8 @@ static void addEdges(Node& node, const Node& existingNode,
 
 void DependenceAnalysis::analyze(ir::IRKernel& kernel)
 {
+	report("Running dependence analysis on kernel " << kernel.name);
+	
 	auto controlDependenceAnalysis = static_cast<ControlDependenceAnalysis*>(
 		getAnalysis("ControlDependenceAnalysis")); 
 	auto dataDependenceAnalysis = static_cast<DataDependenceAnalysis*>(
@@ -77,6 +91,9 @@ static void addEdges(Node& node, const Node& existingNode,
 	
 		assert(successorNode != instructionToNodes.end());
 		
+		report(" " << node.instruction->toString() << " -> "
+			<< successor->instruction->toString());
+	
 		node.successors.push_back(successorNode->second);
 	}
 	

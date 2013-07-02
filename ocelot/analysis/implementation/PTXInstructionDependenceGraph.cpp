@@ -22,6 +22,8 @@ namespace analysis
 typedef ir::PTXInstruction PTXInstruction;
 typedef std::unordered_set<PTXInstruction*> InstructionSet;
 typedef PTXInstructionDependenceGraph::iterator iterator;
+typedef PTXInstructionDependenceGraph::InstructionPair InstructionPair;
+typedef PTXInstructionDependenceGraph::DependenceMap DependenceMap;
 
 PTXInstructionDependenceGraph::Node::Node(PTXInstruction* i)
 : instruction(i)
@@ -29,7 +31,8 @@ PTXInstructionDependenceGraph::Node::Node(PTXInstruction* i)
 
 }
 
-static bool dependsOn(iterator next, iterator target, InstructionSet& visited);
+static bool dependsOn(iterator next, iterator target, InstructionSet& visited,
+	DependenceMap& savedDependencies);
 
 bool PTXInstructionDependenceGraph::dependsOn(const PTXInstruction* instruction,
 	const PTXInstruction* dependee)
@@ -45,7 +48,7 @@ bool PTXInstructionDependenceGraph::dependsOn(const PTXInstruction* instruction,
 	InstructionSet visited;
 	
 	return analysis::dependsOn(instructionNode->second,
-		dependeeNode->second, visited);
+		dependeeNode->second, visited, _savedDependencies);
 }
 
 PTXInstructionDependenceGraph::iterator PTXInstructionDependenceGraph::begin()
@@ -91,16 +94,35 @@ PTXInstructionDependenceGraph::const_iterator
 	return node->second;
 }
 
-static bool dependsOn(iterator next, iterator target, InstructionSet& visited)
+static bool dependsOn(iterator next, iterator dependee, InstructionSet& visited,
+	DependenceMap& savedDependencies)
 {
+	auto dependence = InstructionPair(next->instruction, dependee->instruction);
+
+	auto savedDependence = savedDependencies.find(dependence);
+
+	if(savedDependence != savedDependencies.end())
+	{
+		return savedDependence->second;
+	}
+
 	if(!visited.insert(next->instruction).second) return false;
 	
-	if(next == target) return true;
+	if(next == dependee) return true;
 	
 	for(auto successor : next->successors)
 	{
-		if(dependsOn(successor, target, visited)) return true;
+		if(dependsOn(successor, dependee, visited, savedDependencies))
+		{
+			return true;
+		}
+		
+		savedDependencies.insert(std::make_pair(
+			InstructionPair(next->instruction, successor->instruction), true));
 	}
+
+	savedDependencies.insert(std::make_pair(
+		InstructionPair(next->instruction, dependee->instruction), false));
 
 	return false;
 }

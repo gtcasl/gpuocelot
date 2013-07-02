@@ -93,7 +93,7 @@ class DataflowGraph : public KernelAnalysis
 				bool operator==( const Register& r ) const;
 		};
 
-		struct Register_Hash
+		struct RegisterHash
 		{
 			inline std::size_t operator()( Register r ) const
 			{
@@ -173,7 +173,7 @@ class DataflowGraph : public KernelAnalysis
 				std::string toString() const;
 		};
 
-		struct BlockVector_Hash
+		struct BlockVectorHash
 		{
 			inline std::size_t operator()( BlockVector::iterator it ) const
 			{
@@ -183,11 +183,11 @@ class DataflowGraph : public KernelAnalysis
 
 		/*! \brief A vector of Block pointers */
 		typedef std::unordered_set< BlockVector::iterator,
-			BlockVector_Hash > BlockPointerSet;
+			BlockVectorHash > BlockPointerSet;
 
 		/*! \brief A unique set of register Ids */
 		typedef std::unordered_set< Register,
-			Register_Hash > RegisterSet;		
+			RegisterHash > RegisterSet;		
 
 		/*! \brief A class for referring to a generic basic block of 
 				instructions.

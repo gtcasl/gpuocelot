@@ -11,6 +11,7 @@
 
 #include <ocelot/analysis/interface/CycleAnalysis.h>
 #include <ocelot/analysis/interface/DependenceAnalysis.h>
+#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
 
 // Standard Library Includes
 #include <unordered_set>
@@ -38,7 +39,8 @@ typedef std::unordered_set<PTXInstruction*> InstructionSet;
 static InstructionSet getBackwardsBranches(analysis::CycleAnalysis* c);
 static InstructionSet getInstructionsThatCanObserveSideEffects(ir::IRKernel& k);
 static InstructionSet getBranchesThatDependOn(const InstructionSet& branches,
-	const InstructionSet& instructions, analysis::DependenceAnalysis*);
+	const InstructionSet& instructions, analysis::DependenceAnalysis*,
+	analysis::ControlDependenceAnalysis*);
 
 static InstructionSet getCallsToFuctionsThatObserveSideEffects(ir::IRKernel& k);
 static void insertYieldsBefore(ir::IRKernel& k,
@@ -53,6 +55,9 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 		getAnalysis("CycleAnalysis"));
 	auto dependenceAnalysis = static_cast<analysis::DependenceAnalysis*>(
 		getAnalysis("DependenceAnalysis"));
+	auto controlDependenceAnalysis =
+		static_cast<analysis::ControlDependenceAnalysis*>(
+		getAnalysis("ControlDependenceAnalysis"));
 
 	// Discover branches that require yields
 	auto backwardsBranches = getBackwardsBranches(cycleAnalysis);
@@ -62,7 +67,7 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 	
 	auto branchesThatRequireYields = getBranchesThatDependOn(
 		backwardsBranches, instructionsThatCanObserveSideEffects,
-		dependenceAnalysis);
+		dependenceAnalysis, controlDependenceAnalysis);
 
 	auto functionCallsThatRequireYields =
 		getCallsToFuctionsThatObserveSideEffects(k);
@@ -129,17 +134,38 @@ static InstructionSet getInstructionsThatCanObserveSideEffects(ir::IRKernel& k)
 	return instructions;
 }
 
+static InstructionSet getControlDependentInstructions(
+	const PTXInstruction* branch, const InstructionSet& instructions,
+	analysis::ControlDependenceAnalysis* controlDependenceAnalysis)
+{
+	InstructionSet controlDependentInstructions;
+	
+	for(auto instruction : instructions)
+	{
+		if(controlDependenceAnalysis->dependsOn(branch, instruction))
+		{
+			controlDependentInstructions.insert(instruction);
+		}
+	}
+	
+	return controlDependentInstructions;
+}
+
 static InstructionSet getBranchesThatDependOn(const InstructionSet& branches,
 	const InstructionSet& instructions,
-	analysis::DependenceAnalysis* dependenceAnalysis)
+	analysis::DependenceAnalysis* dependenceAnalysis,
+	analysis::ControlDependenceAnalysis* controlDependenceAnalysis)
 {
 	InstructionSet dependentBranches;
 	
 	for(auto branch : branches)
 	{
-		for(auto instruction : instructions)
+		auto controlDependentInstructions = getControlDependentInstructions(
+			branch, instructions, controlDependenceAnalysis);
+	
+		for(auto instruction : controlDependentInstructions)
 		{
-			if(dependenceAnalysis->dependsOn(branch, instruction))
+			if(dependenceAnalysis->dependsOn(instruction, branch))
 			{
 				dependentBranches.insert(branch);
 				break;

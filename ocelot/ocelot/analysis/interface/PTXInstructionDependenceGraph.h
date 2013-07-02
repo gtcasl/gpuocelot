@@ -9,6 +9,7 @@
 // Standard Library Includes
 #include <list>
 #include <unordered_map>
+#include <cstring>
 
 // Forward Declarations
 namespace ir { class PTXInstruction; }
@@ -71,6 +72,24 @@ protected:
 	NodeList             _nodes;
 	InstructionToNodeMap _instructionToNodes;
 
+public:
+	typedef std::pair<const PTXInstruction*,
+		const PTXInstruction*> InstructionPair;
+	
+	struct InstructionPairHash
+	{
+		inline size_t operator()(const InstructionPair p) const
+		{
+			return (size_t)p.first ^ (size_t)p.second;
+		}
+	};
+	
+	typedef std::unordered_map<InstructionPair, bool, InstructionPairHash>
+		DependenceMap;
+
+private:
+
+	DependenceMap _savedDependencies;
 };
 
 }

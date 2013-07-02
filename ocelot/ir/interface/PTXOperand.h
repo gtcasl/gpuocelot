@@ -255,6 +255,13 @@ namespace ir {
 		offset(0), imm_uint(v), reg(0), vec(v1) {}
 
 	template<> inline
+	PTXOperand::PTXOperand(const char* v) : identifier(v), 
+		addressMode(Label), type(TypeSpecifier_invalid),
+		relaxedType(TypeSpecifier_invalid),
+		offset(0), condition(Pred), reg(0), vec(v1) {
+	}
+
+	template<> inline
 	PTXOperand::PTXOperand(float v) : addressMode(Immediate), type(f32),
 		relaxedType(TypeSpecifier_invalid),
 		offset(0), imm_single(v), reg(0), vec(v1) {

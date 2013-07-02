@@ -383,6 +383,9 @@ def getLibCXXPaths():
 	return (inc_path, lib_path)
 
 def getCXXFLAGS(mode, warn, warnings_as_errors, CXX):
+	if not CXX in gCompilerOptions:
+		raise ValueError, 'Error: No support for compiler \'' + CXX + '\''
+	
 	result = []
 	if mode == 'release':
 		# turn on optimization

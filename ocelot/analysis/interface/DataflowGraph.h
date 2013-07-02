@@ -136,8 +136,6 @@ class DataflowGraph : public KernelAnalysis
 		typedef InstructionVector::iterator InstructionIterator;
 		/*! \brief A vector of instruction iterators */
 		typedef std::list< InstructionIterator > InstructionIteratorList;
-		/*! \brief iterator over all uses in the same block */
-		typedef InstructionIteratorList::iterator DUIterator;
 		/*! \brief iterator */
 		typedef BlockVector::iterator iterator;
 		/*! \brief const_iterator */
@@ -153,10 +151,6 @@ class DataflowGraph : public KernelAnalysis
 				RegisterPointerVector d;
 				/*! \brief Source registers */
 				RegisterPointerVector s;
-				/*! \brief iterator over all uses in the same block */
-				InstructionIteratorList uses;
-				/*! \brief iterator over all defs in the same block */
-				InstructionIteratorList defs;
 				/*! \brief A pointer to the owning DFG block */
 				iterator block;
 
@@ -456,9 +450,6 @@ class DataflowGraph : public KernelAnalysis
 	public:
 		/*! \brief Compute live ranges */
 		void compute();
-		/*! \brief Construct DU/UD chains*/
-		void constructDUChains();
-		void constructBlockDUChains(iterator blockIter);
 		/*! \brief Determine the max register used in the graph */
 		RegisterId maxRegister() const;
 		/*! \brief Allocate a new register that is not used elswhere 

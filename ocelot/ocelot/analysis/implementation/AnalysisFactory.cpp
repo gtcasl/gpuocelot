@@ -21,6 +21,9 @@
 #include <ocelot/analysis/interface/SimpleAliasAnalysis.h>
 #include <ocelot/analysis/interface/CycleAnalysis.h>
 #include <ocelot/analysis/interface/SafeRegionAnalysis.h>
+#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
+#include <ocelot/analysis/interface/DataDependenceAnalysis.h>
+#include <ocelot/analysis/interface/DependenceAnalysis.h>
 
 namespace analysis 
 {
@@ -103,6 +106,18 @@ Analysis* AnalysisFactory::createAnalysis(const std::string& name,
 	else if(name == "SimpleAliasAnalysis")
 	{
 		analysis = new SimpleAliasAnalysis;
+	}
+	else if(name == "ControlDependenceAnalysis")
+	{
+		analysis = new ControlDependenceAnalysis;
+	}
+	else if(name == "DataDependenceAnalysis")
+	{
+		analysis = new DataDependenceAnalysis;
+	}
+	else if(name == "DependenceAnalysis")
+	{
+		analysis = new DependenceAnalysis;
 	}
 
 	if(analysis != nullptr)

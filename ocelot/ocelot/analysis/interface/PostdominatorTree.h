@@ -31,6 +31,8 @@ namespace analysis
 	public:
 		typedef std::vector<int> IndexVector;
 		typedef std::vector<IndexVector> IndexArrayVector;
+		typedef ir::ControlFlowGraph::iterator block_iterator;
+		typedef ir::ControlFlowGraph::BlockPointerVector BlockPointerVector;
 		
 	public:
 		PostdominatorTree();
@@ -43,11 +45,23 @@ namespace analysis
 		/*! Writes a representation of the DominatorTree to an output stream */
 		std::ostream& write(std::ostream& out);
 
+		/*! Does a particular block post-dominate another block? */
+		bool postDominates(block_iterator block, 
+			block_iterator potentialSuccessor);
+
+		/*! Given a block known to be in the control flow graph, 
+			return the post dominator */
+		block_iterator getPostDominator(block_iterator block);
+	
+		/*! Get the post dominance frontier of a block */
+		BlockPointerVector getPostDominanceFrontier(block_iterator block);
+	
+	public:
 		/*! Parent control flow graph */
 		ir::ControlFlowGraph* cfg;
 	
 		/*! store of the basic blocks in the dominator tree in post-order */
-		ir::ControlFlowGraph::BlockPointerVector blocks;
+		BlockPointerVector blocks;
 	
 		/*! nth element stores the immediate post-dominator 
 			of node n or -1 if undefined */
@@ -57,18 +71,13 @@ namespace analysis
 			n is the immediate post-dominator */
 		IndexArrayVector dominated;
 	
-		/*! Map from a BasicBlock pointer to an index into the blocks vector */
-		ir::ControlFlowGraph::BlockMap blocksToIndex;
-
-		/*! Does a particular block post-dominate another block? */
-		bool postDominates(ir::ControlFlowGraph::iterator block, 
-			ir::ControlFlowGraph::iterator potentialSuccessor);
-
-		/*! Given a block known to be in the control flow graph, 
-			return the post dominator */
-		ir::ControlFlowGraph::iterator getPostDominator(
-			ir::ControlFlowGraph::iterator block);
+		/*!  nth element stores a list of elements in the post dominance
+			frontier of n */
+		IndexArrayVector frontiers;
 	
+		/*! Map from a BasicBlock pointer to an index into the blocks vector */
+		ir::ControlFlowGraph::BlockMap blocksToIndex;	
+
 	private:
 		void computeDT();
 		int intersect(int b1, int b2) const;

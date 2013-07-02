@@ -1,0 +1,87 @@
+/*! \file   DependenceAnalysis.cpp
+	\author Gregory Diamos <gregory.diamos@gatech.edu>
+	\date   Friday June 29, 2013
+	\file   The source file for the DependenceAnalysis class.
+*/
+
+// Ocelot Includes
+#include <ocelot/analysis/interface/DependenceAnalysis.h>
+
+#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
+#include <ocelot/analysis/interface/DataDependenceAnalysis.h>
+
+// Standard Library Includes
+#include <cassert>
+
+namespace analysis
+{
+
+DependenceAnalysis::DependenceAnalysis()
+: KernelAnalysis("DependenceAnalysis",
+	{"DataDependenceAnalysis", "ControlDependenceAnalysis"})
+{
+
+}
+
+typedef DependenceAnalysis::Node Node;
+
+typedef DependenceAnalysis::InstructionToNodeMap InstructionToNodeMap;
+
+static void addEdges(Node& node, const Node& existingNode,
+	const InstructionToNodeMap& instructionToNodes);
+
+void DependenceAnalysis::analyze(ir::IRKernel& kernel)
+{
+	auto controlDependenceAnalysis = static_cast<ControlDependenceAnalysis*>(
+		getAnalysis("ControlDependenceAnalysis")); 
+	auto dataDependenceAnalysis = static_cast<DataDependenceAnalysis*>(
+		getAnalysis("DataDependenceAnalysis")); 
+		
+	for(auto& node : *controlDependenceAnalysis)
+	{
+		auto newNode = _nodes.insert(_nodes.end(), Node(node.instruction));
+	
+		_instructionToNodes.insert(std::make_pair(node.instruction, newNode));
+	}
+	
+	for(auto& node : *this)
+	{
+		auto controlDependenceNode = controlDependenceAnalysis->getNode(
+			node.instruction);
+	
+		addEdges(node, *controlDependenceNode, _instructionToNodes);
+
+		auto dataDependenceNode = dataDependenceAnalysis->getNode(
+			node.instruction);
+	
+		addEdges(node, *dataDependenceNode, _instructionToNodes);
+	}
+}
+
+static void addEdges(Node& node, const Node& existingNode,
+	const InstructionToNodeMap& instructionToNodes)
+{
+	for(auto& predecessor : existingNode.predecessors)
+	{
+		auto predecessorNode = instructionToNodes.find(
+			predecessor->instruction);
+	
+		assert(predecessorNode != instructionToNodes.end());
+		
+		node.predecessors.push_back(predecessorNode->second);
+	}
+	
+	for(auto& successor : existingNode.successors)
+	{
+		auto successorNode = instructionToNodes.find(successor->instruction);
+	
+		assert(successorNode != instructionToNodes.end());
+		
+		node.successors.push_back(successorNode->second);
+	}
+	
+}
+
+}
+
+

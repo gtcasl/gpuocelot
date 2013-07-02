@@ -383,6 +383,9 @@ namespace ir {
 		bool mayHaveRelaxedTypeDestination() const;
 		/*! \brief Can the instruction affect state other than destinations? */
 		bool hasSideEffects() const;
+		/*! \brief Can the instruction observe state produced by
+			other threads? */
+		bool canObserveSideEffects() const;
 		/*! \brief Does the instruction trigger a memory operation */
 		bool isMemoryInstruction() const;
 		/*! \brief Can the instruction exit the kernel/function */

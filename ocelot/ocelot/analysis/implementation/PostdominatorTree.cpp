@@ -17,6 +17,9 @@
 #include <hydrazine/interface/string.h>
 #include <hydrazine/interface/debug.h>
 
+// Standard Library Includes
+#include <unordered_set>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -134,6 +137,35 @@ void PostdominatorTree::computeDT() {
 			dominated[p_dom[n]].push_back(n);
 		}
 	}
+	
+	report(" Computing frontiers")
+	
+	frontiers.resize(blocks.size());
+	for (int b_ind = 0; b_ind < (int)blocks.size(); b_ind++) {
+	
+		ir::ControlFlowGraph::iterator block = blocks[b_ind];
+			
+		if(block->successors.size() < 2) continue;
+
+		typedef std::unordered_set<int> BasicBlockSet;
+		
+		BasicBlockSet blocksWithThisBlockInTheirFrontier;
+		
+		for (auto successor : block->successors) {
+			auto runner = successor;
+			
+			while (runner != getPostDominator(block)) {
+				blocksWithThisBlockInTheirFrontier.insert(
+					blocksToIndex[runner]);
+				
+				runner = getPostDominator(runner);
+			}
+		}
+		
+		for (auto frontierBlock : blocksWithThisBlockInTheirFrontier) {
+			frontiers[b_ind].push_back(frontierBlock);
+		}
+	}
 }
 
 int PostdominatorTree::intersect(int b1, int b2) const {
@@ -149,6 +181,21 @@ int PostdominatorTree::intersect(int b1, int b2) const {
 		}
 	}
 	return finger1;
+}
+
+PostdominatorTree::BlockPointerVector
+	PostdominatorTree::getPostDominanceFrontier(block_iterator block)
+{
+	BlockPointerVector frontierBlocks;
+	
+	auto& frontier = frontiers[blocksToIndex[block]];
+	
+	for(auto blockId : frontier)
+	{
+		frontierBlocks.push_back(blocks[blockId]);
+	}
+	
+	return frontierBlocks;
 }
 
 std::ostream& PostdominatorTree::write(std::ostream& out) {

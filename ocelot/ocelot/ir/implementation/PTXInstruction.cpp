@@ -2565,6 +2565,24 @@ bool ir::PTXInstruction::hasSideEffects() const {
 		|| opcode == Trap || opcode == Reconverge || opcode == Ret;
 }
 
+bool ir::PTXInstruction::canObserveSideEffects() const {
+	if (opcode == Atom) return true;
+
+	if (opcode == Ld) {
+		if (volatility == Volatile) {
+			return true;
+		}
+		
+		if (cacheOperation == Cv || cacheOperation == Cg) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	return false;
+}
+
 bool ir::PTXInstruction::isMemoryInstruction() const {
 	return opcode == St || opcode == Atom
 		|| opcode == Ldu

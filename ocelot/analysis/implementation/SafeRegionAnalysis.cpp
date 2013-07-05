@@ -24,52 +24,10 @@ SafeRegionAnalysis::SafeRegionAnalysis()
 
 void SafeRegionAnalysis::analyze(ir::IRKernel& kernel)
 {
-	_regions.clear();
-	
-	_formRegions(kernel);
-	
-	_buildBlockToRegionMap(_regionRoot);
-}
-
-void SafeRegionAnalysis::_formRegions(ir::IRKernel& kernel)
-{
-	BlockSet visited;
-	BlockSet blocksWithSideEffects;
-	
-	_findBlocksWithSideEffects(blocksWithSideEffects, kernel);
-	
-	_formRegionFromSeed(visited, kernel.cfg()->begin(), blocksWithSideEffects);
-}
-
-void SafeRegionAnalysis::_findBlocksWithSideEffects(
-	BlockSet& blocksWithSideEffects, ir::IRKernel& kernel)
-{
-	
-}
-
-void SafeRegionAnalysis::_formRegionFromSeed(
-	BlockSet& visited, iterator block, const BlockSet& blocksWithSideEffects)
-{
 
 }
 
-void SafeRegionAnalysis::_buildBlockToRegionMap(Region& region)
-{
-	if(region.children.empty())
-	{
-		_regions.insert(std::make_pair(region.block, &region));
-		
-		return;
-	}
-
-	for(auto child = region.children.begin();
-		child != region.children.end(); ++child)
-	{
-		_buildBlockToRegionMap(*child);
-	}
-}
-
-const SafeRegionAnalysis::Region* SafeRegionAnalysis::getRegion(
+const SafeRegionAnalysis::SafeRegion* SafeRegionAnalysis::getRegion(
 	const_iterator block) const
 {
 	auto region = _regions.find(block);
@@ -78,8 +36,8 @@ const SafeRegionAnalysis::Region* SafeRegionAnalysis::getRegion(
 	return region->second;
 }
 
-SafeRegionAnalysis::Region::Region(Region* p, RegionId i)
-: parent(p), id(i), doesNotDependOnSideEffects(false)
+SafeRegionAnalysis::SafeRegion::SafeRegion(SafeRegion* p)
+: parent(p), doesNotDependOnSideEffects(false)
 {
 
 }

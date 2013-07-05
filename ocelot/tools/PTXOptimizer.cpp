@@ -252,8 +252,17 @@ int main( int argc, char** argv )
 	
 	optimizer.passes = parsePassTypes( passes );
 	
-	optimizer.optimize();
-
+	
+	try
+	{
+		optimizer.optimize();
+	}
+	catch(const std::exception& e)
+	{
+		std::cout << "Optimization Failed:\n" << e.what() << std::endl;
+		return 1;
+	}
+	
 	return 0;
 }
 

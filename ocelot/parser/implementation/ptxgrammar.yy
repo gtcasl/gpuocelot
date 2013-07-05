@@ -516,8 +516,8 @@ functionName : identifier
 	state.functionName( $<text>1, @1 );
 };
 
-optionalSemicolon: ';'
-optionalSemicolon: /* empty string */
+optionalSemicolon: ';';
+optionalSemicolon: /* empty string */;
 
 functionDeclaration : externOrVisible functionBegin optionalReturnArgumentList 
 	functionName argumentList optionalSemicolon
@@ -547,6 +547,8 @@ entryDeclaration : entryName optionalArgumentList performanceDirectives
 };
 
 entry : entryDeclaration openBrace entryStatements closeBrace;
+
+entry : entryDeclaration openBrace closeBrace;
 
 entry : entryDeclaration ';'
 {
@@ -1219,7 +1221,7 @@ mad24 : OPCODE_MAD24 mad24Modifier dataType operand ',' operand
 	state.instruction( $<text>1, $<value>3 );
 };
 
-membarSpaceType : TOKEN_GL | TOKEN_CTA;
+membarSpaceType : TOKEN_GL | TOKEN_CTA | TOKEN_SYS;
 
 membarSpace : membarSpaceType
 {

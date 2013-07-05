@@ -505,7 +505,17 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return TOKEN_NORMAL; }
 ".subnormal"                    { yylval->value = TOKEN_SUBNORMAL; \
                                     return TOKEN_SUBNORMAL; }
-                                    
+
+@{IDENTIFIER}                   { sstrcpy( yylval->text, yytext + 1, 1024 ); \
+                                    return TOKEN_PREDICATE_IDENTIFIER; }
+@!{IDENTIFIER}                  { sstrcpy( yylval->text, yytext + 2, 1024 ); \
+                                    return TOKEN_INV_PREDICATE_IDENTIFIER; }
+{IDENTIFIER}                    { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return TOKEN_IDENTIFIER;}
+{STRING}                        { sstrcpy( yylval->text, yytext + 1, \
+                                    MIN( strlen( yytext ) - 1, 1024 ) ); \
+                                    return TOKEN_STRING;}
+                                                                       
 {DECIMAL_CONSTANT}              { std::stringstream stream; stream << yytext; \
                                     stream >> yylval->value; \
                                     return TOKEN_DECIMAL_CONSTANT; }
@@ -561,15 +571,7 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     \
                                     return TOKEN_LABEL; \
                                 }
-@{IDENTIFIER}                   { sstrcpy( yylval->text, yytext + 1, 1024 ); \
-                                    return TOKEN_PREDICATE_IDENTIFIER; }
-@!{IDENTIFIER}                  { sstrcpy( yylval->text, yytext + 2, 1024 ); \
-                                    return TOKEN_INV_PREDICATE_IDENTIFIER; }
-{IDENTIFIER}                    { sstrcpy( yylval->text, yytext, 1024 ); \
-                                    return TOKEN_IDENTIFIER;}
-{STRING}                        { sstrcpy( yylval->text, yytext + 1, \
-                                    MIN( strlen( yytext ) - 1, 1024 ) ); \
-                                    return TOKEN_STRING;}
+
 
 {METADATA}                      { sstrcpy( yylval->text, yytext, 1024 );
                                     return TOKEN_METADATA; }

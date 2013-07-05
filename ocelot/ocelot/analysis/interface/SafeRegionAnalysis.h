@@ -14,14 +14,11 @@
 // Standard Library Includes
 #include <list>
 #include <unordered_map>
-#include <unordered_set>
 
 namespace analysis
 {
 
-/*! \brief A class for assigning unique predicate mask variables to
-	control flow graph regions.
-*/
+/*! \brief A class for tracking program regions that can be safely vectorized */
 class SafeRegionAnalysis: public KernelAnalysis
 {
 public:
@@ -30,22 +27,19 @@ public:
 	typedef CFG::const_iterator const_iterator;
 	typedef CFG::iterator       iterator;
 
-	typedef unsigned int RegionId;
-
-	class Region
+	class SafeRegion
 	{
 	public:
-		typedef std::list<Region> RegionList;
+		typedef std::list<SafeRegion> SafeRegionList;
 	
 	public:
-		Region(Region* parent = 0, RegionId = 0);
+		SafeRegion(SafeRegion* parent = nullptr);
 	
 	public:
-		Region*    parent;
-		RegionList children;
-		RegionId   id;
-		iterator   block; // If this is a leaf node, the block
-	
+		SafeRegion*    parent;
+		SafeRegionList children;
+		iterator       block; // If this is a leaf node, the block
+		
 	public:
 		bool doesNotDependOnSideEffects;
 	};
@@ -59,24 +53,14 @@ public:
 
 public:
 	/*! \brief Get the region of the specified block */
-	const Region* getRegion(const_iterator block) const;
+	const SafeRegion* getRegion(const_iterator block) const;
 	
 private:
-	typedef std::unordered_map<const_iterator, Region*> RegionMap;
-	typedef std::unordered_set<const_iterator> BlockSet;
+	typedef std::unordered_map<const_iterator, SafeRegion*> SafeRegionMap;
 
 private:
-	void _formRegions(ir::IRKernel& kernel);
-	void _findBlocksWithSideEffects(BlockSet& blocksWithSideEffects,
-		ir::IRKernel& kernel);
-	void _formRegionFromSeed(BlockSet& visited, iterator block,
-		const BlockSet& blocksWithSideEffects);
-	
-	void _buildBlockToRegionMap(Region& region);
-
-private:
-	Region    _regionRoot;
-	RegionMap _regions;
+	SafeRegion    _root;
+	SafeRegionMap _regions;
 	
 };
 

@@ -24,6 +24,7 @@
 #include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
 #include <ocelot/analysis/interface/DataDependenceAnalysis.h>
 #include <ocelot/analysis/interface/DependenceAnalysis.h>
+#include <ocelot/analysis/interface/MemoryDependenceAnalysis.h>
 
 namespace analysis 
 {
@@ -114,6 +115,10 @@ Analysis* AnalysisFactory::createAnalysis(const std::string& name,
 	else if(name == "DataDependenceAnalysis")
 	{
 		analysis = new DataDependenceAnalysis;
+	}
+	else if(name == "MemoryDependenceAnalysis")
+	{
+		analysis = new MemoryDependenceAnalysis;
 	}
 	else if(name == "DependenceAnalysis")
 	{

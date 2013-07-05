@@ -9,6 +9,7 @@
 
 #include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
 #include <ocelot/analysis/interface/DataDependenceAnalysis.h>
+#include <ocelot/analysis/interface/MemoryDependenceAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 
@@ -23,14 +24,15 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
 
 DependenceAnalysis::DependenceAnalysis()
 : KernelAnalysis("DependenceAnalysis",
-	{"DataDependenceAnalysis", "ControlDependenceAnalysis"})
+	{"DataDependenceAnalysis", "ControlDependenceAnalysis",
+		"MemoryDependenceAnalysis"})
 {
 
 }
@@ -50,6 +52,8 @@ void DependenceAnalysis::analyze(ir::IRKernel& kernel)
 		getAnalysis("ControlDependenceAnalysis")); 
 	auto dataDependenceAnalysis = static_cast<DataDependenceAnalysis*>(
 		getAnalysis("DataDependenceAnalysis")); 
+	auto memoryDependenceAnalysis = static_cast<MemoryDependenceAnalysis*>(
+		getAnalysis("MemoryDependenceAnalysis")); 
 		
 	for(auto& node : *controlDependenceAnalysis)
 	{
@@ -69,6 +73,14 @@ void DependenceAnalysis::analyze(ir::IRKernel& kernel)
 			node.instruction);
 	
 		addEdges(node, *dataDependenceNode, _instructionToNodes);
+		
+		auto memoryDependenceNode = memoryDependenceAnalysis->getNode(
+			node.instruction);
+		
+		if(memoryDependenceNode != memoryDependenceAnalysis->end())
+		{
+			addEdges(node, *memoryDependenceNode, _instructionToNodes);
+		}
 	}
 }
 

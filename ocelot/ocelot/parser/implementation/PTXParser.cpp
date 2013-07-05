@@ -2829,6 +2829,7 @@ namespace parser
 		{
 			case TOKEN_CTA: return ir::PTXInstruction::CtaLevel; break;
 			case TOKEN_GL: return ir::PTXInstruction::GlobalLevel; break;
+			case TOKEN_SYS: return ir::PTXInstruction::SystemLevel; break;
 			default: break;
 		}
 		
@@ -2906,7 +2907,7 @@ namespace parser
 		std::stringstream temp;
 		
 		report( "Parsing file " << fileName );
-		report( "Running 2.1 main parse pass." );
+		report( "Running main parse pass." );
 		
 		parser::PTXLexer lexer( &input, &temp );
 		reset();

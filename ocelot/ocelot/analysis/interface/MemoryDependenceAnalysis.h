@@ -1,7 +1,7 @@
-/*! \file   DataDependenceAnalysis.h
+/*! \file   MemoryDependenceAnalysis.h
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date   Friday June 29, 2013
-	\file   The header file for the DataDependenceAnalysis class.
+	\file   The header file for the MemoryDependenceAnalysis class.
 */
 
 #pragma once
@@ -13,16 +13,15 @@
 namespace analysis
 {
 
-/*! \brief Discover all data dependences in a kernel */
-class DataDependenceAnalysis
+/*! \brief Discover memory dependences in the program */
+class MemoryDependenceAnalysis
 : public KernelAnalysis, public PTXInstructionDependenceGraph
 {
 public:
-	DataDependenceAnalysis();
+	MemoryDependenceAnalysis();
 
 public:
 	void analyze(ir::IRKernel& kernel);
-
 };
 
 }

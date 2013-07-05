@@ -84,6 +84,13 @@ bool SimpleAliasAnalysis::canAlias(const ir::Instruction* s,
 
 	if(cannotAliasAnyStore(load)) return false;
 	
+	// check for address space differences
+	if(load->addressSpace != ir::PTXInstruction::Generic &&
+		store->addressSpace != ir::PTXInstruction::Generic)
+	{
+		if(load->addressSpace != store->addressSpace) return false;
+	}
+	
 	// check for constant addresses
 	if(load->a.addressMode == ir::PTXOperand::Immediate)
 	{

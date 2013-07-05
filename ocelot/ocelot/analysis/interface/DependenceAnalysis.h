@@ -10,9 +10,6 @@
 #include <ocelot/analysis/interface/Analysis.h>
 #include <ocelot/analysis/interface/PTXInstructionDependenceGraph.h>
 
-// Forward Declarations
-namespace ir { class PTXInstruction; }
-
 namespace analysis
 {
 
@@ -20,9 +17,6 @@ namespace analysis
 class DependenceAnalysis
 : public PTXInstructionDependenceGraph, public KernelAnalysis
 {
-public:
-	typedef ir::PTXInstruction PTXInstruction;
-
 public:
 	DependenceAnalysis();
 

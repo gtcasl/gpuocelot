@@ -10,12 +10,6 @@
 #include <ocelot/analysis/interface/Analysis.h>
 #include <ocelot/analysis/interface/PTXInstructionDependenceGraph.h>
 
-// Standard Library Includes
-#include <unordered_map>
-
-// Forward Declarations
-namespace ir { class PTXInstruction; }
-
 namespace analysis
 {
 
@@ -23,9 +17,6 @@ namespace analysis
 class ControlDependenceAnalysis
 : public KernelAnalysis, public PTXInstructionDependenceGraph
 {
-public:
-	typedef ir::PTXInstruction   PTXInstruction;
-
 public:
 	ControlDependenceAnalysis();
 

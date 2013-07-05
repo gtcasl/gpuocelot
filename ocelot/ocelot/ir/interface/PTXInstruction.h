@@ -18,6 +18,7 @@ namespace ir {
 		enum Level {
 			CtaLevel,
 			GlobalLevel,
+			SystemLevel,
 			Level_Invalid
 		};
 

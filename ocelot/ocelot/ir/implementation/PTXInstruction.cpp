@@ -13,6 +13,7 @@ std::string ir::PTXInstruction::toString( Level l ) {
 	switch( l ) {
 		case CtaLevel:    return "cta"; break;
 		case GlobalLevel: return "gl";  break;
+		case SystemLevel: return "sys";  break;
 		default: break;
 	}
 	return "";

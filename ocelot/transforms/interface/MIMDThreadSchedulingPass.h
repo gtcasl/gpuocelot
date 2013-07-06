@@ -23,6 +23,23 @@ public:
 	/*! \brief Run the pass on a specific kernel in the module */
 	void runOnKernel(ir::IRKernel& k);
 
+public:
+	class Statistics
+	{
+	public:
+		Statistics();
+	
+	public:
+		unsigned int totalInstructions;
+		unsigned int totalSafeInstructions;
+	
+	public:
+		void reset();
+	};
+
+public:
+	Statistics statistics;
+
 };
 
 

@@ -25,6 +25,7 @@
 #include <ocelot/analysis/interface/DataDependenceAnalysis.h>
 #include <ocelot/analysis/interface/DependenceAnalysis.h>
 #include <ocelot/analysis/interface/MemoryDependenceAnalysis.h>
+#include <ocelot/analysis/interface/HammockGraphAnalysis.h>
 
 namespace analysis 
 {
@@ -123,6 +124,10 @@ Analysis* AnalysisFactory::createAnalysis(const std::string& name,
 	else if(name == "DependenceAnalysis")
 	{
 		analysis = new DependenceAnalysis;
+	}
+	else if(name == "HammockGraphAnalysis")
+	{
+		analysis = new HammockGraphAnalysis;
 	}
 
 	if(analysis != nullptr)

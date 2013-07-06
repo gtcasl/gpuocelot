@@ -52,6 +52,10 @@ namespace analysis
 		/*! Given a block known to be in the control flow graph, 
 			return the post dominator */
 		block_iterator getPostDominator(block_iterator block);
+
+		/*! Get the nearest common post-dominator of two blocks */
+		block_iterator getCommonPostDominator(block_iterator block2,
+			block_iterator block1);
 	
 		/*! Get the post dominance frontier of a block */
 		BlockPointerVector getPostDominanceFrontier(block_iterator block);

@@ -17,6 +17,9 @@
 #include <hydrazine/interface/debug.h>
 #include <hydrazine/interface/Casts.h>
 
+// Confguration
+#include <configure.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -26,14 +29,22 @@
 static void* cudaMallocWrapper(size_t bytes)
 {
 	void* pointer = 0;
+	
+	#if EXCLUDE_CUDA_RUNTIME == 0
 	cudaMalloc(&pointer, bytes);
+	#endif
+	
 	return pointer;
 }
 
 static uint64_t cudaGetParameterBufferWrapper(uint64_t alignment, uint64_t bytes)
 {
 	void* pointer = 0;
+
+	#if EXCLUDE_CUDA_RUNTIME == 0
 	cudaMalloc(&pointer, bytes);
+	#endif
+
 	uint64_t address = hydrazine::bit_cast<uint64_t>(pointer);
 	assert(address % alignment == 0);
 
@@ -42,7 +53,9 @@ static uint64_t cudaGetParameterBufferWrapper(uint64_t alignment, uint64_t bytes
 
 static void cudaFreeWrapper(void* pointer)
 {
+	#if EXCLUDE_CUDA_RUNTIME == 0
 	cudaFree(pointer);
+	#endif
 }
 
 static size_t align(size_t address, size_t alignment)

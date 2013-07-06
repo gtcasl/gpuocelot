@@ -529,8 +529,9 @@ DataflowGraph* DataflowGraph::Block::dfg()
 }
 
 DataflowGraph::DataflowGraph()  
-	: KernelAnalysis("DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 
-		_ssa( SsaType::None ), _maxRegister( 0 )
+	: KernelAnalysis("DataflowGraphAnalysis", {"PostDominatorTreeAnalysis"}),
+		_cfg( 0 ), _consistent( false ), _ssa( SsaType::None ),
+		_maxRegister( 0 )
 {
 }
 

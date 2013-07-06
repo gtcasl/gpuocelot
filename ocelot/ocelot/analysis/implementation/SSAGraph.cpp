@@ -763,7 +763,8 @@ void SSAGraph::_gssa(DataflowGraph::RegisterId& current)
 
 	PostdominatorTree& pdt = static_cast<PostdominatorTree&>(
 		*_graph.getAnalysis("PostDominatorTreeAnalysis"));
-
+	assert(&pdt != nullptr);
+	
 	reportE(DEBUG, "Building GSSA");
 	for(DataflowGraph::iterator fi = _graph.begin(); fi != _graph.end(); ++fi)
 	{

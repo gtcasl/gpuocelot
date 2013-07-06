@@ -12,8 +12,18 @@
 
 #include <ocelot/ir/interface/IRKernel.h>
 
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
+
 // Standard Library Includes
 #include <cassert>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 namespace analysis
 {
@@ -36,8 +46,13 @@ static void splitHammock(Hammock& hammock, DominatorTree* dominatorTree,
 	
 void HammockGraphAnalysis::analyze(ir::IRKernel& kernel)
 {
+	report("Forming hammock graph for kernel " << kernel.name);
+	
 	_root.entry = kernel.cfg()->get_entry_block();
 	_root.exit  = kernel.cfg()->get_exit_block();
+	
+	report("  creating new hammock (entry: " << _root.entry->label()
+		<< ", exit: " << _root.exit->label() << ")");
 	
 	// Start with a single hammock containing the entire function
 	for(auto block = kernel.cfg()->begin();
@@ -45,6 +60,8 @@ void HammockGraphAnalysis::analyze(ir::IRKernel& kernel)
 	{
 		if(block == _root.entry) continue;
 		if(block == _root.exit)  continue;
+		
+		report("   containing " << block->label());
 	
 		_root.children.push_back(Hammock(&_root, block, block));
 	}
@@ -67,36 +84,55 @@ const Hammock* HammockGraphAnalysis::getHammock(const_iterator block) const
 	return 0;
 }
 
+const Hammock* HammockGraphAnalysis::getRoot() const
+{
+	return &_root;
+}
+
 Hammock::Hammock(Hammock* p, iterator e, iterator ex)
 : parent(p), entry(e), exit(ex)
 {
 
 }
 
-typedef std::unordered_map<iterator, hammock_iterator> BlockToHammockMap;
-
-static iterator getPostDominator(PostdominatorTree* postDominatorTree,
-	iterator dominator)
+bool Hammock::isLeaf() const
 {
-	auto postdominator = postDominatorTree->getPostDominator(
-			dominator);
-			
-	// chase through straight-line successors
-	while(true)
-	{
-		if(postdominator->successors.size() != 1) break;
-
-		auto next = postdominator->successors.back();
-	
-		if(next->predecessors.size() != 1) break;
-		
-		postdominator = next;
-	}
-	
-	return postdominator;
+	return entry == exit;
 }
 
-static Hammock createNewHammock(BlockToHammockMap& unvisited,
+typedef std::unordered_map<iterator, hammock_iterator> BlockToHammockMap;
+
+static bool expandHammock(iterator& entry, iterator& exit,
+	iterator parentEntry, iterator parentExit,
+	DominatorTree* dominatorTree, PostdominatorTree* postDominatorTree)
+{
+	auto dominator = dominatorTree->getDominator(entry);
+	
+	if(dominator == parentEntry || dominator == parentExit) return false;
+
+	while(dominator->successors.size() < 2)
+	{
+		dominator = dominatorTree->getDominator(dominator);
+		
+		if(dominator == parentEntry || dominator == parentExit) return false;
+	}
+
+	auto postdominator = postDominatorTree->getPostDominator(dominator);
+	
+	if(!postDominatorTree->postDominates(postdominator, exit))
+	{
+		return false;
+	}
+	
+	bool changed = entry != dominator || exit != postdominator;
+	
+	entry = dominator;
+	exit  = postdominator;
+
+	return changed;
+}
+
+static hammock_iterator createNewHammock(BlockToHammockMap& unvisited,
 	hammock_iterator hammock,
 	DominatorTree* dominatorTree, PostdominatorTree* postDominatorTree)
 {
@@ -104,54 +140,47 @@ static Hammock createNewHammock(BlockToHammockMap& unvisited,
 	auto entry = hammock->entry;
 	auto exit  = hammock->entry;
 	
-	while(true)
+	report(" finding hammock surrounding " << entry->label()
+		<< " from parent (entry: " << hammock->parent->entry->label()
+		<< ", exit: " << hammock->parent->exit->label() << ")");
+	
+	bool changed = true;
+	
+	while(changed)
 	{
-		auto dominator = dominatorTree->getDominator(entry);
-		
-		if(dominator == hammock->parent->entry)
-		{
-			if(entry == hammock->entry)
-			{
-				return Hammock(hammock->parent, entry, entry);
-			}
+		changed = expandHammock(entry, exit, hammock->parent->entry,
+			hammock->parent->exit, dominatorTree, postDominatorTree);
 			
-			break;
-		}
-
-		auto postdominator = getPostDominator(postDominatorTree, dominator);
-		
-		if(postdominator == hammock->parent->exit)
-		{
-			if(entry == hammock->entry)
-			{
-				return Hammock(hammock->parent, entry, entry);
-			}
-		
-			break;
-		}
-		
-		entry = dominator;
-		exit  = postdominator;
+		if(unvisited.count(entry) == 0) return hammock;
+	}
+	
+	if(entry == hammock->entry)
+	{
+		return hammock;
+	}
+	
+	if(exit == hammock->entry)
+	{
+		return hammock;
 	}
 	
 	// Create the new hammock
-	Hammock newHammock(hammock->parent, entry, exit);
+	report("  creating new hammock (entry: " << entry->label()
+		<< ", exit: " << exit->label() << ")");
 	
 	// Remove the entry and exit from the parent
 	auto entryHammock = unvisited.find(entry);
 	assert(entryHammock != unvisited.end());
 	
-	hammock->parent->children.erase(entryHammock->second);
+	auto newHammock = entryHammock->second;
+	
+	newHammock->entry = entry;
+	newHammock->exit  = exit;
+
 	unvisited.erase(entryHammock);
-	
-	auto exitHammock = unvisited.find(exit);
-	assert(exitHammock != unvisited.end());
-	
-	hammock->parent->children.erase(exitHammock->second);
-	unvisited.erase(exitHammock);
-	
+		
 	// Move all contained children into the new hammock
-	typedef std::list<hammock_iterator>  HammockIteratorList;
+	typedef std::list<hammock_iterator> HammockIteratorList;
 	
 	HammockIteratorList unvisitedIterators;
 	
@@ -164,13 +193,25 @@ static Hammock createNewHammock(BlockToHammockMap& unvisited,
 	for(auto unvisitedIterator = unvisitedIterators.begin();
 		unvisitedIterator != unvisitedIterators.end(); ++unvisitedIterator)
 	{
+		if((*unvisitedIterator)->entry == entry) continue;
+		if((*unvisitedIterator)->entry == exit)  continue;
+
 		if(!dominatorTree->dominates(entry, (*unvisitedIterator)->entry))
 		{
 			continue;
 		}
+
+		if(!postDominatorTree->postDominates(exit, (*unvisitedIterator)->entry))
+		{
+			continue;
+		}
+
+		report("   containing " << (*unvisitedIterator)->entry->label());
 		
-		newHammock.children.splice(newHammock.children.end(),
-			hammock->parent->children, *unvisitedIterator);
+		(*unvisitedIterator)->parent = &*newHammock;
+		
+		newHammock->children.splice(newHammock->children.end(),
+			newHammock->parent->children, *unvisitedIterator);
 	
 		auto oldHammock = unvisited.find((*unvisitedIterator)->entry);
 		assert(oldHammock != unvisited.end());
@@ -205,13 +246,11 @@ static void splitHammock(Hammock& hammock, DominatorTree* dominatorTree,
 			auto newHammock = createNewHammock(unvisited, child->second,
 				dominatorTree, postDominatorTree);
 		
-			bool isNewHammockASubset = newHammock.entry != hammock.entry;
+			bool isNewHammockASubset = !newHammock->isLeaf();
 			
 			if(isNewHammockASubset)
 			{
-				hammock.children.push_back(newHammock);
-				
-				splitHammock(newHammock, dominatorTree, postDominatorTree);
+				splitHammock(*newHammock, dominatorTree, postDominatorTree);
 
 				changed = true;
 				break;

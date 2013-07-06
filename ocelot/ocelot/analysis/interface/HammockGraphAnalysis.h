@@ -38,6 +38,9 @@ public:
 			iterator ex = iterator());
 	
 	public:
+		bool isLeaf() const;
+	
+	public:
 		Hammock*    parent;
 		HammockList children;
 		iterator    entry; // If the entry and exit are the same, the hammock
@@ -57,6 +60,9 @@ public:
 public:
 	/*! \brief Get the inner-most hammock of the specified block */
 	const Hammock* getHammock(const_iterator block) const;
+
+	/*! \brief Gets the root of the hammock graph */
+	const Hammock* getRoot() const;
 
 private:
 	typedef std::unordered_map<const_iterator, Hammock*> HammockMap;

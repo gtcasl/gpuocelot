@@ -36,6 +36,9 @@ public:
 		SafeRegion(SafeRegion* parent = nullptr);
 	
 	public:
+		bool isLeaf() const;
+	
+	public:
 		SafeRegion*    parent;
 		SafeRegionList children;
 		iterator       block; // If this is a leaf node, the block
@@ -43,6 +46,8 @@ public:
 	public:
 		bool doesNotDependOnSideEffects;
 	};
+	
+	typedef std::unordered_map<const_iterator, SafeRegion*> SafeRegionMap;
 
 public:
 	/*! \brief Create the analysis */
@@ -54,9 +59,8 @@ public:
 public:
 	/*! \brief Get the region of the specified block */
 	const SafeRegion* getRegion(const_iterator block) const;
-	
-private:
-	typedef std::unordered_map<const_iterator, SafeRegion*> SafeRegionMap;
+	/*! \brief Get the root of the program */
+	const SafeRegion* getRoot() const;
 
 private:
 	SafeRegion    _root;

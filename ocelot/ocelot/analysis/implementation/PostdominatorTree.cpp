@@ -85,6 +85,18 @@ ir::ControlFlowGraph::iterator PostdominatorTree::getPostDominator(
 	return blocks[p_dom[n]];
 }
 
+ir::ControlFlowGraph::iterator PostdominatorTree::getCommonPostDominator(
+	ir::ControlFlowGraph::iterator block1,
+	ir::ControlFlowGraph::iterator block2) {
+
+	int n1 = blocksToIndex[block1];
+	int n2 = blocksToIndex[block2];
+	
+	int n = intersect(p_dom[n1], p_dom[n2]);
+	
+	return blocks[n];
+}
+
 /*! Computes the dominator tree from a CFG using algorithm __*/
 void PostdominatorTree::computeDT() {
 	int end_node = blocksToIndex[cfg->get_exit_block()];

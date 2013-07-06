@@ -7,14 +7,16 @@
 // Ocelot Includes
 #include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
 
-#include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 
-#include <ocelot/analysis/interface/CycleAnalysis.h>
-#include <ocelot/analysis/interface/DependenceAnalysis.h>
-#include <ocelot/analysis/interface/ControlDependenceAnalysis.h>
+#include <ocelot/analysis/interface/SafeRegionAnalysis.h>
+
+// Hydrazine Includes
+#include <hydrazine/interface/debug.h>
 
 // Standard Library Includes
 #include <unordered_set>
+#include <cassert>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -27,236 +29,90 @@ namespace transforms
 {
 
 MIMDThreadSchedulingPass::MIMDThreadSchedulingPass()
-: KernelPass({"DependenceAnalysis", "CycleAnalysis"}, 
-		"MIMDThreadSchedulingPass")
+: KernelPass({"SafeRegionAnalysis"}, "MIMDThreadSchedulingPass")
 {
 
 }
 
 typedef ir::PTXInstruction PTXInstruction;
-typedef std::unordered_set<PTXInstruction*> InstructionSet;
+typedef MIMDThreadSchedulingPass::Statistics Statistics;
+typedef analysis::SafeRegionAnalysis::SafeRegion SafeRegion;
 
-static InstructionSet getBackwardsBranches(analysis::CycleAnalysis* c);
-static InstructionSet getInstructionsThatCanObserveSideEffects(ir::IRKernel& k);
-static InstructionSet getBranchesThatDependOn(const InstructionSet& branches,
-	const InstructionSet& instructions, analysis::DependenceAnalysis*,
-	analysis::ControlDependenceAnalysis*);
+static void insertYieldsBeforeBlocksWithSideEffects(const SafeRegion*,
+	Statistics&);
 
-static InstructionSet getCallsToFuctionsThatObserveSideEffects(ir::IRKernel& k);
-static void insertYieldsBefore(ir::IRKernel& k,
-	const InstructionSet& instructions);
-	
 void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 {
+	statistics.reset();
+	
 	report("Discovering branches that require scheduler yields.");
 	
 	// Get analyses
-	auto cycleAnalysis = static_cast<analysis::CycleAnalysis*>(
-		getAnalysis("CycleAnalysis"));
-	auto dependenceAnalysis = static_cast<analysis::DependenceAnalysis*>(
-		getAnalysis("DependenceAnalysis"));
-	auto controlDependenceAnalysis =
-		static_cast<analysis::ControlDependenceAnalysis*>(
-		getAnalysis("ControlDependenceAnalysis"));
+	auto safeRegionAnalysis = static_cast<analysis::SafeRegionAnalysis*>(
+		getAnalysis("SafeRegionAnalysis"));
 
-	// Discover branches that require yields
-	auto backwardsBranches = getBackwardsBranches(cycleAnalysis);
-	
-	auto instructionsThatCanObserveSideEffects =
-		getInstructionsThatCanObserveSideEffects(k);
-	
-	auto branchesThatRequireYields = getBranchesThatDependOn(
-		backwardsBranches, instructionsThatCanObserveSideEffects,
-		dependenceAnalysis, controlDependenceAnalysis);
+	insertYieldsBeforeBlocksWithSideEffects(safeRegionAnalysis->getRoot(),
+		statistics);
 
-	auto functionCallsThatRequireYields =
-		getCallsToFuctionsThatObserveSideEffects(k);
-
-	// Insert yields before branches
-	report(" Found the following instructions ("
-		<< branchesThatRequireYields.size() << " branches) ("
-		<< functionCallsThatRequireYields.size() << " function calls):");
-	insertYieldsBefore(k, branchesThatRequireYields     );
-	insertYieldsBefore(k, functionCallsThatRequireYields);
+	report(" Total instructions:       " << statistics.totalInstructions);
+	report(" Total safe instructions:  " << statistics.totalSafeInstructions);
+	report(" Percent safe instructions "
+		<< ((100.0 * statistics.totalSafeInstructions) /
+			(statistics.totalInstructions)) << "%");
 }
 
-static InstructionSet getBackwardsBranches(
-	analysis::CycleAnalysis* cycleAnalysis)
+Statistics::Statistics()
+: totalInstructions(0), totalSafeInstructions(0)
 {
-	auto edges = cycleAnalysis->getAllBackEdges();
-	
-	report(" Getting backwards branches");
-	
-	InstructionSet backwardsBranches;
-	
-	for(auto& edge : edges)
-	{
-		if(edge->type != ir::Edge::Branch) continue;
-		
-		auto block = edge->head;
-		
-		assert(!block->instructions.empty());
-		
-		auto ptxBranch = static_cast<ir::PTXInstruction*>(
-			block->instructions.back());
-		
-		assert(ptxBranch->isBranch());
-		
-		report("  " << ptxBranch->toString());
-				
-		backwardsBranches.insert(ptxBranch);
-	}
-	
-	return backwardsBranches;
+
 }
 
-static InstructionSet getInstructionsThatCanObserveSideEffects(ir::IRKernel& k)
+void Statistics::reset()
 {
-	InstructionSet instructions;
-	
-	report(" Getting instructions that can observe side-effects");
-	
-	for(auto& block : *k.cfg())
+	totalInstructions     = 0;
+	totalSafeInstructions = 0;
+}
+
+typedef ir::ControlFlowGraph::iterator block_iterator;
+
+static void insertYield(block_iterator block);
+
+static void insertYieldsBeforeBlocksWithSideEffects(const SafeRegion* region,
+	Statistics& statistics)
+{
+	if(region->isLeaf())
 	{
-		for(auto instruction : block.instructions)
+		unsigned int instructions = region->block->instructions.size();
+	
+		statistics.totalInstructions += instructions;
+		
+		if(region->doesNotDependOnSideEffects)
 		{
-			auto ptxInstruction = static_cast<ir::PTXInstruction*>(instruction);
-		
-			if(ptxInstruction->canObserveSideEffects())
-			{
-				report("  " << ptxInstruction->toString());
-				
-				instructions.insert(ptxInstruction);
-			}
+			statistics.totalSafeInstructions += instructions;
+		}
+		else
+		{
+			insertYield(region->block);
 		}
 	}
-	
-	return instructions;
-}
-
-static InstructionSet getControlDependentInstructions(
-	const PTXInstruction* branch, const InstructionSet& instructions,
-	analysis::ControlDependenceAnalysis* controlDependenceAnalysis)
-{
-	InstructionSet controlDependentInstructions;
-	
-	for(auto instruction : instructions)
+	else
 	{
-		if(controlDependenceAnalysis->dependsOn(branch, instruction))
+		for(auto& child : region->children)
 		{
-			controlDependentInstructions.insert(instruction);
+			insertYieldsBeforeBlocksWithSideEffects(&child, statistics);
 		}
 	}
-	
-	return controlDependentInstructions;
-}
-
-static InstructionSet getBranchesThatDependOn(const InstructionSet& branches,
-	const InstructionSet& instructions,
-	analysis::DependenceAnalysis* dependenceAnalysis,
-	analysis::ControlDependenceAnalysis* controlDependenceAnalysis)
-{
-	InstructionSet dependentBranches;
-	
-	for(auto branch : branches)
-	{
-		auto controlDependentInstructions = getControlDependentInstructions(
-			branch, instructions, controlDependenceAnalysis);
-	
-		for(auto instruction : controlDependentInstructions)
-		{
-			if(dependenceAnalysis->dependsOn(instruction, branch))
-			{
-				dependentBranches.insert(branch);
-				break;
-			}
-		}
-	}
-	
-	return dependentBranches;
-}
-
-static InstructionSet getCallsToFuctionsThatObserveSideEffects(ir::IRKernel& k)
-{
-	InstructionSet instructions;
-
-	for(auto& block : *k.cfg())
-	{
-		for(auto instruction : block.instructions)
-		{
-			auto ptxInstruction = static_cast<ir::PTXInstruction*>(instruction);
-		
-			// TODO: Check that the target can observe side effects
-			if(ptxInstruction->isCall())
-			{
-				instructions.insert(ptxInstruction);
-			}
-		}
-	}
-	
-	return instructions;
-}
-
-typedef ir::ControlFlowGraph::iterator iterator;
-typedef std::unordered_map<PTXInstruction*, iterator> InstructionToBlocks;
-
-static InstructionToBlocks getBlocks(ir::IRKernel& k)
-{
-	InstructionToBlocks blocks;
-	
-	for(auto block = k.cfg()->begin(); block != k.cfg()->end(); ++block)
-	{
-		for(auto instruction : block->instructions)
-		{
-			auto ptx = static_cast<PTXInstruction*>(instruction);
-		
-			blocks.insert(std::make_pair(ptx, block));
-		}
-	}
-	
-	return blocks;
-}
-
-typedef ir::BasicBlock::instruction_iterator instruction_iterator;
-
-static instruction_iterator getIterator(iterator block,
-	const PTXInstruction* ptx)
-{
-	for(auto instruction = block->instructions.begin();
-		instruction != block->instructions.end(); ++instruction)
-	{
-		if(*instruction == ptx) return instruction;
-	}
-	
-	return block->instructions.end();
 }
 
 typedef ir::PTXOperand PTXOperand;
 
-static void insertYield(iterator block, instruction_iterator position)
+static void insertYield(block_iterator block)
 {
 	PTXInstruction* yield = new PTXInstruction(PTXInstruction::Call);
 
 	yield->a = PTXOperand("_Zintrinsic_yield");
 
-	block->instructions.insert(position, yield);
-}
-
-static void insertYieldsBefore(ir::IRKernel& k, const InstructionSet& branches)
-{
-	auto blocks = getBlocks(k);
-	
-	for(auto branch : branches)
-	{
-		auto block = blocks.find(branch);
-		assert(block != blocks.end());
-	
-		auto position = getIterator(block->second, branch);
-		
-		report("  " << branch->toString());
-		
-		insertYield(block->second, position);
-	}
+	block->instructions.insert(block->instructions.begin(), yield);
 }
 
 }

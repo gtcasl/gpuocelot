@@ -65,7 +65,7 @@
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
 %token<text> OPCODE_BFI OPCODE_BFE OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
-%token<text> OPCODE_PREFETCH OPCODE_PREFETCHU
+%token<text> OPCODE_PREFETCH OPCODE_PREFETCHU OPCODE_SHFL
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -107,13 +107,14 @@
 %token<value> TOKEN_X TOKEN_Y TOKEN_Z TOKEN_W
 
 %token<value> TOKEN_ANY TOKEN_ALL
+%token<value> TOKEN_UP TOKEN_DOWN TOKEN_BFLY TOKEN_IDX
 
 %token<value> TOKEN_MIN TOKEN_MAX TOKEN_DEC TOKEN_INC TOKEN_ADD TOKEN_CAS
 %token<value> TOKEN_EXCH
 
 %token<value> TOKEN_1D TOKEN_2D TOKEN_3D TOKEN_A1D TOKEN_A2D TOKEN_CUBE TOKEN_ACUBE
 
-%token<value> TOKEN_CA TOKEN_WB TOKEN_CG TOKEN_CS TOKEN_LU TOKEN_CV TOKEN_WT
+%token<value> TOKEN_CA TOKEN_WB TOKEN_CG TOKEN_CS TOKEN_LU TOKEN_CV TOKEN_WT TOKEN_NC
 
 %token<value> TOKEN_L1 TOKEN_L2
 
@@ -406,7 +407,12 @@ registerPrefix : dataType;
 
 registerDeclaration : TOKEN_REG registerPrefix registerIdentifierList ';';
 
+optionalTimestampAndSize : /* empty string */;
+optionalTimestampAndSize : ',' TOKEN_DECIMAL_CONSTANT
+	',' TOKEN_DECIMAL_CONSTANT;
+
 fileDeclaration : TOKEN_FILE TOKEN_DECIMAL_CONSTANT TOKEN_STRING
+	optionalTimestampAndSize
 {
 	state.fileDeclaration( $<value>2, $<text>3 );
 };
@@ -667,7 +673,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_RCP | OPCODE_SIN | OPCODE_REM | OPCODE_MUL24 | OPCODE_MAD24
 	| OPCODE_DIV | OPCODE_ABS | OPCODE_NEG | OPCODE_MIN | OPCODE_MAX
 	| OPCODE_MAD | OPCODE_SET | OPCODE_SETP | OPCODE_SELP | OPCODE_SLCT
-	| OPCODE_MOV | OPCODE_ST | OPCODE_COPYSIGN
+	| OPCODE_MOV | OPCODE_ST | OPCODE_COPYSIGN | OPCODE_SHFL
 	| OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
 	| OPCODE_AND | OPCODE_XOR | OPCODE_OR
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
@@ -850,7 +856,7 @@ instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
 	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red
 	| ret | sad | selp | set | setp | slct | st | suld | suq | sured | sust
-	| testp | tex | tld4 | trap | txq | vote;
+	| testp | tex | tld4 | trap | txq | vote | shfl;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;
@@ -1384,9 +1390,7 @@ selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 };
 
 
-/*
-	multiple orderings of modifiers for OptiX support
-*/
+/* multiple orderings of modifiers for OptiX support */
 setModifier : comparison optionalFtz;
 setModifier : ftz comparison;
 
@@ -1404,9 +1408,7 @@ set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand
 	state.convert( $<value>6, @1 );
 };
 
-/*
-	multiple orderings of modifiers for OptiX support
-*/
+/* multiple orderings of modifiers for OptiX support */
 setpModifier : comparison optionalFtz;
 setpModifier : ftz comparison;
 
@@ -1430,6 +1432,19 @@ setp : OPCODE_SETP comparison boolOperator optionalFtz dataType predicatePair
 	state.instruction( $<text>1, $<value>5 );
 };
 
+shuffleModifierId : TOKEN_UP | TOKEN_DOWN | TOKEN_BFLY | TOKEN_IDX;
+
+shuffleModifier : shuffleModifierId
+{
+	state.shuffle( $<value>1 );
+};
+
+shfl : OPCODE_SHFL shuffleModifier dataType predicatePair ',' operand ','
+	operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3 );
+};
+
 slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ',' 
 	operand ',' operand ';'
 {
@@ -1442,7 +1457,8 @@ st : OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' arrayOperand ';'
 	state.instruction( $<text>1, $<value>3 );
 };
 
-geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D | TOKEN_A1D | TOKEN_A2D | TOKEN_CUBE | TOKEN_ACUBE;
+geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D | TOKEN_A1D | TOKEN_A2D |
+	TOKEN_CUBE | TOKEN_ACUBE;
 
 geometry : geometryId
 {
@@ -1506,7 +1522,7 @@ suq : OPCODE_SUQ surfaceQuery dataType operand ',' '[' operand ']' ';'
 	state.surfaceQuery( $<value>2 );
 };
 
-cacheOperation : TOKEN_CA | TOKEN_CG | TOKEN_CS | TOKEN_CV
+cacheOperation : TOKEN_CA | TOKEN_CG | TOKEN_CS | TOKEN_CV | TOKEN_NC
 {
 	state.cacheOperation( $<value>1 );
 };

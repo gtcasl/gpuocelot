@@ -1771,6 +1771,11 @@ namespace parser
 	{
 		statement.instruction.vote = tokenToVoteMode( token );
 	}
+
+	void PTXParser::State::shuffle( int token )
+	{
+		statement.instruction.shuffleMode = tokenToShuffleMode( token );
+	}
 	
 	void PTXParser::State::level( int token )
 	{
@@ -2539,6 +2544,7 @@ namespace parser
 		if( string == "set" ) return ir::PTXInstruction::Set;
 		if( string == "setp" ) return ir::PTXInstruction::SetP;
 		if( string == "shl" ) return ir::PTXInstruction::Shl;
+		if( string == "shfl" ) return ir::PTXInstruction::Shfl;
 		if( string == "shr" ) return ir::PTXInstruction::Shr;
 		if( string == "sin" ) return ir::PTXInstruction::Sin;
 		if( string == "slct" ) return ir::PTXInstruction::SlCt;
@@ -2695,6 +2701,7 @@ namespace parser
 			case TOKEN_CS: return ir::PTXInstruction::Cs;
 			case TOKEN_CV: return ir::PTXInstruction::Cv;
 			case TOKEN_WT: return ir::PTXInstruction::Wt;
+			case TOKEN_NC: return ir::PTXInstruction::Nc;
 			default: break;
 		}
 		return ir::PTXInstruction::CacheOperation_Invalid;
@@ -2821,6 +2828,20 @@ namespace parser
 		}
 		
 		return ir::PTXInstruction::VoteMode_Invalid;		
+	}
+	
+	ir::PTXInstruction::ShuffleMode PTXParser::tokenToShuffleMode( int token )
+	{
+		switch( token )
+		{
+			case TOKEN_UP:   return ir::PTXInstruction::Up;   break;
+			case TOKEN_DOWN: return ir::PTXInstruction::Down; break;
+			case TOKEN_BFLY: return ir::PTXInstruction::Bfly; break;
+			case TOKEN_IDX:  return ir::PTXInstruction::Idx;  break;
+			default: break;
+		}
+		
+		return ir::PTXInstruction::ShuffleMode_Invalid;		
 	}
 	
 	ir::PTXInstruction::Level PTXParser::tokenToLevel( int token )

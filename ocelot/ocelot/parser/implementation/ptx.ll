@@ -206,6 +206,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return OPCODE_SET; }
 "setp"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SETP; }
+"shfl"                          { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SHFL; }
 "shl"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SHL; }
 "shr"                           { sstrcpy( yylval->text, yytext, 1024 ); \
@@ -417,6 +419,11 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
 ".any"                          { yylval->value = TOKEN_ANY; return TOKEN_ANY; }
 ".all"                          { yylval->value = TOKEN_ALL; return TOKEN_ALL; }
 
+".up"                           { yylval->value = TOKEN_UP;   return TOKEN_UP;   }
+".down"                         { yylval->value = TOKEN_DOWN; return TOKEN_DOWN; }
+".bfly"                         { yylval->value = TOKEN_BFLY; return TOKEN_BFLY; }
+".idx"                          { yylval->value = TOKEN_IDX;  return TOKEN_IDX;  }
+
 ".min"                          { yylval->value = TOKEN_MIN; return TOKEN_MIN; }
 ".max"                          { yylval->value = TOKEN_MAX; return TOKEN_MAX; }
 ".dec"                          { yylval->value = TOKEN_DEC; return TOKEN_DEC; }
@@ -441,6 +448,7 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
 ".cs"                           { yylval->value = TOKEN_CS; return TOKEN_CS; }
 ".lu"                           { yylval->value = TOKEN_LU; return TOKEN_LU; }
 ".cv"                           { yylval->value = TOKEN_CV; return TOKEN_CV; }
+".nc"                           { yylval->value = TOKEN_NC; return TOKEN_NC; }
 ".wt"                           { yylval->value = TOKEN_WT; return TOKEN_WT; }
 
 ".L1"                           { yylval->value = TOKEN_L1; return TOKEN_L1; }

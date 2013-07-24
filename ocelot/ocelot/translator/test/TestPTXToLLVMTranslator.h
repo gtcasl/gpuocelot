@@ -37,6 +37,8 @@ namespace test
 		
 		public:
 			std::string input;
+			/*! \brief Total amount of time to spend on tests in seconds */
+			hydrazine::Timer::Second timeLimit;
 			bool recursive;
 			bool output;
 	};

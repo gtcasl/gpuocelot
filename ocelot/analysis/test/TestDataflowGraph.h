@@ -58,6 +58,8 @@ namespace test
 		public:
 			/*! \brief The relative path to search for PTX files */
 			std::string base;
+			/*! \brief Total amount of time to spend on tests in seconds */
+			hydrazine::Timer::Second timeLimit;
 		
 		public:
 			TestDataflowGraph();

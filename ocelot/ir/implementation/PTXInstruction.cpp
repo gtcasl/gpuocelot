@@ -34,6 +34,7 @@ std::string ir::PTXInstruction::toStringLoad(CacheOperation operation) {
 		case Cg: return "cg";
 		case Cs: return "cs";
 		case Cv: return "cv";
+		case Nc: return "nc";
 		default: break;
 	}
 	return "";
@@ -310,6 +311,17 @@ std::string ir::PTXInstruction::toString( VoteMode mode ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( ShuffleMode mode ) {
+	switch( mode ) {
+		case Up:   return "up";   break;
+		case Down: return "down"; break;
+		case Bfly: return "bfly"; break;
+		case Idx:  return "idx";  break;
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::toString( ColorComponent color ) {
 	switch( color ) {
 		case red:   return "r"; break;
@@ -375,6 +387,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case SelP:       return "selp";       break;
 		case Set:        return "set";        break;
 		case SetP:       return "setp";       break;
+		case Shfl:       return "shfl";       break;
 		case Shl:        return "shl";        break;
 		case Shr:        return "shr";        break;
 		case Sin:        return "sin";        break;
@@ -1575,6 +1588,32 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;			
 		}
+		case Shfl: {
+			if( type != PTXOperand::b32 ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( d.bytes() != a.bytes() 
+				&& a.addressMode != PTXOperand::Immediate ) {
+				std::stringstream stream;
+				stream << "size of operand A " << a.bytes() 
+					<< " does not match size of operand D " << d.bytes();
+				return stream.str(); 
+			}
+			if( b.bytes() != 4 && b.addressMode != PTXOperand::Immediate ) {
+				std::stringstream stream;
+				stream << "size of operand B " << b.bytes() 
+					<< " must be 4 bytes";
+				return stream.str();
+			}
+			if( c.bytes() != 4 && c.addressMode != PTXOperand::Immediate ) {
+				std::stringstream stream;
+				stream << "size of operand C " << b.bytes() 
+					<< " must be 4 bytes";
+				return stream.str();
+			}
+			break;
+		}
 		case Shl: {
 			if( type != PTXOperand::b16 && type != PTXOperand::b32 
 				&& type != PTXOperand::b64 ) {
@@ -2390,6 +2429,19 @@ std::string ir::PTXInstruction::toString() const {
 			if( c.addressMode != PTXOperand::Invalid ) {
 				result += ", " + c.toString();
 			}
+			return result;
+		}
+		case Shfl: {
+			std::string result = guard() + "shl." + toString( shuffleMode )
+				+ "." +	PTXOperand::toString( type ) + " " + d.toString();
+
+			if( pq.addressMode != PTXOperand::Invalid && !isPt( pq ) ) {
+				result += "|" + pq.toString();
+			}
+				
+			result += ", " + a.toString() + ", " + b.toString() + ", " +
+				c.toString();
+		
 			return result;
 		}
 		case Shl: {

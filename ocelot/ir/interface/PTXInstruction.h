@@ -76,6 +76,7 @@ namespace ir {
 			SelP,
 			Set,
 			SetP,
+			Shfl,
 			Shl,
 			Shr,
 			Sin,
@@ -196,6 +197,7 @@ namespace ir {
 			Cv = 1,
 			Cg = 2,
 			Cs = 3,
+			Nc = 4,
 			Wb = 0,
 			Wt = 1,
 			CacheOperation_Invalid
@@ -318,6 +320,14 @@ namespace ir {
 			VoteMode_Invalid
 		};
 		
+		enum ShuffleMode {
+			Up,
+			Down,
+			Bfly,
+			Idx,
+			ShuffleMode_Invalid
+		};
+		
 	public:
 		static std::string toString( Level );
 		static std::string toString( CacheLevel cache );
@@ -341,6 +351,7 @@ namespace ir {
 		static std::string modifierString( unsigned int, CarryFlag = None );
 		static std::string toString( VoteMode );
 		static std::string toString( ColorComponent );
+		static std::string toString( ShuffleMode );
 		static std::string toString( Opcode );
 		static bool isPt( const PTXOperand& );
 
@@ -403,6 +414,8 @@ namespace ir {
 		unsigned int modifier;
 
 		union {
+			/*! Shuffle mode */
+			ShuffleMode shuffleMode;
 		
 			/*! Comparison operator */
 			CmpOp comparisonOperator;

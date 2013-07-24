@@ -156,13 +156,21 @@ namespace test
 	{
 		StringVector files = _getFileNames();
 		
+		hydrazine::Timer timer;
+		timer.start();
+	
+		unsigned int count = 0;
+	
 		report( "Translating the following files:\n " 
 			<< hydrazine::toString( files.begin(), files.end(), "\n " )  );
 		
-		for( StringVector::iterator fi = files.begin(); 
-			fi != files.end(); ++fi )
+		for( unsigned int i = 0, e = files.size(); i != e; ++i )
 		{	
-			ptxFile = *fi;
+			if( timer.seconds() > timeLimit ) break;
+
+			unsigned int index = random() % files.size();
+	
+			ptxFile = files[ index ];
 		
 			if(  !_testTranslate( ) )
 			{
@@ -173,7 +181,11 @@ namespace test
 		
 			status << "For file " << ptxFile 
 				<< ", Test Point 1 (Translate): Passed\n";
+				
+			++count;
 		}
+	
+		status << "Finished running " << count << " tests...\n";
 			
 		return true;	
 	}
@@ -201,6 +213,8 @@ int main( int argc, char** argv )
 		"Recursively search directories.");
 	parser.parse( "-o", test.output, false,
 		"Print out the internal representation of each parsed file." );
+	parser.parse("-l", "--time-limit", test.timeLimit, 60, 
+		"How many seconds to run tests.");
 	parser.parse( "-s", test.seed, 0,
 		"Set the random seed, 0 implies seed with time." );
 	parser.parse( "-v", test.verbose, false, "Print out info after the test." );

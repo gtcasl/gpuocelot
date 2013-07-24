@@ -282,15 +282,26 @@ namespace test
 	bool TestDataflowGraph::_testGeneric()
 	{
 		status << "Testing Generic Dataflow" << std::endl;
-		for( StringVector::const_iterator file = _files.begin(); 
-			file != _files.end(); ++file )
-		{
-			status << " For File: " << *file << std::endl;
+		
+		hydrazine::Timer timer;
+		timer.start();
+	
+		StringVector usedFiles;
+		
+		for( unsigned int i = 0, e = _files.size(); i != e; ++i )
+		{	
+			if( timer.seconds() > timeLimit ) break;
+
+			unsigned int index = random() % _files.size();
+	
+			std::string file = _files[ index ];
+		
+			status << " For File: " << file << std::endl;
 
 			ir::Module module;
 			try 
 			{
-				module.load( *file );
+				module.load( file );
 			}
 			catch(parser::PTXParser::Exception& e)
 			{
@@ -322,7 +333,13 @@ namespace test
 					return false;
 				}
 			}
+			
+			usedFiles.push_back( file );
+			
 		}
+		
+		_files = usedFiles;
+		
 		status << " Test Passed" << std::endl;
 		return true;
 	}
@@ -450,6 +467,10 @@ int main( int argc, char** argv )
 
 	parser.parse( "-i", "--input", test.base, "../tests/ptx", 
 		"Search path for PTX files." );
+	parser.parse("-l", "--time-limit", test.timeLimit, 60, 
+		"How many seconds to run tests.");
+	parser.parse( "-s", test.seed, 0,
+		"Set the random seed, 0 implies seed with time." );
 	parser.parse( "-v", "--verbose", test.verbose, false, 
 		"Print out info after the test." );
 	parser.parse();

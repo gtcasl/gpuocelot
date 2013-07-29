@@ -26,7 +26,7 @@ namespace transforms
 {
 
 MoveEliminationPass::MoveEliminationPass()
-: KernelPass({"MinimalStaticSingleAssignment"}, "MoveEliminationPass")
+: KernelPass({"DataflowGraphAnalysis"}, "MoveEliminationPass")
 {
 	
 }
@@ -45,6 +45,8 @@ void MoveEliminationPass::runOnKernel(ir::IRKernel& k)
 	auto dfg = static_cast<analysis::DataflowGraph*>(
 		getAnalysis("DataflowGraphAnalysis"));
 	assert(dfg != 0);
+
+	dfg->convertToSSAType(analysis::DataflowGraph::Minimal);
 
 	auto moves = getMoves(dfg);
 	

@@ -240,7 +240,7 @@ void DivergenceLinearScan::_coalesce()
 
 DivergenceLinearScan::DivergenceLinearScan(unsigned regs) 
 : LinearScanRegisterAllocationPass(regs-1,
-	{"DivergenceAnalysis", "GatedStaticSingleAssignment"}, 0),
+	{"DivergenceAnalysis", "DataflowGraphAnalysis"}, 0),
 	_shared("ocelot_divergence_stack", MemoryArray::MemoryDirective::Shared,
 		MemoryArray::StackAddressSpace::Shared),
 	_m(NULL)
@@ -256,6 +256,11 @@ void DivergenceLinearScan::initialize(const ir::Module& m)
 
 void DivergenceLinearScan::runOnKernel(ir::IRKernel& k)
 {
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+		getAnalysis("DataflowGraphAnalysis"));
+	
+	dfg->convertToSSAType(analysis::DataflowGraph::Gated);
+
 #if DIVERGENCE_REGISTER_PROFILE_H_
 	divergenceProfiler::resetSpillData();
 #endif

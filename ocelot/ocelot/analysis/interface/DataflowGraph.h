@@ -467,6 +467,9 @@ class DataflowGraph : public KernelAnalysis
 		/*! \brief Set the type of SSA to use when the graph is constructed */
 		void setPreferredSSAType(SsaType form);
 		
+		/*! \brief Convert to the specified SSA type if it is not already  */
+		void convertToSSAType(SsaType form);
+		
 	public:
 		/*! \brief Get an executable sequence of blocks */
 		BlockPointerVector executableSequence();

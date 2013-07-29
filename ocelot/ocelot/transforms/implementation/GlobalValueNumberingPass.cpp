@@ -32,7 +32,7 @@ namespace transforms
 
 
 GlobalValueNumberingPass::GlobalValueNumberingPass(bool e)
-:  KernelPass({"MinimalStaticSingleAssignment",
+:  KernelPass({"DataflowGraphAnalysis",
 	"DominatorTreeAnalysis", "SimpleAliasAnalysis"},
 	"GlobalValueNumberingPass"), eliminateInstructions(e), _nextNumber(0)
 {
@@ -47,6 +47,11 @@ void GlobalValueNumberingPass::initialize(const ir::Module& m)
 void GlobalValueNumberingPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running GlobalValueNumberingPass on '" << k.name << "'");
+	
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+		getAnalysis("DataflowGraphAnalysis"));
+	
+	dfg->convertToSSAType(analysis::DataflowGraph::Minimal);
 	
 	if(eliminateInstructions)
 	{

@@ -39,7 +39,10 @@ def build(options):
 
 	if options.no_cuda_runtime:
 		command += " enable_cuda_runtime=false"
-
+	
+	if options.static:
+		command += " library=static"
+	
 	if options.build_deb:
 		if not options.install:
 			print "Install must be set for a debian build, setting it"
@@ -163,6 +166,9 @@ def main():
 		type="int", default = "1" )
 	parser.add_option( "-s", "--submit", \
 		default = False, action = "store_true" )
+	parser.add_option( "-S", "--static", \
+		default = False, action = "store_true",
+		help = "Statically link ocelot." )
 	parser.add_option( "-i", "--install", \
 		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \

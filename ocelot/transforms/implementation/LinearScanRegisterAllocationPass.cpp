@@ -142,6 +142,12 @@ void LinearScanRegisterAllocationPass::runOnKernel(ir::IRKernel& k)
 	reportE(INFO, "Running on kernel " << k.name << " with "
 		<< _registers << " physical registers");
 
+	// put the dataflow graph in the correct form
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+		getAnalysis("DataflowGraphAnalysis"));
+	
+	dfg->convertToSSAType(analysis::DataflowGraph::Minimal);
+	
 	_clear();
 	_kernel = &k;
 	_coalesce();

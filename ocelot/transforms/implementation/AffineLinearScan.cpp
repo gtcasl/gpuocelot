@@ -249,12 +249,12 @@ void AffineLinearScan::_coalesce()
 
 AffineLinearScan::AffineLinearScan(unsigned regs) :
 		LinearScanRegisterAllocationPass(regs-1,
-			{"AffineAnalysis", "GatedStaticSingleAssignment"}, 0),
+			{"AffineAnalysis", "DataflowGraphAnalysis"}, 0),
 		_shared("ocelot_affine_stack", MemoryArray::MemoryDirective::Shared,
 			MemoryArray::StackAddressSpace::Shared),
 		_m(NULL)
 {
-
+	
 }
 
 void AffineLinearScan::initialize(const ir::Module& m)
@@ -265,6 +265,11 @@ void AffineLinearScan::initialize(const ir::Module& m)
 
 void AffineLinearScan::runOnKernel(ir::IRKernel& k)
 {
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+		getAnalysis("DataflowGraphAnalysis"));
+	
+	dfg->convertToSSAType(analysis::DataflowGraph::Gated);
+	
 	#if AFFINE_REGISTER_PROFILE_H_
 	affineProfiler::resetSpillData();
 	#endif

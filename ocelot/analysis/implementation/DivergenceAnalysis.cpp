@@ -29,7 +29,7 @@ namespace analysis
 /*! \brief Constructor, already making the analysis of a input kernel */
 DivergenceAnalysis::DivergenceAnalysis()
 : KernelAnalysis( "DivergenceAnalysis",
-	{"GatedStaticSingleAssignment",
+	{"DataflowGraphAnalysis",
 	"PostDominatorTreeAnalysis"}), _doCFGanalysis(true),
 	_includeConditionalConvergence(true)
 {
@@ -49,6 +49,8 @@ void DivergenceAnalysis::analyze(ir::IRKernel &k)
 	assert(dfgAnalysis != 0);
 
 	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
+
+	dfg.convertToSSAType(DataflowGraph::Gated);
 
 	assert(dfg.ssa());
 

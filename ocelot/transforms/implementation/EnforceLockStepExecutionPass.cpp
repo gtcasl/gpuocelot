@@ -37,13 +37,19 @@ EnforceLockStepExecutionPass::EnforceLockStepExecutionPass()
 
 void EnforceLockStepExecutionPass::initialize(const ir::Module& m)
 {
-
+	_statistics.reset();
 }
 
 void EnforceLockStepExecutionPass::runOnKernel(ir::IRKernel& k)
 {
 	report("Running Enforce-Lock-Step-Execution-Pass on kernel '"
 		<< k.name << "'");
+	
+	// Convert out of ssa
+	auto dfg = static_cast<analysis::DataflowGraph*>(
+		getAnalysis("DataflowGraphAnalysis"));
+	
+	dfg->fromSsa();
 	
 	// Predicate all instructions with their region variable
 	_predicateInstructions(k);
@@ -68,6 +74,13 @@ void EnforceLockStepExecutionPass::runOnKernel(ir::IRKernel& k)
 	
 	// Free data structures
 	_reset();
+	
+	// Invalidate analyses
+	invalidateAllAnalyses();
+	
+	// Print statistics
+	//std::cout << "For kernel '" << k.name << "' ";
+	//std::cout << _statistics.toString();
 }
 
 void EnforceLockStepExecutionPass::finalize()
@@ -263,6 +276,8 @@ void EnforceLockStepExecutionPass::_predicateInstructions(ir::IRKernel& k)
 			
 			ptx->pg.condition = ir::PTXOperand::Pred;
 			ptx->pg.reg       = blockVariable;
+
+			++_statistics.predicatedInstructions;
 		}
 	}
 }
@@ -351,6 +366,8 @@ void EnforceLockStepExecutionPass::_deleteAllBranches(ir::IRKernel& k)
 				report("  " << ptx->toString());
 	
 				instruction = dfg->erase(block, instruction);
+	
+				++_statistics.removedBranches;
 			}
 			else
 			{
@@ -804,6 +821,8 @@ void EnforceLockStepExecutionPass::_uniformBranchToTarget(block_iterator block,
 	bra.uni = true;
 	
 	dfg->insert(block, bra);
+	
+	++_statistics.insertedBranches;
 		
 	report("   added uniform branch to target " << target->label());
 }
@@ -825,6 +844,8 @@ void EnforceLockStepExecutionPass::_conditionalBranchToTarget(
 	bra.uni = true;
 	
 	dfg->insert(block, bra);
+	
+	++_statistics.insertedBranches;
 		
 	report("   added conditional branch to target " << target->label());
 }
@@ -849,6 +870,8 @@ void EnforceLockStepExecutionPass::_branchToTargetIfVariableIsSet(
 	
 	dfg->insert(block, vote);
 	
+	++_statistics.insertedVotes;
+	
 	ir::PTXInstruction bra(ir::PTXInstruction::Bra);
 	
 	bra.pg  = vote.d;
@@ -856,6 +879,10 @@ void EnforceLockStepExecutionPass::_branchToTargetIfVariableIsSet(
 	bra.uni = true;
 	
 	dfg->insert(block, bra);
+	
+	++_statistics.insertedBranches;
+	
+	
 	
 	report("   added check for target " << target->label());
 }
@@ -1027,6 +1054,37 @@ EnforceLockStepExecutionPass::Register
 	
 	return edgeVariable->second;
 }
+
+EnforceLockStepExecutionPass::Statistics::Statistics()
+: removedBranches(0), predicatedInstructions(0),
+  insertedBranches(0), insertedVotes(0)
+{
+
+}
+	
+std::string EnforceLockStepExecutionPass::Statistics::toString() const
+{
+	std::stringstream stream;
+
+	stream << "Statistics:\n"
+		" Removed Branches:        "  << removedBranches << "\n"
+		" Predicated Instructions: "  << predicatedInstructions << "\n"
+		" Inserted Branches:       "  << insertedBranches << "\n"
+		" Inserted Votes:          "  << insertedVotes << "\n"
+		;
+		
+	return stream.str();
+}
+
+
+void EnforceLockStepExecutionPass::Statistics::reset()
+{
+	removedBranches        = 0;
+	predicatedInstructions = 0;
+	insertedBranches       = 0;
+	insertedVotes          = 0;
+}
+
 
 }
 

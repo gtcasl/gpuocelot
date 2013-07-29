@@ -496,9 +496,8 @@ void AffineTransferFunction::dumpMap(std::ostream & os) const {
 /*! \brief Constructor. Initalized the fields of the object.
  */
 AffineAnalysis::AffineAnalysis() :
-	KernelAnalysis("AffineAnalysis",
-	{"DominatorTreeAnalysis", "PostDominatorTreeAnalysis",
-		"GatedStaticSingleAssignment"})
+	KernelAnalysis("DataflowGraphAnalysis",
+	{"DominatorTreeAnalysis", "PostDominatorTreeAnalysis"})
 
 {
 	_sa = NULL;
@@ -511,10 +510,14 @@ AffineAnalysis::AffineAnalysis() :
 void AffineAnalysis::analyze(ir::IRKernel &k) {
 	_kernel = &k;
 	AffineTransferFunction::_isFunct = _kernel->function();
-	_sm = new AffineTransferFunction::StateMap;
-	_aft = new AffineTransferFunction(*_sm, static_cast<DataflowGraph*>(getAnalysis("DataflowGraphAnalysis")));
+	auto dfg = static_cast<DataflowGraph*>(getAnalysis("DataflowGraphAnalysis"));
 
-	_sa = new SparseAnalysis((DataflowGraph*) (getAnalysis("DataflowGraphAnalysis")), _aft);
+	dfg->convertToSSAType(DataflowGraph::Gated);
+
+	_sm = new AffineTransferFunction::StateMap;
+	_aft = new AffineTransferFunction(*_sm, dfg);
+	
+	_sa = new SparseAnalysis(dfg, _aft);
 	_sa->iterateToFixPoint();
 }
 

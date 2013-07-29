@@ -94,6 +94,28 @@ private:
 	RegionMap _blockToRegionRegisters;
 	BlockSet  _blocksWithEntryPointRegionTransitions;
 
+private:
+	class Statistics
+	{
+	public:
+		Statistics();
+	
+	public:
+		std::string toString() const;
+	
+	public:
+		void reset();
+	
+	public:
+		unsigned int removedBranches;
+		unsigned int predicatedInstructions;
+		unsigned int insertedBranches;
+		unsigned int insertedVotes;
+	};
+
+private:
+	Statistics _statistics;
+
 };
 
 }

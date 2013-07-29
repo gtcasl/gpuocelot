@@ -26,7 +26,7 @@ namespace transforms
 {
 
 DeadCodeEliminationPass::DeadCodeEliminationPass()
-: KernelPass({"StaticSingleAssignment"}, "DeadCodeEliminationPass")
+: KernelPass({"DataflowGraphAnalysis"}, "DeadCodeEliminationPass")
 {
 
 }
@@ -251,6 +251,8 @@ void DeadCodeEliminationPass::runOnKernel(ir::IRKernel& k)
 
 	analysis::DataflowGraph& dfg =
 		*static_cast<analysis::DataflowGraph*>(dfgAnalysis);
+	
+	dfg.convertToSSAType(analysis::DataflowGraph::Minimal);
 	
 	assert(dfg.ssa() != analysis::DataflowGraph::SsaType::None);
 	

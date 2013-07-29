@@ -47,30 +47,12 @@ Analysis* AnalysisFactory::createAnalysis(const std::string& name,
 	{
 		analysis = new PostdominatorTree;
 	}
-    else if(name == "DataflowGraphAnalysis"
-    	|| name == "StaticSingleAssignment"
-    	|| name == "MinimalStaticSingleAssignment"
-    	|| name == "GatedStaticSingleAssignment")
+    else if(name == "DataflowGraphAnalysis")
 	{
 		auto dfg = new DataflowGraph;
 		
-		if(name == "DataflowGraphAnalysis")
-		{
-			dfg->setPreferredSSAType(analysis::DataflowGraph::None);
-		}
-		else if(name == "StaticSingleAssignment")
-		{
-			dfg->setPreferredSSAType(analysis::DataflowGraph::Default);
-		}
-		else if(name == "MinimalStaticSingleAssignment")
-		{
-			dfg->setPreferredSSAType(analysis::DataflowGraph::Minimal);
-		}
-		else if(name == "GatedStaticSingleAssignment")
-		{
-			dfg->setPreferredSSAType(analysis::DataflowGraph::Gated);
-		}
-		
+		dfg->setPreferredSSAType(analysis::DataflowGraph::None);
+				
 		analysis = dfg;
 	}
 	else if(name == "DivergenceAnalysis")

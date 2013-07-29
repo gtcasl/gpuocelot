@@ -27,7 +27,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0 
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -51,16 +51,17 @@ static PassUseCountMap getPassUseCounts(const PassWaveList& waves)
 			{
 				auto use = uses.find(analysisType);
 			
-				report(" Recording future use of analysis " << analysisType);
-				
 				if(use == uses.end())
 				{
-					uses.insert(std::make_pair(analysisType, 1));
+					use = uses.insert(std::make_pair(analysisType, 1)).first;
 				}
 				else
 				{
 					use->second += 1;
 				}
+				
+				report(" Recording future use of analysis " << analysisType
+					<< " (" << use->second << " total) by " << pass->name);
 			}
 		}
 	}
@@ -81,8 +82,6 @@ static PassUseCountMap getPassUseCounts(const PassWaveList& waves,
 			{
 				auto use = uses.find(analysisType);
 			
-				report(" Recording future use of analysis " << analysisType);
-				
 				unsigned int useCount = 0;
 				
 				switch(pass->type)
@@ -115,14 +114,20 @@ static PassUseCountMap getPassUseCounts(const PassWaveList& waves,
 				default : break;
 				}
 				
+				if(useCount == 0) continue;
+				
 				if(use == uses.end())
 				{
-					uses.insert(std::make_pair(analysisType, useCount));
+					use = uses.insert(std::make_pair(
+						analysisType, useCount)).first;
 				}
 				else
 				{
 					use->second += useCount;
 				}
+				
+				report(" Recording future use of analysis " << analysisType
+					<< " (" << use->second << " total) by " << pass->name);
 			}
 		}
 	}
@@ -131,13 +136,24 @@ static PassUseCountMap getPassUseCounts(const PassWaveList& waves,
 }
 	
 static void freeUnusedDataStructures(PassUseCountMap& uses,
-	AnalysisMap& analyses, const Pass::StringVector& types)
+	AnalysisMap& analyses)
 {
-	for(auto analysisType : types)
+	Pass::StringVector freedAnalyses;
+	
+	for(auto& use : uses)
+	{
+		if(use.second == 0)
+		{
+			freedAnalyses.push_back(use.first);
+		}
+	}
+	
+	for(auto& analysisType : freedAnalyses)
 	{
 		auto use = uses.find(analysisType);
 		
-		assert(use != uses.end());
+		assertM(use != uses.end(), "Could not find entry for "
+			<< analysisType);
 		
 		if(use->second == 0)
 		{
@@ -145,6 +161,7 @@ static void freeUnusedDataStructures(PassUseCountMap& uses,
 			uses.erase(use);
 			
 			auto analysis = analyses.find(analysisType);
+			
 			if(analysis != analyses.end())
 			{
 				delete analysis->second;
@@ -158,6 +175,8 @@ static void freeUnusedDataStructures(PassUseCountMap& uses,
 static void allocateDependencies(PassUseCountMap& uses,
 	analysis::Analysis* newAnalysis,
 	AnalysisMap& analyses, IRKernel* function, PassManager* manager);
+static void freeDependencies(PassUseCountMap& uses,
+	analysis::Analysis* newAnalysis);
 
 static void allocateDataStructure(PassUseCountMap& uses,
 	const std::string& analysisType,
@@ -172,7 +191,7 @@ static void allocateDataStructure(PassUseCountMap& uses,
 
 	newAnalysis->setPassManager(manager);
 
-	// allocate dependencies
+	// allocate dependencies (use-counts)
 	allocateDependencies(uses, newAnalysis, analyses, function, manager);
 	
 	auto functionAnalysis = static_cast<analysis::KernelAnalysis*>(
@@ -180,9 +199,9 @@ static void allocateDataStructure(PassUseCountMap& uses,
 
 	functionAnalysis->analyze(*function);
 
-	// free dependencies
-	freeUnusedDataStructures(uses, analyses, newAnalysis->required);
-
+	// free dependencies (use-counts)
+	freeDependencies(uses, newAnalysis);
+	
 	analyses.insert(std::make_pair(newAnalysis->name, newAnalysis));
 }
 
@@ -191,37 +210,36 @@ static void allocateDependencies(PassUseCountMap& uses,
 	AnalysisMap& analyses, IRKernel* function, PassManager* manager)
 {
 	// increment use count
-	for(auto type : newAnalysis->required)
+	for(auto& type : newAnalysis->required)
 	{
 		auto use = uses.find(type);
 			
-		report(" Recording future use of analysis " << type);
-		
 		if(use == uses.end())
 		{
-			uses.insert(std::make_pair(type, 1));
+			use = uses.insert(std::make_pair(type, 1)).first;
 		}
 		else
 		{
 			++use->second;
 		}
+
+		report("   Recording future use of analysis " << type
+			<< " (" << use->second << " total) by " << newAnalysis->name);
 	}
 	
 	// allocate dependencies
-	for(auto type : newAnalysis->required)
+	for(auto& type : newAnalysis->required)
 	{
 		allocateDataStructure(uses, type, analyses, function, manager);
 	}
 }
 
-static void allocateNewDataStructures(PassUseCountMap& uses,
-	AnalysisMap& analyses, IRKernel* function, const Pass::StringVector& types,
-	PassManager* manager)
+static void freeDependencies(PassUseCountMap& uses,
+	analysis::Analysis* newAnalysis)
 {
-	for(auto analysisType : types)
+	// decrement use count
+	for(auto& analysisType : newAnalysis->required)
 	{
-		report(" Recording use of analysis " << analysisType);
-		
 		auto use = uses.find(analysisType);
 		
 		assert(use != uses.end());
@@ -229,6 +247,29 @@ static void allocateNewDataStructures(PassUseCountMap& uses,
 		assert(use->second > 0);
 		
 		--use->second;
+		
+		report("   Recording user '" << newAnalysis->name
+			<< "' finished with analysis " << analysisType
+			<< " (" << use->second << " remaining)");
+	}
+}
+
+static void allocateNewDataStructures(PassUseCountMap& uses,
+	AnalysisMap& analyses, IRKernel* function, const Pass::StringVector& types,
+	PassManager* manager)
+{
+	for(auto& analysisType : types)
+	{
+		auto use = uses.find(analysisType);
+		
+		assert(use != uses.end());
+		
+		assert(use->second > 0);
+		
+		--use->second;
+		
+		report(" Recording user (transform) finished with analysis "
+			<< analysisType	<< " (" << use->second << " remaining)");
 		
 		allocateDataStructure(uses, analysisType, analyses, function, manager);
 	}
@@ -445,12 +486,6 @@ void PassManager::clear()
 		delete *pass;
 	}
 	
-	for(auto pass = _ownedTemporaryPasses.begin();
-		pass != _ownedTemporaryPasses.end(); ++pass)
-	{
-		delete *pass;
-	}
-	
 	_ownedTemporaryPasses.clear();
 	_passes.clear();
 	_extraDependences.clear();
@@ -504,8 +539,7 @@ void PassManager::runOnKernel(IRKernel& function)
 			runKernelPass(&function, *pass);
 			_previouslyRunPasses[(*pass)->name] = *pass;
 			
-			freeUnusedDataStructures(passesUseCounts, analyses,
-			 	(*pass)->analyses);
+			freeUnusedDataStructures(passesUseCounts, analyses);
 		}
 
 		for(auto pass = wave->begin(); pass != wave->end(); ++pass)
@@ -517,6 +551,7 @@ void PassManager::runOnKernel(IRKernel& function)
 		_function = 0;
 	}
 	
+	assert(passesUseCounts.empty());
 	_previouslyRunPasses.clear();
 }
 
@@ -549,6 +584,8 @@ void PassManager::runOnModule()
 				
 				allocateNewDataStructures(passesUseCounts, analyses->second,
 					function->second, (*pass)->analyses, this);
+			
+				freeUnusedDataStructures(passesUseCounts, analyses->second);
 			}
 			
 			_previouslyRunPasses[(*pass)->name] = *pass;
@@ -582,8 +619,7 @@ void PassManager::runOnModule()
 				runKernelPass(_module, _function, *pass);
 				_previouslyRunPasses[(*pass)->name] = *pass;
 			
-				freeUnusedDataStructures(passesUseCounts, analyses->second,
-					(*pass)->analyses);
+				freeUnusedDataStructures(passesUseCounts, analyses->second);
 			}
 
 			for(auto pass = wave->begin(); pass != wave->end(); ++pass)
@@ -596,6 +632,7 @@ void PassManager::runOnModule()
 		}
 	}
 	
+	assert(passesUseCounts.empty());
 	_previouslyRunPasses.clear();
 }
 
@@ -633,6 +670,19 @@ void PassManager::invalidateAnalysis(const std::string& type)
 	if(analysis != _analyses->end())
 	{
 		report("Invalidating analysis " << type);
+		delete analysis->second;
+		_analyses->erase(analysis);
+	}
+}
+
+void PassManager::invalidateAllAnalyses()
+{
+	assert(_analyses != 0);
+
+	while(!_analyses->empty())
+	{
+		AnalysisMap::iterator analysis = _analyses->begin();
+		report("Invalidating analysis " << analysis->first);
 		delete analysis->second;
 		_analyses->erase(analysis);
 	}

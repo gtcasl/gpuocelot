@@ -1368,6 +1368,21 @@ void DataflowGraph::setPreferredSSAType(SsaType form)
 	_ssa = form;
 }
 
+void DataflowGraph::convertToSSAType(SsaType form)
+{
+	if(form == _ssa) return;
+	
+	if(_ssa != None)
+	{
+		fromSsa();
+	}
+	
+	if(form != None)
+	{
+		toSsa(form);
+	}
+}
+
 DataflowGraph::BlockPointerVector DataflowGraph::executableSequence()
 {
 	ir::ControlFlowGraph::BlockPointerVector 

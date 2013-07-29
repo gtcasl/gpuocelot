@@ -81,6 +81,10 @@ public:
 	/*! \brief Invalidate the analysis, the pass manager will
 		need to generate it again for other applications */
 	void invalidateAnalysis(const std::string& name);
+	
+	/*! \brief Invalidate all analyses, the pass manager will
+		need to generate it again for other applications */
+	void invalidateAllAnalyses();
 
 public:
 	/*! \brief Get a list of passes that this pass depends on */

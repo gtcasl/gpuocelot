@@ -26,7 +26,7 @@ namespace transforms
 {
 
 ConstantPropagationPass::ConstantPropagationPass()
-: KernelPass({"MinimalStaticSingleAssignment"}, "ConstantPropagationPass")
+: KernelPass({"DataflowGraphAnalysis"}, "ConstantPropagationPass")
 {
 
 }
@@ -46,6 +46,8 @@ void ConstantPropagationPass::runOnKernel(ir::IRKernel& k)
 	
 	analysis::DataflowGraph& dfg =
 		*static_cast<analysis::DataflowGraph*>(dfgAnalysis);
+	
+	dfg.convertToSSAType(analysis::DataflowGraph::Minimal);
 	
 	assert(dfg.ssa() == analysis::DataflowGraph::Minimal);
 	

@@ -104,6 +104,10 @@ public:
 	/*! \brief Invalidate the analysis, the pass manager will
 		need to generate it again the next time 'get' is called */
 	void invalidateAnalysis(const std::string& type);
+	
+	/*! \brief Invalidate all analyses, the pass manager will
+		need to generate them again the next time 'get' is called */
+	void invalidateAllAnalyses();
 
 public:
 	/*! \brief Get a previously run pass by name */

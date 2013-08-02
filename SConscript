@@ -148,10 +148,6 @@ OcelotLinker = env.Program('OcelotLinker', \
 	['ocelot/tools/OcelotLinker.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotLinker, libocelot)
 
-KernelDrawer = env.Program('KernelDrawer', \
-	['ocelot/tools/KernelDrawer.cpp'], LIBS=ocelot_libs)
-env.Depends(KernelDrawer, libocelot)
-
 ocelot_server_libs = ['']
 
 if os.name != 'nt':

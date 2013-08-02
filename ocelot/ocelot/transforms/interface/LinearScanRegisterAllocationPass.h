@@ -57,8 +57,8 @@ public:
 	/*! \brief Constructor on the number of registers to allocate */
 	LinearScanRegisterAllocationPass(unsigned regs = 8,
 		const Analysis::StringVector& analysis =
-			{"DataflowGraphAnalysis", "DominatorTreeAnalysis",
-				"PostDominatorTreeAnalysis"},
+			Analysis::StringVector({"DataflowGraphAnalysis", "DominatorTreeAnalysis",
+				"PostDominatorTreeAnalysis"}),
 		unsigned reserved = 0);
 
 	/*! \brief Initialize the pass using a specific module */

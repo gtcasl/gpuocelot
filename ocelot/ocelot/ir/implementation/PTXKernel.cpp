@@ -560,10 +560,8 @@ unsigned int PTXKernel::getSharedMemoryLayout(
 	std::map<std::string, unsigned int> &globalOffsets, 
 	std::map<std::string, unsigned int> &localOffsets) const {
 	
-	using namespace std;
 	typedef std::unordered_map<std::string, 
 		ir::Module::GlobalMap::const_iterator> GlobalMap;
-	typedef std::	unordered_set<std::string> StringSet;
 	typedef std::deque<ir::PTXOperand*> OperandVector;
 	
 	unsigned int sharedOffset = 0;

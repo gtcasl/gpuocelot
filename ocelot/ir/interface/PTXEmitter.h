@@ -20,7 +20,7 @@ namespace ir {
 		/*! \brief Controls how PTX modules, kernels, and instructions are emitted */
 		enum Target {
 			Target_invalid,
-			Target_OcelotIR,		//! invertible Ocelot PTX IR (parser <-> IR)
+			Target_OcelotIR,    //! invertible Ocelot PTX IR (parser <-> IR)
 			Target_NVIDIA_PTX30	//! PTX emitter compatible with CUDA driver
 		};
 	};

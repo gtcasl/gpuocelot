@@ -12,8 +12,11 @@
 
 // Ocelot Includes
 #include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/analysis/interface/DivergenceAnalysis.h>
+
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/ReadableLayoutPass.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/Version.h>
@@ -625,7 +628,8 @@ void PTXKernel::write(std::ostream& stream) const
 	writeWithEmitter(stream);
 }
 
-void PTXKernel::writeWithEmitter(std::ostream& stream, PTXEmitter::Target emitterTarget) const 
+void PTXKernel::writeWithEmitter(std::ostream& stream,
+	PTXEmitter::Target emitterTarget) const 
 {
 	std::stringstream strReturnArguments;
 	std::stringstream strArguments;
@@ -693,9 +697,26 @@ void PTXKernel::writeWithEmitter(std::ostream& stream, PTXEmitter::Target emitte
 	
 	// issue actual instructions
 	if (_cfg != 0) {
-		ControlFlowGraph::BlockPointerVector 
-			blocks = _cfg->executable_sequence();
+		ControlFlowGraph::BlockPointerVector blocks; 
+		
+		if (emitterTarget == PTXEmitter::Target_OcelotIR
+			|| emitterTarget == PTXEmitter::Target_NVIDIA_PTX30) {
+
+			// TODO: implement a const version of the pass manager
+			transforms::PassManager manager(const_cast<Module*>(module));
 			
+			transforms::ReadableLayoutPass pass;
+			manager.addPass(&pass);
+			
+			manager.runOnKernel(const_cast<PTXKernel&>(*this));
+			manager.releasePasses();
+						
+			blocks = pass.blocks;
+		}
+		else {
+			blocks = _cfg->executable_sequence();
+		}		
+		
 		IndirectCallMap indirectCalls;
 	
 		// look for and emit function prototypes

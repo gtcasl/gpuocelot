@@ -2522,6 +2522,7 @@ namespace parser
 		if( string == "lg2" ) return ir::PTXInstruction::Lg2;
 		if( string == "mad24" ) return ir::PTXInstruction::Mad24;
 		if( string == "mad" ) return ir::PTXInstruction::Mad;
+		if( string == "madc" ) return ir::PTXInstruction::MadC;
 		if( string == "max" ) return ir::PTXInstruction::Max;
 		if( string == "membar" ) return ir::PTXInstruction::Membar;
 		if( string == "min" ) return ir::PTXInstruction::Min;

@@ -364,6 +364,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Lg2:        return "lg2";        break;
 		case Mad24:      return "mad24";      break;
 		case Mad:        return "mad";        break;
+		case MadC:       return "madc";        break;
 		case Max:        return "max";        break;
 		case Membar:     return "membar";     break;
 		case Min:        return "min";        break;
@@ -1070,6 +1071,32 @@ std::string ir::PTXInstruction::valid() const {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
 				}
+			}
+			break;
+		}
+		case MadC: {
+			if( !( type == PTXOperand::u32 || type == PTXOperand::s32 ) ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, a.type )  ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, b.type )  ) {
+				return "operand B type " + PTXOperand::toString( b.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, c.type )  ) {
+				return "operand C type " + PTXOperand::toString( c.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			if( !( ( modifier & hi ) || ( modifier & lo ) ) ) {
+				return "modifier must be hi or lo";
+			}
+			if( !PTXOperand::valid( type, d.type )  ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
 			break;
 		}
@@ -2285,6 +2312,13 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Mad: {
 			std::string result = guard() + "mad.";
+			result += modifierString( modifier, carry );
+			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
+				+ a.toString() + ", " + b.toString() + ", " + c.toString();
+			return result;
+		}
+		case MadC: {
+			std::string result = guard() + "madc.";
 			result += modifierString( modifier, carry );
 			result += PTXOperand::toString( type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString() + ", " + c.toString();

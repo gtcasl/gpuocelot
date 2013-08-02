@@ -53,6 +53,7 @@ namespace ir {
 			Lg2,
 			Mad24,
 			Mad,
+			MadC,
 			Max,
 			Membar,
 			Min,

@@ -55,9 +55,9 @@
 %token<text> OPCODE_MUL OPCODE_SAD OPCODE_SUB OPCODE_EX2 OPCODE_LG2 OPCODE_ADDC
 %token<text> OPCODE_RCP OPCODE_SIN OPCODE_REM OPCODE_MUL24 OPCODE_MAD24
 %token<text> OPCODE_DIV OPCODE_ABS OPCODE_NEG OPCODE_MIN OPCODE_MAX
-%token<text> OPCODE_MAD OPCODE_SET OPCODE_SETP OPCODE_SELP OPCODE_SLCT
-%token<text> OPCODE_MOV OPCODE_ST OPCODE_CVT OPCODE_AND OPCODE_XOR OPCODE_OR
-%token<text> OPCODE_CVTA OPCODE_ISSPACEP OPCODE_LDU
+%token<text> OPCODE_MAD OPCODE_MADC OPCODE_SET OPCODE_SETP OPCODE_SELP 
+%token<text> OPCODE_SLCT OPCODE_MOV OPCODE_ST OPCODE_CVT OPCODE_AND OPCODE_XOR 
+%token<text> OPCODE_OR OPCODE_CVTA OPCODE_ISSPACEP OPCODE_LDU
 %token<text> OPCODE_SULD OPCODE_TXQ OPCODE_SUST OPCODE_SURED OPCODE_SUQ
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
 %token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC
@@ -672,8 +672,8 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_MUL | OPCODE_SAD | OPCODE_SUB | OPCODE_EX2 | OPCODE_LG2
 	| OPCODE_RCP | OPCODE_SIN | OPCODE_REM | OPCODE_MUL24 | OPCODE_MAD24
 	| OPCODE_DIV | OPCODE_ABS | OPCODE_NEG | OPCODE_MIN | OPCODE_MAX
-	| OPCODE_MAD | OPCODE_SET | OPCODE_SETP | OPCODE_SELP | OPCODE_SLCT
-	| OPCODE_MOV | OPCODE_ST | OPCODE_COPYSIGN | OPCODE_SHFL
+	| OPCODE_MAD | OPCODE_MADC | OPCODE_SET | OPCODE_SETP | OPCODE_SELP
+	| OPCODE_SLCT | OPCODE_MOV | OPCODE_ST | OPCODE_COPYSIGN | OPCODE_SHFL
 	| OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
 	| OPCODE_AND | OPCODE_XOR | OPCODE_OR
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
@@ -853,7 +853,7 @@ optionalFloatRounding : floatRounding | /* empty string */;
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfe | bfi | bfind | brev | branch | addOrSub
 	| addCOrSubC | atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
-	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
+	| ld | ldu | mad | mad24 | madc | membar | mov | mul24 | mul | notInstruction
 	| pmevent | popc | prefetch | prefetchu | prmt | rcpSqrtInstruction | red
 	| ret | sad | selp | set | setp | slct | st | suld | suq | sured | sust
 	| testp | tex | tld4 | trap | txq | vote | shfl;
@@ -975,6 +975,16 @@ call : OPCODE_CALL optionalUniOrTail optionalReturnOperandList identifier
 	state.call( $<text>4, @1 );
 };
 
+optionalCarry : TOKEN_CARRY
+{
+	state.carry( true );
+};
+
+optionalCarry : /* empty string */
+{
+	state.carry( false );
+};
+
 addModifier : TOKEN_CARRY
 {
 	state.carry( true );
@@ -993,17 +1003,9 @@ addOrSub : addOrSubOpcode addModifier dataType operand ',' operand ','
 	state.instruction( $<text>1, $<value>3 );
 };
 
-addCModifier : TOKEN_CARRY
-{
-	state.carry( true );
-};
-
-addCModifier : /* empty string */
-{
-	state.carry( false );
-};
-
 addCOrSubCOpcode : OPCODE_ADDC | OPCODE_SUBC;
+
+addCModifier : optionalCarry;
 
 addCOrSubC : addCOrSubCOpcode addCModifier dataType operand ',' operand 
 	',' operand ';'
@@ -1202,9 +1204,18 @@ roundHiLoWide : floatRounding | hiOrLo | TOKEN_WIDE;
 mulModifier : roundHiLoWide optionalFtz optionalSaturate
 {
 	state.modifier( $<value>1 );
+	state.carry( false );
 };
 
-mulModifier : optionalFtz optionalSaturate;;
+mulModifier : hiOrLo TOKEN_CARRY
+{
+	state.carry( true );
+};
+
+mulModifier : optionalFtz optionalSaturate
+{
+	state.carry( false );
+};
 
 madOpcode : OPCODE_MAD | OPCODE_FMA;
 
@@ -1222,6 +1233,17 @@ mad24Modifier : hiOrLo optionalSaturate
 };
 
 mad24 : OPCODE_MAD24 mad24Modifier dataType operand ',' operand 
+	',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3 );
+};
+
+madCModifier : hiOrLo optionalCarry
+{
+	state.modifier( $<value>1 );
+};
+
+madc : OPCODE_MADC madCModifier dataType operand ',' operand 
 	',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3 );

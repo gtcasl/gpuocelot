@@ -162,6 +162,8 @@ LABEL ({IDENTIFIER}{WHITESPACE}":")
                                     return OPCODE_MIN; }
 "mad"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MAD; }
+"madc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MADC; }
 "mad24"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MAD24; }
 "max"                           { sstrcpy( yylval->text, yytext, 1024 ); \

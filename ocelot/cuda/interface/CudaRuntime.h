@@ -159,7 +159,7 @@ namespace cuda {
 			/*! \brief Initializing constructor */
 			Dimension(int x = 0, int y = 0, int z = 0, 
 				const cudaChannelFormatDesc& f = 
-				{8,0,0,0,cudaChannelFormatKindNone});
+				cudaChannelFormatDesc({8,0,0,0,cudaChannelFormatKindNone}));
 	
 			/*! \brief Get the pitch of the array */
 			size_t pitch() const;

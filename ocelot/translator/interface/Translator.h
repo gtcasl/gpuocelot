@@ -64,7 +64,7 @@ public:
 	Translator( ir::Instruction::Architecture s, 
 		ir::Instruction::Architecture t, 
 		OptimizationLevel l = NoOptimization, 
-		const StringVector& analyses = {},
+		const StringVector& analyses = StringVector(),
 		const std::string& name = "" );
 	/*! \brief The destructor is needed for virtual methods */
 	virtual ~Translator();

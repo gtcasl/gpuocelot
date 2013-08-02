@@ -699,7 +699,7 @@ def Environment():
 	if os.name == 'posix':
 		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
 		if platform.system() != 'Darwin':
-			env.AppendUnique(EXTRA_LIBS = ['-lrt'])
+			env.AppendUnique(EXTRA_LIBS = ['-lrt', '-lpthread'])
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

@@ -1630,8 +1630,20 @@ namespace executive
 			if(array->second != 0) array->second->update();
 		}
 		
+		for(auto generator = traceGenerators.begin();
+			generator != traceGenerators.end(); ++generator)
+		{
+			(*generator)->initialize(*kernel);
+		}
+		
 		kernel->launchGrid(grid.x, grid.y, grid.z);
 		synchronize();
+
+		for(auto generator = traceGenerators.begin();
+			generator != traceGenerators.end(); ++generator)
+		{
+			(*generator)->finish();
+		}
 		
 	}
 

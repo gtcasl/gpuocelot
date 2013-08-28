@@ -5,21 +5,25 @@
 	\brief measures the total kernel runtime of an application
 */
 
-// C++ includes
-#include <fstream>
+// Ocelot includes
+#include <ocelot/trace/interface/KernelTimer.h>
+
+#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
+
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Boost includes
 #include <boost/lexical_cast.hpp>
 
-// Ocelot includes
-#include <ocelot/trace/interface/KernelTimer.h>
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
+// C++ includes
+#include <fstream>
+#include <cstdlib>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-trace::KernelTimer::KernelTimer(): outputFile("traceKernelTimer.json"), kernel(0) {
-	kernelTimer.clearAccumulated();
+trace::KernelTimer::KernelTimer(): outputFile("traceKernelTimer.json"), kernel(nullptr), kernelSequenceNumber(0), dynamicInstructions(0) {
+	outputFile = api::OcelotConfiguration::get().trace.kernelTimer.outputFile;
 }
 
 trace::KernelTimer::~KernelTimer() {
@@ -28,7 +32,7 @@ trace::KernelTimer::~KernelTimer() {
 void trace::KernelTimer::initialize(const executive::ExecutableKernel& kernel) {
 	this->kernel = &kernel;
 	dynamicInstructions = 0;
-	kernelTimer.start();
+	timer.start();
 }
 
 void trace::KernelTimer::event(const TraceEvent &) {
@@ -36,23 +40,22 @@ void trace::KernelTimer::event(const TraceEvent &) {
 }
 
 void trace::KernelTimer::finish() {
-	kernelTimer.stop();
+	timer.stop();
 	
-	size_t kernelCycles = kernelTimer.getAccumulated();
-	assert(kernelCycles);
+	double seconds = timer.seconds();
 	
 	std::ofstream file(outputFile.c_str(), std::ios_base::app);
 
-	const char *appname = getenv("APPNAME");
-	if (!appname) { appname = "Unknown Application"; }
+	const char *appname = std::getenv("APPNAME");
+	if (!appname) { appname = kernel->module->path().c_str(); }
 
 	file << "{ \"application\": \"" << appname << "\", ";
 	
-	const char *trial = getenv("TRIALNAME");
+	const char *trial = std::getenv("TRIALNAME");
 	if (trial) {
 		file << " \"trial\": \"" << trial << "\", ";
 	}
-	const char *execution = getenv("EXECUTION");
+	const char *execution = std::getenv("EXECUTION");
 	if (execution) {
 		file << " \"execution\": " << boost::lexical_cast<int, const char *>(execution) << ", ";
 	}
@@ -61,8 +64,9 @@ void trace::KernelTimer::finish() {
 		<< "\"ISA\": \"" << ir::Instruction::toString(kernel->device->properties().ISA) << "\", "
 		<< "\"device\": \"" << kernel->device->properties().name << "\", "
 		<< "\"kernel\": \"" << kernel->name << "\", "
+		<< "\"sequenceNumberInApplication\": " << kernelSequenceNumber++ << ", "
 		<< "\"instructions\": " << dynamicInstructions << ", "
-		<< "\"kernelRuntime\": " << kernelCycles << " }, " << std::endl;
+		<< "\"kernelRuntime\": " << seconds << " }, " << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -55,12 +55,11 @@ public:
 		const ir::PTXOperand::DataType &b) const;
 
 	/*! \brief Constructor on the number of registers to allocate */
-	LinearScanRegisterAllocationPass(unsigned regs = 8,
-		const Analysis::StringVector& analysis =
-			Analysis::StringVector({"DataflowGraphAnalysis", "DominatorTreeAnalysis",
-				"PostDominatorTreeAnalysis"}),
-		unsigned reserved = 0);
-
+	LinearScanRegisterAllocationPass(unsigned regs = 8);
+	
+	LinearScanRegisterAllocationPass(unsigned regs,
+		const Analysis::StringVector& analysis, unsigned reserved);
+	
 	/*! \brief Initialize the pass using a specific module */
 	virtual void initialize(const ir::Module& m);
 	/*! \brief Run the pass on a specific kernel in the module */

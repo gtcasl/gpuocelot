@@ -28,7 +28,9 @@ class TraceConfig:
 		self.ignoreIrrelevantWrites = False
 		self.enableMemoryChecker    = True
 		self.checkInitialization    = False
+		self.enableTimer            = True
 		self.database               = "traces/database.trace"
+		self.timerOutputFile        = "kernel-times.json"
 
 	def write(self, openFile):
 		openFile.write("\ttrace: {\n")
@@ -42,6 +44,11 @@ class TraceConfig:
 		openFile.write("\t\traceDetector: {\n")
 		openFile.write("\t\t\tenabled:                " + str(self.enableRaceDetector) + ",\n")
 		openFile.write("\t\t\tignoreIrrelevantWrites: " + str(self.ignoreIrrelevantWrites) + "\n")
+		openFile.write("\t\t},\n")
+
+		openFile.write("\t\tkernelTimer: {\n")
+		openFile.write("\t\t\tenabled:    " + str(self.enableTimer)     + ",\n")
+		openFile.write("\t\t\toutputFile: \"" + str(self.timerOutputFile) + "\"\n" )
 		openFile.write("\t\t},\n")
 
 		openFile.write("\t\tdebugger: {\n")
@@ -95,25 +102,27 @@ class ExecutiveConfig:
 
 class OptimizationsConfig:
 	def __init__(self):
-		self.subkernelSize        = 10000
-		self.structuralTransform  = False
-		self.predicateToSelect    = False
-		self.linearScanAllocation = False
-		self.mimdThreadScheduling = False
-		self.syncElimination      = False
-		self.hoistSpecialValues   = False
-		self.simplifyCFG          = True
+		self.subkernelSize            = 10000
+		self.structuralTransform      = False
+		self.predicateToSelect        = False
+		self.linearScanAllocation     = False
+		self.mimdThreadScheduling     = False
+		self.syncElimination          = False
+		self.hoistSpecialValues       = False
+		self.simplifyCFG              = True
+		self.enforceLockStepExecution = False
 
 	def write(self, openFile):
 		openFile.write("\toptimizations: {\n")
-		openFile.write("\t\tsubkernelSize:        " + str(self.subkernelSize) + ",\n")
-		openFile.write("\t\tsimplifyCFG:          " + str(self.simplifyCFG) + ",\n")
-		openFile.write("\t\tstructuralTransform:  " + str(self.structuralTransform) + ",\n")
-		openFile.write("\t\tpredicateToSelect:    " + str(self.predicateToSelect) + ",\n")
-		openFile.write("\t\tlinearScanAllocation: " + str(self.linearScanAllocation) + ",\n")
-		openFile.write("\t\tmimdThreadScheduling: " + str(self.mimdThreadScheduling) + ",\n")
-		openFile.write("\t\tsyncElimination:      " + str(self.syncElimination) + ",\n")
-		openFile.write("\t\thoistSpecialValues:   " + str(self.hoistSpecialValues) + "\n")
+		openFile.write("\t\tsubkernelSize:            " + str(self.subkernelSize) + ",\n")
+		openFile.write("\t\tsimplifyCFG:              " + str(self.simplifyCFG) + ",\n")
+		openFile.write("\t\tstructuralTransform:      " + str(self.structuralTransform) + ",\n")
+		openFile.write("\t\tpredicateToSelect:        " + str(self.predicateToSelect) + ",\n")
+		openFile.write("\t\tlinearScanAllocation:     " + str(self.linearScanAllocation) + ",\n")
+		openFile.write("\t\tmimdThreadScheduling:     " + str(self.mimdThreadScheduling) + ",\n")
+		openFile.write("\t\tsyncElimination:          " + str(self.syncElimination) + ",\n")
+		openFile.write("\t\thoistSpecialValues:       " + str(self.hoistSpecialValues) + ",\n")
+		openFile.write("\t\tenforceLockStepExecution: " + str(self.enforceLockStepExecution) + "\n")
 		openFile.write("\t}")
 	
 class CheckpointConfig:

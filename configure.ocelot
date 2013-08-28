@@ -11,6 +11,10 @@
 			enabled:                False,
 			ignoreIrrelevantWrites: False
 		},
+		kernelTimer: {
+			enabled:    True,
+			outputFile: "kernel-times.json"
+		},
 		debugger: {
 			enabled:      False,
 			kernelFilter: "",
@@ -42,13 +46,14 @@
 		verify:   False
 	},
 	optimizations: {
-		subkernelSize:        10000,
-		simplifyCFG:          True,
-		structuralTransform:  False,
-		predicateToSelect:    False,
-		linearScanAllocation: False,
-		mimdThreadScheduling: False,
-		syncElimination:      False,
-		hoistSpecialValues:   False
+		subkernelSize:            10000,
+		simplifyCFG:              True,
+		structuralTransform:      False,
+		predicateToSelect:        False,
+		linearScanAllocation:     False,
+		mimdThreadScheduling:     False,
+		syncElimination:          False,
+		hoistSpecialValues:       False,
+		enforceLockStepExecution: False
 	}
 }

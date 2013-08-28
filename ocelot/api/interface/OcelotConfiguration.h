@@ -85,9 +85,6 @@ namespace api {
 				KernelTimer();
 				bool enabled;
 				std::string outputFile;
-				
-				bool enableCacheProfiling;
-				std::string cacheLevel;
 			};
 
 		public:
@@ -107,14 +104,14 @@ namespace api {
 			//! \brief Race detection
 			RaceDetector raceDetector;
                         
-      //! \brief Interactive Debugger
-      Debugger debugger;
+			//! \brief Interactive Debugger
+			Debugger debugger;
 
-      //! \brief Memory checker
-      MemoryChecker memoryChecker;
-      
-      //! \brief measures the total runtime of kernels launched by the application
-      KernelTimer kernelTimer;
+			//! \brief Memory checker
+			MemoryChecker memoryChecker;
+
+			//! \brief measures the total runtime of kernels launched by the application
+			KernelTimer kernelTimer;
 		};
 
 		class CudaRuntimeImplementation {

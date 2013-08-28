@@ -10,7 +10,9 @@
 
 // Ocelot includes
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/trace/interface/EventTimer.h>
+
+// Hydrazine includes
+#include <hydrazine/interface/Timer.h>
 
 namespace trace {
 
@@ -28,7 +30,8 @@ namespace trace {
 		
 	protected:
 		const executive::ExecutableKernel *kernel;
-		executive::EventTimer kernelTimer;
+		size_t kernelSequenceNumber;
+		hydrazine::Timer timer;
 		size_t dynamicInstructions;
 	};
 }

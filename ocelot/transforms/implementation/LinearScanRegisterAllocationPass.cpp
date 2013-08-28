@@ -120,6 +120,15 @@ const ir::PTXOperand::DataType LinearScanRegisterAllocationPass::selectType(
 }
 
 LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass(
+	unsigned regs)
+: KernelPass(StringVector({"DataflowGraphAnalysis",
+		"DominatorTreeAnalysis","PostDominatorTreeAnalysis"}),
+		"LinearScanRegisterAllocationPass"),
+	_memoryStack("ocelot_ls_stack"), _registers(regs)
+{
+	
+}
+LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass(
 	unsigned regs, const Analysis::StringVector& analysis, unsigned reserved)
 : KernelPass(analysis, "LinearScanRegisterAllocationPass"),
 	_memoryStack("ocelot_ls_stack"), _registers(regs)

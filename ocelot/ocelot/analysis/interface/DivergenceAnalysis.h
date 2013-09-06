@@ -16,6 +16,11 @@ namespace analysis
 /*!\brief DivergenceAnalysis implements divergence analysis. The divergence
    analysis goes over the program dataflow graph and finds all the variables
    that will always hold the same values for every thread.
+   
+   
+   "This algorithm is described in the article 'Divergence Analysis', to appear
+   in the ACM Transactions on Programming Languages and Systems (TOPLAS) 2014."
+   
  */
 class DivergenceAnalysis : public KernelAnalysis
 {

@@ -976,7 +976,7 @@ static void optimize(llvm::Module& module,
 	}
 	else
 	{
-		manager.add(llvm::createSimplifyLibCallsPass());
+//		manager.add(llvm::createSimplifyLibCallsPass());
 		manager.add(llvm::createInstructionCombiningPass());
 		manager.add(llvm::createJumpThreadingPass());
 		manager.add(llvm::createCFGSimplificationPass());

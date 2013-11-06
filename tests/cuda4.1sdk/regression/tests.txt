@@ -10,7 +10,6 @@ ConvolutionSeparable -qatest
 ConvolutionTexture -qatest
 CppIntegration -qatest
 DwtHaar1D -qatest
-Eigenvalues -qatest
 FDTD3d -qatest
 FastWalshTransform -qatest
 Histogram -qatest
@@ -34,10 +33,8 @@ SimpleTemplates -qatest
 SimpleTexture -qatest
 SimpleTexture3D -qatest
 SimpleZeroCopy -qatest
-SobelFilter -qatest
 SobolQRNG -qatest
 SortingNetworks
 Template -qatest
 Transpose -qatest
 VectorAdd -qatest
-VolumeRender -qatest

@@ -27,6 +27,11 @@
 #include <fstream>
 
 using namespace hydrazine;
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif 
+
+#define REPORT_BASE 1
 
 namespace instrumentation
 {
@@ -52,9 +57,11 @@ namespace instrumentation
     }
 
     void BasicBlockInstrumentor::initialize() {
+		if(threadBlocks < 1 ) 
+			threadBlocks = 1;
         
         counter = 0;
-
+		report("allocating " << entries*kernelDataMap[kernelName] * threadBlocks * threads);
         if(cudaMalloc((void **) &counter, (entries * kernelDataMap[kernelName] * threadBlocks * threads) * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
@@ -70,28 +77,36 @@ namespace instrumentation
     void BasicBlockInstrumentor::createPasses() {
         
         entries = 1;
-        transforms::CToPTXInstrumentationPass *pass;
+        //transforms::CToPTXInstrumentationPass *pass;
         
         switch(type) {
-            case executionCount:
+           /* if(0) //case orig_executionCount:  //FIXME add new variable for fine grain block execution count
             {
                 pass = new transforms::CToPTXInstrumentationPass("resources/basicBlockExecutionCount.c");
                 _profile.type = EXECUTION_COUNT;
                 symbol = pass->baseAddress;
                 break;
-            }
+            }*/
+			case executionCount:
+			{
+				transforms::BasicBlockExecutionCountPass *pass = new transforms::BasicBlockExecutionCountPass();
+                symbol = pass->baseAddress;
+                passes[0] = pass;   
+                entries = pass->entries;
+				break;
+			}
             case instructionCount:
             {
-                pass = new transforms::CToPTXInstrumentationPass("resources/threadInstructionCount.c");
-                _profile.type = INST_COUNT;
-                symbol = pass->baseAddress;
+                //pass = new transforms::CToPTXInstrumentationPass("resources/threadInstructionCount.c");
+                //_profile.type = INST_COUNT;
+                //symbol = pass->baseAddress;
                 break;
             }
             default:
                 throw hydrazine::Exception( "No basic block instrumentation pass specified!" );
         }
         
-        passes[0] = pass; 
+        //passes[0] = pass; 
     }
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {
@@ -135,7 +150,6 @@ namespace instrumentation
                 for(j = 0; j < kernelDataMap[kernelName] * threads * threadBlocks; j++) {
                    
                     _kernelProfile.instructionCount += info[j];
-                    
                 }
 
                 *out << "\nDynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";

@@ -20,8 +20,10 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
+//set to 1 to remove exit instructions 
+#define DEBUG 1
 namespace transforms
 {
     analysis::DataflowGraph& BoundsCheckPass::dfg()
@@ -148,8 +150,8 @@ namespace transforms
                 || instruction.opcode == ir::PTXInstruction::St ) )
             {
                 report("inserting instrumentation");
-                checkBounds(block, instruction, loc);     //FIXME debugging
-                loc = 1;                                    //FIXME not sure if this works
+                checkBounds(block, instruction, loc);     
+                loc = 0; 
                 _instruction = block->instructions().begin();
                 for(unsigned int i=0; i < loc; i++, ++_instruction){}
                     
@@ -203,40 +205,6 @@ namespace transforms
                 break;
         }
         
-        //if 8, 16, 32, 64, 
-        unsigned short mask=0;
-        
-        switch(memInst.type)
-        {
-            case ir::PTXOperand::s8:
-            case ir::PTXOperand::u8:
-            case ir::PTXOperand::b8:
-                mask = 0x1;
-                break;
-            case ir::PTXOperand::s16:
-            case ir::PTXOperand::u16:
-            case ir::PTXOperand::b16:
-            case ir::PTXOperand::f16:
-                mask = 0x1;
-                break;
-            case ir::PTXOperand::s32:
-            case ir::PTXOperand::u32:
-            case ir::PTXOperand::f32:
-            case ir::PTXOperand::b32:
-                mask = 0x3;
-                break;
-            case ir::PTXOperand::u64:
-            case ir::PTXOperand::s64:
-            case ir::PTXOperand::f64:
-            case ir::PTXOperand::b64:
-                mask = 0x07;
-                break;
-            case ir::PTXOperand::pred:
-            default:
-                //error
-                assert(false);
-                break;
-        }
             
 //        mov.u64 finalAddr, addr (memInst.a or memInst.d, reg or identifier)
 //        (optional) add finalAddr, finalAddr, offset
@@ -599,7 +567,10 @@ namespace transforms
         ir::PTXInstruction *stTidX = new ir::PTXInstruction(ir::PTXInstruction::St);
         stTidX->type = type;
         stTidX->d = ir::PTXOperand(ir::PTXOperand::Indirect, type, registerMap["counterPtrReg"] ); //reportInfo
-        stTidX->a = ir::PTXOperand(ir::PTXOperand::Register, type, tidX);
+        //stTidX->a = ir::PTXOperand(ir::PTXOperand::Register, type, tidX);
+        stTidX->a.addressMode = ir::PTXOperand::Immediate;
+        stTidX->a.imm_uint = 1;
+
         stTidX->addressSpace = ir::PTXInstruction::Global; 
         dfg().insert( blockError, *stTidX, loc++ );
         
@@ -613,8 +584,9 @@ namespace transforms
         dfg().insert( blockError, *stAddr, loc++ );
         
         //ret
-        ir::PTXInstruction *ret = new ir::PTXInstruction(ir::PTXInstruction::Ret);        
-        dfg().insert( blockError, *ret, loc++ );
+        ir::PTXInstruction *ret = new ir::PTXInstruction(ir::PTXInstruction::Exit);        
+        if(!DEBUG)
+			dfg().insert( blockError, *ret, loc++ );
         
     }
     
@@ -865,6 +837,7 @@ namespace transforms
     BoundsCheckPass::BoundsCheckPass() : entries(2)
     {
         baseAddress = kernelReportInfo();
+		name = "Bounds Check Pass";
         allocMapAddress = getAllocMap();
     }
     

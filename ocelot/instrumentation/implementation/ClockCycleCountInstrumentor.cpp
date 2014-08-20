@@ -112,6 +112,7 @@ namespace instrumentation
         if(err < 0)
             report("Unable to send kernel profile");
     
+        fmt = json;
         switch(fmt) {
     
             case json:
@@ -119,7 +120,7 @@ namespace instrumentation
                 *out << kernelName << "_maxSMRuntime = " << _kernelProfile.maxSMRuntime << "\n\n";
                 *out << kernelName << "_threadBlockToProcessorMap = {";
 
-                for (instrumentation::KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
+                for (instrumentation::KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin();
                     it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
 			        *out << it->first << ":(";
                     

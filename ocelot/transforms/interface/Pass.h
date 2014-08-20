@@ -56,7 +56,7 @@ public:
 	const int analyses;
 	
 	/*! \brief The name of the pass */
-	const std::string name;
+	std::string name;
 
 public:
 	/*! \brief The default constructor sets the type */

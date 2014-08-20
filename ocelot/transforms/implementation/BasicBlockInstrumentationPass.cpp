@@ -127,7 +127,6 @@ namespace transforms
         dfg().insert(block, cvt, location++);
 
         cvt.d.reg = ctaIdY;
-        cvt.d.reg = nctaIdX;
         cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId, ir::PTXOperand::iy, ir::PTXOperand::u32);
 	    cvt.a.addressMode = ir::PTXOperand::Special;
 	    cvt.a.vec = ir::PTXOperand::v1;

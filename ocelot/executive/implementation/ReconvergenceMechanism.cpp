@@ -144,7 +144,8 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 
 void executive::ReconvergenceIPDOM::eval_Bar(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
-	
+	//SI_FIX temp
+	return;
 	if (context.active.count() < context.active.size()) {
 		// deadlock - not all threads reach synchronization barrier
 #if REPORT_BAR

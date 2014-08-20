@@ -13,13 +13,29 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
+#include <hydrazine/implementation/debug.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
+
+
+
 namespace transforms
 {
-
-    BasicBlockExecutionCountPass::BasicBlockExecutionCountPass() {
-
+	void BasicBlockExecutionCountPass::initialize(ir::Module &m) {
+		report("Adding global variable to " << m.path() );
+     
+        ir::PTXStatement counter = ir::PTXStatement(ir::PTXStatement::Global);
+        counter.name = kernelReportInfo();
+        counter.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+         
+        /* inserting the global counter array into the module */
+        m.insertGlobalAsStatement(counter);
     }
-
+ 
     size_t BasicBlockExecutionCountPass::incrementBasicBlockCounter(analysis::DataflowGraph::iterator block, analysis::DataflowGraph::RegisterId registerId, std::map<std::string, analysis::DataflowGraph::RegisterId> registerMap, size_t location ) {
 
         /* Load, increment, and store back the result into the
@@ -46,8 +62,8 @@ namespace transforms
         add.a = ld.d;
         add.b.type = type;	
         add.b.addressMode = ir::PTXOperand::Immediate;
-        add.b.imm_int = 1;
-        
+        add.b.imm_int = block->instructions().size(); //1; //FIXME
+
         ir::PTXInstruction st(ir::PTXInstruction::St);
         st.addressSpace = ir::PTXInstruction::Global; 
         st.type = type;       
@@ -65,8 +81,8 @@ namespace transforms
     void BasicBlockExecutionCountPass::runOnKernel( ir::IRKernel& k )
 	{
 		
-        analysis::DataflowGraph::RegisterId registerId = dfg().newRegister();
-
+        analysis::DataflowGraph::RegisterId registerId = dfg().newRegister();		//FIXME
+		report("non predicate register: " << registerId);
         /* ensure that there is at least one basic block -- otherwise, skip this kernel */
         if(dfg().empty())
             return;
@@ -77,21 +93,39 @@ namespace transforms
         /* instrumenting ptx at the beginning of the first basic block. */
         size_t count = calculateThreadId(entry, 0);
         size_t location = count;
-        count = calculateBasicBlockCounterOffset(entry, 0, location);
+        count = calculateBasicBlockCounterOffset(entry, 0, location); //FIXME
         location += count;  
-        count = incrementBasicBlockCounter(entry, registerId, registerMap, location);
-   
+        count = incrementBasicBlockCounter(entry, registerId, registerMap, location); //FIXME temp comment for debugging ld error
+  		//registerId++; //to get rid of unused warning: FIXME
+
         unsigned int basicBlockId = 1;
         for( analysis::DataflowGraph::iterator block = ++(entry); 
 		    block != dfg().end(); ++block )
 	        {
                if(!block->instructions().empty()){
-                    count = calculateBasicBlockCounterOffset(block, basicBlockId, 0);
-                    count = incrementBasicBlockCounter(block, registerId, registerMap, count);
+                    count = calculateBasicBlockCounterOffset(block, basicBlockId, 0);		//FIXME
+                    count = incrementBasicBlockCounter(block, registerId, registerMap, count);	//FIXME
                     basicBlockId++;        
                 } 
 	        } 
 	}
+ 
+	BasicBlockExecutionCountPass::BasicBlockExecutionCountPass() 
+        
+    {
+        baseAddress = kernelReportInfo();
+		entries = 1;
+    }
+    
+    void BasicBlockExecutionCountPass::finalize() {
+
+    }
+    
+    std::string BasicBlockExecutionCountPass::kernelReportInfo() const
+    {
+        return basicBlockCounterBase();//"__align_error_table";
+    }
+
 }
 
 

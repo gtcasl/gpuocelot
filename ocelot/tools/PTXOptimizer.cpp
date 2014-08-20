@@ -54,7 +54,7 @@ namespace tools
 		ir::Module module( input );
 
 		transforms::PassManager manager( &module );
-
+#if 0
 		if( registerAllocationType == LinearScan )
 		{
 			transforms::Pass* pass =
@@ -62,7 +62,7 @@ namespace tools
 				registerCount );
 			manager.addPass( *pass );
 		}
-
+#endif
 		if( passes & SubkernelFormation )
 		{
 			transforms::Pass* pass = new transforms::SubkernelFormationPass(
@@ -131,7 +131,7 @@ namespace tools
 				+ output + " for writing." );
 		}
 		
-		module.writeIR( out );
+		//module.writeIR( out );
 
 		if(!cfg) return;
 		
@@ -140,8 +140,8 @@ namespace tools
 			kernel != module.kernels().end(); ++kernel )
 		{
 			report(" Writing CFG for kernel '" << kernel->first << "'");
-			std::ofstream out( std::string( 
-				kernel->first + "_cfg.dot" ).c_str() );
+			//std::ofstream out( std::string( 
+			//	kernel->first + "_cfg.dot" ).c_str() );
 		
 			if( !out.is_open() )
 			{

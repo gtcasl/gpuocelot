@@ -25,6 +25,16 @@ namespace transforms
             /*! \brief default constructor */
             BasicBlockExecutionCountPass();
 
+			void initialize(ir::Module &);
+
+			void finalize();
+
+			std::string baseAddress;
+			
+			//size_t entries;
+
+			std::string kernelReportInfo() const;
+
         protected:
 
             size_t incrementBasicBlockCounter(analysis::DataflowGraph::iterator block, analysis::DataflowGraph::RegisterId registerId, std::map<std::string, analysis::DataflowGraph::RegisterId> registerMap, size_t location);

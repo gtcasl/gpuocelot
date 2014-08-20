@@ -81,7 +81,7 @@ public:
 };
 
 cuda::CudaDriverFrontend::CudaDriverFrontend():
-	_devicesLoaded(false), _computeCapability(2)
+	_devicesLoaded(false), _computeCapability(3)
 {
 	_flags = 0;
 	_enumerateDevices();

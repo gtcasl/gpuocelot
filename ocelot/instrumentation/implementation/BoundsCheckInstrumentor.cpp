@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASe 0
+#define REPORT_BASE 1
 
 using namespace hydrazine;
 
@@ -52,6 +52,7 @@ namespace instrumentation
         *it = memVector.size()*2;
         ++it;
         
+        report("# of allocations: " << memVector.size());
         for (executive::Device::MemoryAllocationVector::iterator allocation = 
             memVector.begin(); allocation != memVector.end(); ++allocation)
         {
@@ -60,9 +61,8 @@ namespace instrumentation
             ++it;
             *it = startAddr + (*allocation)->size();
             ++it;
+			report("start: " << startAddr << " end: " << startAddr + (*allocation)->size());
         }
-        
-        //*/
         
     }
 
@@ -70,7 +70,7 @@ namespace instrumentation
     {
         //copy allocationMap to global memory
         allocMap = NULL;
-        std::cout << "allocating " << globalAllocationMap.size() * sizeof( size_t ) << " bytes for gAlloc map\n" ;
+        report( "allocating " << globalAllocationMap.size() * sizeof( size_t ) << " bytes for gAlloc map\n");
         if(cudaMalloc((void **) &allocMap, globalAllocationMap.size() * sizeof( size_t )) != cudaSuccess)
         {
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
@@ -90,7 +90,7 @@ namespace instrumentation
         
         //allocate global mem for reporting info
         counter = 0;
-        std::cout << "allocating " << entries * threads * threadBlocks * sizeof(size_t) << "bytes for counter\n" ;
+        report("allocating " << entries * threads * threadBlocks * sizeof(size_t) << "bytes for counter\n");
         if(cudaMalloc((void **) &counter, entries * threads * threadBlocks * sizeof(size_t)) != cudaSuccess)
         {
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
@@ -130,7 +130,7 @@ namespace instrumentation
         {
             cudaFree(allocMap);     //allocation map only for gpu kernel use
         }
-        
+       	
         switch(fmt) 
         {
 
@@ -151,7 +151,7 @@ namespace instrumentation
                 *out << "Thread Count: " << threads << "\n";
             
                 *out << "Error: ";
-                for( unsigned int i=0; i < threads; ++i)
+                for( unsigned int i=0; i < 2; ++i)//threads; ++i) //FIXME
                 {
                     *out << "\nthread ID: " << info[i*entries+0] << " "
                         << "Address: " << (int)info[i*entries+1] << " ";

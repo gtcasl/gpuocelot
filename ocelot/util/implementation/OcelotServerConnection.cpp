@@ -150,7 +150,7 @@ void remote::OcelotServerConnection::_enumerateDevices() {
 	if(_devicesLoaded) return;
 	
 	int _flags = 0;
-	int _computeCapability = 2;
+	int _computeCapability = 3;
 	
 	if(config::get().executive.enableNVIDIA) {
 		executive::DeviceVector d = 

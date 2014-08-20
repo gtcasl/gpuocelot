@@ -12,6 +12,9 @@
 #include <hydrazine/interface/Stringable.h>
 #include <deque>
 
+namespace executive {
+	class CooperativeThreadArray;
+}
 /*! \brief A namespace for trace generation related classes */
 namespace trace {
 
@@ -79,6 +82,7 @@ namespace trace {
 
 	public:
 
+		executive::CooperativeThreadArray * execCTA;
 		/*!
 			ID of the block that generated the event
 		*/

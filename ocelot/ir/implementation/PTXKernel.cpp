@@ -192,11 +192,31 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 				{
 					if( d.array.empty() )
 					{
+						if(d.reg == 23)
+							report("encountered r23! break here to debug!");
 						if( encountered.insert( d.reg ).second )
 						{
 							report( "   Added %r" << d.reg );
 							analysis::DataflowGraph::Register live_reg( 
 								d.reg, d.type );
+
+							//FIXME: hack to allow %p and %r of same reg number
+#if 0	
+							RegisterSet::iterator it = addedRegisters.find(live_reg.id);
+							if (addedRegisters.find(live_reg.id) != addedRegisters.end()) {
+								for (RegisterVector::const_iterator reg = regs.begin();
+										reg != regs.end(); ++reg) {
+									if (reg->id == live_reg.id) {
+										if (type == PTXOperand::pred) {
+											//insert
+											break;
+										}
+										//don't insert
+										break;
+									}
+								}
+							}
+#endif
 							if (addedRegisters.find(live_reg.id)
 								== addedRegisters.end()) {
 								regs.push_back( live_reg );

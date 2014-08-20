@@ -326,6 +326,7 @@ namespace transforms
         setp.d.reg = pred;
         setp.d.type = ir::PTXOperand::pred;
         setp.d.addressMode = ir::PTXOperand::Register;
+        setp.a.addressMode = ir::PTXOperand::Register;
         setp.a.reg = masked;
         setp.b.addressMode = ir::PTXOperand::Immediate;
         setp.b.imm_int = 0;
@@ -432,16 +433,17 @@ namespace transforms
         exit.pg.condition = ir::PTXOperand::Pred;
         exit.pg.reg = pred;
         
-        dfg().insert( block, exit, loc++ );
+        //dfg().insert( block, exit, loc++ );
 
     }
     
     AlignmentCheckPass::AlignmentCheckPass() 
-        : entries(4)//,
+        : entries(4) 
 //        KernelPass( Analysis::DataflowGraphAnalysis,
 //            "Alignment Check Pass" )
     {
         baseAddress = kernelReportInfo();
+		name = "Alignment Check Pass";
     }
     
     void AlignmentCheckPass::finalize() {

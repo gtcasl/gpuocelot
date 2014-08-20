@@ -459,7 +459,8 @@ typedef enum CUjit_target_enum
     CU_TARGET_COMPUTE_12,       /**< Compute device class 1.2 */
     CU_TARGET_COMPUTE_13,       /**< Compute device class 1.3 */
     CU_TARGET_COMPUTE_20,       /**< Compute device class 2.0 */
-    CU_TARGET_COMPUTE_21        /**< Compute device class 2.1 */
+    CU_TARGET_COMPUTE_21,       /**< Compute device class 2.1 */
+    CU_TARGET_COMPUTE_30        /**< Compute device class 3.0 */
 } CUjit_target;
 
 /**

@@ -64,6 +64,9 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 	
 	basicBlockExecutionCount = false;
 	
+	controlFlowCheck = false;
+	registerCheck = false;
+	alignmentCheck = false;
 	try
 	{
 		std::ifstream stream("configure.ocelot");
@@ -76,8 +79,21 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 		
 		if(!instrumentConfig.is_null())
 		{
+			// configuration for basic block execution cound instrumentor
+			hydrazine::json::Visitor config = instrumentConfig["errorInjection"];
+			
+			if(!config.is_null()) 
+			{
+			    errorInjection = true;
+			    
+				errorInjectionInstrumentor.enabled = config.parse<bool>(
+					"enabled", true);
+	
+				errorInjectionInstrumentor.logfile = config.parse<std::string>(
+					"logfile", "");
+			}
 			// configuration for alignment check instrumentor
-			hydrazine::json::Visitor config = instrumentConfig["alignmentCheck"];
+			config = instrumentConfig["alignmentCheck"];
 			
 			if(!config.is_null()) 
 			{
@@ -87,6 +103,34 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 					"enabled", true);
 	
 				alignmentCheckInstrumentor.logfile = config.parse<std::string>(
+					"logfile", "");
+			}
+			
+			// configuration for alignment check instrumentor
+			config = instrumentConfig["registerCheck"];
+			
+			if(!config.is_null()) 
+			{
+			    registerCheck = true;
+			    
+				registerCheckInstrumentor.enabled = config.parse<bool>(
+					"enabled", true);
+	
+				registerCheckInstrumentor.logfile = config.parse<std::string>(
+					"logfile", "");
+			}
+			
+			// configuration for alignment check instrumentor
+			config = instrumentConfig["controlFlowCheck"];
+			
+			if(!config.is_null()) 
+			{
+			    controlFlowCheck = true;
+			    
+				controlFlowCheckInstrumentor.enabled = config.parse<bool>(
+					"enabled", true);
+	
+				controlFlowCheckInstrumentor.logfile = config.parse<std::string>(
 					"logfile", "");
 			}
 			
@@ -197,6 +241,7 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 			
 		        basicBlockInstrumentor.type = BasicBlockInstrumentor::executionCount;
 			}
+
 		}
 	}
 	catch(const hydrazine::Exception& exp) 
@@ -210,6 +255,19 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 	{
 		report( "Creating alignment check instrumentor" );
 		ocelot::addInstrumentor(_alignmentCheckInstrumentor);			
+	}
+		
+	if(controlFlowCheck)
+	{
+		report( "Creating control check instrumentor" );
+		ocelot::addInstrumentor(_controlFlowCheckInstrumentor);			
+	}
+	
+
+	if(registerCheck)
+	{
+		report( "Creating register check instrumentor" );
+		ocelot::addInstrumentor(_registerCheckInstrumentor);			
 	}
 	
 	if(boundsCheck)
@@ -257,6 +315,12 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 	    report( "Creating basic block execution count instrumentor" );
 	    _basicBlockInstrumentor.type = instrumentation::BasicBlockInstrumentor::executionCount;
 	    ocelot::addInstrumentor(_basicBlockInstrumentor);
+	}
+	
+	if(errorInjection)
+	{
+	    report( "Creating error injection" );
+	    ocelot::addInstrumentor(_errorInjectionInstrumentor);
 	}
 }
 

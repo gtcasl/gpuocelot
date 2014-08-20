@@ -87,8 +87,8 @@ namespace instrumentation
                 passes[0] = pass;   
                 
                 entries = pass->entries;
+            	break;
             }
-            break;
 //            case raceDetection:
 //            {
 //                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/intraWarpRaceDetection.c");
@@ -115,7 +115,7 @@ namespace instrumentation
             cudaFree(counter);
         }
         
-        
+        return; //	FIXME debug only
         switch(fmt) 
         {
 

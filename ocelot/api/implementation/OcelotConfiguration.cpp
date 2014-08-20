@@ -25,7 +25,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -87,6 +87,9 @@ api::OcelotConfiguration::TraceGeneration::DynamicCompilationOverhead::DynamicCo
 	enabled(false) {
 }
 
+api::OcelotConfiguration::TraceGeneration::KernelTimer::KernelTimer(): enabled(false), outputFile("traceKernelTimer.json")
+{
+}
 api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
 
@@ -122,6 +125,12 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
     if (!dynComp.is_null()) {
     	trace.dynamicCompilation.enabled = dynComp.parse<bool>("enabled", false);
     }
+  hydrazine::json::Visitor kernelTimer = config["kernelTimer"];
+  if (!kernelTimer.is_null()) {
+  	trace.kernelTimer.enabled = kernelTimer.parse<bool>("enabled", false);
+  	trace.kernelTimer.outputFile = kernelTimer.parse<std::string>("outputFile", 
+  		"traceKernelTimer.json");
+  }
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

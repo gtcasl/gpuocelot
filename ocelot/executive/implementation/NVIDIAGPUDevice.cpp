@@ -46,10 +46,10 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 0
+#define REPORT_PTX 1
 
 // if 1, adds line numbers to reported PTX
-#define REPORT_PTX_WITH_LINENUMBERS 0
+#define REPORT_PTX_WITH_LINENUMBERS 1
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -414,7 +414,7 @@ namespace executive
 		memset(errorLogBuffer, 0, errorLogSize);
 
 		void* optionValues[3] = {
-			(void*)CU_TARGET_COMPUTE_20,
+			(void*)CU_TARGET_COMPUTE_30,
 			(void*)errorLogBuffer, 
 			hydrazine::bit_cast<void*>(errorLogActualSize), 
 		};

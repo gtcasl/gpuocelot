@@ -77,6 +77,20 @@ namespace api {
 					bool ignoreIrrelevantWrites;
 			};
 			
+			class KernelTimer {
+			public:
+				KernelTimer();
+				bool enabled;
+				std::string outputFile;
+				
+				bool enableCacheProfiling;
+				std::string cacheLevel;
+			};
+
+		public:
+			TraceGeneration();
+
+		public:
 			//! \brief Check memory errors
 			class MemoryChecker
 			{
@@ -95,9 +109,6 @@ namespace api {
 			};
 
 		public:
-			TraceGeneration();
-
-		public:
 			
 			//! \brief Race detection
 			RaceDetector raceDetector;
@@ -110,6 +121,10 @@ namespace api {
       
       //! \brief Dynamic compilation
       DynamicCompilationOverhead dynamicCompilation;
+
+      //! \brief measures the total runtime of kernels launched by the application
+      KernelTimer kernelTimer;
+
     };
 
         class CudaRuntimeImplementation {

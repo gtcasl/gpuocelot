@@ -40,65 +40,65 @@
 #define REPORT_BASE 0
 
 // reporting for kernel instructions
-#define REPORT_STATIC_INSTRUCTIONS 0
-#define REPORT_DYNAMIC_INSTRUCTIONS 1
+#define REPORT_STATIC_INSTRUCTIONS 1
+#define REPORT_DYNAMIC_INSTRUCTIONS 0
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
 #define NTH_THREAD 0
-#define REPORT_REGISTER_READS 1
-#define REPORT_REGISTER_WRITES 1
+#define REPORT_REGISTER_READS 0
+#define REPORT_REGISTER_WRITES 0
 
 // individually turn on or off reporting for particular instructions
-#define REPORT_ABS 1
-#define REPORT_ADD 1
-#define REPORT_ADDC 1
-#define REPORT_AND 1
-#define REPORT_ATOM 1
-#define REPORT_BAR 1
+#define REPORT_ABS 0
+#define REPORT_ADD 0
+#define REPORT_ADDC 0
+#define REPORT_AND 0
+#define REPORT_ATOM 0
+#define REPORT_BAR 0
 #define REPORT_BRA 0
-#define REPORT_BRKPT 1
-#define REPORT_CALL 1
-#define REPORT_CNOT 1
-#define REPORT_COS 1
-#define REPORT_CVT 1
-#define REPORT_DIV 1
-#define REPORT_EX2 1
-#define REPORT_EXIT 1
+#define REPORT_BRKPT 0
+#define REPORT_CALL 0
+#define REPORT_CNOT 0
+#define REPORT_COS 0
+#define REPORT_CVT 0
+#define REPORT_DIV 0
+#define REPORT_EX2 0
+#define REPORT_EXIT 0
 #define REPORT_LD 0
-#define REPORT_LG2 1
-#define REPORT_MAD24 1
-#define REPORT_MAD 1
-#define REPORT_MAX 1
-#define REPORT_MIN 1
-#define REPORT_MOV 1
-#define REPORT_MUL24 1
-#define REPORT_MUL 1
-#define REPORT_NEG 1
-#define REPORT_NOT 1
-#define REPORT_OR 1
-#define REPORT_RCP 1
+#define REPORT_LG2 0
+#define REPORT_MAD24 0
+#define REPORT_MAD 0
+#define REPORT_MAX 0
+#define REPORT_MIN 0
+#define REPORT_MOV 0
+#define REPORT_MUL24 0
+#define REPORT_MUL 0
+#define REPORT_NEG 0
+#define REPORT_NOT 0
+#define REPORT_OR 0
+#define REPORT_RCP 0
 #define REPORT_RECONVERGE 0
-#define REPORT_RED 1
-#define REPORT_REM 1
-#define REPORT_RET 1
-#define REPORT_RSQRT 1
-#define REPORT_SAD 1
+#define REPORT_RED 0
+#define REPORT_REM 0
+#define REPORT_RET 0
+#define REPORT_RSQRT 0
+#define REPORT_SAD 0
 #define REPORT_SELP 0
 #define REPORT_SETP 0
-#define REPORT_SET 1
-#define REPORT_SHL 1
-#define REPORT_SHR 1
-#define REPORT_SIN 1
-#define REPORT_SLCT 1
-#define REPORT_SQRT 1
+#define REPORT_SET 0
+#define REPORT_SHL 0
+#define REPORT_SHR 0
+#define REPORT_SIN 0
+#define REPORT_SLCT 0
+#define REPORT_SQRT 0
 #define REPORT_ST 0
-#define REPORT_SUB 1
-#define REPORT_SUBC 1
-#define REPORT_TEX 1
-#define REPORT_TRAP 1	
-#define REPORT_VOTE 1
-#define REPORT_XOR 1
+#define REPORT_SUB 0
+#define REPORT_SUBC 0
+#define REPORT_TEX 0
+#define REPORT_TRAP 0	
+#define REPORT_VOTE 0
+#define REPORT_XOR 0
 
 using namespace ir;
 using namespace std;
@@ -334,6 +334,7 @@ void executive::CooperativeThreadArray::trace() {
 	if (traceEvents) {
 		currentEvent.contextStackSize =
 			(ir::PTXU32)reconvergenceMechanism->stackSize();
+		currentEvent.execCTA = this;
 		kernel->traceEvent(currentEvent);
 	}
 }

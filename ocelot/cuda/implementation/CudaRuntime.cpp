@@ -34,13 +34,13 @@
 #define CATCH_RUNTIME_EXCEPTIONS 0
 
 // whether verbose error messages are printed
-#define CUDA_VERBOSE 1
+#define CUDA_VERBOSE 0
 
 // whether debugging messages are printed
 #define REPORT_BASE 1
 
 // report all ptx modules
-#define REPORT_ALL_PTX 0
+#define REPORT_ALL_PTX 1
 
 // report PTX after instrumentation passes
 #define REPORT_INSTRUMENTED_PTX 1
@@ -519,7 +519,7 @@ void cuda::CudaRuntime::_registerAllModules() {
 
 cuda::CudaRuntime::CudaRuntime() :
 	_deviceCount(0), _devicesLoaded(false), 
-	_selectedDevice(-1), _nextSymbol(1), _computeCapability(2), _flags(0), 
+	_selectedDevice(-1), _nextSymbol(1), _computeCapability(3), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 
@@ -2669,6 +2669,8 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
             (*instrumentor)->kernelName = kernelName;
             (*instrumentor)->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
             (*instrumentor)->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
+			if ((*instrumentor)->threadBlocks < 1)
+				(*instrumentor)->threadBlocks = 1;
             (*instrumentor)->initialize();
             launch.sharedMemory = (*instrumentor)->sharedMemSize;
         }

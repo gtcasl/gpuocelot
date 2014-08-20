@@ -8,10 +8,13 @@
 #define INSTRUMENTATION_CONFIGURATION_H_INCLUDED
 
 #include <ocelot/instrumentation/interface/ClockCycleCountInstrumentor.h>
+#include <ocelot/instrumentation/interface/ErrorInjectionInstrumentor.h>
 #include <ocelot/instrumentation/interface/BasicBlockInstrumentor.h>
 #include <ocelot/instrumentation/interface/WarpReductionInstrumentor.h>
 #include <ocelot/instrumentation/interface/BoundsCheckInstrumentor.h>
 #include <ocelot/instrumentation/interface/AlignmentCheckInstrumentor.h>
+#include <ocelot/instrumentation/interface/ControlFlowCheckInstrumentor.h>
+#include <ocelot/instrumentation/interface/RegisterCheckInstrumentor.h>
 
 #include <mqueue.h>
 
@@ -34,6 +37,32 @@ namespace instrumentation
 			//! \brief path to log file
 			std::string logfile;
 		};
+
+		//! \brief configuration for the alignment check instrumentor */
+		class ControlFlowCheckInstrumentor 
+		{
+		public:
+			ControlFlowCheckInstrumentor() : enabled(false) { }
+			
+			//! \brief whether instrumentor is enabled
+			bool enabled;
+			
+			//! \brief path to log file
+			std::string logfile;
+		};
+
+		//! \brief configuration for the alignment check instrumentor */
+		class RegisterCheckInstrumentor 
+		{
+		public:
+			RegisterCheckInstrumentor() : enabled(false) { }
+			
+			//! \brief whether instrumentor is enabled
+			bool enabled;
+			
+			//! \brief path to log file
+			std::string logfile;
+		};
 		
 		//! \brief configuration for the array bounds check instrumentor */
 		class BoundsCheckInstrumentor 
@@ -47,12 +76,25 @@ namespace instrumentation
 			//! \brief path to log file
 			std::string logfile;
 		};
-		
+			
 		//! \brief configuration for the clock cycle count instrumentor */
 		class ClockCycleCountInstrumentor 
 		{
 		public:
 			ClockCycleCountInstrumentor() : enabled(false) { }
+			
+			//! \brief whether instrumentor is enabled
+			bool enabled;
+			
+			//! \brief path to log file
+			std::string logfile;
+		};
+		
+		//! \brief configuration for the error injection instrumentor */
+		class ErrorInjectionInstrumentor 
+		{
+		public:
+			ErrorInjectionInstrumentor() : enabled(false) { }
 			
 			//! \brief whether instrumentor is enabled
 			bool enabled;
@@ -113,6 +155,9 @@ namespace instrumentation
         mqd_t messageQueue;    
 
 		bool alignmentCheck;
+		bool controlFlowCheck;
+		bool registerCheck;
+		bool errorInjection;
 		bool boundsCheck;
 		bool clockCycleCount;
 		bool memoryEfficiency;
@@ -123,11 +168,21 @@ namespace instrumentation
 
         //! \brief alignment check instrumentor
         AlignmentCheckInstrumentor alignmentCheckInstrumentor;
+        
+		//! \brief alignment check instrumentor
+        ControlFlowCheckInstrumentor controlFlowCheckInstrumentor;
+        
+		//! \brief alignment check instrumentor
+        RegisterCheckInstrumentor registerCheckInstrumentor;
+		
 		//! \brief array bound check instrumentor
 		BoundsCheckInstrumentor boundsCheckInstrumentor;
 		
 		//! \brief clock cycle count instrumentor
 		ClockCycleCountInstrumentor clockCycleCountInstrumentor;
+		
+		//! \brief clock cycle count instrumentor
+		ErrorInjectionInstrumentor errorInjectionInstrumentor;
 		
 		//! \brief basic block instrumentor
 		BasicBlockInstrumentor basicBlockInstrumentor;
@@ -141,8 +196,11 @@ namespace instrumentation
 
 	private:
 	    instrumentation::AlignmentCheckInstrumentor _alignmentCheckInstrumentor;
+	    instrumentation::ControlFlowCheckInstrumentor _controlFlowCheckInstrumentor;
+	    instrumentation::RegisterCheckInstrumentor _registerCheckInstrumentor;
 		instrumentation::BoundsCheckInstrumentor _boundsCheckInstrumentor;
 		instrumentation::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
+		instrumentation::ErrorInjectionInstrumentor _errorInjectionInstrumentor;
 		instrumentation::BasicBlockInstrumentor _basicBlockInstrumentor;
 		instrumentation::WarpReductionInstrumentor _warpReductionInstrumentor;
 		

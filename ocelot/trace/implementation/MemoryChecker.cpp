@@ -18,6 +18,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <bitset>
 #include <set>
+#include <map>
 
 // Debugging messages
 #ifdef REPORT_BASE
@@ -1012,26 +1013,26 @@ namespace trace
 			static std::set<int> pastOpcodes;
 			if (pastOpcodes.find(e.instruction->opcode) == pastOpcodes.end())
 			{
-				std::cout << "valid opcode: " << e.instruction->opcode << std::endl;
+				//std::cout << "valid opcode: " << e.instruction->opcode << std::endl;
 				pastOpcodes.insert(e.instruction->opcode);
 			}
 			if (pastMasks.find(ms.a)==pastMasks.end() )
 			{
-				std::cout
-					  <<"a" << numOfValidOpcodes << "\n"
-					  << std::bitset<64>(ms.a) << std::endl;
+				//std::cout
+				//	  <<"a" << numOfValidOpcodes << "\n"
+				//	  << std::bitset<64>(ms.a) << std::endl;
 				pastMasks.insert(ms.a);
 			}
 			if (pastMasks.find(ms.b) == pastMasks.end())
 			{
-				std::cout << "b" << numOfValidOpcodes << "\n"
-					  << std::bitset<64>(ms.b) << std::endl;
+				//std::cout << "b" << numOfValidOpcodes << "\n"
+				//	  << std::bitset<64>(ms.b) << std::endl;
 				pastMasks.insert(ms.a);
 			}
 			if (pastMasks.find(ms.c) == pastMasks.end())
 			{
-				std::cout << "c" << numOfValidOpcodes << "\n"
-					  << std::bitset<64>(ms.c) << std::endl;
+				//std::cout << "c" << numOfValidOpcodes << "\n"
+				//	  << std::bitset<64>(ms.c) << std::endl;
 				pastMasks.insert(ms.a);
 			}
 		}
@@ -1110,14 +1111,12 @@ namespace trace
          * Each dInst points to other dInsts via their reads and writes
          * Other dInsts are found by getting the last action performed on a particular register
          */
-			const ir::PTXInstruction inst = *(e.instruction);
-				if (inst.addressSpace == ir::PTXInstruction::Shared
-&& e.instruction->opcode == ir::PTXInstruction::Ld)
-					std::cout << "shared inst encountered for debugging purposes\n";
+		const ir::PTXInstruction inst = *(e.instruction);
 
 		for( unsigned int thread = 0; thread < threads; ++thread )
 		{
-			DynInst* currDInst = new DynInst(inst.toString(), e.PC, time() );	//dInst
+			DynInst* currDInst = new DynInst(std::string(), e.PC, time() );	//dInst
+//			DynInst* currDInst = new DynInst(inst.toString(), e.PC, time() );	//dInst
 			assert(currDInst);
 			duChain.at(thread).chain.push_back(currDInst);
 
@@ -1186,7 +1185,7 @@ namespace trace
 
 			if(sib != -1)
 			{
-				if (registerFile[d.reg].sizeInBits != -1)
+				if (0)//registerFile[d.reg].sizeInBits != -1)
 				{
 					//DEBUG
 					if (registerFile[d.reg].sizeInBits != sib)
@@ -1933,7 +1932,7 @@ namespace trace
 
 			//recover potential utilization not captured at end of execution
 			//for(auto& cta : relStructures)
-			{
+			auto recoverUtilization = [&](){
 				for(auto& thread : relStructures.regFile )
 				{
 					for(auto& reg : thread)
@@ -1949,8 +1948,9 @@ namespace trace
 						}
 					}
 				}
-			}
+			};
 
+			recoverUtilization();
 			//get overall stats
 			size_t totalReads = 0;
 			size_t totalWrites = 0;
@@ -2032,7 +2032,10 @@ namespace trace
 #endif
 			pvfRegFileHistogram();
 
+			//calculate PVF (all live ranges over livetime of all registers)
 			//pvfRegFile();
+
+			std::multimap<int, int> startList, endList;
 			{
                 uint64_t sumThreadVuln = 0;
                 uint64_t sumThreadPotentialVuln = 0;
@@ -2040,12 +2043,14 @@ namespace trace
 				bool aceLR = false;
 				auto vulnerability = 0, totalVuln = 0;
 				uint64_t currentMask = 0;
-				auto threadNum = 0;
 				//debug
 				std::vector<int> regVuln;
 				regVuln.resize(relStructures.regFile[0].size());
 
-				for(auto& thread : relStructures.regFile )
+				auto threadNum = 0;
+				auto threadPVF = [&](std::vector<Util> &thread)
+
+
 				{
 					auto regNum = 0;
 					for(auto& reg : thread)
@@ -2074,26 +2079,42 @@ namespace trace
 								aceLR = event->ace;
 							} else {
 								//finish any previous live range
-								auto vulnTime = readTime - writeTime;
+								const auto vulnTime = readTime - writeTime;
+
+								uint64_t bitsACE = 0;
 								if ( vulnTime >0 && aceLR)
 								{
-									uint64_t bitsACE;
 									asm ("popcnt %1, %0"
 											: "=r" (bitsACE)
 											  : "r" (currentMask));
 									vulnerability += vulnTime * bitsACE;
-									assert(bitsACE >= (unsigned) reg.sizeInBits && "error: register smaller than ace bits");
+									if (bitsACE > (unsigned) reg.sizeInBits )
+									{
+										std::cout << "PC:" << event->PC
+												  << " Time: " << event->time << "\n";
+										std::cout << duChain[threadNum].chain[event->time]->opcode << "\n";
+										std::cout << "bitsACE: " << bitsACE
+												  << " vs reg size: " << reg.sizeInBits << "\n"
+										  << " mask: " << std::hex << currentMask << std::endl;
+										assert(false && "error: register smaller than ace bits");
+									}
 									totalVuln += reg.sizeInBits;
+								}
+								if(threadNum == 0)
+								{
+									startList.insert({writeTime, bitsACE});
+									endList.insert({readTime, bitsACE});
 								}
 								//start new live range
 								writeTime = readTime = event->time;
 								currentMask = 0;
 							}
 						}
-						auto vulnTime = readTime - writeTime;
+						const auto vulnTime = readTime - writeTime;
+
+						uint64_t bitsACE = 0;
 						if ( vulnTime >0 && aceLR)
 						{
-							uint64_t bitsACE;
 							asm ("popcnt %1, %0"
 									: "=r" (bitsACE)
 									  : "r" (currentMask));
@@ -2109,8 +2130,13 @@ namespace trace
 										  << "  bitsACE=" << bitsACE << " reg.sizeInBits="
 										  << reg.sizeInBits
 										  << " mask: " << std::hex << currentMask << std::endl;
+								assert(false && "error: register smaller than ace bits");
 							}
-							assert(bitsACE <= (unsigned)reg.sizeInBits && "error: register smaller than ace bits");
+							if (threadNum == 0)
+							{
+								startList.insert({writeTime, bitsACE});
+								endList.insert({readTime, bitsACE});
+							}
 						}
 						regNum++;
 					}
@@ -2125,12 +2151,71 @@ namespace trace
 					threadNum++;
                     sumThreadVuln += vulnerability;
                     sumThreadPotentialVuln += totalVuln;
-				}
+				};
+
+				for(auto& thread : relStructures.regFile )
+					threadPVF(thread);
+
+				auto currEnd = endList.begin();
+				auto start = startList.begin();
+				int simulRegs = 1, maxSimulRegs = 0;
+				int currBits = start->second, maxBitsNeeded = 0;
+
+				//finds maximum # of registers and max # of bits needed per thread in hardware
+				//iterate over time line, for each start encountered, increment register needed
+				//for each end of live-range encountered, decrement register needed
+				auto maxRegResources= [&]()
+				{
+					//skip all zero's
+					while((++currEnd)->first == 0);
+					while((++start)->first == 0);
+
+					int i=0;
+					int j=0;
+					for( ; start != startList.end(); start++)
+					{
+						simulRegs++;
+						currBits +=start->second;
+						auto tmp = start;
+						if((++tmp)->first == start->first)
+							continue;
+						maxSimulRegs = (simulRegs > maxSimulRegs) ? simulRegs : maxSimulRegs;
+						maxBitsNeeded = (currBits > maxBitsNeeded) ? currBits : maxBitsNeeded;
+
+						//move end iterator to match start
+						while( currEnd->first <= start->first && currEnd != endList.end())
+						{
+							simulRegs--;
+							currBits -= currEnd->second;
+							currEnd++;
+							j++;
+						}
+						i++;
+					}
+				};
+
+				/*
+				std::cout << "Start bit widths (" << startList.size() << "): \n";
+					for(auto startElem: startList)
+						std::cout << startElem.first << ":" << startElem.second << " ";
+
+					std::cout << "\n End bit widths: (" << endList.size() << ")\n";
+
+					for(auto endElem: endList)
+						std::cout << endElem.first << ":" << endElem.second << " ";
+					std::cout << "\n";
+	*/
 				static unsigned int lastTime = 0;
 				int thisTime = time();
 				thisTime -= lastTime;
 				lastTime = time();
 
+				maxRegResources();
+
+			std::cout << "max simultaneous registers: " << maxSimulRegs
+					  << "\tavg bits/reg needed " << (float)maxBitsNeeded/(float)maxSimulRegs<< "\n";
+				//not iterating over all threads auto threadSize = relStructures.regFile.size();
+				sumThreadPotentialVuln = thisTime * threadNum * maxBitsNeeded;
 				double ctaPVF = sumThreadVuln/(double)(thisTime*sumThreadPotentialVuln);
 				std::cout << "CTA PVF: " << ctaPVF << std::endl;
 
@@ -2163,6 +2248,8 @@ namespace trace
 				}
 				dynInstsOut.close();
 			}
+
+
 		}
 	}
 

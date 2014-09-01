@@ -1807,10 +1807,8 @@ namespace trace
 		{
 			for(auto & thread: relStructures.regFile)
 			{
-				//	auto r=  0;
 				for(auto &reg : thread)
 				{
-					//		std::cout << "\nregister " << r++ << "\t";
 					for(auto &use : reg.trace)
 					{
 						auto thispvf = use.second - use.first;
@@ -1824,7 +1822,6 @@ namespace trace
 							{
 								if(thispvf <= *b)
 								{
-									//		std::cout << thispvf << ": " << use.first << "-" << use.second << "\t";
 									histogram.at(h)++;//(*h)++;
 									break;
 								}
@@ -1856,9 +1853,6 @@ namespace trace
 				fsh << interval << ",\n";
 #endif
 			fsh.close();
-			//float avgRead = totalReads / (float) (vf.regFile.size()*vf.regFile[0].size());
-			//float avgInterval = (float)totalIntervals/(float)(binCount);
-			//float regNum = (vf.regFile.size()*vf.regFile[0].size());
 
 			auto threadNum = relStructures.regFile.size();
 			auto regNum = relStructures.regFile[0].size();
@@ -1867,8 +1861,8 @@ namespace trace
 			std::cout << "total: " << totalInterval << " regs*threads: " << regNum * threadNum
 					<< " average interval " << avgInterval  << "\n";
 
-			//for(auto& cta : relStructures)
 			auto totalUtil = 0;
+			//for(auto& cta : relStructures)
 			{
 				for(auto& thread : relStructures.regFile )
 				{
@@ -1907,6 +1901,196 @@ namespace trace
 									<< "#dInsts: " << allLinks.size()  <<  " #dInsts: "
 									<< dInstCount << "  # of mismatched dInsts: " << nomatch << "\n";
 	}
+	void MemoryChecker::pvfRegFile()
+	{
+		std::multimap<int, int> startList, endList;
+		uint64_t sumThreadVuln = 0;
+		uint64_t sumThreadPotentialVuln = 0;
+		size_t writeTime=0, readTime=0;
+		bool aceLR = false;
+		auto vulnerability = 0, totalVuln = 0;
+		uint64_t currentMask = 0;
+		//debug
+		std::vector<int> regVuln;
+		regVuln.resize(relStructures.regFile[0].size());
+
+		auto calcVuln = [&](unsigned int &threadNum, int &regNum, Util& reg, bool &aceLR, size_t &readTime,
+				size_t &writeTime, uint64_t &currentMask) {
+			const auto vulnTime = readTime - writeTime;
+			uint64_t bitsACE = 0;
+			if ( vulnTime >0 && aceLR)
+			{
+				asm ("popcnt %1, %0"
+						: "=r" (bitsACE)
+						  : "r" (currentMask));
+				vulnerability += vulnTime * bitsACE;
+				totalVuln += reg.sizeInBits;
+
+				//debug
+				regVuln[regNum] = vulnTime * bitsACE;
+/*
+				if(bitsACE > (unsigned)reg.sizeInBits )
+				{
+					std::cout << "thread:reg=" << std::dec << threadNum << ":" << regNum << "\n";
+					if (event != nullptr)
+					{
+						std::cout << "PC:" << event->PC
+							<< " Time: " << event->time << "\n"
+							<< duChain[threadNum].chain[event->time]->opcode << "\n";
+					}
+						std::cout << "bitsACE: " << bitsACE
+							<< " vs reg size: " << reg.sizeInBits << "\n"
+							<< " mask: " << std::hex << currentMask << std::endl;
+					assert(false && "error: register smaller than ace bits");
+				}
+//*/
+				//for determining max registers and bits used
+				if (threadNum == 0)
+				{
+					startList.insert({writeTime, bitsACE});
+					endList.insert({readTime, bitsACE});
+				}
+			}
+		};
+		auto registerPVF = [&](unsigned int threadNum, int regNum, Util &reg, bool & aceLR,
+				size_t &readTime, size_t &writeTime,
+				size_t &currentMask)
+		{
+			for(auto &event : reg.relEventList)
+			{
+				if (event->read)
+				{
+					readTime = event->time;
+					//take union of bitmask
+
+					currentMask |= event->paMask;
+					aceLR = event->ace;
+				} else {
+					//finish any previous live range
+					calcVuln(threadNum, regNum, reg, aceLR, readTime, writeTime, readTime);
+					//start new live range
+					writeTime = readTime = event->time;
+					currentMask = 0;
+				}
+			}
+		};
+
+		auto threadPVF = [&](unsigned int threadNum)
+		{
+			auto regNum = 0;
+			for(auto& reg : relStructures.regFile[threadNum])
+			{
+				aceLR = false;
+				writeTime = readTime = 0;
+				currentMask = 0;
+				registerPVF(threadNum, regNum, reg, aceLR, readTime, writeTime, currentMask);
+
+				//grab size of vulnerability (duration of live range and # of ace bits in register)
+				calcVuln(threadNum, regNum, reg, aceLR, readTime, writeTime, currentMask);
+
+				regNum++;
+			}
+			if(0)
+			{
+				if(totalVuln == 0)
+					std::cout << "no any vuln? ";
+				else
+					std::cout << "thread's RF PVF: "
+					<< (double)vulnerability/(double)(time()*totalVuln) << std::endl;
+			}
+			sumThreadVuln += vulnerability;
+			sumThreadPotentialVuln += totalVuln;
+		};
+
+		auto maxRegResources= [&](int &maxSimulRegs, int &maxBitsNeeded)
+		{
+			int simulRegs = 1;
+			auto currEnd = endList.begin();
+			auto start = startList.begin();
+			int currBits = start->second;
+			//skip all zero's
+			while((++currEnd)->first == 0);
+			while((++start)->first == 0);
+
+			int i=0;
+			int j=0;
+			for( ; start != startList.end(); start++)
+			{
+				simulRegs++;
+				currBits +=start->second;
+				auto tmp = start;
+				if((++tmp)->first == start->first)
+					continue;
+				maxSimulRegs = (simulRegs > maxSimulRegs) ? simulRegs : maxSimulRegs;
+				maxBitsNeeded = (currBits > maxBitsNeeded) ? currBits : maxBitsNeeded;
+
+				//move end iterator to match start
+				while( currEnd->first <= start->first && currEnd != endList.end())
+				{
+					simulRegs--;
+					currBits -= currEnd->second;
+					currEnd++;
+					j++;
+				}
+				i++;
+			}
+		};
+
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		// Start of pvfRegFile()
+		//////////////////////////////////////////////////////////////////////////////////////
+
+		auto threadSize = relStructures.regFile.size();
+		for(unsigned int threadNum=0; threadNum < threadSize; threadNum++)
+			threadPVF(threadNum);
+
+		int maxSimulRegs = 0, maxBitsNeeded = 0;
+		static unsigned int lastTime = 0;
+		int thisTime = time();
+		thisTime -= lastTime;
+		lastTime = time();
+
+		//finds maximum # of registers and max # of bits needed per thread in hardware
+		//iterate over time line, for each start encountered, increment register needed
+		//for each end of live-range encountered, decrement register needed
+		maxRegResources(maxSimulRegs, maxBitsNeeded);
+
+		std::cout << "max simultaneous registers: " << maxSimulRegs
+				<< "\tavg bits/reg needed " << (float)maxBitsNeeded/(float)maxSimulRegs<< "\n";
+
+		sumThreadPotentialVuln = thisTime * threadSize * maxBitsNeeded;
+		double ctaPVF = sumThreadVuln/(double)(thisTime*sumThreadPotentialVuln);
+		std::cout << "CTA PVF: " << ctaPVF << std::endl;
+
+		//output regVuln to debug file
+		std::ofstream rvOut("regVuln.txt");
+		for ( unsigned int i=0; i < regVuln.size(); i++)
+		{
+			rvOut << i << ": " << regVuln[i] << std::endl;
+		}
+		rvOut.close();
+
+		//print to file dynamic instruction dependency-tree
+		std::ofstream dynInstsOut("dynInsts_dependencies");
+		int threadNum = 0;
+		for ( auto & thread : duChain )
+		{
+			dynInstsOut << "thread " << threadNum << "\n";
+			for (auto & inst : thread.chain)
+			{
+				dynInstsOut << inst->time << ": ";
+				for (auto & read : inst->read)
+				{
+					dynInstsOut << read->dynInstPtr->opcode << " ";
+				}
+				dynInstsOut << "\n";
+			}
+			dynInstsOut << "\n";
+			threadNum++;
+		}
+		dynInstsOut.close();
+	}
 
 	void MemoryChecker::finish()
 	{
@@ -1930,9 +2114,8 @@ namespace trace
 						<< "\t registers per thread " << regNum << std::endl;
 			}
 
-			//recover potential utilization not captured at end of execution
-			//for(auto& cta : relStructures)
-			auto recoverUtilization = [&](){
+			auto recoverUtilization = [&]()
+			{
 				for(auto& thread : relStructures.regFile )
 				{
 					for(auto& reg : thread)
@@ -1949,70 +2132,34 @@ namespace trace
 					}
 				}
 			};
-
-			recoverUtilization();
-			//get overall stats
-			size_t totalReads = 0;
-			size_t totalWrites = 0;
-
-			//for(auto& cta : relStructures)
+			auto totalReadWrite = [&](size_t &totalReads, size_t &totalWrites)
+			{
 				for(auto& thread : relStructures.regFile )
 					for(auto& reg : thread )
 					{
 						totalReads += reg.readCount;
 						totalWrites += reg.writeCount;
 					}
+			};
 
-			size_t numBlocks = _dim.x * _dim.y * _dim.z;
-			float avgRead = totalReads / (float) (relStructures.regFile.size()*relStructures.regFile[0].size());
-			float avgWrite = totalWrites / (float) (relStructures.regFile.size()*relStructures.regFile[0].size());
-
-			if (printStats)
+			auto markACE = [&](int &totalCount)
 			{
-				std::cout << "#blocks: " << numBlocks << "\n";
-				std::cout << "average reads: " << avgRead
-						<< "\naverage writes: " << avgWrite << "\n";
-			}
-
-#if ACE	
-			//traverse backwards in duChain.ace and mark all ACE dInsts
-//			std::cout << "marking ace dInsts from " << duChain.size() << "\n";
-			auto totalCount = 0, aceCount = 0;
-			int threadCount = 0;
-			for( auto & thread: duChain )
-			{
-				reportE(DUCHAIN, "thread: " << threadCount++ << "  root registers: " << thread.ace.size() << "\n");
-				auto reg = 0;
-				for( auto & dInst: thread.ace )
+				int threadCount = 0;
+				for( auto & thread: duChain )
 				{
-					reportE(DUCHAIN, "marking root reg: " << reg++ << "\n");
-					uint64_t mask = -1; //all ace
-					thread.mark(dInst, mask);	//mark all dInsts connected to this dInst as ace
-				}
-			}
-
-			if (printStats)
-			{
-				checkMismatchedLinks(); 	//and print mismatched links if found
-#if 0
-				//print out
-				std::cout << "Printing all dInsts/instructions, ace or not\n";
-				for(auto & thread: duChain )
-				{
-					for(auto & dInst: thread.chain)
+					reportE(DUCHAIN, "thread: " << threadCount++
+							<< "  root registers: " << thread.ace.size() << "\n");
+					auto reg = 0;
+					for( auto & dInst: thread.ace )
 					{
-						std::cout << "t" << dInst->time << " PC" << dInst->PC << " " << dInst->opcode << " ace: " << dInst->ace;
-						//	if (dInst->ace == false )
-						std::cout << "\tdInst& 0x" << std::hex << (size_t)dInst << std::dec;
-
-						std::cout << "\n";
-						++dInstCount;
+						reportE(DUCHAIN, "marking root reg: " << reg++ << "\n");
+						uint64_t mask = -1; //all ace
+						thread.mark(dInst, mask);	//mark all dInsts connected to this dInst as ace
 					}
-					break;
 				}
-				std::cout << "# dInsts just  printed: " << dInstCount << "\n";
-#endif        
-				//count # of ace/total instructions
+			};
+			auto countACE = [&](int &totalCount, int &aceCount)
+			{
 				for( auto & thread: duChain )
 				{
 					for(auto & dInst: thread.chain)
@@ -2022,234 +2169,56 @@ namespace trace
 							aceCount++;
 					}
 				}
+			};
 
-				std::cout << "ace/total: " << aceCount << "/" << totalCount << "\t"
-						<<  aceCount/((float)totalCount) << "\n";
 
-				std::cout << "Kernel duration: " << time() << "\n";
-			}
-			printLiveRangeDuration(1); //FIXME uncomment this line to print liveRangePC, input to RegisterCheckPass
+
+			///////////////////////////////////////////////////////////////////////////////
+			//start of body of MemoryChecker::finish() if(checkPVF)
+			//////////////////////////////////////////////////////////////////////////////////
+			/* recover potential utilization not captured at end of execution */
+			//for(auto& cta : relStructures)
+				recoverUtilization();
+
+			/* get overall stats */
+			size_t totalReads = 0;
+			size_t totalWrites = 0;
+			//for(auto& cta : relStructures)
+				totalReadWrite(totalReads, totalWrites);
+
+			size_t numBlocks = _dim.x * _dim.y * _dim.z;
+			float avgRead = totalReads /
+					(float) (relStructures.regFile.size()*relStructures.regFile[0].size());
+			float avgWrite = totalWrites /
+					(float) (relStructures.regFile.size()*relStructures.regFile[0].size());
+
+#if ACE	
+			//traverse backwards in duChain.ace and mark all ACE dInsts
+			auto totalCount = 0, aceCount = 0;
+			markACE(totalCount);
 #endif
+
+			printLiveRangeDuration(1); //FIXME uncomment this line to print liveRangePC, input to RegisterCheckPass
 			pvfRegFileHistogram();
 
-			//calculate PVF (all live ranges over livetime of all registers)
-			//pvfRegFile();
+			//calculate PVF (all live ranges over life-time of all registers in all threads of CTA)
+			pvfRegFile();
 
-			std::multimap<int, int> startList, endList;
+			if (printStats)
 			{
-                uint64_t sumThreadVuln = 0;
-                uint64_t sumThreadPotentialVuln = 0;
-				size_t writeTime=0, readTime=0;
-				bool aceLR = false;
-				auto vulnerability = 0, totalVuln = 0;
-				uint64_t currentMask = 0;
-				//debug
-				std::vector<int> regVuln;
-				regVuln.resize(relStructures.regFile[0].size());
+				checkMismatchedLinks();
 
-				auto threadNum = 0;
-				auto threadPVF = [&](std::vector<Util> &thread)
+				std::cout << "#blocks: " << numBlocks << "\n";
+				std::cout << "average reads: " << avgRead
+						<< "\naverage writes: " << avgWrite << "\n";
 
+				//count # of ace/total instructions
+				countACE(totalCount, aceCount);
 
-				{
-					auto regNum = 0;
-					for(auto& reg : thread)
-					{
-						aceLR = false;
-						writeTime = readTime = 0;
-						currentMask = 0;
-						for(auto &event : reg.relEventList)
-						{
-							if (event->read)
-							{
-								readTime = event->time;
-								//take union of bitmask
-								if (0)//(currentMask ^ event->paMask) != 0)
-								{
-									std::cout << "thread:reg=" << threadNum << ":" << regNum
-											  << " mask diff: " << std::hex << currentMask
-											  << " and " << event->paMask << "\n";
-								}
-								if(0)//regNum == 2)
-								{
-									std::cout << "event mask for reg2: "
-											  << std::hex << event->paMask << std::endl;
-								}
-								currentMask |= event->paMask;
-								aceLR = event->ace;
-							} else {
-								//finish any previous live range
-								const auto vulnTime = readTime - writeTime;
-
-								uint64_t bitsACE = 0;
-								if ( vulnTime >0 && aceLR)
-								{
-									asm ("popcnt %1, %0"
-											: "=r" (bitsACE)
-											  : "r" (currentMask));
-									vulnerability += vulnTime * bitsACE;
-									if (bitsACE > (unsigned) reg.sizeInBits )
-									{
-										std::cout << "PC:" << event->PC
-												  << " Time: " << event->time << "\n";
-										std::cout << duChain[threadNum].chain[event->time]->opcode << "\n";
-										std::cout << "bitsACE: " << bitsACE
-												  << " vs reg size: " << reg.sizeInBits << "\n"
-										  << " mask: " << std::hex << currentMask << std::endl;
-										assert(false && "error: register smaller than ace bits");
-									}
-									totalVuln += reg.sizeInBits;
-								}
-								if(threadNum == 0)
-								{
-									startList.insert({writeTime, bitsACE});
-									endList.insert({readTime, bitsACE});
-								}
-								//start new live range
-								writeTime = readTime = event->time;
-								currentMask = 0;
-							}
-						}
-						const auto vulnTime = readTime - writeTime;
-
-						uint64_t bitsACE = 0;
-						if ( vulnTime >0 && aceLR)
-						{
-							asm ("popcnt %1, %0"
-									: "=r" (bitsACE)
-									  : "r" (currentMask));
-							vulnerability += vulnTime * bitsACE;
-							totalVuln += reg.sizeInBits;
-
-							//debug
-							regVuln[regNum] = vulnTime * bitsACE;
-
-							if(bitsACE > (unsigned)reg.sizeInBits )
-							{
-								std::cout << "thread:reg=" << std::dec << threadNum << ":" << regNum
-										  << "  bitsACE=" << bitsACE << " reg.sizeInBits="
-										  << reg.sizeInBits
-										  << " mask: " << std::hex << currentMask << std::endl;
-								assert(false && "error: register smaller than ace bits");
-							}
-							if (threadNum == 0)
-							{
-								startList.insert({writeTime, bitsACE});
-								endList.insert({readTime, bitsACE});
-							}
-						}
-						regNum++;
-					}
-					if(0)
-					{
-						if(totalVuln == 0)
-							std::cout << "no any vuln? ";
-						else
-							std::cout << "thread's RF PVF: "
-								<< (double)vulnerability/(double)(time()*totalVuln) << std::endl;
-					}
-					threadNum++;
-                    sumThreadVuln += vulnerability;
-                    sumThreadPotentialVuln += totalVuln;
-				};
-
-				for(auto& thread : relStructures.regFile )
-					threadPVF(thread);
-
-				auto currEnd = endList.begin();
-				auto start = startList.begin();
-				int simulRegs = 1, maxSimulRegs = 0;
-				int currBits = start->second, maxBitsNeeded = 0;
-
-				//finds maximum # of registers and max # of bits needed per thread in hardware
-				//iterate over time line, for each start encountered, increment register needed
-				//for each end of live-range encountered, decrement register needed
-				auto maxRegResources= [&]()
-				{
-					//skip all zero's
-					while((++currEnd)->first == 0);
-					while((++start)->first == 0);
-
-					int i=0;
-					int j=0;
-					for( ; start != startList.end(); start++)
-					{
-						simulRegs++;
-						currBits +=start->second;
-						auto tmp = start;
-						if((++tmp)->first == start->first)
-							continue;
-						maxSimulRegs = (simulRegs > maxSimulRegs) ? simulRegs : maxSimulRegs;
-						maxBitsNeeded = (currBits > maxBitsNeeded) ? currBits : maxBitsNeeded;
-
-						//move end iterator to match start
-						while( currEnd->first <= start->first && currEnd != endList.end())
-						{
-							simulRegs--;
-							currBits -= currEnd->second;
-							currEnd++;
-							j++;
-						}
-						i++;
-					}
-				};
-
-				/*
-				std::cout << "Start bit widths (" << startList.size() << "): \n";
-					for(auto startElem: startList)
-						std::cout << startElem.first << ":" << startElem.second << " ";
-
-					std::cout << "\n End bit widths: (" << endList.size() << ")\n";
-
-					for(auto endElem: endList)
-						std::cout << endElem.first << ":" << endElem.second << " ";
-					std::cout << "\n";
-	*/
-				static unsigned int lastTime = 0;
-				int thisTime = time();
-				thisTime -= lastTime;
-				lastTime = time();
-
-				maxRegResources();
-
-			std::cout << "max simultaneous registers: " << maxSimulRegs
-					  << "\tavg bits/reg needed " << (float)maxBitsNeeded/(float)maxSimulRegs<< "\n";
-				//not iterating over all threads auto threadSize = relStructures.regFile.size();
-				sumThreadPotentialVuln = thisTime * threadNum * maxBitsNeeded;
-				double ctaPVF = sumThreadVuln/(double)(thisTime*sumThreadPotentialVuln);
-				std::cout << "CTA PVF: " << ctaPVF << std::endl;
-
-				//output regVuln to debug file
-
-				std::ofstream rvOut("regVuln.txt");
-				for ( unsigned int i=0; i < regVuln.size(); i++)
-				{
-					rvOut << i << ": " << regVuln[i] << std::endl;
-				}
-				rvOut.close();
-
-
-				std::ofstream dynInstsOut("dynInsts_dependencies");
-				threadNum = 0;
-				for ( auto & thread : duChain )
-				{
-					dynInstsOut << "thread " << threadNum << "\n";
-					for (auto & inst : thread.chain)
-					{
-						dynInstsOut << inst->time << ": ";
-						for (auto & read : inst->read)
-						{
-							dynInstsOut << read->dynInstPtr->opcode << " ";
-						}
-						dynInstsOut << "\n";
-					}
-					dynInstsOut << "\n";
-					threadNum++;
-				}
-				dynInstsOut.close();
+				std::cout << "ace/total: " << aceCount << "/" << totalCount << "\t"
+						<<  aceCount/((float)totalCount) << "\n"
+						<< "Kernel duration: " << time() << "\n";
 			}
-
-
 		}
 	}
 

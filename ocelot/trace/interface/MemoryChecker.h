@@ -303,6 +303,7 @@ namespace trace
 			 */
 			size_t computePVF();
 
+			void pvfRegFile();
 			/*! \brief get value from register
 			 *
 			 */

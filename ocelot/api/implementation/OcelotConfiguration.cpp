@@ -78,7 +78,8 @@ api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
 
 api::OcelotConfiguration::TraceGeneration::MemoryChecker::MemoryChecker():
 	enabled(true),
-	checkInitialization(false)
+	checkInitialization(false),
+	PVF(false)
 {
 
 }
@@ -103,6 +104,8 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
             	memoryCheckerConfig.parse<bool>("enabled", true);
             trace.memoryChecker.checkInitialization = 
             	memoryCheckerConfig.parse<bool>("checkInitialization", false);
+            trace.memoryChecker.PVF =
+            	memoryCheckerConfig.parse<bool>("PVF", false);
     }
     
     hydrazine::json::Visitor raceConfig = config["raceDetector"];

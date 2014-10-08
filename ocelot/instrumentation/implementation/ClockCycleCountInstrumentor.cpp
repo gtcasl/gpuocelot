@@ -112,7 +112,7 @@ namespace instrumentation
         if(err < 0)
             report("Unable to send kernel profile");
     
-        fmt = json;
+        fmt = text;
         switch(fmt) {
     
             case json:
@@ -140,7 +140,7 @@ namespace instrumentation
                     }
 
                 *out << "}\n\n";
-            
+
             break;
             
             case text:   
@@ -148,6 +148,8 @@ namespace instrumentation
                 *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << " ms\n";
 
             break;
+            default:
+            	break;
 
         }
 

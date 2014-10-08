@@ -52,12 +52,13 @@ namespace trace
 			{
 				public:
 					DynInst(std::string op, size_t pc, size_t t) :
-						opcode(op), 
+						//opcode(op),
 						PC(pc),  
 						time(t),
 				 		ace(false),
 						init(false)
-					{ opcode.append(1,'\0'); }
+					{// opcode.append(1,'\0');
+					}
 				public:
 					class ProgramPoint //wrapper for relEvent on a particular register
 					{
@@ -73,7 +74,7 @@ namespace trace
 							RelEvent* relEvent; 
 					};
 					std::vector<ProgramPoint*> write, read;
-					std::string opcode;
+					//std::string opcode;
 					size_t PC;
 					size_t time;
 					bool ace;
@@ -247,7 +248,6 @@ namespace trace
 		
 			ShadowMemory _registerFileShadow;
 
-			//std::vector<RelStructures> relStructures;
 			RelStructures relStructures;
 			std::vector<DefUseChain> duChain;
 
@@ -258,6 +258,9 @@ namespace trace
 							uint64_t a,b,c,d;
 							Masks() : a(-1), b(-1), c(-1), d(-1) {}
 						};
+		public:
+			const RelStructures* getRelStructures() { return &relStructures; }
+			const std::vector<DefUseChain>* getDUChain() { return &duChain; }
 		private:
 			/*! \brief Check the alignment of a memory access */
 			void _checkAlignment(const TraceEvent& e);
@@ -303,7 +306,12 @@ namespace trace
 			 */
 			size_t computePVF();
 
+			/*! \brief compute PVF and return the average PVF of register file
+			 *  threshold used to calculate PVF if checksum SRE of certain
+			 *  threshold is used
+			 */
 			void pvfRegFile();
+			void pvfSharedMem();
 			/*! \brief get value from register
 			 *
 			 */
@@ -312,12 +320,16 @@ namespace trace
 
 			int getOperandSize(ir::PTXOperand::DataType type);
 
+			//signal handler to print debug info upon receiving sigint
+			//void intHandler(int);
+
 		public:
 			/*! \brief The constructor initializes the cached allocations */
 			MemoryChecker();
 
 			/*! \brief Set initialization checking toggle */
 			void setCheckInitialization(bool toggle);
+			void setPVF(bool toggle);
 			
 			/*! \brief Set the cache and get a pointer to the memory mappings */
 			virtual void initialize(const executive::ExecutableKernel& kernel);

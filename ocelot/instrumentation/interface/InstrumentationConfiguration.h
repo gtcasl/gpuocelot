@@ -51,7 +51,7 @@ namespace instrumentation
 			std::string logfile;
 		};
 
-		//! \brief configuration for the alignment check instrumentor */
+		//! \brief configuration for the register check instrumentor */
 		class RegisterCheckInstrumentor 
 		{
 		public:
@@ -62,6 +62,9 @@ namespace instrumentation
 			
 			//! \brief path to log file
 			std::string logfile;
+
+			//! \brief minimum live-range value threshold for inserting checks
+			int lrThreshold;
 		};
 		
 		//! \brief configuration for the array bounds check instrumentor */

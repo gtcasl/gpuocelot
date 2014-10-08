@@ -116,6 +116,9 @@ InstrumentationConfiguration::InstrumentationConfiguration()
 				registerCheckInstrumentor.enabled = config.parse<bool>(
 					"enabled", true);
 	
+				registerCheckInstrumentor.lrThreshold= config.parse<int>(
+					"threshold", 2);
+
 				registerCheckInstrumentor.logfile = config.parse<std::string>(
 					"logfile", "");
 			}

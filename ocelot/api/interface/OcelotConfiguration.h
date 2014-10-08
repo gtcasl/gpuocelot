@@ -99,6 +99,7 @@ namespace api {
 			public:
 					bool enabled;
 					bool checkInitialization;
+					bool PVF;
 			};
 			
 			class DynamicCompilationOverhead {

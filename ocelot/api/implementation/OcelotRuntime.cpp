@@ -136,6 +136,8 @@ namespace ocelot
 			report( "Creating memory checker" );
 			_memoryChecker.setCheckInitialization(  
 				c.trace.memoryChecker.checkInitialization );
+			_memoryChecker.setPVF(
+				c.trace.memoryChecker.PVF);
 			ocelot::addTraceGenerator( _memoryChecker, true );
 		}
 		if (c.trace.raceDetector.enabled)

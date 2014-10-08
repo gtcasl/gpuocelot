@@ -19,7 +19,8 @@
 #include <bitset>
 #include <set>
 #include <map>
-
+#include <algorithm>
+#include <signal.h>
 // Debugging messages
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -31,7 +32,7 @@
 #define BINS 0
 #define ACE 1
 
-const bool enableLRPC = false;
+const bool enableLRPC = true;
 
 #define REPORT_KERNEL_INSTRUCTIONS 0
 #define MEMORY 1
@@ -633,9 +634,54 @@ namespace trace
 		checkInitialization = toggle;
 	}
 	
-			std::vector <MemoryChecker::DynInst*> MemoryChecker::DefUseChain::sharedMemInst;
-			std::vector<MemoryChecker::Util> MemoryChecker::RelStructures::sharedMemory;
-			std::vector<MemoryChecker::Util> MemoryChecker::RelStructures::globalMemory;
+	void MemoryChecker::setPVF(bool toggle)
+	{
+		checkPVF = toggle;
+	}
+
+	std::vector <MemoryChecker::DynInst*> MemoryChecker::DefUseChain::sharedMemInst;
+	std::vector<MemoryChecker::Util> MemoryChecker::RelStructures::sharedMemory;
+	std::vector<MemoryChecker::Util> MemoryChecker::RelStructures::globalMemory;
+
+	MemoryChecker *MC;
+	void intHandler(int dummy=0)
+	{
+		std::cout << "last dynInst executed: " << MC->time() << std::endl;
+		//debug - print out allocation size of all memory structures
+
+		int totalSize = 0;
+		for (const auto &thread : MC->getRelStructures()->regFile)
+		{
+			for (const auto &reg : thread)
+			{
+				totalSize += sizeof reg;
+				for (const auto &re : reg.relEventList)
+				{
+					totalSize += sizeof re;
+				}
+			}
+		}
+		std::cout << "total reg size in bytes " << totalSize << std::endl;
+		totalSize = 0;
+		for ( const auto &thread : *(MC->getDUChain()) )
+		{
+			for (const auto &dynInst : thread.chain)
+			{
+				totalSize += sizeof *dynInst;
+				for (const auto &pp : dynInst->read)
+				{
+					totalSize += sizeof pp;
+				}
+				for (const auto &pp : dynInst->write)
+				{
+					totalSize += sizeof pp;
+				}
+				//totalSize += sizeof dynInst->opcode;
+			}
+		}
+		std::cout << "total duChain size in bytes " << totalSize << std::endl;
+		assert(false);
+	}
 	void MemoryChecker::initialize( const executive::ExecutableKernel& kernel )
 	{
 		_dim = kernel.blockDim();
@@ -668,7 +714,7 @@ namespace trace
 		_constShadow.resize(_constant.extent);
 		_localShadow.resize(_local.extent);
 
-		checkPVF = true;
+		//checkPVF = true;
 		//int ctaNum = _grid.x * _grid.y * _grid.z;
 		//relStructures.resize(ctaNum);
 		//for( auto& cta : relStructures)
@@ -698,6 +744,8 @@ namespace trace
 
 		_time = 0;
 
+		signal(SIGINT, intHandler);
+		MC = this;
 	}
 
 	void MemoryChecker::event( const TraceEvent& event )
@@ -718,8 +766,16 @@ namespace trace
 		}
 		if( checkInitialization )
 			_checkInstructions( event );
+
+		ir::Dim3& grid = _grid;
+		const unsigned int cta = event.blockId.x + event.blockId.y * grid.x
+			+ grid.x * grid.y * event.blockId.z;
+		//FIXME temporary until bugs are ironed out
+		if (cta > 0 )
+			return;
 		if( checkPVF )
 			_checkPVF ( event );
+		incTime(); //assumption: each call to _checkPVF is a new dynamic instruction (always the next one)
 	}
 
 	void MemoryChecker::incTime()
@@ -1091,14 +1147,10 @@ namespace trace
 		const unsigned int cta = e.blockId.x + e.blockId.y * grid.x
 			+ grid.x * grid.y * e.blockId.z;
 		
-		//FIXME temporary until bugs are ironed out
-		if (cta > 1 )
-			return;
 
 		//when cta finishes execution and new one starts, finish and erase data structs to save memory
 		finishPVFAnalysis(cta, lastCTA);
 		lastCTA = cta;
-		incTime(); //assumption: each call to _checkPVF is a new dynamic instruction (always the next one)
 		
 		unsigned int threads = e.active.size();
 
@@ -1543,7 +1595,10 @@ namespace trace
 			}
 		}
 
-        std::vector<size_t> thresholds {1,2,3,4,5,10,20,30,40,50,100,200,300};
+        std::vector<size_t> thresholds(10);
+        int i = 1;
+        generate(begin(thresholds), end(thresholds), [&](){ return i *= 2; });
+
         
 		//dump to file: list of all live ranges for each register
         std::vector<std::string> lrPCFileNames(thresholds.size());
@@ -1558,14 +1613,11 @@ namespace trace
         }
         }
 		std::string lrDurationFileName = "liveRangeDuration_" + _kernel->name + ".log";
-		//std::cout << "writing to " << lrDurationFileName << "\n";
 		std::ofstream lrDurationFile(lrDurationFileName); 
-
 
 
 		//per CTA
 		//find live range duration for each register
-		//potentially multiple values per register
 		size_t totalLRPerCTA = 0;
 		int threadNum = 0;
 		for(auto& thread: relStructures.regFile)
@@ -1597,15 +1649,11 @@ namespace trace
 					if ( !relEvent->read ) //if write
 					{
 						durationOut << "w" << relEvent->time << " ";
-						//insert new live range if greater than zero
 						size_t duration =  lastReadTime - lastWriteTime;
 						if ( duration >= 1 )
 						{
-							if ( duration > 100000 )
-								assert(false && "duration larger than 100,000!");
+							assert((duration < SIZE_MAX) && "duration too damn large!");
 
-							//record previous duration
-							//durationOut << duration << " " ;
 							totalLRPerCTA += duration;
 							assert(duration >= 0 && "live range duration is negative");
 
@@ -1706,6 +1754,8 @@ namespace trace
 					lrDurationFile<< durationOut.str();
 			}
 			threadNum++;
+			//just print for one thread only
+			break;
 		}
 		auto regPerCTA = relStructures.regFile[0].size();
 		//std::cout << "total register actions: " << relEvents << "\t";
@@ -1901,49 +1951,157 @@ namespace trace
 									<< "#dInsts: " << allLinks.size()  <<  " #dInsts: "
 									<< dInstCount << "  # of mismatched dInsts: " << nomatch << "\n";
 	}
+
+	//can live range be computed for values across registers/shared memory?
+	//can a value be counted if it's stored into reg, then shared mem, then used?
+	//what if another thread writes into shared mem? that would f it up.
+	void MemoryChecker::pvfSharedMem()
+	{
+		size_t totalVuln = 0, totalPotentialVuln = 0;
+		std::vector<size_t> sumSREVuln;
+		const int numThresholds = 10;
+		//thresholds go from 2-2048
+		//fill threshold vector for all thresholds above input
+		uint64_t threshold = 2;
+		std::vector<size_t> thresholds;
+		std::vector<int> numChecks;
+		std::vector<int> numCheckedLength;
+		for(int i=0; i < numThresholds; i++)
+		{
+			thresholds.push_back(threshold);
+			threshold *= 2;
+		}
+		sumSREVuln.resize(thresholds.size(), 0);
+		numChecks.resize(thresholds.size(), 0);
+		numCheckedLength.resize(thresholds.size(), 0);
+
+		//calculate # of bits in mask
+		auto calcVuln = [&](bool aceLR, size_t readTime,
+				size_t writeTime, uint64_t currentMask) {
+			const auto vulnTime = readTime - writeTime;
+			uint64_t bitsACE = 0;
+			if ( vulnTime >0 && aceLR)
+			{
+				asm ("popcnt %1, %0" : "=r" (bitsACE) : "r" (currentMask));
+				totalVuln += vulnTime * bitsACE;
+				for(unsigned int i=0; i < thresholds.size(); i++)
+				{
+					if (vulnTime >= thresholds[i])
+					{
+						sumSREVuln[i] += bitsACE;
+						numChecks[i]++;
+						numCheckedLength[i] += vulnTime;
+					} else {
+						sumSREVuln[i] += vulnTime * bitsACE;
+					}
+				}
+				totalPotentialVuln += 8;
+			}
+		};
+		//iterate over each byte and look through its RelEventList
+		for (auto &location : relStructures.sharedMemory)
+		{
+			size_t readTime = 0, writeTime = 0;
+			bool aceLR;
+			uint64_t currentMask = 0;
+
+			for (auto &event : location.relEventList)
+			{
+				//find write and read events
+				if (event->read)
+				{
+					readTime = event->time;
+					//take union of bitmask
+
+					currentMask |= event->paMask;
+					aceLR = event->ace;
+				} else {
+					//finish any previous live range
+					calcVuln(aceLR, readTime, writeTime, readTime);
+					//start new live range
+					writeTime = readTime = event->time;
+					currentMask = 0;
+				}
+			}
+			calcVuln(aceLR, readTime, writeTime, readTime);
+		}
+
+		static unsigned int lastTime = 0;
+		int thisTime = time();
+		thisTime -= lastTime;
+		lastTime = time();
+
+		totalPotentialVuln = thisTime * relStructures.sharedMemory.size() * 8;
+		double ctaPVF = totalVuln/(double)(thisTime*totalPotentialVuln);
+		auto regTimeVuln= thisTime * 8;
+		std::cout << "Shared Memory PVF: " << ctaPVF
+				  << "\nwith SRE PVF/threshold:\n ";
+		for(unsigned int i=0; i<thresholds.size(); i++)
+		{
+			std::cout << thresholds[i] << " "
+					  << (sumSREVuln[i] + regTimeVuln)
+								/(double)(regTimeVuln+thisTime*totalPotentialVuln)
+					  << " " << numChecks[i] << " " << numCheckedLength[i]/(float)numChecks[i] << "\n";
+		}
+		std::cout << std::endl;
+	}
+
+	//calculate PVF of register file
+	//determine # of physical register allocations required
+	//determine PVF if checksum SRE is used
 	void MemoryChecker::pvfRegFile()
 	{
 		std::multimap<int, int> startList, endList;
-		uint64_t sumThreadVuln = 0;
-		uint64_t sumThreadPotentialVuln = 0;
+		uint64_t totalThreadVuln = 0;
+		std::vector<size_t> sumSREThreadVuln;
+		const int numThresholds = 10;
+		//thresholds go from 2-2048
+		//fill threshold vector for all thresholds above input
+		uint64_t threshold = 2;
+		std::vector<size_t> thresholds;
+		std::vector<int> numChecks;
+		std::vector<int> numCheckedLength;
+		for(int i=0; i < numThresholds; i++)
+		{
+			thresholds.push_back(threshold);
+			threshold *= 2;
+		}
+		sumSREThreadVuln.resize(thresholds.size(), 0);
+		numChecks.resize(thresholds.size(), 0);
+		numCheckedLength.resize(thresholds.size(), 0);
+
+		uint64_t totalThreadPotentialVuln = 0;
 		size_t writeTime=0, readTime=0;
 		bool aceLR = false;
-		auto vulnerability = 0, totalVuln = 0;
 		uint64_t currentMask = 0;
 		//debug
 		std::vector<int> regVuln;
 		regVuln.resize(relStructures.regFile[0].size());
 
-		auto calcVuln = [&](unsigned int &threadNum, int &regNum, Util& reg, bool &aceLR, size_t &readTime,
-				size_t &writeTime, uint64_t &currentMask) {
+		auto calcVuln = [&](unsigned int threadNum, int regNum, Util& reg, bool aceLR, size_t readTime,
+				size_t writeTime, uint64_t currentMask) {
 			const auto vulnTime = readTime - writeTime;
 			uint64_t bitsACE = 0;
 			if ( vulnTime >0 && aceLR)
 			{
-				asm ("popcnt %1, %0"
-						: "=r" (bitsACE)
-						  : "r" (currentMask));
-				vulnerability += vulnTime * bitsACE;
-				totalVuln += reg.sizeInBits;
+				asm ("popcnt %1, %0" : "=r" (bitsACE) : "r" (currentMask));
+				totalThreadVuln += vulnTime * bitsACE;
+				for(unsigned int i=0; i < thresholds.size(); i++)
+				{
+					if (vulnTime >= thresholds[i])
+					{
+						sumSREThreadVuln[i] += bitsACE;
+						numChecks[i]++;
+						numCheckedLength[i] += vulnTime;
+					} else {
+						sumSREThreadVuln[i] += vulnTime * bitsACE;
+					}
+				}
+				totalThreadPotentialVuln += reg.sizeInBits;
 
 				//debug
 				regVuln[regNum] = vulnTime * bitsACE;
-/*
-				if(bitsACE > (unsigned)reg.sizeInBits )
-				{
-					std::cout << "thread:reg=" << std::dec << threadNum << ":" << regNum << "\n";
-					if (event != nullptr)
-					{
-						std::cout << "PC:" << event->PC
-							<< " Time: " << event->time << "\n"
-							<< duChain[threadNum].chain[event->time]->opcode << "\n";
-					}
-						std::cout << "bitsACE: " << bitsACE
-							<< " vs reg size: " << reg.sizeInBits << "\n"
-							<< " mask: " << std::hex << currentMask << std::endl;
-					assert(false && "error: register smaller than ace bits");
-				}
-//*/
+
 				//for determining max registers and bits used
 				if (threadNum == 0)
 				{
@@ -1973,6 +2131,9 @@ namespace trace
 					currentMask = 0;
 				}
 			}
+			//if list ends in a read,
+			calcVuln(threadNum, regNum, reg, aceLR, readTime, writeTime, readTime);
+
 		};
 
 		auto threadPVF = [&](unsigned int threadNum)
@@ -1990,16 +2151,7 @@ namespace trace
 
 				regNum++;
 			}
-			if(0)
-			{
-				if(totalVuln == 0)
-					std::cout << "no any vuln? ";
-				else
-					std::cout << "thread's RF PVF: "
-					<< (double)vulnerability/(double)(time()*totalVuln) << std::endl;
-			}
-			sumThreadVuln += vulnerability;
-			sumThreadPotentialVuln += totalVuln;
+
 		};
 
 		auto maxRegResources= [&](int &maxSimulRegs, int &maxBitsNeeded)
@@ -2018,9 +2170,9 @@ namespace trace
 			{
 				simulRegs++;
 				currBits +=start->second;
-				auto tmp = start;
-				if((++tmp)->first == start->first)
-					continue;
+				//auto tmp = start;
+				//if((++tmp)->first == start->first)
+					//continue;
 				maxSimulRegs = (simulRegs > maxSimulRegs) ? simulRegs : maxSimulRegs;
 				maxBitsNeeded = (currBits > maxBitsNeeded) ? currBits : maxBitsNeeded;
 
@@ -2041,6 +2193,12 @@ namespace trace
 		// Start of pvfRegFile()
 		//////////////////////////////////////////////////////////////////////////////////////
 
+		//job September 1st: calculate PVF if all live ranges greater than X is shrunk to 1
+		//						and also add 1 extra register's worth of liverange
+		//				2nd task: calculate PVF for shared memory AND with checksum implemented
+		//				3rd task: repeat for main memory
+		//				4th task: mark only instructions that store to global memory addresses that
+		//							will ultimately be copied back to host as ACE
 		auto threadSize = relStructures.regFile.size();
 		for(unsigned int threadNum=0; threadNum < threadSize; threadNum++)
 			threadPVF(threadNum);
@@ -2059,9 +2217,20 @@ namespace trace
 		std::cout << "max simultaneous registers: " << maxSimulRegs
 				<< "\tavg bits/reg needed " << (float)maxBitsNeeded/(float)maxSimulRegs<< "\n";
 
-		sumThreadPotentialVuln = thisTime * threadSize * maxBitsNeeded;
-		double ctaPVF = sumThreadVuln/(double)(thisTime*sumThreadPotentialVuln);
-		std::cout << "CTA PVF: " << ctaPVF << std::endl;
+		totalThreadPotentialVuln = thisTime * threadSize * maxBitsNeeded;
+		double ctaPVF = totalThreadVuln/(double)(thisTime*totalThreadPotentialVuln);
+		auto regTimeVuln= thisTime*threadSize * 64;
+		std::cout << "CTA PVF: " << ctaPVF
+				  << "\nwith SRE PVF/threshold: \n";
+		for(unsigned int i=0; i<thresholds.size(); i++)
+		{
+			std::cout << thresholds[i] << " "
+			          << (sumSREThreadVuln[i] + regTimeVuln)
+								/(double)(regTimeVuln+thisTime*totalThreadPotentialVuln)
+					  << " " << numChecks[i] << " " << numCheckedLength[i]/(float)numChecks[i] << "\n";
+
+		}
+		std::cout << std::endl;
 
 		//output regVuln to debug file
 		std::ofstream rvOut("regVuln.txt");
@@ -2072,6 +2241,7 @@ namespace trace
 		rvOut.close();
 
 		//print to file dynamic instruction dependency-tree
+#if 0
 		std::ofstream dynInstsOut("dynInsts_dependencies");
 		int threadNum = 0;
 		for ( auto & thread : duChain )
@@ -2090,6 +2260,7 @@ namespace trace
 			threadNum++;
 		}
 		dynInstsOut.close();
+#endif
 	}
 
 	void MemoryChecker::finish()
@@ -2203,6 +2374,7 @@ namespace trace
 
 			//calculate PVF (all live ranges over life-time of all registers in all threads of CTA)
 			pvfRegFile();
+			pvfSharedMem();
 
 			if (printStats)
 			{
@@ -2219,6 +2391,8 @@ namespace trace
 						<<  aceCount/((float)totalCount) << "\n"
 						<< "Kernel duration: " << time() << "\n";
 			}
+		} else {
+			std::cout << "Total cycles " << time() << std::endl;
 		}
 	}
 
@@ -2296,7 +2470,7 @@ namespace trace
 
 		dInst->ace = true;
 
-		reportE(DUCHAIN, "t" << dInst->time << "\tPC" << dInst->PC << "\t:\t" << dInst->opcode.c_str() << "\t" );
+		//reportE(DUCHAIN, "t" << dInst->time << "\tPC" << dInst->PC << "\t:\t" << dInst->opcode.c_str() << "\t" );
 
 		//skip if has no read operands
 		if (dInst->read.size() == 0)
@@ -2321,7 +2495,7 @@ namespace trace
 				std::cout << "logically masked~! -- "
 						<< lastMask << " & " << r->relEvent->paMask << " = "
 						<< (lastMask & r->relEvent->paMask) << "\n";
-				std::cout << dInst->opcode << std::endl;
+				//std::cout << dInst->opcode << std::endl;
 				//even if mask is 0, it may still be ACE due to the way masks are calculated
 				//continue;
 			}

@@ -732,7 +732,7 @@ void DivergenceAnalysis::_findBranches(branch_set& branches)
 void DivergenceAnalysis::_propagateDivergenceAlongControlDependences(
 	branch_set& branches)
 {
-	typedef std::unordered_set<const DataflowGraph::Block*> BlockSet;
+	//typedef std::unordered_set<const DataflowGraph::Block*> BlockSet;
 	
 	/* 2) Obtain all branch instructions that depend on a divergent predicate
 	* List of branches that are divergent, so their controlflow

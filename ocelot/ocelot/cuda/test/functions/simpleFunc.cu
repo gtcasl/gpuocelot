@@ -4,7 +4,7 @@
 	\brief demonstrates function calls in CUDA - this thoroughly chokes Ocelot
 */
 
-#include <stdio.h>
+ #include <stdio.h>
 
 extern "C"  __noinline__ __device__ float square(float f) {
 	return f * f;

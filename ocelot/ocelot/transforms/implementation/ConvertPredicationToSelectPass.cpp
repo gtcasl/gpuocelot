@@ -37,7 +37,7 @@ namespace transforms
 	void ConvertPredicationToSelectPass::_replacePredicate( 
 		analysis::DataflowGraph::iterator block, unsigned int id )
 	{
-		typedef analysis::DataflowGraph::RegisterSet RegisterSet;
+		//typedef analysis::DataflowGraph::RegisterSet RegisterSet;
 
 		analysis::DataflowGraph::InstructionVector::const_iterator 
 			instruction( block->instructions().begin() );

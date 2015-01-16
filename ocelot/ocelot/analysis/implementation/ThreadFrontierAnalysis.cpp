@@ -74,7 +74,7 @@ bool ThreadFrontierAnalysis::isInThreadFrontier(const_iterator block,
 
 void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 {
-	typedef std::unordered_set<const_iterator> BlockSet;
+	//typedef std::unordered_set<const_iterator> BlockSet;
 
 	#if REPORT_BASE != 0
 	kernel.cfg()->write(std::cout);	

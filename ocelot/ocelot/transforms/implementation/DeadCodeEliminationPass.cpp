@@ -146,7 +146,7 @@ static bool canRemoveAliveIn(iterator block, const Register& aliveIn)
 static void eliminateDeadInstructions(analysis::DataflowGraph& dfg,
 	BlockSet& blocks, iterator block)
 {
-	typedef analysis::DataflowGraph::Block                Block;
+	//typedef analysis::DataflowGraph::Block                Block;
 	typedef analysis::DataflowGraph::RegisterSet   RegisterSet;
 	typedef std::vector<unsigned int>                     KillList;
 	typedef std::vector<PhiInstructionVector::iterator>   PhiKillList;

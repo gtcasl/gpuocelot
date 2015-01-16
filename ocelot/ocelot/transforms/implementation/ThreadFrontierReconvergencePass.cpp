@@ -49,7 +49,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	typedef std::multimap<Priority, ir::ControlFlowGraph::const_iterator,
 		std::greater<Priority>> ReversePriorityMap;
 	typedef analysis::ThreadFrontierAnalysis TFAnalysis;
-	typedef ir::ControlFlowGraph::const_pointer_iterator const_pointer_iterator;
+	//typedef ir::ControlFlowGraph::const_pointer_iterator const_pointer_iterator;
 
 	Analysis* analysis = getAnalysis("ThreadFrontierAnalysis");
 	assert(analysis != 0);

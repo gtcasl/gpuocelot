@@ -5,7 +5,7 @@
 	\date Feburary 12, 2010
 */
 
-#include <stdio.h>
+ #include <stdio.h>
 
 __device__ float Pi;
 

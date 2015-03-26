@@ -1,0 +1,3 @@
+[submodule "ocelot/hydrazine"]
+	path = ocelot/hydrazine
+	url = https://github.com/gtcasl/hydrazine.git

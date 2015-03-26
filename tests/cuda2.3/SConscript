@@ -99,6 +99,7 @@ paths = [ '-I' + env['CUDA_PATH'] + '/shared',
 
 env.Append(CPPFLAGS = paths)
 env.Append(CPPFLAGS = '-I' + os.path.join(env['install_path'], 'include'))
+env.Append(CPPFLAGS = '-I' + os.path.join(env['install_path'], os.path.join('include', 'hydrazine')))
 env.Append(LIBPATH = [os.path.join(env['install_path'], 'lib')])
 
 	

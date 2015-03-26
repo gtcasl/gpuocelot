@@ -163,7 +163,7 @@ def runUnitTests(options, buildSucceeded):
 		if 'unit' in options.test_lists.replace(' ', '').split(','):
 			createConfig('ocelot', config)
 
-			command = "cd ocelot; hydrazine/python/RunRegression.py -v"
+			command = "cd ocelot; hydrazine/hydrazine/python/RunRegression.py -v"
 
 			if options.debug:
 				command += " -p ../.debug_build/ocelot"

@@ -95,7 +95,7 @@ def runUnitTests(options, buildSucceeded):
 	if options.test_level == 'none':
 		return False
 	
-	command = "python hydrazine/python/RunRegression.py -v"
+	command = "python hydrazine/hydrazine/python/RunRegression.py -v"
 	
 	if options.debug:
 		command += " -p .debug_build/"

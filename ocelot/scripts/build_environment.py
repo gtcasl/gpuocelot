@@ -685,6 +685,7 @@ def Environment():
 
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
+	env.Prepend(CPPPATH = os.path.join(os.path.dirname(thisDir), 'hydrazine'))
 
 	if env['install']:
 		env.AppendUnique(LIBPATH = os.path.abspath(

@@ -3,6 +3,7 @@
 #
 
 import subprocess
+import os
 
 #
 #
@@ -11,7 +12,7 @@ def getOcelotPaths():
 	"""returns (ocelotIncludePath, ocelotLibPath, ocelotBinPath)"""
 	results = []
 	for arg in ('-i', '-L', '-b'):
-		ocelotConfig = subprocess.Popen(['/usr/local/bin/OcelotConfig', arg], stdout = subprocess.PIPE)
+		ocelotConfig = subprocess.Popen(['OcelotConfig', arg], stdout = subprocess.PIPE)
 		results.append(ocelotConfig.stdout.readline()[:-2])
 	return results
 
@@ -23,8 +24,9 @@ ocelotIncludePath, ocelotLibPath, ocelotBinPath = getOcelotPaths()
 #
 
 env = Environment()
-env.Append(CPPPATH = [ocelotIncludePath, '.'])
+env.Append(CPPPATH = [ocelotIncludePath, '.', os.path.join(ocelotIncludePath, 'hydrazine')])
 env.Append(CXXFLAGS = ['-std=c++0x'])
+env.Append(LIBPATH = [ocelotLibPath])
 
 sources = (
 	"traces/implementation/BranchTraceGenerator.cpp",

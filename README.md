@@ -5,9 +5,9 @@ Ocelot is a modular dynamic compilation framework for heterogeneous system, prov
 Please check the installation guide [here](https://github.com/gtcasl/gpuocelot/wiki/Installation).
 
 #Resources
-*Source code documentation
+* Source code documentation
 [http://gpuocelot.gatech.edu/doxygen](http://gpuocelot.gatech.edu/doxygen)
-*Mailing list
+* Mailing list
 [http://groups.google.com/group/gpuocelot](http://groups.google.com/group/gpuocelot)
 
 #News

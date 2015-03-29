@@ -1,5 +1,5 @@
 #Overview
-Ocelot is a modular dynamic compilation framework for heterogeneous system, providing various backend targets for CUDA programs and analysis modules for the PTX virtual instruction set. **Ocelot currently allows CUDA programs to be executed on NVIDIA GPUs, AMD GPUs, and x86-CPUs at full speed without recompilation.**
+Ocelot is a modular dynamic compilation framework for heterogeneous system, providing various backend targets for CUDA programs and analysis modules for the PTX virtual instruction set. **Ocelot currently allows CUDA programs to be executed on NVIDIA GPUs, AMD GPUs, and x86-CPUs at full speed without recompilation.** For more information, check [http://gpuocelot.gatech.edu/](http://gpuocelot.gatech.edu/).
 
 #Installation
 Please check the installation guide [here](https://github.com/gtcasl/gpuocelot/wiki/Installation).

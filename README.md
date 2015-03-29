@@ -4,6 +4,12 @@ Ocelot is a modular dynamic compilation framework for heterogeneous system, prov
 #Installation
 Please check the installation guide [here](https://github.com/gtcasl/gpuocelot/wiki/Installation).
 
+#Resources
+##Source code documentation
+[http://gpuocelot.gatech.edu/doxygen](http://gpuocelot.gatech.edu/doxygen)
+##Mailing list
+[http://groups.google.com/group/gpuocelot](http://groups.google.com/group/gpuocelot)
+
 #News
 March, 2013 - Actively seeking developers for AMD and Intel GPU backends. Please post on the mailing list if interested.
 

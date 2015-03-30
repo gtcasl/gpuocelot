@@ -105,7 +105,7 @@ def runStandardTests(options, directory, name, config):
 	createConfig(directory, config)
 	
 	# Run Cuda 2.2 tests
-	command = "cd " + directory + "; hydrazine/python/RunRegression.py -v"
+	command = "cd " + directory + "; ../../ocelot/hydrazine/hydrazine/python/RunRegression.py -v"
 	
 	if options.debug:
 		command += " -p ../../.debug_build/" + directory

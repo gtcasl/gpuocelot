@@ -60,9 +60,9 @@ struct Thread_info
   uint64_t inst_count;
 };
 
-#define TRACEGEN_VER 131
+#define TRACEGEN_VER 14
 
-#if TRACEGEN_VER == 131
+#if TRACEGEN_VER == 14
 
 //mov can do 
 // i. vector to scalar packing (4 src regs + 1 predicate register) 
@@ -70,7 +70,7 @@ struct Thread_info
 
 #define MAX_SRC_NUM 5
 #define MAX_DST_NUM 4
-#define SPECIAL_REG_START 900 //NUM_REG_IDS in Simulator
+#define SPECIAL_REG_START 1551 //NUM_REG_IDS in Simulator
 
 //new format
 struct Inst_info{

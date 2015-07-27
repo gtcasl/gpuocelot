@@ -73,7 +73,7 @@
    opcode == ir::PTXInstruction::Exit)
 
 
-#if TRACEGEN_VER == 131
+#if TRACEGEN_VER == 14
 
 #define SET_STORE_FLAG(inst_info, opcode) \
   do { \
@@ -349,7 +349,6 @@
 
 using namespace std;
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////// 
 // Opcode enumerator
 // These should be exactly matched with the Macsim
@@ -406,7 +405,9 @@ enum GPU_OPCODE_ENUM_ {
 	GPU_LG2,
 	GPU_MAD24,
 	GPU_MAD,
-	GPU_MAD64,
+  GPU_MAD64,
+  GPU_MADC,
+  GPU_MADC64,
 	GPU_MAX,
 	GPU_MAX64,
 	GPU_MEMBAR_CTA,
@@ -450,6 +451,8 @@ enum GPU_OPCODE_ENUM_ {
 	GPU_SET64,
 	GPU_SETP,
 	GPU_SETP64,
+  GPU_SHFL,
+  GPU_SHFL64,
 	GPU_SHL,
 	GPU_SHL64,
 	GPU_SHR,
@@ -554,7 +557,7 @@ enum GPU_FENCE_LEVEL_ENUM_ {
 // We should match with total number of instructions in gpuocelot (ptx)
 
 // Opcode translation
-// missing instruction from PTX manual : madc, shfl
+// missing instruction from PTX manual :
 int opcode_translator[ir::PTXInstruction::Nop][4] = 
 {
   // 32 bit integer    , 64 bit integer   , 32 bit FP        , 64 bit FP
@@ -589,6 +592,7 @@ int opcode_translator[ir::PTXInstruction::Nop][4] =
   { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_LG2     , (int)GPU_INVALID   }, // Lg2
   { (int)GPU_MAD24     , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Mad24
   { (int)GPU_MAD       , (int)GPU_MAD64   , (int)GPU_MAD     , (int)GPU_MAD64     }, // Mad
+  { (int)GPU_MADC      , (int)GPU_MADC64  , (int)GPU_MADC    , (int)GPU_MADC64    }, // Madc 
   { (int)GPU_MAX       , (int)GPU_MAX64   , (int)GPU_MAX     , (int)GPU_MAX64     }, // Max
   //{ (int)GPU_MEMBAR  , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Membar
   { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_INVALID , (int)GPU_INVALID   }, // Membar
@@ -614,6 +618,7 @@ int opcode_translator[ir::PTXInstruction::Nop][4] =
   { (int)GPU_SELP      , (int)GPU_SELP64  , (int)GPU_SELP    , (int)GPU_SELP64    }, // SelP
   { (int)GPU_SET       , (int)GPU_SET64   , (int)GPU_SET     , (int)GPU_SET64     }, // Set
   { (int)GPU_SETP      , (int)GPU_SETP64  , (int)GPU_SETP    , (int)GPU_SETP64    }, // SetP
+  { (int)GPU_SHFL      , (int)GPU_SHFL64  , (int)GPU_INVALID , (int)GPU_INVALID   }, // Shfl
   { (int)GPU_SHL       , (int)GPU_SHL64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Shl
   { (int)GPU_SHR       , (int)GPU_SHR64   , (int)GPU_INVALID , (int)GPU_INVALID   }, // Shr
   { (int)GPU_INVALID   , (int)GPU_INVALID , (int)GPU_SIN     , (int)GPU_INVALID   }, // Sin
@@ -833,7 +838,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
     // We have opcodes for 82 GPU Instructions! this check lets us 
     // know if new instructions have been added (or removed), but 
     // what if there have been modifications and count hasn't changed?
-    assert(ir::PTXInstruction::Nop == 82); 
+    assert(ir::PTXInstruction::Nop == 84); 
     // same concern as above, 
     // also ensure that SPECIAL_REG_START + special reg value is < 256
     // we are using 1 byte fields to store register ids
@@ -1394,7 +1399,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
           ptx_inst->a.vec ==  ir::PTXOperand::v4) {
         for (unsigned int i = 0; i < ptx_inst->a.array.size(); ++i) {
           assert(ptx_inst->a.array[i].reg < SPECIAL_REG_START);
-          inst_info->src[src_count] = ptx_inst->a.array[i].reg;
+          inst_info->src[src_count] = ptx_inst->a.reg;
           ++src_count;
         }
       }
@@ -1476,6 +1481,9 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
       }
       else {
         if (ptx_inst->d.vec ==  ir::PTXOperand::v1) {
+          if (ptx_inst->d.reg >= SPECIAL_REG_START) {
+            report("ptx_inst->d.reg (" << ptx_inst->d.reg << ") is less than SPECIAL_REG_START(" << SPECIAL_REG_START << "\n");
+          } 
           assert(ptx_inst->d.reg < SPECIAL_REG_START);
           inst_info->dst[dest_count] = ptx_inst->d.reg;
           ++dest_count;
